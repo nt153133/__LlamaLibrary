@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
@@ -52,7 +51,7 @@ namespace LlamaLibrary.OrderbotTags
                 return;
             }
 
-            IEnumerable<GearSet> groupedGearSets = GearsetManager
+            var groupedGearSets = GearsetManager
                                                    .GearSets
                                                    .Where(g => g.InUse)
                                                    .OrderByDescending(GetGearSetiLvl)

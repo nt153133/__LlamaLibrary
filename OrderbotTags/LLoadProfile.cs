@@ -18,7 +18,7 @@ namespace Ff14bot.NeoProfiles
         [XmlAttribute("Path")]
         public string ProfileName { get; set; }
 
-        public override bool IsDone { get { return _done; } }
+        public override bool IsDone => _done;
 
         protected override Composite CreateBehavior()
         {

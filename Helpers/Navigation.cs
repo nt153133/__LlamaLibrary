@@ -25,7 +25,7 @@ namespace LlamaLibrary.Helpers
         public static readonly WaitTimer WaitTimer_0 = new WaitTimer(new TimeSpan(0, 0, 0, 15));
         internal static async Task<Queue<NavGraph.INode>> GenerateNodes(uint ZoneId, Vector3 xyz)
         {
-            return await NavGraph.GetPathAsync((uint)ZoneId, xyz);
+            return await NavGraph.GetPathAsync(ZoneId, xyz);
         }
 
         public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ)
@@ -72,7 +72,7 @@ namespace LlamaLibrary.Helpers
 
             if (path == null)
             {
-                bool result = await FlightorMove(XYZ);
+                var result = await FlightorMove(XYZ);
                 Navigator.Stop();
                 return result;
             }
@@ -83,7 +83,7 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            object object_0 = new object();
+            var object_0 = new object();
             var composite = NavGraph.NavGraphConsumer(j => path);
 
             while (path.Count > 0)
@@ -152,7 +152,10 @@ namespace LlamaLibrary.Helpers
 
             await Coroutine.Wait(5000, () => SelectIconString.IsOpen || DialogOpen);
 
-            if (DialogOpen) Next();
+            if (DialogOpen)
+            {
+                Next();
+            }
 
             if (SelectIconString.IsOpen)
             {
@@ -161,11 +164,17 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Wait(5000, () => DialogOpen || SelectYesno.IsOpen);
             }
 
-            if (DialogOpen) Next();
+            if (DialogOpen)
+            {
+                Next();
+            }
 
             await Coroutine.Wait(3000, () => SelectYesno.IsOpen);
             if (SelectYesno.IsOpen)
+            {
                 SelectYesno.Yes();
+            }
+
             await Coroutine.Wait(3000, () => !SelectYesno.IsOpen);
         }
 
@@ -178,7 +187,11 @@ namespace LlamaLibrary.Helpers
             Navigator.Stop();
             await Coroutine.Sleep(1000);
 
-            if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+            if (CommonBehaviors.IsLoading)
+            {
+                await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+            }
+
             return WorldManager.ZoneId == 399;
         }
 
@@ -203,7 +216,11 @@ namespace LlamaLibrary.Helpers
 
         internal static async Task<bool> FlightorMove(FateData fate)
         {
-            if (fate == null) return false;
+            if (fate == null)
+            {
+                return false;
+            }
+
             var moving = MoveResult.GeneratingPath;
             var target = new FlyToParameters(fate.Location);
             while ((!(moving == MoveResult.Done ||
@@ -223,7 +240,10 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> GetToIslesOfUmbra()
         {
-            if (WorldManager.ZoneId == 138 && (WorldManager.SubZoneId == 461 || WorldManager.SubZoneId == 228)) return true;
+            if (WorldManager.ZoneId == 138 && (WorldManager.SubZoneId == 461 || WorldManager.SubZoneId == 228))
+            {
+                return true;
+            }
 
             await GetTo(138, new Vector3(317.4333f, -36.325f, 352.8649f));
 
@@ -231,7 +251,11 @@ namespace LlamaLibrary.Helpers
 
             await Coroutine.Sleep(1000);
 
-            if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+            if (CommonBehaviors.IsLoading)
+            {
+                await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+            }
+
             await Coroutine.Sleep(1000);
             return WorldManager.ZoneId == 138 && (WorldManager.SubZoneId == 461 || WorldManager.SubZoneId == 228);
         }

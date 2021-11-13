@@ -24,9 +24,12 @@ namespace LlamaLibrary.RemoteAgents
 
         public AetherWheelSlot[] GetWheelSlots()
         {
-            int count = 6;
+            var count = 6;
 
-            if (AetherialWheel.Instance.IsOpen) count = AetherialWheel.Instance.MaxSlots;
+            if (AetherialWheel.Instance.IsOpen)
+            {
+                count = AetherialWheel.Instance.MaxSlots;
+            }
 
             using (Core.Memory.TemporaryCacheState(enabledTemporarily: false))
             {

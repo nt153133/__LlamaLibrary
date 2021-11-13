@@ -55,8 +55,8 @@ namespace LlamaLibrary.AutoRetainerSort
 
             if (Owner != null)
             {
-                int ownerCenterX = Owner.Location.X + (Owner.Width / 2) - (Width / 2);
-                int ownerCenterY = Owner.Location.Y + (Owner.Height / 2) - (Width / 2);
+                var ownerCenterX = Owner.Location.X + (Owner.Width / 2) - (Width / 2);
+                var ownerCenterY = Owner.Location.Y + (Owner.Height / 2) - (Width / 2);
                 Location = new Point(ownerCenterX, ownerCenterY);
             }
         }

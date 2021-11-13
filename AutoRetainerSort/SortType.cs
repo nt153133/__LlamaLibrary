@@ -60,12 +60,23 @@ namespace LlamaLibrary.AutoRetainerSort
             SortType = sortType;
         }
 
-        public override string ToString() => $"{SortType.ToString()} [{Count.ToString()}]";
+        public override string ToString()
+        {
+            return $"{SortType} [{Count}]";
+        }
 
         public bool Equals(SortTypeWithCount other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return SortType == other.SortType;
         }
 
@@ -76,11 +87,27 @@ namespace LlamaLibrary.AutoRetainerSort
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            Type type = obj.GetType();
-            if (type == typeof(SortType)) return Equals((SortType)obj);
-            if (type != GetType()) return false;
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            var type = obj.GetType();
+            if (type == typeof(SortType))
+            {
+                return Equals((SortType)obj);
+            }
+
+            if (type != GetType())
+            {
+                return false;
+            }
+
             return Equals((SortTypeWithCount)obj);
         }
 

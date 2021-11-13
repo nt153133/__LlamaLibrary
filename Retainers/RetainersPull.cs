@@ -30,34 +30,21 @@ namespace LlamaLibrary.Retainers
     {
         private static readonly string BotName = "Retainers";
 
-        private bool _init = false;
-
         private Composite _root;
 
         private SettingsForm _settings;
 
         public RetainersPull()
         {
-            // Task.Factory.StartNew(() =>
-            //  {
             Init();
-            _init = true;
-
-            //     Log("INIT DONE");
-            //   });
         }
 
-        public override string Name
-        {
-            get
-            {
+        public override string Name =>
 #if RB_CN
                 return "雇员拉";
 #else
-                return "Retainers";
+                "Retainers";
 #endif
-            }
-        }
 
         public override bool WantButton => true;
 
@@ -78,7 +65,10 @@ namespace LlamaLibrary.Retainers
         public override void OnButtonPress()
         {
             if (_settings == null || _settings.IsDisposed)
+            {
                 _settings = new SettingsForm();
+            }
+
             try
             {
                 _settings.Show();
@@ -94,11 +84,11 @@ namespace LlamaLibrary.Retainers
             OffsetManager.Init();
 
             Log("Load venture.json");
-            ventureData = new Lazy<List<RetainerTaskData>>(() => loadResource<List<RetainerTaskData>>(Resources.Ventures));
+            ventureData = new Lazy<List<RetainerTaskData>>(() => LoadResource<List<RetainerTaskData>>(Resources.Ventures));
             Log("Loaded venture.json");
         }
 
-        private static T loadResource<T>(string text)
+        private static T LoadResource<T>(string text)
         {
             return JsonConvert.DeserializeObject<T>(text);
         }
@@ -134,7 +124,10 @@ namespace LlamaLibrary.Retainers
         public static async Task CheckVentureTask()
         {
             var verified = await VerifiedRetainerData();
-            if (!verified) return;
+            if (!verified)
+            {
+                return;
+            }
 
             var count = await HelperFunctions.GetNumberOfRetainers();
             var rets = Core.Memory.ReadArray<RetainerInfo>(Offsets.RetainerData, count);
@@ -242,10 +235,15 @@ namespace LlamaLibrary.Retainers
                 }
             }
 
-            if (RetainerSettings.Instance.DepositFromPlayer) await RetainerRoutine.DumpItems(RetainerSettings.Instance.DepositFromSaddleBags);
+            if (RetainerSettings.Instance.DepositFromPlayer)
+            {
+                await RetainerRoutine.DumpItems(RetainerSettings.Instance.DepositFromSaddleBags);
+            }
 
             if (RetainerSettings.Instance.GetGil)
+            {
                 GetRetainerGil();
+            }
 
             return true;
         }
@@ -327,7 +325,11 @@ namespace LlamaLibrary.Retainers
 
                 await Coroutine.Wait(1500, () => DialogOpen || SelectString.IsOpen);
                 await Coroutine.Sleep(200);
-                if (DialogOpen) Next();
+                if (DialogOpen)
+                {
+                    Next();
+                }
+
                 await Coroutine.Sleep(200);
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
             }

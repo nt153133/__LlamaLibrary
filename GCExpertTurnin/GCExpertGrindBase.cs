@@ -43,7 +43,10 @@ namespace LlamaLibrary.GCExpertTurnin
         public override void OnButtonPress()
         {
             if (settings == null || settings.IsDisposed)
+            {
                 settings = new GCExpertSettingsFrm();
+            }
+
             try
             {
                 settings.Show();
@@ -96,7 +99,7 @@ namespace LlamaLibrary.GCExpertTurnin
 
                     var outList = new List<LisbethOrder>
                     {
-                        new LisbethOrder(0, 1, (int)GCExpertSettings.Instance.ItemId, (int)couldCraft, ((ClassJobType)DataManager.GetItem((uint)GCExpertSettings.Instance.ItemId).RepairClass).ToString(), true)
+                        new LisbethOrder(0, 1, GCExpertSettings.Instance.ItemId, (int)couldCraft, ((ClassJobType)DataManager.GetItem((uint)GCExpertSettings.Instance.ItemId).RepairClass).ToString(), true)
                     };
 
                     var order = JsonConvert.SerializeObject(outList, Formatting.None);
@@ -123,7 +126,10 @@ namespace LlamaLibrary.GCExpertTurnin
 
         public static async Task HandInExpert()
         {
-            if (GCExpertSettings.Instance.Craft && ConditionParser.ItemCount((uint)GCExpertSettings.Instance.ItemId) == 0) return;
+            if (GCExpertSettings.Instance.Craft && ConditionParser.ItemCount((uint)GCExpertSettings.Instance.ItemId) == 0)
+            {
+                return;
+            }
 
             if (!GrandCompanySupplyList.Instance.IsOpen)
             {
@@ -154,8 +160,8 @@ namespace LlamaLibrary.GCExpertTurnin
                 var maxSeals = Core.Me.MaxGCSeals();*/
 
                 //var items = Core.Memory.ReadArray<GCTurninItem>(Offsets.GCTurnin, Offsets.GCTurninCount);
-                int i = 0;
-                int count = GrandCompanySupplyList.Instance.GetNumberOfTurnins(); //ConditionParser.ItemCount((uint) GCExpertSettings.Instance.ItemId);
+                var i = 0;
+                var count = GrandCompanySupplyList.Instance.GetNumberOfTurnins(); //ConditionParser.ItemCount((uint) GCExpertSettings.Instance.ItemId);
 
                 if (count > 0)
                 {

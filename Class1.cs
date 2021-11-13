@@ -23,11 +23,7 @@ namespace LlamaLibrary
         {
         }
 
-        public Composite TradeAcceptBehavior
-        {
-            get
-            {
-                return new PrioritySelector(
+        public Composite TradeAcceptBehavior => new PrioritySelector(
                     new Decorator(
                         r => Trade.IsOpen,
                         new PrioritySelector(
@@ -50,7 +46,5 @@ namespace LlamaLibrary
                         )
                     )
                 );
-            }
-        }
     }
 }

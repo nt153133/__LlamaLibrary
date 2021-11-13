@@ -30,11 +30,7 @@ namespace LlamaLibrary
 
         internal static bool Paused { get; set; }
 
-        public Composite FollowBehavior
-        {
-            get
-            {
-                return new PrioritySelector(
+        public Composite FollowBehavior => new PrioritySelector(
                     new Decorator(
                         r => !Paused,
                         new PrioritySelector(
@@ -43,13 +39,14 @@ namespace LlamaLibrary
                         )
                     )
                 );
-            }
-        }
 
         public override void OnButtonPress()
         {
             if (_settings == null || _settings.IsDisposed)
+            {
                 _settings = new AutoFollowSettingsFrm();
+            }
+
             try
             {
                 _settings.Show();
@@ -74,7 +71,10 @@ namespace LlamaLibrary
         public static async Task<bool> MoveToTask(BattleCharacter target, float distance)
         {
             //Logger.LogCritical($"Move To task");
-            if (target.Location == Vector3.Zero) return false;
+            if (target.Location == Vector3.Zero)
+            {
+                return false;
+            }
 
             //Logger.LogCritical($"move to {location}");
             while (target.Location.Distance2DSqr(Core.Me.Location) >= distance)

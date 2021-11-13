@@ -17,10 +17,12 @@ namespace LlamaLibrary.RemoteWindows
             _name = WindowName;
         }
 
-        public async Task<bool> Open()
+        public override async Task<bool> Open()
         {
             if (IsOpen)
+            {
                 return true;
+            }
 
             AgentInterface<AgentContentsInfo>.Instance.Toggle();
             await Coroutine.Wait(5000, () => IsOpen);

@@ -40,13 +40,16 @@ namespace LlamaLibrary.AutoRetainerSort
                 yield return SaddlebagInventory;
             }
 
-            foreach (CachedInventory retainerInventory in RetainerInventories.Values)
+            foreach (var retainerInventory in RetainerInventories.Values)
             {
                 yield return retainerInventory;
             }
         }
 
-        public static bool AnyRulesExist() => AutoRetainerSortSettings.Instance.InventoryOptions.Values.Any(invOptions => invOptions.Any());
+        public static bool AnyRulesExist()
+        {
+            return AutoRetainerSortSettings.Instance.InventoryOptions.Values.Any(invOptions => invOptions.Any());
+        }
 
         public static CachedInventory GetByIndex(int index)
         {
@@ -63,7 +66,7 @@ namespace LlamaLibrary.AutoRetainerSort
 
         public static ItemSortInfo GetSortInfo(uint trueItemId)
         {
-            if (ItemSortInfoCache.TryGetValue(trueItemId, out ItemSortInfo sortInfo))
+            if (ItemSortInfoCache.TryGetValue(trueItemId, out var sortInfo))
             {
                 return sortInfo;
             }
@@ -74,7 +77,7 @@ namespace LlamaLibrary.AutoRetainerSort
 
         public static bool AnyUnsorted()
         {
-            foreach (CachedInventory cachedInventory in GetAllInventories())
+            foreach (var cachedInventory in GetAllInventories())
             {
                 if (FilledAndSortedInventories.Contains(cachedInventory.Index))
                 {
@@ -93,9 +96,12 @@ namespace LlamaLibrary.AutoRetainerSort
         public static void UpdateIndex(int index, IEnumerable<Bag> bags)
         {
             var bagsArray = bags.ToArray();
-            CachedInventory cachedInventory = GetByIndex(index);
+            var cachedInventory = GetByIndex(index);
             cachedInventory.Update(bagsArray);
-            if (cachedInventory.AllBelong() && cachedInventory.FreeSlots == 0) FilledAndSortedInventories.Add(index);
+            if (cachedInventory.AllBelong() && cachedInventory.FreeSlots == 0)
+            {
+                FilledAndSortedInventories.Add(index);
+            }
         }
 
         public static void UpdateFromCache(RetainerInfo[] retData)
@@ -105,17 +111,20 @@ namespace LlamaLibrary.AutoRetainerSort
             var mainBagsArray = InventoryManager.GetBagsByInventoryBagId(GeneralFunctions.MainBags).ToArray();
             PlayerInventory.Update(mainBagsArray);
 
-            StoredSaddleBagInventory storedSaddlebagInventory = ItemFinder.GetCachedSaddlebagInventoryComplete();
+            var storedSaddlebagInventory = ItemFinder.GetCachedSaddlebagInventoryComplete();
             SaddlebagInventory.Update(storedSaddlebagInventory);
 
             var cachedRetInventories = ItemFinder.GetCachedRetainerInventories();
 
             for (var i = 0; i < retData.Length; i++)
             {
-                RetainerInfo retInfo = retData[i];
-                if (!retInfo.Active) continue;
+                var retInfo = retData[i];
+                if (!retInfo.Active)
+                {
+                    continue;
+                }
 
-                if (cachedRetInventories.TryGetValue(retInfo.Unique, out StoredRetainerInventory storedInventory))
+                if (cachedRetInventories.TryGetValue(retInfo.Unique, out var storedInventory))
                 {
                     if (RetainerInventories.ContainsKey(i))
                     {
@@ -129,7 +138,7 @@ namespace LlamaLibrary.AutoRetainerSort
                 }
             }
 
-            foreach (CachedInventory cachedInventory in GetAllInventories())
+            foreach (var cachedInventory in GetAllInventories())
             {
                 if (cachedInventory.AllBelong() && cachedInventory.FreeSlots == 0)
                 {
@@ -137,7 +146,7 @@ namespace LlamaLibrary.AutoRetainerSort
                 }
             }
 
-            foreach (ItemSortInfo sortInfo in PlayerInventory.ItemCounts.Select(x => GetSortInfo(x.Key)))
+            foreach (var sortInfo in PlayerInventory.ItemCounts.Select(x => GetSortInfo(x.Key)))
             {
                 if (sortInfo.ItemInfo.Unique)
                 {

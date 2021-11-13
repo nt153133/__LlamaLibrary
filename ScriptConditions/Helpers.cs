@@ -92,7 +92,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int ZodiacCompletedMahatma()
         {
-            return (int)(ZodiacLightLevel() / 500);
+            return ZodiacLightLevel() / 500;
         }
 
         public static bool ZodiacMahatmaIsDone()
@@ -124,7 +124,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int MaxGCSeals()
         {
-            return (int)Core.Me.MaxGCSeals();
+            return Core.Me.MaxGCSeals();
         }
 
         public static int GetNPCIconId(int npcID)
@@ -145,7 +145,10 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool MsLeftInDungeonGt(long time)
         {
-            if (DirectorManager.ActiveDirector == null) return false;
+            if (DirectorManager.ActiveDirector == null)
+            {
+                return false;
+            }
 
             if (DirectorManager.ActiveDirector is InstanceContentDirector activeAsInstance)
             {
@@ -157,14 +160,20 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int CurrentMettle()
         {
-            if (DirectorManager.ActiveDirector == null) return 0;
+            if (DirectorManager.ActiveDirector == null)
+            {
+                return 0;
+            }
 
             return (int)Core.Memory.Read<uint>(DirectorManager.ActiveDirector.Pointer + Offsets.CurrentMettle);
         }
 
         public static int NextResistanceRank()
         {
-            if (DirectorManager.ActiveDirector == null) return 0;
+            if (DirectorManager.ActiveDirector == null)
+            {
+                return 0;
+            }
 
             return (int)Core.Memory.Read<uint>(DirectorManager.ActiveDirector.Pointer + Offsets.NextReistanceRank);
         }
@@ -238,7 +247,9 @@ namespace LlamaLibrary.ScriptConditions
             }
 
             if (SelectYesno.IsOpen)
+            {
                 SelectYesno.Yes();
+            }
 
             try
             {
@@ -269,10 +280,10 @@ namespace LlamaLibrary.ScriptConditions
                 }
             });
 
-            if (waitTask != await Task.WhenAny(
-                waitTask,
-                                               Task.Delay(timeout)))
+            if (waitTask != await Task.WhenAny(waitTask, Task.Delay(timeout)))
+            {
                 throw new TimeoutException();
+            }
         }
     }
 }

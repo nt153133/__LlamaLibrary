@@ -80,7 +80,11 @@ namespace LlamaLibrary.Helpers
 
         public static async Task GetToGCBase()
         {
-            if (Core.Me.GrandCompany == 0) return;
+            if (Core.Me.GrandCompany == 0)
+            {
+                return;
+            }
+
             var GcBase = BaseLocations[Core.Me.GrandCompany];
             Logger.Info($"{Core.Me.GrandCompany} {GcBase.Key} {GcBase.Value}");
             await Navigation.GetTo(GcBase.Key, GcBase.Value);
@@ -93,7 +97,11 @@ namespace LlamaLibrary.Helpers
 
         public static async Task InteractWithNpc(GCNpc npc)
         {
-            if (Core.Me.GrandCompany == 0) return;
+            if (Core.Me.GrandCompany == 0)
+            {
+                return;
+            }
+
             var targetNpc = GameObjectManager.GetObjectByNPCId(NpcList[Core.Me.GrandCompany][npc]);
             if (targetNpc == null || !targetNpc.IsWithinInteractRange)
             {
@@ -102,11 +110,19 @@ namespace LlamaLibrary.Helpers
             }
 
             if (targetNpc == null)
+            {
                 return;
+            }
+
             if (!targetNpc.IsWithinInteractRange)
+            {
                 await Navigation.OffMeshMoveInteract(targetNpc);
+            }
+
             if (targetNpc.IsWithinInteractRange)
+            {
                 targetNpc.Interact();
+            }
         }
 
         public static async Task GetToGCBase(GrandCompany grandCompany)
@@ -131,11 +147,19 @@ namespace LlamaLibrary.Helpers
             }
 
             if (targetNpc == null)
+            {
                 return;
+            }
+
             if (!targetNpc.IsWithinInteractRange)
+            {
                 await Navigation.OffMeshMoveInteract(targetNpc);
+            }
+
             if (targetNpc.IsWithinInteractRange)
+            {
                 targetNpc.Interact();
+            }
         }
 
         public static async Task BuyFCAction(GrandCompany grandCompany, int actionId)

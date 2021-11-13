@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using ff14bot.Enums;
 using ff14bot.Managers;
@@ -14,13 +13,25 @@ namespace LlamaLibrary.ScriptConditions
         {
             if (ids.Length == 0)
             {
-                if (dist > 0) return GameObjectManager.GetObjectsOfType<BattleCharacter>().Count(i => i.CanAttack && i.IsTargetable && i.Distance() < dist);
-                else return GameObjectManager.GetObjectsOfType<BattleCharacter>().Count(i => i.CanAttack && i.IsTargetable);
+                if (dist > 0)
+                {
+                    return GameObjectManager.GetObjectsOfType<BattleCharacter>().Count(i => i.CanAttack && i.IsTargetable && i.Distance() < dist);
+                }
+                else
+                {
+                    return GameObjectManager.GetObjectsOfType<BattleCharacter>().Count(i => i.CanAttack && i.IsTargetable);
+                }
             }
             else
             {
-                if (dist > 0) return GameObjectManager.GetObjectsByNPCIds<BattleCharacter>(ids).Count(i => i.CanAttack && i.IsTargetable && i.Distance() < dist);
-                else return GameObjectManager.GetObjectsByNPCIds<BattleCharacter>(ids).Count(i => i.CanAttack && i.IsTargetable);
+                if (dist > 0)
+                {
+                    return GameObjectManager.GetObjectsByNPCIds<BattleCharacter>(ids).Count(i => i.CanAttack && i.IsTargetable && i.Distance() < dist);
+                }
+                else
+                {
+                    return GameObjectManager.GetObjectsByNPCIds<BattleCharacter>(ids).Count(i => i.CanAttack && i.IsTargetable);
+                }
             }
         }
 
@@ -31,7 +42,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int HighestILvl(ClassJobType job)
         {
-            IEnumerable<GearSet> sets = GearsetManager.GearSets.Where(g => g.InUse && g.Class == job && g.Gear.Any());
+            var sets = GearsetManager.GearSets.Where(g => g.InUse && g.Class == job && g.Gear.Any());
             return sets.Any() ? sets.Max(GeneralFunctions.GetGearSetiLvl) : 0;
         }
 
@@ -52,7 +63,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int DailyQuestAllowance()
         {
-            return (int)BeastTribeHelper.DailyQuestAllowance();
+            return BeastTribeHelper.DailyQuestAllowance();
         }
 
         public static bool LisbethPresent()
@@ -60,7 +71,11 @@ namespace LlamaLibrary.ScriptConditions
             var loader = BotManager.Bots
                 .FirstOrDefault(c => c.Name == "Lisbeth");
 
-            if (loader == null) return false;
+            if (loader == null)
+            {
+                return false;
+            }
+
             return true;
         }
 

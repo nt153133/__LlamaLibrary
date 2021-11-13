@@ -61,7 +61,9 @@ namespace LlamaLibrary.Helpers
             if (_savedTimers.ContainsKey(cycle))
             {
                 if (_savedTimers[cycle].IsValid)
+                {
                     return _savedTimers[cycle].ResetTime;
+                }
 
                 Log($"Timer Invalid getting new one for cycle: {cycle}");
                 _savedTimers[cycle] = new SavedTimer(DateTimeOffset.FromUnixTimeSeconds(Timers.GetNextCycle(cycle)).LocalDateTime, Timers.CurrentTime);

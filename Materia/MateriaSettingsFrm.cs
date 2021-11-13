@@ -23,8 +23,8 @@ namespace LlamaLibrary.Materia
 
         private void MateriaSettingsFrm_Load(object sender, EventArgs e)
         {
-            this.itemCb.SelectionChangeCommitted += new System.EventHandler(itemCb_SelectionChangeCommitted);
-            this.affixCb.SelectionChangeCommitted += new System.EventHandler(affixCb_SelectionChangeCommitted);
+            itemCb.SelectionChangeCommitted += new System.EventHandler(itemCb_SelectionChangeCommitted);
+            affixCb.SelectionChangeCommitted += new System.EventHandler(affixCb_SelectionChangeCommitted);
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;
             bindingSourceInventory.Clear();
 
@@ -297,7 +297,7 @@ namespace LlamaLibrary.Materia
         private void button4_Click(object sender, EventArgs e)
         {
             var list = MateriaBase.Materia(_selectedBagSlotAffix);
-            List<BagSlot> materiaToAdd = new List<BagSlot>();
+            var materiaToAdd = new List<BagSlot>();
 
             //var inventoryMateria =
             //bindingSourceInventoryMateria.DataSource =InventoryManager.FilledSlots.Where(i=> i.Item.EquipmentCatagory == ItemUiCategory.Materia);

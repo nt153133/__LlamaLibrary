@@ -65,13 +65,15 @@ namespace LlamaLibrary
             Navigator.NavigationProvider = new ServiceNavigationProvider();
 
             var output = new List<string>();
-            bool medium = false;
-            bool large = false;
+            var medium = false;
+            var large = false;
             var outputMed = new List<string>();
             var outputLarge = new List<string>();
 
             if (ConditionParser.HasAetheryte(2))
+            {
                 output.AddRange(await GetLavenderPlots());
+            }
 
             foreach (var line in output)
             {
@@ -89,13 +91,15 @@ namespace LlamaLibrary
 
             if (large)
             {
-                string message = string.Join("\n", outputLarge);
-                string title = "Large";
+                var message = string.Join("\n", outputLarge);
+                var title = "Large";
                 MessageBox.Show(message, title);
             }
 
             if (ConditionParser.HasAetheryte(8))
+            {
                 output.AddRange(await GetMistsPlots());
+            }
 
             foreach (var line in output)
             {
@@ -113,13 +117,15 @@ namespace LlamaLibrary
 
             if (large)
             {
-                string message = string.Join("\n", outputLarge);
-                string title = "Large";
+                var message = string.Join("\n", outputLarge);
+                var title = "Large";
                 MessageBox.Show(message, title);
             }
 
             if (ConditionParser.HasAetheryte(9))
+            {
                 output.AddRange(await GetGobletPlots());
+            }
 
             foreach (var line in output)
             {
@@ -137,16 +143,20 @@ namespace LlamaLibrary
 
             if (large)
             {
-                string message = string.Join("\n", outputLarge);
-                string title = "Large";
+                var message = string.Join("\n", outputLarge);
+                var title = "Large";
                 MessageBox.Show(message, title);
             }
 
             if (ConditionParser.HasAetheryte(111))
+            {
                 output.AddRange(await GetShiroganePlots());
+            }
 
             if (!output.Any())
+            {
                 Log1($"No Housing Plots For Sale");
+            }
 
             foreach (var line in output)
             {
@@ -174,15 +184,15 @@ namespace LlamaLibrary
 
             if (medium)
             {
-                string message = string.Join("\n", outputMed);
-                string title = "Medium";
+                var message = string.Join("\n", outputMed);
+                var title = "Medium";
                 MessageBox.Show(message, title);
             }
 
             if (large)
             {
-                string message = string.Join("\n", outputLarge);
-                string title = "Large";
+                var message = string.Join("\n", outputLarge);
+                var title = "Large";
                 MessageBox.Show(message, title);
             }
         }
@@ -190,20 +200,30 @@ namespace LlamaLibrary
         public static async Task<List<string>> GetMistsPlots()
         {
             if (ConditionParser.IsQuestCompleted(66750))
+            {
                 await GetToResidential(8);
+            }
             else
+            {
                 await GetToMistsWindow();
+            }
 
             if (!SelectString.IsOpen)
+            {
                 return new List<string>();
+            }
 
             await OpenHousingWards();
             var list = await HousingWards();
 
             if (ConditionParser.IsQuestCompleted(66750))
+            {
                 await CloseHousingWardsNoLoad();
+            }
             else
+            {
                 await CloseHousingWards();
+            }
 
             return list;
         }
@@ -211,20 +231,30 @@ namespace LlamaLibrary
         public static async Task<List<string>> GetLavenderPlots()
         {
             if (ConditionParser.IsQuestCompleted(66748))
+            {
                 await GetToResidential(2);
+            }
             else
+            {
                 await GetToLavenderWindow();
+            }
 
             if (!SelectString.IsOpen)
+            {
                 return new List<string>();
+            }
 
             await OpenHousingWards();
             var list = await HousingWards();
 
             if (ConditionParser.IsQuestCompleted(66748))
+            {
                 await CloseHousingWardsNoLoad();
+            }
             else
+            {
                 await CloseHousingWards();
+            }
 
             return list;
         }
@@ -232,20 +262,30 @@ namespace LlamaLibrary
         public static async Task<List<string>> GetGobletPlots()
         {
             if (ConditionParser.IsQuestCompleted(66749))
+            {
                 await GetToResidential(9);
+            }
             else
+            {
                 await GetToGobletWindow();
+            }
 
             if (!SelectString.IsOpen)
+            {
                 return new List<string>();
+            }
 
             await OpenHousingWards();
             var list = await HousingWards();
 
             if (ConditionParser.IsQuestCompleted(66749))
+            {
                 await CloseHousingWardsNoLoad();
+            }
             else
+            {
                 await CloseHousingWards();
+            }
 
             return list;
         }
@@ -253,29 +293,45 @@ namespace LlamaLibrary
         public static async Task<List<string>> GetShiroganePlots()
         {
             if (ConditionParser.IsQuestCompleted(68167))
+            {
                 await GetToResidential(111);
+            }
             else
+            {
                 await GetToShiroganeWindow();
+            }
 
             if (!SelectString.IsOpen)
+            {
                 return new List<string>();
+            }
 
             await OpenHousingWards();
             var list = await HousingWards();
 
             if (ConditionParser.IsQuestCompleted(68167))
+            {
                 await CloseHousingWardsNoLoad();
+            }
             else
+            {
                 await CloseHousingWards();
+            }
 
             return list;
         }
 
         public static async Task GetToResidential(uint aetheryteId)
         {
-            if (!ConditionParser.HasAetheryte(aetheryteId)) return;
+            if (!ConditionParser.HasAetheryte(aetheryteId))
+            {
+                return;
+            }
 
-            if (!WorldManager.TeleportById(aetheryteId)) return;
+            if (!WorldManager.TeleportById(aetheryteId))
+            {
+                return;
+            }
 
             do
             {
@@ -283,7 +339,10 @@ namespace LlamaLibrary
             }
             while (Core.Me.IsCasting);
             await Coroutine.Sleep(2000);
-            if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+            if (CommonBehaviors.IsLoading)
+            {
+                await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+            }
 
             await Coroutine.Wait(10000, () => GameObjectManager.GetObjectByNPCId(aetheryteId) != null);
             await Coroutine.Sleep(2000);
@@ -326,9 +385,13 @@ namespace LlamaLibrary
             if (SelectString.IsOpen)
             {
                 if (Translator.Language == Language.Chn)
+                {
                     SelectString.ClickLineContains("冒险者住宅区传送");
+                }
                 else
+                {
                     SelectString.ClickLineContains("Residential");
+                }
             }
 
             await Coroutine.Sleep(500);
@@ -364,14 +427,21 @@ namespace LlamaLibrary
             if (SelectIconString.IsOpen)
             {
                 if (Translator.Language == Language.Chn)
+                {
                     SelectIconString.ClickLineContains("薰衣草苗圃");
+                }
                 else
+                {
                     SelectIconString.ClickLineContains("Lavender Beds");
+                }
 
                 await Coroutine.Wait(5000, () => DialogOpen || SelectString.IsOpen);
             }
 
-            if (DialogOpen) Next();
+            if (DialogOpen)
+            {
+                Next();
+            }
 
             await Coroutine.Wait(3000, () => SelectString.IsOpen);
         }
@@ -381,9 +451,13 @@ namespace LlamaLibrary
             if (SelectString.IsOpen)
             {
                 if (Translator.Language == Language.Chn)
+                {
                     SelectString.ClickLineContains("移动到指定小区");
+                }
                 else
+                {
                     SelectString.ClickLineContains("Go to specified");
+                }
 
                 await Coroutine.Wait(5000, () => HousingSelectBlock.Instance.IsOpen);
             }
@@ -449,7 +523,10 @@ namespace LlamaLibrary
 
             await Coroutine.Wait(5000, () => DialogOpen);
 
-            if (DialogOpen) Next();
+            if (DialogOpen)
+            {
+                Next();
+            }
 
             await Coroutine.Wait(3000, () => SelectString.IsOpen);
         }
@@ -470,7 +547,10 @@ namespace LlamaLibrary
 
                 await Coroutine.Sleep(500);
 
-                if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                if (CommonBehaviors.IsLoading)
+                {
+                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                }
             }
         }
 

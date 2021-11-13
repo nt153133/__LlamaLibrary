@@ -35,7 +35,10 @@ namespace LlamaLibrary.AutoTrade
         {
             foreach (DataGridViewColumn col in grid.Columns)
             {
-                if (col.DataPropertyName == "ItemName") col.ReadOnly = true;
+                if (col.DataPropertyName == "ItemName")
+                {
+                    col.ReadOnly = true;
+                }
             }
 
             grid.ResetBindings();
@@ -99,9 +102,13 @@ namespace LlamaLibrary.AutoTrade
             _inventoryItems.RemoveAll(lbItem => lbItem.BagSlot == null || !lbItem.BagSlot.IsFilled || lbItem.BagSlot.TrueItemId != lbItem.TrueItemId || lbItem.TrueItemId < 20 || lbItem.QtyAvailable == 0);
 
             // Fill inventory listbox with data.
-            foreach (BagSlot slot in MainBagsFilledSlots.Where(i => i.CanTrade() && i.TrueItemId > 19))
+            foreach (var slot in MainBagsFilledSlots.Where(i => i.CanTrade() && i.TrueItemId > 19))
             {
-                if (_inventoryItems.Any(x => x.TrueItemId == slot.TrueItemId)) continue;
+                if (_inventoryItems.Any(x => x.TrueItemId == slot.TrueItemId))
+                {
+                    continue;
+                }
+
                 _inventoryItems.Add(new ItemToTrade(slot));
                 _shouldSort = true;
             }
@@ -118,7 +125,7 @@ namespace LlamaLibrary.AutoTrade
 
             // Refresh Trade Qty values.
             ItemsToTrade.RemoveAll(x => x.QtyAvailable == 0);
-            foreach (ItemToTrade item in ItemsToTrade.Where(item => item.QtyToTrade > item.QtyAvailable))
+            foreach (var item in ItemsToTrade.Where(item => item.QtyToTrade > item.QtyAvailable))
             {
                 item.QtyToTrade = item.QtyAvailable;
             }
@@ -148,9 +155,13 @@ namespace LlamaLibrary.AutoTrade
 
         private void btnToTrade_Click(object sender, EventArgs e)
         {
-            foreach (ItemToTrade lbItem in listBoxInventory.SelectedItems.Cast<ItemToTrade>())
+            foreach (var lbItem in listBoxInventory.SelectedItems.Cast<ItemToTrade>())
             {
-                if (ItemsToTrade.Contains(lbItem)) continue;
+                if (ItemsToTrade.Contains(lbItem))
+                {
+                    continue;
+                }
+
                 ItemsToTrade.Add(lbItem);
             }
 
@@ -159,16 +170,24 @@ namespace LlamaLibrary.AutoTrade
 
         private void dataGridToTrade_DataError(object sender, DataGridViewDataErrorEventArgs anError)
         {
-            DataGridView view = (DataGridView)sender;
+            var view = (DataGridView)sender;
             view.Rows[anError.RowIndex].Cells[anError.ColumnIndex].Value = 0;
         }
 
         private void dataGridToTrade_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            DataGridView view = (DataGridView)sender;
-            if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
-            if (view.Columns[e.ColumnIndex].DataPropertyName != "QtyToTrade") return;
-            ItemToTrade item = (ItemToTrade)view.Rows[e.RowIndex].DataBoundItem;
+            var view = (DataGridView)sender;
+            if (e.ColumnIndex < 0 || e.RowIndex < 0)
+            {
+                return;
+            }
+
+            if (view.Columns[e.ColumnIndex].DataPropertyName != "QtyToTrade")
+            {
+                return;
+            }
+
+            var item = (ItemToTrade)view.Rows[e.RowIndex].DataBoundItem;
             if (item.QtyToTrade > item.QtyAvailable)
             {
                 item.QtyToTrade = item.QtyAvailable;
@@ -184,11 +203,19 @@ namespace LlamaLibrary.AutoTrade
 
         private void txtBoxGil_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtBoxGil.Text)) return;
-            int selectionFromRight = txtBoxGil.Text.Length - txtBoxGil.SelectionStart + txtBoxGil.SelectionLength;
-            string gilText = txtBoxGil.Text;
-            if (gilText.Length <= 3) return;
-            bool parsed = long.TryParse(gilText, NumberStyles.AllowThousands, _culture, out long valueBefore);
+            if (string.IsNullOrEmpty(txtBoxGil.Text))
+            {
+                return;
+            }
+
+            var selectionFromRight = txtBoxGil.Text.Length - txtBoxGil.SelectionStart + txtBoxGil.SelectionLength;
+            var gilText = txtBoxGil.Text;
+            if (gilText.Length <= 3)
+            {
+                return;
+            }
+
+            var parsed = long.TryParse(gilText, NumberStyles.AllowThousands, _culture, out var valueBefore);
             if (!parsed)
             {
                 gilText = new string(gilText.Where(char.IsDigit).ToArray());
@@ -203,21 +230,36 @@ namespace LlamaLibrary.AutoTrade
 
             valueBefore = Math.Min(valueBefore, 999999999);
             txtBoxGil.Text = string.Format(_culture, "{0:N0}", valueBefore);
-            int newSelection = Math.Max(txtBoxGil.TextLength - selectionFromRight, 0);
+            var newSelection = Math.Max(txtBoxGil.TextLength - selectionFromRight, 0);
             txtBoxGil.Select(newSelection, 0);
 
-            int.TryParse(gilText, NumberStyles.AllowThousands, _culture, out int value);
-            if (value > 0) GilToTrade = value;
+            int.TryParse(gilText, NumberStyles.AllowThousands, _culture, out var value);
+            if (value > 0)
+            {
+                GilToTrade = value;
+            }
         }
 
         private void dataGridToTrade_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Delete) return;
-            DataGridView g = (DataGridView)sender;
-            if (g.SelectedCells.Count <= 0) return;
-            List<DataGridViewRow> rows = (from DataGridViewCell cell in g.SelectedCells let rowIndex = cell.RowIndex select g.Rows[cell.RowIndex]).Distinct().ToList();
-            if (!rows.Any()) return;
-            foreach (ItemToTrade rowData in rows.Select(row => (ItemToTrade)row.DataBoundItem))
+            if (e.KeyCode != Keys.Delete)
+            {
+                return;
+            }
+
+            var g = (DataGridView)sender;
+            if (g.SelectedCells.Count <= 0)
+            {
+                return;
+            }
+
+            var rows = (from DataGridViewCell cell in g.SelectedCells let rowIndex = cell.RowIndex select g.Rows[cell.RowIndex]).Distinct().ToList();
+            if (!rows.Any())
+            {
+                return;
+            }
+
+            foreach (var rowData in rows.Select(row => (ItemToTrade)row.DataBoundItem))
             {
                 ItemsToTrade.Remove(rowData);
             }
@@ -238,7 +280,9 @@ namespace LlamaLibrary.AutoTrade
         private void txtBoxFilter_TextChanged(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtBoxFilter.Text))
+            {
                 bindingSourceInventory.DataSource = _inventoryItems;
+            }
             else
             {
                 bindingSourceInventory.DataSource = _inventoryItems
@@ -273,8 +317,15 @@ namespace LlamaLibrary.AutoTrade
             BagSlot = bagSlot;
             TrueItemId = bagSlot.TrueItemId;
             StackSize = (int)bagSlot.Item.StackSize;
-            if (TrueItemId > 1000000) ItemName = bagSlot.Item.CurrentLocaleName + " [HQ]";
-            else ItemName = bagSlot.Item.CurrentLocaleName;
+            if (TrueItemId > 1000000)
+            {
+                ItemName = bagSlot.Item.CurrentLocaleName + " [HQ]";
+            }
+            else
+            {
+                ItemName = bagSlot.Item.CurrentLocaleName;
+            }
+
             QtyToTrade = QtyAvailable;
         }
 
@@ -291,10 +342,14 @@ namespace LlamaLibrary.AutoTrade
         public override bool Equals(object obj)
         {
             if (obj != null && obj.GetType() == typeof(BagSlot))
+            {
                 return TrueItemId == (obj as BagSlot)?.TrueItemId;
+            }
 
             if (obj != null && obj.GetType() == typeof(ItemToTrade))
+            {
                 return TrueItemId == (obj as ItemToTrade)?.TrueItemId;
+            }
 
             return base.Equals(obj);
         }

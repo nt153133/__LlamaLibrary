@@ -48,8 +48,7 @@ namespace Ff14bot
         private async Task ChangeJob()
         {
             var gearSets = GearsetManager.GearSets.Where(i => i.InUse);
-            ClassJobType newjob;
-            var foundJob = Enum.TryParse(job.Trim(), true, out newjob);
+            var foundJob = Enum.TryParse(job.Trim(), true, out ClassJobType newjob);
 
             if (Core.Me.CurrentJob == newjob && !force)
             {
@@ -77,14 +76,14 @@ namespace Ff14bot
             {
                 job = job.Trim() + "s_Primary_Tool";
 
-                ItemUiCategory category;
-                var categoryFound = Enum.TryParse(job, true, out category);
+                var categoryFound = Enum.TryParse(job, true, out
+                ItemUiCategory category);
 
                 if (categoryFound)
                 {
                     Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Found Item Category: {categoryFound} Category:{category}");
                     var item = InventoryManager.FilledInventoryAndArmory.Where(i => i.Item.EquipmentCatagory == category).OrderByDescending(i => i.Item.ItemLevel).FirstOrDefault();
-                    BagSlot EquipSlot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.EquippedItems)[EquipmentSlot.MainHand];
+                    var EquipSlot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.EquippedItems)[EquipmentSlot.MainHand];
 
                     Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Found Item {item}");
                     if (item != null)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using LlamaLibrary.AutoRetainerSort.Classes;
 using static LlamaLibrary.AutoRetainerSort.Classes.ItemSortInfo;
 
 namespace LlamaLibrary.AutoRetainerSort
@@ -45,8 +44,8 @@ namespace LlamaLibrary.AutoRetainerSort
 
             if (Owner != null)
             {
-                int ownerCenterX = Owner.Location.X + (Owner.Width / 2) - (Width / 2);
-                int ownerCenterY = Owner.Location.Y + (Owner.Height / 2) - (Width / 2);
+                var ownerCenterX = Owner.Location.X + (Owner.Width / 2) - (Width / 2);
+                var ownerCenterY = Owner.Location.Y + (Owner.Height / 2) - (Width / 2);
                 Location = new Point(ownerCenterX, ownerCenterY);
             }
         }
@@ -59,28 +58,44 @@ namespace LlamaLibrary.AutoRetainerSort
 
         private void Name_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtBoxName.Text)) return;
+            if (string.IsNullOrEmpty(txtBoxName.Text))
+            {
+                return;
+            }
+
             _sortInfo.Name = txtBoxName.Text;
         }
 
         private void AddNewSortType_Click(object sender, EventArgs e)
         {
-            SortType selected = NewSortType;
-            if (_sortInfo.ContainsType(selected)) return;
+            var selected = NewSortType;
+            if (_sortInfo.ContainsType(selected))
+            {
+                return;
+            }
 
             foreach (var pair in AutoRetainerSortSettings.Instance.InventoryOptions)
             {
-                if (pair.Key == _index) continue;
+                if (pair.Key == _index)
+                {
+                    continue;
+                }
 
-                if (!pair.Value.ContainsType(selected)) continue;
+                if (!pair.Value.ContainsType(selected))
+                {
+                    continue;
+                }
 
-                DialogResult dr = MessageBox.Show(
+                var dr = MessageBox.Show(
                     string.Format(Strings.AddNewItem_AlreadyExists_Warning, pair.Value.Name, selected.ToString(), pair.Value.Name, _sortInfo.Name),
                     Strings.WarningCaption,
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning);
 
-                if (dr != DialogResult.Yes) return;
+                if (dr != DialogResult.Yes)
+                {
+                    return;
+                }
 
                 pair.Value.RemoveType(selected);
                 break;
@@ -93,13 +108,19 @@ namespace LlamaLibrary.AutoRetainerSort
         private void AddNewItem_Click(object sender, EventArgs e)
         {
             var toAddIds = new HashSet<uint>();
-            using (AddNewItemForm newItemForm = new AddNewItemForm())
+            using (var newItemForm = new AddNewItemForm())
             {
-                DialogResult dr = newItemForm.ShowDialog(this);
-                if (dr != DialogResult.OK) return;
+                var dr = newItemForm.ShowDialog(this);
+                if (dr != DialogResult.OK)
+                {
+                    return;
+                }
 
-                SearchResult selectedItem = newItemForm.SelectedSearchResult;
-                if (selectedItem == null || selectedItem.RawItemId == 0) return;
+                var selectedItem = newItemForm.SelectedSearchResult;
+                if (selectedItem == null || selectedItem.RawItemId == 0)
+                {
+                    return;
+                }
 
                 if (newItemForm.ModifierNone)
                 {
@@ -129,17 +150,28 @@ namespace LlamaLibrary.AutoRetainerSort
                 }
             }
 
-            foreach (uint toAddId in toAddIds)
+            foreach (var toAddId in toAddIds)
             {
-                ItemSortInfo sortInfo = ItemSortStatus.GetSortInfo(toAddId);
+                var sortInfo = ItemSortStatus.GetSortInfo(toAddId);
                 var shouldAdd = true;
                 foreach (var indexInfoPair in AutoRetainerSortSettings.Instance.InventoryOptions)
                 {
-                    if (indexInfoPair.Key == _index) continue;
-                    if (!indexInfoPair.Value.ContainsItem(sortInfo)) continue;
-                    if (sortInfo.ItemInfo.Unique) continue;
+                    if (indexInfoPair.Key == _index)
+                    {
+                        continue;
+                    }
 
-                    DialogResult dr = MessageBox.Show(
+                    if (!indexInfoPair.Value.ContainsItem(sortInfo))
+                    {
+                        continue;
+                    }
+
+                    if (sortInfo.ItemInfo.Unique)
+                    {
+                        continue;
+                    }
+
+                    var dr = MessageBox.Show(
                         string.Format(Strings.AddNewItem_AlreadyExists_Warning, indexInfoPair.Value.Name, sortInfo.Name, indexInfoPair.Value.Name, _sortInfo.Name),
                         Strings.WarningCaption,
                         MessageBoxButtons.YesNo,
@@ -156,7 +188,11 @@ namespace LlamaLibrary.AutoRetainerSort
                     }
                 }
 
-                if (!shouldAdd) continue;
+                if (!shouldAdd)
+                {
+                    continue;
+                }
+
                 AutoRetainerSort.LogSuccess($"Added {sortInfo.Name} to {_sortInfo.Name}!");
                 _bsItems.Add(sortInfo);
             }

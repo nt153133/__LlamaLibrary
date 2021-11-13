@@ -73,10 +73,11 @@ namespace LlamaLibrary.RemoteAgents
 
             Core.Memory.CallInjected64<IntPtr>(
                 Offsets.OpenWindow,
-                                               Pointer,
-0U,
-                                               npc,
-1U);
+                Pointer,
+                0U,
+                npc,
+                1U
+            );
 
             await Coroutine.Wait(5000, () => SatisfactionSupply.Instance.IsOpen);
 

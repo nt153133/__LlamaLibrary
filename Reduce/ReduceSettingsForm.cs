@@ -40,10 +40,7 @@ namespace LlamaLibrary.Reduce
         {
             if (textZone.Text != null)
             {
-            }
-            {
-                int _zone;
-                if (int.TryParse(textZone.Text, out _zone))
+                if (int.TryParse(textZone.Text, out var _zone))
                 {
                     ReduceSettings.Instance.AEZone = _zone;
                 }

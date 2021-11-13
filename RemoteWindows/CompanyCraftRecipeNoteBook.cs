@@ -20,7 +20,9 @@ namespace LlamaLibrary.RemoteWindows
         public void SelectWheel(uint ItemId)
         {
             if (WheelIndexes.Any(i => i.Value == ItemId))
+            {
                 SendAction(8, 3, 1, 0, 0, 0, 0, 0, 0, 4, WheelIndexes.First(i => i.Value == ItemId).Key, 0, 0, 0, 0, 0, 0);
+            }
         }
 
         public static Dictionary<ulong, uint> WheelIndexes = new Dictionary<ulong, uint>

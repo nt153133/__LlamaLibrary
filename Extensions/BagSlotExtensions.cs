@@ -103,7 +103,9 @@ namespace LlamaLibrary.Extensions
         public static void RetainerRetrieveQuantity(this BagSlot bagSlot, int amount)
         {
             if (bagSlot.Count < amount)
+            {
                 amount = (int)bagSlot.Count;
+            }
 
             lock (Core.Memory.Executor.AssemblyLock)
             {
@@ -187,7 +189,11 @@ namespace LlamaLibrary.Extensions
 
         public static void ExtractMateria(this BagSlot bagSlot)
         {
-            if ((int)bagSlot.SpiritBond != 100) return;
+            if ((int)bagSlot.SpiritBond != 100)
+            {
+                return;
+            }
+
             lock (Core.Memory.Executor.AssemblyLock)
             {
                 using (Core.Memory.TemporaryCacheState(false))
@@ -235,7 +241,10 @@ namespace LlamaLibrary.Extensions
             var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + 0x20, 5);
             for (var i = 0; i < 5; i++)
             {
-                if (materiaType[i] > 0) return true;
+                if (materiaType[i] > 0)
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -244,10 +253,13 @@ namespace LlamaLibrary.Extensions
         public static int MateriaCount(this BagSlot bagSlot)
         {
             var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + 0x20, 5);
-            int count = 0;
+            var count = 0;
             for (var i = 0; i < 5; i++)
             {
-                if (materiaType[i] > 0) count++;
+                if (materiaType[i] > 0)
+                {
+                    count++;
+                }
             }
 
             return count;
@@ -295,12 +307,12 @@ namespace LlamaLibrary.Extensions
 
         public static bool AddToSaddlebagQuantity(this BagSlot bagSlot, uint amount)
         {
-            return AddToSaddleCall(Offsets.ItemFuncParam, (uint)bagSlot.BagId, bagSlot.Slot, (uint)amount) == IntPtr.Zero;
+            return AddToSaddleCall(Offsets.ItemFuncParam, (uint)bagSlot.BagId, bagSlot.Slot, amount) == IntPtr.Zero;
         }
 
         public static bool RemoveFromSaddlebagQuantity(this BagSlot bagSlot, uint amount)
         {
-            return RemoveFromSaddleCall(Offsets.ItemFuncParam, (uint)bagSlot.BagId, bagSlot.Slot, (uint)amount) == IntPtr.Zero;
+            return RemoveFromSaddleCall(Offsets.ItemFuncParam, (uint)bagSlot.BagId, bagSlot.Slot, amount) == IntPtr.Zero;
         }
 
         public static void UseItemRaw(this BagSlot bagSlot)
@@ -316,10 +328,11 @@ namespace LlamaLibrary.Extensions
                 {
                     return Core.Memory.CallInjected64<byte>(
                         Offsets.BagSlotUseItem,
-                                                            InventoryManager,
-                                                            TrueItemId,
-                                                            inventoryContainer,
-                                                            inventorySlot);
+                        InventoryManager,
+                        TrueItemId,
+                        inventoryContainer,
+                        inventorySlot
+                    );
                 }
             }
         }
@@ -332,10 +345,11 @@ namespace LlamaLibrary.Extensions
                 {
                     return Core.Memory.CallInjected64<IntPtr>(
                         Offsets.RemoveFromSaddle,
-                                                              InventoryManager,
-                                                              inventoryContainer,
-                                                              inventorySlot,
-                                                              count);
+                        InventoryManager,
+                        inventoryContainer,
+                        inventorySlot,
+                        count
+                    );
                 }
             }
         }
@@ -348,10 +362,11 @@ namespace LlamaLibrary.Extensions
                 {
                     return Core.Memory.CallInjected64<IntPtr>(
                         Offsets.AddToSaddle,
-                                                              InventoryManager,
-                                                              inventoryContainer,
-                                                              inventorySlot,
-                                                              count);
+                        InventoryManager,
+                        inventoryContainer,
+                        inventorySlot,
+                        count
+                    );
                 }
             }
         }
@@ -401,12 +416,12 @@ namespace LlamaLibrary.Extensions
 
         private static async Task<bool> BagSlotMoveWait(BagSlot bagSlot, uint curSlotCount, int waitMs = DefaultBagSlotMoveWait)
         {
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
             sw.Start();
             if (await Coroutine.Wait(waitMs, () => !bagSlot.IsValid || !bagSlot.IsFilled || bagSlot.Count < curSlotCount))
             {
                 sw.Stop();
-                int remainingMs = waitMs - (int)sw.ElapsedMilliseconds;
+                var remainingMs = waitMs - (int)sw.ElapsedMilliseconds;
                 if (remainingMs > 0)
                 {
                     await Coroutine.Sleep(remainingMs);
@@ -421,28 +436,28 @@ namespace LlamaLibrary.Extensions
 
         public static async Task<bool> TryAddToSaddlebag(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
         {
-            uint curSlotCount = bagSlot.Count;
+            var curSlotCount = bagSlot.Count;
             bagSlot.AddToSaddlebagQuantity(moveCount);
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
         }
 
         public static async Task<bool> TryRemoveFromSaddlebag(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
         {
-            uint curSlotCount = bagSlot.Count;
+            var curSlotCount = bagSlot.Count;
             bagSlot.RemoveFromSaddlebagQuantity(moveCount);
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
         }
 
         public static async Task<bool> TryEntrustToRetainer(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
         {
-            uint curSlotCount = bagSlot.Count;
+            var curSlotCount = bagSlot.Count;
             bagSlot.RetainerEntrustQuantity(moveCount);
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
         }
 
         public static async Task<bool> TryRetrieveFromRetainer(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
         {
-            uint curSlotCount = bagSlot.Count;
+            var curSlotCount = bagSlot.Count;
             bagSlot.RetainerRetrieveQuantity(moveCount);
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
         }

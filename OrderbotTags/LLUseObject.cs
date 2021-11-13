@@ -3,7 +3,6 @@ using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
-using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
 using TreeSharp;
@@ -44,7 +43,7 @@ namespace LlamaLibrary.OrderbotTags
         {
             var gameobj = GameObjectManager.GetObjectByNPCId(NpcId);
 
-            if (gameobj == default(GameObject))
+            if (gameobj == default)
             {
                 _isDone = true;
                 return;

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
@@ -54,7 +53,7 @@ namespace LlamaLibrary.OrderbotTags
                 return;
             }
 
-            List<BagSlot> slots = InventoryManager.FilledSlots.Where(x => ItemIds.Contains((int)x.RawItemId)).ToList();
+            var slots = InventoryManager.FilledSlots.Where(x => ItemIds.Contains((int)x.RawItemId)).ToList();
 
             if (!slots.Any())
             {
@@ -66,7 +65,7 @@ namespace LlamaLibrary.OrderbotTags
 
             foreach (var slot in slots)
             {
-                string name = slot.Name;
+                var name = slot.Name;
                 slot.Discard();
                 if (await Coroutine.Wait(5000, () => !slot.IsValid || !slot.IsFilled))
                 {

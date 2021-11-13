@@ -19,19 +19,30 @@ namespace LlamaLibrary.RemoteWindows
 
         public async Task<uint> Purchase(uint itemId, uint itemCount = 1)
         {
-            if (!IsOpen) return 0u;
+            if (!IsOpen)
+            {
+                return 0u;
+            }
 
             var items = SpecialShopManager.Items;
 
             var specialShopItem = items?.Cast<SpecialShopItem?>().FirstOrDefault(i => i.HasValue && i.Value.ItemIds.Contains(itemId));
 
             //Logging.Write(Colors.Fuchsia, $"[ShopExchangeItem] Buying {specialShopItem}");
-            if (!specialShopItem.HasValue) return 0u;
+            if (!specialShopItem.HasValue)
+            {
+                return 0u;
+            }
 
-            if (itemCount > specialShopItem.Value.Item0.StackSize) itemCount = specialShopItem.Value.Item0.StackSize;
+            if (itemCount > specialShopItem.Value.Item0.StackSize)
+            {
+                itemCount = specialShopItem.Value.Item0.StackSize;
+            }
 
             if (!CanAfford(specialShopItem.Value))
+            {
                 return 0;
+            }
 
             // Logging.Write(Colors.Fuchsia, $"[Purchase] Can afford {CanAfford(specialShopItem.Value)}");
             var index = items.IndexOf(specialShopItem.Value);
@@ -73,7 +84,7 @@ namespace LlamaLibrary.RemoteWindows
                 if (Request.IsOpen)
                 {
                     // Logging.Write(Colors.Fuchsia, $"[Purchase] Request");
-                    for (int i = 0; i < 3; i++)
+                    for (var i = 0; i < 3; i++)
                     {
                         BagSlot item;
                         if (specialShopItem.Value.HqCurrencies[i])
@@ -94,7 +105,9 @@ namespace LlamaLibrary.RemoteWindows
                     }
 
                     if (Request.HandOverButtonClickable)
+                    {
                         Request.HandOver();
+                    }
 
                     await Coroutine.Sleep(1000);
                 }
@@ -120,7 +133,7 @@ namespace LlamaLibrary.RemoteWindows
 
         private static bool CanAfford(SpecialShopItem item)
         {
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 if (item.CurrencyCosts[i] == 0)
                 {
@@ -128,7 +141,9 @@ namespace LlamaLibrary.RemoteWindows
                 }
 
                 if (!InventoryManager.FilledInventoryAndArmory.Any(j => j.RawItemId == item.CurrencyTypes[i] && j.Count >= item.CurrencyCosts[i]))
+                {
                     return false;
+                }
             }
 
             return true;

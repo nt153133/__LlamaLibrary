@@ -21,11 +21,18 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
         {
             foreach (var idCountPair in ItemCounts.Where(x => x.Key > 0 && x.Value > 0))
             {
-                ItemSortInfo sortInfo = ItemSortStatus.GetSortInfo(idCountPair.Key);
+                var sortInfo = ItemSortStatus.GetSortInfo(idCountPair.Key);
                 if (Index != ItemSortStatus.PlayerInventoryIndex
                     && sortInfo.ItemInfo.Unique
-                    && ItemSortStatus.PlayerInventoryUniques.Contains(sortInfo.TrueItemId)) continue;
-                if (sortInfo.SortStatus(Index) == SortStatus.Move) return false;
+                    && ItemSortStatus.PlayerInventoryUniques.Contains(sortInfo.TrueItemId))
+                {
+                    continue;
+                }
+
+                if (sortInfo.SortStatus(Index) == SortStatus.Move)
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -40,19 +47,50 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
             {
                 var sortInfo = ItemSortStatus.GetSortInfo(idCountPair.Key);
                 var desiredIndexes = sortInfo.MatchingIndexes;
-                if (desiredIndexes.Length == 0) continue;
-                for (int i = 0; i < desiredIndexes.Length; i++)
+                if (desiredIndexes.Length == 0)
                 {
-                    if (desiredIndexes[i] == Index) continue;
-                    if (desiredIndexes[i] < ItemSortStatus.PlayerInventoryIndex) continue;
-                    if (desiredIndexes[i] == int.MinValue || desiredIndexes[i] == int.MaxValue) continue;
-                    if (ItemSortStatus.FilledAndSortedInventories.Contains(desiredIndexes[i])) continue;
+                    continue;
+                }
+
+                for (var i = 0; i < desiredIndexes.Length; i++)
+                {
+                    if (desiredIndexes[i] == Index)
+                    {
+                        continue;
+                    }
+
+                    if (desiredIndexes[i] < ItemSortStatus.PlayerInventoryIndex)
+                    {
+                        continue;
+                    }
+
+                    if (desiredIndexes[i] == int.MinValue || desiredIndexes[i] == int.MaxValue)
+                    {
+                        continue;
+                    }
+
+                    if (ItemSortStatus.FilledAndSortedInventories.Contains(desiredIndexes[i]))
+                    {
+                        continue;
+                    }
+
                     if (sortInfo.ItemInfo.Unique)
                     {
-                        if (ItemSortStatus.GetByIndex(desiredIndexes[i]).ItemCounts.ContainsKey(sortInfo.TrueItemId)) continue;
-                        if (ItemSortStatus.TryingToMoveUniques.Contains(sortInfo.TrueItemId)) continue;
+                        if (ItemSortStatus.GetByIndex(desiredIndexes[i]).ItemCounts.ContainsKey(sortInfo.TrueItemId))
+                        {
+                            continue;
+                        }
+
+                        if (ItemSortStatus.TryingToMoveUniques.Contains(sortInfo.TrueItemId))
+                        {
+                            continue;
+                        }
+
                         if (Index != ItemSortStatus.PlayerInventoryIndex
-                            && ItemSortStatus.PlayerInventoryUniques.Contains(sortInfo.TrueItemId)) continue;
+                            && ItemSortStatus.PlayerInventoryUniques.Contains(sortInfo.TrueItemId))
+                        {
+                            continue;
+                        }
                     }
 
                     ItemSortStatus.TryingToMoveUniques.Add(sortInfo.TrueItemId);
@@ -98,9 +136,13 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
         public void Update(Bag[] bags)
         {
             Clear();
-            foreach (BagSlot bagSlot in bags.SelectMany(x => x.FilledSlots))
+            foreach (var bagSlot in bags.SelectMany(x => x.FilledSlots))
             {
-                if (bagSlot == null || !bagSlot.IsValid || !bagSlot.IsFilled) continue;
+                if (bagSlot == null || !bagSlot.IsValid || !bagSlot.IsFilled)
+                {
+                    continue;
+                }
+
                 if (ItemCounts.ContainsKey(bagSlot.TrueItemId))
                 {
                     ItemCounts[bagSlot.TrueItemId] += (int)bagSlot.Count;

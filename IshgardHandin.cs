@@ -39,7 +39,9 @@ namespace LlamaLibrary
         public async Task<bool> HandInGatheringItem(int job)
         {
             if ((!HWDGathereInspect.Instance.IsOpen && GatherNpc == null) || GatherNpc.Location.Distance(Core.Me.Location) > 5f)
+            {
                 await Navigation.GetTo(886, new Vector3(-20.04274f, -16f, 141.3337f));
+            }
 
             if (!HWDGathereInspect.Instance.IsOpen && GatherNpc.Location.Distance(Core.Me.Location) > 4f)
             {
@@ -69,8 +71,6 @@ namespace LlamaLibrary
 
                 if (HWDGathereInspect.Instance.CanAutoSubmit())
                 {
-                }
-                {
                     HWDGathereInspect.Instance.ClickAutoSubmit();
                     await Coroutine.Wait(6000, () => HWDGathereInspect.Instance.CanRequestInspection());
                     if (HWDGathereInspect.Instance.CanRequestInspection())
@@ -99,7 +99,9 @@ namespace LlamaLibrary
         public async Task<bool> HandInKupoTicket(int slot)
         {
             if ((!HWDLottery.Instance.IsOpen && KupoNpc == null) || KupoNpc.Location.Distance(Core.Me.Location) > 5f)
+            {
                 await Navigation.GetTo(886, new Vector3(43.59162f, -16f, 170.3864f));
+            }
 
             if (!HWDLottery.Instance.IsOpen && KupoNpc.Location.Distance(Core.Me.Location) > 4f)
             {
@@ -172,7 +174,9 @@ namespace LlamaLibrary
         public async Task<bool> HandInItem(uint itemId, int index, int job, bool stopScripMax = false)
         {
             if ((!HWDSupply.Instance.IsOpen && Npc == null) || Npc.Location.Distance(Core.Me.Location) > 5f)
+            {
                 await Navigation.GetTo(886, new Vector3(43.59162f, -16f, 170.3864f));
+            }
 
             if (!HWDSupply.Instance.IsOpen && Npc.Location.Distance(Core.Me.Location) > 4f)
             {
@@ -255,7 +259,10 @@ namespace LlamaLibrary
                     if (stopScripMax)
                     {
                         if (SelectYesno.IsOpen)
+                        {
                             SelectYesno.No();
+                        }
+
                         await Coroutine.Sleep(500);
                         if (Request.IsOpen)
                         {
@@ -306,14 +313,19 @@ namespace LlamaLibrary
             }
 
             if (InventoryManager.FilledSlots.Any(i => i.RawItemId == itemId))
+            {
                 await HandInItem(itemId, index, job, stopScripMax);
+            }
+
             return false;
         }
 
         public async Task<bool> BuyItem(uint itemId, int SelectStringLine = 0)
         {
             if ((!ShopExchangeCurrency.Open && VendorNpc == null) || VendorNpc.Location.Distance(Core.Me.Location) > 5f)
+            {
                 await Navigation.GetTo(886, new Vector3(36.33978f, -16f, 145.3877f));
+            }
 
             if (!ShopExchangeCurrency.Open && VendorNpc.Location.Distance(Core.Me.Location) > 4f)
             {
@@ -337,11 +349,17 @@ namespace LlamaLibrary
                 var items = SpecialShopManager.Items;
                 var specialShopItem = items?.Cast<SpecialShopItem?>().FirstOrDefault(i => i.HasValue && i.Value.ItemIds.Contains(itemId));
 
-                if (!specialShopItem.HasValue) return false;
+                if (!specialShopItem.HasValue)
+                {
+                    return false;
+                }
 
                 var count = CanAffordScrip(specialShopItem.Value);
 
-                if (count > 0) Purchase(itemId, count);
+                if (count > 0)
+                {
+                    Purchase(itemId, count);
+                }
 
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
 
@@ -360,7 +378,9 @@ namespace LlamaLibrary
         public async Task<bool> BuyItem(uint itemId, int maxCount, int SelectStringLine = 0)
         {
             if ((!ShopExchangeCurrency.Open && VendorNpc == null) || VendorNpc.Location.Distance(Core.Me.Location) > 5f)
+            {
                 await Navigation.GetTo(886, new Vector3(36.33978f, -16f, 145.3877f));
+            }
 
             if (!ShopExchangeCurrency.Open && VendorNpc.Location.Distance(Core.Me.Location) > 4f)
             {
@@ -384,11 +404,17 @@ namespace LlamaLibrary
                 var items = SpecialShopManager.Items;
                 var specialShopItem = items?.Cast<SpecialShopItem?>().FirstOrDefault(i => i.HasValue && i.Value.ItemIds.Contains(itemId));
 
-                if (!specialShopItem.HasValue) return false;
+                if (!specialShopItem.HasValue)
+                {
+                    return false;
+                }
 
                 var count = Math.Min(CanAffordScrip(specialShopItem.Value), maxCount);
 
-                if (count > 0) Purchase(itemId, (uint)count);
+                if (count > 0)
+                {
+                    Purchase(itemId, (uint)count);
+                }
 
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
 
@@ -415,19 +441,32 @@ namespace LlamaLibrary
         internal static uint Purchase(uint itemId, uint itemCount)
         {
             var windowByName = RaptureAtkUnitManager.GetWindowByName("ShopExchangeCurrency");
-            if (windowByName == null) return 0u;
+            if (windowByName == null)
+            {
+                return 0u;
+            }
 
             var items = SpecialShopManager.Items;
 
             var specialShopItem = items?.Cast<SpecialShopItem?>().FirstOrDefault(i => i.HasValue && i.Value.ItemIds.Contains(itemId));
 
-            if (!specialShopItem.HasValue) return 0u;
+            if (!specialShopItem.HasValue)
+            {
+                return 0u;
+            }
 
-            if (itemCount > specialShopItem.Value.Item0.StackSize) itemCount = specialShopItem.Value.Item0.StackSize;
+            if (itemCount > specialShopItem.Value.Item0.StackSize)
+            {
+                itemCount = specialShopItem.Value.Item0.StackSize;
+            }
 
             var count = CanAffordScrip(specialShopItem.Value);
 
-            if (itemCount > count) itemCount = count;
+            if (itemCount > count)
+            {
+                itemCount = count;
+            }
+
             var index = items.IndexOf(specialShopItem.Value);
             var obj = new ulong[8]
             {
@@ -449,7 +488,11 @@ namespace LlamaLibrary
         private static uint CanAffordScrip(SpecialShopItem item)
         {
             var scrips = SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)28063);
-            if (scrips == 0) return 0u;
+            if (scrips == 0)
+            {
+                return 0u;
+            }
+
             return scrips / item.CurrencyCosts[0];
         }
 
@@ -481,7 +524,10 @@ namespace LlamaLibrary
                     await Coroutine.Sleep(1000);
                 }
 
-                if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                if (CommonBehaviors.IsLoading)
+                {
+                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                }
 
                 await Coroutine.Wait(10000, () => WorldManager.ZoneId == FoundationZoneId);
                 await Coroutine.Sleep(3000);
@@ -510,16 +556,24 @@ namespace LlamaLibrary
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
                 await Coroutine.Sleep(500);
                 if (SelectString.IsOpen)
+                {
                     SelectString.ClickSlot(1);
+                }
 
                 await Coroutine.Sleep(5000);
 
-                if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                if (CommonBehaviors.IsLoading)
+                {
+                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                }
 
                 await Coroutine.Sleep(3000);
             }
 
-            if (!(VendorNpc.Location.Distance(Core.Me.Location) > 5f)) return Npc.Location.Distance(Core.Me.Location) <= 5f;
+            if (!(VendorNpc.Location.Distance(Core.Me.Location) > 5f))
+            {
+                return Npc.Location.Distance(Core.Me.Location) <= 5f;
+            }
 
             var target = new Vector3(10.58188f, -15.96282f, 163.8702f);
             Navigator.PlayerMover.MoveTowards(target);
@@ -559,23 +613,28 @@ namespace LlamaLibrary
                 }
 
                 if (!ConditionParser.HasAetheryte(AetheryteId))
-
+                {
                     //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
                     //TreeRoot.Stop();
                     return false;
+                }
 
                 if (!WorldManager.TeleportById(AetheryteId))
-
+                {
                     //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
                     //TreeRoot.Stop();
                     return false;
+                }
 
                 while (Core.Me.IsCasting)
                 {
                     await Coroutine.Sleep(1000);
                 }
 
-                if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                if (CommonBehaviors.IsLoading)
+                {
+                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                }
 
                 await Coroutine.Wait(10000, () => WorldManager.ZoneId == FoundationZoneId);
                 await Coroutine.Sleep(3000);
@@ -604,11 +663,16 @@ namespace LlamaLibrary
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
                 await Coroutine.Sleep(500);
                 if (SelectString.IsOpen)
+                {
                     SelectString.ClickSlot(1);
+                }
 
                 await Coroutine.Sleep(5000);
 
-                if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                if (CommonBehaviors.IsLoading)
+                {
+                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                }
 
                 await Coroutine.Sleep(3000);
             }
@@ -651,23 +715,28 @@ namespace LlamaLibrary
                 }
 
                 if (!ConditionParser.HasAetheryte(AetheryteId))
-
+                {
                     //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
                     //TreeRoot.Stop();
                     return false;
+                }
 
                 if (!WorldManager.TeleportById(AetheryteId))
-
+                {
                     //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
                     //TreeRoot.Stop();
                     return false;
+                }
 
                 while (Core.Me.IsCasting)
                 {
                     await Coroutine.Sleep(1000);
                 }
 
-                if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                if (CommonBehaviors.IsLoading)
+                {
+                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                }
 
                 await Coroutine.Wait(10000, () => WorldManager.ZoneId == FoundationZoneId);
                 await Coroutine.Sleep(3000);
@@ -696,11 +765,16 @@ namespace LlamaLibrary
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
                 await Coroutine.Sleep(500);
                 if (SelectString.IsOpen)
+                {
                     SelectString.ClickSlot(1);
+                }
 
                 await Coroutine.Sleep(5000);
 
-                if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                if (CommonBehaviors.IsLoading)
+                {
+                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                }
 
                 await Coroutine.Sleep(3000);
             }

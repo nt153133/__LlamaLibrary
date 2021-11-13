@@ -13,7 +13,7 @@ namespace Ff14bot.NeoProfiles
     {
         private bool _done;
 
-        public override bool IsDone { get { return _done; } }
+        public override bool IsDone => _done;
 
         protected override Composite CreateBehavior()
         {

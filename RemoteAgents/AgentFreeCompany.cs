@@ -52,16 +52,19 @@ namespace LlamaLibrary.RemoteAgents
 
         public List<(string, bool)> GetMembers()
         {
-            int i = 0;
-            List<(string, bool)> result = new List<(string, bool)>();
-            IntPtr start = GetRosterPtr();
+            var i = 0;
+            var result = new List<(string, bool)>();
+            var start = GetRosterPtr();
             byte testByte = 0;
             do
             {
                 var addr = start + (i * 0x60);
                 testByte = Core.Memory.Read<byte>(addr);
                 if (testByte != 0)
+                {
                     result.Add((Core.Memory.ReadStringUTF8(addr + 0x22), Core.Memory.Read<byte>(addr + 0xD) != 0));
+                }
+
                 i++;
             }
             while (testByte != 0);
@@ -86,7 +89,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public async Task<FcAction[]> GetCurrentActions()
         {
-            bool wasopen = FreeCompany.Instance.IsOpen;
+            var wasopen = FreeCompany.Instance.IsOpen;
             if (!FreeCompany.Instance.IsOpen)
             {
                 Instance.Toggle();
@@ -99,10 +102,13 @@ namespace LlamaLibrary.RemoteAgents
                 await Coroutine.Wait(5000, () => FreeCompanyAction.Instance.IsOpen);
                 if (FreeCompanyAction.Instance.IsOpen)
                 {
-                    uint numCurrentActions = Core.Memory.NoCacheRead<uint>(ActionAddress + Offsets.CurrentCount);
+                    var numCurrentActions = Core.Memory.NoCacheRead<uint>(ActionAddress + Offsets.CurrentCount);
                     var currentActions = Core.Memory.ReadArray<FcAction>(ActionAddress + 0x8, (int)numCurrentActions);
                     if (!wasopen)
+                    {
                         FreeCompany.Instance.Close();
+                    }
+
                     return currentActions;
                 }
             }
@@ -112,7 +118,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public async Task<FcAction[]> GetAvailableActions()
         {
-            bool wasopen = FreeCompany.Instance.IsOpen;
+            var wasopen = FreeCompany.Instance.IsOpen;
             if (!FreeCompany.Instance.IsOpen)
             {
                 Instance.Toggle();
@@ -128,7 +134,10 @@ namespace LlamaLibrary.RemoteAgents
                     var actionCount = Core.Memory.NoCacheRead<uint>(ActionAddress + Offsets.ActionCount);
                     var actions = Core.Memory.ReadArray<FcAction>(ActionAddress + 0x30, (int)actionCount);
                     if (!wasopen)
+                    {
                         FreeCompany.Instance.Close();
+                    }
+
                     return actions;
                 }
             }

@@ -155,22 +155,40 @@ namespace LlamaLibrary.AutoRetainerSort
         [JsonProperty("SpecificItems")]
         public BindingList<ItemSortInfo> SpecificItems;
 
-        public bool ContainsType(SortType type) => SortTypes.Any(x => x.Equals(type));
+        public bool ContainsType(SortType type)
+        {
+            return SortTypes.Any(x => x.Equals(type));
+        }
 
-        public bool ContainsId(uint trueItemId) => SpecificItems.Any(x => x.TrueItemId == trueItemId);
+        public bool ContainsId(uint trueItemId)
+        {
+            return SpecificItems.Any(x => x.TrueItemId == trueItemId);
+        }
 
-        public bool ContainsItem(ItemSortInfo sortInfo) => SpecificItems.Any(x => x.Equals(sortInfo));
+        public bool ContainsItem(ItemSortInfo sortInfo)
+        {
+            return SpecificItems.Any(x => x.Equals(sortInfo));
+        }
 
-        public bool ContainsSlot(BagSlot bagSlot) => ContainsId(bagSlot.TrueItemId) || ContainsType(bagSlot.Item.EquipmentCatagory.GetSortType());
+        public bool ContainsSlot(BagSlot bagSlot)
+        {
+            return ContainsId(bagSlot.TrueItemId) || ContainsType(bagSlot.Item.EquipmentCatagory.GetSortType());
+        }
 
-        public bool Any() => SortTypes.Any() || SpecificItems.Any();
+        public bool Any()
+        {
+            return SortTypes.Any() || SpecificItems.Any();
+        }
 
         public bool RemoveType(SortType type)
         {
             var toRemove = new List<SortTypeWithCount>();
             foreach (var sortTypeWithCount in SortTypes)
             {
-                if (sortTypeWithCount.SortType == type) toRemove.Add(sortTypeWithCount);
+                if (sortTypeWithCount.SortType == type)
+                {
+                    toRemove.Add(sortTypeWithCount);
+                }
             }
 
             foreach (var sortTypeWithCount in toRemove)
@@ -181,7 +199,10 @@ namespace LlamaLibrary.AutoRetainerSort
             return toRemove.Any();
         }
 
-        public override string ToString() => Name;
+        public override string ToString()
+        {
+            return Name;
+        }
 
         public InventorySortInfo(string name)
         {

@@ -15,9 +15,9 @@
         {
             get
             {
-                uint[] result = new uint[NumberOfItems];
-                int j = 0;
-                for (int i = 7; i < NumberOfItems; i += 7)
+                var result = new uint[NumberOfItems];
+                var j = 0;
+                for (var i = 7; i < NumberOfItems; i += 7)
                 {
                     result[j] = (uint)___Elements()[i].TrimmedData;
                     j++;
@@ -30,7 +30,9 @@
         public void ClickItem(int index)
         {
             if (IsOpen && index < NumberOfItems)
+            {
                 SendAction(2, 3, 0, 4, (ulong)index);
+            }
         }
 
         public void PassItem(int index)

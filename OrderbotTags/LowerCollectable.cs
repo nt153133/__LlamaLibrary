@@ -43,7 +43,7 @@ namespace LlamaLibrary.OrderbotTags
         private async Task LowerQualityAndCombine(int collectability)
         {
             var HQslots = InventoryManager.FilledSlots.Where(slot => slot.IsCollectable && slot.Collectability < collectability);
-            List<uint> ids = new List<uint>();
+            var ids = new List<uint>();
 
             if (HQslots.Any())
             {

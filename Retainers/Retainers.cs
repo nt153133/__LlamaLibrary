@@ -53,26 +53,16 @@ namespace LlamaLibrary.Retainers
         {
             OffsetManager.Init();
 
-            //Task.Factory.StartNew(() =>
-            // {
-            init();
-            _init = true;
+            VenturesInit();
             Log("INIT DONE");
-
-            //  });
         }
 
-        public override string Name
-        {
-            get
-            {
+        public override string Name =>
 #if RB_CN
                 return "雇员整理";
 #else
-                return BotName;
+                BotName;
 #endif
-            }
-        }
 
         public override bool WantButton => true;
 
@@ -85,17 +75,16 @@ namespace LlamaLibrary.Retainers
         public override Composite Root => _root;
 
         internal static Lazy<List<RetainerTaskData>> VentureData;
-        private volatile bool _init;
         private int ventures;
 
-        internal void init()
+        internal void VenturesInit()
         {
             Log("Load venture.json");
-            VentureData = new Lazy<List<RetainerTaskData>>(() => loadResource<List<RetainerTaskData>>(Resources.Ventures));
+            VentureData = new Lazy<List<RetainerTaskData>>(() => LoadResource<List<RetainerTaskData>>(Resources.Ventures));
             Log("Loaded venture.json");
         }
 
-        private static T loadResource<T>(string text)
+        private static T LoadResource<T>(string text)
         {
             return JsonConvert.DeserializeObject<T>(text);
         }
@@ -107,7 +96,10 @@ namespace LlamaLibrary.Retainers
         public override void OnButtonPress()
         {
             if (settings == null || settings.IsDisposed)
+            {
                 settings = new SettingsForm();
+            }
+
             try
             {
                 settings.Show();
@@ -127,7 +119,10 @@ namespace LlamaLibrary.Retainers
         private void LogVerbose(string text, params object[] args)
         {
             if (!debug)
+            {
                 return;
+            }
+
             var msg = string.Format("[" + BotName + "] " + text, args);
             Logging.WriteVerbose(msg);
         }
@@ -151,7 +146,10 @@ namespace LlamaLibrary.Retainers
 
         private async Task<bool> RetainerTest()
         {
-            if (done) return true;
+            if (done)
+            {
+                return true;
+            }
 
             Log(" ");
             Log("==================================================");
@@ -220,16 +218,26 @@ namespace LlamaLibrary.Retainers
 
             for (var retainerIndex = 0; retainerIndex < ordered.Length; retainerIndex++)
             {
-                if (!ordered[retainerIndex].Active) continue;
-                if (!retainerNames.ContainsKey(retainerIndex)) retainerNames.Add(retainerIndex, RetainerList.Instance.RetainerName(retainerIndex));
-                bool hasJob = RetainerList.Instance.RetainerHasJob(retainerIndex);
+                if (!ordered[retainerIndex].Active)
+                {
+                    continue;
+                }
+
+                if (!retainerNames.ContainsKey(retainerIndex))
+                {
+                    retainerNames.Add(retainerIndex, RetainerList.Instance.RetainerName(retainerIndex));
+                }
+
+                var hasJob = RetainerList.Instance.RetainerHasJob(retainerIndex);
                 Log($"Selecting {RetainerList.Instance.RetainerName(retainerIndex)}");
                 await RetainerRoutine.SelectRetainer(retainerIndex);
 
                 var inventory = new RetainerInventory();
 
                 if (RetainerSettings.Instance.GetGil)
+                {
                     GetRetainerGil();
+                }
 
                 LogVerbose("Inventory open");
                 foreach (var item in InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Where(FilterStackable))
@@ -260,7 +268,10 @@ namespace LlamaLibrary.Retainers
 
                 Log("Checking retainer[{0}] against player inventory", retainerNames[retainerIndex]);
 
-                if (RetainerSettings.Instance.DepositFromPlayer) await RetainerRoutine.DumpItems();
+                if (RetainerSettings.Instance.DepositFromPlayer)
+                {
+                    await RetainerRoutine.DumpItems();
+                }
 
                 Log("Done checking against player inventory");
 
@@ -389,7 +400,10 @@ namespace LlamaLibrary.Retainers
                         //await Coroutine.Sleep(1000);
                     }
 
-                    if (!RetainerList.Instance.IsOpen) Log("Failed opening retainer list");
+                    if (!RetainerList.Instance.IsOpen)
+                    {
+                        Log("Failed opening retainer list");
+                    }
 
                     LogVerbose("Open:" + RetainerList.Instance.IsOpen);
 
@@ -404,14 +418,21 @@ namespace LlamaLibrary.Retainers
                     //
                     await Coroutine.Wait(5000, RetainerTasks.IsInventoryOpen);
 
-                    if (!RetainerTasks.IsInventoryOpen()) continue;
+                    if (!RetainerTasks.IsInventoryOpen())
+                    {
+                        continue;
+                    }
+
                     await Coroutine.Sleep(500);
 
                     Log("Checking retainer[{0}] against move list", retainerNames[retainerIndex]);
 
                     foreach (var item in moveFrom[retainerIndex])
                     {
-                        if (!InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Any(i => i.TrueItemId == item)) continue;
+                        if (!InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Any(i => i.TrueItemId == item))
+                        {
+                            continue;
+                        }
 
                         Log("Moved: " + InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).First(i => i.TrueItemId == item)
                                 .Move(InventoryManager.GetBagsByInventoryBagId(InventoryBagId_0).First(bag => bag.FreeSlots > 0).GetFirstFreeSlot()));
@@ -428,7 +449,10 @@ namespace LlamaLibrary.Retainers
 
                     await Coroutine.Wait(3000, () => DialogOpen);
 
-                    if (DialogOpen) Next();
+                    if (DialogOpen)
+                    {
+                        Next();
+                    }
 
                     await Coroutine.Wait(3000, () => RetainerList.Instance.IsOpen);
 
@@ -538,7 +562,11 @@ namespace LlamaLibrary.Retainers
 
                     await Coroutine.Wait(1500, () => DialogOpen);
                     await Coroutine.Sleep(200);
-                    if (DialogOpen) Next();
+                    if (DialogOpen)
+                    {
+                        Next();
+                    }
+
                     await Coroutine.Sleep(200);
                     await Coroutine.Wait(5000, () => SelectString.IsOpen);
                 }
@@ -612,7 +640,11 @@ namespace LlamaLibrary.Retainers
 
                 await Coroutine.Wait(1500, () => DialogOpen || SelectString.IsOpen);
                 await Coroutine.Sleep(200);
-                if (DialogOpen) Next();
+                if (DialogOpen)
+                {
+                    Next();
+                }
+
                 await Coroutine.Sleep(200);
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
             }

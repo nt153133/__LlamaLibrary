@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using LlamaLibrary.AutoRetainerSort.Classes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -13,7 +12,7 @@ namespace LlamaLibrary.AutoRetainerSort
     {
         public static string GetSettingsPath()
         {
-            TypeInfo botType = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(i => i.FullName.Contains("Lisbeth.Reborn"))?.DefinedTypes.FirstOrDefault(i => i.Name == "Directories")
+            var botType = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(i => i.FullName.Contains("Lisbeth.Reborn"))?.DefinedTypes.FirstOrDefault(i => i.Name == "Directories")
                                ?? AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(i => i.FullName.Contains("Lisbeth"))?.DefinedTypes.FirstOrDefault(i => i.Name == "Directories");
 
             if (botType == null)
@@ -24,21 +23,21 @@ namespace LlamaLibrary.AutoRetainerSort
 
             AutoRetainerSort.Log($"Lisbeth Type {botType.FullName}");
 
-            string assemblyLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location ?? string.Empty);
-            string settingsPath = botType.GetProperty("SettingsPath")?.GetValue(null) as string ?? string.Empty;
+            var assemblyLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location ?? string.Empty);
+            var settingsPath = botType.GetProperty("SettingsPath")?.GetValue(null) as string ?? string.Empty;
 
             if (string.IsNullOrEmpty(assemblyLocation) || string.IsNullOrEmpty(settingsPath))
             {
                 return string.Empty;
             }
 
-            string settingsFilePath = Path.Combine(assemblyLocation, settingsPath);
+            var settingsFilePath = Path.Combine(assemblyLocation, settingsPath);
             return settingsFilePath;
         }
 
         private static JObject GetJObject(string settingsFilePath)
         {
-            using (StreamReader reader = File.OpenText(settingsFilePath))
+            using (var reader = File.OpenText(settingsFilePath))
             {
                 return (JObject)JToken.ReadFrom(new JsonTextReader(reader));
             }
@@ -52,33 +51,45 @@ namespace LlamaLibrary.AutoRetainerSort
                 return;
             }
 
-            JObject settingsJObject = GetJObject(settingsPath);
-            LisbethRetainerRules knownRules = new LisbethRetainerRules(settingsJObject);
+            var settingsJObject = GetJObject(settingsPath);
+            var knownRules = new LisbethRetainerRules(settingsJObject);
 
             foreach (var indexInfoPair in AutoRetainerSortSettings.Instance.InventoryOptions)
             {
-                if (!knownRules.RulesByIndex.ContainsKey(indexInfoPair.Key)) continue;
+                if (!knownRules.RulesByIndex.ContainsKey(indexInfoPair.Key))
+                {
+                    continue;
+                }
+
                 var ruleList = knownRules.RulesByIndex[indexInfoPair.Key];
-                foreach (uint itemId in indexInfoPair.Value.SpecificItems.Select(x => x.RawItemId).Distinct())
+                foreach (var itemId in indexInfoPair.Value.SpecificItems.Select(x => x.RawItemId).Distinct())
                 {
                     ruleList.Add(new LisbethRetainerRules.ItemRule(itemId));
                 }
             }
 
-            foreach (CachedInventory cachedInventory in ItemSortStatus.GetAllInventories())
+            foreach (var cachedInventory in ItemSortStatus.GetAllInventories())
             {
-                if (!knownRules.RulesByIndex.ContainsKey(cachedInventory.Index)) continue;
-                var ruleList = knownRules.RulesByIndex[cachedInventory.Index];
-                foreach (ItemSortInfo sortInfo in cachedInventory.ItemCounts.Select(x => ItemSortStatus.GetSortInfo(x.Key)).Distinct())
+                if (!knownRules.RulesByIndex.ContainsKey(cachedInventory.Index))
                 {
-                    if (sortInfo.ItemInfo.Unique || sortInfo.ItemInfo.StackSize <= 1) continue;
+                    continue;
+                }
+
+                var ruleList = knownRules.RulesByIndex[cachedInventory.Index];
+                foreach (var sortInfo in cachedInventory.ItemCounts.Select(x => ItemSortStatus.GetSortInfo(x.Key)).Distinct())
+                {
+                    if (sortInfo.ItemInfo.Unique || sortInfo.ItemInfo.StackSize <= 1)
+                    {
+                        continue;
+                    }
+
                     ruleList.Add(new LisbethRetainerRules.ItemRule(sortInfo.RawItemId));
                 }
             }
 
             SetRules(settingsJObject, knownRules);
 
-            using (StreamWriter outputFile = new StreamWriter(settingsPath, false))
+            using (var outputFile = new StreamWriter(settingsPath, false))
             {
                 outputFile.Write(JsonConvert.SerializeObject(settingsJObject, Formatting.None));
             }
@@ -86,9 +97,9 @@ namespace LlamaLibrary.AutoRetainerSort
 
         private static void SetRules(JObject settingsObject, LisbethRetainerRules rules)
         {
-            foreach (JToken retainerToken in settingsObject["Retainers"])
+            foreach (var retainerToken in settingsObject["Retainers"])
             {
-                int retainerIndex = retainerToken["Index"]?.ToObject<int>() ?? 0;
+                var retainerIndex = retainerToken["Index"]?.ToObject<int>() ?? 0;
                 retainerToken["Rules"] = JToken.FromObject(rules.RulesByIndex[retainerIndex]);
             }
         }
@@ -109,20 +120,43 @@ namespace LlamaLibrary.AutoRetainerSort
 
             public bool Equals(ItemRule other)
             {
-                if (ReferenceEquals(null, other)) return false;
-                if (ReferenceEquals(this, other)) return true;
+                if (other is null)
+                {
+                    return false;
+                }
+
+                if (ReferenceEquals(this, other))
+                {
+                    return true;
+                }
+
                 return ItemId == other.ItemId;
             }
 
             public override bool Equals(object obj)
             {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != this.GetType()) return false;
+                if (obj is null)
+                {
+                    return false;
+                }
+
+                if (ReferenceEquals(this, obj))
+                {
+                    return true;
+                }
+
+                if (obj.GetType() != GetType())
+                {
+                    return false;
+                }
+
                 return Equals((ItemRule)obj);
             }
 
-            public override int GetHashCode() => (int)ItemId;
+            public override int GetHashCode()
+            {
+                return (int)ItemId;
+            }
 
             public ItemRule(uint itemId, bool lowerQuality = false)
             {
@@ -134,32 +168,32 @@ namespace LlamaLibrary.AutoRetainerSort
         public LisbethRetainerRules(JObject lisbethSettings)
         {
             RulesByIndex = new Dictionary<int, HashSet<ItemRule>>();
-            JToken retainerSettings = lisbethSettings["Retainers"];
+            var retainerSettings = lisbethSettings["Retainers"];
             if (retainerSettings == null)
             {
                 AutoRetainerSort.LogCritical("No retainers found in Lisbeth's settings!");
                 return;
             }
 
-            foreach (JToken retainerInfo in retainerSettings)
+            foreach (var retainerInfo in retainerSettings)
             {
-                int index = retainerInfo["Index"]?.ToObject<int>() ?? 0;
+                var index = retainerInfo["Index"]?.ToObject<int>() ?? 0;
                 RulesByIndex.Add(index, new HashSet<ItemRule>());
                 var ruleSet = RulesByIndex[index];
-                JToken currentRules = retainerInfo["Rules"];
+                var currentRules = retainerInfo["Rules"];
                 if (currentRules == null)
                 {
                     AutoRetainerSort.LogCritical("RetainerInfo didn't contain any rules array!");
                     return;
                 }
 
-                foreach (JToken rule in currentRules)
+                foreach (var rule in currentRules)
                 {
-                    ItemRule itemRule = rule.ToObject<ItemRule>();
+                    var itemRule = rule.ToObject<ItemRule>();
                     if (itemRule == null)
                     {
-                        JToken itemIdToken = rule["Item"];
-                        AutoRetainerSort.LogCritical(itemIdToken == null ? "Couldn't parse rule! ID is null?" : $"Couldn't parse rule for ID {itemIdToken.ToObject<uint>().ToString()}");
+                        var itemIdToken = rule["Item"];
+                        AutoRetainerSort.LogCritical(itemIdToken == null ? "Couldn't parse rule! ID is null?" : $"Couldn't parse rule for ID {itemIdToken.ToObject<uint>()}");
                         continue;
                     }
 

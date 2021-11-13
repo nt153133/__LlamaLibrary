@@ -74,11 +74,19 @@ namespace Ff14bot.NeoProfiles.Tags
             get
             {
                 if (IsQuestComplete)
+                {
                     return true;
-                if (IsStepComplete)
-                    return true;
+                }
 
-                if (_doneTalking) return true;
+                if (IsStepComplete)
+                {
+                    return true;
+                }
+
+                if (_doneTalking)
+                {
+                    return true;
+                }
 
                 return false;
             }
@@ -94,17 +102,28 @@ namespace Ff14bot.NeoProfiles.Tags
             _usedSlots = new HashSet<BagSlot>();
             if (RequiresHq == null)
             {
-                if (ItemIds != null) RequiresHq = new bool[ItemIds.Length];
+                if (ItemIds != null)
+                {
+                    RequiresHq = new bool[ItemIds.Length];
+                }
             }
             else
             {
-                if (RequiresHq.Length != ItemIds.Length) LogError("RequiresHq must have the same number of items as ItemIds");
+                if (RequiresHq.Length != ItemIds.Length)
+                {
+                    LogError("RequiresHq must have the same number of items as ItemIds");
+                }
+
                 return;
             }
 
             if (Amount != null)
             {
-                if (Amount.Length != ItemIds.Length) LogError("Amount must have the same number of items as ItemIds");
+                if (Amount.Length != ItemIds.Length)
+                {
+                    LogError("Amount must have the same number of items as ItemIds");
+                }
+
                 return;
             }
 
@@ -116,9 +135,13 @@ namespace Ff14bot.NeoProfiles.Tags
                     var item = DataManager.GetItem((uint)ItemIds[i], RequiresHq[i]);
 
                     if (i == ItemIds.Length - 1)
+                    {
                         sb.Append($"{item.CurrentLocaleName}");
+                    }
                     else
+                    {
                         sb.Append($"{item.CurrentLocaleName},");
+                    }
                 }
             }
 
@@ -156,16 +179,24 @@ namespace Ff14bot.NeoProfiles.Tags
                     {
                         BagSlot item;
                         if (RequiresHq[i])
+                        {
                             item = items.FirstOrDefault(z => z.RawItemId == ItemIds[i] && z.IsHighQuality && !_usedSlots.Contains(z));
+                        }
                         else
+                        {
                             item = items.FirstOrDefault(z => z.RawItemId == ItemIds[i] && !_usedSlots.Contains(z));
+                        }
 
                         if (item == null)
                         {
                             if (RequiresHq[i])
+                            {
                                 LogError("We don't have any high quality items with an id of {0}", ItemIds[i]);
+                            }
                             else
+                            {
                                 LogError("We don't have any items with an id of {0}", ItemIds[i]);
+                            }
                         }
                         else
                         {

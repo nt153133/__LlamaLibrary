@@ -29,7 +29,6 @@ using LlamaLibrary.Memory;
 using LlamaLibrary.Properties;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
-using LlamaLibrary.RetainerItemFinder;
 using LlamaLibrary.Retainers;
 using LlamaLibrary.Structs;
 using Newtonsoft.Json;
@@ -71,7 +70,6 @@ namespace LlamaLibrary
 
         private readonly SortedDictionary<string, List<string>> luaFunctions = new SortedDictionary<string, List<string>>();
 
-        private volatile bool _init;
         private Composite _root;
 
         public Dictionary<string, List<Composite>> hooks;
@@ -94,8 +92,7 @@ namespace LlamaLibrary
         {
             Task.Factory.StartNew(() =>
             {
-                init();
-                _init = true;
+                Init();
                 Log("INIT DONE");
             });
         }
@@ -134,16 +131,16 @@ namespace LlamaLibrary
             DumpLLOffsets();
         }
 
-        internal void init()
+        internal void Init()
         {
             OffsetManager.Init();
 
             Log("Load venture.json");
-            VentureData = loadResource<List<RetainerTaskData>>(Resources.Ventures);
+            VentureData = LoadResource<List<RetainerTaskData>>(Resources.Ventures);
             Log("Loaded venture.json");
         }
 
-        private static T loadResource<T>(string text)
+        private static T LoadResource<T>(string text)
         {
             return JsonConvert.DeserializeObject<T>(text);
         }
@@ -178,11 +175,11 @@ namespace LlamaLibrary
         {
             Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
-            BagSlot soil = ff14bot.Managers.InventoryManager.FilledInventoryAndArmory.First(x => x.RawItemId == 16026);
-            BagSlot seeds = ff14bot.Managers.InventoryManager.FilledInventoryAndArmory.First(x => x.RawItemId == 13765);
+            var soil = ff14bot.Managers.InventoryManager.FilledInventoryAndArmory.First(x => x.RawItemId == 16026);
+            var seeds = ff14bot.Managers.InventoryManager.FilledInventoryAndArmory.First(x => x.RawItemId == 13765);
 
             //EventObject plant = null;
-            List<(int gardenIndex, int plantIndex, string plant, EventObject obj)> plants = new List<(int gardenIndex, int plantIndex, string plant, EventObject obj)>();
+            var plants = new List<(int GardenIndex, int PlantIndex, string Plant, EventObject Obj)>();
             foreach (var plant in GardenManager.Plants.Where(i => i.Distance(Core.Me.Location) < 10))
             {
                 var GardenIndex = Lua.GetReturnVal<int>($"return _G['{plant.LuaString}']:GetHousingGardeningIndex();");
@@ -191,12 +188,12 @@ namespace LlamaLibrary
                 plants.Add((GardenIndex, PlantIndex, Plant.CurrentLocaleName, plant));
             }
 
-            foreach (var plant in plants.Where(i => i.gardenIndex == 0))
+            foreach (var plant in plants.Where(i => i.GardenIndex == 0))
             {
-                if (plant.gardenIndex == 0 && plant.plant == "")
+                if (plant.GardenIndex == 0 && plant.Plant == "")
                 {
-                    Log($"Garden {plant.gardenIndex} Plant {plant.plantIndex}, {plant.plant}");
-                    await GardenHelper.Plant(plant.obj, seeds, soil);
+                    Log($"Garden {plant.GardenIndex} Plant {plant.PlantIndex}, {plant.Plant}");
+                    await GardenHelper.Plant(plant.Obj, seeds, soil);
                     await Coroutine.Sleep(5000);
                 }
             }
@@ -272,7 +269,7 @@ namespace LlamaLibrary
 
         public static async Task TurninSkySteelCrafting()
         {
-            Dictionary<uint, CraftingRelicTurnin> TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
+            var TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
             {
                 { 31101, new CraftingRelicTurnin(31101, 0, 1, 2000, 30315) },
                 { 31109, new CraftingRelicTurnin(31109, 0, 0, 3000, 30316) },
@@ -331,7 +328,7 @@ namespace LlamaLibrary
                         //  Log($"Pressing position {turnin.Position}");
                         CollectablesShop.Instance.SelectItem(turnin.Position);
                         await Coroutine.Sleep(1000);
-                        int i = 0;
+                        var i = 0;
                         while (CollectablesShop.Instance.TurninCount > 0)
                         {
                             // Log($"Pressing trade {i}");
@@ -362,7 +359,10 @@ namespace LlamaLibrary
                     {
                         var haveSlot = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).SelectMany(k => k.FilledSlots).FirstOrDefault(j => j.TrueItemId == slot.TrueItemId && j.Item.StackSize > 1 && j.Count < j.Item.StackSize);
 
-                        if (haveSlot == default(BagSlot)) break;
+                        if (haveSlot == default(BagSlot))
+                        {
+                            break;
+                        }
 
                         slot.RetainerEntrustQuantity(Math.Min(haveSlot.Item.StackSize - haveSlot.Count, slot.Count));
 
@@ -396,13 +396,19 @@ namespace LlamaLibrary
                         {
                             var haveSlot = InventoryManager.FilledSlots.FirstOrDefault(j => j.TrueItemId == slot.TrueItemId && j.Item.StackSize > 1 && j.Count < j.Item.StackSize);
 
-                            if (haveSlot == default(BagSlot)) break;
+                            if (haveSlot == default(BagSlot))
+                            {
+                                break;
+                            }
 
                             var result = slot.RemoveFromSaddlebagQuantity(Math.Min(haveSlot.Item.StackSize - haveSlot.Count, slot.Count));
 
                             Log($"Retrieve {slot.Name} {result}");
                             if (!result)
+                            {
                                 break;
+                            }
+
                             await Coroutine.Sleep(500);
                         }
                     }
@@ -410,12 +416,18 @@ namespace LlamaLibrary
 
                 foreach (var slot in InventoryManager.GetBagsByInventoryBagId(SaddlebagIds).SelectMany(i => i.FilledSlots))
                 {
-                    if (InventoryManager.FreeSlots < 1) break;
+                    if (InventoryManager.FreeSlots < 1)
+                    {
+                        break;
+                    }
 
                     var result = slot.RemoveFromSaddlebagQuantity(slot.Count);
                     Log($"Retrieve {slot.Name} {result}");
                     if (!result)
+                    {
                         break;
+                    }
+
                     await Coroutine.Sleep(500);
                 }
 
@@ -443,13 +455,19 @@ namespace LlamaLibrary
                         {
                             var haveSlot = InventoryManager.FilledSlots.FirstOrDefault(j => j.TrueItemId == slot.TrueItemId && j.Item.StackSize > 1 && j.Count < j.Item.StackSize);
 
-                            if (haveSlot == default(BagSlot)) break;
+                            if (haveSlot == default(BagSlot))
+                            {
+                                break;
+                            }
 
                             var result = slot.RemoveFromSaddlebagQuantity(Math.Min(haveSlot.Item.StackSize - haveSlot.Count, slot.Count));
 
                             Log($"Retrieve {slot.Name} {result}");
                             if (!result)
+                            {
                                 break;
+                            }
+
                             await Coroutine.Sleep(500);
                         }
                     }
@@ -457,11 +475,18 @@ namespace LlamaLibrary
 
                 foreach (var slot in InventoryManager.GetBagsByInventoryBagId(SaddlebagIds).SelectMany(i => i.FilledSlots))
                 {
-                    if (InventoryManager.FreeSlots < 1) break;
+                    if (InventoryManager.FreeSlots < 1)
+                    {
+                        break;
+                    }
+
                     var result = slot.AddToSaddlebagQuantity(slot.Count);
                     Log($"Move {slot.Name}");
                     if (!result)
+                    {
                         break;
+                    }
+
                     await Coroutine.Sleep(_rand.Next(300, 400));
                 }
 
@@ -612,8 +637,6 @@ namespace LlamaLibrary
 
             TreeRoot.Stop("Stop Requested");
             return Task.FromResult(true);
-
-            return Task.FromResult(true);
         }
 
         private void Log(IntPtr instancePointer)
@@ -685,18 +708,22 @@ namespace LlamaLibrary
 
             if (NeedGreed.Instance.IsOpen)
             {
-                for (int i = 0; i < NeedGreed.Instance.NumberOfItems; i++)
+                for (var i = 0; i < NeedGreed.Instance.NumberOfItems; i++)
                 {
                     NeedGreed.Instance.PassItem(i);
                     await Coroutine.Sleep(500);
                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                     if (SelectYesno.IsOpen)
+                    {
                         SelectYesno.Yes();
+                    }
                 }
             }
 
             if (NeedGreed.Instance.IsOpen)
+            {
                 NeedGreed.Instance.Close();
+            }
         }
 
         public static async Task<bool> GoGarden(uint AE)
@@ -753,7 +780,7 @@ namespace LlamaLibrary
                 await Coroutine.Sleep(3000);
 
                 //await HandleCurrentGCWindow();
-                AtkAddonControl windowByName = RaptureAtkUnitManager.GetWindowByName("Talk");
+                var windowByName = RaptureAtkUnitManager.GetWindowByName("Talk");
                 if (windowByName != null)
                 {
                     var test = windowByName.TryFindAgentInterface();
@@ -768,8 +795,8 @@ namespace LlamaLibrary
                 var maxSeals = Core.Me.MaxGCSeals();*/
 
                 //var items = Core.Memory.ReadArray<GCTurninItem>(Offsets.GCTurnin, Offsets.GCTurninCount);
-                int i = 0;
-                int count = ConditionParser.ItemCount(2049);
+                var i = 0;
+                var count = ConditionParser.ItemCount(2049);
                 if (count > 0)
                 {
                     for (var index = 0; index < count; index++)
@@ -938,7 +965,7 @@ namespace LlamaLibrary
             }
 
             sb = new StringBuilder();
-            int i = 0;
+            var i = 0;
             foreach (var vtable in AgentModule.AgentVtables)
             {
                 sb.AppendLine($"Model_{i},{Core.Memory.GetRelative(vtable).ToString("X")}");
@@ -966,7 +993,7 @@ namespace LlamaLibrary
                 Logging.WriteDiagnostic("SelectIconString Failed to open.");
             }
 
-            uint Slot = (uint)ScriptConditions.Helpers.ZodiacCompletedMahatma();
+            var Slot = (uint)ScriptConditions.Helpers.ZodiacCompletedMahatma();
             await Coroutine.Sleep(1000);
 
             GameObjectManager.GetObjectByNPCId(1011791).Interact();
@@ -1024,7 +1051,7 @@ namespace LlamaLibrary
 
         private async Task BuyHouse()
         {
-            Random _rnd = new Random();
+            var _rnd = new Random();
 
             var placard = GameObjectManager.GetObjectsByNPCId(2002736).OrderBy(i => i.Distance()).FirstOrDefault();
             if (placard != null)
@@ -1071,10 +1098,10 @@ namespace LlamaLibrary
         private void DumpOffsets()
         {
             var off = typeof(Core).GetProperty("Offsets", BindingFlags.NonPublic | BindingFlags.Static);
-            StringBuilder stringBuilder = new StringBuilder();
-            int i = 0;
-            int p1 = 0;
-            int p2 = 0;
+            var stringBuilder = new StringBuilder();
+            var i = 0;
+            var p1 = 0;
+            var p2 = 0;
             foreach (var p in off.PropertyType.GetFields())
             {
                 var tp = p.GetValue(off.GetValue(null));
@@ -1087,7 +1114,7 @@ namespace LlamaLibrary
                     if (t.FieldType == typeof(IntPtr))
                     {
                         //IntPtr ptr = new IntPtr(((IntPtr) t.GetValue(tp)).ToInt64() - Core.Memory.ImageBase.ToInt64());
-                        IntPtr ptr = (IntPtr)t.GetValue(tp);
+                        var ptr = (IntPtr)t.GetValue(tp);
                         stringBuilder.Append($"Struct{i + 88}_IntPtr{p1}, {Core.Memory.GetRelative(ptr).ToInt64()}\n");
 
                         //stringBuilder.Append(string.Format("\tPtr Offset_{0}: 0x{1:x}", p1, ptr.ToInt64()));
@@ -1110,7 +1137,7 @@ namespace LlamaLibrary
 
         private void DumpLuaFunctions()
         {
-            string func = "local values = {} for key,value in pairs(_G) do table.insert(values, key); end return unpack(values);";
+            var func = "local values = {} for key,value in pairs(_G) do table.insert(values, key); end return unpack(values);";
 
             var retValues = Lua.GetReturnValues(func);
             foreach (var ret in retValues.Where(ret => !ret.StartsWith("_") && !ret.StartsWith("Luc") && !ret.StartsWith("Stm") && !char.IsDigit(ret[ret.Length - 1]) && !char.IsLower(ret[0])))
@@ -1119,13 +1146,19 @@ namespace LlamaLibrary
                 {
                     var name = ret.Split(':')[0];
                     if (luaFunctions.ContainsKey(name))
+                    {
                         continue;
+                    }
+
                     luaFunctions.Add(name, GetSubFunctions(name));
                 }
                 else
                 {
                     if (luaFunctions.ContainsKey(ret))
+                    {
                         continue;
+                    }
+
                     luaFunctions.Add(ret, GetSubFunctions(ret));
                 }
             }
@@ -1133,8 +1166,8 @@ namespace LlamaLibrary
 
         private static List<string> GetSubFunctions(string luaObject)
         {
-            string func = $"local values = {{}} for key,value in pairs(_G['{luaObject}']) do table.insert(values, key); end return unpack(values);";
-            List<string> functions = new List<string>();
+            var func = $"local values = {{}} for key,value in pairs(_G['{luaObject}']) do table.insert(values, key); end return unpack(values);";
+            var functions = new List<string>();
             try
             {
                 var retValues = Lua.GetReturnValues(func);
@@ -1189,12 +1222,14 @@ namespace LlamaLibrary
                 {
                     Log("Used Navgraph/Flightor to get there");
                     if (searchBell.IsWithinInteractRange)
+                    {
                         return true;
+                    }
                 }
             }
 
             (uint, Vector3) bellLocation;
-            int tries = 0;
+            var tries = 0;
             if (SummoningBells.Any(i => i.Item1 == WorldManager.ZoneId))
             {
                 Log("Found a bell in our zone");
@@ -1202,8 +1237,8 @@ namespace LlamaLibrary
             }
             else
             {
-                bool foundBell = false;
-                Random rand = new Random();
+                var foundBell = false;
+                var rand = new Random();
                 do
                 {
                     tries++;
@@ -1299,7 +1334,7 @@ namespace LlamaLibrary
             var count = await GetNumberOfRetainers();
             var rets = Core.Memory.ReadArray<RetainerInfo>(Offsets.RetainerData, count);
 
-            int index = 0;
+            var index = 0;
             foreach (var ret in rets)
             {
                 Log($"{index} {ret.Name}");
@@ -1308,7 +1343,7 @@ namespace LlamaLibrary
 
             index = 0;
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 Log($"{i} {RetainerList.Instance.RetainerName(i)}");
             }
@@ -1344,7 +1379,10 @@ namespace LlamaLibrary
                 }
             }
 
-            if (RetainerSettings.Instance.DepositFromPlayer) await RetainerRoutine.DumpItems();
+            if (RetainerSettings.Instance.DepositFromPlayer)
+            {
+                await RetainerRoutine.DumpItems();
+            }
 
             Log("Done checking against player inventory");
 
@@ -1402,7 +1440,11 @@ namespace LlamaLibrary
 
                 await Coroutine.Wait(1500, () => DialogOpen);
                 await Coroutine.Sleep(200);
-                if (DialogOpen) Next();
+                if (DialogOpen)
+                {
+                    Next();
+                }
+
                 await Coroutine.Sleep(200);
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
             }
@@ -1444,13 +1486,13 @@ namespace LlamaLibrary
         public async Task testGather()
         {
             var patternFinder = new PatternFinder(Core.Memory);
-            IntPtr AnimationLocked = patternFinder.Find("48 8D 0D ?? ?? ?? ?? BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 80 8B ?? ?? ?? ?? ?? 45 33 C9 44 8B C7 89 BB ?? ?? ?? ?? Add 3 TraceRelative");
+            var AnimationLocked = patternFinder.Find("48 8D 0D ?? ?? ?? ?? BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 80 8B ?? ?? ?? ?? ?? 45 33 C9 44 8B C7 89 BB ?? ?? ?? ?? Add 3 TraceRelative");
 
             var GatherLock = Core.Memory.Read<uint>(AnimationLocked + 0x2A);
 
             if (GatheringManager.WindowOpen)
             {
-                GatheringItem items = GatheringManager.GatheringWindowItems.FirstOrDefault(i => i.IsFilled && !i.IsUnknown && !i.ItemData.Unique && i.CanGather);
+                var items = GatheringManager.GatheringWindowItems.FirstOrDefault(i => i.IsFilled && !i.IsUnknown && !i.ItemData.Unique && i.CanGather);
 
                 Log($"Gathering: {items}");
 
@@ -1487,24 +1529,24 @@ namespace LlamaLibrary
             Log($"Inventory Pointer: {Offsets.ItemFuncParam.ToInt64():X}  Function: {Offsets.ItemSplitFunc.ToInt64():X}");
             a.Split(1);
 
-            AtkAddonControl windowByName = RaptureAtkUnitManager.GetWindowByName("SelectString");
+            var windowByName = RaptureAtkUnitManager.GetWindowByName("SelectString");
 
             if (windowByName != null)
             {
-                List<string> list = new List<string>();
-                IntPtr pointer = Core.Memory.Read<IntPtr>(windowByName.Pointer + 0x238 + 0x38);
+                var list = new List<string>();
+                var pointer = Core.Memory.Read<IntPtr>(windowByName.Pointer + 0x238 + 0x38);
 
                 if (pointer != IntPtr.Zero)
                 {
-                    int count = Core.Memory.Read<int>(pointer + 0x118);
-                    for (int i = 0; i < count; i++)
+                    var count = Core.Memory.Read<int>(pointer + 0x118);
+                    for (var i = 0; i < count; i++)
                     {
-                        IntPtr addr = Core.Memory.Read<IntPtr>(pointer + 0xF0) + (24 * i) + 8;
-                        IntPtr pointer2 = Core.Memory.Read<IntPtr>(addr) + 8;
+                        var addr = Core.Memory.Read<IntPtr>(pointer + 0xF0) + (24 * i) + 8;
+                        var pointer2 = Core.Memory.Read<IntPtr>(addr) + 8;
                         var short1 = Core.Memory.Read<ushort>(pointer2 + 0x42);
-                        IntPtr addr2 = Core.Memory.Read<IntPtr>(pointer2 + 0x50) + (8 * (short1 - 1));
-                        IntPtr pointer3 = Core.Memory.Read<IntPtr>(addr2);
-                        string item = Core.Memory.ReadString(Core.Memory.Read<IntPtr>(pointer3 + 0xB8), Encoding.UTF8);
+                        var addr2 = Core.Memory.Read<IntPtr>(pointer2 + 0x50) + (8 * (short1 - 1));
+                        var pointer3 = Core.Memory.Read<IntPtr>(addr2);
+                        var item = Core.Memory.ReadString(Core.Memory.Read<IntPtr>(pointer3 + 0xB8), Encoding.UTF8);
                         list.Add(item);
                     }
                 }
@@ -1556,7 +1598,7 @@ namespace LlamaLibrary
                 Logger.Info("Gathering");
                 if (GuildLeve.Instance.Window == RemoteWindows.LeveWindow.Gathering)
                 {
-                    for (int i = 0; i < 3; i++)
+                    for (var i = 0; i < 3; i++)
                     {
                         GuildLeve.Instance.SwitchClass(i);
                         await Coroutine.Sleep(500);
@@ -1569,7 +1611,7 @@ namespace LlamaLibrary
                 Logger.Info("Crafting");
                 if (GuildLeve.Instance.Window == RemoteWindows.LeveWindow.Crafting)
                 {
-                    for (int i = 0; i < 8; i++)
+                    for (var i = 0; i < 8; i++)
                     {
                         GuildLeve.Instance.SwitchClass(i);
                         await Coroutine.Sleep(500);
@@ -1582,7 +1624,7 @@ namespace LlamaLibrary
                 Logger.Info("Gathering");
                 if (GuildLeve.Instance.Window == RemoteWindows.LeveWindow.Gathering)
                 {
-                    for (int i = 0; i < 3; i++)
+                    for (var i = 0; i < 3; i++)
                     {
                         GuildLeve.Instance.SwitchClass(i);
                         await Coroutine.Sleep(500);
@@ -1595,7 +1637,7 @@ namespace LlamaLibrary
                 Logger.Info("Crafting");
                 if (GuildLeve.Instance.Window == RemoteWindows.LeveWindow.Crafting)
                 {
-                    for (int i = 0; i < 8; i++)
+                    for (var i = 0; i < 8; i++)
                     {
                         GuildLeve.Instance.SwitchClass(i);
                         await Coroutine.Sleep(500);

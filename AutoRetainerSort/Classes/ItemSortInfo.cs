@@ -24,7 +24,7 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
                     }
                     catch (Exception ex)
                     {
-                        AutoRetainerSort.LogCritical($"Error! Couldn't get item data for ID {RawItemId.ToString()}.");
+                        AutoRetainerSort.LogCritical($"Error! Couldn't get item data for ID {RawItemId}.");
                         throw new ArgumentException($"Unable to get ItemInfo. TrueId: {TrueItemId}, RawId: {RawItemId}", "ItemInfo", ex);
                     }
                 }
@@ -32,7 +32,7 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
                 // Check again to make sure it's not still null.
                 if (_itemInfo == null)
                 {
-                    AutoRetainerSort.LogCritical($"Error! Couldn't get item data for ID {RawItemId.ToString()}.");
+                    AutoRetainerSort.LogCritical($"Error! Couldn't get item data for ID {RawItemId}.");
                     throw new ArgumentException($"Unable to get ItemInfo. TrueId: {TrueItemId}, RawId: {RawItemId}", "ItemInfo");
                 }
 
@@ -50,8 +50,15 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
                 {
                     try
                     {
-                        if (ItemInfo == null) return "UNKNOWN";
-                        if (string.IsNullOrEmpty(ItemInfo.CurrentLocaleName)) return "UNKNOWN";
+                        if (ItemInfo == null)
+                        {
+                            return "UNKNOWN";
+                        }
+
+                        if (string.IsNullOrEmpty(ItemInfo.CurrentLocaleName))
+                        {
+                            return "UNKNOWN";
+                        }
 
                         _name = ItemInfo.CurrentLocaleName;
                     }
@@ -61,7 +68,7 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
                     }
                 }
 
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.Append(_name);
                 if (IsCollectable)
                 {
@@ -86,8 +93,16 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
         {
             get
             {
-                if (IsHighQuality) return TrueItemId - QualityOffset;
-                if (IsCollectable) return TrueItemId - CollectableOffset;
+                if (IsHighQuality)
+                {
+                    return TrueItemId - QualityOffset;
+                }
+
+                if (IsCollectable)
+                {
+                    return TrueItemId - CollectableOffset;
+                }
+
                 return TrueItemId;
             }
         }
@@ -104,7 +119,10 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
             {
                 if (_sortType == null)
                 {
-                    if (ItemInfo == null) return SortType.UNKNOWN;
+                    if (ItemInfo == null)
+                    {
+                        return SortType.UNKNOWN;
+                    }
 
                     _sortType = ItemInfo.EquipmentCatagory.GetSortType();
                 }
@@ -166,25 +184,50 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
 
         public ItemIndexStatus IndexStatus(int index)
         {
-            int[] localMatchCache = MatchingIndexes.ToArray();
+            var localMatchCache = MatchingIndexes.ToArray();
 
-            if (localMatchCache.Length == 0) return ItemIndexStatus.NoMatchingIndex;
+            if (localMatchCache.Length == 0)
+            {
+                return ItemIndexStatus.NoMatchingIndex;
+            }
 
-            if (ItemSortStatus.FilledAndSortedInventories.Contains(index)) return ItemIndexStatus.NoSpaceInIndex;
+            if (ItemSortStatus.FilledAndSortedInventories.Contains(index))
+            {
+                return ItemIndexStatus.NoSpaceInIndex;
+            }
 
-            if (localMatchCache.All(x => ItemSortStatus.FilledAndSortedInventories.Contains(x))) return ItemIndexStatus.NoSpaceInAnyIndex;
+            if (localMatchCache.All(x => ItemSortStatus.FilledAndSortedInventories.Contains(x)))
+            {
+                return ItemIndexStatus.NoSpaceInAnyIndex;
+            }
 
-            if (localMatchCache.Length == 1 && localMatchCache[0] == index) return ItemIndexStatus.BelongsInIndex;
+            if (localMatchCache.Length == 1 && localMatchCache[0] == index)
+            {
+                return ItemIndexStatus.BelongsInIndex;
+            }
 
-            if (localMatchCache.Length > 1 && localMatchCache.Any(x => x == index)) return ItemIndexStatus.BelongsInIndexAndOthers;
+            if (localMatchCache.Length > 1 && localMatchCache.Any(x => x == index))
+            {
+                return ItemIndexStatus.BelongsInIndexAndOthers;
+            }
 
             if (ItemInfo.Unique)
             {
-                if (localMatchCache.All(x => ItemSortStatus.GetByIndex(x).ItemCounts.ContainsKey(TrueItemId))) return ItemIndexStatus.UniqueButNoSpace;
-                if (localMatchCache.All(x => ItemSortStatus.GetByIndex(x).ItemCounts.ContainsKey(TrueItemId))) return ItemIndexStatus.UniqueButNoSpace;
+                if (localMatchCache.All(x => ItemSortStatus.GetByIndex(x).ItemCounts.ContainsKey(TrueItemId)))
+                {
+                    return ItemIndexStatus.UniqueButNoSpace;
+                }
+
+                if (localMatchCache.All(x => ItemSortStatus.GetByIndex(x).ItemCounts.ContainsKey(TrueItemId)))
+                {
+                    return ItemIndexStatus.UniqueButNoSpace;
+                }
             }
 
-            if (localMatchCache.All(x => x != index && x != int.MinValue)) return ItemIndexStatus.BelongsElsewhere;
+            if (localMatchCache.All(x => x != index && x != int.MinValue))
+            {
+                return ItemIndexStatus.BelongsElsewhere;
+            }
 
             return ItemIndexStatus.Unknown;
         }
@@ -196,22 +239,48 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
 
         public bool Equals(ItemSortInfo other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return TrueItemId == other.TrueItemId;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((ItemSortInfo)obj);
         }
 
-        public override int GetHashCode() => (int)TrueItemId;
+        public override int GetHashCode()
+        {
+            return (int)TrueItemId;
+        }
 
-        public override string ToString() => Name;
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     [Flags]

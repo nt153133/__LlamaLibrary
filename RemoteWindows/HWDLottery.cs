@@ -40,7 +40,7 @@ namespace LlamaLibrary.RemoteWindows
                     Core.Memory.CallInjected64<uint>(Offsets.KupoFunction, new object[2]
                     {
                         agent.Pointer,
-1U
+                        1U
                     });
 
                     await Coroutine.Sleep(2000);

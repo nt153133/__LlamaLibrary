@@ -123,12 +123,6 @@ namespace LlamaLibrary.Retainers
             return bell;
         }
 
-        private static void LogCritical(string text, params object[] args)
-        {
-            var msg = $"[Helpers] {text}";
-            Logging.Write(Colors.OrangeRed, msg);
-        }
-
         private static void LogCritical(string text)
         {
             var msg = $"[Helpers] {text}";
@@ -414,7 +408,8 @@ namespace LlamaLibrary.Retainers
             {
                 return Core.Memory.CallInjected64<int>(
                     Offsets.GetNumberOfRetainers,
-                                                       Offsets.RetainerData);
+                    Offsets.RetainerData
+                );
             }
         }
 
@@ -435,11 +430,12 @@ namespace LlamaLibrary.Retainers
             {
                 Core.Memory.CallInjected64<IntPtr>(
                     Offsets.ExecuteCommand,
-                                                   (uint)Offsets.RetainerNetworkPacket,
-0U,
-0U,
-0U,
-0U);
+                    (uint)Offsets.RetainerNetworkPacket,
+                    0U,
+                    0U,
+                    0U,
+                    0U
+                );
             }
         }
 

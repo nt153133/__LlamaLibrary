@@ -19,7 +19,9 @@
             var button = WindowByName.FindButton(18);
 
             if (button == null)
+            {
                 return false;
+            }
 
             return button.Clickable;
         }

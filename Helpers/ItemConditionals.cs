@@ -33,7 +33,9 @@ namespace LlamaLibrary.Helpers
                 foreach (var cat in Parameters)
                 {
                     if (Enum.TryParse(cat, out MyItemRole enumOut))
+                    {
                         temp.Add(enumOut);
+                    }
                 }
 
                 return temp;
@@ -75,7 +77,9 @@ namespace LlamaLibrary.Helpers
                 foreach (var cat in Parameters)
                 {
                     if (Enum.TryParse(cat, out ItemUiCategory enumOut))
+                    {
                         temp.Add(enumOut);
+                    }
                 }
 
                 return temp;
@@ -139,13 +143,7 @@ namespace LlamaLibrary.Helpers
             Parameters = conditional.Parameters;
         }
 
-        private List<uint> Ids
-        {
-            get
-            {
-                return Parameters.Select(cat => (uint)int.Parse(cat)).ToList();
-            }
-        }
+        private List<uint> Ids => Parameters.Select(cat => (uint)int.Parse(cat)).ToList();
 
         public override IEnumerable<BagSlot> CheckCondition(IEnumerable<BagSlot> slots)
         {

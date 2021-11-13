@@ -33,19 +33,50 @@ namespace LlamaLibrary.Helpers
             (InventoryBagId)0xFA0, (InventoryBagId)0xFA1//, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005
         };
 
-        public static IEnumerable<BagSlot> MainBagsFilledSlots() => InventoryManager.GetBagsByInventoryBagId(MainBags).SelectMany(x => x.FilledSlots);
+        public static IEnumerable<BagSlot> MainBagsFilledSlots()
+        {
+            return InventoryManager.GetBagsByInventoryBagId(MainBags).SelectMany(x => x.FilledSlots);
+        }
 
         private static bool IsJumping => Core.Memory.NoCacheRead<byte>(Offsets.Conditions + Offsets.JumpingCondition) != 0;
 
         private static bool CheckIfBusy(bool leaveDuty, bool stopFishing, bool dismount)
         {
-            if (stopFishing && FishingManager.State != FishingState.None) return true;
-            if (leaveDuty && DutyManager.InInstance) return true;
-            if (dismount && Core.Me.IsMounted) return true;
-            if (CraftingLog.IsOpen) return true;
-            if (CraftingManager.IsCrafting) return true;
-            if (MovementManager.IsOccupied) return true;
-            if (InSmallTalk) return true;
+            if (stopFishing && FishingManager.State != FishingState.None)
+            {
+                return true;
+            }
+
+            if (leaveDuty && DutyManager.InInstance)
+            {
+                return true;
+            }
+
+            if (dismount && Core.Me.IsMounted)
+            {
+                return true;
+            }
+
+            if (CraftingLog.IsOpen)
+            {
+                return true;
+            }
+
+            if (CraftingManager.IsCrafting)
+            {
+                return true;
+            }
+
+            if (MovementManager.IsOccupied)
+            {
+                return true;
+            }
+
+            if (InSmallTalk)
+            {
+                return true;
+            }
+
             return false;
         }
 
@@ -53,7 +84,10 @@ namespace LlamaLibrary.Helpers
         {
             for (var tryStep = 1; tryStep < 6; tryStep++)
             {
-                if (!CheckIfBusy(leaveDuty, stopFishing, dismount)) break;
+                if (!CheckIfBusy(leaveDuty, stopFishing, dismount))
+                {
+                    break;
+                }
 
                 Log($"We're occupied. Trying to exit out. Attempt #{tryStep}");
 
@@ -143,11 +177,26 @@ namespace LlamaLibrary.Helpers
                 {
                     if (!await WindowEscapeSpam("SelectString"))
                     {
-                        if (SelectString.Lines().Contains("Cancel")) SelectString.ClickLineContains("Cancel");
-                        else if (SelectString.Lines().Contains("Quit")) SelectString.ClickLineContains("Quit");
-                        else if (SelectString.Lines().Contains("Exit")) SelectString.ClickLineContains("Exit");
-                        else if (SelectString.Lines().Contains("Nothing")) SelectString.ClickLineContains("Nothing");
-                        else SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
+                        if (SelectString.Lines().Contains("Cancel"))
+                        {
+                            SelectString.ClickLineContains("Cancel");
+                        }
+                        else if (SelectString.Lines().Contains("Quit"))
+                        {
+                            SelectString.ClickLineContains("Quit");
+                        }
+                        else if (SelectString.Lines().Contains("Exit"))
+                        {
+                            SelectString.ClickLineContains("Exit");
+                        }
+                        else if (SelectString.Lines().Contains("Nothing"))
+                        {
+                            SelectString.ClickLineContains("Nothing");
+                        }
+                        else
+                        {
+                            SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
+                        }
                     }
                 }
 
@@ -155,18 +204,37 @@ namespace LlamaLibrary.Helpers
                 {
                     if (!await WindowEscapeSpam("SelectIconString"))
                     {
-                        if (SelectIconString.Lines().Contains("Cancel")) SelectString.ClickLineContains("Cancel");
-                        else if (SelectIconString.Lines().Contains("Quit")) SelectString.ClickLineContains("Quit");
-                        else if (SelectIconString.Lines().Contains("Exit")) SelectString.ClickLineContains("Exit");
-                        else if (SelectIconString.Lines().Contains("Nothing")) SelectString.ClickLineContains("Nothing");
-                        else SelectIconString.ClickSlot((uint)(SelectIconString.LineCount - 1));
+                        if (SelectIconString.Lines().Contains("Cancel"))
+                        {
+                            SelectString.ClickLineContains("Cancel");
+                        }
+                        else if (SelectIconString.Lines().Contains("Quit"))
+                        {
+                            SelectString.ClickLineContains("Quit");
+                        }
+                        else if (SelectIconString.Lines().Contains("Exit"))
+                        {
+                            SelectString.ClickLineContains("Exit");
+                        }
+                        else if (SelectIconString.Lines().Contains("Nothing"))
+                        {
+                            SelectString.ClickLineContains("Nothing");
+                        }
+                        else
+                        {
+                            SelectIconString.ClickSlot((uint)(SelectIconString.LineCount - 1));
+                        }
                     }
                 }
 
                 while (QuestLogManager.InCutscene)
                 {
                     AgentCutScene.Instance.PromptSkip();
-                    if (AgentCutScene.Instance.CanSkip && SelectString.IsOpen) SelectString.ClickSlot(0);
+                    if (AgentCutScene.Instance.CanSkip && SelectString.IsOpen)
+                    {
+                        SelectString.ClickSlot(0);
+                    }
+
                     await Coroutine.Yield();
                 }
 
@@ -195,7 +263,7 @@ namespace LlamaLibrary.Helpers
 
                 if (RaptureAtkUnitManager.GetWindowByName(windowName) != null)
                 {
-                    RaptureAtkUnitManager.GetWindowByName(windowName).SendAction(1, 3UL, (ulong)uint.MaxValue);
+                    RaptureAtkUnitManager.GetWindowByName(windowName).SendAction(1, 3UL, uint.MaxValue);
                 }
 
                 await Coroutine.Wait(300, () => RaptureAtkUnitManager.GetWindowByName(windowName) == null);
@@ -215,22 +283,26 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Wait(5000, () => Character.Instance.IsOpen);
             }
 
-            int armoryCount = 0;
+            var armoryCount = 0;
 
             if (useRecommendEquip)
             {
                 foreach (var bagSlot in InventoryManager.EquippedItems)
                 {
-                    if (!bagSlot.IsValid) continue;
+                    if (!bagSlot.IsValid)
+                    {
+                        continue;
+                    }
+
                     if (bagSlot.Slot == 0 && !bagSlot.IsFilled)
                     {
                         Log("MainHand slot isn't filled. How?");
                         continue;
                     }
 
-                    float itemWeight = bagSlot.IsFilled ? ItemWeight.GetItemWeight(bagSlot.Item) : -1;
+                    var itemWeight = bagSlot.IsFilled ? ItemWeight.GetItemWeight(bagSlot.Item) : -1;
 
-                    BagSlot betterItem = InventoryManager.FilledArmorySlots
+                    var betterItem = InventoryManager.FilledArmorySlots
                         .Where(bs =>
                                    GetEquipUiCategory(bagSlot.Slot).Contains(bs.Item.EquipmentCatagory) &&
                                    bs.Item.IsValidForCurrentClass &&
@@ -239,13 +311,21 @@ namespace LlamaLibrary.Helpers
                         .OrderByDescending(r => ItemWeight.GetItemWeight(r.Item))
                         .FirstOrDefault();
 
-                    if (betterItem == null || !betterItem.IsValid || !betterItem.IsFilled || betterItem == bagSlot || itemWeight >= ItemWeight.GetItemWeight(betterItem.Item)) continue;
+                    if (betterItem == null || !betterItem.IsValid || !betterItem.IsFilled || betterItem == bagSlot || itemWeight >= ItemWeight.GetItemWeight(betterItem.Item))
+                    {
+                        continue;
+                    }
+
                     armoryCount++;
                 }
 
                 if (armoryCount > 1)
                 {
-                    if (!RecommendEquip.Instance.IsOpen) AgentRecommendEquip.Instance.Toggle();
+                    if (!RecommendEquip.Instance.IsOpen)
+                    {
+                        AgentRecommendEquip.Instance.Toggle();
+                    }
+
                     await Coroutine.Wait(3500, () => RecommendEquip.Instance.IsOpen);
                     RecommendEquip.Instance.Confirm();
                     await Coroutine.Sleep(800);
@@ -254,16 +334,20 @@ namespace LlamaLibrary.Helpers
 
             foreach (var bagSlot in InventoryManager.EquippedItems)
             {
-                if (!bagSlot.IsValid) continue;
+                if (!bagSlot.IsValid)
+                {
+                    continue;
+                }
+
                 if (bagSlot.Slot == 0 && !bagSlot.IsFilled)
                 {
                     Log("MainHand slot isn't filled. How?");
                     continue;
                 }
 
-                float itemWeight = bagSlot.IsFilled ? ItemWeight.GetItemWeight(bagSlot.Item) : -1;
+                var itemWeight = bagSlot.IsFilled ? ItemWeight.GetItemWeight(bagSlot.Item) : -1;
 
-                BagSlot betterItem = InventoryManager.FilledInventoryAndArmory
+                var betterItem = InventoryManager.FilledInventoryAndArmory
                     .Where(bs =>
                                GetEquipUiCategory(bagSlot.Slot).Contains(bs.Item.EquipmentCatagory) &&
                                bs.Item.IsValidForCurrentClass &&
@@ -276,10 +360,13 @@ namespace LlamaLibrary.Helpers
                 if (betterItem != null) Log($"{betterItem.Name}");
                 else Log("Betteritem was null.");
                 */
-                if (betterItem == null || !betterItem.IsValid || !betterItem.IsFilled || betterItem == bagSlot || itemWeight >= ItemWeight.GetItemWeight(betterItem.Item)) continue;
+                if (betterItem == null || !betterItem.IsValid || !betterItem.IsFilled || betterItem == bagSlot || itemWeight >= ItemWeight.GetItemWeight(betterItem.Item))
+                {
+                    continue;
+                }
 
                 Log(bagSlot.IsFilled ? $"Equipping {betterItem.Name} over {bagSlot.Name}." : $"Equipping {betterItem.Name}.");
-                Item currentItem = bagSlot.Item;
+                var currentItem = bagSlot.Item;
                 betterItem.Move(bagSlot);
                 await Coroutine.Wait(3000, () => bagSlot.Item != currentItem);
                 if (bagSlot.Item == currentItem)
@@ -293,13 +380,20 @@ namespace LlamaLibrary.Helpers
 
             if (useRecommendEquip)
             {
-                if (!RecommendEquip.Instance.IsOpen) AgentRecommendEquip.Instance.Toggle();
+                if (!RecommendEquip.Instance.IsOpen)
+                {
+                    AgentRecommendEquip.Instance.Toggle();
+                }
+
                 await Coroutine.Wait(3500, () => RecommendEquip.Instance.IsOpen);
                 RecommendEquip.Instance.Confirm();
                 await Coroutine.Sleep(800);
             }
 
-            if (updateGearSet) await UpdateGearSet();
+            if (updateGearSet)
+            {
+                await UpdateGearSet();
+            }
 
             Character.Instance.Close();
         }
@@ -317,7 +411,10 @@ namespace LlamaLibrary.Helpers
                 }
             }
 
-            if (!Character.Instance.IsOpen) return false;
+            if (!Character.Instance.IsOpen)
+            {
+                return false;
+            }
 
             if (!await Coroutine.Wait(1200, () => Character.Instance.CanUpdateGearSet()))
             {
@@ -342,9 +439,15 @@ namespace LlamaLibrary.Helpers
             }
 
             await Coroutine.Wait(10000, () => !SelectYesno.IsOpen);
-            if (SelectYesno.IsOpen) return true;
+            if (SelectYesno.IsOpen)
+            {
+                return true;
+            }
 
-            if (Character.Instance.IsOpen) Character.Instance.Close();
+            if (Character.Instance.IsOpen)
+            {
+                Character.Instance.Close();
+            }
 
             return true;
         }
@@ -398,7 +501,7 @@ namespace LlamaLibrary.Helpers
                 return;
             }
 
-            List<BagSlot> bagSlots = items.ToList();
+            var bagSlots = items.ToList();
             if (!bagSlots.Any())
             {
                 Log("No items found to sell.");
@@ -421,14 +524,18 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Wait(3000, () => RetainerTasks.IsOpen);
                 RetainerTasks.CloseTasks();
                 await Coroutine.Wait(3000, () => Talk.DialogOpen);
-                if (Talk.DialogOpen) Talk.Next();
+                if (Talk.DialogOpen)
+                {
+                    Talk.Next();
+                }
+
                 await Coroutine.Wait(3000, () => RetainerList.Instance.IsOpen);
                 await RetainerRoutine.CloseRetainers();
                 return;
             }
 
-            int itemCount = bagSlots.Count;
-            int i = 1;
+            var itemCount = bagSlots.Count;
+            var i = 1;
             foreach (var bagSlot in bagSlots)
             {
                 if (!bagSlot.IsValid || !bagSlot.IsFilled)
@@ -438,17 +545,29 @@ namespace LlamaLibrary.Helpers
                     continue;
                 }
 
-                string name = bagSlot.Name;
+                var name = bagSlot.Name;
                 Log($"Attempting to sell #{i++} of {itemCount}: {name}");
-                int waitTime = 600;
+                var waitTime = 600;
 
                 bagSlot.RetainerSellItem();
 
-                if (await Coroutine.Wait(500, () => SelectYesno.IsOpen)) SelectYesno.ClickYes();
-                else waitTime -= 500;
+                if (await Coroutine.Wait(500, () => SelectYesno.IsOpen))
+                {
+                    SelectYesno.ClickYes();
+                }
+                else
+                {
+                    waitTime -= 500;
+                }
 
-                if (!await Coroutine.Wait(5000, () => !bagSlot.IsValid || !bagSlot.IsFilled)) Log($"We couldn't sell {name}.");
-                else Log($"Sold {name}.");
+                if (!await Coroutine.Wait(5000, () => !bagSlot.IsValid || !bagSlot.IsFilled))
+                {
+                    Log($"We couldn't sell {name}.");
+                }
+                else
+                {
+                    Log($"Sold {name}.");
+                }
 
                 await Coroutine.Sleep(waitTime);
             }
@@ -459,7 +578,11 @@ namespace LlamaLibrary.Helpers
             await Coroutine.Wait(3000, () => SelectYesno.IsOpen);
             SelectYesno.ClickYes();
             await Coroutine.Wait(3000, () => Talk.DialogOpen);
-            if (Talk.DialogOpen) Talk.Next();
+            if (Talk.DialogOpen)
+            {
+                Talk.Next();
+            }
+
             await Coroutine.Wait(3000, () => RetainerList.Instance.IsOpen);
             await RetainerRoutine.CloseRetainers();
         }
@@ -486,9 +609,15 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Wait(3000, () => RetainerList.Instance.IsOpen);
             }
 
-            if (!exitList) return RetainerList.Instance.IsOpen;
+            if (!exitList)
+            {
+                return RetainerList.Instance.IsOpen;
+            }
 
-            if (!RetainerList.Instance.IsOpen) return true;
+            if (!RetainerList.Instance.IsOpen)
+            {
+                return true;
+            }
 
             await RetainerRoutine.CloseRetainers();
             await Coroutine.Wait(3000, () => !RetainerList.Instance.IsOpen);
@@ -513,13 +642,14 @@ namespace LlamaLibrary.Helpers
                     {
                         Core.Memory.CallInjected64<IntPtr>(
                             repairWindow,
-                                                           new object[4]
-                                                           {
-                                                               ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
-                                                               0,
-                                                               0,
-                                                               repairVendor
-                                                           });
+                            new object[4]
+                            {
+                                ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
+                                0,
+                                0,
+                                repairVendor
+                            }
+                        );
                     }
 
                     await Coroutine.Wait(1500, () => Repair.IsOpen);
@@ -538,23 +668,27 @@ namespace LlamaLibrary.Helpers
 
         public static int GetGearSetiLvl(GearSet gs)
         {
-            List<ushort> gear = gs.Gear.Select(i => i.Item.ItemLevel).Where(x => x > 0).ToList();
-            if (!gear.Any()) return 0;
-            return (int)gear.Sum(i => i) / gear.Count;
+            var gear = gs.Gear.Select(i => i.Item.ItemLevel).Where(x => x > 0).ToList();
+            if (!gear.Any())
+            {
+                return 0;
+            }
+
+            return gear.Sum(i => i) / gear.Count;
         }
 
         public static async Task GoHome()
         {
-            uint[] privateHousing = new uint[] { 59, 60, 61, 97 };
-            uint[] FCHousing = new uint[] { 56, 57, 58, 96 };
+            var privateHousing = new uint[] { 59, 60, 61, 97 };
+            var FCHousing = new uint[] { 56, 57, 58, 96 };
 
             var AE = WorldManager.AvailableLocations;
 
             var PrivateHouses = AE.Where(x => privateHousing.Contains(x.AetheryteId)).OrderBy(x => x.GilCost);
             var FCHouses = AE.Where(x => FCHousing.Contains(x.AetheryteId)).OrderBy(x => x.GilCost);
 
-            bool HavePrivateHousing = PrivateHouses.Any();
-            bool HaveFCHousing = FCHouses.Any();
+            var HavePrivateHousing = PrivateHouses.Any();
+            var HaveFCHousing = FCHouses.Any();
 
             Log($"Private House Access: {HavePrivateHousing} FC House Access: {HaveFCHousing}");
 
@@ -646,7 +780,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task TurninOddlyDelicate()
         {
-            Dictionary<uint, CraftingRelicTurnin> TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
+            var TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
             {
                 // BaseItemID, Tab, Index, Mini Collectability, RewardItemID
                 { 31750, new CraftingRelicTurnin(31750, 0, 0, 2500, 31736) }, //Carpenter Oddly Delicate Pine Lumber --> Oddly Delicate Saw Part
@@ -721,7 +855,11 @@ namespace LlamaLibrary.Helpers
                     // Log("Window open");
                     foreach (var item in collectables)
                     {
-                        if (!TurnItemList.Keys.Contains(item)) continue;
+                        if (!TurnItemList.Keys.Contains(item))
+                        {
+                            continue;
+                        }
+
                         Log($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
                         var turnin = TurnItemList[item];
 
@@ -732,7 +870,7 @@ namespace LlamaLibrary.Helpers
                         //  Log($"Pressing position {turnin.Position}");
                         CollectablesShop.Instance.SelectItem(turnin.Position);
                         await Coroutine.Sleep(1000);
-                        int i = 0;
+                        var i = 0;
                         while (CollectablesShop.Instance.TurninCount > 0)
                         {
                             // Log($"Pressing trade {i}");
@@ -750,7 +888,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task TurninResplendentCrafting()
         {
-            Dictionary<uint, CraftingRelicTurnin> TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
+            var TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
             {
                 { 33162, new CraftingRelicTurnin(33162, 0, 2, 6300, 33194) },
                 { 33163, new CraftingRelicTurnin(33163, 1, 2, 6300, 33195) },
@@ -830,7 +968,11 @@ namespace LlamaLibrary.Helpers
                     // Log("Window open");
                     foreach (var item in collectables)
                     {
-                        if (!TurnItemList.Keys.Contains(item)) continue;
+                        if (!TurnItemList.Keys.Contains(item))
+                        {
+                            continue;
+                        }
+
                         Log($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
                         var turnin = TurnItemList[item];
 
@@ -841,7 +983,7 @@ namespace LlamaLibrary.Helpers
                         //  Log($"Pressing position {turnin.Position}");
                         CollectablesShop.Instance.SelectItem(turnin.Position);
                         await Coroutine.Sleep(1000);
-                        int i = 0;
+                        var i = 0;
                         while (CollectablesShop.Instance.TurninCount > 0)
                         {
                             // Log($"Pressing trade {i}");

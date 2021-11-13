@@ -21,7 +21,9 @@ namespace LlamaLibrary.RemoteWindows
             set
             {
                 if (WindowByName != null && ___Elements()[45].TrimmedData != value)
+                {
                     SendAction(2, 1, 2, 1, (ulong)value);
+                }
             }
         }
 

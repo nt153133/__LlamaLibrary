@@ -66,7 +66,10 @@ namespace Ff14bot.NeoProfiles
             get
             {
                 if (IsQuestComplete)
+                {
                     return true;
+                }
+
                 return IsStepComplete;
             }
         }
@@ -104,16 +107,23 @@ namespace Ff14bot.NeoProfiles
             if (RewardSlot == -1)
             {
                 if (QuestId > 65535)
+                {
                     DataManager.QuestCache.TryGetValue((uint)QuestId, out _questdata);
+                }
                 else
+                {
                     DataManager.QuestCache.TryGetValue((ushort)QuestId, out _questdata);
+                }
 
                 if (_questdata != null && _questdata.Rewards.Any())
                 {
-                    var values = _questdata.Rewards.Select(r => new score(r)).OrderByDescending(r => r.Value).ToArray();
+                    var values = _questdata.Rewards.Select(r => new Score(r)).OrderByDescending(r => r.Value).ToArray();
 
                     //If everything is valued the same cause its items that are not equipment most likely
-                    if (values.Select(r => r.Value).Distinct().Count() == 1) values = values.OrderByDescending(r => r.Reward.Worth).ToArray();
+                    if (values.Select(r => r.Value).Distinct().Count() == 1)
+                    {
+                        values = values.OrderByDescending(r => r.Reward.Worth).ToArray();
+                    }
 
                     //Now in heavensward the rewardlist doesnt start at 0 for some reason
                     RewardSlot = _questdata.Rewards.IndexOf(values[0].Reward) + 5;
@@ -130,11 +140,17 @@ namespace Ff14bot.NeoProfiles
 
             if (RequiresHq == null)
             {
-                if (ItemIds != null) RequiresHq = new bool[ItemIds.Length];
+                if (ItemIds != null)
+                {
+                    RequiresHq = new bool[ItemIds.Length];
+                }
             }
             else
             {
-                if (RequiresHq.Length != ItemIds.Length) LogError("RequiresHq must have the same number of items as ItemIds");
+                if (RequiresHq.Length != ItemIds.Length)
+                {
+                    LogError("RequiresHq must have the same number of items as ItemIds");
+                }
             }
 
             Log("Turning in quest {0}({1}) from {2} at {3}", QuestName, QuestId, _questGiver, Position);
@@ -169,9 +185,13 @@ namespace Ff14bot.NeoProfiles
                     new Action(r =>
                     {
                         if (_selectStringIndex.Count > 0)
+                        {
                             SelectString.ClickSlot((uint)_selectStringIndex.Dequeue());
+                        }
                         else
+                        {
                             SelectString.ClickSlot(0);
+                        }
                     })
                 ),
                 new Decorator(r => SelectString.IsOpen, new Action(r =>
@@ -197,16 +217,24 @@ namespace Ff14bot.NeoProfiles
                     {
                         BagSlot item;
                         if (RequiresHq[i])
+                        {
                             item = items.FirstOrDefault(z => z.RawItemId == ItemIds[i] && z.IsHighQuality && !_usedSlots.Contains(z));
+                        }
                         else
+                        {
                             item = items.FirstOrDefault(z => z.RawItemId == ItemIds[i] && !_usedSlots.Contains(z));
+                        }
 
                         if (item == null)
                         {
                             if (RequiresHq[i])
+                            {
                                 LogError("We don't have any high quality items with an id of {0}", ItemIds[i]);
+                            }
                             else
+                            {
                                 LogError("We don't have any items with an id of {0}", ItemIds[i]);
+                            }
                         }
                         else
                         {
@@ -244,9 +272,9 @@ namespace Ff14bot.NeoProfiles
             base.OnDone();
         }
 
-        private struct score
+        private struct Score
         {
-            public score(Reward reward)
+            public Score(Reward reward)
             {
                 Reward = reward;
                 Value = ItemWeightsManager.GetItemWeight(reward);

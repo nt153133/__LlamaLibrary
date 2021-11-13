@@ -14,7 +14,6 @@ using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Memory;
-
 using TreeSharp;
 using Action = TreeSharp.Action;
 
@@ -46,7 +45,10 @@ namespace LlamaLibrary.AutoTrade
         public override void OnButtonPress()
         {
             if (_settings == null || _settings.IsDisposed)
+            {
                 _settings = new AutoTradeSettings();
+            }
+
             try
             {
                 _settings.Show();
@@ -57,11 +59,7 @@ namespace LlamaLibrary.AutoTrade
             }
         }
 
-        private Composite TradeAcceptBehavior
-        {
-            get
-            {
-                return new PrioritySelector(
+        private Composite TradeAcceptBehavior => new PrioritySelector(
                     new Decorator(
                         r => Trade.IsOpen,
                         new PrioritySelector(
@@ -84,8 +82,6 @@ namespace LlamaLibrary.AutoTrade
                         )
                     )
                 );
-            }
-        }
 
         public override void Start()
         {
@@ -103,7 +99,7 @@ namespace LlamaLibrary.AutoTrade
         private async Task<bool> Run()
         {
             TradeQueue.Clear();
-            BattleCharacter target = GameObjectManager.Target as BattleCharacter;
+            var target = GameObjectManager.Target as BattleCharacter;
 
             if (target == null)
             {
@@ -172,7 +168,7 @@ namespace LlamaLibrary.AutoTrade
         private static async Task TradeItems(Queue<QueuedTradeItem> tradeQueue, BattleCharacter target)
         {
             failedTradeCount = 0;
-            int gilToTrade = AutoTradeSettings.GilToTrade;
+            var gilToTrade = AutoTradeSettings.GilToTrade;
             if (gilToTrade > 0)
             {
                 LogSuccess($"We want to trade a total of {gilToTrade:N0} gil.");
@@ -187,7 +183,7 @@ namespace LlamaLibrary.AutoTrade
                     break;
                 }
 
-                int result = target.OpenTradeWindow();
+                var result = target.OpenTradeWindow();
 
                 if (result != 0)
                 {
@@ -208,8 +204,8 @@ namespace LlamaLibrary.AutoTrade
 
                 LogSuccess("Trading window opened.");
 
-                int gilAmount = 0;
-                int currentGil = AutoTradeSettings.CurrentGil;
+                var gilAmount = 0;
+                var currentGil = AutoTradeSettings.CurrentGil;
 
                 if (gilToTrade > 0)
                 {
@@ -223,16 +219,16 @@ namespace LlamaLibrary.AutoTrade
                 if (tradeQueue.Any())
                 {
                     WatchedBagSlots.Clear();
-                    List<MarkedBagSlot> markedBagSlots = AutoTradeSettings.MainBagsFilledSlots
+                    var markedBagSlots = AutoTradeSettings.MainBagsFilledSlots
                         .Where(x => x.CanTrade() && AutoTradeSettings.ItemsToTrade.Any(y => y.TrueItemId == x.TrueItemId))
                         .Select(x => new MarkedBagSlot(x))
                         .ToList();
 
-                    for (int i = 0; i < 5 && tradeQueue.Any(); i++)
+                    for (var i = 0; i < 5 && tradeQueue.Any(); i++)
                     {
-                        QueuedTradeItem itemToTrade = tradeQueue.Dequeue();
+                        var itemToTrade = tradeQueue.Dequeue();
 
-                        MarkedBagSlot itemSlot = markedBagSlots
+                        var itemSlot = markedBagSlots
                             .Where(x => x.BagSlot.TrueItemId == itemToTrade.TrueItemId && !x.BeingTraded)
                             .OrderByDescending(x => x.BagSlot.Count)
                             .FirstOrDefault();
@@ -265,7 +261,11 @@ namespace LlamaLibrary.AutoTrade
                 }
 
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
-                if (SelectYesno.IsOpen) SelectYesno.Yes();
+                if (SelectYesno.IsOpen)
+                {
+                    SelectYesno.Yes();
+                }
+
                 await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
                 await Coroutine.Wait(30000, () => Trade.TradeStage == 1);
                 if (Trade.TradeStage == 6)
@@ -312,13 +312,19 @@ namespace LlamaLibrary.AutoTrade
 
         private static bool WatchedSlotsUnchanged(IReadOnlyCollection<WatchedBagSlot> watchedSlots)
         {
-            if (!watchedSlots.Any()) return false;
+            if (!watchedSlots.Any())
+            {
+                return false;
+            }
 
             using (Core.Memory.TemporaryCacheState(false))
             {
-                foreach (WatchedBagSlot toCheck in watchedSlots.Where(toCheck => toCheck.BagSlot != null && toCheck.BagSlot.IsFilled && toCheck.TrueItemId == toCheck.BagSlot.TrueItemId))
+                foreach (var toCheck in watchedSlots.Where(toCheck => toCheck.BagSlot != null && toCheck.BagSlot.IsFilled && toCheck.TrueItemId == toCheck.BagSlot.TrueItemId))
                 {
-                    if (toCheck.Count == toCheck.BagSlot.Count) return true;
+                    if (toCheck.Count == toCheck.BagSlot.Count)
+                    {
+                        return true;
+                    }
                 }
             }
 
@@ -327,26 +333,34 @@ namespace LlamaLibrary.AutoTrade
 
         private static async Task QueueTradeItems(IEnumerable<ItemToTrade> itemsToQueue)
         {
-            foreach (ItemToTrade item in itemsToQueue)
+            foreach (var item in itemsToQueue)
             {
-                List<BagSlot> inventoryItems = AutoTradeSettings.MainBagsFilledSlots.Where(i => i.TrueItemId == item.TrueItemId && i.CanTrade()).ToList();
-                if (!inventoryItems.Any()) continue;
+                var inventoryItems = AutoTradeSettings.MainBagsFilledSlots.Where(i => i.TrueItemId == item.TrueItemId && i.CanTrade()).ToList();
+                if (!inventoryItems.Any())
+                {
+                    continue;
+                }
+
                 if (inventoryItems.Count > inventoryItems.Count(x => x.Count >= x.Item.StackSize))
                 {
                     await CombineStacks(item.TrueItemId);
                     await CombineStacks(item.TrueItemId);
                 }
 
-                int quotient = Math.DivRem(item.QtyToTrade, item.StackSize, out int remainder);
+                var quotient = Math.DivRem(item.QtyToTrade, item.StackSize, out var remainder);
                 if (quotient > 0)
                 {
-                    for (int i = 0; i < quotient; i++)
+                    for (var i = 0; i < quotient; i++)
                     {
                         TradeQueue.Enqueue(new QueuedTradeItem(item, item.StackSize));
                     }
                 }
 
-                if (remainder > 0) TradeQueue.Enqueue(new QueuedTradeItem(item, remainder));
+                if (remainder > 0)
+                {
+                    TradeQueue.Enqueue(new QueuedTradeItem(item, remainder));
+                }
+
                 LogSuccess($"Queued x{item.QtyToTrade} {item.ItemName} to trade.");
             }
         }

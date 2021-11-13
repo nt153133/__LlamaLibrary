@@ -17,16 +17,16 @@ namespace LlamaLibrary.RetainerItemFinder
 
         public StoredRetainerInventory(IntPtr pointer)
         {
-            IntPtr position = pointer;
+            var position = pointer;
             EquippedItems = new List<uint>(Core.Memory.ReadArray<uint>(position, 14).Where(i => i != 0));
-            position = position + (14 * sizeof(uint));
+            position += 14 * sizeof(uint);
             var itemIds = Core.Memory.ReadArray<uint>(position, 175);
-            position = position + (175 * sizeof(uint));
+            position += 175 * sizeof(uint);
             var qtys = Core.Memory.ReadArray<ushort>(position, 175);
-            position = position + (175 * sizeof(ushort));
+            position += 175 * sizeof(ushort);
             var crystalQtys = Core.Memory.ReadArray<ushort>(position, 18);
 
-            for (int i = 0; i < 18; i++)
+            for (var i = 0; i < 18; i++)
             {
                 if (crystalQtys[i] == 0)
                 {
@@ -37,7 +37,7 @@ namespace LlamaLibrary.RetainerItemFinder
                 SlotCount.Add((uint)(i + 2), 1);
             }
 
-            for (int i = 0; i < 175; i++)
+            for (var i = 0; i < 175; i++)
             {
                 if (itemIds[i] == 0)
                 {

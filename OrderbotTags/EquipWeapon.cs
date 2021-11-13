@@ -46,11 +46,15 @@ namespace LlamaLibrary.OrderbotTags
                 var itemRole = DataManager.GetItem((uint)weapon).ItemRole;
                 var EquipSlot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.EquippedItems)[EquipmentSlot.MainHand];
                 if (itemRole == ItemRole.Shield)
+                {
                     EquipSlot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.EquippedItems)[EquipmentSlot.OffHand];
+                }
 
                 var item1 = InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint)weapon);
                 if (item1 != default(BagSlot))
+                {
                     item1.Move(EquipSlot);
+                }
             }
 
             _isDone = true;

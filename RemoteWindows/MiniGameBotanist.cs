@@ -43,12 +43,18 @@ namespace LlamaLibrary.RemoteWindows
             {
                 var data = Core.Memory.ReadString((IntPtr)___Elements()[15].Data, Encoding.UTF8);
 
-                if (!_timeRegex.IsMatch(data)) return 0;
+                if (!_timeRegex.IsMatch(data))
+                {
+                    return 0;
+                }
 
                 var sec = int.Parse(_timeRegex.Match(data).Groups[2].Value.Trim());
                 var min = int.Parse(_timeRegex.Match(data).Groups[1].Value.Trim());
 
-                if (min > 0) return 60 + sec;
+                if (min > 0)
+                {
+                    return 60 + sec;
+                }
 
                 return sec;
             }

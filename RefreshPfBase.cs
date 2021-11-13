@@ -41,7 +41,7 @@ namespace LlamaLibrary
 
         public override void Start()
         {
-            agentId = getAgent();
+            agentId = GetAgent();
             _root = new ActionRunCoroutine(r => Run());
         }
 
@@ -55,70 +55,74 @@ namespace LlamaLibrary
                 case PlayerIcon.Trial_Adventurer:
                 case PlayerIcon.New_Adventurer:
                 case PlayerIcon.None:
+                {
+                    if (PfWindow == null)
                     {
-                        if (PfWindow == null)
+                        AgentModule.ToggleAgentInterfaceById(agentId);
+                        await Coroutine.Wait(5000, () => PfWindow != null);
+
+                        if (PfWindow != null)
                         {
-                            AgentModule.ToggleAgentInterfaceById(agentId);
-                            await Coroutine.Wait(5000, () => PfWindow != null);
+                            PfWindow.SendAction(1, 3, 0xE);
+                            await Coroutine.Wait(5000, () => PfConditionWindow != null);
 
-                            if (PfWindow != null)
+                            if (PfConditionWindow != null)
                             {
-                                PfWindow.SendAction(1, 3, 0xE);
-                                await Coroutine.Wait(5000, () => PfConditionWindow != null);
-
-                                if (PfConditionWindow != null)
+                                var elements = ___Elements(PfConditionWindow);
+                                var data = Core.Memory.ReadString((IntPtr)elements[184].Data, Encoding.UTF8);
+                                if (data != "")
                                 {
-                                    var elements = ___Elements(PfConditionWindow);
-                                    var data = Core.Memory.ReadString((IntPtr)elements[184].Data, Encoding.UTF8);
-                                    if (data != "")
+                                    PfConditionWindow.SendAction(1, 3, 0x0);
+                                    Log("Registering PF");
+                                    await Coroutine.Sleep(2000);
+                                    await Coroutine.Wait(5000, () => PfConditionWindow == null);
+                                    if (PfWindow != null)
                                     {
-                                        PfConditionWindow.SendAction(1, 3, 0x0);
-                                        Log("Registering PF");
-                                        await Coroutine.Sleep(2000);
-                                        await Coroutine.Wait(5000, () => PfConditionWindow == null);
-                                        if (PfWindow != null)
-                                        {
-                                            Log("Closing PF window");
-                                            PfWindow.SendAction(1, 3, uint.MaxValue);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Log("No Comment Setup. Quiting");
-                                        TreeRoot.Stop("No Comment Setup");
+                                        Log("Closing PF window");
+                                        PfWindow.SendAction(1, 3, uint.MaxValue);
                                     }
                                 }
                                 else
                                 {
-                                    Log("Condition window didn't open");
-                                    TreeRoot.Stop("Shit Happens");
+                                    Log("No Comment Setup. Quiting");
+                                    TreeRoot.Stop("No Comment Setup");
                                 }
                             }
                             else
                             {
-                                Log("PF window didn't open");
+                                Log("Condition window didn't open");
                                 TreeRoot.Stop("Shit Happens");
                             }
                         }
-
-                        break;
+                        else
+                        {
+                            Log("PF window didn't open");
+                            TreeRoot.Stop("Shit Happens");
+                        }
                     }
+
+                    break;
+                }
             }
 
             return true;
         }
 
-        private int getAgent()
+        private int GetAgent()
         {
             var patternFinder = new PatternFinder(Core.Memory);
-            IntPtr agentVtable = patternFinder.Find("48 8D 05 ? ? ? ? 48 89 51 ? 48 89 01 48 8B F9 48 8D 05 ? ? ? ? 4C 89 79 ? Add 3 TraceRelative");
+            var agentVtable = patternFinder.Find("48 8D 05 ? ? ? ? 48 89 51 ? 48 89 01 48 8B F9 48 8D 05 ? ? ? ? 4C 89 79 ? Add 3 TraceRelative");
 
             return AgentModule.FindAgentIdByVtable(agentVtable);
         }
 
         private static TwoInt[] ___Elements(AtkAddonControl WindowByName)
         {
-            if (WindowByName == null) return null;
+            if (WindowByName == null)
+            {
+                return null;
+            }
+
             var elementCount = ElementCount(WindowByName);
             var addr = Core.Memory.Read<IntPtr>(WindowByName.Pointer + Offset2);
             return Core.Memory.ReadArray<TwoInt>(addr, elementCount);

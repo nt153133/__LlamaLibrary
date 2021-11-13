@@ -133,7 +133,10 @@ namespace LlamaLibrary.OrderbotTags
                 await Coroutine.Sleep(500);
             }
 
-            if (DutyManager.QueueState == QueueState.None) return;
+            if (DutyManager.QueueState == QueueState.None)
+            {
+                return;
+            }
 
             await Coroutine.Sleep(500);
             if (CommonBehaviors.IsLoading)
@@ -149,7 +152,9 @@ namespace LlamaLibrary.OrderbotTags
                     ff14bot.RemoteAgents.AgentCutScene.Instance.PromptSkip();
                     await Coroutine.Wait(250, () => SelectString.IsOpen);
                     if (SelectString.IsOpen)
+                    {
                         SelectString.ClickSlot(0);
+                    }
                 }
             }
 

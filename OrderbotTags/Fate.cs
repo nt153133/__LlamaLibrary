@@ -37,7 +37,6 @@ namespace Ff14bot.NeoProfiles
         private int _min;
         private int _max;
         private int _timeout;
-        private uint localindex = 0;
 
         [XmlAttribute("MaxLevel")]
         public string MaxLevel { get; set; }
@@ -88,7 +87,7 @@ namespace Ff14bot.NeoProfiles
 
         private DateTime saveNow = DateTime.Now;
         private bool hunting = false;
-        public override bool IsDone { get { return _done; } }
+        public override bool IsDone => _done;
 
         //some Statistics
         private FateData currentfate;
@@ -112,7 +111,6 @@ namespace Ff14bot.NeoProfiles
         public static int currentstep = 0;  //currentstep 1 we are in a fate / currentstep 0 we are not in a fate
 
         private static readonly Stopwatch ClusterTimer = Stopwatch.StartNew();
-        private int distance = 2;
         protected Func<bool> condition;
 
         private bool ShouldStop()
@@ -152,12 +150,14 @@ namespace Ff14bot.NeoProfiles
             return new PrioritySelector(
                 new Decorator(
                     ret => ShouldStop(),
-                                                      new Action(r => OnDoneWhile())),
+                    new Action(r => OnDoneWhile())
+                ),
                 new Decorator(
                     ret => DateTime.Now > saveNow + TimeSpan.FromSeconds(_timeout) && currentstep == 0,
-                               new Action(r => OnTimeout())),
+                    new Action(r => OnTimeout())
+                ),
 
-                 // This one will run always kind of a pulse one
+                // This one will run always kind of a pulse one
                 new Sequence(
                     new Action(r => CountDeath()),
                     new Action(r => IsFateStillActive()),
@@ -165,138 +165,135 @@ namespace Ff14bot.NeoProfiles
                     new ActionAlwaysFail() //always fail that the rest of the tree is traveresd
                  ),
 
-                            //Start fighting Fate Mobs but only when we are in close range to the fate position.TBD enhance this filter
-
-                            new Decorator(
+                // Start fighting Fate Mobs but only when we are in close range to the fate position.
+                // TODO: Enhance this filter
+                new Decorator(
                     r => currentfate != null && FateManager.WithinFate && Core.Me.ElementalLevel > 0 && currentfate.MaxLevel < Core.Me.ElementalLevel,
-                              new ActionRunCoroutine(async r =>
-                              {
-                                  Logging.Write("Applying Eureka Level Sync.");
+                    new ActionRunCoroutine(async r =>
+                    {
+                        Logging.Write("Applying Eureka Level Sync.");
 
-                                  ToDoList.LevelSync();
+                        ToDoList.LevelSync();
 
-                                  await Coroutine.Sleep(500);
+                        await Coroutine.Sleep(500);
 
-                                  return false;
-                              })),
+                        return false;
+                    })
+                ),
                 new Decorator(
                     r => currentfate != null && FateManager.WithinFate,
-                              new ActionRunCoroutine(r =>
-                              {
-                                  Logging.Write($"In fate {Core.Me.ElementalLevel} > 0 && {currentfate.MaxLevel} < {Core.Me.ElementalLevel}.");
+                    new ActionRunCoroutine(r =>
+                    {
+                        Logging.Write($"In fate {Core.Me.ElementalLevel} > 0 && {currentfate.MaxLevel} < {Core.Me.ElementalLevel}.");
 
-                                  return Task.FromResult(false);
-                              })),
+                        return Task.FromResult(false);
+                    })
+                ),
                 new Decorator(
                     r => currentfate != null && FateManager.WithinFate && currentfate.MaxLevel < Core.Player.ClassLevel && !Core.Me.IsLevelSynced,
-                              new ActionRunCoroutine(async r =>
-                              {
-                                  Logging.Write("Applying Level Sync.");
+                    new ActionRunCoroutine(async r =>
+                    {
+                        Logging.Write("Applying Level Sync.");
 
-                                  ToDoList.LevelSync();
+                        ToDoList.LevelSync();
 
-                                  await Coroutine.Sleep(500);
+                        await Coroutine.Sleep(500);
 
-                                  return false;
-                              })
-                             ),
-
-
-
+                        return false;
+                    })
+                ),
                 new Decorator(
                       ret => currentstep == 1 && Vector3.Distance(Core.Player.Location, Position) > (currentfate.Radius - 10),
-                      UseFlight ? new ActionRunCoroutine(obj => Lisbeth.TravelToZones(WorldManager.ZoneId, Position)) : new ActionRunCoroutine(obj => LlamaLibrary.Helpers.Navigation.FlightorMove(currentfate))// CommonBehaviors.MoveAndStop(ret => Position, Distance, stopInRange: true, destinationName: "Moving to Fates.")
+                      UseFlight ? new ActionRunCoroutine(obj => Lisbeth.TravelToZones(WorldManager.ZoneId, Position)) : new ActionRunCoroutine(obj => Navigation.FlightorMove(currentfate))
 
-                                                                                                                                                ),
-
-
+                // CommonBehaviors.MoveAndStop(ret => Position, Distance, stopInRange: true, destinationName: "Moving to Fates.")
+                ),
                 new Decorator(
                     r => currentfate != null && FateManager.WithinFate && currentfate.Icon == FateIconType.KillHandIn && currentfate.TimeLeft.Minutes <= 8,
-                     new Sequence(
-                          new Action(r =>
-                         {
-                             Poi.Clear("Handing in items.");
-                             Logging.Write("Hand-in Fate");
-                             var npc = GameObjectManager
-                                    .GetObjectsOfType<BattleCharacter>()
-                                    .Where(
-                                        b => b.IsFate && !b.CanAttack && b.FateId == currentfate.Id);
-                             var q = from s in npc
-                                     group s by s into g
-                                     orderby g.Count() descending
-                                     select g.Key;
-                             if (q.LastOrDefault() == null)
-                             {
-                                 Logging.Write("Could not find handin NPC. Something is wrong.");
-                                 return;
-                             }
+                    new Sequence(
+                        new Action(async r =>
+                        {
+                            Poi.Clear("Handing in items.");
+                            Logging.Write("Hand-in Fate");
 
-                             tempProvider = CombatTargeting.Instance.Provider;
-                             CombatTargeting.Instance.Provider = new NullTargetingProvider();
-                             MoveTo(q.LastOrDefault().Location);
-                             GameObjectManager.GetObjectByNPCId(q.LastOrDefault().NpcId).Interact();
-                             Talk.Next();
-                             InventoryManager.GetBagByInventoryBagId(InventoryBagId.KeyItems).FilledSlots.LastOrDefault().Handover();
-                             Request.HandOver();
-                             CombatTargeting.Instance.Provider = tempProvider;
-                         }),
-                          new ActionAlwaysFail() //always fail that the rest of the tree is traveresd
-                          )),
+                            var fateNpcs = GameObjectManager
+                                .GetObjectsOfType<BattleCharacter>()
+                                .Where(bc => bc.IsFate && !bc.CanAttack && bc.FateId == currentfate.Id)
+                                .GroupBy(bc => bc)
+                                .OrderByDescending(group => group.Count())
+                                .Select(group => group.Key);
 
+                            var handinNpc = fateNpcs.LastOrDefault();
+
+                            if (handinNpc == null)
+                            {
+                                Logging.Write("Could not find handin NPC. Something is wrong.");
+                                return;
+                            }
+
+                            tempProvider = CombatTargeting.Instance.Provider;
+                            CombatTargeting.Instance.Provider = new NullTargetingProvider();
+
+                            await MoveTo(handinNpc.Location);
+
+                            GameObjectManager.GetObjectByNPCId(handinNpc.NpcId).Interact();
+                            Talk.Next();
+                            InventoryManager.GetBagByInventoryBagId(InventoryBagId.KeyItems).FilledSlots.LastOrDefault().Handover();
+                            Request.HandOver();
+
+                            CombatTargeting.Instance.Provider = tempProvider;
+                        }),
+                        new ActionAlwaysFail() //always fail that the rest of the tree is traveresd
+                    )
+                ),
                 new Decorator(
                     ret => Talk.DialogOpen,
-                            new Action(r =>
-                            {
-                                Talk.Next();
-                            })),
+                    new Action(r =>
+                    {
+                        Talk.Next();
+                    })
+                ),
                 new Decorator(
                     ret => Request.IsOpen,
-                            new Action(r =>
-                            {
-                                GameObjectManager.GetObjectByNPCId(npc.NpcId).Interact();
-                                InventoryManager.GetBagByInventoryBagId(InventoryBagId.KeyItems).FilledSlots.LastOrDefault().Handover();
-                                Request.HandOver();
-                            })),
-
-                //Find fates
-
-
-
-
-                new Decorator(
-                    r => currentfate != null && fateid != 0 && Poi.Current.Type != PoiType.Kill,
-                  new ActionRunCoroutine(r =>
+                    new Action(r =>
                     {
-                        MoveToFocusedFate();
-                      return Task.CompletedTask;
+                        GameObjectManager.GetObjectByNPCId(npc.NpcId).Interact();
+                        InventoryManager.GetBagByInventoryBagId(InventoryBagId.KeyItems).FilledSlots.LastOrDefault().Handover();
+                        Request.HandOver();
                     })
-
                 ),
 
-
+                //Find fates
+                new Decorator(
+                    r => currentfate != null && fateid != 0 && Poi.Current.Type != PoiType.Kill,
+                    new ActionRunCoroutine(r =>
+                    {
+                        MoveToFocusedFate();
+                        return Task.CompletedTask;
+                    })
+                ),
                 new Decorator(
                     ret => currentfate == null && currentstep == 0,
-                  new Sequence(
-                  new ActionRunCoroutine(async r =>
-                  {
-                      await getFates();
-                      if (currentfate != null)
+                    new Sequence(
+                        new ActionRunCoroutine(async r =>
                         {
-                            GoFate();
-                        }
-                      else
-                        {
-                            GoHunting();
-                        }
-                  }
-                            )
-            )),
+                            await getFates();
+                            if (currentfate != null)
+                            {
+                                GoFate();
+                            }
+                            else
+                            {
+                                GoHunting();
+                            }
+                        })
+                    )
+                ),
                 new ActionAlwaysSucceed()
             );
         }
 
         // End of B Tree
-
 
         private static async Task<bool> FlyTo(Vector3 destination, bool land = false, bool dismount = false, bool ignoreIndoors = true, float minHeight = 0f)
         {
@@ -331,8 +328,15 @@ namespace Ff14bot.NeoProfiles
                 }
 
                 var parameters = new FlyToParameters(destination) { CheckIndoors = !ignoreIndoors };
-                if (MovementManager.IsDiving) parameters.CheckIndoors = false;
-                if (minHeight > 0) parameters.MinHeight = minHeight;
+                if (MovementManager.IsDiving)
+                {
+                    parameters.CheckIndoors = false;
+                }
+
+                if (minHeight > 0)
+                {
+                    parameters.MinHeight = minHeight;
+                }
 
                 Flightor.MoveTo(parameters);
                 await Coroutine.Yield();
@@ -364,7 +368,7 @@ namespace Ff14bot.NeoProfiles
                     return true;
                 }
 
-                int ticks = 0;
+                var ticks = 0;
                 while (MovementManager.IsMoving && ticks < 100)
                 {
                     MovementManager.MoveStop();
@@ -394,7 +398,7 @@ namespace Ff14bot.NeoProfiles
                 return true;
             }
 
-            int ticks = 0;
+            var ticks = 0;
             if (await CommonTasks.CanLand() == CanLandResult.Yes)
             {
                 while (ticks < 100 && await CommonTasks.Land())
@@ -403,6 +407,7 @@ namespace Ff14bot.NeoProfiles
                     {
                         break;
                     }
+
                     await Coroutine.Sleep(100);
                     ticks++;
                 }
@@ -432,7 +437,7 @@ namespace Ff14bot.NeoProfiles
                 return true;
             }
 
-            int ticks = 0;
+            var ticks = 0;
             while (Core.Me.IsMounted && ticks < 100)
             {
                 ActionManager.Dismount();
@@ -526,7 +531,9 @@ namespace Ff14bot.NeoProfiles
                     }
 
                     if (Poi.Current != null)
+                    {
                         Poi.Current.BattleCharacter.Target();
+                    }
                 }
             }
         }
@@ -539,7 +546,7 @@ namespace Ff14bot.NeoProfiles
 
         private void UpdateFateData()
         {
-            foreach (FateData item in FateManager.ActiveFates)
+            foreach (var item in FateManager.ActiveFates)
             {
                 if (item.Id == fateid)
                 {
@@ -554,8 +561,8 @@ namespace Ff14bot.NeoProfiles
         {
             if (currentstep > 0)
             {
-                int found = 0;
-                foreach (FateData item in FateManager.ActiveFates)
+                var found = 0;
+                foreach (var item in FateManager.ActiveFates)
                 {
                     if (item.Id == fateid)
                     {
@@ -566,7 +573,10 @@ namespace Ff14bot.NeoProfiles
                 if (found == 0)
                 {
                     if (currentfate != null)
+                    {
                         SetLastFate();
+                    }
+
                     currentstep = 0;
                     fateid = 0;
                     currentfate = null;
@@ -602,16 +612,23 @@ namespace Ff14bot.NeoProfiles
                     Logging.Write("Moving using escort fate logic.");
                     Navigator.Stop();
 
-                    Func<bool> isInFront = () => !npc.IsBehind;
+                    bool IsInFront()
+                    {
+                        return !npc.IsBehind;
+                    }
+
                     Logging.Write("M1");
                     await Coroutine.Sleep(500);
                     Logging.Write("M2");
                     MovementManager.MoveForwardStart();
-                    while (npc.IsValid && (Core.Me.Distance(npc) > 1 || !isInFront()))
+                    while (npc.IsValid && (Core.Me.Distance(npc) > 1 || !IsInFront()))
                     {
                         Core.Me.Face(npc);
                         if (!MovementManager.IsMoving)
+                        {
                             MovementManager.MoveForwardStart();
+                        }
+
                         await Coroutine.Sleep(200);
                     }
 
@@ -700,21 +717,24 @@ namespace Ff14bot.NeoProfiles
             {
                 return null;
             }
+
             if (targetArray.Length > 0 && targetArray[0].NpcId == 541)
             {
                 return null;
             }
+
             if (targetArray.Length > 0)
             {
                 return targetArray[0];
             }
+
             return null;  // pick a random target
         }
 
         public List<FateData> MyFilter(List<FateData> List)
         {
-            List<FateData> ReturnList = new List<FateData>();
-            foreach (FateData f in List)
+            var ReturnList = new List<FateData>();
+            foreach (var f in List)
             {
                 if (f.Icon.ToString() == "Boss" && f.Progress > 85)
                 {
@@ -738,7 +758,9 @@ namespace Ff14bot.NeoProfiles
         public async Task<bool> getFates()
         {
             if (SharedFate)
+            {
                 await LlamaLibrary.ScriptConditions.Extras.UpdateSharedFates();
+            }
 
             if (FateIds.Length > 0)
             {
@@ -755,7 +777,7 @@ namespace Ff14bot.NeoProfiles
                 }
             }
 
-            List<FateData> FateCandidates = FateManager.ActiveFates.ToList();
+            var FateCandidates = FateManager.ActiveFates.ToList();
             var FateList = MyFilter(FateCandidates);
 
             currentfate = FateList.OrderBy(fate => Core.Me.Distance(fate.Location)).FirstOrDefault(fate => fate.Level < _max && fate.Level > _min);
@@ -770,7 +792,7 @@ namespace Ff14bot.NeoProfiles
         // check all fates and return the FateData with the given Ids or null
         public FateData IsFateActive(int[] ids)
         {
-            var _fate = FateManager.ActiveFates.Where(fate => ids.Contains((int)fate.Id) && fate.Progress >= ((int)MinProgress)).Take(1);
+            var _fate = FateManager.ActiveFates.Where(fate => ids.Contains((int)fate.Id) && fate.Progress >= MinProgress).Take(1);
             var fateArray = _fate as FateData[] ?? _fate.ToArray();
             if (fateArray.Length > 0)
             {
@@ -783,9 +805,9 @@ namespace Ff14bot.NeoProfiles
         [Obsolete]
         public static async Task<bool> MoveTo(Vector3 location)
         {
-            bool goalReached = false;
+            var goalReached = false;
 
-            float distance = Core.Me.Location.Distance(location);
+            var distance = Core.Me.Location.Distance(location);
             if (distance < 3f)
             {
                 return true;
@@ -864,7 +886,7 @@ namespace Ff14bot.NeoProfiles
         /// <returns> The objects by weight. </returns>
         public List<BattleCharacter> GetObjectsByWeight()
         {
-            BattleCharacter[] allUnits = GameObjectManager.GetObjectsOfType<BattleCharacter>().ToArray();
+            var allUnits = GameObjectManager.GetObjectsOfType<BattleCharacter>().ToArray();
 
             _aggroedBattleCharacters = GameObjectManager.Attackers.ToArray();
             var inCombat = Core.Player.InCombat;
@@ -884,31 +906,47 @@ namespace Ff14bot.NeoProfiles
         private bool IsValidUnit(bool incombat, BattleCharacter unit)
         {
             if (!unit.IsValid || unit.IsDead || !unit.IsVisible || unit.CurrentHealthPercent <= 0)
+            {
                 return false;
+            }
 
             if (IgnoreNpcIds.Contains(unit.NpcId))
+            {
                 return false;
+            }
 
             // Ignore blacklisted mobs if they're in combat with us!
             if (Blacklist.Contains(unit.ObjectId, BlacklistFlags.Combat))
+            {
                 return false;
+            }
 
             var fategone = unit.IsFateGone;
             if (fategone)
+            {
                 return false;
+            }
 
             //Make sure we always return true for units inside our aggro list
             if (_aggroedBattleCharacters.Contains(unit))
+            {
                 return true;
+            }
 
             if (!unit.IsFate)
+            {
                 return false;
+            }
 
             if (!unit.CanAttack)
+            {
                 return false;
+            }
 
             if (Vector3.Distance(unit.Location, LLFate.Position) > 50)
+            {
                 return false;
+            }
 
             return !incombat;
         }
@@ -940,12 +978,14 @@ namespace Ff14bot.NeoProfiles
             //Units that are targeting the player, focus on low health ones so that we can reduce the incoming damage
             if (unit.CurrentTargetId == Core.Player.ObjectId)
             {
-                weight +=  100 - unit.CurrentHealthPercent;
+                weight += 100 - unit.CurrentHealthPercent;
             }
 
             // Less weight on out of combat targets.
             if (!unit.InCombat)
+            {
                 weight -= 100;
+            }
 
             return weight;
         }

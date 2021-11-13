@@ -27,7 +27,7 @@ namespace LlamaLibrary.Helpers
 
         static Timers()
         {
-            for (int i = 0; i < MaxRows; i++)
+            for (var i = 0; i < MaxRows; i++)
             {
                 _cycles[i] = GetCycleRow(i);
             }
@@ -36,7 +36,7 @@ namespace LlamaLibrary.Helpers
         public static void PrintTimers()
         {
             Log($"Current Time: ({CurrentTime.LocalDateTime})");
-            for (int i = 1; i < MaxRows; i++)
+            for (var i = 1; i < MaxRows; i++)
             {
                 var time = DateTimeOffset.FromUnixTimeSeconds(GetNextCycle(i));
 
@@ -50,7 +50,10 @@ namespace LlamaLibrary.Helpers
             {
                 ulong currentTime;
                 lock (Core.Memory.Executor.AssemblyLock)
+                {
                     currentTime = Core.Memory.CallInjected64<ulong>(Offsets.GetCurrentTime, 0);
+                }
+
                 return currentTime;
             }
         }
@@ -71,12 +74,16 @@ namespace LlamaLibrary.Helpers
         {
             IntPtr CyclePtr;
             lock (Core.Memory.Executor.AssemblyLock)
+            {
                 CyclePtr = Core.Memory.CallInjected64<IntPtr>(Offsets.GetCycleExd, index);
+            }
 
             if (CyclePtr != IntPtr.Zero)
+            {
                 return Core.Memory.Read<CycleTime>(CyclePtr);
+            }
 
-            return default(CycleTime);
+            return default;
         }
 
         [StructLayout(LayoutKind.Explicit, Size = 0x8)]

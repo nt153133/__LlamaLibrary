@@ -27,7 +27,11 @@ namespace LlamaLibrary.Helpers
 
         public static bool DoActionDecipher(BagSlot slot)
         {
-            if ((slot.Item.MyItemRole() != MyItemRole.Map) || HasMap()) return false;
+            if ((slot.Item.MyItemRole() != MyItemRole.Map) || HasMap())
+            {
+                return false;
+            }
+
             return Core.Memory.CallInjected64<byte>(Offsets.DoAction, new object[6]
             {
                 Offsets.ActionManagerParam, //rcx
@@ -41,7 +45,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool HasMap()
         {
-            uint[] questMaps = new uint[] { 2001351, 2001705, 2001772, 200974 };
+            var questMaps = new uint[] { 2001351, 2001705, 2001772, 200974 };
             return InventoryManager.GetBagByInventoryBagId(InventoryBagId.KeyItems).FilledSlots.Any(i => i.EnglishName.EndsWith("map", StringComparison.InvariantCultureIgnoreCase) && !questMaps.Contains(i.RawItemId));
         }
 
@@ -57,9 +61,9 @@ namespace LlamaLibrary.Helpers
 
         public static BagSlot CurrentMap()
         {
-            uint[] questMaps = new uint[] { 2001351, 2001705, 2001772, 200974 };
+            var questMaps = new uint[] { 2001351, 2001705, 2001772, 200974 };
             var map = InventoryManager.GetBagByInventoryBagId(InventoryBagId.KeyItems).FilledSlots.Where(i => i.EnglishName.EndsWith("map", StringComparison.InvariantCultureIgnoreCase) && !questMaps.Contains(i.RawItemId)).ToList();
-            return map.Any() ? map.First() : default(BagSlot);
+            return map.Any() ? map.First() : default;
         }
     }
 }

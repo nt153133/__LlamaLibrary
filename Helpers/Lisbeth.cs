@@ -28,7 +28,7 @@ namespace LlamaLibrary.Helpers
         private static Func<string, Vector3, Task<bool>> _travelToWithArea;
         private static Func<uint, uint, Vector3, Task<bool>> _travelTo;
         private static Func<uint, Vector3, Task<bool>> _travelToWithoutSubzone;
-        private static System.Action _openWindow;
+        private static Action _openWindow;
 
         static Lisbeth()
         {
@@ -40,13 +40,20 @@ namespace LlamaLibrary.Helpers
             var loader = BotManager.Bots
                 .FirstOrDefault(c => c.Name == "Lisbeth");
 
-            if (loader == null) return;
+            if (loader == null)
+            {
+                return;
+            }
 
             var lisbethObjectProperty = loader.GetType().GetProperty("Lisbeth");
             var lisbeth = lisbethObjectProperty?.GetValue(loader);
             var orderMethod = lisbeth?.GetType().GetMethod("ExecuteOrders");
             var apiObject = lisbeth.GetType().GetProperty("Api")?.GetValue(lisbeth);
-            if (lisbeth == null || orderMethod == null) return;
+            if (lisbeth == null || orderMethod == null)
+            {
+                return;
+            }
+
             if (apiObject != null)
             {
                 var m = apiObject.GetType().GetMethod("GetCurrentAreaName");
@@ -90,33 +97,48 @@ namespace LlamaLibrary.Helpers
 
         internal static async Task<bool> ExecuteOrders(string json)
         {
-            if (_orderMethod != null) return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false });
+            if (_orderMethod != null)
+            {
+                return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false });
+            }
 
             FindLisbeth();
             if (_orderMethod == null)
+            {
                 return false;
+            }
 
             return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false });
         }
 
         internal static async Task<bool> ExecuteOrdersIgnoreHome(string json)
         {
-            if (_orderMethod != null) return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true });
+            if (_orderMethod != null)
+            {
+                return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true });
+            }
 
             FindLisbeth();
             if (_orderMethod == null)
+            {
                 return false;
+            }
 
             return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true });
         }
 
         internal static async Task<bool> TravelTo(string area, Vector3 position)
         {
-            if (_travelToWithArea != null) return await _travelToWithArea(area, position);
+            if (_travelToWithArea != null)
+            {
+                return await _travelToWithArea(area, position);
+            }
 
             FindLisbeth();
             if (_travelToWithArea == null)
+            {
                 return false;
+            }
 
             return await _travelToWithArea(area, position);
         }

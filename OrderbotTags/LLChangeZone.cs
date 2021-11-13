@@ -42,10 +42,12 @@ namespace LlamaLibrary.OrderbotTags
         {
             MovementManager.SetFacing(Heading);
             MovementManager.MoveForwardStart();
+
             while (!CommonBehaviors.IsLoading)
             {
                 await Coroutine.Yield();
             }
+
             MovementManager.MoveStop();
 
             _isDone = true;

@@ -31,7 +31,9 @@ namespace LlamaLibrary.RemoteWindows
         public async Task<bool> BuyItem(uint itemId)
         {
             if (InventoryManager.FilledSlots.Any(i => i.RawItemId == itemId))
+            {
                 return true;
+            }
 
             if (IsOpen)
             {
@@ -45,10 +47,12 @@ namespace LlamaLibrary.RemoteWindows
         public int GetItemIndex(uint itemId)
         {
             var items = GetAvailItems().ToArray();
-            for (int i = 0; i < items.Length; i++)
+            for (var i = 0; i < items.Length; i++)
             {
                 if (items[i].Id == itemId)
+                {
                     return i;
+                }
             }
 
             return -1;
@@ -57,7 +61,9 @@ namespace LlamaLibrary.RemoteWindows
         public void ClickItem(int index)
         {
             if (index >= 0)
+            {
                 SendAction(2, 3, 0, 3, (ulong)index);
+            }
         }
     }
 }

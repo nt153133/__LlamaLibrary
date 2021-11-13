@@ -23,9 +23,13 @@ namespace LlamaLibrary.Retainers
             get
             {
                 if (IsRandom)
+                {
                     return NameRaw;
+                }
                 else
+                {
                     return DataManager.GetItem((uint)ItemId).CurrentLocaleName;
+                }
             }
         }
 

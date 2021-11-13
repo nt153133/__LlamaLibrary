@@ -129,14 +129,14 @@ namespace LlamaLibrary.Structs
 
         public override string ToString()
         {
-            FieldInfo[] fields = GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-            StringBuilder stringBuilder = new StringBuilder();
+            var fields = GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+            var stringBuilder = new StringBuilder();
 
             //stringBuilder.AppendFormat("{0}: ", GetType().Name);
-            FieldInfo[] array = fields;
-            foreach (FieldInfo fieldInfo in array)
+            var array = fields;
+            foreach (var fieldInfo in array)
             {
-                object value = fieldInfo.GetValue(this);
+                var value = fieldInfo.GetValue(this);
                 stringBuilder.AppendFormat(" {0}, ", value ?? "null");
             }
 

@@ -77,7 +77,10 @@ namespace LlamaLibrary.OrderbotTags
 
                 await Coroutine.Wait(5000, () => DialogOpen || FreeShop.Instance.IsOpen);
 
-                if (DialogOpen) Next();
+                if (DialogOpen)
+                {
+                    Next();
+                }
 
                 await Coroutine.Wait(5000, () => FreeShop.Instance.IsOpen);
 

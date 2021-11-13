@@ -34,8 +34,12 @@ namespace LlamaLibrary.Helpers
 
         public static bool HaveTurninItems()
         {
-            if (!Request.IsOpen) return false;
-            bool haveAll = true;
+            if (!Request.IsOpen)
+            {
+                return false;
+            }
+
+            var haveAll = true;
             foreach (var item in GetItems())
             {
                 var items = InventoryManager.FilledSlots.Where(i => i.RawItemId == item.ItemId && i.Count >= item.Count);
@@ -54,7 +58,10 @@ namespace LlamaLibrary.Helpers
 
         public static bool HandOver()
         {
-            if (!Request.IsOpen || !HaveTurninItems()) return false;
+            if (!Request.IsOpen || !HaveTurninItems())
+            {
+                return false;
+            }
 
             foreach (var item in GetItems())
             {

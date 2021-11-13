@@ -105,7 +105,10 @@ namespace LlamaLibrary.RemoteWindows
         {
             for (var index = 0; index < list.Length; index++)
             {
-                if (list[index].Unique == contentId) return index;
+                if (list[index].Unique == contentId)
+                {
+                    return index;
+                }
             }
 
             return -1;

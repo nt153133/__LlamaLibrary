@@ -20,9 +20,13 @@ namespace LlamaLibrary.AutoRetainerSort
 
                     foreach (var idItemPair in DataManager.ItemCache)
                     {
-                        uint itemId = idItemPair.Key;
-                        Item itemInfo = idItemPair.Value;
-                        if (itemId == 0 || itemId > QualityOffset || itemInfo == null) continue;
+                        var itemId = idItemPair.Key;
+                        var itemInfo = idItemPair.Value;
+                        if (itemId == 0 || itemId > QualityOffset || itemInfo == null)
+                        {
+                            continue;
+                        }
+
                         _itemNameCache[itemId] = itemInfo.CurrentLocaleName;
                     }
                 }
@@ -40,8 +44,8 @@ namespace LlamaLibrary.AutoRetainerSort
         {
             if (Owner != null)
             {
-                int ownerCenterX = Owner.Location.X + (Owner.Width / 2) - (Width / 2);
-                int ownerCenterY = Owner.Location.Y + (Owner.Height / 2) - (Width / 2);
+                var ownerCenterX = Owner.Location.X + (Owner.Width / 2) - (Width / 2);
+                var ownerCenterY = Owner.Location.Y + (Owner.Height / 2) - (Width / 2);
                 Location = new Point(ownerCenterX, ownerCenterY);
             }
 
@@ -53,22 +57,37 @@ namespace LlamaLibrary.AutoRetainerSort
         private void SearchBox_TextChanged(object sender, EventArgs e)
         {
             var searchResults = new List<SearchResult>();
-            if (string.IsNullOrEmpty(textBoxSearch.Text)) return;
+            if (string.IsNullOrEmpty(textBoxSearch.Text))
+            {
+                return;
+            }
+
             var splitSearchText = textBoxSearch.Text.Split(' ');
-            int foundCount = 0;
+            var foundCount = 0;
             foreach (var idNamePair in ItemNameCache)
             {
-                string itemName = idNamePair.Value;
-                int matchCount = 0;
-                for (int i = 0; i < splitSearchText.Length; i++)
+                var itemName = idNamePair.Value;
+                var matchCount = 0;
+                for (var i = 0; i < splitSearchText.Length; i++)
                 {
-                    if (itemName.IndexOf(splitSearchText[i], StringComparison.OrdinalIgnoreCase) < 0) continue;
+                    if (itemName.IndexOf(splitSearchText[i], StringComparison.OrdinalIgnoreCase) < 0)
+                    {
+                        continue;
+                    }
+
                     matchCount++;
                 }
 
-                if (matchCount < splitSearchText.Length) continue;
+                if (matchCount < splitSearchText.Length)
+                {
+                    continue;
+                }
+
                 searchResults.Add(new SearchResult(idNamePair.Key, itemName));
-                if (++foundCount >= 10) break;
+                if (++foundCount >= 10)
+                {
+                    break;
+                }
             }
 
             _bsSearchResults.DataSource = searchResults;
@@ -136,7 +155,10 @@ namespace LlamaLibrary.AutoRetainerSort
 
         public uint RawItemId;
 
-        public override string ToString() => Name;
+        public override string ToString()
+        {
+            return Name;
+        }
 
         public SearchResult(uint rawItemId, string name)
         {

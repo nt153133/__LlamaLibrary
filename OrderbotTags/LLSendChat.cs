@@ -28,8 +28,8 @@ namespace Ff14bot.NeoProfiles
         [XmlAttribute("XYZ")]
         public Vector3 XYZ
         {
-            get { return Position; }
-            set { Position = value; }
+            get => Position;
+            set => Position = value;
         }
 
         public Vector3 Position;
@@ -92,7 +92,9 @@ namespace Ff14bot.NeoProfiles
             get
             {
                 if (QuestId > 0 && StepId > 0)
+                {
                     return IsStepComplete;
+                }
 
                 return _done;
             }
@@ -189,8 +191,8 @@ namespace Ff14bot.NeoProfiles
 
             if (QuestItem > 0 && XYZ != null)
             {
-                BagSlot item = InventoryManager.FilledSlots.FirstOrDefault(r => r.RawItemId == QuestItem);
-                Log($"Using {item.EnglishName} on {XYZ.ToString()}.");
+                var item = InventoryManager.FilledSlots.FirstOrDefault(r => r.RawItemId == QuestItem);
+                Log($"Using {item.EnglishName} on {XYZ}.");
                 ActionManager.DoActionLocation(ff14bot.Enums.ActionType.KeyItem, (uint)QuestItem, XYZ);
                 await Coroutine.Wait(10000, () => !Core.Player.IsCasting);
             }

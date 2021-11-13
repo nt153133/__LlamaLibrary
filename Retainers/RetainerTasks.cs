@@ -22,17 +22,20 @@ namespace LlamaLibrary.Retainers
 
         public static bool CloseInventory()
         {
-            if (!IsInventoryOpen()) return true;
+            if (!IsInventoryOpen())
+            {
+                return true;
+            }
 
             if (RaptureAtkUnitManager.GetWindowByName("InventoryRetainer") != null)
             {
-                RaptureAtkUnitManager.GetWindowByName("InventoryRetainer").SendAction(1, 3, (ulong)uint.MaxValue);
+                RaptureAtkUnitManager.GetWindowByName("InventoryRetainer").SendAction(1, 3, uint.MaxValue);
                 return true;
             }
 
             if (RaptureAtkUnitManager.GetWindowByName("InventoryRetainerLarge") != null)
             {
-                RaptureAtkUnitManager.GetWindowByName("InventoryRetainerLarge").SendAction(1, 3, (ulong)uint.MaxValue);
+                RaptureAtkUnitManager.GetWindowByName("InventoryRetainerLarge").SendAction(1, 3, uint.MaxValue);
                 return true;
             }
 
@@ -41,7 +44,10 @@ namespace LlamaLibrary.Retainers
 
         public static bool CloseTasks()
         {
-            if (IsOpen) SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
+            if (IsOpen)
+            {
+                SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
+            }
 
             return !IsOpen;
         }

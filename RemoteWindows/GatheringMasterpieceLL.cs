@@ -68,7 +68,9 @@ namespace LlamaLibrary.RemoteWindows
         public void Collect()
         {
             if (IsOpen)
+            {
                 SendAction(1, 3, 0);
+            }
         }
 
         public void SetScrutiny(bool value = true)

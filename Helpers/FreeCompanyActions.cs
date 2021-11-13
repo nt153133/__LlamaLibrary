@@ -23,7 +23,10 @@ namespace LlamaLibrary.Helpers
             if (curActions.Length == 2)
             {
                 if (FreeCompany.Instance.IsOpen)
+                {
                     FreeCompany.Instance.Close();
+                }
+
                 return;
             }
 
@@ -34,7 +37,10 @@ namespace LlamaLibrary.Helpers
             if (buffs1 == null && !curActions.Any(i => i.id == buff1))
             {
                 if (FreeCompany.Instance.IsOpen)
+                {
                     FreeCompany.Instance.Close();
+                }
+
                 await GrandCompanyHelper.BuyFCAction(grandCompany, buff1);
                 await Coroutine.Sleep(1000);
 
@@ -61,7 +67,10 @@ namespace LlamaLibrary.Helpers
             if (buffs2 == null && !curActions.Any(i => i.id == buff2))
             {
                 if (FreeCompany.Instance.IsOpen)
+                {
                     FreeCompany.Instance.Close();
+                }
+
                 await GrandCompanyHelper.BuyFCAction(grandCompany, buff2);
                 await Coroutine.Sleep(1000);
 
@@ -146,7 +155,9 @@ namespace LlamaLibrary.Helpers
             }
 
             if (FreeCompany.Instance.IsOpen)
+            {
                 FreeCompany.Instance.Close();
+            }
         }
     }
 }

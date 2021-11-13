@@ -73,7 +73,7 @@ namespace LlamaLibrary.OrderbotTags
                 return;
             }
 
-            List<BagSlot> bagSlots = IgnoreGear ? InventoryManager.FilledSlots.ToList() : InventoryManager.FilledSlots.Where(x => x.Item.StackSize == 999).ToList();
+            var bagSlots = IgnoreGear ? InventoryManager.FilledSlots.ToList() : InventoryManager.FilledSlots.Where(x => x.Item.StackSize == 999).ToList();
 
             List<uint> toLower;
 

@@ -52,34 +52,53 @@ namespace LlamaLibrary.RemoteWindows
 
         public bool CanRegister()
         {
-            if (WindowByName == null) return false;
+            if (WindowByName == null)
+            {
+                return false;
+            }
+
             var remoteButton = WindowByName.FindButton(36);
             return remoteButton != null && remoteButton.Clickable;
         }
 
         public void Register()
         {
-            if (WindowByName != null) WindowByName.SendAction(1, 3, 14);
+            if (WindowByName != null)
+            {
+                WindowByName.SendAction(1, 3, 14);
+            }
         }
 
         public void SetTrust(int trust)
         {
-            if (WindowByName != null) WindowByName.SendAction(2, 3, 15, 4, (ulong)trust);
+            if (WindowByName != null)
+            {
+                WindowByName.SendAction(2, 3, 15, 4, (ulong)trust);
+            }
         }
 
-        public void Close()
+        public override void Close()
         {
-            if (WindowByName != null) WindowByName.SendAction(1, 3, 0);
+            if (WindowByName != null)
+            {
+                WindowByName.SendAction(1, 3, 0);
+            }
         }
 
         public void PressNpcSelection(int npc)
         {
-            if (WindowByName != null && npc < 6) WindowByName.SendAction(2, 3, 12, 4, (ulong)npc);
+            if (WindowByName != null && npc < 6)
+            {
+                WindowByName.SendAction(2, 3, 12, 4, (ulong)npc);
+            }
         }
 
         public void ToggleScenario()
         {
-            if (WindowByName != null) WindowByName.SendAction(1, 3, 17);
+            if (WindowByName != null)
+            {
+                WindowByName.SendAction(1, 3, 17);
+            }
         }
 
         private TrustNPC GetTrustNpc(int id)

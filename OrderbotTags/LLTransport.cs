@@ -17,31 +17,13 @@ namespace Ff14bot.NeoProfiles.Tags
     [XmlElement("SoTransport")]
     public class SoTransport : ProfileBehavior
     {
-        public override bool HighPriority
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool HighPriority => true;
 
         private bool _done;
 
-        public override bool IsDone
-        {
-            get
-            {
-                return _done;
-            }
-        }
+        public override bool IsDone => _done;
 
-        public override string StatusText
-        {
-            get
-            {
-                return $"Transporting for {QuestName}.";
-            }
-        }
+        public override string StatusText => $"Transporting for {QuestName}.";
 
         [XmlAttribute("NpcId")]
         public int NpcId { get; set; }
@@ -65,7 +47,11 @@ namespace Ff14bot.NeoProfiles.Tags
         {
             get
             {
-                if (_done) return null;
+                if (_done)
+                {
+                    return null;
+                }
+
                 var npc = GameObjectManager.GetObjectsByNPCId((uint)NpcId).FirstOrDefault(r => r.IsVisible && r.IsTargetable);
                 return npc;
             }
@@ -80,7 +66,7 @@ namespace Ff14bot.NeoProfiles.Tags
         {
             var gameobj = GameObjectManager.GetObjectByNPCId((uint)NpcId);
 
-            if (gameobj == default(GameObject))
+            if (gameobj == default)
             {
                 _done = true;
                 return;

@@ -39,7 +39,9 @@ namespace LlamaLibrary.Memory
         internal static void Init()
         {
             if (initDone)
+            {
                 return;
+            }
 
             var q1 = from t in Assembly.GetExecutingAssembly().GetTypes()
                      where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static).Any(i => i.Name == "Offsets"))
@@ -58,9 +60,13 @@ namespace LlamaLibrary.Memory
                                          {
                                              var res = ParseField(field, pf);
                                              if (field.FieldType == typeof(IntPtr))
+                                             {
                                                  field.SetValue(instance, res);
+                                             }
                                              else
+                                             {
                                                  field.SetValue(instance, (int)res);
+                                             }
                                          }
 
                                          //set the value
@@ -89,7 +95,7 @@ namespace LlamaLibrary.Memory
                                 );
             }
 
-            Dictionary<IntPtr, int> vtables = new Dictionary<IntPtr, int>();
+            var vtables = new Dictionary<IntPtr, int>();
             for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
             {
                 vtables.Add(AgentModule.AgentVtables[index], index);
@@ -101,17 +107,17 @@ namespace LlamaLibrary.Memory
 
             foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
             {
-                //Log(MyType.Name);
-
                 var test = ((IAgent)Activator.CreateInstance(
                     MyType,
-                                                               BindingFlags.Instance | BindingFlags.NonPublic,
-                                                               null,
-                                                               new object[]
-                                                               {
-                                                                   IntPtr.Zero
-                                                               },
-                                                               null)).RegisteredVtable;
+                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    null,
+                    new object[]
+                    {
+                        IntPtr.Zero
+                    },
+                    null)
+                ).RegisteredVtable;
+
                 if (vtables.ContainsKey(test))
                 {
                     Log($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
@@ -126,7 +132,9 @@ namespace LlamaLibrary.Memory
             ScriptManager.Init(typeof(ScriptConditions.Helpers));
             initDone = true;
             if (_debug)
+            {
                 Log($"\n {sb}");
+            }
         }
 
         internal static void AddNamespacesToScriptManager(params string[] param)
@@ -142,8 +150,7 @@ namespace LlamaLibrary.Memory
 
             try
             {
-                var list = field.GetValue(null) as List<string>;
-                if (list == null)
+                if (!(field.GetValue(null) is List<string> list))
                 {
                     return;
                 }
@@ -181,8 +188,14 @@ namespace LlamaLibrary.Memory
             if (lang == Language.Chn)
             {
                 if (valcn != null)
+                {
                     return (IntPtr)valcn.Value;
-                if (offset == null) return IntPtr.Zero;
+                }
+
+                if (offset == null)
+                {
+                    return IntPtr.Zero;
+                }
 
                 //var b1 = true;
                 try
@@ -204,8 +217,14 @@ namespace LlamaLibrary.Memory
             else
             {
                 if (valna != null)
+                {
                     return (IntPtr)valna.Value;
-                if (offset == null) return IntPtr.Zero;
+                }
+
+                if (offset == null)
+                {
+                    return IntPtr.Zero;
+                }
 
                 try
                 {
@@ -266,7 +285,9 @@ namespace LlamaLibrary.Memory
             }
 
             if (valna != null)
+            {
                 sb.AppendLine($"{field.DeclaringType.Name},{field.Name},{valna}");
+            }
 
             if (field.DeclaringType != null && field.DeclaringType.IsNested)
             {

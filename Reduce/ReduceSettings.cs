@@ -27,7 +27,10 @@ namespace LlamaLibrary.Reduce
             get
             {
                 if (_settings != null)
+                {
                     return _settings;
+                }
+
                 _settings = new ReduceSettings { _initialized = true };
 
                 return _settings;

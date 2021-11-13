@@ -55,13 +55,17 @@ namespace LlamaLibrary.RemoteWindows
         public virtual void Close()
         {
             if (IsOpen)
+            {
                 SendAction(1, 3uL, 0xFFFFFFFFuL);
+            }
         }
 
         public int GetAgentInterfaceId()
         {
             if (WindowByName == null)
+            {
                 return 0;
+            }
 
             var test = WindowByName.TryFindAgentInterface();
 
@@ -76,7 +80,11 @@ namespace LlamaLibrary.RemoteWindows
 
         protected TwoInt[] ___Elements()
         {
-            if (WindowByName == null) return null;
+            if (WindowByName == null)
+            {
+                return null;
+            }
+
             var elementCount = ElementCount();
             var addr = Core.Memory.Read<IntPtr>(WindowByName.Pointer + Offset2);
             return Core.Memory.ReadArray<TwoInt>(addr, elementCount);
@@ -90,12 +98,17 @@ namespace LlamaLibrary.RemoteWindows
         protected void SendAction(int pairCount, params ulong[] param)
         {
             if (IsOpen)
+            {
                 WindowByName.SendAction(pairCount, param);
+            }
         }
 
         public virtual async Task<bool> Open()
         {
-            if (IsOpen) return true;
+            if (IsOpen)
+            {
+                return true;
+            }
 
             Agent.Toggle();
             return await WaitTillWindowOpen(5000);

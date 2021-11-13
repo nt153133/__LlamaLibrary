@@ -92,7 +92,7 @@ namespace LlamaLibrary.RetainerItemFinder
 
         public static async Task<bool> FlashSaddlebags()
         {
-            bool couldOpen = await InventoryBuddy.Instance.Open();
+            var couldOpen = await InventoryBuddy.Instance.Open();
             if (couldOpen)
             {
                 await Coroutine.Sleep(200);
@@ -126,9 +126,12 @@ namespace LlamaLibrary.RetainerItemFinder
                 firstTimeSaddleRead = false;
             }
 
-            for (int i = 0; i < 140; i++)
+            for (var i = 0; i < 140; i++)
             {
-                if (ids[i] == 0) continue;
+                if (ids[i] == 0)
+                {
+                    continue;
+                }
 
                 if (result.ContainsKey(ids[i]))
                 {

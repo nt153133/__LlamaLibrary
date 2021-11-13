@@ -12,7 +12,6 @@ using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
-using ff14bot.Objects;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
@@ -62,7 +61,7 @@ namespace LlamaLibrary
         {
             Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
-            var DeliveryNpcs = new Dictionary<uint, (uint Zone, Vector3 location, string name, int requiredQuest, uint index)>
+            var DeliveryNpcs = new Dictionary<uint, (uint Zone, Vector3 Location, string Name, int RequiredQuest, uint Index)>
             {
                 { 1019615, (478, new Vector3(-71.68203f, 206.5714f, 29.38501f), "Zhloe Aliapoh", 67087, 1) }, //(Zhloe Aliapoh) Idyllshire(Dravania)
                 { 1020337, (635, new Vector3(171.312988f, 13.02367f, -89.951965f), "M'naago", 68541, 2) }, //(M'naago) Rhalgr's Reach(Gyr Abania)
@@ -73,17 +72,17 @@ namespace LlamaLibrary
                 { 1035211, (886, new Vector3(-115.1127f, 0f, -134.8367f), "Charlemend", 69615, 7) }
             };
 
-            foreach (var npc in DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.Value.requiredQuest)).OrderByDescending(i => i.Value.index))
+            foreach (var npc in DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.Value.RequiredQuest)).OrderByDescending(i => i.Value.Index))
             {
-                await AgentSatisfactionSupply.Instance.LoadWindow(npc.Value.index);
-                List<uint> items = new List<uint>();
+                await AgentSatisfactionSupply.Instance.LoadWindow(npc.Value.Index);
+                var items = new List<uint>();
                 if (!DeliveryNpcs.ContainsKey(AgentSatisfactionSupply.Instance.NpcId))
                 {
                     Log($"Bad Npc ID: {AgentSatisfactionSupply.Instance.NpcId}");
                     break;
                 }
 
-                Log($"{DeliveryNpcs[AgentSatisfactionSupply.Instance.NpcId].name}");
+                Log($"{DeliveryNpcs[AgentSatisfactionSupply.Instance.NpcId].Name}");
                 Log($"\tHeartLevel:{AgentSatisfactionSupply.Instance.HeartLevel}");
                 Log($"\tRep:{AgentSatisfactionSupply.Instance.CurrentRep}/{AgentSatisfactionSupply.Instance.MaxRep}");
                 Log($"\tDeliveries Remaining:{AgentSatisfactionSupply.Instance.DeliveriesRemaining}");
@@ -96,11 +95,11 @@ namespace LlamaLibrary
 
                 if (AgentSatisfactionSupply.Instance.HeartLevel == 5 || AgentSatisfactionSupply.Instance.DeliveriesRemaining == 0)
                 {
-                    Log($"{DeliveryNpcs[AgentSatisfactionSupply.Instance.NpcId].name} Satisfaction Level is Maxed or out of deliveries, skipping");
+                    Log($"{DeliveryNpcs[AgentSatisfactionSupply.Instance.NpcId].Name} Satisfaction Level is Maxed or out of deliveries, skipping");
                     continue;
                 }
 
-                List<LisbethOrder> outList = new List<LisbethOrder>();
+                var outList = new List<LisbethOrder>();
 
                 if (npc.Key == 1025878)
                 {
@@ -133,7 +132,7 @@ namespace LlamaLibrary
                 if (InventoryManager.FilledSlots.Any(i => items.Contains(i.RawItemId)) && AgentSatisfactionSupply.Instance.DeliveriesRemaining > 0)
                 {
                     Log("Have items to turn in");
-                    await HandInCustomNpc(npc.Key, (npc.Value.Zone, npc.Value.location));
+                    await HandInCustomNpc(npc.Key, (npc.Value.Zone, npc.Value.Location));
                 }
 
                 /*if (AgentSatisfactionSupply.Instance.DeliveriesRemaining == 0)
@@ -147,17 +146,20 @@ namespace LlamaLibrary
             return true;
         }
 
-        private async Task<bool> HandInCustomNpc(uint npcID, (uint Zone, Vector3 location) npcLocation)
+        private async Task<bool> HandInCustomNpc(uint npcID, (uint Zone, Vector3 Location) npcLocation)
         {
             var npc = GameObjectManager.GetObjectByNPCId(npcID);
 
-            if (npc == default(GameObject) || !npc.IsWithinInteractRange)
+            if (npc == default || !npc.IsWithinInteractRange)
             {
-                await Navigation.GetTo(npcLocation.Zone, npcLocation.location);
+                await Navigation.GetTo(npcLocation.Zone, npcLocation.Location);
                 npc = GameObjectManager.GetObjectByNPCId(npcID);
             }
 
-            if (npc == default(GameObject)) return false;
+            if (npc == default)
+            {
+                return false;
+            }
 
             npc.Interact();
 
@@ -173,23 +175,23 @@ namespace LlamaLibrary
             while (Talk.DialogOpen)
             {
                 Talk.Next();
-                await Buddy.Coroutines.Coroutine.Sleep(200);
+                await Coroutine.Sleep(200);
                 await Coroutine.Yield();
             }
 
             await Coroutine.Wait(10000, () => Conversation.IsOpen);
-            await Buddy.Coroutines.Coroutine.Sleep(500);
+            await Coroutine.Sleep(500);
 
             Logging.WriteDiagnostic("Choosing 'Make a delivery.'");
             Conversation.SelectLine(0);
-            await Buddy.Coroutines.Coroutine.Wait(1000, () => Talk.DialogOpen);
+            await Coroutine.Wait(1000, () => Talk.DialogOpen);
 
             if (Talk.DialogOpen)
             {
                 while (Talk.DialogOpen)
                 {
                     Talk.Next();
-                    await Buddy.Coroutines.Coroutine.Sleep(200);
+                    await Coroutine.Sleep(200);
                     await Coroutine.Yield();
                 }
             }
@@ -202,20 +204,29 @@ namespace LlamaLibrary
                 {
                     Logging.WriteDiagnostic("Turning in items");
 
-                    if (AgentSatisfactionSupply.Instance.DeliveriesRemaining < 1) break;
+                    if (AgentSatisfactionSupply.Instance.DeliveriesRemaining < 1)
+                    {
+                        break;
+                    }
 
                     if (AgentSatisfactionSupply.Instance.HasDoHTurnin)
+                    {
                         SatisfactionSupply.Instance.ClickItem(0);
+                    }
                     else if (AgentSatisfactionSupply.Instance.HasDoLTurnin)
+                    {
                         SatisfactionSupply.Instance.ClickItem(1);
+                    }
                     else if (AgentSatisfactionSupply.Instance.HasFshTurnin)
+                    {
                         SatisfactionSupply.Instance.ClickItem(2);
+                    }
 
                     await Coroutine.Wait(10000, () => Request.IsOpen);
 
                     Logging.WriteDiagnostic("Selecting items.");
                     await CommonTasks.HandOverRequestedItems();
-                    await Buddy.Coroutines.Coroutine.Sleep(500);
+                    await Coroutine.Sleep(500);
 
                     if (SelectYesno.IsOpen)
                     {
@@ -228,10 +239,10 @@ namespace LlamaLibrary
                         if (Talk.DialogOpen)
                         {
                             Talk.Next();
-                            await Buddy.Coroutines.Coroutine.Sleep(200);
+                            await Coroutine.Sleep(200);
                         }
 
-                        await Buddy.Coroutines.Coroutine.Sleep(500);
+                        await Coroutine.Sleep(500);
                     }
 
                     if (QuestLogManager.InCutscene)
@@ -243,16 +254,19 @@ namespace LlamaLibrary
                             {
                                 AgentCutScene.Instance.PromptSkip();
                                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
-                                if (SelectString.IsOpen) SelectString.ClickSlot(0);
+                                if (SelectString.IsOpen)
+                                {
+                                    SelectString.ClickSlot(0);
+                                }
                             }
 
                             if (Talk.DialogOpen)
                             {
                                 Talk.Next();
-                                await Buddy.Coroutines.Coroutine.Sleep(200);
+                                await Coroutine.Sleep(200);
                             }
 
-                            await Buddy.Coroutines.Coroutine.Sleep(500);
+                            await Coroutine.Sleep(500);
                         }
 
                         if (SatisfactionSupplyResult.Instance.IsOpen)
@@ -267,29 +281,29 @@ namespace LlamaLibrary
                             Talk.Next();
                             await Coroutine.Wait(200, () => !Talk.DialogOpen);
                             await Coroutine.Wait(500, () => Talk.DialogOpen);
-                            await Buddy.Coroutines.Coroutine.Sleep(200);
+                            await Coroutine.Sleep(200);
                             await Coroutine.Yield();
                         }
 
-                        await Buddy.Coroutines.Coroutine.Sleep(500);
+                        await Coroutine.Sleep(500);
                         await Coroutine.Wait(5000, () => Talk.DialogOpen);
                         while (Talk.DialogOpen)
                         {
                             Talk.Next();
                             await Coroutine.Wait(200, () => !Talk.DialogOpen);
                             await Coroutine.Wait(500, () => Talk.DialogOpen);
-                            await Buddy.Coroutines.Coroutine.Sleep(200);
+                            await Coroutine.Sleep(200);
                             await Coroutine.Yield();
                         }
 
-                        await Buddy.Coroutines.Coroutine.Sleep(500);
+                        await Coroutine.Sleep(500);
                         await Coroutine.Wait(5000, () => Talk.DialogOpen);
                         while (Talk.DialogOpen)
                         {
                             Talk.Next();
                             await Coroutine.Wait(200, () => !Talk.DialogOpen);
                             await Coroutine.Wait(500, () => Talk.DialogOpen);
-                            await Buddy.Coroutines.Coroutine.Sleep(200);
+                            await Coroutine.Sleep(200);
                             await Coroutine.Yield();
                         }
 
@@ -297,7 +311,10 @@ namespace LlamaLibrary
                     }
 
                     await Coroutine.Wait(5000, () => SatisfactionSupply.Instance.IsOpen);
-                    if (!SatisfactionSupply.Instance.IsOpen) break;
+                    if (!SatisfactionSupply.Instance.IsOpen)
+                    {
+                        break;
+                    }
                 }
                 while (AgentSatisfactionSupply.Instance.DeliveriesRemaining > 0 && AgentSatisfactionSupply.Instance.HasAnyTurnin);
             }

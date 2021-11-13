@@ -189,7 +189,10 @@ namespace LlamaLibrary.Memory
             get
             {
                 if (_eventHandler == IntPtr.Zero)
+                {
                     _eventHandler = Core.Memory.Read<IntPtr>(EventHandlerOff);
+                }
+
                 return _eventHandler;
             }
         }

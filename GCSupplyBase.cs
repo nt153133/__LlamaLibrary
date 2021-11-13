@@ -80,7 +80,7 @@ namespace MasterPieceSupplyTest
                 return;
             }
 
-            string lisbethOrder = await GetGCSupplyList();
+            var lisbethOrder = await GetGCSupplyList();
 
             if (lisbethOrder == "")
             {
@@ -93,7 +93,7 @@ namespace MasterPieceSupplyTest
                 if (!await Lisbeth.ExecuteOrders(lisbethOrder))
                 {
                     Log("Lisbeth order failed, Dumping order to GCSupply.json");
-                    using (StreamWriter outputFile = new StreamWriter("GCSupply.json", false))
+                    using (var outputFile = new StreamWriter("GCSupply.json", false))
                     {
                         await outputFile.WriteAsync(lisbethOrder);
                     }
@@ -167,7 +167,11 @@ namespace MasterPieceSupplyTest
                 var item = items.FirstOrDefault(j => j.ItemID == windowItemIds[index]);
                 var index1 = index;
                 var handover = InventoryManager.FilledSlots.Where(k => k.RawItemId == item.ItemID && !k.HasMateria() && k.Count >= required[index1]).OrderByDescending(k => k.HqFlag).FirstOrDefault();
-                if (handover == default(BagSlot)) continue;
+                if (handover == default(BagSlot))
+                {
+                    continue;
+                }
+
                 Log($"{handover.Name} {handover.IsHighQuality}");
                 if (handover.IsHighQuality)
                 {
@@ -233,7 +237,9 @@ namespace MasterPieceSupplyTest
                 if (!ContentsInfo.Instance.IsOpen)
                 {
                     if (await ContentsInfo.Instance.Open())
+                    {
                         ContentsInfo.Instance.OpenGCSupplyWindow();
+                    }
                 }
 
                 await Coroutine.Wait(5000, () => ContentsInfoDetail.Instance.IsOpen);
@@ -251,8 +257,8 @@ namespace MasterPieceSupplyTest
                 return "";
             }
 
-            List<LisbethOrder> outList = new List<LisbethOrder>();
-            int id = 0;
+            var outList = new List<LisbethOrder>();
+            var id = 0;
             foreach (var item in ContentsInfoDetail.Instance.GetCraftingTurninItems().Where(item => !InventoryManager.FilledSlots.Any(i => i.RawItemId == item.Key.Id && !i.HasMateria() && i.Count >= item.Value.Key)))
             {
                 Logging.Write($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
@@ -265,9 +271,12 @@ namespace MasterPieceSupplyTest
             foreach (var item in ContentsInfoDetail.Instance.GetGatheringTurninItems().Where(item => !InventoryManager.FilledSlots.Any(i => i.RawItemId == item.Key.Id && i.Count >= item.Value.Key)))
             {
                 Logging.Write($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
-                string type = "Gather";
+                var type = "Gather";
                 if (item.Value.Value.Equals("Fisher"))
+                {
                     continue; //type = "Fisher";
+                }
+
                 var order = new LisbethOrder(id, 2, (int)item.Key.Id, item.Value.Key, type, true);
 
                 outList.Add(order);
@@ -282,7 +291,10 @@ namespace MasterPieceSupplyTest
                 Logging.Write($"{order}");
             }*/
             if (outList.Count == 0)
+            {
                 return "";
+            }
+
             return JsonConvert.SerializeObject(outList, Formatting.None);
         }
 
@@ -301,7 +313,9 @@ namespace MasterPieceSupplyTest
                 if (!ContentsInfo.Instance.IsOpen)
                 {
                     if (await ContentsInfo.Instance.Open())
+                    {
                         ContentsInfo.Instance.OpenGCSupplyWindow();
+                    }
                 }
 
                 await Coroutine.Wait(5000, () => ContentsInfoDetail.Instance.IsOpen);
@@ -319,8 +333,8 @@ namespace MasterPieceSupplyTest
                 return false;
             }
 
-            List<LisbethOrder> outList = new List<LisbethOrder>();
-            int id = 0;
+            var outList = new List<LisbethOrder>();
+            var id = 0;
             foreach (var item in ContentsInfoDetail.Instance.GetCraftingTurninItems())
             {
                 Logging.Write($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
@@ -335,7 +349,10 @@ namespace MasterPieceSupplyTest
                 Logging.Write($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
                 var type = "Gather";
                 if (item.Value.Value.Equals("Fisher"))
+                {
                     type = "Fisher";
+                }
+
                 var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, type);
 
                 outList.Add(order);
@@ -350,7 +367,7 @@ namespace MasterPieceSupplyTest
                 Logging.Write($"{order}");
             }
 
-            using (StreamWriter outputFile = new StreamWriter("GCSupply.json", false))
+            using (var outputFile = new StreamWriter("GCSupply.json", false))
             {
                 await outputFile.WriteAsync(JsonConvert.SerializeObject(outList, Formatting.None));
             }
@@ -360,7 +377,7 @@ namespace MasterPieceSupplyTest
 
         public async Task<bool> PrintMasterPieceList()
         {
-            Dictionary<ClassJobType, int> Classes = new Dictionary<ClassJobType, int>
+            var Classes = new Dictionary<ClassJobType, int>
             {
                 { ClassJobType.Carpenter, 0 },
                 { ClassJobType.Blacksmith, 1 },

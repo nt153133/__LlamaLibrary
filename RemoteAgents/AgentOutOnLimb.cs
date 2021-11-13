@@ -34,7 +34,7 @@ namespace LlamaLibrary.RemoteAgents
         public int CursorLocation
         {
             get => Core.Memory.Read<ushort>(addressLocation);
-            set => Core.Memory.Write(addressLocation, locationValue(value));
+            set => Core.Memory.Write(addressLocation, LocationValue(value));
         }
 
         public bool IsReadyBotanist => Core.Memory.Read<byte>(Pointer + Offsets.IsReady) == 3;
@@ -43,16 +43,16 @@ namespace LlamaLibrary.RemoteAgents
 
         public void Refresh()
         {
-            IntPtr intptr_0 = Core.Memory.Read<IntPtr>(Memory.Offsets.SearchResultPtr);
-            IntPtr intptr_1 = Core.Memory.Read<IntPtr>(intptr_0 + 0x38);
-            IntPtr intptr_2 = Core.Memory.Read<IntPtr>(intptr_1 + 0x18);
-            IntPtr intptr_3 = Core.Memory.Read<IntPtr>(intptr_2 + 0x310);
+            var intptr_0 = Core.Memory.Read<IntPtr>(Memory.Offsets.SearchResultPtr);
+            var intptr_1 = Core.Memory.Read<IntPtr>(intptr_0 + 0x38);
+            var intptr_2 = Core.Memory.Read<IntPtr>(intptr_1 + 0x18);
+            var intptr_3 = Core.Memory.Read<IntPtr>(intptr_2 + 0x310);
             addressLocation = Core.Memory.Read<IntPtr>(intptr_3 + 0x20);
         }
 
-        private ushort locationValue(int percent)
+        private ushort LocationValue(int percent)
         {
-            ushort location = (ushort)((percent * 100) + rnd.Next(0, 99));
+            var location = (ushort)((percent * 100) + rnd.Next(0, 99));
 
             //Logger.Info($"Setting Location {location}");
             return location;

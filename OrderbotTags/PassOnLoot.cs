@@ -47,18 +47,22 @@ namespace LlamaLibrary.OrderbotTags
 
             if (NeedGreed.Instance.IsOpen)
             {
-                for (int i = 0; i < NeedGreed.Instance.NumberOfItems; i++)
+                for (var i = 0; i < NeedGreed.Instance.NumberOfItems; i++)
                 {
                     NeedGreed.Instance.PassItem(i);
                     await Coroutine.Sleep(500);
                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                     if (SelectYesno.IsOpen)
+                    {
                         SelectYesno.Yes();
+                    }
                 }
             }
 
             if (NeedGreed.Instance.IsOpen)
+            {
                 NeedGreed.Instance.Close();
+            }
         }
 
         public override bool IsDone => _isDone;

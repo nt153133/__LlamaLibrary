@@ -171,10 +171,10 @@ namespace LlamaLibrary
             lastChange = new WaitTimer(new TimeSpan(0, 7, 0));
             Log($"Current Weather: {WorldManager.CurrentWeather}  {WorldManager.CurrentWeatherId}");
 
-            Random time = new Random();
+            var time = new Random();
 
-            int minutes = time.Next(10, 20);
-            int sec = time.Next(0, 59);
+            var minutes = time.Next(10, 20);
+            var sec = time.Next(0, 59);
             standBy = AfkSpots[time.Next(0, AfkSpots.Length)];
 
             while (TimeLeftInDiadem > new TimeSpan(0, minutes, sec))
@@ -182,7 +182,10 @@ namespace LlamaLibrary
                 switch (WorldManager.CurrentWeatherId)
                 {
                     case 133:
-                        if (lastWeather == 133) break;
+                        if (lastWeather == 133)
+                        {
+                            break;
+                        }
 
                         //await FlyTo(new Vector3(-295.9257f, 268.4518f, -370.327f));
                         await MineWeather(ClassJobType.Miner, UmbralFlareAbove, UmbralFlare);
@@ -190,17 +193,32 @@ namespace LlamaLibrary
                         await StandBy();
                         break;
                     case 135:
-                        if (lastWeather == 135) break; await MineWeather(ClassJobType.Miner, UmbralLevinAbove, UmbralLevin);
+                        if (lastWeather == 135)
+                        {
+                            break;
+                        }
+
+                        await MineWeather(ClassJobType.Miner, UmbralLevinAbove, UmbralLevin);
                         standBy = AfkSpots[time.Next(0, AfkSpots.Length)];
                         await StandBy();
                         break;
                     case 134:
-                        if (lastWeather == 134) break; await MineWeather(ClassJobType.Botanist, UmbralDuststormAbove, UmbralDuststorm);
+                        if (lastWeather == 134)
+                        {
+                            break;
+                        }
+
+                        await MineWeather(ClassJobType.Botanist, UmbralDuststormAbove, UmbralDuststorm);
                         standBy = AfkSpots[time.Next(0, AfkSpots.Length)];
                         await StandBy();
                         break;
                     case 136:
-                        if (lastWeather == 136) break; await MineWeather(ClassJobType.Botanist, UmbralTempestAbove, UmbralTempest);
+                        if (lastWeather == 136)
+                        {
+                            break;
+                        }
+
+                        await MineWeather(ClassJobType.Botanist, UmbralTempestAbove, UmbralTempest);
                         standBy = AfkSpots[time.Next(0, AfkSpots.Length)];
                         await StandBy();
                         break;
@@ -223,7 +241,8 @@ namespace LlamaLibrary
                             return;
                         } break;
                         //*/
-                        await StandBy(); break;
+                        await StandBy();
+                        break;
                 }
 
                 await Coroutine.Sleep(1000);
@@ -276,7 +295,9 @@ namespace LlamaLibrary
         public async Task StandBy()
         {
             if (Core.Me.DistanceSqr(standBy) > 10f)
+            {
                 await FlyTo(standBy);
+            }
         }
 
         public async Task MineWeather(ClassJobType jobType, Vector3 above, Vector3[] safeSpots)
@@ -332,9 +353,13 @@ namespace LlamaLibrary
                 await Coroutine.Sleep(500);
 
                 if (Core.Me.CurrentJob == ClassJobType.Miner)
+                {
                     await testMine();
+                }
                 else if (Core.Me.CurrentJob == ClassJobType.Botanist)
+                {
                     await testBtn();
+                }
 
                 //await UseCordial();
                 Log("Done Test Gather");
@@ -350,7 +375,10 @@ namespace LlamaLibrary
 
         public static async Task SwitchToJob(ClassJobType job)
         {
-            if (Core.Me.CurrentJob == job) return;
+            if (Core.Me.CurrentJob == job)
+            {
+                return;
+            }
 
             var gearSets = GearsetManager.GearSets.Where(i => i.InUse);
 
@@ -372,7 +400,7 @@ namespace LlamaLibrary
             Log("in Test Gather");
             if (GatheringManager.WindowOpen)
             {
-                GatheringItem items = GatheringManager.GatheringWindowItems.FirstOrDefault(i => i.IsFilled && i.CanGather);
+                var items = GatheringManager.GatheringWindowItems.FirstOrDefault(i => i.IsFilled && i.CanGather);
 
                 Log($"Gathering: {items}");
 
@@ -390,7 +418,7 @@ namespace LlamaLibrary
             //Log("in Test Gather");
             if (GatheringManager.WindowOpen)
             {
-                GatheringItem items = GatheringManager.GatheringWindowItems.Where(i => i.IsFilled && i.CanGather).OrderByDescending(s => s.Stars).FirstOrDefault();
+                var items = GatheringManager.GatheringWindowItems.Where(i => i.IsFilled && i.CanGather).OrderByDescending(s => s.Stars).FirstOrDefault();
 
                 if (Core.Me.CurrentGP >= 500)
                 {
@@ -432,7 +460,7 @@ namespace LlamaLibrary
             //Log("in Test Gather");
             if (GatheringManager.WindowOpen)
             {
-                GatheringItem items = GatheringManager.GatheringWindowItems.Where(i => i.IsFilled && i.CanGather).OrderByDescending(s => s.Stars).FirstOrDefault();
+                var items = GatheringManager.GatheringWindowItems.Where(i => i.IsFilled && i.CanGather).OrderByDescending(s => s.Stars).FirstOrDefault();
                 if (Core.Me.CurrentGP >= 500)
                 {
                     await Coroutine.Wait(5000, () => ActionManager.CanCast(224, Core.Me));

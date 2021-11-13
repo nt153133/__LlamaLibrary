@@ -23,7 +23,10 @@ namespace LlamaLibrary.Memory.Attributes
         {
             Pattern = pattern;
             if (PatternCN == "")
+            {
                 PatternCN = pattern;
+            }
+
             Numeric = numeric;
         }
 

@@ -27,7 +27,7 @@ namespace ResplendentTools
         private Composite _root;
         public override string Name => _name;
 
-        public static string _name => "ResplendentTools";
+        private static readonly string _name = "ResplendentTools";
         public override PulseFlags PulseFlags => PulseFlags.All;
 
         public override bool IsAutonomous => true;
@@ -75,18 +75,25 @@ namespace ResplendentTools
 
         public static Task<string> CalculateLisbethResplendentOrder(string job, int finalItemId, int cMaterialId, int bMaterialId, int cComponentId, int bComponentId, int aComponentId)
         {
-            List<LisbethOrder> outList = new List<LisbethOrder>();
+            var outList = new List<LisbethOrder>();
 
             var item = InventoryManager.FilledSlots.FirstOrDefault(i => i.RawItemId == finalItemId);
-            int finalItemCount = (int)(item == null ? 0 : item.Count);
+            var finalItemCount = (int)(item == null ? 0 : item.Count);
 
             LisbethOrder order;
             if (ConditionParser.HasAtLeast((uint)cMaterialId, 2))
+            {
                 order = new LisbethOrder(1, 1, cComponentId, NumberToCraft(finalItemCount, cMaterialId), job);
+            }
             else if (ConditionParser.HasAtLeast((uint)bMaterialId, 2))
+            {
                 order = new LisbethOrder(1, 1, bComponentId, NumberToCraft(finalItemCount, bMaterialId), job);
+            }
             else
+            {
                 order = new LisbethOrder(1, 1, aComponentId, 30 - (finalItemCount / 2), job);
+            }
+
             outList.Add(order);
             return Task.FromResult(JsonConvert.SerializeObject(outList, Formatting.None));
         }
@@ -139,14 +146,14 @@ namespace ResplendentTools
         private static int NumberToCraft(int finalItemCount, int currentIngredientId)
         {
             var currentIngredient = InventoryManager.FilledSlots.FirstOrDefault(i => i.RawItemId == currentIngredientId);
-            int currentIngredientCount = (int)(currentIngredient == null ? 0 : currentIngredient.Count);
+            var currentIngredientCount = (int)(currentIngredient == null ? 0 : currentIngredient.Count);
 
-            return (int)Math.Min(30 - (finalItemCount / 2), currentIngredientCount / 2);
+            return Math.Min(30 - (finalItemCount / 2), currentIngredientCount / 2);
         }
 
         public static async Task DoResplendentCrafting()
         {
-            string lisbethOrder = await GetLisbethResplendentOrder();
+            var lisbethOrder = await GetLisbethResplendentOrder();
 
             if (lisbethOrder == "")
             {
@@ -158,7 +165,7 @@ namespace ResplendentTools
                 if (!await Lisbeth.ExecuteOrders(lisbethOrder))
                 {
                     Log("Lisbeth order failed, Dumping order to GCSupply.json");
-                    using (StreamWriter outputFile = new StreamWriter("GCSupply.json", false))
+                    using (var outputFile = new StreamWriter("GCSupply.json", false))
                     {
                         await outputFile.WriteAsync(lisbethOrder);
                     }

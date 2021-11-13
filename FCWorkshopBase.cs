@@ -79,7 +79,6 @@ namespace LlamaLibrary
         private static uint[] npcids = new uint[] { 2005236, 2005238, 2005240, 2007821 };
         private readonly bool readOrder = false;
 
-        private bool _init;
         private Composite _root;
 
         private List<LisbethOrder> orderList;
@@ -90,8 +89,7 @@ namespace LlamaLibrary
             {
                 Task.Factory.StartNew(() =>
                 {
-                    init();
-                    _init = true;
+                    Init();
                 });
             }
         }
@@ -141,7 +139,7 @@ namespace LlamaLibrary
             _root = null;
         }
 
-        internal void init()
+        internal void Init()
         {
             OffsetManager.Init();
 
@@ -150,7 +148,7 @@ namespace LlamaLibrary
             // Logger.Info("Loaded Order.json");
         }
 
-        private static T loadResource<T>(string text)
+        private static T LoadResource<T>(string text)
         {
             return JsonConvert.DeserializeObject<T>(text);
         }
@@ -209,7 +207,7 @@ namespace LlamaLibrary
 
             foreach (var category in CountCategories)
             {
-                using (var outputFile = new StreamWriter($"{category.ToString()}.csv", false))
+                using (var outputFile = new StreamWriter($"{category}.csv", false))
                 {
                     outputFile.WriteLine($"ItemId,IsHq,Count,Ilvl,ItemUICategory,Name");
                     foreach (var itemStored in categoryCount[category])
@@ -315,16 +313,23 @@ namespace LlamaLibrary
             var windowByName = RaptureAtkUnitManager.GetWindowByName(windowName);
 
             if (windowByName == null)
+            {
                 return false;
+            }
 
             while (SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.YellowCraftersScrips) > 50 && InventoryManager.FreeSlots > 1)
             {
-                if (windowByName != null) windowByName.SendAction(4, 3, 0, 3, 0x19, 3, 1, 0, 0);
+                if (windowByName != null)
+                {
+                    windowByName.SendAction(4, 3, 0, 3, 0x19, 3, 1, 0, 0);
+                }
 
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
 
                 if (SelectYesno.IsOpen)
+                {
                     SelectYesno.Yes();
+                }
 
                 await Coroutine.Sleep(700);
             }
@@ -607,16 +612,24 @@ namespace LlamaLibrary
                                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
 
                                     if (SelectYesno.IsOpen)
+                                    {
                                         SelectYesno.Yes();
+                                    }
 
                                     await Coroutine.Sleep(700);
 
-                                    if (!isHQ) continue;
+                                    if (!isHQ)
+                                    {
+                                        continue;
+                                    }
 
                                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
 
                                     if (SelectYesno.IsOpen)
+                                    {
                                         SelectYesno.Yes();
+                                    }
+
                                     await Coroutine.Sleep(700);
                                 }
                                 else
@@ -632,7 +645,9 @@ namespace LlamaLibrary
                         }
                     }
                     else
+                    {
                         Logging.Write($"No Turn ins available {turnInsAvail}");
+                    }
                 }
                 else
                 {
@@ -685,7 +700,9 @@ namespace LlamaLibrary
         public static async Task<bool> CloseFCCraftingStation()
         {
             if (!SubmarinePartsMenu.Instance.IsOpen)
+            {
                 return true;
+            }
 
             SubmarinePartsMenu.Instance.Close();
 

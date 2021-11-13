@@ -21,9 +21,9 @@ namespace Ff14bot.NeoProfiles
     {
         protected LLUseSpellTag() { Hotspots = new IndexedList<HotSpot>(); }
 
-        public override bool HighPriority { get { return true; } }
+        public override bool HighPriority => true;
 
-        private SpellData Spell { get { return DataManager.GetSpellData(SpellId); } }
+        private SpellData Spell => DataManager.GetSpellData(SpellId);
 
         public override string StatusText => $"Using ability {Spell.LocalizedName} for {QuestName}.";
 
@@ -67,7 +67,7 @@ namespace Ff14bot.NeoProfiles
 
         [XmlAttribute("XYZ")]
         public Vector3 XYZ { get; set; }
-        public HotSpot Position { get { return Hotspots.CurrentOrDefault; } }
+        public HotSpot Position => Hotspots.CurrentOrDefault;
 
         [XmlAttribute("Radius")]
         [DefaultValue(50f)]
@@ -126,20 +126,13 @@ namespace Ff14bot.NeoProfiles
             return false;
         }
 
-        private Composite CustomLogic
-        {
-            get
-            {
-                return
-                    new Decorator(
+        private Composite CustomLogic => new Decorator(
                         r => (r as GameObject) != null,
                         new PrioritySelector(
                             CommonBehaviors.MoveAndStop(ret => ((GameObject)ret).Location, UseDistance, true),
                             CreateUseSpell()
                          )
                      );
-            }
-        }
 
         private Composite CreateUseSpell()
         {
@@ -179,6 +172,7 @@ namespace Ff14bot.NeoProfiles
                 {
                     Log($"Target set to {_target.EnglishName}.");
                 }
+
                 return _target;
             }
         }
@@ -187,7 +181,7 @@ namespace Ff14bot.NeoProfiles
         {
             var possible = GameObjectManager.GetObjectsOfType<GameObject>(true, false).Where(obj => obj.IsVisible && obj.IsTargetable && NpcIds.Contains((int)obj.NpcId)).OrderBy(obj => obj.DistanceSqr(Core.Me.Location));
 
-            float closest = float.MaxValue;
+            var closest = float.MaxValue;
             foreach (var obj in possible)
             {
                 if (obj.DistanceSqr() < 1)
@@ -215,6 +209,7 @@ namespace Ff14bot.NeoProfiles
                     {
                         Hotspots.Next();
                     }
+
                     return obj;
                 }
             }

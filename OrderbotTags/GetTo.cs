@@ -30,23 +30,13 @@ namespace Ff14bot.NeoProfiles.Tags
         public int ZoneId { get; set; }
 
         private bool _generatedNodes = false;
-        private bool _isdone;
-        public override bool IsDone
-        {
-            get
-            {
-                return FinalizedPath?.Count == 0;
-            }
-        }
 
-        public override bool HighPriority
-        {
-            get { return true; }
-        }
+        public override bool IsDone => FinalizedPath?.Count == 0;
+
+        public override bool HighPriority => true;
 
         protected override void OnResetCachedDone()
         {
-            _isdone = false;
             _generatedNodes = false;
             FinalizedPath = null;
         }

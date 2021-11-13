@@ -10,21 +10,61 @@ namespace LlamaLibrary.Helpers
     {
         public static float GetItemWeight(Item item, ClassJobType job = ClassJobType.Adventurer)
         {
-            if (!MainHandsAndOffHands.Contains(item.EquipmentCatagory) && !item.IsArmor && !item.IsWeapon) return -1f;
-            if (job == ClassJobType.Adventurer) job = Core.Me.CurrentJob;
-            if (!item.IsValidForClass(job)) return -1f;
-            ushort level = ClassJobLevel(job);
-            if ((item.Id == 2634 || item.Id == 2633) && level <= 10) return 5000f;
-            if (item.Id == 8567 && level <= 25) return 5000f;
-            if (item.Id == 14043 && level <= 30) return 5000f;
-            if (item.Id == 16039 && level <= 50) return 5000f;
-            if (item.Id == 24589 && level <= 70) return 5000f;
+            if (!MainHandsAndOffHands.Contains(item.EquipmentCatagory) && !item.IsArmor && !item.IsWeapon)
+            {
+                return -1f;
+            }
+
+            if (job == ClassJobType.Adventurer)
+            {
+                job = Core.Me.CurrentJob;
+            }
+
+            if (!item.IsValidForClass(job))
+            {
+                return -1f;
+            }
+
+            var level = ClassJobLevel(job);
+            if ((item.Id == 2634 || item.Id == 2633) && level <= 10)
+            {
+                return 5000f;
+            }
+
+            if (item.Id == 8567 && level <= 25)
+            {
+                return 5000f;
+            }
+
+            if (item.Id == 14043 && level <= 30)
+            {
+                return 5000f;
+            }
+
+            if (item.Id == 16039 && level <= 50)
+            {
+                return 5000f;
+            }
+
+            if (item.Id == 24589 && level <= 70)
+            {
+                return 5000f;
+            }
 
             float weight = 0;
             Dictionary<ItemAttribute, float> values;
-            if (job.IsDoh()) values = DoHWeights;
-            else if (job.IsDol()) values = DoLWeights;
-            else values = ClassItemWeightStorage.Instance.Values;
+            if (job.IsDoh())
+            {
+                values = DoHWeights;
+            }
+            else if (job.IsDol())
+            {
+                values = DoLWeights;
+            }
+            else
+            {
+                values = ClassItemWeightStorage.Instance.Values;
+            }
 
             foreach (var itemStat in item.Attributes)
             {

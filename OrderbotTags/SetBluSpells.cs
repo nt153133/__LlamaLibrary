@@ -41,8 +41,8 @@ namespace LlamaLibrary.OrderbotTags
 
         private async Task SetBlueActiveSpells(int[] spells)
         {
-            uint[] newSpells = new uint[spells.Length];
-            for (int i = 0; i < spells.Length; i++)
+            var newSpells = new uint[spells.Length];
+            for (var i = 0; i < spells.Length; i++)
             {
                 newSpells[i] = (uint)spells[i];
             }

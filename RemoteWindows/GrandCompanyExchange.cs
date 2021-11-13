@@ -33,7 +33,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public void BuyItemByIndex(uint index, int qty)
         {
-            SendAction(4, 3, 0, 3, (ulong)index, 3, (ulong)qty, 0, 7); //Click item and qty
+            SendAction(4, 3, 0, 3, index, 3, (ulong)qty, 0, 7); //Click item and qty
         }
 
         public void ChangeRankGroup(int rankGroup)

@@ -23,8 +23,9 @@ namespace LlamaLibrary.Helpers
             {
                 done = Core.Memory.CallInjected64<bool>(
                     Offsets.CheckById,
-                                                        Offsets.Achieve,
-                                                        achievementId);
+                    Offsets.Achieve,
+                    achievementId
+                );
             }
 
             return done;

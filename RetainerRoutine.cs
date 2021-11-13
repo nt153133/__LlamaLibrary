@@ -96,7 +96,11 @@ namespace LlamaLibrary
 
             for (var retainerIndex = 0; retainerIndex < numRetainers; retainerIndex++)
             {
-                if (!ordered[retainerIndex].Active) continue;
+                if (!ordered[retainerIndex].Active)
+                {
+                    continue;
+                }
+
                 Log($"Selecting {ordered[retainerIndex].Name}");
                 await SelectRetainer(retainerIndex);
 
@@ -117,7 +121,7 @@ namespace LlamaLibrary
 
         internal static async Task<List<CompleteRetainer>> ReadRetainers(Func<RetainerInfo, int, Task<CompleteRetainer>> retainerTask)
         {
-            List<CompleteRetainer> retainers = new List<CompleteRetainer>();
+            var retainers = new List<CompleteRetainer>();
             if (!await OpenRetainerList())
             {
                 return retainers;
@@ -138,7 +142,11 @@ namespace LlamaLibrary
 
             for (var retainerIndex = 0; retainerIndex < numRetainers; retainerIndex++)
             {
-                if (!ordered[retainerIndex].Active) continue;
+                if (!ordered[retainerIndex].Active)
+                {
+                    continue;
+                }
+
                 Log($"Selecting {ordered[retainerIndex].Name}");
                 await SelectRetainer(retainerIndex);
 
@@ -242,7 +250,10 @@ namespace LlamaLibrary
                     {
                         var haveSlot = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).SelectMany(k => k.FilledSlots).FirstOrDefault(j => j.TrueItemId == slot.TrueItemId && j.Item.StackSize > 1 && j.Count < j.Item.StackSize);
 
-                        if (haveSlot == default(BagSlot)) break;
+                        if (haveSlot == default(BagSlot))
+                        {
+                            break;
+                        }
 
                         slot.RetainerEntrustQuantity(Math.Min(haveSlot.Item.StackSize - haveSlot.Count, slot.Count));
 
@@ -268,11 +279,17 @@ namespace LlamaLibrary
         public static async Task<bool> SelectRetainer(ulong retainerContentId)
         {
             //Log($"Selecting retainer {retainerContentId}");
-            if (RetainerList.Instance.IsOpen) return await RetainerList.Instance.SelectRetainer(retainerContentId);
+            if (RetainerList.Instance.IsOpen)
+            {
+                return await RetainerList.Instance.SelectRetainer(retainerContentId);
+            }
 
             if (RetainerTasks.IsOpen)
             {
-                if (CurrentRetainer == retainerContentId) return true;
+                if (CurrentRetainer == retainerContentId)
+                {
+                    return true;
+                }
 
                 if (await DeSelectRetainer())
                 {
@@ -290,7 +307,11 @@ namespace LlamaLibrary
 
         public static async Task<bool> DeSelectRetainer()
         {
-            if (!RetainerTasks.IsOpen) return true;
+            if (!RetainerTasks.IsOpen)
+            {
+                return true;
+            }
+
             RetainerTasks.CloseTasks();
 
             await Coroutine.Wait(3000, () => DialogOpen || SelectYesno.IsOpen);
@@ -382,7 +403,11 @@ namespace LlamaLibrary
 
                 await Coroutine.Wait(1500, () => DialogOpen || SelectString.IsOpen);
                 await Coroutine.Sleep(200);
-                if (DialogOpen) Next();
+                if (DialogOpen)
+                {
+                    Next();
+                }
+
                 await Coroutine.Sleep(200);
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
             }

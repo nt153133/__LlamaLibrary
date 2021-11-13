@@ -303,7 +303,6 @@
     <Compile Include="RemoteWindows\SatisfactionSupplyResult.cs" />
     <Compile Include="RemoteWindows\ShopExchangeItem.cs" />
     <Compile Include="RemoteWindows\SubmarinePartsMenu.cs" />
-    <Compile Include="Repair.cs" />
     <Compile Include="RetainerItemFinder\StoredSaddlebagInventory.cs" />
     <Compile Include="RetainerRoutine.cs" />
     <Compile Include="Retainers\CompleteRetainer.cs" />

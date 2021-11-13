@@ -43,16 +43,20 @@ namespace LlamaLibrary.Helpers
 
         public static async Task SetAllSpells(uint[] spells)
         {
-            if (spells.Length > Offsets.MaxActive) return;
-            int index = 0;
-            for (int i = 0; i < spells.Length; i++)
+            if (spells.Length > Offsets.MaxActive)
+            {
+                return;
+            }
+
+            var index = 0;
+            for (var i = 0; i < spells.Length; i++)
             {
                 SetSpell(i, spells[i]);
                 await Coroutine.Sleep(200);
                 index++;
             }
 
-            for (int i = index; i < Offsets.MaxActive + 1; i++)
+            for (var i = index; i < Offsets.MaxActive + 1; i++)
             {
                 SetSpell(i, 0);
                 await Coroutine.Sleep(200);
@@ -61,19 +65,25 @@ namespace LlamaLibrary.Helpers
 
         public static async Task SetSpells(uint[] spells)
         {
-            if (spells.Length > Offsets.MaxActive) return;
+            if (spells.Length > Offsets.MaxActive)
+            {
+                return;
+            }
 
             var currentSpells = ActiveSpells;
 
-            if (spells.All(i => currentSpells.Contains(i))) return;
+            if (spells.All(i => currentSpells.Contains(i)))
+            {
+                return;
+            }
 
             var spellsToAdd = spells.Except(currentSpells);
 
-            List<(int, uint)> spellsToModify = new List<(int, uint)>();
+            var spellsToModify = new List<(int, uint)>();
 
             foreach (var spell in spellsToAdd)
             {
-                for (int i = 0; i < currentSpells.Length; i++)
+                for (var i = 0; i < currentSpells.Length; i++)
                 {
                     if (currentSpells[i] == 0)
                     {

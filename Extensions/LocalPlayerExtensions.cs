@@ -38,8 +38,11 @@ namespace LlamaLibrary.Extensions
 
         internal static int MaxGCSeals(this LocalPlayer player)
         {
-            byte gc = Core.Memory.Read<byte>(Offsets.CurrentGC);
-            if (gc == 0) return 0;
+            var gc = Core.Memory.Read<byte>(Offsets.CurrentGC);
+            if (gc == 0)
+            {
+                return 0;
+            }
 
             var Rank = Core.Memory.Read<byte>(Offsets.CurrentGC + gc);
             IntPtr rankRow;
@@ -47,7 +50,8 @@ namespace LlamaLibrary.Extensions
             {
                 rankRow = Core.Memory.CallInjected64<IntPtr>(
                     Offsets.GCGetMaxSealsByRank,
-                                                             Rank);
+                    Rank
+                );
             }
 
             return Core.Memory.Read<int>(rankRow);

@@ -35,7 +35,7 @@ namespace Ff14bot.NeoProfiles
 
         public override bool IsDone => _isDone;
 
-        private static async void mythread()
+        private static async void MyThread()
         {
             Logging.Write(Colors.Chocolate, "[LisbethOrderTag] Thread Started");
 
@@ -55,7 +55,10 @@ namespace Ff14bot.NeoProfiles
 
                 var method = BotType.GetMethod("Load", BindingFlags.Static | BindingFlags.NonPublic);
 
-                if (method != null) method.Invoke(null, null);
+                if (method != null)
+                {
+                    method.Invoke(null, null);
+                }
 
                 Thread.Sleep(4000);
 
@@ -119,7 +122,10 @@ namespace Ff14bot.NeoProfiles
 
             var BotType = AppDomain.CurrentDomain.GetAssemblies().First(i => i.FullName.Contains("Lisbeth.Reborn")).DefinedTypes.FirstOrDefault(i => i.Name == "Directories");
 
-            if (BotType == null) BotType = AppDomain.CurrentDomain.GetAssemblies().First(i => i.FullName.Contains("Lisbeth")).DefinedTypes.FirstOrDefault(i => i.Name == "Directories");
+            if (BotType == null)
+            {
+                BotType = AppDomain.CurrentDomain.GetAssemblies().First(i => i.FullName.Contains("Lisbeth")).DefinedTypes.FirstOrDefault(i => i.Name == "Directories");
+            }
 
             Logging.Write(Colors.Chocolate, $"[LisbethOrderTag] Lisbeth Type {BotType.FullName}");
 
@@ -138,13 +144,16 @@ namespace Ff14bot.NeoProfiles
                 outputFile.Write(JsonConvert.SerializeObject(settings, Formatting.None));
             }
 
-            if (File.Exists(resumePath)) File.Delete(resumePath);
+            if (File.Exists(resumePath))
+            {
+                File.Delete(resumePath);
+            }
 
             Logging.Write(Colors.Chocolate, "[LisbethOrderTag] Settings Written");
 
             await Coroutine.Sleep(1000);
 
-            var a = new Thread(mythread);
+            var a = new Thread(MyThread);
             a.Start();
 
             _isDone = false;
@@ -179,7 +188,7 @@ namespace Ff14bot.NeoProfiles
         /// <param name="frequency">The frequency at which the condition will be check, in milliseconds.</param>
         /// <param name="timeout">Timeout in milliseconds.</param>
         /// <exception cref="TimeoutException"></exception>
-        /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task WaitWhile(Func<bool> condition, int frequency = 25, int timeout = -1)
         {
             var waitTask = Task.Run(async () =>
@@ -191,7 +200,9 @@ namespace Ff14bot.NeoProfiles
             });
 
             if (waitTask != await Task.WhenAny(waitTask, Task.Delay(timeout)))
+            {
                 throw new TimeoutException();
+            }
         }
 
         /// <summary>
@@ -200,7 +211,7 @@ namespace Ff14bot.NeoProfiles
         /// <param name="condition">The break condition.</param>
         /// <param name="frequency">The frequency at which the condition will be checked.</param>
         /// <param name="timeout">The timeout in milliseconds.</param>
-        /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task WaitUntil(Func<bool> condition, int frequency = 25, int timeout = -1)
         {
             var waitTask = Task.Run(async () =>
@@ -211,10 +222,10 @@ namespace Ff14bot.NeoProfiles
                 }
             });
 
-            if (waitTask != await Task.WhenAny(
-                waitTask,
-                    Task.Delay(timeout)))
+            if (waitTask != await Task.WhenAny(waitTask, Task.Delay(timeout)))
+            {
                 throw new TimeoutException();
+            }
         }
 
         private class LisbethOrder

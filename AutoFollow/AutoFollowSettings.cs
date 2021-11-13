@@ -24,7 +24,11 @@ namespace LlamaLibrary
             get => _followLeader;
             set
             {
-                if (_followLeader == value) return;
+                if (_followLeader == value)
+                {
+                    return;
+                }
+
                 _followLeader = value;
                 Save();
             }
@@ -37,7 +41,11 @@ namespace LlamaLibrary
             get => _isPaused;
             set
             {
-                if (_isPaused == value) return;
+                if (_isPaused == value)
+                {
+                    return;
+                }
+
                 _isPaused = value;
                 Save();
             }
@@ -49,7 +57,11 @@ namespace LlamaLibrary
             get => _followTargetName;
             set
             {
-                if (_followTargetName == value) return;
+                if (_followTargetName == value)
+                {
+                    return;
+                }
+
                 _followTargetName = value;
                 Save();
             }

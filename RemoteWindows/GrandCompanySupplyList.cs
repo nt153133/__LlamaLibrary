@@ -28,9 +28,9 @@ namespace LlamaLibrary.RemoteWindows
             var canHandInElements = new ArraySegment<TwoInt>(currentElements, 346, numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
             var reqElements = new ArraySegment<TwoInt>(currentElements, 386, numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
 
-            bool[] turins = new bool[numberTurnins];
+            var turins = new bool[numberTurnins];
 
-            for (int i = 0; i < numberTurnins; i++)
+            for (var i = 0; i < numberTurnins; i++)
             {
                 turins[i] = canHandInElements[i] >= reqElements[i];
             }

@@ -51,13 +51,14 @@ namespace LlamaLibrary.OrderbotTags
                 //We have not dug yet.
                 new Decorator(
                     r => Navigator.InPosition(Core.Me.Location, XYZ, 10) && !GameObjectManager.GameObjects.Any(i => i.Type == GameObjectType.Treasure),
-                        new ActionRunCoroutine(async s =>
-                        {
-                            ActionManager.DoAction(ActionType.General, 20, Core.Me);
-                            return await Coroutine.Wait(
-                                10000,
-                                () => GameObjectManager.GameObjects.Any(i => i.Type == GameObjectType.Treasure));
-                        })),
+                    new ActionRunCoroutine(async s =>
+                    {
+                        ActionManager.DoAction(ActionType.General, 20, Core.Me);
+                        return await Coroutine.Wait(
+                            10000,
+                            () => GameObjectManager.GameObjects.Any(i => i.Type == GameObjectType.Treasure));
+                    })
+                ),
                 new Decorator(r => GameObjectManager.Attackers.Any() && Poi.Current.Type != PoiType.Kill, new ActionRunCoroutine(
                     s =>
                     {

@@ -19,9 +19,14 @@ namespace LlamaLibrary.Helpers
 
         public static bool AnimationLocked => CraftingManager.AnimationLocked;
 
+        // TODO: arg `statis` is unused here in favor of property `Status`, but method is public.  Safe to remove anyway?
         public static bool IsValid(CraftingStatus statis)
         {
-            if (Status.Stage == 9 || Status.Stage == 10) return true;
+            if (Status.Stage == 9 || Status.Stage == 10)
+            {
+                return true;
+            }
+
             return false;
         }
 

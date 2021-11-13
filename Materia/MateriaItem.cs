@@ -14,10 +14,10 @@ namespace LlamaLibrary.Materia
 
         public MateriaItem(int key, int tier, int value, string stat)
         {
-            this.Key = key;
-            this.Tier = tier;
-            this.Value = value;
-            this.Stat = stat;
+            Key = key;
+            Tier = tier;
+            Value = value;
+            Stat = stat;
         }
 
         public override string ToString()

@@ -35,7 +35,7 @@ namespace LlamaLibrary.Materia
         {
             Task.Factory.StartNew(() =>
             {
-                init();
+                Init();
                 _init = true;
                 Log("INIT DONE");
             });
@@ -53,7 +53,10 @@ namespace LlamaLibrary.Materia
         public override void OnButtonPress()
         {
             if (_settings == null || _settings.IsDisposed)
+            {
                 _settings = new MateriaSettingsFrm();
+            }
+
             try
             {
                 _settings.Show();
@@ -119,16 +122,16 @@ namespace LlamaLibrary.Materia
             Logging.Write(Colors.Aquamarine, msg);
         }
 
-        internal void init()
+        internal void Init()
         {
             OffsetManager.Init();
 
             Log("Load Materia.json");
-            MateriaList = loadResource<Dictionary<int, List<MateriaItem>>>(Resources.Materia);
+            MateriaList = LoadResource<Dictionary<int, List<MateriaItem>>>(Resources.Materia);
             Log("Loaded Materia.json");
         }
 
-        private static T loadResource<T>(string text)
+        private static T LoadResource<T>(string text)
         {
             return JsonConvert.DeserializeObject<T>(text);
         }
@@ -140,16 +143,21 @@ namespace LlamaLibrary.Materia
             {
                 Log($"Want to affix Materia to {bagSlot}");
 
-                for (int i = 0; i < materiaList.Count; i++)
+                for (var i = 0; i < materiaList.Count; i++)
                 {
                     if (materiaList[i] == null)
+                    {
                         break;
+                    }
 
                     Log($"Want to affix materia {i} {materiaList[i]}");
 
-                    if (!materiaList[i].IsFilled) continue;
+                    if (!materiaList[i].IsFilled)
+                    {
+                        continue;
+                    }
 
-                    int count = MateriaCount(bagSlot);
+                    var count = MateriaCount(bagSlot);
 
                     while (materiaList[i].IsFilled && (count == MateriaCount(bagSlot)))
                     {
@@ -230,7 +238,9 @@ namespace LlamaLibrary.Materia
                     }
 
                     if (!materiaList[i].IsFilled)
+                    {
                         return false;
+                    }
                 }
             }
 
@@ -242,8 +252,8 @@ namespace LlamaLibrary.Materia
             if (bagSlot != null && bagSlot.IsValid)
             {
                 Log($"Want to remove Materia from {bagSlot}");
-                int count = MateriaCount(bagSlot);
-                for (int i = 0; i < count; i++)
+                var count = MateriaCount(bagSlot);
+                for (var i = 0; i < count; i++)
                 {
                     Log($"Removing materia {count - i}");
                     bagSlot.RemoveMateria();
@@ -265,7 +275,9 @@ namespace LlamaLibrary.Materia
             for (var i = 0; i < 5; i++)
             {
                 if (materiaType[i] > 0)
+                {
                     materia.Add(MateriaList[materiaType[i]].First(j => j.Tier == materiaLevel[i]));
+                }
             }
 
             return materia;
@@ -276,7 +288,10 @@ namespace LlamaLibrary.Materia
             var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + 0x20, 5);
             for (var i = 0; i < 5; i++)
             {
-                if (materiaType[i] > 0) return true;
+                if (materiaType[i] > 0)
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -285,10 +300,13 @@ namespace LlamaLibrary.Materia
         public static int MateriaCount(BagSlot bagSlot)
         {
             var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + 0x20, 5);
-            int count = 0;
+            var count = 0;
             for (var i = 0; i < 5; i++)
             {
-                if (materiaType[i] > 0) count++;
+                if (materiaType[i] > 0)
+                {
+                    count++;
+                }
             }
 
             return count;

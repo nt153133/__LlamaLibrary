@@ -7,26 +7,20 @@ namespace LlamaLibrary.Extensions
     public static class EnumExtensions
     {
         /// <summary>
-        ///     is a dow class.
+        /// Determines if character class is a Disciple of War (combat).
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">The <see cref="ClassJobType"/> to be categorized.</param>
+        /// <returns><see langword="true"/> if class is a Disciple of War.</returns>
         internal static bool IsDow(this ClassJobType type)
         {
-            return type != ClassJobType.Adventurer &&
-                   type != ClassJobType.Alchemist &&
-                   type != ClassJobType.Armorer &&
-                   type != ClassJobType.Blacksmith &&
-                   type != ClassJobType.Botanist &&
-                   type != ClassJobType.Carpenter &&
-                   type != ClassJobType.Culinarian &&
-                   type != ClassJobType.Fisher &&
-                   type != ClassJobType.Goldsmith &&
-                   type != ClassJobType.Leatherworker &&
-                   type != ClassJobType.Miner &&
-                   type != ClassJobType.Weaver;
+            return !IsDoh(type) && !IsDol(type);
         }
 
+        /// <summary>
+        /// Determines if character class is a Disciple of the Hand (crafter).
+        /// </summary>
+        /// <param name="type">The <see cref="ClassJobType"/> to be categorized.</param>
+        /// <returns><see langword="true"/> if class is a Disciple of the Hand.</returns>
         internal static bool IsDoh(this ClassJobType type)
         {
             return type == ClassJobType.Carpenter ||
@@ -39,6 +33,11 @@ namespace LlamaLibrary.Extensions
                    type == ClassJobType.Culinarian;
         }
 
+        /// <summary>
+        /// Determines if character class is a Disciple of the Land (gatherer).
+        /// </summary>
+        /// <param name="type">The <see cref="ClassJobType"/> to be categorized.</param>
+        /// <returns><see langword="true"/> if class is a Disciple of the Land.</returns>
         internal static bool IsDol(this ClassJobType type)
         {
             return type == ClassJobType.Miner ||
@@ -54,15 +53,20 @@ namespace LlamaLibrary.Extensions
         internal static ClassJobCategory ClassJobCategory(this RetainerRole type)
         {
             if (type.ClassJob().IsDow())
+            {
                 return Enums.ClassJobCategory.DOW;
+            }
 
             switch (type.ClassJob())
             {
-                case ClassJobType.Miner: return Enums.ClassJobCategory.MIN;
-                case ClassJobType.Fisher: return Enums.ClassJobCategory.FSH;
-                case ClassJobType.Botanist: return Enums.ClassJobCategory.BOT;
-
-                default: return Enums.ClassJobCategory.ANY;
+                case ClassJobType.Miner:
+                    return Enums.ClassJobCategory.MIN;
+                case ClassJobType.Fisher:
+                    return Enums.ClassJobCategory.FSH;
+                case ClassJobType.Botanist:
+                    return Enums.ClassJobCategory.BOT;
+                default:
+                    return Enums.ClassJobCategory.ANY;
             }
         }
     }

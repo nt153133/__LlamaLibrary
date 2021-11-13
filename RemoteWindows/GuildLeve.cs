@@ -17,11 +17,11 @@ namespace LlamaLibrary.RemoteWindows
 
         public string PrintWindow()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.AppendLine(Window.ToString());
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
                 var leveBlock = GetLeveGroup(i);
 
@@ -30,7 +30,9 @@ namespace LlamaLibrary.RemoteWindows
                 foreach (var leve in leveBlock)
                 {
                     if (!leve.Contains("Level "))
+                    {
                         sb.AppendLine(leve);
+                    }
                 }
             }
 
@@ -39,9 +41,9 @@ namespace LlamaLibrary.RemoteWindows
 
         public string[] GetLeveGroup(int index)
         {
-            string[] names = new string[3];
+            var names = new string[3];
 
-            names[0] = Core.Memory.ReadString((IntPtr)___Elements()[ (index * 8) + 628].Data, Encoding.UTF8);
+            names[0] = Core.Memory.ReadString((IntPtr)___Elements()[(index * 8) + 628].Data, Encoding.UTF8);
             names[1] = Core.Memory.ReadString((IntPtr)___Elements()[((index * 8) + 628) + 2].Data, Encoding.UTF8);
             names[2] = Core.Memory.ReadString((IntPtr)___Elements()[((index * 8) + 628) + 4].Data, Encoding.UTF8);
 

@@ -51,7 +51,9 @@ namespace LlamaLibrary.RemoteWindows
             set
             {
                 if (WindowByName != null && CurrentClassSelected() != value)
+                {
                     SendAction(2, 0, 1, 1, (ulong)value);
+                }
             }
         }
 

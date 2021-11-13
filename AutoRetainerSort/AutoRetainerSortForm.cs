@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using LlamaLibrary.AutoRetainerSort.Classes;
 using LlamaLibrary.RemoteWindows;
-using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.AutoRetainerSort
 {
@@ -41,16 +39,19 @@ namespace LlamaLibrary.AutoRetainerSort
         private void Listbox_DoubleClick(object sender, EventArgs e)
         {
             var selectedItem = (KeyValuePair<int, InventorySortInfo>)listBoxInventoryOptions.SelectedItem;
-            EditInventoryOptionsForm editForm = new EditInventoryOptionsForm(selectedItem.Value, selectedItem.Key);
+            var editForm = new EditInventoryOptionsForm(selectedItem.Value, selectedItem.Key);
             editForm.Show(this);
         }
 
         private void AddNew_Click(object sender, EventArgs e)
         {
-            using (AddNewInventoryForm addNewForm = new AddNewInventoryForm())
+            using (var addNewForm = new AddNewInventoryForm())
             {
-                DialogResult dr = addNewForm.ShowDialog(this);
-                if (dr == DialogResult.Cancel) return;
+                var dr = addNewForm.ShowDialog(this);
+                if (dr == DialogResult.Cancel)
+                {
+                    return;
+                }
 
                 AutoRetainerSortSettings.Instance.InventoryOptions.Add(addNewForm.Index, new InventorySortInfo(addNewForm.RetainerName));
                 ResetBindingSource();
@@ -72,21 +73,27 @@ namespace LlamaLibrary.AutoRetainerSort
             var selectedItem = (KeyValuePair<int, InventorySortInfo>)listBoxInventoryOptions.SelectedItem;
             if (selectedItem.Key >= ItemSortStatus.SaddlebagInventoryIndex)
             {
-                DialogResult dr = MessageBox.Show(
+                var dr = MessageBox.Show(
                     $"Are you sure you want to delete {selectedItem.Value.Name}?",
                     "Really Delete?",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Exclamation);
-                if (dr != DialogResult.Yes) return;
+                if (dr != DialogResult.Yes)
+                {
+                    return;
+                }
             }
             else
             {
-                DialogResult dr = MessageBox.Show(
+                var dr = MessageBox.Show(
                     $"Are you REALLY sure you want to delete the Player Inventory from being sorted?{Environment.NewLine}This is probably going to break things... don't blame me.",
                     Strings.WarningCaption,
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Hand);
-                if (dr != DialogResult.Yes) return;
+                if (dr != DialogResult.Yes)
+                {
+                    return;
+                }
             }
 
             if (AutoRetainerSortSettings.Instance.InventoryOptions.Remove(selectedItem.Key))
@@ -95,7 +102,7 @@ namespace LlamaLibrary.AutoRetainerSort
             }
             else
             {
-                AutoRetainerSort.LogCritical($"Something went wrong with trying to remove {selectedItem.Value.Name} from the list... Index: {selectedItem.Key.ToString()}");
+                AutoRetainerSort.LogCritical($"Something went wrong with trying to remove {selectedItem.Value.Name} from the list... Index: {selectedItem.Key}");
             }
 
             AutoRetainerSortSettings.Instance.Save();
@@ -106,7 +113,7 @@ namespace LlamaLibrary.AutoRetainerSort
         {
             if (!AutoRetainerSortSettings.Instance.InventoryOptions.ContainsKey(ItemSortStatus.PlayerInventoryIndex))
             {
-                DialogResult dr = MessageBox.Show(
+                var dr = MessageBox.Show(
                     "It looks like you don't have the player inventory added to the indexes... somehow. Do you want me to re-add that for you?",
                     "Um.",
                     MessageBoxButtons.YesNo,
@@ -121,7 +128,7 @@ namespace LlamaLibrary.AutoRetainerSort
 
             if (!AutoRetainerSortSettings.Instance.InventoryOptions.ContainsKey(ItemSortStatus.SaddlebagInventoryIndex))
             {
-                DialogResult dr = MessageBox.Show(
+                var dr = MessageBox.Show(
                     "It looks like you don't have the chocobo saddlebag added to the indexes. Do you want me to re-add that for you?",
                     "Hey Listen!",
                     MessageBoxButtons.YesNo,
@@ -140,14 +147,17 @@ namespace LlamaLibrary.AutoRetainerSort
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 
-            DialogResult warningResult = MessageBox.Show(
+            var warningResult = MessageBox.Show(
                 Strings.AutoSetup_OverwriteWarning,
                 "Warning!",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);
-            if (warningResult == DialogResult.No) return;
+            if (warningResult == DialogResult.No)
+            {
+                return;
+            }
 
-            bool conflictUnsorted = MessageBox.Show(
+            var conflictUnsorted = MessageBox.Show(
                 Strings.AutoSetup_ConflictQuestion,
                 "Conflict?",
                 MessageBoxButtons.YesNo,
@@ -155,7 +165,7 @@ namespace LlamaLibrary.AutoRetainerSort
 
             var newInventorySetup = AutoRetainerSortSettings.Instance.InventoryOptions;
 
-            foreach (InventorySortInfo inventorySortInfo in newInventorySetup.Values)
+            foreach (var inventorySortInfo in newInventorySetup.Values)
             {
                 inventorySortInfo.SortTypes.Clear();
             }
@@ -164,9 +174,16 @@ namespace LlamaLibrary.AutoRetainerSort
 
             for (var i = 0; i < orderedRetainerList.Length; i++)
             {
-                if (newInventorySetup.ContainsKey(i)) continue;
-                RetainerInfo retInfo = orderedRetainerList[i];
-                if (!retInfo.Active) continue;
+                if (newInventorySetup.ContainsKey(i))
+                {
+                    continue;
+                }
+
+                var retInfo = orderedRetainerList[i];
+                if (!retInfo.Active)
+                {
+                    continue;
+                }
 
                 newInventorySetup.Add(i, new InventorySortInfo(retInfo.Name));
             }
@@ -177,14 +194,14 @@ namespace LlamaLibrary.AutoRetainerSort
 
             var sortTypeCounts = new Dictionary<SortType, Dictionary<int, int>>();
 
-            foreach (SortType sortType in Enum.GetValues(typeof(SortType)).Cast<SortType>())
+            foreach (var sortType in Enum.GetValues(typeof(SortType)).Cast<SortType>())
             {
                 sortTypeCounts[sortType] = new Dictionary<int, int>();
             }
 
-            foreach (CachedInventory cachedInventory in ItemSortStatus.GetAllInventories())
+            foreach (var cachedInventory in ItemSortStatus.GetAllInventories())
             {
-                foreach (SortType sortType in cachedInventory.ItemCounts.Select(x => ItemSortStatus.GetSortInfo(x.Key).SortType))
+                foreach (var sortType in cachedInventory.ItemCounts.Select(x => ItemSortStatus.GetSortInfo(x.Key).SortType))
                 {
                     var indexCountDic = sortTypeCounts[sortType];
                     if (indexCountDic.ContainsKey(cachedInventory.Index))
@@ -200,12 +217,19 @@ namespace LlamaLibrary.AutoRetainerSort
 
             foreach (var typeDicPair in sortTypeCounts)
             {
-                SortType sortType = typeDicPair.Key;
-                int indexCount = typeDicPair.Value.Keys.Count;
-                if (indexCount == 0) continue;
-                if (indexCount > 1 && conflictUnsorted) continue;
+                var sortType = typeDicPair.Key;
+                var indexCount = typeDicPair.Value.Keys.Count;
+                if (indexCount == 0)
+                {
+                    continue;
+                }
 
-                int desiredIndex = typeDicPair.Value.OrderByDescending(x => x.Value).First().Key;
+                if (indexCount > 1 && conflictUnsorted)
+                {
+                    continue;
+                }
+
+                var desiredIndex = typeDicPair.Value.OrderByDescending(x => x.Value).First().Key;
                 AutoRetainerSortSettings.Instance.InventoryOptions[desiredIndex].SortTypes.Add(new SortTypeWithCount(sortType));
             }
 

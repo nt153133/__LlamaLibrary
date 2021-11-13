@@ -11,7 +11,7 @@ namespace LlamaLibrary.RemoteAgents
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
 
-        public IntPtr MinionListAddress => this.Pointer + Offsets.AgentOffset;
+        public IntPtr MinionListAddress => Pointer + Offsets.AgentOffset;
         private static class Offsets
         {
             [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? 40 53 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8B 4B ? 48 85 C9 74 ? 48 8B 53 ? 41 B8 ? ? ? ? 48 2B D1 48 83 E2 ? E8 ? ? ? ? 33 C0 48 89 43 ? 48 89 43 ? 48 89 43 ? 48 8B CB 48 83 C4 ? 5B E9 ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 48 8B 80 ? ? ? ? 8B 40 ? C1 E8 ? F6 D0 Add 3 TraceRelative")]
@@ -30,7 +30,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public MinionStruct[] GetCurrentMinions()
         {
-            var address = this.Pointer + Offsets.AgentOffset;
+            var address = Pointer + Offsets.AgentOffset;
             var address1 = Core.Memory.Read<IntPtr>(address);
             var count = Core.Memory.Read<uint>(Offsets.MinionCount);
             return Core.Memory.ReadArray<MinionStruct>(address1, (int)count);

@@ -37,10 +37,7 @@ namespace LlamaLibrary.Helpers
 
         public static IntPtr ActiveShopPtr => Core.Memory.Read<IntPtr>(Offsets.GCShopPtr);
 
-        public static List<GCShopItem> Items
-        {
-            get { return Core.Memory.ReadArray<GCShopItem>(ActiveShopPtr + Offsets.GCArrayStart, Offsets.GCShopCount).Where(i => i.ItemID != 0).ToList(); }
-        }
+        public static List<GCShopItem> Items => Core.Memory.ReadArray<GCShopItem>(ActiveShopPtr + Offsets.GCArrayStart, Offsets.GCShopCount).Where(i => i.ItemID != 0).ToList();
 
         public static int CanAfford(GCShopItem item)
         {
@@ -58,7 +55,7 @@ namespace LlamaLibrary.Helpers
             Logger.Info($"Itemid {item.ItemID}");
             if (item.ItemID != 0)
             {
-                int qtyCanBuy = Math.Min(qty, CanAfford(item));
+                var qtyCanBuy = Math.Min(qty, CanAfford(item));
                 Logger.Info($"CanBuy {qtyCanBuy}");
                 GrandCompanyExchange.Instance.BuyItemByIndex(item.Index, qtyCanBuy);
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
@@ -80,7 +77,7 @@ namespace LlamaLibrary.Helpers
                 Logger.Info($"{(ActiveShopPtr + Offsets.GCArrayStart).ToString("X")}");
                 foreach (var item1 in Items)
                 {
-                    Logger.Info($"{item1.ToString()}");
+                    Logger.Info($"{item1}");
                 }
             }
 

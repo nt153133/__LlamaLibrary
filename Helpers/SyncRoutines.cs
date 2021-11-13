@@ -14,7 +14,11 @@ namespace LlamaLibrary.Helpers
                 {
                     while (!condition())
                     {
-                        if (checkWindows) RaptureAtkUnitManager.Update();
+                        if (checkWindows)
+                        {
+                            RaptureAtkUnitManager.Update();
+                        }
+
                         await Task.Delay(frequency);
                         await Task.Yield();
                     }

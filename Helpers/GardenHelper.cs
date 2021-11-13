@@ -56,9 +56,10 @@ namespace LlamaLibrary.Helpers
         }
                 */
 
+        // TODO: arg `plantPlan` unused here.  Unfinished feature?  Safe to remove despite public method?
         public static async Task GoGarden(uint AE, Vector3 gardenLoc, List<Tuple<uint, uint>> plantPlan)
         {
-            if (gardenLoc != default(Vector3))
+            if (gardenLoc != default)
             {
                 Navigator.PlayerMover = new SlideMover();
                 Navigator.NavigationProvider = new ServiceNavigationProvider();
@@ -83,8 +84,6 @@ namespace LlamaLibrary.Helpers
 
         public static bool AlwaysWater { get; set; }
 
-        //public static void Log(string text, params object[] args) { Logger.Info(text, args); }
-
         public static async Task<bool> Main(Vector3 gardenLoc)
         {
             var watering = GardenManager.Plants.Where(r => !Blacklist.Contains(r) && r.Distance2D(gardenLoc) < 10).ToArray();
@@ -99,10 +98,22 @@ namespace LlamaLibrary.Helpers
                         Log($"Watering {result} {plant.ObjectId:X}");
                         await Navigation.FlightorMove(plant.Location);
                         plant.Interact();
-                        if (!await Coroutine.Wait(5000, () => Talk.DialogOpen)) continue;
+                        if (!await Coroutine.Wait(5000, () => Talk.DialogOpen))
+                        {
+                            continue;
+                        }
+
                         Talk.Next();
-                        if (!await Coroutine.Wait(5000, () => SelectString.IsOpen)) continue;
-                        if (!await Coroutine.Wait(5000, () => SelectString.LineCount > 0)) continue;
+                        if (!await Coroutine.Wait(5000, () => SelectString.IsOpen))
+                        {
+                            continue;
+                        }
+
+                        if (!await Coroutine.Wait(5000, () => SelectString.LineCount > 0))
+                        {
+                            continue;
+                        }
+
                         if (SelectString.LineCount == 4)
                         {
                             SelectString.ClickSlot(1);
@@ -126,20 +137,40 @@ namespace LlamaLibrary.Helpers
             foreach (var plant in plants)
             {
                 var result = GardenManager.GetCrop(plant);
-                if (result == null) continue;
+                if (result == null)
+                {
+                    continue;
+                }
+
                 Log($"Fertilizing {GardenManager.GetCrop(plant)} {plant.ObjectId:X}");
                 await Navigation.FlightorMove(plant.Location);
                 plant.Interact();
-                if (!await Coroutine.Wait(5000, () => Talk.DialogOpen)) continue;
+                if (!await Coroutine.Wait(5000, () => Talk.DialogOpen))
+                {
+                    continue;
+                }
+
                 Talk.Next();
-                if (!await Coroutine.Wait(5000, () => SelectString.IsOpen)) continue;
-                if (!await Coroutine.Wait(5000, () => SelectString.LineCount > 0)) continue;
+                if (!await Coroutine.Wait(5000, () => SelectString.IsOpen))
+                {
+                    continue;
+                }
+
+                if (!await Coroutine.Wait(5000, () => SelectString.LineCount > 0))
+                {
+                    continue;
+                }
+
                 if (SelectString.LineCount == 4)
                 {
                     SelectString.ClickSlot(0);
                     if (await Coroutine.Wait(2000, () => GardenManager.ReadyToFertilize))
                     {
-                        if (GardenManager.Fertilize() != FertilizeResult.Success) continue;
+                        if (GardenManager.Fertilize() != FertilizeResult.Success)
+                        {
+                            continue;
+                        }
+
                         Log($"Plant with objectId {plant.ObjectId:X} was fertilized");
                         await Coroutine.Sleep(2300);
                     }
@@ -165,13 +196,13 @@ namespace LlamaLibrary.Helpers
             {
                 AgentHousingPlant.Instance.Pointer,
                 (uint)soil.BagId,
-                (ushort)soil.Slot
+                soil.Slot
             });
             result = Core.Memory.CallInjected64<IntPtr>(Offsets.PlantFunction, new object[3]
             {
                 AgentHousingPlant.Instance.Pointer,
                 (uint)seeds.BagId,
-                (ushort)seeds.Slot
+                seeds.Slot
             });
 
             await Coroutine.Wait(5000, () => SeedStruct.ItemId == seeds.RawItemId && SoilStruct.ItemId == soil.RawItemId);
@@ -192,9 +223,17 @@ namespace LlamaLibrary.Helpers
             foreach (var tmpPlant in plants)
             {
                 var _GardenIndex = Lua.GetReturnVal<int>($"return _G['{plant.LuaString}']:GetHousingGardeningIndex();");
-                if (_GardenIndex != GardenIndex) continue;
+                if (_GardenIndex != GardenIndex)
+                {
+                    continue;
+                }
+
                 var _PlantIndex = Lua.GetReturnVal<int>($"return _G['{plant.LuaString}']:GetHousingGardeningPlantIndex();");
-                if (_PlantIndex != PlantIndex) continue;
+                if (_PlantIndex != PlantIndex)
+                {
+                    continue;
+                }
+
                 var _Plant = DataManager.GetItem(Lua.GetReturnVal<uint>($"return _G['{plant.LuaString}']:GetHousingGardeningPlantCrop();"));
                 if (_Plant != null)
                 {
@@ -222,9 +261,17 @@ namespace LlamaLibrary.Helpers
                 {
                     plant.Interact();
                     await Coroutine.Wait(5000, () => Talk.DialogOpen);
-                    if (Talk.DialogOpen) Talk.Next();
+                    if (Talk.DialogOpen)
+                    {
+                        Talk.Next();
+                    }
+
                     await Coroutine.Wait(5000, () => Conversation.IsOpen);
-                    if (Conversation.IsOpen) Conversation.SelectLine(0);
+                    if (Conversation.IsOpen)
+                    {
+                        Conversation.SelectLine(0);
+                    }
+
                     await Coroutine.Wait(5000, () => HousingGardening.IsOpen);
                     if (HousingGardening.IsOpen)
                     {

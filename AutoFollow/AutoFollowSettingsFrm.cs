@@ -16,7 +16,9 @@ namespace LlamaLibrary
 
             checkBox1.Checked = AutoFollowSettings.Instance.IsPaused;
             if (AutoFollowSettings.Instance.FollowLeader)
+            {
                 radioButton1.Checked = true;
+            }
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
