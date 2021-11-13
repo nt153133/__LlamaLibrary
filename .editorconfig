@@ -1,8 +1,8 @@
-
+﻿
 [*]
 charset = utf-8-bom
 end_of_line = crlf
-trim_trailing_whitespace = false
+trim_trailing_whitespace = true
 insert_final_newline = false
 indent_style = space
 indent_size = 4
@@ -93,7 +93,7 @@ dotnet_diagnostic.SA1009.severity = None
 dotnet_diagnostic.SA1111.severity = None
 
 # Braces should not be ommitted
-dotnet_diagnostic.SA1503.severity = None
+dotnet_diagnostic.SA1503.severity = warning
 dotnet_diagnostic.sa1004.severity = none
 dotnet_diagnostic.sa1005.severity = none
 dotnet_diagnostic.sa1101.severity = none
@@ -178,9 +178,14 @@ resharper_web_config_wrong_module_highlighting = warning
 [{*.har,*.inputactions,*.jsb2,*.jsb3,*.json,.babelrc,.eslintrc,.stylelintrc,bowerrc,jest.config}]
 indent_style = space
 indent_size = 2
-csharp_space_after_keywords_in_control_flow_statements=true
 
 [*.{appxmanifest,asax,ascx,aspx,axaml,build,cg,cginc,compute,cs,cshtml,dtd,fs,fsi,fsscript,fsx,hlsl,hlsli,hlslinc,master,ml,mli,nuspec,paml,razor,resw,resx,shader,skin,usf,ush,vb,xaml,xamlx,xoml,xsd}]
 indent_style = space
 indent_size = 4
 tab_width = 4
+
+csharp_prefer_braces=true:warning
+csharp_space_after_keywords_in_control_flow_statements=true
+
+# CS0649: Field 'LocalPlayerExtensions.Offsets.CurrentGC' is never assigned to, and will always have its default value
+dotnet_diagnostic.CS0649.severity = silent
