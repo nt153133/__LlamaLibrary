@@ -1,16 +1,29 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31903.286
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LlamaLibrary", "LlamaLibrary.csproj", "{196EE308-0205-4CC4-B449-51064F7E9960}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{196EE308-0205-4CC4-B449-51064F7E9960}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{196EE308-0205-4CC4-B449-51064F7E9960}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{196EE308-0205-4CC4-B449-51064F7E9960}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{196EE308-0205-4CC4-B449-51064F7E9960}.Release|Any CPU.Build.0 = Release|Any CPU
+		{196EE308-0205-4CC4-B449-51064F7E9960}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{196EE308-0205-4CC4-B449-51064F7E9960}.Debug|x64.ActiveCfg = Debug|x64
+		{196EE308-0205-4CC4-B449-51064F7E9960}.Debug|x64.Build.0 = Debug|x64
+		{196EE308-0205-4CC4-B449-51064F7E9960}.Release|Any CPU.ActiveCfg = Release|x64
+		{196EE308-0205-4CC4-B449-51064F7E9960}.Release|x64.ActiveCfg = Release|x64
+		{196EE308-0205-4CC4-B449-51064F7E9960}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B1CF9ED-2F3A-4A3B-8D79-AFAE2C6486CE}
 	EndGlobalSection
 EndGlobal
