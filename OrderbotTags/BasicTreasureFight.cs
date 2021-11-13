@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Buddy.Coroutines;
@@ -19,7 +19,7 @@ using ActionType = ff14bot.Enums.ActionType;
 namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("BasicTreasureFight")]
-    public class BasicTreasureFight: ProfileBehavior
+    public class BasicTreasureFight : ProfileBehavior
     {
         [XmlAttribute("XYZ")]
         public Vector3 XYZ { get; set; }
@@ -35,7 +35,7 @@ namespace LlamaLibrary.OrderbotTags
             .FilledSlots.Select(i => i.RawItemId);
 
         //we are done when the item is gone
-        public override bool IsDone => 
+        public override bool IsDone =>
             !TreasureMap.MapPrimary.Keys.Any(i => Items.Contains(i)) &&
             !GameObjectManager.GameObjects.Any(i => i.Type == GameObjectType.Treasure) &&
             !GameObjectManager.Attackers.Any();
@@ -44,21 +44,25 @@ namespace LlamaLibrary.OrderbotTags
         {
             return new PrioritySelector(
                 CommonBehaviors.HandleLoading,
+
                 //GetTo
-                new Decorator(c => WorldManager.ZoneId != ZoneId || !Navigator.InPosition(Core.Me.Location, XYZ, 10),new ActionRunCoroutine(t => Lisbeth.TravelToZones((uint) ZoneId, (uint) SubZoneId,XYZ))),
+                new Decorator(c => WorldManager.ZoneId != ZoneId || !Navigator.InPosition(Core.Me.Location, XYZ, 10), new ActionRunCoroutine(t => Lisbeth.TravelToZones((uint)ZoneId, (uint)SubZoneId, XYZ))),
+
                 //We have not dug yet.
-                new Decorator(r => Navigator.InPosition(Core.Me.Location, XYZ, 10) && !GameObjectManager.GameObjects.Any(i => i.Type == GameObjectType.Treasure), 
+                new Decorator(
+                    r => Navigator.InPosition(Core.Me.Location, XYZ, 10) && !GameObjectManager.GameObjects.Any(i => i.Type == GameObjectType.Treasure),
                         new ActionRunCoroutine(async s =>
                         {
                             ActionManager.DoAction(ActionType.General, 20, Core.Me);
-                            return await Coroutine.Wait(10000,
+                            return await Coroutine.Wait(
+                                10000,
                                 () => GameObjectManager.GameObjects.Any(i => i.Type == GameObjectType.Treasure));
                         })),
                 new Decorator(r => GameObjectManager.Attackers.Any() && Poi.Current.Type != PoiType.Kill, new ActionRunCoroutine(
-                    async s =>
+                    s =>
                     {
                         Poi.Current = new Poi(GameObjectManager.Attackers.OrderBy(i => i.NpcId).First(), PoiType.Kill);
-                        return true;
+                        return System.Threading.Tasks.Task.FromResult(true);
                     })),
                 new Decorator(s => !GameObjectManager.Attackers.Any() && GameObjectManager.GameObjects.Any(i => i.Type == GameObjectType.Treasure), new ActionRunCoroutine(
                     async s =>
@@ -77,10 +81,12 @@ namespace LlamaLibrary.OrderbotTags
                         {
                             SelectYesno.ClickYes();
                         }
+
                         if (Core.Me.IsCasting && !GameObjectManager.Attackers.Any())
                         {
                             await Coroutine.Wait(10000, () => GameObjectManager.Attackers.Any() || !Core.Me.IsCasting);
                         }
+
                         return true;
                     }))
                 );

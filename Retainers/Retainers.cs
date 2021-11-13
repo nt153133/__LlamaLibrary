@@ -29,11 +29,9 @@ namespace LlamaLibrary.Retainers
 {
     public class Retainers : BotBase
     {
-        private static readonly string botName = "Retainers Organize";
+        private static readonly string BotName = "Retainers Organize";
 
-        private static bool done;
-
-        private static readonly InventoryBagId[] inventoryBagId_0 = new InventoryBagId[6]
+        private static readonly InventoryBagId[] InventoryBagId_0 = new InventoryBagId[6]
         {
             InventoryBagId.Bag1,
             InventoryBagId.Bag2,
@@ -42,6 +40,8 @@ namespace LlamaLibrary.Retainers
             InventoryBagId.Bag5,
             InventoryBagId.Bag6
         };
+
+        private static bool done;
 
         private Composite _root;
 
@@ -52,12 +52,14 @@ namespace LlamaLibrary.Retainers
         public Retainers()
         {
             OffsetManager.Init();
+
             //Task.Factory.StartNew(() =>
-           // {
-                init();
-                _init = true;
-                Log("INIT DONE");
-          //  });
+            // {
+            init();
+            _init = true;
+            Log("INIT DONE");
+
+            //  });
         }
 
         public override string Name
@@ -67,7 +69,7 @@ namespace LlamaLibrary.Retainers
 #if RB_CN
                 return "雇员整理";
 #else
-                return botName;
+                return BotName;
 #endif
             }
         }
@@ -89,7 +91,7 @@ namespace LlamaLibrary.Retainers
         internal void init()
         {
             Log("Load venture.json");
-            VentureData = new Lazy<List<RetainerTaskData>>(() =>loadResource<List<RetainerTaskData>>(Resources.Ventures));
+            VentureData = new Lazy<List<RetainerTaskData>>(() => loadResource<List<RetainerTaskData>>(Resources.Ventures));
             Log("Loaded venture.json");
         }
 
@@ -111,14 +113,14 @@ namespace LlamaLibrary.Retainers
                 settings.Show();
                 settings.Activate();
             }
-            catch (ArgumentOutOfRangeException ee)
+            catch (ArgumentOutOfRangeException)
             {
             }
         }
 
         private void Log(string text, params object[] args)
         {
-            var msg = string.Format("[" + botName + "] " + text, args);
+            var msg = string.Format("[" + BotName + "] " + text, args);
             Logging.Write(Colors.Green, msg);
         }
 
@@ -126,13 +128,13 @@ namespace LlamaLibrary.Retainers
         {
             if (!debug)
                 return;
-            var msg = string.Format("[" + botName + "] " + text, args);
+            var msg = string.Format("[" + BotName + "] " + text, args);
             Logging.WriteVerbose(msg);
         }
 
         private void LogCritical(string text, params object[] args)
         {
-            var msg = string.Format("[" + botName + "] " + text, args);
+            var msg = string.Format("[" + BotName + "] " + text, args);
             Logging.Write(Colors.OrangeRed, msg);
         }
 
@@ -160,7 +162,6 @@ namespace LlamaLibrary.Retainers
             var count = await HelperFunctions.GetNumberOfRetainers();
             var rets = Core.Memory.ReadArray<RetainerInfo>(Offsets.RetainerData, count);
 
-
             //var retainerIndex = 0;
 
             //Settings variables
@@ -173,6 +174,7 @@ namespace LlamaLibrary.Retainers
                 TreeRoot.Stop("Done playing with retainers");
                 return false;
             }
+
             await UseSummoningBell();
             await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen);
 
@@ -187,8 +189,9 @@ namespace LlamaLibrary.Retainers
             {
                 await RetainerRoutine.DeSelectRetainer();
             }
+
             var ordered = RetainerList.Instance.OrderedRetainerList.ToArray();
-            var numRetainers = ordered.Where(i=> i.Active).Count(); //GetNumberOfRetainers();
+            var numRetainers = ordered.Where(i => i.Active).Count(); //GetNumberOfRetainers();
 
             var retList = new List<RetainerInventory>();
             var moveToOrder = new List<KeyValuePair<uint, int>>();
@@ -261,14 +264,14 @@ namespace LlamaLibrary.Retainers
 
                 Log("Done checking against player inventory");
 
-                if (RetainerSettings.Instance.ReassignVentures && (ordered[retainerIndex].Job != ClassJobType.Adventurer) && ventures > 2 && (ordered[retainerIndex].VentureEndTimestamp - UnixTimestamp) <=0)
+                if (RetainerSettings.Instance.ReassignVentures && (ordered[retainerIndex].Job != ClassJobType.Adventurer) && ventures > 2 && (ordered[retainerIndex].VentureEndTimestamp - UnixTimestamp) <= 0)
                 {
                     Log("Checking Ventures");
                     await RetainerHandleVentures(); //CheckVentures();
                 }
                 else if ((ordered[retainerIndex].VentureEndTimestamp - UnixTimestamp) > 0)
                 {
-                    Log($"Venture will be done in {(ordered[retainerIndex].VentureEndTimestamp - UnixTimestamp)/60} minutes");
+                    Log($"Venture will be done in {(ordered[retainerIndex].VentureEndTimestamp - UnixTimestamp) / 60} minutes");
                 }
                 else
                 {
@@ -296,6 +299,7 @@ namespace LlamaLibrary.Retainers
             }
 
             if (debug)
+            {
                 foreach (var itemId in masterInventory)
                 {
                     var retainers = "";
@@ -307,10 +311,12 @@ namespace LlamaLibrary.Retainers
 
                     Log("Item {0}: {1}", itemId.Key, retainers);
                 }
+            }
 
             LogCritical("Duplicate items Found:");
 
             if (debug)
+            {
                 foreach (var itemId in masterInventory.Where(r => r.Value.Count > 1))
                 {
                     var retainers = "";
@@ -323,6 +329,7 @@ namespace LlamaLibrary.Retainers
 
                     Log("Item {0}: {1}", itemId.Key, retainers);
                 }
+            }
 
             /*
                  * Same as above but before the second foreach save retainer/count
@@ -378,6 +385,7 @@ namespace LlamaLibrary.Retainers
                     {
                         await UseSummoningBell();
                         await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen);
+
                         //await Coroutine.Sleep(1000);
                     }
 
@@ -392,6 +400,7 @@ namespace LlamaLibrary.Retainers
                     await Coroutine.Wait(5000, () => RetainerTasks.IsOpen);
 
                     RetainerTasks.OpenInventory();
+
                     //
                     await Coroutine.Wait(5000, RetainerTasks.IsInventoryOpen);
 
@@ -405,7 +414,7 @@ namespace LlamaLibrary.Retainers
                         if (!InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Any(i => i.TrueItemId == item)) continue;
 
                         Log("Moved: " + InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).First(i => i.TrueItemId == item)
-                                .Move(InventoryManager.GetBagsByInventoryBagId(inventoryBagId_0).First(bag => bag.FreeSlots > 0).GetFirstFreeSlot()));
+                                .Move(InventoryManager.GetBagsByInventoryBagId(InventoryBagId_0).First(bag => bag.FreeSlots > 0).GetFirstFreeSlot()));
                         await Coroutine.Sleep(200);
                     }
 
@@ -444,7 +453,6 @@ namespace LlamaLibrary.Retainers
                 return false;
             }
 
-
             for (var retainerIndex = 0; retainerIndex < numRetainers; retainerIndex++)
             {
                 Log($"Selecting {RetainerList.Instance.RetainerName(retainerIndex)}");
@@ -455,6 +463,7 @@ namespace LlamaLibrary.Retainers
                 await RetainerRoutine.DeSelectRetainer();
                 Log($"Done with {RetainerList.Instance.RetainerName(retainerIndex)}");
             }
+
             //   await RetainerRoutine.ReadRetainers(RetainerRoutine.DumpItems());
 
             LogVerbose("Closing Retainer List");
@@ -513,7 +522,8 @@ namespace LlamaLibrary.Retainers
                         Log("RetainerTaskAsk didn't open");
                         return false;
                     }
-                    await Coroutine.Wait(2000,RetainerTaskAskExtensions.CanAssign);
+
+                    await Coroutine.Wait(2000, RetainerTaskAskExtensions.CanAssign);
                     if (RetainerTaskAskExtensions.CanAssign())
                     {
                         RetainerTaskAsk.Confirm();
@@ -610,7 +620,6 @@ namespace LlamaLibrary.Retainers
             {
                 Log("Venture Not Done");
             }
-
 
             return true;
         }

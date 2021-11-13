@@ -118,6 +118,7 @@
     <Compile Include="Extensions\LocalPlayerExtensions.cs" />
     <Compile Include="Extensions\RetainerTaskAskExtensions.cs" />
     <Compile Include="FCWorkshopBase.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
     <Compile Include="Structs\SharedFateProgress.cs" />
@@ -372,6 +373,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".editorconfig" />
     <Content Include="Resources\AllHunts.json" />
     <Content Include="Resources\Materia.json" />
     <Content Include="Resources\Ventures.json" />

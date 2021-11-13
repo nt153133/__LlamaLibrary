@@ -6,7 +6,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    public class AgentFishGuide: AgentInterface<AgentFishGuide>, IAgent
+    public class AgentFishGuide : AgentInterface<AgentFishGuide>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.Vtable;
 
@@ -20,10 +20,11 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 48 8D 43 ? 88 93 ? ? ? ? Add 3 Read8")]
             internal static int TabStart;
         }
+
         protected AgentFishGuide(IntPtr pointer) : base(pointer)
         {
-
         }
+
         public FishGuideItem[] GetTabList()
         {
             using (Core.Memory.TemporaryCacheState(enabledTemporarily: false))
@@ -32,8 +33,6 @@ namespace LlamaLibrary.RemoteAgents
                 return Core.Memory.ReadArray<FishGuideItem>(Pointer + Offsets.TabStart - 0x6, Offsets.TabSlotCount); //.Select(x => x.FishItem) as List<uint>;
             }
         }
-
-
     }
 
     [StructLayout(LayoutKind.Sequential, Size = 0x8)]

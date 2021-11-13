@@ -13,7 +13,6 @@ namespace LlamaLibrary.OrderbotTags
     {
         private bool _isDone;
 
-
         [XmlAttribute("itemIDs")]
         [XmlAttribute("ItemIDs")]
         [XmlAttribute("itemID")]
@@ -40,21 +39,22 @@ namespace LlamaLibrary.OrderbotTags
             return new ActionRunCoroutine(r => EquipWeapons(Item));
         }
 
-        private async Task EquipWeapons(int[] weapons)
+        private Task EquipWeapons(int[] weapons)
         {
             foreach (var weapon in weapons)
             {
-                var itemRole = DataManager.GetItem((uint) weapon).ItemRole;
-                BagSlot EquipSlot = ff14bot.Managers.InventoryManager.GetBagByInventoryBagId(ff14bot.Enums.InventoryBagId.EquippedItems)[ff14bot.Enums.EquipmentSlot.MainHand];
+                var itemRole = DataManager.GetItem((uint)weapon).ItemRole;
+                var EquipSlot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.EquippedItems)[EquipmentSlot.MainHand];
                 if (itemRole == ItemRole.Shield)
-                    EquipSlot = ff14bot.Managers.InventoryManager.GetBagByInventoryBagId(ff14bot.Enums.InventoryBagId.EquippedItems)[ff14bot.Enums.EquipmentSlot.OffHand];
+                    EquipSlot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.EquippedItems)[EquipmentSlot.OffHand];
 
-                var item1 = ff14bot.Managers.InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint) weapon);
+                var item1 = InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint)weapon);
                 if (item1 != default(BagSlot))
                     item1.Move(EquipSlot);
             }
 
             _isDone = true;
+            return Task.CompletedTask;
         }
 
         public override bool IsDone => _isDone;

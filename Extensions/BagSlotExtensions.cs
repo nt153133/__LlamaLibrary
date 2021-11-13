@@ -22,7 +22,7 @@ namespace LlamaLibrary.Extensions
                         return Core.Memory.CallInjected64<uint>(Offsets.ItemSplitFunc, new object[4]
                         {
                             Offsets.ItemFuncParam,
-                            (uint) bagSlot.BagId,
+                            (uint)bagSlot.BagId,
                             bagSlot.Slot,
                             amount
                         }) == 0;
@@ -53,13 +53,12 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-
-                    Core.Memory.CallInjected64<uint>(Offsets.ItemDiscardFunc, new object[3]
-                    {
+                Core.Memory.CallInjected64<uint>(Offsets.ItemDiscardFunc, new object[3]
+                {
                         Offsets.ItemFuncParam,
-                        (uint) bagSlot.BagId,
+                        (uint)bagSlot.BagId,
                         bagSlot.Slot,
-                    });
+                });
             }
         }
 
@@ -71,7 +70,7 @@ namespace LlamaLibrary.Extensions
                 {
                     Offsets.EventHandler,
                     0x390000,
-                    (uint) bagSlot.BagId,
+                    (uint)bagSlot.BagId,
                     bagSlot.Slot,
                     2
                 });
@@ -89,7 +88,7 @@ namespace LlamaLibrary.Extensions
                         Core.Memory.CallInjected64<uint>(Offsets.ItemLowerQualityFunc, new object[3]
                         {
                             Offsets.ItemFuncParam,
-                            (uint) bagSlot.BagId,
+                            (uint)bagSlot.BagId,
                             bagSlot.Slot,
                         });
                     }
@@ -104,7 +103,7 @@ namespace LlamaLibrary.Extensions
         public static void RetainerRetrieveQuantity(this BagSlot bagSlot, int amount)
         {
             if (bagSlot.Count < amount)
-                amount = (int) bagSlot.Count;
+                amount = (int)bagSlot.Count;
 
             lock (Core.Memory.Executor.AssemblyLock)
             {
@@ -113,7 +112,7 @@ namespace LlamaLibrary.Extensions
                     Core.Memory.CallInjected64<uint>(Offsets.RetainerRetrieveQuantity, new object[4]
                     {
                         Offsets.ItemFuncParam,
-                        (uint) bagSlot.BagId,
+                        (uint)bagSlot.BagId,
                         bagSlot.Slot,
                         amount
                     });
@@ -160,16 +159,14 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-
-                    Core.Memory.CallInjected64<uint>(Offsets.RemoveMateriaFunc, new object[5]
-                    {
+                Core.Memory.CallInjected64<uint>(Offsets.RemoveMateriaFunc, new object[5]
+                {
                         Offsets.EventHandler,
                         0x390001,
-                        (uint) bagSlot.BagId,
+                        (uint)bagSlot.BagId,
                         bagSlot.Slot,
                         0
-                    });
-
+                });
             }
         }
 
@@ -177,22 +174,20 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-
-                    Core.Memory.CallInjected64<uint>(Offsets.RemoveMateriaFunc, new object[5]
-                    {
+                Core.Memory.CallInjected64<uint>(Offsets.RemoveMateriaFunc, new object[5]
+                {
                         Offsets.EventHandler,
                         0x390002,
-                        (uint) bagSlot.BagId,
+                        (uint)bagSlot.BagId,
                         bagSlot.Slot,
                         0
-                    });
-
+                });
             }
         }
 
         public static void ExtractMateria(this BagSlot bagSlot)
         {
-            if ((int) bagSlot.SpiritBond != 100) return;
+            if ((int)bagSlot.SpiritBond != 100) return;
             lock (Core.Memory.Executor.AssemblyLock)
             {
                 using (Core.Memory.TemporaryCacheState(false))
@@ -200,7 +195,7 @@ namespace LlamaLibrary.Extensions
                     Core.Memory.CallInjected64<uint>(Offsets.ExtractMateriaFunc, new object[3]
                     {
                         Offsets.ExtractMateriaParam,
-                        (uint) bagSlot.BagId,
+                        (uint)bagSlot.BagId,
                         bagSlot.Slot,
                     });
                 }
@@ -295,22 +290,22 @@ namespace LlamaLibrary.Extensions
 
         public static void PlaceAetherWheel(this BagSlot bagSlot)
         {
-            PlaceAetherWheel((uint) bagSlot.BagId, bagSlot.Slot);
+            PlaceAetherWheel((uint)bagSlot.BagId, bagSlot.Slot);
         }
 
         public static bool AddToSaddlebagQuantity(this BagSlot bagSlot, uint amount)
-        { 
-            return AddToSaddleCall(Offsets.ItemFuncParam, (uint) bagSlot.BagId, bagSlot.Slot, (uint) amount) == IntPtr.Zero;
+        {
+            return AddToSaddleCall(Offsets.ItemFuncParam, (uint)bagSlot.BagId, bagSlot.Slot, (uint)amount) == IntPtr.Zero;
         }
 
         public static bool RemoveFromSaddlebagQuantity(this BagSlot bagSlot, uint amount)
         {
-            return RemoveFromSaddleCall(Offsets.ItemFuncParam, (uint) bagSlot.BagId, bagSlot.Slot, (uint) amount) == IntPtr.Zero;
+            return RemoveFromSaddleCall(Offsets.ItemFuncParam, (uint)bagSlot.BagId, bagSlot.Slot, (uint)amount) == IntPtr.Zero;
         }
 
         public static void UseItemRaw(this BagSlot bagSlot)
         {
-            BagSlotUseItemCall(Offsets.ItemFuncParam, bagSlot.TrueItemId, (uint) bagSlot.BagId, bagSlot.Slot);
+            BagSlotUseItemCall(Offsets.ItemFuncParam, bagSlot.TrueItemId, (uint)bagSlot.BagId, bagSlot.Slot);
         }
 
         internal static byte BagSlotUseItemCall(IntPtr InventoryManager, uint TrueItemId, uint inventoryContainer, int inventorySlot)
@@ -319,7 +314,8 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjected64<byte>(Offsets.BagSlotUseItem,
+                    return Core.Memory.CallInjected64<byte>(
+                        Offsets.BagSlotUseItem,
                                                             InventoryManager,
                                                             TrueItemId,
                                                             inventoryContainer,
@@ -334,7 +330,8 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjected64<IntPtr>(Offsets.RemoveFromSaddle,
+                    return Core.Memory.CallInjected64<IntPtr>(
+                        Offsets.RemoveFromSaddle,
                                                               InventoryManager,
                                                               inventoryContainer,
                                                               inventorySlot,
@@ -349,7 +346,8 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjected64<IntPtr>(Offsets.AddToSaddle,
+                    return Core.Memory.CallInjected64<IntPtr>(
+                        Offsets.AddToSaddle,
                                                               InventoryManager,
                                                               inventoryContainer,
                                                               inventorySlot,
@@ -367,7 +365,7 @@ namespace LlamaLibrary.Extensions
                     return Core.Memory.CallInjected64<IntPtr>(Offsets.PlaceAetherWheel, new object[3]
                     {
                         AgentBagSlot.Instance.PointerForAether,
-                        (int) inventorySlot,
+                        (int)inventorySlot,
                         inventoryContainer,
                     });
                 }
@@ -398,7 +396,7 @@ namespace LlamaLibrary.Extensions
 
             return DataManager.GetItem(ItemId).CurrentLocaleName;
         }
-        
+
         public const int DefaultBagSlotMoveWait = 600;
 
         private static async Task<bool> BagSlotMoveWait(BagSlot bagSlot, uint curSlotCount, int waitMs = DefaultBagSlotMoveWait)
@@ -413,8 +411,10 @@ namespace LlamaLibrary.Extensions
                 {
                     await Coroutine.Sleep(remainingMs);
                 }
+
                 return true;
             }
+
             sw.Stop();
             return false;
         }
@@ -425,21 +425,21 @@ namespace LlamaLibrary.Extensions
             bagSlot.AddToSaddlebagQuantity(moveCount);
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
         }
-        
+
         public static async Task<bool> TryRemoveFromSaddlebag(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
         {
             uint curSlotCount = bagSlot.Count;
             bagSlot.RemoveFromSaddlebagQuantity(moveCount);
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
         }
-        
+
         public static async Task<bool> TryEntrustToRetainer(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
         {
             uint curSlotCount = bagSlot.Count;
             bagSlot.RetainerEntrustQuantity(moveCount);
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
         }
-        
+
         public static async Task<bool> TryRetrieveFromRetainer(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
         {
             uint curSlotCount = bagSlot.Count;

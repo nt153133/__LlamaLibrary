@@ -7,7 +7,8 @@ using ff14bot.RemoteWindows;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    public class RemoteWindow<T> : RemoteWindow where T : RemoteWindow<T>, new()
+    public class RemoteWindow<T> : RemoteWindow
+        where T : RemoteWindow<T>, new()
     {
         private static T _instance;
         public static T Instance => _instance ?? (_instance = new T());
@@ -98,6 +99,7 @@ namespace LlamaLibrary.RemoteWindows
 
             Agent.Toggle();
             return await WaitTillWindowOpen(5000);
+
             //return SyncRoutines.WaitUntil(() => IsOpen, 50, 5000, true);
         }
     }

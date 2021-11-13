@@ -24,6 +24,7 @@ namespace LlamaLibrary.RemoteWindows
             var items = SpecialShopManager.Items;
 
             var specialShopItem = items?.Cast<SpecialShopItem?>().FirstOrDefault(i => i.HasValue && i.Value.ItemIds.Contains(itemId));
+
             //Logging.Write(Colors.Fuchsia, $"[ShopExchangeItem] Buying {specialShopItem}");
             if (!specialShopItem.HasValue) return 0u;
 
@@ -31,6 +32,7 @@ namespace LlamaLibrary.RemoteWindows
 
             if (!CanAfford(specialShopItem.Value))
                 return 0;
+
             // Logging.Write(Colors.Fuchsia, $"[Purchase] Can afford {CanAfford(specialShopItem.Value)}");
             var index = items.IndexOf(specialShopItem.Value);
             var obj = new ulong[8]
@@ -44,9 +46,10 @@ namespace LlamaLibrary.RemoteWindows
                 0uL,
                 0uL
             };
-            obj[3] = (uint) index;
+            obj[3] = (uint)index;
             obj[5] = itemCount;
             SendAction(4, obj);
+
             // Logging.Write(Colors.Fuchsia, $"[Purchase] Sent Action");
             await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog") != null);
 
@@ -74,11 +77,14 @@ namespace LlamaLibrary.RemoteWindows
                     {
                         BagSlot item;
                         if (specialShopItem.Value.HqCurrencies[i])
+                        {
                             item = InventoryManager.FilledInventoryAndArmory.FirstOrDefault(j => j.RawItemId == specialShopItem.Value.CurrencyTypes[i] && j.Count >= specialShopItem.Value.CurrencyCosts[i] && j.IsHighQuality == specialShopItem.Value.HqCurrencies[i]);
+                        }
                         else
                         {
                             item = InventoryManager.FilledInventoryAndArmory.FirstOrDefault(j => j.RawItemId == specialShopItem.Value.CurrencyTypes[i] && j.Count >= specialShopItem.Value.CurrencyCosts[i]);
                         }
+
                         // Logging.Write(Colors.Fuchsia, $"[Purchase] Request item {item}");
                         if (item != null)
                         {
@@ -107,9 +113,7 @@ namespace LlamaLibrary.RemoteWindows
                     await CommonTasks.HandleLoading();
                     await Coroutine.Sleep(500);
                 }
-
             }
-
 
             return itemCount;
         }
@@ -122,7 +126,6 @@ namespace LlamaLibrary.RemoteWindows
                 {
                     continue;
                 }
-
 
                 if (!InventoryManager.FilledInventoryAndArmory.Any(j => j.RawItemId == item.CurrencyTypes[i] && j.Count >= item.CurrencyCosts[i]))
                     return false;

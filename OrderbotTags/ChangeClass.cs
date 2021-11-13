@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
+using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Helpers;
 using ff14bot.Managers;
@@ -12,7 +13,7 @@ using ff14bot.NeoProfiles;
 using ff14bot.RemoteWindows;
 using TreeSharp;
 
-namespace ff14bot
+namespace Ff14bot
 {
     [XmlElement("ChangeClass")]
     public class ChangeClass : ProfileBehavior
@@ -23,13 +24,13 @@ namespace ff14bot
 
         public override bool HighPriority => true;
 
-        [XmlAttribute("Job")] public string job { get; set; }
+        [XmlAttribute("Job")]
+        public string job { get; set; }
 
-        [XmlAttribute("Force")] 
-        [XmlAttribute("force")] 
+        [XmlAttribute("Force")]
+        [XmlAttribute("force")]
         [DefaultValue(false)]
         public bool force { get; set; }
-
 
         protected override void OnStart()
         {
@@ -55,6 +56,7 @@ namespace ff14bot
                 _isDone = true;
                 return;
             }
+
             Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Started");
             Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Found job: {foundJob} Job:{newjob}");
             if (foundJob && gearSets.Any(gs => gs.Class == newjob))
@@ -71,10 +73,9 @@ namespace ff14bot
 
                 // await Coroutine.Sleep(1000);
             }
-
             else if (foundJob)
             {
-                job = job.Trim() + ("s_Primary_Tool");
+                job = job.Trim() + "s_Primary_Tool";
 
                 ItemUiCategory category;
                 var categoryFound = Enum.TryParse(job, true, out category);
@@ -82,7 +83,7 @@ namespace ff14bot
                 if (categoryFound)
                 {
                     Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Found Item Category: {categoryFound} Category:{category}");
-                    var item = InventoryManager.FilledInventoryAndArmory.Where(i => i.Item.EquipmentCatagory == category).OrderByDescending(i=> i.Item.ItemLevel).FirstOrDefault();
+                    var item = InventoryManager.FilledInventoryAndArmory.Where(i => i.Item.EquipmentCatagory == category).OrderByDescending(i => i.Item.ItemLevel).FirstOrDefault();
                     BagSlot EquipSlot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.EquippedItems)[EquipmentSlot.MainHand];
 
                     Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Found Item {item}");

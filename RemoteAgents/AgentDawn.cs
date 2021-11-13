@@ -17,6 +17,7 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 41 88 46 ? E8 ? ? ? ? C6 43 ? ? Add 3 Read8")]
             internal static int DawnIsScenario;
         }
+
         protected AgentDawn(IntPtr pointer) : base(pointer)
         {
         }

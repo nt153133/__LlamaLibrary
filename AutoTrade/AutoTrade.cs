@@ -22,6 +22,8 @@ namespace LlamaLibrary.AutoTrade
 {
     public class AutoTrade : BotBase
     {
+        private static readonly Queue<QueuedTradeItem> TradeQueue = new Queue<QueuedTradeItem>();
+
         private Composite _root;
         public override string Name => "AutoTrade";
         public override PulseFlags PulseFlags => PulseFlags.All;
@@ -50,7 +52,7 @@ namespace LlamaLibrary.AutoTrade
                 _settings.Show();
                 _settings.Activate();
             }
-            catch (ArgumentOutOfRangeException ee)
+            catch (ArgumentOutOfRangeException)
             {
             }
         }
@@ -60,16 +62,19 @@ namespace LlamaLibrary.AutoTrade
             get
             {
                 return new PrioritySelector(
-                    new Decorator(r => Trade.IsOpen,
+                    new Decorator(
+                        r => Trade.IsOpen,
                         new PrioritySelector(
-                            new Decorator(r => SelectYesno.IsOpen && Trade.TradeStage == 5,
+                            new Decorator(
+                                r => SelectYesno.IsOpen && Trade.TradeStage == 5,
                                 new Sequence(
                                     new Action(r => Log("At Select Yes/No")),
                                     new Sleep(200),
                                     new Action(r => SelectYesno.ClickYes())
                                 )
                             ),
-                            new Decorator(r => Trade.IsOpen && Trade.TradeStage == 3,
+                            new Decorator(
+                                r => Trade.IsOpen && Trade.TradeStage == 3,
                                 new Sequence(
                                     new Action(r => Log($"Window open accepting from {Trade.Trader}")),
                                     new Sleep(500),
@@ -105,16 +110,19 @@ namespace LlamaLibrary.AutoTrade
                 Log("No target found to trade to.");
                 return false;
             }
+
             if (target.IsMe)
             {
                 Log("We can't trade with ourselves.");
                 return false;
             }
+
             if (target.Type != GameObjectType.Pc)
             {
                 Log("We can't trade with an NPC.");
                 return false;
             }
+
             if (!target.IsWithinInteractRange)
             {
                 Log("Target is too far away to interact with.");
@@ -127,7 +135,7 @@ namespace LlamaLibrary.AutoTrade
 
             await TradeItems(TradeQueue, target);
 
-            if (FailedTradeCount >= 5)
+            if (failedTradeCount >= 5)
             {
                 LogCritical("Too many failed trades, exiting.");
             }
@@ -158,21 +166,20 @@ namespace LlamaLibrary.AutoTrade
             return true;
         }
 
-        private static int FailedTradeCount;
-
-        private static readonly Queue<QueuedTradeItem> TradeQueue = new Queue<QueuedTradeItem>();
+        private static int failedTradeCount;
         private static readonly List<WatchedBagSlot> WatchedBagSlots = new List<WatchedBagSlot>();
 
         private static async Task TradeItems(Queue<QueuedTradeItem> tradeQueue, BattleCharacter target)
         {
-            FailedTradeCount = 0;
+            failedTradeCount = 0;
             int gilToTrade = AutoTradeSettings.GilToTrade;
             if (gilToTrade > 0)
             {
                 LogSuccess($"We want to trade a total of {gilToTrade:N0} gil.");
             }
+
             LogSuccess("---Starting Trades---");
-            while ((TradeQueue.Any() || gilToTrade > 0) && FailedTradeCount < 3)
+            while ((TradeQueue.Any() || gilToTrade > 0) && failedTradeCount < 3)
             {
                 if (!target.IsWithinInteractRange)
                 {
@@ -184,17 +191,16 @@ namespace LlamaLibrary.AutoTrade
 
                 if (result != 0)
                 {
-                    FailedTradeCount++;
+                    failedTradeCount++;
                     LogCritical("Couldn't open trade window. Pausing to retry...");
                     await Coroutine.Sleep(3000);
                     continue;
                 }
 
-
                 await Coroutine.Wait(5000, () => Trade.IsOpen);
                 if (!Trade.IsOpen)
                 {
-                    FailedTradeCount++;
+                    failedTradeCount++;
                     LogCritical("Trade window never opened. Pausing to retry...");
                     await Coroutine.Sleep(3000);
                     continue;
@@ -210,7 +216,7 @@ namespace LlamaLibrary.AutoTrade
                     gilAmount = Math.Min(gilToTrade, 1000000);
                     LogSuccess($"Adding {gilAmount:N0} gil.");
                     RaptureAtkUnitManager.GetWindowByName("Trade").SendAction(1, 3, 2);
-                    await WaitForInputNumeric((uint) gilAmount);
+                    await WaitForInputNumeric((uint)gilAmount);
                     await Coroutine.Sleep(250);
                 }
 
@@ -239,7 +245,7 @@ namespace LlamaLibrary.AutoTrade
 
                         itemSlot.BeingTraded = true;
                         WatchedBagSlots.Add(new WatchedBagSlot(itemSlot.BagSlot));
-                        LogSuccess($"Adding x{itemToTrade.QtyToTrade} {itemToTrade.ItemName} to Slot {i+1}.");
+                        LogSuccess($"Adding x{itemToTrade.QtyToTrade} {itemToTrade.ItemName} to Slot {i + 1}.");
                         itemSlot.BagSlot.TradeItem();
                         if (itemToTrade.QtyToTrade > 1 && itemToTrade.StackSize > 1)
                         {
@@ -257,6 +263,7 @@ namespace LlamaLibrary.AutoTrade
                     LogCritical("Our target still hasn't accepted the trade... aborting.");
                     break;
                 }
+
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                 if (SelectYesno.IsOpen) SelectYesno.Yes();
                 await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
@@ -275,14 +282,15 @@ namespace LlamaLibrary.AutoTrade
                 if (gilToTrade > 0 && currentGil == AutoTradeSettings.CurrentGil)
                 {
                     LogCritical("Trading gil didn't go through.");
-                    FailedTradeCount++;
+                    failedTradeCount++;
                     continue;
                 }
+
                 gilToTrade -= gilAmount;
                 if (WatchedSlotsUnchanged(WatchedBagSlots))
                 {
                     LogCritical("Some items were unchanged, even though they should have been traded.");
-                    FailedTradeCount++;
+                    failedTradeCount++;
                     continue;
                 }
             }
@@ -337,6 +345,7 @@ namespace LlamaLibrary.AutoTrade
                         TradeQueue.Enqueue(new QueuedTradeItem(item, item.StackSize));
                     }
                 }
+
                 if (remainder > 0) TradeQueue.Enqueue(new QueuedTradeItem(item, remainder));
                 LogSuccess($"Queued x{item.QtyToTrade} {item.ItemName} to trade.");
             }

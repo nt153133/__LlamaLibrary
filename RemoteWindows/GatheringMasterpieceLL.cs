@@ -2,7 +2,7 @@
 
 namespace LlamaLibrary.RemoteWindows
 {
-    public class GatheringMasterpieceLL: RemoteWindow<GatheringMasterpieceLL>
+    public class GatheringMasterpieceLL : RemoteWindow<GatheringMasterpieceLL>
     {
         private const string WindowName = "GatheringMasterpiece";
         public GatheringMasterpieceLL() : base(WindowName)
@@ -68,28 +68,31 @@ namespace LlamaLibrary.RemoteWindows
         public void Collect()
         {
             if (IsOpen)
-                SendAction(1,3,0);
+                SendAction(1, 3, 0);
         }
 
         public void SetScrutiny(bool value = true)
         {
             if (value)
-                SendAction(3,3,0x65,0,0,2,1);
+            {
+                SendAction(3, 3, 0x65, 0, 0, 2, 1);
+            }
             else
             {
-                SendAction(3,3,0x65,0,0,2,0);
+                SendAction(3, 3, 0x65, 0, 0, 2, 0);
             }
         }
 
         public void SetCollectorsIntuition(bool value = true)
         {
             if (value)
-                SendAction(3,3,0x66,0,0,2,1);
+            {
+                SendAction(3, 3, 0x66, 0, 0, 2, 1);
+            }
             else
             {
-                SendAction(3,3,0x66,0,0,2,0);
+                SendAction(3, 3, 0x66, 0, 0, 2, 0);
             }
         }
-
     }
 }

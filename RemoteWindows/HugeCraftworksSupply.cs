@@ -7,7 +7,7 @@ using LlamaLibrary.RemoteAgents;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    public class HugeCraftworksSupply: RemoteWindow<HugeCraftworksSupply>
+    public class HugeCraftworksSupply : RemoteWindow<HugeCraftworksSupply>
     {
         private const string WindowName = "HugeCraftworksSupply";
 
@@ -16,11 +16,11 @@ namespace LlamaLibrary.RemoteWindows
             _name = WindowName;
         }
 
-        public int TurnInItemId =>  ___Elements()[9].TrimmedData;
+        public int TurnInItemId => ___Elements()[9].TrimmedData;
 
         public void Deliver()
         {
-            SendAction(1,3,0);
+            SendAction(1, 3, 0);
         }
 
         public async Task HandOverItems()
@@ -32,12 +32,14 @@ namespace LlamaLibrary.RemoteWindows
                 if (slot != null)
                 {
                     AgentHandIn.Instance.HandIn(slot);
+
                     //await Coroutine.Sleep(500);
                     await Coroutine.Wait(5000, () => InputNumeric.IsOpen);
                     if (InputNumeric.IsOpen)
                     {
-                        InputNumeric.Ok((uint) InputNumeric.Field.CurrentValue);
+                        InputNumeric.Ok((uint)InputNumeric.Field.CurrentValue);
                     }
+
                     await Coroutine.Sleep(700);
                 }
             }

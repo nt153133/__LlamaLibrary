@@ -5,7 +5,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    public class AgentOutOnLimb: AgentInterface<AgentOutOnLimb>, IAgent
+    public class AgentOutOnLimb : AgentInterface<AgentOutOnLimb>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
         private static class Offsets
@@ -17,8 +17,9 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 41 C6 86 ? ? ? ? ? EB ? 41 C6 86 ? ? ? ? ? Add 3 Read32")]
             internal static int CursorLocked;
         }
+
         public IntPtr addressLocation = IntPtr.Zero;
-        Random rnd = new Random();
+        private Random rnd = new Random();
 
         protected AgentOutOnLimb(IntPtr pointer) : base(pointer)
         {
@@ -27,7 +28,7 @@ namespace LlamaLibrary.RemoteAgents
         public bool CursorLocked
         {
             get => Core.Memory.Read<byte>(Pointer + Offsets.CursorLocked) != 1;
-            set => Core.Memory.Write(Pointer + Offsets.CursorLocked, (byte) (value ? 0:1));
+            set => Core.Memory.Write(Pointer + Offsets.CursorLocked, (byte)(value ? 0 : 1));
         }
 
         public int CursorLocation
@@ -51,9 +52,10 @@ namespace LlamaLibrary.RemoteAgents
 
         private ushort locationValue(int percent)
         {
-            ushort location = (ushort) ((percent * 100) + rnd.Next(0, 99));
+            ushort location = (ushort)((percent * 100) + rnd.Next(0, 99));
+
             //Logger.Info($"Setting Location {location}");
-           return location;
+            return location;
         }
     }
 }

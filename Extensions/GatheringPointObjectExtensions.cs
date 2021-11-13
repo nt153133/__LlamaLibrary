@@ -7,7 +7,7 @@ namespace LlamaLibrary.Extensions
     {
         internal static int Base(this GatheringPointObject node)
         {
-            return (int) Core.Memory.Read<uint>(node.Pointer + 0x80);
+            return (int)Core.Memory.Read<uint>(node.Pointer + 0x80);
         }
     }
 }

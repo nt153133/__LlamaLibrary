@@ -113,12 +113,16 @@ namespace LlamaLibrary.AutoRetainerSort
                 {
                     toAddIds.Add(selectedItem.RawItemId + CollectableOffset);
                 }
-                else return;
+                else
+                {
+                    return;
+                }
 
                 if (newItemForm.IncludeHQ)
                 {
                     toAddIds.Add(selectedItem.RawItemId + QualityOffset);
                 }
+
                 if (newItemForm.IncludeCollectable)
                 {
                     toAddIds.Add(selectedItem.RawItemId + CollectableOffset);

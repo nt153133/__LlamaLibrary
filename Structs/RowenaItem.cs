@@ -68,7 +68,7 @@ namespace LlamaLibrary.Structs
         public readonly byte byte4;
 
         [FieldOffset(0x30)]
-        private readonly IntPtr DumbPtr;
+        private readonly IntPtr dumbPtr;
 
         [FieldOffset(0x38)]
         public readonly int N00000065;
@@ -88,12 +88,12 @@ namespace LlamaLibrary.Structs
         [FieldOffset(0x4C)]
         public readonly int N000000AB;
 
+        [FieldOffset(0x98)]
+        public readonly int int1;
+
         [FieldOffset(0x60)]
         [MarshalAs(UnmanagedType.LPUTF8Str, SizeConst = 0x30)]
         public string _name;
-
-        [FieldOffset(0x98)]
-        public readonly int int1;
 
         [FieldOffset(0x9C)]
         public readonly byte N000000BF;
@@ -102,7 +102,7 @@ namespace LlamaLibrary.Structs
         public readonly byte N000000C4;
 
         [FieldOffset(0x9E)]
-        public readonly byte N000000C8; 
+        public readonly byte N000000C8;
 
         [FieldOffset(0x9F)]
         public readonly byte N000000BB;
@@ -116,11 +116,11 @@ namespace LlamaLibrary.Structs
         [FieldOffset(0xa6)]
         public readonly short short3;
 
+        public bool Starred => _Starred > 0;
 
-        public bool Starred => (_Starred > 0);
-
-        public bool Enabled => (Qty > 0);
+        public bool Enabled => Qty > 0;
         public string Name => DataManager.GetItem(ItemId).CurrentLocaleName;
+
         //''
         public string ToString1()
         {
@@ -131,6 +131,7 @@ namespace LlamaLibrary.Structs
         {
             FieldInfo[] fields = GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
             StringBuilder stringBuilder = new StringBuilder();
+
             //stringBuilder.AppendFormat("{0}: ", GetType().Name);
             FieldInfo[] array = fields;
             foreach (FieldInfo fieldInfo in array)
@@ -138,13 +139,12 @@ namespace LlamaLibrary.Structs
                 object value = fieldInfo.GetValue(this);
                 stringBuilder.AppendFormat(" {0}, ", value ?? "null");
             }
+
             stringBuilder.AppendFormat(" {0}, ", Name ?? "null");
             stringBuilder.AppendFormat(" {0}, ", Starred);
             stringBuilder.AppendFormat(" {0}, ", Enabled);
             return stringBuilder.ToString();
         }
-
-
     }
 
     public enum ScripType : uint

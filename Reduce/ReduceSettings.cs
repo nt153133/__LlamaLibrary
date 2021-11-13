@@ -28,7 +28,7 @@ namespace LlamaLibrary.Reduce
             {
                 if (_settings != null)
                     return _settings;
-                _settings = new ReduceSettings {_initialized = true};
+                _settings = new ReduceSettings { _initialized = true };
 
                 return _settings;
             }
@@ -42,7 +42,8 @@ namespace LlamaLibrary.Reduce
         public bool IncludeArmory
         {
             get => _includeArmory;
-            set { 
+            set
+            {
                 _includeArmory = value;
                 Save();
             }
@@ -56,10 +57,11 @@ namespace LlamaLibrary.Reduce
         public bool IncludeDE10000
         {
             get => _includeDe10000;
-            set { 
-                    _includeDe10000 = value;
-                    Save();
-                }
+            set
+            {
+                _includeDe10000 = value;
+                Save();
+            }
         }
 
         [Setting]
@@ -70,7 +72,8 @@ namespace LlamaLibrary.Reduce
         public bool StayRunning
         {
             get => _stayRunning;
-            set { 
+            set
+            {
                 _stayRunning = value;
                 Save();
             }
@@ -83,7 +86,8 @@ namespace LlamaLibrary.Reduce
         public bool OpenCoffers
         {
             get => _openCoffers;
-            set { 
+            set
+            {
                 _openCoffers = value;
                 Save();
             }
@@ -97,7 +101,8 @@ namespace LlamaLibrary.Reduce
         public int AEZone
         {
             get => _AEZone;
-            set { 
+            set
+            {
                 _AEZone = value;
                 Save();
             }
@@ -111,11 +116,11 @@ namespace LlamaLibrary.Reduce
         public bool AEZoneCheck
         {
             get => _AEZoneCheck;
-            set { 
+            set
+            {
                 _AEZoneCheck = value;
                 Save();
             }
         }
-
     }
 }

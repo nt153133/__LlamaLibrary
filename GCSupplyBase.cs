@@ -61,7 +61,7 @@ namespace MasterPieceSupplyTest
             _root = null;
         }
 
-        public async static Task DoGCDailyTurnins()
+        public static async Task DoGCDailyTurnins()
         {
             Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
@@ -99,7 +99,9 @@ namespace MasterPieceSupplyTest
                     }
                 }
                 else
+                {
                     Log("Lisbeth order should be done");
+                }
             }
 
             items = Core.Memory.ReadArray<GCTurninItem>(Offsets.GCTurnin, Offsets.GCTurninCount);
@@ -143,7 +145,7 @@ namespace MasterPieceSupplyTest
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
                 if (SelectString.IsOpen)
                 {
-                    SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+                    SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
                 }
             }
         }
@@ -198,7 +200,7 @@ namespace MasterPieceSupplyTest
                 }
                 else
                 {
-                    if (Core.Me.GCSeals() + (item.Seals) < maxSeals)
+                    if (Core.Me.GCSeals() + item.Seals < maxSeals)
                     {
                         GrandCompanySupplyList.Instance.ClickItem(index);
                         await Coroutine.Wait(5000, () => Request.IsOpen);
@@ -249,26 +251,24 @@ namespace MasterPieceSupplyTest
                 return "";
             }
 
-
-
             List<LisbethOrder> outList = new List<LisbethOrder>();
             int id = 0;
             foreach (var item in ContentsInfoDetail.Instance.GetCraftingTurninItems().Where(item => !InventoryManager.FilledSlots.Any(i => i.RawItemId == item.Key.Id && !i.HasMateria() && i.Count >= item.Value.Key)))
             {
                 Logging.Write($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
-                var order = new LisbethOrder(id, 1, (int) item.Key.Id, item.Value.Key, item.Value.Value);
+                var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, item.Value.Value);
                 outList.Add(order);
 
                 id++;
             }
 
-            foreach (var item in ContentsInfoDetail.Instance.GetGatheringTurninItems().Where(item => !InventoryManager.FilledSlots.Any(i => i.RawItemId == item.Key.Id  && i.Count >= item.Value.Key)))
+            foreach (var item in ContentsInfoDetail.Instance.GetGatheringTurninItems().Where(item => !InventoryManager.FilledSlots.Any(i => i.RawItemId == item.Key.Id && i.Count >= item.Value.Key)))
             {
                 Logging.Write($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
                 string type = "Gather";
                 if (item.Value.Value.Equals("Fisher"))
                     continue; //type = "Fisher";
-                var order = new LisbethOrder(id, 2, (int) item.Key.Id, item.Value.Key, type, true);
+                var order = new LisbethOrder(id, 2, (int)item.Key.Id, item.Value.Key, type, true);
 
                 outList.Add(order);
                 id++;
@@ -324,7 +324,7 @@ namespace MasterPieceSupplyTest
             foreach (var item in ContentsInfoDetail.Instance.GetCraftingTurninItems())
             {
                 Logging.Write($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
-                var order = new LisbethOrder(id, 1, (int) item.Key.Id, item.Value.Key, item.Value.Value);
+                var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, item.Value.Value);
                 outList.Add(order);
 
                 id++;
@@ -336,7 +336,7 @@ namespace MasterPieceSupplyTest
                 var type = "Gather";
                 if (item.Value.Value.Equals("Fisher"))
                     type = "Fisher";
-                var order = new LisbethOrder(id, 1, (int) item.Key.Id, item.Value.Key, type);
+                var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, type);
 
                 outList.Add(order);
                 id++;
@@ -350,7 +350,6 @@ namespace MasterPieceSupplyTest
                 Logging.Write($"{order}");
             }
 
-
             using (StreamWriter outputFile = new StreamWriter("GCSupply.json", false))
             {
                 await outputFile.WriteAsync(JsonConvert.SerializeObject(outList, Formatting.None));
@@ -363,17 +362,17 @@ namespace MasterPieceSupplyTest
         {
             Dictionary<ClassJobType, int> Classes = new Dictionary<ClassJobType, int>
             {
-                {ClassJobType.Carpenter, 0},
-                {ClassJobType.Blacksmith, 1},
-                {ClassJobType.Armorer, 2},
-                {ClassJobType.Goldsmith, 3},
-                {ClassJobType.Leatherworker, 4},
-                {ClassJobType.Weaver, 5},
-                {ClassJobType.Alchemist, 6},
-                {ClassJobType.Culinarian, 7},
-                {ClassJobType.Miner, 8},
-                {ClassJobType.Botanist, 9},
-                {ClassJobType.Fisher, 10},
+                { ClassJobType.Carpenter, 0 },
+                { ClassJobType.Blacksmith, 1 },
+                { ClassJobType.Armorer, 2 },
+                { ClassJobType.Goldsmith, 3 },
+                { ClassJobType.Leatherworker, 4 },
+                { ClassJobType.Weaver, 5 },
+                { ClassJobType.Alchemist, 6 },
+                { ClassJobType.Culinarian, 7 },
+                { ClassJobType.Miner, 8 },
+                { ClassJobType.Botanist, 9 },
+                { ClassJobType.Fisher, 10 },
             };
 
             if (!MasterPieceSupply.Instance.IsOpen)

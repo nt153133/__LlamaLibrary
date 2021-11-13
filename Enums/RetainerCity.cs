@@ -1,6 +1,6 @@
 ﻿namespace LlamaLibrary.PersonalTester
 {
-    public enum RetainerCity: byte
+    public enum RetainerCity : byte
     {
         LIMSA = 1,
         GRIDANIA = 2,

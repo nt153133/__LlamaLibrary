@@ -1,19 +1,19 @@
-using System;
-using Buddy.Coroutines;
-using ff14bot;
-using ff14bot.Behavior;
-using ff14bot.Helpers;
-using ff14bot.Managers;
-using ff14bot.Objects;
-using ff14bot.RemoteWindows;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Buddy.Coroutines;
 using Clio.Utilities;
+using ff14bot;
+using ff14bot.Behavior;
 using ff14bot.Enums;
+using ff14bot.Helpers;
+using ff14bot.Managers;
 using ff14bot.Navigation;
+using ff14bot.Objects;
 using ff14bot.RemoteAgents;
+using ff14bot.RemoteWindows;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteAgents;
@@ -30,14 +30,12 @@ namespace LlamaLibrary.Helpers
 
         public static readonly InventoryBagId[] SaddlebagIds =
         {
-            (InventoryBagId) 0xFA0,(InventoryBagId) 0xFA1//, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005 
+            (InventoryBagId)0xFA0, (InventoryBagId)0xFA1//, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005
         };
 
         public static IEnumerable<BagSlot> MainBagsFilledSlots() => InventoryManager.GetBagsByInventoryBagId(MainBags).SelectMany(x => x.FilledSlots);
 
-        static bool IsJumping => Core.Memory.NoCacheRead<byte>(Offsets.Conditions + Offsets.JumpingCondition) != 0;
-
-        #region StopBusy
+        private static bool IsJumping => Core.Memory.NoCacheRead<byte>(Offsets.Conditions + Offsets.JumpingCondition) != 0;
 
         private static bool CheckIfBusy(bool leaveDuty, bool stopFishing, bool dismount)
         {
@@ -149,7 +147,7 @@ namespace LlamaLibrary.Helpers
                         else if (SelectString.Lines().Contains("Quit")) SelectString.ClickLineContains("Quit");
                         else if (SelectString.Lines().Contains("Exit")) SelectString.ClickLineContains("Exit");
                         else if (SelectString.Lines().Contains("Nothing")) SelectString.ClickLineContains("Nothing");
-                        else SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+                        else SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
                     }
                 }
 
@@ -161,7 +159,7 @@ namespace LlamaLibrary.Helpers
                         else if (SelectIconString.Lines().Contains("Quit")) SelectString.ClickLineContains("Quit");
                         else if (SelectIconString.Lines().Contains("Exit")) SelectString.ClickLineContains("Exit");
                         else if (SelectIconString.Lines().Contains("Nothing")) SelectString.ClickLineContains("Nothing");
-                        else SelectIconString.ClickSlot((uint) (SelectIconString.LineCount - 1));
+                        else SelectIconString.ClickSlot((uint)(SelectIconString.LineCount - 1));
                     }
                 }
 
@@ -197,7 +195,7 @@ namespace LlamaLibrary.Helpers
 
                 if (RaptureAtkUnitManager.GetWindowByName(windowName) != null)
                 {
-                    RaptureAtkUnitManager.GetWindowByName(windowName).SendAction(1, 3UL, (ulong) uint.MaxValue);
+                    RaptureAtkUnitManager.GetWindowByName(windowName).SendAction(1, 3UL, (ulong)uint.MaxValue);
                 }
 
                 await Coroutine.Wait(300, () => RaptureAtkUnitManager.GetWindowByName(windowName) == null);
@@ -207,10 +205,6 @@ namespace LlamaLibrary.Helpers
 
             return RaptureAtkUnitManager.GetWindowByName(windowName) == null;
         }
-
-        #endregion StopBusy
-
-        #region InventoryEquip
 
         public static async Task InventoryEquipBest(bool updateGearSet = true, bool useRecommendEquip = true)
         {
@@ -333,7 +327,10 @@ namespace LlamaLibrary.Helpers
 
             Character.Instance.UpdateGearSet();
 
-            if (await Coroutine.Wait(1500, () => SelectYesno.IsOpen)) SelectYesno.Yes();
+            if (await Coroutine.Wait(1500, () => SelectYesno.IsOpen))
+            {
+                SelectYesno.Yes();
+            }
             else
             {
                 if (Character.Instance.IsOpen)
@@ -387,8 +384,6 @@ namespace LlamaLibrary.Helpers
                     return null;
             }
         }
-
-        #endregion InventoryEquip
 
         public static IEnumerable<BagSlot> NonGearSetItems()
         {
@@ -477,12 +472,14 @@ namespace LlamaLibrary.Helpers
 
                 await Coroutine.Wait(3000, () => RetainerTasks.IsOpen);
             }
+
             if (RetainerTasks.IsOpen)
             {
                 RetainerTasks.CloseTasks();
 
                 await Coroutine.Wait(3000, () => Talk.DialogOpen);
             }
+
             if (Talk.DialogOpen)
             {
                 Talk.Next();
@@ -514,7 +511,8 @@ namespace LlamaLibrary.Helpers
                     Log($"OPEN: AgentId {AgentId} Offset {repairVendor.ToInt64():X} Func {repairWindow.ToInt64():X}");
                     lock (Core.Memory.Executor.AssemblyLock)
                     {
-                        Core.Memory.CallInjected64<IntPtr>(repairWindow,
+                        Core.Memory.CallInjected64<IntPtr>(
+                            repairWindow,
                                                            new object[4]
                                                            {
                                                                ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
@@ -532,17 +530,18 @@ namespace LlamaLibrary.Helpers
                 SelectYesno.ClickYes();
                 Repair.Close();
             }
-            else Log("No items to repair.");
+            else
+            {
+                Log("No items to repair.");
+            }
         }
 
         public static int GetGearSetiLvl(GearSet gs)
         {
             List<ushort> gear = gs.Gear.Select(i => i.Item.ItemLevel).Where(x => x > 0).ToList();
             if (!gear.Any()) return 0;
-            return (int) gear.Sum(i => i) / gear.Count;
+            return (int)gear.Sum(i => i) / gear.Count;
         }
-
-        #region GoHome
 
         public static async Task GoHome()
         {
@@ -557,11 +556,9 @@ namespace LlamaLibrary.Helpers
             bool HavePrivateHousing = PrivateHouses.Any();
             bool HaveFCHousing = FCHouses.Any();
 
-
             Log($"Private House Access: {HavePrivateHousing} FC House Access: {HaveFCHousing}");
 
             //await GoToHousingBell(FCHouses.First());
-
 
             if (HavePrivateHousing)
             {
@@ -647,8 +644,6 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
-        #endregion GoHome
-
         public static async Task TurninOddlyDelicate()
         {
             Dictionary<uint, CraftingRelicTurnin> TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
@@ -721,7 +716,6 @@ namespace LlamaLibrary.Helpers
 
                 await Coroutine.Wait(10000, () => CollectablesShop.Instance.IsOpen);
 
-
                 if (CollectablesShop.Instance.IsOpen)
                 {
                     // Log("Window open");
@@ -734,6 +728,7 @@ namespace LlamaLibrary.Helpers
                         // Log($"Pressing job {turnin.Job}");
                         CollectablesShop.Instance.SelectJob(turnin.Job);
                         await Coroutine.Sleep(500);
+
                         //  Log($"Pressing position {turnin.Position}");
                         CollectablesShop.Instance.SelectItem(turnin.Position);
                         await Coroutine.Sleep(1000);
@@ -824,12 +819,11 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Wait(10000, () => Conversation.IsOpen);
                     if (Conversation.IsOpen)
                     {
-                        Conversation.SelectLine((uint) 0);
+                        Conversation.SelectLine(0U);
                     }
                 }
 
                 await Coroutine.Wait(10000, () => CollectablesShop.Instance.IsOpen);
-
 
                 if (CollectablesShop.Instance.IsOpen)
                 {
@@ -843,6 +837,7 @@ namespace LlamaLibrary.Helpers
                         // Log($"Pressing job {turnin.Job}");
                         CollectablesShop.Instance.SelectJob(turnin.Job);
                         await Coroutine.Sleep(500);
+
                         //  Log($"Pressing position {turnin.Position}");
                         CollectablesShop.Instance.SelectItem(turnin.Position);
                         await Coroutine.Sleep(1000);

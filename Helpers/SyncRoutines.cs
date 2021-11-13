@@ -8,7 +8,7 @@ namespace LlamaLibrary.Helpers
     {
         public static bool WaitUntil(Func<bool> condition, int frequency = 25, int timeout = -1, bool checkWindows = false)
         {
-            var t = Task.Run(async delegate
+            var t = Task.Run(async () =>
             {
                 var waitTask = Task.Run(async () =>
                 {
@@ -32,7 +32,7 @@ namespace LlamaLibrary.Helpers
             {
                 t.Wait();
             }
-            catch (AggregateException ae)
+            catch (AggregateException)
             {
             }
 

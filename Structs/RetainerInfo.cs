@@ -38,10 +38,10 @@ namespace LlamaLibrary.Structs
         public byte NumberOfMbItems;
 
         //0x32
-        private byte Unknown1;
+        private byte unknown1;
 
         //0x33
-        private byte Unknown2;
+        private byte unknown2;
 
         //0x34
         public int MBTimeOutTimestamp;
@@ -53,10 +53,10 @@ namespace LlamaLibrary.Structs
         public int VentureEndTimestamp;
 
         //0x40
-        private int Unknown3;
+        private int unknown3;
 
         //0x44
-        private int Unknown4;
+        private int unknown4;
 
         public bool Active => enabled == 1;
 
@@ -69,11 +69,11 @@ namespace LlamaLibrary.Structs
             return $"{Name} ({(enabled == 1 ? "enabled" : "disabled")}) - {Job} ({Level}) Gil: {Gil} Selling: {NumberOfMbItems} Venture: {VentureTask} VentureEnd: {UnixTimeStampToDateTime(VentureEndTimestamp)} {Unique}";
         }
 
-        public static DateTime UnixTimeStampToDateTime( double unixTimeStamp )
+        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
-            DateTime dtDateTime = new DateTime(1970,1,1,0,0,0,0,DateTimeKind.Utc);
-            dtDateTime = dtDateTime.AddSeconds( unixTimeStamp ).ToLocalTime();
+            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
         }
     }

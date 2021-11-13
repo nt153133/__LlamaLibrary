@@ -1,11 +1,11 @@
 ﻿using System;
 using ff14bot;
 using ff14bot.Managers;
- using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory.Attributes;
 
- namespace LlamaLibrary.RemoteAgents
+namespace LlamaLibrary.RemoteAgents
 {
-    public class AgentRetainerVenture: AgentInterface<AgentRetainerVenture>, IAgent
+    public class AgentRetainerVenture : AgentInterface<AgentRetainerVenture>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
         private static class Offsets
@@ -15,6 +15,7 @@ using ff14bot.Managers;
             [Offset("Search 41 8B 4E ? E8 ? ? ? ? 4C 8B F8 Add 3 Read8")]
             internal static int RetainerTask;
         }
+
         protected AgentRetainerVenture(IntPtr pointer) : base(pointer)
         {
         }

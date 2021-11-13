@@ -8,7 +8,6 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Extensions
 {
-
     public static class LocalPlayerExtensions
     {
         internal static class Offsets
@@ -19,7 +18,8 @@ namespace LlamaLibrary.Extensions
             internal static IntPtr CurrentGC;
             [Offset("Search 48 83 EC ? 48 8B 05 ? ? ? ? 44 8B C1 BA ? ? ? ? 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? C3 48 8B 00 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? 80 F9 ?")]
             internal static IntPtr GCGetMaxSealsByRank;
-            //PlayerID 8byte ulong ID unique to that character which is included in MB listings 
+
+            //PlayerID 8byte ulong ID unique to that character which is included in MB listings
             [Offset("Search 48 8B 05 ? ? ? ? 48 8D 0D ? ? ? ? 41 8B DC Add 3 TraceRelative")]
             internal static IntPtr PlayerID;
         }
@@ -31,9 +31,9 @@ namespace LlamaLibrary.Extensions
 
         internal static uint GCSeals(this LocalPlayer player)
         {
-            uint[] sealTypes = {20, 21, 22};
-            var bagslot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.Currency).FirstOrDefault(i => i.RawItemId == sealTypes[(int)Core.Me.GrandCompany -1]);
-            return bagslot?.Count ?? (uint) 0;
+            uint[] sealTypes = { 20, 21, 22 };
+            var bagslot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.Currency).FirstOrDefault(i => i.RawItemId == sealTypes[(int)Core.Me.GrandCompany - 1]);
+            return bagslot?.Count ?? 0U;
         }
 
         internal static int MaxGCSeals(this LocalPlayer player)
@@ -44,8 +44,12 @@ namespace LlamaLibrary.Extensions
             var Rank = Core.Memory.Read<byte>(Offsets.CurrentGC + gc);
             IntPtr rankRow;
             lock (Core.Memory.Executor.AssemblyLock)
-                rankRow = Core.Memory.CallInjected64<IntPtr>(Offsets.GCGetMaxSealsByRank,
+            {
+                rankRow = Core.Memory.CallInjected64<IntPtr>(
+                    Offsets.GCGetMaxSealsByRank,
                                                              Rank);
+            }
+
             return Core.Memory.Read<int>(rankRow);
         }
 

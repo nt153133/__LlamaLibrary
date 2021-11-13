@@ -5,7 +5,7 @@ using ff14bot.RemoteWindows;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    public class FreeCompanyAction: RemoteWindow<FreeCompanyAction>
+    public class FreeCompanyAction : RemoteWindow<FreeCompanyAction>
     {
         private const string WindowName = "FreeCompanyAction";
 
@@ -16,7 +16,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public void SelectAction(int index)
         {
-            SendAction(2,3,1,4,(ulong) index);
+            SendAction(2, 3, 1, 4, (ulong)index);
         }
 
         public void SelectEnable()

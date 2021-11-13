@@ -47,6 +47,7 @@ namespace LlamaLibrary.OrderbotTags
                 await Coroutine.Yield();
                 return;
             }
+
             await SmallTalk(WaitTime);
 
             _isDone = true;

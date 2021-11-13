@@ -28,6 +28,7 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
                         throw new ArgumentException($"Unable to get ItemInfo. TrueId: {TrueItemId}, RawId: {RawItemId}", "ItemInfo", ex);
                     }
                 }
+
                 // Check again to make sure it's not still null.
                 if (_itemInfo == null)
                 {
@@ -70,6 +71,7 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
                 {
                     sb.Append(" (HQ)");
                 }
+
                 return sb.ToString();
             }
         }
@@ -130,7 +132,7 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
                             indexList.Add(sortInfoPair.Key);
                         }
                     }
-                    
+
                     // OrderByDescending so we place any uniques in Player Inventory last.
                     return indexList.Any() ? indexList.OrderByDescending(x => x).ToArray() : Array.Empty<int>();
                 }
@@ -146,6 +148,7 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
                         {
                             indexList.Add(sortInfoPair.Key);
                         }
+
                         if (sortInfoPair.Value.ContainsId(TrueItemId))
                         {
                             indexList.Add(sortInfoPair.Key);
@@ -170,7 +173,7 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
             if (ItemSortStatus.FilledAndSortedInventories.Contains(index)) return ItemIndexStatus.NoSpaceInIndex;
 
             if (localMatchCache.All(x => ItemSortStatus.FilledAndSortedInventories.Contains(x))) return ItemIndexStatus.NoSpaceInAnyIndex;
-            
+
             if (localMatchCache.Length == 1 && localMatchCache[0] == index) return ItemIndexStatus.BelongsInIndex;
 
             if (localMatchCache.Length > 1 && localMatchCache.Any(x => x == index)) return ItemIndexStatus.BelongsInIndexAndOthers;

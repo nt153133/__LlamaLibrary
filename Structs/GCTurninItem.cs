@@ -32,7 +32,7 @@ namespace LlamaLibrary.Structs
         {
             get
             {
-                if (Starred) return (_Seals * 2);
+                if (Starred) return _Seals * 2;
                 return _Seals;
             }
         }

@@ -89,11 +89,11 @@ namespace LlamaLibrary.OrderbotTags
             }
             else if (ForceLower)
             {
-                toLower = ItemIds.Select(x => (uint) x).ToList();
+                toLower = ItemIds.Select(x => (uint)x).ToList();
             }
             else
             {
-                var slotsWithId = bagSlots.Where(x => ItemIds.Contains((int) x.RawItemId)).ToList();
+                var slotsWithId = bagSlots.Where(x => ItemIds.Contains((int)x.RawItemId)).ToList();
                 var HQ = slotsWithId.Where(x => x.IsHighQuality).Select(x => x.RawItemId).OrderBy(x => x);
                 var NQ = slotsWithId.Where(x => !x.IsHighQuality).Select(x => x.RawItemId).OrderBy(x => x);
                 toLower = NQ.Intersect(HQ).ToList();
@@ -105,11 +105,11 @@ namespace LlamaLibrary.OrderbotTags
                 return;
             }
 
-            await StopBusy(leaveDuty:false, dismount: false);
+            await StopBusy(leaveDuty: false, dismount: false);
 
             foreach (var itemId in toLower)
             {
-                await LowerQualityAndCombine((int) itemId);
+                await LowerQualityAndCombine((int)itemId);
                 await Coroutine.Sleep(200);
             }
 

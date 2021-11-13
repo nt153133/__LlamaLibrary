@@ -27,13 +27,13 @@ namespace LlamaLibrary
 {
     public class GatherTest : BotBase
     {
+        // public static InstanceContentDirector Director => DirectorManager.ActiveDirector as InstanceContentDirector;
+        public int TimerOffset;
 
-       // public static InstanceContentDirector Director => DirectorManager.ActiveDirector as InstanceContentDirector;
-       public int TimerOffset;
+        public TimeSpan TimeLeftInDiadem => TimeSpan.FromSeconds(Core.Memory.Read<float>(DirectorManager.ActiveDirector.Pointer + TimerOffset)); //640
 
-       public TimeSpan TimeLeftInDiadem => TimeSpan.FromSeconds(Core.Memory.Read<float>(DirectorManager.ActiveDirector.Pointer + TimerOffset)); //640
         //Wind new Vector3(greenf), BTN
-        private static readonly Vector3[] umbralTempest =
+        private static readonly Vector3[] UmbralTempest =
         {
             new Vector3(-580.9533f, 330.8294f, 458.0585f),
             new Vector3(-608.1638f, 329.7346f, 456.2433f),
@@ -42,7 +42,7 @@ namespace LlamaLibrary
         };
 
         //Red Flare Mining
-        private static readonly Vector3[] umbralFlare =
+        private static readonly Vector3[] UmbralFlare =
         {
             new Vector3(-430.0615f, 320.2874f, -572.0226f),
             new Vector3(-453.1085f, 320.7165f, -594.9066f),
@@ -51,7 +51,7 @@ namespace LlamaLibrary
         };
 
         //Purple Mining Levin
-        private static readonly Vector3[] umbralLevin =
+        private static readonly Vector3[] UmbralLevin =
         {
             new Vector3(619.6818f, 251.9896f, -423.0514f),
             new Vector3(613.7454f, 251.9896f, -396.2267f),
@@ -59,23 +59,22 @@ namespace LlamaLibrary
             new Vector3(635.2657f, 252.35f, -420.4232f)
         };
 
-
         //ORange btn
-        private static readonly Vector3[] umbralDuststorm =
+        private static readonly Vector3[] UmbralDuststorm =
         {
             new Vector3(408.5911f, 293.0109f, 604.5204f),
             new Vector3(409.6448f, 293.4354f, 568.1148f),
             new Vector3(379.7924f, 292.971f, 569.1271f)
         };
 
-        private static readonly Vector3[] afkSpots2 =
+        private static readonly Vector3[] AfkSpots2 =
         {
             new Vector3(60.57302f, 246.5133f, -290.3074f),
             new Vector3(168.4951f, 170.8651f, 72.97058f),
             new Vector3(-9.105042f, 158.3274f, 129.1192f)
         };
 
-        private static readonly Vector3[] afkSpots =
+        private static readonly Vector3[] AfkSpots =
         {
 //-182.1712, 0.8445628, -298.0846
             new Vector3(-182.1712f, 0.8445628f, -298.0846f),
@@ -86,23 +85,23 @@ namespace LlamaLibrary
         };
 
         //Above orange
-        private static readonly Vector3 umbralDuststormAbove = new Vector3(409.9393f, 314.985f, 560.1671f);
+        private static readonly Vector3 UmbralDuststormAbove = new Vector3(409.9393f, 314.985f, 560.1671f);
 
         //above green
-        private static readonly Vector3 umbralTempestAbove = new Vector3(-578.7819f, 349.9304f, 462.1082f);
+        private static readonly Vector3 UmbralTempestAbove = new Vector3(-578.7819f, 349.9304f, 462.1082f);
 
         //above purple
-        private static readonly Vector3 umbralLevinAbove = new Vector3(602.6203f, 276.4863f, -394.3397f);
+        private static readonly Vector3 UmbralLevinAbove = new Vector3(602.6203f, 276.4863f, -394.3397f);
 
         //above red
-        private static readonly Vector3 umbralFlareAbove = new Vector3(-396.0904f, 340.3934f, -557.02f);
+        private static readonly Vector3 UmbralFlareAbove = new Vector3(-396.0904f, 340.3934f, -557.02f);
 
         //above start
-        private static readonly Vector3 startAbove = new Vector3(-645.4365f, 300.4301f, -151.262f);
+        private static readonly Vector3 StartAbove = new Vector3(-645.4365f, 300.4301f, -151.262f);
 
         private static Vector3 standBy = new Vector3(-164.3966f, -1.072426f, -302.2528f);
 
-        private static int[] weatherNodes = new[] {33229, 33230, 33231, 33232,33584, 33585, 33586, 33587, 33836, 33837,33838,33839};
+        private static int[] weatherNodes = new[] { 33229, 33230, 33231, 33232, 33584, 33585, 33586, 33587, 33836, 33837, 33838, 33839 };
 
         private static int lastWeather = 0;
 
@@ -114,7 +113,7 @@ namespace LlamaLibrary
         {
             if (Translator.Language == Language.Chn)
             {
-                TimerOffset = 0x6F0;//0x650
+                TimerOffset = 0x6F0; //0x650
             }
             else
             {
@@ -132,7 +131,6 @@ namespace LlamaLibrary
 
         public override bool WantButton { get; } = false;
 
-
         public override void Start()
         {
             lastWeather = 0;
@@ -149,12 +147,12 @@ namespace LlamaLibrary
         {
             //await LeveWindow(1018997);
             //await HousingWards();
-           Navigator.PlayerMover = new SlideMover();
+            Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
             await GatherWeatherNodes();
+
             //Navigator.PlayerMover = new SlideMover();
             //Navigator.NavigationProvider = new ServiceNavigationProvider();
-
 
             //TreeRoot.Stop("Stop Requested");
             return true;
@@ -162,7 +160,6 @@ namespace LlamaLibrary
 
         public async Task GatherWeatherNodes()
         {
-
             if (WorldManager.RawZoneId != 901)
             {
                 await EnterDiadem();
@@ -171,39 +168,44 @@ namespace LlamaLibrary
                 Log($"Time left {TimeLeftInDiadem:hh\\:mm\\:ss}");
             }
 
-            lastChange = new WaitTimer(new TimeSpan(0,7,0));
+            lastChange = new WaitTimer(new TimeSpan(0, 7, 0));
             Log($"Current Weather: {WorldManager.CurrentWeather}  {WorldManager.CurrentWeatherId}");
 
             Random time = new Random();
 
             int minutes = time.Next(10, 20);
             int sec = time.Next(0, 59);
-            standBy = afkSpots[time.Next(0, afkSpots.Length)];
+            standBy = AfkSpots[time.Next(0, AfkSpots.Length)];
 
-            while (TimeLeftInDiadem > new TimeSpan(0,minutes,sec))
+            while (TimeLeftInDiadem > new TimeSpan(0, minutes, sec))
             {
                 switch (WorldManager.CurrentWeatherId)
                 {
                     case 133:
                         if (lastWeather == 133) break;
-                        //await FlyTo(new Vector3(-295.9257f, 268.4518f, -370.327f)); 
-                        await MineWeather(ClassJobType.Miner, umbralFlareAbove, umbralFlare);
-                        standBy = afkSpots[time.Next(0, afkSpots.Length)];
+
+                        //await FlyTo(new Vector3(-295.9257f, 268.4518f, -370.327f));
+                        await MineWeather(ClassJobType.Miner, UmbralFlareAbove, UmbralFlare);
+                        standBy = AfkSpots[time.Next(0, AfkSpots.Length)];
                         await StandBy();
                         break;
-                    case 135: if (lastWeather == 135) break; await MineWeather(ClassJobType.Miner, umbralLevinAbove, umbralLevin); 
-                        standBy = afkSpots[time.Next(0, afkSpots.Length)];
+                    case 135:
+                        if (lastWeather == 135) break; await MineWeather(ClassJobType.Miner, UmbralLevinAbove, UmbralLevin);
+                        standBy = AfkSpots[time.Next(0, AfkSpots.Length)];
                         await StandBy();
                         break;
-                    case 134: if (lastWeather == 134) break; await MineWeather(ClassJobType.Botanist, umbralDuststormAbove, umbralDuststorm);
-                        standBy = afkSpots[time.Next(0, afkSpots.Length)];
+                    case 134:
+                        if (lastWeather == 134) break; await MineWeather(ClassJobType.Botanist, UmbralDuststormAbove, UmbralDuststorm);
+                        standBy = AfkSpots[time.Next(0, AfkSpots.Length)];
                         await StandBy();
                         break;
-                    case 136: if (lastWeather == 136) break; await MineWeather(ClassJobType.Botanist, umbralTempestAbove, umbralTempest);
-                        standBy = afkSpots[time.Next(0, afkSpots.Length)];
+                    case 136:
+                        if (lastWeather == 136) break; await MineWeather(ClassJobType.Botanist, UmbralTempestAbove, UmbralTempest);
+                        standBy = AfkSpots[time.Next(0, AfkSpots.Length)];
                         await StandBy();
                         break;
-                    default: await Coroutine.Sleep(3000);
+                    default:
+                        await Coroutine.Sleep(3000);
                         if (lastChange.IsFinished)
                         {
                             lastChange.Reset();
@@ -222,7 +224,7 @@ namespace LlamaLibrary
                         } break;
                         //*/
                         await StandBy(); break;
-                } 
+                }
 
                 await Coroutine.Sleep(1000);
             }
@@ -239,8 +241,6 @@ namespace LlamaLibrary
                     await Coroutine.Sleep(10000);
                 }
             }
-
-
         }
 
         public async Task UseCordial()
@@ -263,7 +263,9 @@ namespace LlamaLibrary
             foreach (var node in NodeList)
             {
                 if (weatherNodes.Contains(node.Base()))
+                {
                     Log($"Weather Node Found: {node.Name} ({node.EnglishName}) Base: {node.Base()} Visible: {node.CanGather}");
+                }
                 else
                 {
                     Log($"Node Found: {node.Name} ({node.EnglishName})  Base: {node.Base()} Visible {node.CanGather}");
@@ -360,9 +362,9 @@ namespace LlamaLibrary
             }
         }
 
-        public static List<GatheringPointObject> NodeList => GameObjectManager.GetObjectsOfType<GatheringPointObject>().OrderBy(r=>r.Distance()).ToList();
+        public static List<GatheringPointObject> NodeList => GameObjectManager.GetObjectsOfType<GatheringPointObject>().OrderBy(r => r.Distance()).ToList();
 
-        public static List<GatheringPointObject> WeatherNodeList => GameObjectManager.GetObjectsOfType<GatheringPointObject>().Where(i => weatherNodes.Contains(i.Base()) && i.IsVisible).OrderBy(r=>r.Distance()).ToList();
+        public static List<GatheringPointObject> WeatherNodeList => GameObjectManager.GetObjectsOfType<GatheringPointObject>().Where(i => weatherNodes.Contains(i.Base()) && i.IsVisible).OrderBy(r => r.Distance()).ToList();
 
         public async Task testGather()
         {
@@ -416,6 +418,7 @@ namespace LlamaLibrary
                         ActionManager.DoAction(272, Core.Me);
                         await Coroutine.Sleep(2500);
                     }
+
                     await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + 0x2A) == 0);
                     items?.GatherItem();
                     await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + 0x2A) != 0);
@@ -456,6 +459,7 @@ namespace LlamaLibrary
                         ActionManager.DoAction(273, Core.Me);
                         await Coroutine.Sleep(2500);
                     }
+
                     await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + 0x2A) == 0);
                     items?.GatherItem();
                     await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + 0x2A) != 0);
@@ -505,11 +509,11 @@ namespace LlamaLibrary
                             await Coroutine.Wait(Timeout.Infinite, () => !CommonBehaviors.IsLoading);
                         }
                     }
+
                     await Coroutine.Sleep(2500);
                 }
             }
         }
-
 
         internal static async Task<bool> FlyTo2(Vector3 loc)
         {
@@ -520,10 +524,11 @@ namespace LlamaLibrary
                      moving == MoveResult.Failure ||
                      moving == MoveResult.PathGenerationFailed))
             {
-                moving = Flightor.MoveTo(loc, 100f,false);
+                moving = Flightor.MoveTo(loc, 100f, false);
 
                 await Coroutine.Yield();
             }
+
             Flightor.Clear();
             MovementManager.MoveStop();
 

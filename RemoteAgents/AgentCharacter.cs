@@ -4,7 +4,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    public class AgentCharacter: AgentInterface<AgentCharacter>, IAgent
+    public class AgentCharacter : AgentInterface<AgentCharacter>, IAgent
     {
         private static class Offsets
         {

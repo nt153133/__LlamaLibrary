@@ -38,7 +38,7 @@ namespace LlamaLibrary.OrderbotTags
         [XmlAttribute("Dialog")]
         [XmlAttribute("dialog")]
         [DefaultValue(false)]
-        public bool dialog { get; set; } = false;		
+        public bool dialog { get; set; } = false;
 
         public override bool HighPriority => true;
 
@@ -62,7 +62,7 @@ namespace LlamaLibrary.OrderbotTags
 
         private async Task BuyItem(int itemId, int npcId, int count, int selectString)
         {
-            var unit = GameObjectManager.GetObjectsByNPCId<Character>((uint) npcId).OrderBy(r => r.Distance()).FirstOrDefault();
+            var unit = GameObjectManager.GetObjectsByNPCId<Character>((uint)npcId).OrderBy(r => r.Distance()).FirstOrDefault();
 
             if (unit == null)
             {
@@ -87,13 +87,13 @@ namespace LlamaLibrary.OrderbotTags
                     Talk.Next();
                     await Coroutine.Sleep(1000);
                 }
-            }			
+            }
 
             await Coroutine.Wait(5000, () => Conversation.IsOpen);
 
             if (Conversation.IsOpen)
             {
-                Conversation.SelectLine((uint) selectString);
+                Conversation.SelectLine((uint)selectString);
 
                 if (dialog)
                 {
@@ -104,15 +104,14 @@ namespace LlamaLibrary.OrderbotTags
                         Talk.Next();
                         await Coroutine.Sleep(1000);
                     }
-                }			
+                }
 
                 await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open);
-
 
                 if (ShopExchangeCurrency.Open)
                 {
                     //Log("Opened");
-                    ShopExchangeCurrency.Purchase((uint) itemId, (uint) count);
+                    ShopExchangeCurrency.Purchase((uint)itemId, (uint)count);
                     await Coroutine.Wait(2000, () => SelectYesno.IsOpen || Request.IsOpen);
 
                     if (SelectYesno.IsOpen)

@@ -35,7 +35,8 @@ namespace LlamaLibrary
             get
             {
                 return new PrioritySelector(
-                    new Decorator(r => !Paused,
+                    new Decorator(
+                        r => !Paused,
                         new PrioritySelector(
                             new Decorator(r => CommonBehaviors.IsLoading, CommonBehaviors.HandleLoading),
                             new Decorator(r => true, MoveTo(Vector3.Zero, 9f))
@@ -54,7 +55,7 @@ namespace LlamaLibrary
                 _settings.Show();
                 _settings.Activate();
             }
-            catch (ArgumentOutOfRangeException ee)
+            catch (ArgumentOutOfRangeException)
             {
             }
         }
@@ -66,6 +67,7 @@ namespace LlamaLibrary
         public Composite MoveTo(Vector3 location, float distance)
         {
             return new PrioritySelector(CommonBehaviors.CreateMountBehavior(), CommonBehaviors.CreateSprintBehavior(), new ActionRunCoroutine(i => MoveToTask(PartyManager.PartyLeader.BattleCharacter, 3f)));
+
             //return  new ActionRunCoroutine((i) => MoveToTask(GetTargetLocation(), 9f));
         }
 
@@ -73,11 +75,13 @@ namespace LlamaLibrary
         {
             //Logger.LogCritical($"Move To task");
             if (target.Location == Vector3.Zero) return false;
+
             //Logger.LogCritical($"move to {location}");
             while (target.Location.Distance2DSqr(Core.Me.Location) >= distance)
             {
                 Navigator.PlayerMover.MoveTowards(target.Location);
                 await Coroutine.Yield();
+
                 // Navigator.PlayerMover.MoveStop();
             }
 
@@ -105,7 +109,6 @@ namespace LlamaLibrary
 
         public override void Start()
         {
-
             _root = FollowBehavior;
         }
 

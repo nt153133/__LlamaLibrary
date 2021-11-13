@@ -1,18 +1,20 @@
-﻿using Buddy.Coroutines;
-using Clio.XmlEngine;
-using ff14bot.Managers;
+﻿using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
-using TreeSharp;
-using System;
-using Clio.Utilities;
-using ff14bot.Behavior;
 using System.Linq;
+using System.Threading.Tasks;
+using Buddy.Coroutines;
+using Clio.Utilities;
+using Clio.XmlEngine;
+using ff14bot;
+using ff14bot.Behavior;
+using ff14bot.Managers;
+using ff14bot.NeoProfiles;
+using TreeSharp;
 
-namespace ff14bot.NeoProfiles
+namespace Ff14bot.NeoProfiles
 {
     [XmlElement("LLSendChat")]
-	[XmlElement("SoSendChat")]
+    [XmlElement("SoSendChat")]
     public class LLSendChat : ProfileBehavior
     {
         [XmlAttribute("NpcId")]
@@ -29,6 +31,7 @@ namespace ff14bot.NeoProfiles
             get { return Position; }
             set { Position = value; }
         }
+
         public Vector3 Position;
 
         [XmlAttribute("GearSet")]
@@ -165,11 +168,11 @@ namespace ff14bot.NeoProfiles
                 ChatManager.SendChat("/s " + Say);
             }
 
-            if (Shout!= null)
+            if (Shout != null)
             {
                 Log($"Shouting {Shout}.");
                 ChatManager.SendChat("/shout " + Shout);
-            }			
+            }
 
             if (Emote != null)
             {
@@ -188,7 +191,7 @@ namespace ff14bot.NeoProfiles
             {
                 BagSlot item = InventoryManager.FilledSlots.FirstOrDefault(r => r.RawItemId == QuestItem);
                 Log($"Using {item.EnglishName} on {XYZ.ToString()}.");
-                ActionManager.DoActionLocation(Enums.ActionType.KeyItem, (uint)QuestItem, XYZ);
+                ActionManager.DoActionLocation(ff14bot.Enums.ActionType.KeyItem, (uint)QuestItem, XYZ);
                 await Coroutine.Wait(10000, () => !Core.Player.IsCasting);
             }
 

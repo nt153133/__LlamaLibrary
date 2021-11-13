@@ -28,7 +28,7 @@ namespace LlamaLibrary.Reduce
             RunCheck.Checked = ReduceSettings.Instance.StayRunning;
             checkBox1.Checked = ReduceSettings.Instance.AEZoneCheck; //yeah i'll rename it later
             textZone.Text = ReduceSettings.Instance.AEZone.ToString();
-            checkBox2.Checked = ReduceSettings.Instance.OpenCoffers;//yeah i'll rename it later...this one too
+            checkBox2.Checked = ReduceSettings.Instance.OpenCoffers; //yeah i'll rename it later...this one too
         }
 
         private void RunCheck_CheckedChanged(object sender, EventArgs e)
@@ -38,7 +38,9 @@ namespace LlamaLibrary.Reduce
 
         private void setZoneBtn_Click(object sender, EventArgs e)
         {
-            if (textZone.Text != null);
+            if (textZone.Text != null)
+            {
+            }
             {
                 int _zone;
                 if (int.TryParse(textZone.Text, out _zone))

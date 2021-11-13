@@ -34,7 +34,7 @@ namespace LlamaLibrary.OrderbotTags
 
         private async Task LLGoHomeTask()
         {
-            await LlamaLibrary.Helpers.GeneralFunctions.GoHome();	
+            await LlamaLibrary.Helpers.GeneralFunctions.GoHome();
 
             _isDone = true;
         }

@@ -7,7 +7,7 @@ namespace LlamaLibrary.Extensions
     {
         internal static MyItemRole MyItemRole(this Item item)
         {
-            return (MyItemRole)((byte) item.ItemRole);
+            return (MyItemRole)((byte)item.ItemRole);
         }
     }
 }

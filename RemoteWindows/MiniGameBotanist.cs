@@ -18,17 +18,17 @@ namespace LlamaLibrary.RemoteWindows
 
         public void PressButton()
         {
-            SendAction(3,3,0xB,3,0,3,0);
+            SendAction(3, 3, 0xB, 3, 0, 3, 0);
         }
 
         public void PauseCursor()
         {
-            SendAction(1,3,0xF);
+            SendAction(1, 3, 0xF);
         }
 
         public void ResumeCursor()
         {
-            SendAction(1,3,0xF);
+            SendAction(1, 3, 0xF);
         }
 
         public int GetNumberOfTriesLeft => IsOpen ? ___Elements()[11].TrimmedData : 0;
@@ -41,7 +41,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             get
             {
-                var data = Core.Memory.ReadString((IntPtr) ___Elements()[15].Data, Encoding.UTF8);
+                var data = Core.Memory.ReadString((IntPtr)___Elements()[15].Data, Encoding.UTF8);
 
                 if (!_timeRegex.IsMatch(data)) return 0;
 

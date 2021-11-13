@@ -1,6 +1,6 @@
 ﻿namespace LlamaLibrary.RemoteWindows
 {
-    public class SalvageAutoDialog: RemoteWindow<SalvageAutoDialog>
+    public class SalvageAutoDialog : RemoteWindow<SalvageAutoDialog>
     {
         private const string WindowName = "SalvageAutoDialog";
 

@@ -1,9 +1,9 @@
 ﻿namespace LlamaLibrary.RemoteWindows
-{    
+{
     /// <summary>
-    ///     Class for using the GC squadron window
+    ///     Class for using the GC squadron window.
     /// </summary>
-    public class GcArmyCapture: RemoteWindow<GcArmyCapture>
+    public class GcArmyCapture : RemoteWindow<GcArmyCapture>
     {
         private const string WindowName = "GcArmyCapture";
 
@@ -18,12 +18,12 @@
         }
 
         /// <summary>
-        ///     Sets the squadron command mission
+        ///     Sets the squadron command mission.
         /// </summary>
         /// <param name="index">The duty index from the list starting at 0.</param>
         public void SelectDuty(int index)
         {
-            SendAction(2, 3, 0xB, 4, (ulong) index);
+            SendAction(2, 3, 0xB, 4, (ulong)index);
         }
     }
 }

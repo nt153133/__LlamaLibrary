@@ -9,12 +9,12 @@ using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
-using Character = ff14bot.Objects.Character;
 using static ff14bot.RemoteWindows.Talk;
+using Character = ff14bot.Objects.Character;
 
 namespace LlamaLibrary.OrderbotTags
 {
-[XmlElement("BuyBluTotem")]
+    [XmlElement("BuyBluTotem")]
     public class BuyBluTotem : ProfileBehavior
     {
         private bool _isDone;
@@ -30,7 +30,6 @@ namespace LlamaLibrary.OrderbotTags
 
         [XmlAttribute("SelectString")]
         public int selectString { get; set; }
-
 
         public override bool HighPriority => true;
 
@@ -49,12 +48,12 @@ namespace LlamaLibrary.OrderbotTags
 
         protected override Composite CreateBehavior()
         {
-            return new ActionRunCoroutine(r => BuyItem(ItemId, NpcId,  selectString));
+            return new ActionRunCoroutine(r => BuyItem(ItemId, NpcId, selectString));
         }
 
         private async Task BuyItem(int itemId, int npcId, int selectString)
         {
-            var unit = GameObjectManager.GetObjectsByNPCId<Character>((uint) npcId).OrderBy(r => r.Distance()).FirstOrDefault();
+            var unit = GameObjectManager.GetObjectsByNPCId<Character>((uint)npcId).OrderBy(r => r.Distance()).FirstOrDefault();
 
             if (unit == null)
             {
@@ -74,7 +73,7 @@ namespace LlamaLibrary.OrderbotTags
 
             if (Conversation.IsOpen)
             {
-                Conversation.SelectLine((uint) selectString);
+                Conversation.SelectLine((uint)selectString);
 
                 await Coroutine.Wait(5000, () => DialogOpen || FreeShop.Instance.IsOpen);
 
@@ -85,7 +84,7 @@ namespace LlamaLibrary.OrderbotTags
                 if (FreeShop.Instance.IsOpen)
                 {
                     //Log("Opened");
-                    await FreeShop.Instance.BuyItem((uint) itemId);
+                    await FreeShop.Instance.BuyItem((uint)itemId);
                 }
 
                 await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
@@ -96,8 +95,6 @@ namespace LlamaLibrary.OrderbotTags
                     await Coroutine.Wait(2000, () => !SelectYesno.IsOpen);
                     await Coroutine.Sleep(500);
                 }
-
-
 
                 if (FreeShop.Instance.IsOpen)
                 {

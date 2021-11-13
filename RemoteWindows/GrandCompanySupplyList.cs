@@ -6,7 +6,7 @@ using ff14bot.RemoteWindows;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    public class GrandCompanySupplyList: RemoteWindow<GrandCompanySupplyList>
+    public class GrandCompanySupplyList : RemoteWindow<GrandCompanySupplyList>
     {
         private const string WindowName = "GrandCompanySupplyList";
 
@@ -25,8 +25,8 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = ___Elements();
             var numberTurnins = GetNumberOfTurnins();
 
-            var canHandInElements = new ArraySegment<TwoInt>(currentElements, 346, numberTurnins).Select(i=> (uint)i.TrimmedData).ToArray();
-            var reqElements = new ArraySegment<TwoInt>(currentElements, 386, numberTurnins).Select(i=> (uint)i.TrimmedData).ToArray();
+            var canHandInElements = new ArraySegment<TwoInt>(currentElements, 346, numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
+            var reqElements = new ArraySegment<TwoInt>(currentElements, 386, numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
 
             bool[] turins = new bool[numberTurnins];
 
@@ -43,7 +43,7 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = ___Elements();
             var numberTurnins = GetNumberOfTurnins();
 
-            var turninIdElements = new ArraySegment<TwoInt>(currentElements, 426, numberTurnins).Select(i=> (uint)i.TrimmedData).ToArray();
+            var turninIdElements = new ArraySegment<TwoInt>(currentElements, 426, numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
 
             return turninIdElements;
         }
@@ -53,36 +53,35 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = ___Elements();
             var numberTurnins = GetNumberOfTurnins();
 
-            var reqElements = new ArraySegment<TwoInt>(currentElements, 386, numberTurnins).Select(i=> (uint)i.TrimmedData).ToArray();
+            var reqElements = new ArraySegment<TwoInt>(currentElements, 386, numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
 
             return reqElements;
         }
 
         public void ClickItem(int index)
         {
-            SendAction(2, 3, 1, 3, (ulong) index);
+            SendAction(2, 3, 1, 3, (ulong)index);
         }
 
         public async Task SwitchToExpertDelivery()
         {
-            SendAction(2, 3,0,3,2);
+            SendAction(2, 3, 0, 3, 2);
             await Coroutine.Sleep(500);
-            SendAction(2, 3,5,3,2);
+            SendAction(2, 3, 5, 3, 2);
             await Coroutine.Sleep(500);
         }
 
         public async Task SwitchToProvisioning()
         {
             //var button = WindowByName.FindButton(12);
-            SendAction(2, 3,0,3,1);
+            SendAction(2, 3, 0, 3, 1);
             await Coroutine.Sleep(500);
         }
 
         public async Task SwitchToSupply()
         {
-            SendAction(2, 3,0,3,0);
+            SendAction(2, 3, 0, 3, 0);
             await Coroutine.Sleep(500);
         }
-
     }
 }

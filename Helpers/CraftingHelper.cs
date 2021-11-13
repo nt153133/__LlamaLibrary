@@ -32,7 +32,7 @@ namespace LlamaLibrary.Helpers
                 var status = Status;
                 if (IsValid(status))
                 {
-                    return (int) status.Quality;
+                    return (int)status.Quality;
                 }
                 else
                 {
@@ -48,7 +48,7 @@ namespace LlamaLibrary.Helpers
                 var status = Status;
                 if (IsValid(status))
                 {
-                    return (int) status.Step;
+                    return (int)status.Step;
                 }
                 else
                 {
@@ -64,7 +64,7 @@ namespace LlamaLibrary.Helpers
                 var status = Status;
                 if (IsValid(status))
                 {
-                    return (int) status.HQ;
+                    return (int)status.HQ;
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace LlamaLibrary.Helpers
                 var status = Status;
                 if (IsValid(status))
                 {
-                    return (int) status.Durability;
+                    return (int)status.Durability;
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace LlamaLibrary.Helpers
                 var status = Status;
                 if (IsValid(status))
                 {
-                    return (int) status.Progress;
+                    return (int)status.Progress;
                 }
                 else
                 {
@@ -128,6 +128,5 @@ namespace LlamaLibrary.Helpers
         public static bool IsCrafting => CraftingManager.IsCrafting;
         public static bool CanCraft => CraftingManager.CanCraft;
         public static RecipeData CurrentRecipe => CraftingManager.CurrentRecipe;
-
     }
 }

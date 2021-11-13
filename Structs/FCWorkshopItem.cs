@@ -17,7 +17,7 @@ namespace LlamaLibrary.Structs
 
         public override string ToString()
         {
-            return $"{DataManager.GetItem((uint) ItemId).CurrentLocaleName} x {(Qty * TurnInsRequired)}";
+            return $"{DataManager.GetItem((uint)ItemId).CurrentLocaleName} x {Qty * TurnInsRequired}";
         }
     }
 }

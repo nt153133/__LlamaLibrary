@@ -26,13 +26,13 @@ namespace LlamaLibrary.Retainers
 
             if (RaptureAtkUnitManager.GetWindowByName("InventoryRetainer") != null)
             {
-                RaptureAtkUnitManager.GetWindowByName("InventoryRetainer").SendAction(1, 3, (ulong) uint.MaxValue);
+                RaptureAtkUnitManager.GetWindowByName("InventoryRetainer").SendAction(1, 3, (ulong)uint.MaxValue);
                 return true;
             }
 
             if (RaptureAtkUnitManager.GetWindowByName("InventoryRetainerLarge") != null)
             {
-                RaptureAtkUnitManager.GetWindowByName("InventoryRetainerLarge").SendAction(1, 3, (ulong) uint.MaxValue);
+                RaptureAtkUnitManager.GetWindowByName("InventoryRetainerLarge").SendAction(1, 3, (ulong)uint.MaxValue);
                 return true;
             }
 
@@ -41,7 +41,7 @@ namespace LlamaLibrary.Retainers
 
         public static bool CloseTasks()
         {
-            if (IsOpen) SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+            if (IsOpen) SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
 
             return !IsOpen;
         }
@@ -55,7 +55,7 @@ namespace LlamaLibrary.Retainers
         internal static class RetainerTaskStrings
         {
             //For partial string searches use SelectIconString.ClickLineContains(string) and not Equals
-#if RB_CN			
+#if RB_CN
 			internal static string Inventory = "道具管理";
             internal static string Gil = "金币管理";
             internal static string SellYourInventory = "出售（玩家所持物品）";

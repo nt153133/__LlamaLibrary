@@ -2,9 +2,8 @@
 
 namespace LlamaLibrary.RemoteWindows
 {
-    public class HWDGathereInspect: RemoteWindow<HWDGathereInspect>
+    public class HWDGathereInspect : RemoteWindow<HWDGathereInspect>
     {
-
         private const string WindowName = "HWDGathereInspect";
 
         public HWDGathereInspect() : base(WindowName)
@@ -26,7 +25,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public void ClickClass(int index)
         {
-            SendAction(2, 3,0xE,4,(ulong) index);
+            SendAction(2, 3, 0xE, 4, (ulong)index);
         }
 
         public bool CanAutoSubmit()
@@ -51,7 +50,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public override void Close()
         {
-            SendAction(1, 3, UInt64.MaxValue);
+            SendAction(1, 3, ulong.MaxValue);
         }
     }
 }

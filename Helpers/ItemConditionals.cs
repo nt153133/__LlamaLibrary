@@ -13,12 +13,12 @@ namespace LlamaLibrary.Helpers
     {
         public ItemRoleConditional(string name, ActionType action, List<string> parameters) : base(name, action, parameters)
         {
-            Type = ConditionalType.ItemRole;
+            type = ConditionalType.ItemRole;
         }
 
         public ItemRoleConditional(Conditional conditional)
         {
-            Type = ConditionalType.ItemRole;
+            type = ConditionalType.ItemRole;
             Name = conditional.Name;
             Action = conditional.Action;
             Parameters = conditional.Parameters;
@@ -55,12 +55,12 @@ namespace LlamaLibrary.Helpers
     {
         public ItemCategoryConditional(string name, ActionType action, List<string> parameters) : base(name, action, parameters)
         {
-            Type = ConditionalType.ItemCategory;
+            type = ConditionalType.ItemCategory;
         }
 
         public ItemCategoryConditional(Conditional conditional)
         {
-            Type = ConditionalType.ItemCategory;
+            type = ConditionalType.ItemCategory;
             Name = conditional.Name;
             Action = conditional.Action;
             Parameters = conditional.Parameters;
@@ -97,12 +97,12 @@ namespace LlamaLibrary.Helpers
     {
         public NameConditional(string name, ActionType action, List<string> parameters) : base(name, action, parameters)
         {
-            Type = ConditionalType.Name;
+            type = ConditionalType.Name;
         }
 
         public NameConditional(Conditional conditional)
         {
-            Type = ConditionalType.Name;
+            type = ConditionalType.Name;
             Name = conditional.Name;
             Action = conditional.Action;
             Parameters = conditional.Parameters;
@@ -128,12 +128,12 @@ namespace LlamaLibrary.Helpers
     {
         public IdConditional(string name, ActionType action, List<string> parameters) : base(name, action, parameters)
         {
-            Type = ConditionalType.Id;
+            type = ConditionalType.Id;
         }
 
         public IdConditional(Conditional conditional)
         {
-            Type = ConditionalType.Id;
+            type = ConditionalType.Id;
             Name = conditional.Name;
             Action = conditional.Action;
             Parameters = conditional.Parameters;
@@ -143,7 +143,7 @@ namespace LlamaLibrary.Helpers
         {
             get
             {
-                return Parameters.Select(cat => (uint) int.Parse(cat)).ToList();
+                return Parameters.Select(cat => (uint)int.Parse(cat)).ToList();
             }
         }
 
@@ -165,12 +165,12 @@ namespace LlamaLibrary.Helpers
 
         public List<string> Parameters;
 
-        protected ConditionalType Type;
+        protected ConditionalType type;
 
         public Conditional(string name, ConditionalType type, List<string> parameters)
         {
             Name = name;
-            Type = type;
+            this.type = type;
             Parameters = parameters;
             Action = ActionType.Sell;
         }
@@ -179,7 +179,7 @@ namespace LlamaLibrary.Helpers
         public Conditional(string name, ConditionalType type, ActionType action, List<string> parameters)
         {
             Name = name;
-            Type = type;
+            this.type = type;
             Action = action;
             Parameters = parameters;
         }

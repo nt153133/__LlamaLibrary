@@ -30,12 +30,12 @@ namespace LlamaLibrary
 
         private Vector3 goldenSaucer = new Vector3(-2.129811f, 1.042503f, -8.071652f);
 
-        private static MiniGameResult HitResult = MiniGameResult.None;
+        private static MiniGameResult hitResult = MiniGameResult.None;
 
-        private static int baseDelay = 500;//600
-        private static int maxDelay = 800;//800
+        private static int baseDelay = 500; //600
+        private static int maxDelay = 800; //800
 
-        private readonly List<Vector3> PlayLocations = new List<Vector3>
+        private readonly List<Vector3> playLocations = new List<Vector3>
         {
             new Vector3(36.15812f, 0.00596046f, 28.72554f),
             new Vector3(32.90435f, 0.006565332f, 26.9241f),
@@ -64,14 +64,16 @@ namespace LlamaLibrary
 
         private async Task<bool> Run()
         {
-            var lang = (Language) typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+            var lang = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
                 .First(i => i.FieldType == typeof(Language)).GetValue(null);
 
             if (lang != Language.Eng && lang != Language.Chn) TreeRoot.Stop("Only works on English and Chinese Clients for now");
 
             await StartOutOnLimb();
+
             //Logger.LogCritical("Start Done");
             await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
+
             //Logger.LogCritical("Ready");
             if (await PlayBotanist())
             {
@@ -91,6 +93,7 @@ namespace LlamaLibrary
                         SelectYesno.No();
                         Logger.LogCritical($"Won Nothing Reward: {GetDoubleDownReward()} total so far {totalMGP}");
                         await Coroutine.Sleep(_random.Next(300, 500));
+
                         //await Coroutine.Sleep(_random.Next(4000,5000));
                         break;
                     }
@@ -109,6 +112,7 @@ namespace LlamaLibrary
                         await Coroutine.Sleep(_random.Next(500, 1000));
                         SelectYesno.ClickYes();
                         await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
+
                         //await PlayBotanist();
                     }
                     else if (SelectYesno.IsOpen)
@@ -118,7 +122,8 @@ namespace LlamaLibrary
                         await Coroutine.Sleep(_random.Next(300, 500));
                         break;
                     }
-                } while (await PlayBotanist());
+                }
+                while (await PlayBotanist());
 
                 await Coroutine.Wait(5000, () => GoldSaucerReward.Instance.IsOpen);
 
@@ -147,7 +152,7 @@ namespace LlamaLibrary
 
             if (totalMGP > threashold)
             {
-                var _target = PlayLocations[_random.Next(0, PlayLocations.Count - 1)];
+                var _target = playLocations[_random.Next(0, playLocations.Count - 1)];
                 Logger.LogCritical($"Moving to {_target}");
                 Navigator.PlayerMover.MoveTowards(_target);
                 while (_target.Distance2D(Core.Me.Location) >= 4)
@@ -167,7 +172,7 @@ namespace LlamaLibrary
 
         public static async Task<bool> RunHomeMGP()
         {
-            var lang = (Language) typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+            var lang = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
                 .First(i => i.FieldType == typeof(Language)).GetValue(null);
 
             if (lang != Language.Eng && lang != Language.Chn) TreeRoot.Stop("Only works on English and Chinese Clients for now");
@@ -175,8 +180,10 @@ namespace LlamaLibrary
             while (true)
             {
                 await StartOutOnLimbHome();
+
                 //Logger.LogCritical("Start Done");
                 await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
+
                 //Logger.LogCritical("Ready");
                 if (await PlayBotanist())
                 {
@@ -196,6 +203,7 @@ namespace LlamaLibrary
                             SelectYesno.No();
                             Logger.LogCritical($"Won Nothing Reward: {GetDoubleDownReward()} total so far {totalMGP}");
                             await Coroutine.Sleep(_random.Next(300, 500));
+
                             //await Coroutine.Sleep(_random.Next(4000,5000));
                             break;
                         }
@@ -203,7 +211,7 @@ namespace LlamaLibrary
                         if (SelectYesno.IsOpen && (GetDoubleDownInfo().Key <= 2 || GetDoubleDownInfo().Value < 15))
                         {
                             SelectYesno.No();
-                            Logger.LogCritical($"Click No Reward: {GetDoubleDownReward()} TimeLeft: {GetDoubleDownInfo().Value }");
+                            Logger.LogCritical($"Click No Reward: {GetDoubleDownReward()} TimeLeft: {GetDoubleDownInfo().Value}");
                             await Coroutine.Sleep(_random.Next(300, 500));
                             break;
                         }
@@ -214,11 +222,12 @@ namespace LlamaLibrary
                             await Coroutine.Sleep(_random.Next(300, 500));
                             SelectYesno.ClickYes();
                             await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
+
                             //await PlayBotanist();
                         }
                         else if (SelectYesno.IsOpen)
                         {
-                            Logger.LogCritical($"Click No Reward: {GetDoubleDownReward()} TimeLeft: {GetDoubleDownInfo().Value }");
+                            Logger.LogCritical($"Click No Reward: {GetDoubleDownReward()} TimeLeft: {GetDoubleDownInfo().Value}");
                             SelectYesno.No();
                             await Coroutine.Sleep(_random.Next(300, 500));
                             break;
@@ -237,6 +246,7 @@ namespace LlamaLibrary
                         if (gained == 0)
                         {
                             Logger.LogCritical($"Won {gained}");
+
                             //TreeRoot.Stop("Won zero...issue");
                             break;
                         }
@@ -254,6 +264,7 @@ namespace LlamaLibrary
             }
 
             GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
+
             //TreeRoot.Stop("Stop Requested");
             return true;
         }
@@ -277,7 +288,6 @@ namespace LlamaLibrary
             Navigator.NavigationProvider = new ServiceNavigationProvider();
             Navigator.PlayerMover = new SlideMover();
 
-
             uint npcid = 2005423; //197371
 
             if (GameObjectManager.GetObjectByNPCId(npcid) == null)
@@ -297,7 +307,7 @@ namespace LlamaLibrary
 
                     Navigator.PlayerMover.MoveStop();
 
-                    _target = PlayLocations[_random.Next(0, PlayLocations.Count - 1)];
+                    _target = playLocations[_random.Next(0, playLocations.Count - 1)];
                     Navigator.PlayerMover.MoveTowards(_target);
                     while (_target.Distance2D(Core.Me.Location) >= 4)
                     {
@@ -352,7 +362,6 @@ namespace LlamaLibrary
             Navigator.NavigationProvider = new ServiceNavigationProvider();
             Navigator.PlayerMover = new SlideMover();
 
-
             uint npcid = 197371; //197371
 
             if (GameObjectManager.GetObjectByNPCId(npcid) == null)
@@ -395,6 +404,7 @@ namespace LlamaLibrary
         private async Task<bool> GetToMinionSquare()
         {
             if (!WorldManager.TeleportById(62))
+
                 //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
                 //TreeRoot.Stop();
                 return false;
@@ -429,7 +439,7 @@ namespace LlamaLibrary
             unit.Target();
             unit.Interact();
             await Coroutine.Wait(5000, () => SelectString.IsOpen);
-#if RB_CN			
+#if RB_CN
 
             if (SelectString.IsOpen)
                 SelectString.ClickLineContains("都市传送网");
@@ -465,7 +475,7 @@ namespace LlamaLibrary
         private static void GamelogManagerOnMessageRecevied(object sender, ChatEventArgs e)
         {
             if (e.ChatLogEntry.MessageType == MessageType.SystemMessages)
-#if RB_CN			
+#if RB_CN
                 if (e.ChatLogEntry.FullLine.IndexOf("寻找目标位置", StringComparison.OrdinalIgnoreCase) >= 0)
 #else
                 if (e.ChatLogEntry.FullLine.IndexOf("hatchet", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -476,7 +486,7 @@ namespace LlamaLibrary
                 }
 
             //Hatchet Ready
-#if RB_CN			
+#if RB_CN
             if (e.ChatLogEntry.MessageType == (MessageType) 2105)
             {
                 if (e.ChatLogEntry.FullLine.IndexOf("手感", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -505,30 +515,30 @@ namespace LlamaLibrary
                 }
             }
 #else
-            if (e.ChatLogEntry.MessageType == (MessageType) 2105)
+            if (e.ChatLogEntry.MessageType == (MessageType)2105)
             {
                 if (e.ChatLogEntry.FullLine.IndexOf("nothing", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     //Logger.Info("Not Close");
-                    HitResult = MiniGameResult.NotClose;
+                    hitResult = MiniGameResult.NotClose;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
                 else if (e.ChatLogEntry.FullLine.IndexOf("something close", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     //Logger.Info("Close");
-                    HitResult = MiniGameResult.Close;
+                    hitResult = MiniGameResult.Close;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
                 else if (e.ChatLogEntry.FullLine.IndexOf("very", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     //Logger.Info("Very Close");
-                    HitResult = MiniGameResult.VeryClose;
+                    hitResult = MiniGameResult.VeryClose;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
                 else if (e.ChatLogEntry.FullLine.IndexOf("right on", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     //Logger.Info("On Top");
-                    HitResult = MiniGameResult.OnTop;
+                    hitResult = MiniGameResult.OnTop;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
             }
@@ -548,7 +558,7 @@ namespace LlamaLibrary
             var lastLocation = -1;
 
             //Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft}");
-            var stops1 = new List<int> {20, 60, 40, 80};
+            var stops1 = new List<int> { 20, 60, 40, 80 };
             stops1.Shuffle();
             foreach (var stopLoc in stops1)
             {
@@ -566,7 +576,7 @@ namespace LlamaLibrary
                     case MiniGameResult.Error:
                         Logger.LogCritical("Error");
                         return false;
-                    case MiniGameResult.OnTop:      return true;
+                    case MiniGameResult.OnTop: return true;
                     case MiniGameResult.DoubleDown: return true;
                     case MiniGameResult.VeryClose:
                         stop = true;
@@ -579,6 +589,7 @@ namespace LlamaLibrary
                 }
 
                 lastLocation = stopLoc;
+
                 //Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft}");
                 await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
                 await Coroutine.Sleep(_random.Next(baseDelay, maxDelay));
@@ -589,7 +600,7 @@ namespace LlamaLibrary
             // Logger.LogCritical("endFor");
             if (lastCloseLocation > 1 && lastVeryCloseLocation < 1)
             {
-                var stops = new List<int> {lastCloseLocation - 12, lastCloseLocation + 12, lastCloseLocation - 7, lastCloseLocation + 17};
+                var stops = new List<int> { lastCloseLocation - 12, lastCloseLocation + 12, lastCloseLocation - 7, lastCloseLocation + 17 };
 
                 foreach (var stopLoc in stops)
                 {
@@ -606,7 +617,7 @@ namespace LlamaLibrary
                         case MiniGameResult.Error:
                             Logger.LogCritical("Error");
                             return false;
-                        case MiniGameResult.OnTop:      return true;
+                        case MiniGameResult.OnTop: return true;
                         case MiniGameResult.DoubleDown: return true;
                         case MiniGameResult.VeryClose:
                             stop = true;
@@ -618,7 +629,8 @@ namespace LlamaLibrary
                     }
 
                     lastLocation = stopLoc;
-                   // Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft} stop {stopLoc}");
+
+                    // Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft} stop {stopLoc}");
                     await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
                     await Coroutine.Sleep(_random.Next(baseDelay, maxDelay));
                     if (stop)
@@ -628,7 +640,7 @@ namespace LlamaLibrary
 
             if (lastCloseLocation < 1 && lastVeryCloseLocation < 1)
             {
-                var stops = new List<int> {5, 95, 50, 10, 70, 30, 0};
+                var stops = new List<int> { 5, 95, 50, 10, 70, 30, 0 };
                 stops.Shuffle();
                 foreach (var stopLoc in stops)
                 {
@@ -645,7 +657,7 @@ namespace LlamaLibrary
                         case MiniGameResult.Error:
                             Logger.LogCritical("Error");
                             return false;
-                        case MiniGameResult.OnTop:      return true;
+                        case MiniGameResult.OnTop: return true;
                         case MiniGameResult.DoubleDown: return true;
                         case MiniGameResult.VeryClose:
                             stop = true;
@@ -657,6 +669,7 @@ namespace LlamaLibrary
                     }
 
                     lastLocation = stopLoc;
+
                     //Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft}");
                     if (MiniGameBotanist.Instance.GetProgressLeft == 0)
                         return true;
@@ -673,7 +686,7 @@ namespace LlamaLibrary
 
             if (lastVeryCloseLocation > 1)
             {
-               // Logger.Info($"\tVery Close set location {lastVeryCloseLocation}");
+                // Logger.Info($"\tVery Close set location {lastVeryCloseLocation}");
                 List<int> locations = new List<int>();
                 locations.Add(lastVeryCloseLocation - 7);
                 locations.Add(lastVeryCloseLocation + 7);
@@ -681,24 +694,28 @@ namespace LlamaLibrary
                 locations.Add(lastVeryCloseLocation + 5);
                 locations.Shuffle();
                 int i = 0;
-                while (MiniGameBotanist.Instance.GetProgressLeft > 0 || !SelectYesno.IsOpen || i >= (locations.Count-1) )
+                while (MiniGameBotanist.Instance.GetProgressLeft > 0 || !SelectYesno.IsOpen || i >= (locations.Count - 1))
                 {
                     //var location = _random.Next(lastVeryCloseLocation - 5, lastVeryCloseLocation + 5);
                     //Logger.Info($"Very Close location {locations[i]}");
                     var result = await StopAtLocation(locations[i]);
+
                     //Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft} result {result}");
                     if (MiniGameBotanist.Instance.GetProgressLeft == 0)
                         return true;
                     await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist || SelectYesno.IsOpen);
+
                     //Logger.Info($"IsReady {AgentOutOnLimb.Instance.IsReadyBotanist}");
                     if (!AgentOutOnLimb.Instance.IsReadyBotanist) break;
                     await Coroutine.Sleep(_random.Next(baseDelay, maxDelay));
                     i++;
                 }
-               // Logger.Info($"Done very close");
+
+                // Logger.Info($"Done very close");
             }
 
             if (MiniGameBotanist.Instance.GetProgressLeft == 0)
+
                 //await Coroutine.Sleep(_random.Next(100,200));
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
 
@@ -714,7 +731,7 @@ namespace LlamaLibrary
 
             if (!AgentOutOnLimb.Instance.CursorLocked)
             {
-               // Logger.Info("Lock Cursor");
+                // Logger.Info("Lock Cursor");
                 MiniGameBotanist.Instance.PauseCursor();
                 await Coroutine.Sleep(200);
             }
@@ -722,19 +739,18 @@ namespace LlamaLibrary
             AgentOutOnLimb.Instance.CursorLocation = location;
 
             GamelogManager.MessageRecevied += GamelogManagerOnMessageRecevied;
-            HitResult = MiniGameResult.None;
+            hitResult = MiniGameResult.None;
             await Coroutine.Sleep(400);
             MiniGameBotanist.Instance.PressButton();
             var timeleft = MiniGameBotanist.Instance.GetTimeLeft * 1000;
-            await Coroutine.Wait(timeleft, () => HitResult != MiniGameResult.None || SelectYesno.IsOpen);
+            await Coroutine.Wait(timeleft, () => hitResult != MiniGameResult.None || SelectYesno.IsOpen);
 
-            return SelectYesno.IsOpen ? MiniGameResult.DoubleDown : HitResult;
+            return SelectYesno.IsOpen ? MiniGameResult.DoubleDown : hitResult;
         }
-
 
         public static KeyValuePair<int, int> GetDoubleDownInfo()
         {
-#if RB_CN			
+#if RB_CN
             var OpportunitiesRegex = new Regex(@"还能够挑战(\d)次", RegexOptions.Compiled);
 
             var TimeRegex = new Regex(@"剩余时间：(\d):(\d+).*", RegexOptions.Compiled);
@@ -743,7 +759,6 @@ namespace LlamaLibrary
 
             var TimeRegex = new Regex(@"Time Remaining: (\d):(\d+).*", RegexOptions.Compiled);
 #endif
-
 
             var offset0 = 458;
             var offset2 = 352;
@@ -758,13 +773,12 @@ namespace LlamaLibrary
                 var addr = Core.Memory.Read<IntPtr>(windowByName.Pointer + offset2);
                 var elements = Core.Memory.ReadArray<TwoInt>(addr, elementCount);
 
-                var data = Core.Memory.ReadString((IntPtr) elements[0].Data, Encoding.UTF8);
+                var data = Core.Memory.ReadString((IntPtr)elements[0].Data, Encoding.UTF8);
 
-
-#if RB_CN			
+#if RB_CN
                foreach (var line in data.Split('\n').Skip(3))
 #else
-               foreach (var line in data.Split('\n').Skip(5))
+                foreach (var line in data.Split('\n').Skip(5))
 #endif
                 {
                     if (OpportunitiesRegex.IsMatch(line))
@@ -778,19 +792,17 @@ namespace LlamaLibrary
 
         public static int GetDoubleDownReward()
         {
-#if RB_CN			
+#if RB_CN
 			var RewardRegex = new Regex(@"(\d+) ⇒", RegexOptions.Compiled);
 #else
             var RewardRegex = new Regex(@".*Current payout: .*[^\d](\d+)[^\d].* MGP", RegexOptions.Compiled);
 #endif
-
 
             //Regex TimeRegex = new Regex(@"Time Remaining: (\d):(\d+).*", RegexOptions.Compiled);
 
             var offset0 = 458;
             var offset2 = 352;
             var count = 0;
-            var sec = 0;
 
             var windowByName = RaptureAtkUnitManager.GetWindowByName("SelectYesno");
 
@@ -801,8 +813,8 @@ namespace LlamaLibrary
                 var addr = Core.Memory.Read<IntPtr>(windowByName.Pointer + offset2);
                 var elements = Core.Memory.ReadArray<TwoInt>(addr, elementCount);
 
-                var data = Core.Memory.ReadString((IntPtr) elements[0].Data, Encoding.UTF8);
-#if RB_CN			
+                var data = Core.Memory.ReadString((IntPtr)elements[0].Data, Encoding.UTF8);
+#if RB_CN
                 foreach (var line in data.Split('\n').Skip(5))
                 {
                     if (RewardRegex.IsMatch(line)) count = int.Parse(RewardRegex.Match(line).Groups[1].Value.Trim());

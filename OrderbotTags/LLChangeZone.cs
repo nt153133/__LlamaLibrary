@@ -13,7 +13,8 @@ namespace LlamaLibrary.OrderbotTags
     {
         private bool _isDone;
 
-        [XmlAttribute("Heading")] public float Heading { get; set; }
+        [XmlAttribute("Heading")]
+        public float Heading { get; set; }
 
         public override bool HighPriority => true;
 
@@ -41,7 +42,10 @@ namespace LlamaLibrary.OrderbotTags
         {
             MovementManager.SetFacing(Heading);
             MovementManager.MoveForwardStart();
-            while (!CommonBehaviors.IsLoading) { await Coroutine.Yield(); }
+            while (!CommonBehaviors.IsLoading)
+            {
+                await Coroutine.Yield();
+            }
             MovementManager.MoveStop();
 
             _isDone = true;

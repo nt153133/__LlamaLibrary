@@ -40,7 +40,7 @@ namespace LlamaLibrary.AutoRetainerSort
         {
             using (StreamReader reader = File.OpenText(settingsFilePath))
             {
-                return (JObject) JToken.ReadFrom(new JsonTextReader(reader));
+                return (JObject)JToken.ReadFrom(new JsonTextReader(reader));
             }
         }
 
@@ -101,9 +101,11 @@ namespace LlamaLibrary.AutoRetainerSort
         [JsonObject(MemberSerialization.OptIn)]
         public class ItemRule : IEquatable<ItemRule>
         {
-            [JsonProperty("Item")] public readonly uint ItemId;
+            [JsonProperty("Item")]
+            public readonly uint ItemId;
 
-            [JsonProperty("LowerQuality")] public readonly bool LowerQuality;
+            [JsonProperty("LowerQuality")]
+            public readonly bool LowerQuality;
 
             public bool Equals(ItemRule other)
             {

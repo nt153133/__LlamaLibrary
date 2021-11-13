@@ -1,6 +1,6 @@
 ﻿namespace LlamaLibrary.RemoteWindows
 {
-    public class MateriaAttachDialog: RemoteWindow<MateriaAttachDialog>
+    public class MateriaAttachDialog : RemoteWindow<MateriaAttachDialog>
     {
         private const string WindowName = "MateriaAttachDialog";
 
@@ -11,7 +11,7 @@
 
         public void ClickAttach()
         {
-            SendAction(1,3,0);
+            SendAction(1, 3, 0);
         }
     }
 }

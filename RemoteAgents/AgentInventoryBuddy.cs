@@ -4,7 +4,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    public class AgentInventoryBuddy: AgentInterface<AgentInventoryBuddy>, IAgent
+    public class AgentInventoryBuddy : AgentInterface<AgentInventoryBuddy>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
 
@@ -17,6 +17,5 @@ namespace LlamaLibrary.RemoteAgents
         protected AgentInventoryBuddy(IntPtr pointer) : base(pointer)
         {
         }
-
     }
 }

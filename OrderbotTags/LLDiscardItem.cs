@@ -62,7 +62,7 @@ namespace LlamaLibrary.OrderbotTags
                 return;
             }
 
-            await StopBusy(leaveDuty:false, dismount:false);
+            await StopBusy(leaveDuty: false, dismount: false);
 
             foreach (var slot in slots)
             {

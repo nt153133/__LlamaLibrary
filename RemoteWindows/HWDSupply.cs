@@ -18,7 +18,9 @@ namespace LlamaLibrary.RemoteWindows
         public int CurrentClassSelected()
         {
             if (Translator.Language == Language.Chn)
+            {
                 return ___Elements()[29].TrimmedData;
+            }
             else
             {
                 return ___Elements()[62].TrimmedData;
@@ -27,16 +29,18 @@ namespace LlamaLibrary.RemoteWindows
 
         public int GetAccumulatedScore()
         {
-            return ___Elements()[17+CurrentClassSelected()].TrimmedData;
+            return ___Elements()[17 + CurrentClassSelected()].TrimmedData;
         }
 
         public int NumberOfKupoTickets()
         {
             if (Translator.Language == Language.Chn)
+            {
                 return 0;
+            }
             else
             {
-                var data = Core.Memory.ReadString((IntPtr) ___Elements()[3].Data, Encoding.UTF8).Split('/');
+                var data = Core.Memory.ReadString((IntPtr)___Elements()[3].Data, Encoding.UTF8).Split('/');
                 return data.Length < 2 ? 0 : int.Parse(data[0].Trim());
             }
         }
@@ -58,7 +62,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public override void Close()
         {
-            SendAction(1, 3, UInt64.MaxValue);
+            SendAction(1, 3, ulong.MaxValue);
         }
     }
 }

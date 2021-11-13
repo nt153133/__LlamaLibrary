@@ -27,6 +27,7 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
                     && ItemSortStatus.PlayerInventoryUniques.Contains(sortInfo.TrueItemId)) continue;
                 if (sortInfo.SortStatus(Index) == SortStatus.Move) return false;
             }
+
             return true;
         }
 
@@ -85,6 +86,7 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
             {
                 ItemCounts[idCountPair.Key] = idCountPair.Value;
             }
+
             foreach (var idCountPair in storedInventory.SlotCount)
             {
                 ItemSlotsTakenCounts[idCountPair.Key] = idCountPair.Value;
@@ -110,6 +112,7 @@ namespace LlamaLibrary.AutoRetainerSort.Classes
                     ItemSlotsTakenCounts.Add(bagSlot.TrueItemId, 1);
                 }
             }
+
             FreeSlots = (int)bags.Sum(x => x.FreeSlots);
         }
 

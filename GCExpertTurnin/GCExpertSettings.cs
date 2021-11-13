@@ -6,7 +6,6 @@ namespace LlamaLibrary.GCExpertTurnin
 {
     public class GCExpertSettings : JsonSettings
     {
-
         private bool _accepted;
 
         private bool _craft;
@@ -19,7 +18,7 @@ namespace LlamaLibrary.GCExpertTurnin
 
         public static GCExpertSettings Instance => _settings ?? (_settings = new GCExpertSettings());
 
-        public GCExpertSettings() :base(Path.Combine(CharacterSettingsDirectory, "GCExpertSettings.json"))
+        public GCExpertSettings() : base(Path.Combine(CharacterSettingsDirectory, "GCExpertSettings.json"))
         {
         }
 

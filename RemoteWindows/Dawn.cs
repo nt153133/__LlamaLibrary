@@ -9,11 +9,11 @@ namespace LlamaLibrary.RemoteWindows
     public class Dawn : RemoteWindow<Dawn>
     {
         private static readonly string WindowName = "Dawn";
-        private readonly List<TrustNPC> NpcList;
+        private readonly List<TrustNPC> npcList;
 
         public Dawn() : base(WindowName)
         {
-            NpcList = new List<TrustNPC>
+            npcList = new List<TrustNPC>
             {
                 new TrustNPC("Alphinaud", 82061, 82081, 1),
                 new TrustNPC("Alisaie", 82062, 82082, 2),
@@ -33,7 +33,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public int NumberOfTrustsAvailable => ___Elements()[73].TrimmedData;
         public int SelectedTrustId => ___Elements()[74].TrimmedData;
-        public string SelectedTrustName => Core.Memory.ReadString((IntPtr) ___Elements()[75].Data, Encoding.UTF8);
+        public string SelectedTrustName => Core.Memory.ReadString((IntPtr)___Elements()[75].Data, Encoding.UTF8);
 
         public TrustNPC SelectedNpc1 => GetTrustNpc(___Elements()[34].TrimmedData);
         public TrustNPC SelectedNpc2 => GetTrustNpc(___Elements()[35].TrimmedData);
@@ -64,7 +64,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public void SetTrust(int trust)
         {
-            if (WindowByName != null) WindowByName.SendAction(2, 3, 15, 4, (ulong) trust);
+            if (WindowByName != null) WindowByName.SendAction(2, 3, 15, 4, (ulong)trust);
         }
 
         public void Close()
@@ -74,7 +74,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public void PressNpcSelection(int npc)
         {
-            if (WindowByName != null && npc < 6) WindowByName.SendAction(2, 3, 12, 4, (ulong) npc);
+            if (WindowByName != null && npc < 6) WindowByName.SendAction(2, 3, 12, 4, (ulong)npc);
         }
 
         public void ToggleScenario()
@@ -84,7 +84,7 @@ namespace LlamaLibrary.RemoteWindows
 
         private TrustNPC GetTrustNpc(int id)
         {
-            return NpcList.Any(i => i.Id1 == id || i.Id2 == id) ? NpcList.FirstOrDefault(i => i.Id1 == id || i.Id2 == id) : null;
+            return npcList.Any(i => i.Id1 == id || i.Id2 == id) ? npcList.FirstOrDefault(i => i.Id1 == id || i.Id2 == id) : null;
         }
     }
 
@@ -97,7 +97,6 @@ namespace LlamaLibrary.RemoteWindows
             Id2 = id2;
             ClassId = classId;
         }
-
 
         public string Name { get; }
         public int Id1 { get; }

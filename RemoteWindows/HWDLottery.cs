@@ -6,7 +6,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    public class HWDLottery: RemoteWindow<HWDLottery>
+    public class HWDLottery : RemoteWindow<HWDLottery>
     {
         private const string WindowName = "HWDLottery";
 
@@ -18,7 +18,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public override void Close()
         {
-            SendAction(1,3,2);
+            SendAction(1, 3, 2);
         }
 
         public HWDLottery() : base(WindowName)
@@ -40,7 +40,7 @@ namespace LlamaLibrary.RemoteWindows
                     Core.Memory.CallInjected64<uint>(Offsets.KupoFunction, new object[2]
                     {
                         agent.Pointer,
-                        (uint) 1
+1U
                     });
 
                     await Coroutine.Sleep(2000);

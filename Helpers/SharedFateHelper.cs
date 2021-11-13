@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
@@ -10,15 +10,15 @@ namespace LlamaLibrary.Helpers
 {
     public static class SharedFateHelper
     {
-        private static DateTime LastWindowCheck;
+        private static DateTime lastWindowCheck;
 
         public static SharedFateProgress[] CachedProgress;
 
-        private static TimeSpan CachePeriod = new TimeSpan(0, 1, 0);
+        private static TimeSpan cachePeriod = new TimeSpan(0, 1, 0);
 
         static SharedFateHelper()
         {
-            LastWindowCheck = new DateTime(1970, 1, 1);
+            lastWindowCheck = new DateTime(1970, 1, 1);
         }
 
         public static async Task<SharedFateProgress> GetSharedFateProgress(uint zoneId)
@@ -28,14 +28,14 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<SharedFateProgress[]> CachedRead()
         {
-            if (DateTime.Now - LastWindowCheck < CachePeriod)
+            if (DateTime.Now - lastWindowCheck < cachePeriod)
             {
                 return CachedProgress;
             }
 
             CachedProgress = await OpenWindowGetFateProgresses();
-            
-            LastWindowCheck = DateTime.Now;
+
+            lastWindowCheck = DateTime.Now;
 
             return CachedProgress;
         }
@@ -47,7 +47,7 @@ namespace LlamaLibrary.Helpers
                 FateProgress.Instance.Close();
                 await Coroutine.Wait(10000, () => !FateProgress.Instance.IsOpen);
             }
-            
+
             AgentFateProgress.Instance.Toggle();
 
             await Coroutine.Wait(10000, () => FateProgress.Instance.IsOpen);
@@ -58,19 +58,19 @@ namespace LlamaLibrary.Helpers
             }
 
             await Coroutine.Wait(20000, () => AgentFateProgress.Instance.NumberOfLoadedZones == 6);
-            
+
             if (AgentFateProgress.Instance.NumberOfLoadedZones == 0)
             {
                 return Array.Empty<SharedFateProgress>();
             }
 
             var result = AgentFateProgress.Instance.ProgressArray;
-            
+
             if (FateProgress.Instance.IsOpen)
             {
                 FateProgress.Instance.Close();
             }
-            
+
             await Coroutine.Wait(10000, () => !FateProgress.Instance.IsOpen);
 
             return result;

@@ -7,7 +7,7 @@ using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    public class AgentRetainerList: AgentInterface<AgentRetainerList>, IAgent
+    public class AgentRetainerList : AgentInterface<AgentRetainerList>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
         private static class Offsets
@@ -19,13 +19,14 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 83 FB ? 72 ? 33 D2 48 8D 4C 24 ? E8 ? ? ? ? 48 8D 15 ? ? ? ? Add 2 Read8")]
             internal static int MaxRetainers;
         }
+
         protected AgentRetainerList(IntPtr pointer) : base(pointer)
         {
         }
 
         public IntPtr[] RetainerList => Core.Memory.ReadArray<IntPtr>(Pointer + Offsets.AgentRetainerOffset, Offsets.MaxRetainers);
 
-        public RetainerInfo[] OrderedRetainerList (RetainerInfo[] retainers)
+        public RetainerInfo[] OrderedRetainerList(RetainerInfo[] retainers)
         {
             int count = RetainerList.Count(i => i != IntPtr.Zero);
 
@@ -46,6 +47,5 @@ namespace LlamaLibrary.RemoteAgents
 
             return result;
         }
-
     }
 }

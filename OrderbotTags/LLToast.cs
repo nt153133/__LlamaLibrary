@@ -13,8 +13,8 @@ namespace LlamaLibrary.OrderbotTags
         private bool _isDone;
 
         [XmlAttribute("Message")]
-        [XmlAttribute("message")] 
-		public string message { get; set; }
+        [XmlAttribute("message")]
+        public string message { get; set; }
 
         public override bool HighPriority => true;
 
@@ -38,11 +38,12 @@ namespace LlamaLibrary.OrderbotTags
             return new ActionRunCoroutine(r => SendToast(message));
         }
 
-        private async Task SendToast(string message)
+        private Task SendToast(string message)
         {
-			Core.OverlayManager.AddToast(() => "" + message, TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(29,213,226), System.Windows.Media.Color.FromRgb(13,106,175), new System.Windows.Media.FontFamily("Gautami"));
+            Core.OverlayManager.AddToast(() => "" + message, TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(29, 213, 226), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
 
             _isDone = true;
+            return Task.CompletedTask;
         }
     }
 }

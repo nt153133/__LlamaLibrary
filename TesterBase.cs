@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,7 +37,6 @@ using TreeSharp;
 using static ff14bot.RemoteWindows.Talk;
 using static LlamaLibrary.Retainers.HelperFunctions;
 
-
 namespace LlamaLibrary
 {
     public class TesterBase : BotBase
@@ -46,32 +45,31 @@ namespace LlamaLibrary
 
         private static readonly List<(uint, Vector3)> SummoningBells = new List<(uint, Vector3)>
         {
-            (129, new Vector3(-223.743042f, 16.006714f, 41.306152f)), //Limsa Lominsa Lower Decks(Limsa Lominsa) 
-            (129, new Vector3(-266.376831f, 16.006714f, 41.275635f)), //Limsa Lominsa Lower Decks(Limsa Lominsa) 
-            (129, new Vector3(-149.279053f, 18.203979f, 20.553894f)), //Limsa Lominsa Lower Decks(Limsa Lominsa) 
-            (129, new Vector3(-123.888062f, 17.990356f, 21.469421f)), //Limsa Lominsa Lower Decks(Limsa Lominsa) 
-            (131, new Vector3(148.91272f, 3.982544f, -44.205383f)), //Ul'dah - Steps of Thal(Ul'dah) 
-            (131, new Vector3(111.161987f, 4.104675f, -72.343079f)), //Ul'dah - Steps of Thal(Ul'dah) 
-            (131, new Vector3(153.185303f, 3.982544f, 13.229492f)), //Ul'dah - Steps of Thal(Ul'dah) 
-            (131, new Vector3(118.547363f, 4.013123f, -93.003784f)), //Ul'dah - Steps of Thal(Ul'dah) 
-            (133, new Vector3(160.234863f, 15.671021f, -55.649719f)), //Old Gridania(Gridania) 
-            (133, new Vector3(169.726074f, 15.487854f, -81.895203f)), //Old Gridania(Gridania) 
-            (133, new Vector3(171.007812f, 15.487854f, -101.487854f)), //Old Gridania(Gridania) 
-            (133, new Vector3(160.234863f, 15.671021f, -136.369934f)), //Old Gridania(Gridania) 
-            (156, new Vector3(34.50061f, 28.976807f, -762.233948f)), //Mor Dhona(Mor Dhona) 
-            (156, new Vector3(11.001709f, 28.976807f, -734.554077f)), //Mor Dhona(Mor Dhona) 
-            (419, new Vector3(-151.171204f, -12.64978f, -11.764771f)), //The Pillars(Ishgard) 
-            (478, new Vector3(34.775269f, 208.148193f, -50.858398f)), //Idyllshire(Dravania) 
-            (478, new Vector3(0.38147f, 206.469727f, 51.407593f)), //Idyllshire(Dravania) 
-            (628, new Vector3(19.394226f, 4.043579f, 53.025024f)), //Kugane(Kugane) 
-            (635, new Vector3(-57.633362f, -0.01532f, 49.30188f)), //Rhalgr's Reach(Gyr Abania) 
-            (819, new Vector3(-69.840576f, -7.705872f, 123.491211f)), //The Crystarium(The Crystarium) 
-            (819, new Vector3(-64.255798f, 19.97406f, -144.274109f)), //The Crystarium(The Crystarium) 
-            (820, new Vector3(7.186951f, 83.17688f, 31.448853f)) //Eulmore(Eulmore) 
+            (129, new Vector3(-223.743042f, 16.006714f, 41.306152f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
+            (129, new Vector3(-266.376831f, 16.006714f, 41.275635f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
+            (129, new Vector3(-149.279053f, 18.203979f, 20.553894f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
+            (129, new Vector3(-123.888062f, 17.990356f, 21.469421f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
+            (131, new Vector3(148.91272f, 3.982544f, -44.205383f)), //Ul'dah - Steps of Thal(Ul'dah)
+            (131, new Vector3(111.161987f, 4.104675f, -72.343079f)), //Ul'dah - Steps of Thal(Ul'dah)
+            (131, new Vector3(153.185303f, 3.982544f, 13.229492f)), //Ul'dah - Steps of Thal(Ul'dah)
+            (131, new Vector3(118.547363f, 4.013123f, -93.003784f)), //Ul'dah - Steps of Thal(Ul'dah)
+            (133, new Vector3(160.234863f, 15.671021f, -55.649719f)), //Old Gridania(Gridania)
+            (133, new Vector3(169.726074f, 15.487854f, -81.895203f)), //Old Gridania(Gridania)
+            (133, new Vector3(171.007812f, 15.487854f, -101.487854f)), //Old Gridania(Gridania)
+            (133, new Vector3(160.234863f, 15.671021f, -136.369934f)), //Old Gridania(Gridania)
+            (156, new Vector3(34.50061f, 28.976807f, -762.233948f)), //Mor Dhona(Mor Dhona)
+            (156, new Vector3(11.001709f, 28.976807f, -734.554077f)), //Mor Dhona(Mor Dhona)
+            (419, new Vector3(-151.171204f, -12.64978f, -11.764771f)), //The Pillars(Ishgard)
+            (478, new Vector3(34.775269f, 208.148193f, -50.858398f)), //Idyllshire(Dravania)
+            (478, new Vector3(0.38147f, 206.469727f, 51.407593f)), //Idyllshire(Dravania)
+            (628, new Vector3(19.394226f, 4.043579f, 53.025024f)), //Kugane(Kugane)
+            (635, new Vector3(-57.633362f, -0.01532f, 49.30188f)), //Rhalgr's Reach(Gyr Abania)
+            (819, new Vector3(-69.840576f, -7.705872f, 123.491211f)), //The Crystarium(The Crystarium)
+            (819, new Vector3(-64.255798f, 19.97406f, -144.274109f)), //The Crystarium(The Crystarium)
+            (820, new Vector3(7.186951f, 83.17688f, 31.448853f)) //Eulmore(Eulmore)
         };
 
         private readonly SortedDictionary<string, List<string>> luaFunctions = new SortedDictionary<string, List<string>>();
-
 
         private volatile bool _init;
         private Composite _root;
@@ -87,11 +85,10 @@ namespace LlamaLibrary
 
         private static readonly InventoryBagId[] SaddlebagIds =
         {
-            (InventoryBagId) 0xFA0,(InventoryBagId) 0xFA1//, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005 
+            (InventoryBagId)0xFA0, (InventoryBagId)0xFA1//, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005
         };
 
-        private static uint[] npcids = new uint[] {196818, 196833, 196834, 196835, 196836, 196837, 197084};
-
+        private static uint[] npcids = new uint[] { 196818, 196833, 196834, 196835, 196836, 196837, 197084 };
 
         public TesterBase()
         {
@@ -116,7 +113,6 @@ namespace LlamaLibrary
         public override bool WantButton { get; } = true;
 
         private static Random _rand = new Random();
-
 
         public override void OnButtonPress()
         {
@@ -233,7 +229,7 @@ namespace LlamaLibrary
                 await Coroutine.Wait(10000, () => Conversation.IsOpen);
                 if (Conversation.IsOpen)
                 {
-                    Conversation.SelectLine((uint) selectString);
+                    Conversation.SelectLine((uint)selectString);
                 }
             }
         }
@@ -320,7 +316,6 @@ namespace LlamaLibrary
                 await InteractWithDenys(2);
                 await Coroutine.Wait(10000, () => CollectablesShop.Instance.IsOpen);
 
-
                 if (CollectablesShop.Instance.IsOpen)
                 {
                     // Log("Window open");
@@ -332,6 +327,7 @@ namespace LlamaLibrary
                         // Log($"Pressing job {turnin.Job}");
                         CollectablesShop.Instance.SelectJob(turnin.Job);
                         await Coroutine.Sleep(500);
+
                         //  Log($"Pressing position {turnin.Position}");
                         CollectablesShop.Instance.SelectItem(turnin.Position);
                         await Coroutine.Sleep(1000);
@@ -412,7 +408,7 @@ namespace LlamaLibrary
                     }
                 }
 
-                foreach (var slot in InventoryManager.GetBagsByInventoryBagId(SaddlebagIds).SelectMany(i=> i.FilledSlots))
+                foreach (var slot in InventoryManager.GetBagsByInventoryBagId(SaddlebagIds).SelectMany(i => i.FilledSlots))
                 {
                     if (InventoryManager.FreeSlots < 1) break;
 
@@ -459,14 +455,14 @@ namespace LlamaLibrary
                     }
                 }
 
-                foreach (var slot in InventoryManager.GetBagsByInventoryBagId(SaddlebagIds).SelectMany(i=> i.FilledSlots))
+                foreach (var slot in InventoryManager.GetBagsByInventoryBagId(SaddlebagIds).SelectMany(i => i.FilledSlots))
                 {
                     if (InventoryManager.FreeSlots < 1) break;
                     var result = slot.AddToSaddlebagQuantity(slot.Count);
                     Log($"Move {slot.Name}");
                     if (!result)
                         break;
-                    await Coroutine.Sleep(_rand.Next(300,400));
+                    await Coroutine.Sleep(_rand.Next(300, 400));
                 }
 
                 InventoryBuddy.Instance.Close();
@@ -475,12 +471,13 @@ namespace LlamaLibrary
             }
         }
 
-        private async Task<bool> Run()
+        private Task<bool> Run()
         {
             Log($"HomeWorldId: {WorldHelper.HomeWorldId}, CurrentWorldId: {WorldHelper.CurrentWorldId}, DataCenterId: {WorldHelper.DataCenterId}");
-            
+
             Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
+
             //InventoryManager.GetBagByInventoryBagId(InventoryBagId.Bag1).Pointer
             //         Log(Core.Memory.GetRelative(func));
 
@@ -521,7 +518,6 @@ namespace LlamaLibrary
                 Log($"{BagSlotExtensions.GetItemName(pair.Key)} x {pair.Value}");
             }
             */
-
 
             /*
             Log(AgentBagSlot.Instance.Pointer);
@@ -585,8 +581,7 @@ namespace LlamaLibrary
             }
             */
 
-
-            //Need to check for stacks first, also need to toggle saddle bags window 
+            //Need to check for stacks first, also need to toggle saddle bags window
 
             /*
             var _rand = new Random();
@@ -603,8 +598,6 @@ namespace LlamaLibrary
             await Coroutine.Sleep(500);
             */
 
-
-
             /*
             foreach (var slot in InventoryManager.GetBagsByInventoryBagId(SaddlebagIds).SelectMany(i=> i.FilledSlots))
             {
@@ -617,14 +610,11 @@ namespace LlamaLibrary
             }
             */
 
-
-
             TreeRoot.Stop("Stop Requested");
-            return true;
+            return Task.FromResult(true);
 
-            return true;
+            return Task.FromResult(true);
         }
-
 
         private void Log(IntPtr instancePointer)
         {
@@ -728,7 +718,8 @@ namespace LlamaLibrary
             {
                 Log("Found nearby gardening plot, approaching");
                 await Navigation.FlightorMove(gardenPlot.Location);
-                //await GardenHelper.Main(); 
+
+                //await GardenHelper.Main();
             }
 
             return true;
@@ -760,11 +751,13 @@ namespace LlamaLibrary
             {
                 await GrandCompanySupplyList.Instance.SwitchToExpertDelivery();
                 await Coroutine.Sleep(3000);
+
                 //await HandleCurrentGCWindow();
                 AtkAddonControl windowByName = RaptureAtkUnitManager.GetWindowByName("Talk");
                 if (windowByName != null)
                 {
                     var test = windowByName.TryFindAgentInterface();
+
                     //Log(test);
                 }
 
@@ -773,10 +766,12 @@ namespace LlamaLibrary
                 var windowItemIds = GrandCompanySupplyList.Instance.GetTurninItemsIds();
                 var required = GrandCompanySupplyList.Instance.GetTurninRequired();
                 var maxSeals = Core.Me.MaxGCSeals();*/
+
                 //var items = Core.Memory.ReadArray<GCTurninItem>(Offsets.GCTurnin, Offsets.GCTurninCount);
                 int i = 0;
                 int count = ConditionParser.ItemCount(2049);
                 if (count > 0)
+                {
                     for (var index = 0; index < count; index++)
                     {
                         //var item = windowItemIds[index];
@@ -794,6 +789,7 @@ namespace LlamaLibrary
                         i += 1;
                         await Coroutine.Sleep(500);
                     }
+                }
 
                 if (GrandCompanySupplyList.Instance.IsOpen)
                 {
@@ -801,13 +797,13 @@ namespace LlamaLibrary
                     await Coroutine.Wait(5000, () => SelectString.IsOpen);
                     if (SelectString.IsOpen)
                     {
-                        SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+                        SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
                     }
                 }
 
                 if (Core.Me.GCSeals() > 200)
                 {
-                    await GrandCompanyShop.BuyKnownItem(21072, (int) (Core.Me.GCSeals() / 200));
+                    await GrandCompanyShop.BuyKnownItem(21072, (int)(Core.Me.GCSeals() / 200));
                 }
             }
         }
@@ -891,10 +887,10 @@ namespace LlamaLibrary
             Log(pointer.ToString("X"));
         }
 
-        private async Task TestHook()
+        private Task TestHook()
         {
             Log("LL hook");
-            //await Navigation.GetToMap399();
+            return Task.CompletedTask;
         }
 
         private void DumpLLOffsets()
@@ -902,7 +898,7 @@ namespace LlamaLibrary
             var sb = new StringBuilder();
             var sb1 = new StringBuilder();
             var sb2 = new StringBuilder();
-            foreach (var patternItem in OffsetManager.patterns.OrderBy((k=> k.Key)))
+            foreach (var patternItem in OffsetManager.patterns.OrderBy(k => k.Key))
             {
                 var name = patternItem.Key;
                 var pattern = patternItem.Value.Replace("Search ", "");
@@ -925,7 +921,6 @@ namespace LlamaLibrary
                 var pattern = patternItem.Value.Replace("Search ", "");
                 sb2.AppendLine($"{name}, {pattern}");
             }
-
 
             using (var outputFile = new StreamWriter(@"G:\AgentLL.csv", false))
             {
@@ -956,7 +951,6 @@ namespace LlamaLibrary
             }
         }
 
-
         private async Task TestMathma()
         {
             await Coroutine.Wait(5000, () => SelectIconString.IsOpen);
@@ -972,8 +966,7 @@ namespace LlamaLibrary
                 Logging.WriteDiagnostic("SelectIconString Failed to open.");
             }
 
-
-            uint Slot = (uint) ScriptConditions.Helpers.ZodiacCompletedMahatma();
+            uint Slot = (uint)ScriptConditions.Helpers.ZodiacCompletedMahatma();
             await Coroutine.Sleep(1000);
 
             GameObjectManager.GetObjectByNPCId(1011791).Interact();
@@ -1029,7 +1022,6 @@ namespace LlamaLibrary
             }
         }
 
-
         private async Task BuyHouse()
         {
             Random _rnd = new Random();
@@ -1081,14 +1073,11 @@ namespace LlamaLibrary
             var off = typeof(Core).GetProperty("Offsets", BindingFlags.NonPublic | BindingFlags.Static);
             StringBuilder stringBuilder = new StringBuilder();
             int i = 0;
-            int j = 0;
             int p1 = 0;
             int p2 = 0;
             foreach (var p in off.PropertyType.GetFields())
             {
                 var tp = p.GetValue(off.GetValue(null));
-                //stringBuilder.Append($"\nOffset Struct_{i + 88} {i + 1} ({p.FieldType.GetFields().Length})");
-                j = 0;
                 p1 = 0;
                 p2 = 0;
                 foreach (var t in p.FieldType.GetFields())
@@ -1098,8 +1087,9 @@ namespace LlamaLibrary
                     if (t.FieldType == typeof(IntPtr))
                     {
                         //IntPtr ptr = new IntPtr(((IntPtr) t.GetValue(tp)).ToInt64() - Core.Memory.ImageBase.ToInt64());
-                        IntPtr ptr = (IntPtr) t.GetValue(tp);
+                        IntPtr ptr = (IntPtr)t.GetValue(tp);
                         stringBuilder.Append($"Struct{i + 88}_IntPtr{p1}, {Core.Memory.GetRelative(ptr).ToInt64()}\n");
+
                         //stringBuilder.Append(string.Format("\tPtr Offset_{0}: 0x{1:x}", p1, ptr.ToInt64()));
 
                         p1++;
@@ -1158,7 +1148,6 @@ namespace LlamaLibrary
             return functions;
         }
 
-
         public static void LogCritical(string text)
         {
             Logging.Write(Colors.OrangeRed, text);
@@ -1168,8 +1157,6 @@ namespace LlamaLibrary
         {
             Logging.Write(Colors.Green, text);
         }
-
-
 
         private async Task<bool> MoveSummoningBell(Vector3 loc)
         {
@@ -1328,7 +1315,6 @@ namespace LlamaLibrary
 
             var ordered = RetainerList.Instance.OrderedRetainerList.Where(i => i.Active).ToArray();
 
-
             foreach (var ret in ordered)
             {
                 Log($"{index} {ret.Name}");
@@ -1344,7 +1330,7 @@ namespace LlamaLibrary
             {
                 if (retainer.VentureTask != 0)
                 {
-                    var now = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                    var now = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
                     var timeLeft = retainer.VentureEndTimestamp - now;
 
                     if (timeLeft <= 0 && SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.Venture) > 2)
@@ -1361,7 +1347,6 @@ namespace LlamaLibrary
             if (RetainerSettings.Instance.DepositFromPlayer) await RetainerRoutine.DumpItems();
 
             Log("Done checking against player inventory");
-
 
             //Log($"{RetainerInfo.UnixTimeStampToDateTime(retainer.VentureEndTimestamp)}");
 
@@ -1426,7 +1411,6 @@ namespace LlamaLibrary
                 Log("Venture Not Done");
             }
 
-
             return true;
         }
 
@@ -1439,11 +1423,12 @@ namespace LlamaLibrary
             await ishgard.HandInKupoTicket(1);
         }
 
-        public async Task<bool> testFacetCheck()
+        public Task<bool> testFacetCheck()
         {
             var patternFinder = new PatternFinder(Core.Memory);
 
             var result = patternFinder.Find("44 89 BF ?? ?? ?? ?? 83 BF ?? ?? ?? ?? ?? Add 3 Read32").ToInt32();
+
             //Log(result);
             uint[] npcs = { 1029028, 1033777 };
 
@@ -1453,7 +1438,7 @@ namespace LlamaLibrary
                 Log("Name:{0}, IconID: {1}", unit.Name, Core.Memory.Read<uint>(unit.Pointer + result));
             }
 
-            return false;
+            return Task.FromResult(false);
         }
 
         public async Task testGather()
@@ -1490,10 +1475,9 @@ namespace LlamaLibrary
             Logging.Write(Colors.Pink, msg);
         }
 
-        public async Task<bool> testExtract()
+        public Task<bool> testExtract()
         {
             // var item = InventoryManager.FilledInventoryAndArmory.Where(i => i.Item.EngName.Contains("Voeburtite Ring of Slaying")).FirstOrDefault();
-
 
             //  if (item != null)
             //      item.ExtractMateria();
@@ -1515,10 +1499,10 @@ namespace LlamaLibrary
                     int count = Core.Memory.Read<int>(pointer + 0x118);
                     for (int i = 0; i < count; i++)
                     {
-                        IntPtr addr = Core.Memory.Read<IntPtr>(pointer + 0xF0) + 24 * i + 8;
+                        IntPtr addr = Core.Memory.Read<IntPtr>(pointer + 0xF0) + (24 * i) + 8;
                         IntPtr pointer2 = Core.Memory.Read<IntPtr>(addr) + 8;
                         var short1 = Core.Memory.Read<ushort>(pointer2 + 0x42);
-                        IntPtr addr2 = Core.Memory.Read<IntPtr>(pointer2 + 0x50) + 8 * (short1 - 1);
+                        IntPtr addr2 = Core.Memory.Read<IntPtr>(pointer2 + 0x50) + (8 * (short1 - 1));
                         IntPtr pointer3 = Core.Memory.Read<IntPtr>(addr2);
                         string item = Core.Memory.ReadString(Core.Memory.Read<IntPtr>(pointer3 + 0xB8), Encoding.UTF8);
                         list.Add(item);
@@ -1526,7 +1510,7 @@ namespace LlamaLibrary
                 }
             }
 
-            return true;
+            return Task.FromResult(true);
         }
 
         public async Task<bool> LeveWindow(uint NpcId)
@@ -1628,7 +1612,7 @@ namespace LlamaLibrary
 
             await Coroutine.Wait(5000, () => SelectString.IsOpen);
 
-            SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+            SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
 
             Logger.Info(output);
 
@@ -1646,7 +1630,6 @@ namespace LlamaLibrary
        item.Discard();
        await Coroutine.Sleep(2000);
    }*/
-
 
             //await Helpers.Lisbeth.SelfRepair();
             //await Helpers.Lisbeth.SelfRepairWithMenderFallback();
@@ -1700,7 +1683,6 @@ namespace LlamaLibrary
 
             Lua.DoString("return _G['EventHandler'].NpcRepair();");*/
 
-
             /*
             InventoryBagId[] PlayerInventoryBagIds = new InventoryBagId[6]
             {
@@ -1747,7 +1729,6 @@ namespace LlamaLibrary
             //await TurninSkySteelGathering();
             //await TurninSkySteelCrafting();
 
-
             //await BuyHouse();
             //TreeRoot.Stop("Stop Requested");
             //await LeveWindow(1018997);
@@ -1791,7 +1772,6 @@ namespace LlamaLibrary
             //await GoToSummoningBell();
             //string fun3 = $"return _G['CmnDefRetainerBell']:GetVentureFinishedRetainerName();";
 
-
             //Log($"{await VerifiedRowenaData()}");
             // var resultBool = WorldManager.Raycast(Core.Me.Location, GameObjectManager.Target.Location, out var result);
             // HuntHelper.Test();
@@ -1832,7 +1812,6 @@ namespace LlamaLibrary
             //  Log("Current Daily Hunts");
             //  HuntHelper.Test();
 
-
             //  Log("\nAccepted Hunts");
             // HuntHelper.PrintAcceptedHunts();
 
@@ -1840,7 +1819,7 @@ namespace LlamaLibrary
             //Log($"is it alive ? {mob.IsAlive}");
             // HuntHelper.PrintKillCounts();
             //305 374
-            /*       
+            /*
                    int[] badLocations = new[] {457};
                    List<int> cantGetTo = new List<int>();
                    foreach (var huntLocation1 in badLocations)
@@ -1891,12 +1870,11 @@ namespace LlamaLibrary
 
        */
 
-
             //ActionRunCoroutine test = new ActionRunCoroutine(() => composite_0);
             /*
-                        if (await GoToSummoningBell()) 
+                        if (await GoToSummoningBell())
                             LogSucess("\n****************\n MADE IT BELL\n****************");
-                        else 
+                        else
                         {
                             LogCritical("\n****************\n FAILED TO MAKE IT TO BELL \n****************");
                         }
@@ -1904,7 +1882,6 @@ namespace LlamaLibrary
             //await DoGCDailyTurnins();
 
             //    bool AgentCharacter = AgentModule.TryAddAgent(AgentModule.FindAgentIdByVtable(Offsets.AgentCharacter), typeof(AgentCharacter));
-
 
             //   Log($"Added Venture Agent: {retaineragent}");
 
@@ -1927,7 +1904,6 @@ namespace LlamaLibrary
 
             */
             //var pat = "48 89 0D ? ? ? ? 0F B7 89 ? ? ? ? Add 3 TraceRelative";
-
 
             /*
             var hunts = HuntHelper.DailyHunts;
@@ -1960,11 +1936,9 @@ namespace LlamaLibrary
             }
             */
 
-
             //Log($"{Lisbeth.GetCurrentAreaName}");
 
             //  DumpLuaFunctions();
-
 
             //var line = LlamaLibrary.RemoteWindows.ContentsInfo.Instance.GetElementString(50);
             //int.Parse(line.Split(':')[1].Trim());
@@ -1988,7 +1962,6 @@ namespace LlamaLibrary
 
             // Log(AgentWorldTravelSelect.Instance.CurrentWorld.ToString());
 
-
             //Lisbeth.AddHook("Llama",LlamaLibrary.Retainers.RetainersPull.CheckVentureTask);
 
             //Log($"{Achievements.HasAchievement(2199)}");
@@ -2001,13 +1974,12 @@ namespace LlamaLibrary
 */
             // var newHunts = JsonConvert.DeserializeObject<SortedDictionary<int, StoredHuntLocationLisbeth>>((new StreamReader("hunts.json")).ReadToEnd());
 
-
             /*
             var failed = new Dictionary<int, StoredHuntLocation>();
 
             if (File.Exists("hunts_failed.json"))
                 failed = JsonConvert.DeserializeObject<Dictionary<int, StoredHuntLocation>>((new StreamReader("hunts_failed.json")).ReadToEnd());
-            var start = 76; 
+            var start = 76;
             foreach (var hunt in HuntHelper.DailyHunts.Where(i=> i.Key >= start))
             {
                 await Lisbeth.TravelToZones(hunt.Value.Map, hunt.Value.Location);
@@ -2031,7 +2003,6 @@ namespace LlamaLibrary
                 outputFile.Write(JsonConvert.SerializeObject(failed));
             }
             */
-
 
             //Log($"{Application.ProductVersion} - {Assembly.GetEntryAssembly().GetName().Version.Revision} - {Assembly.GetEntryAssembly().GetName().Version.MinorRevision} - {Assembly.GetEntryAssembly().GetName().Version.Build}");
 
@@ -2059,7 +2030,7 @@ namespace LlamaLibrary
             for (int i = 0; i < LlamaLibrary.RemoteWindows.GrandCompanySupplyList.Instance.GetNumberOfTurnins(); i++)
             {
                 Log($"Can turn in {DataManager.GetItem(windowItemIds[i])}");
-                //bool shouldTurnin = 
+                //bool shouldTurnin =
             }
 
 
@@ -2100,7 +2071,7 @@ namespace LlamaLibrary
 
             /*var newHunts = HuntHelper.DailyHunts;
             var failed = new Dictionary<int, StoredHuntLocation>();
-            var start = 0; 
+            var start = 0;
             foreach (var hunt in newHunts)
             {
                 await Lisbeth.TravelToZones(hunt.Value.Map, hunt.Value.Location);
@@ -2121,7 +2092,6 @@ namespace LlamaLibrary
                 outputFile.Write(JsonConvert.SerializeObject(failed));
             }*/
             // await OutOnALimbBase.RunHomeMGP();
-
 
             /*AgentFreeCompany.Instance.Toggle();
             await Coroutine.Wait(5000, () => FreeCompany.Instance.IsOpen);
@@ -2184,7 +2154,6 @@ namespace LlamaLibrary
                     x++;
                 }*/
 
-
             //Core.Me.Stats
             /*
             Log($"{AgentMinionNoteBook.Instance.MinionListAddress}");
@@ -2226,7 +2195,6 @@ namespace LlamaLibrary
             [FieldOffset(0x40)]
             public readonly byte retainerCityId;
         }
-
 
         [StructLayout(LayoutKind.Sequential, Size = 0x10)]
         private struct FcActionShop

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
@@ -43,7 +43,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public RetainerRole RetainerRole(int index)
         {
-            return (RetainerRole)___Elements()[index * 9 + 4].TrimmedData;
+            return (RetainerRole)___Elements()[(index * 9) + 4].TrimmedData;
         }
 
         public async Task<bool> SelectRetainer(ulong retainerContentId)
@@ -69,6 +69,7 @@ namespace LlamaLibrary.RemoteWindows
             {
                 //Logging.Write($"Sending Action 3UL, 2UL, 3UL, {(ulong)index}");
                 SendAction(2, 3UL, 2UL, 3UL, (ulong)index);
+
                 //Logging.Write("Waiting on Dialog");
                 await Coroutine.Wait(9000, () => DialogOpen || SelectString.IsOpen);
 

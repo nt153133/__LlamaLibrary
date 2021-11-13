@@ -1,14 +1,13 @@
-﻿using ff14bot.Enums;
+﻿using System;
+using ff14bot.Enums;
 using LlamaLibrary.Enums;
-using System;
 
 namespace LlamaLibrary.Extensions
 {
     public static class EnumExtensions
     {
-
         /// <summary>
-        ///     is a dow class
+        ///     is a dow class.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 
-
 namespace LlamaLibrary.Retainers
 {
     public partial class SettingsForm : Form

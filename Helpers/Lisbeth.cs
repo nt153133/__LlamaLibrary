@@ -15,7 +15,11 @@ namespace LlamaLibrary.Helpers
         private static MethodInfo _orderMethod;
         private static MethodInfo _travelMethod;
         public static Func<string> _getCurrentAreaName;
-        private static Func<Task> _stopGentlyAndWait, _equipOptimalGear, _extractMateria, _selfRepair, _selfRepairWithMenderFallback;
+        private static Func<Task> _stopGentlyAndWait;
+        private static Func<Task> _equipOptimalGear;
+        private static Func<Task> _extractMateria;
+        private static Func<Task> _selfRepair;
+        private static Func<Task> _selfRepairWithMenderFallback;
         private static Func<Task> _stopGently;
         private static Action<string, Func<Task>> _addHook;
         private static Action<string> _removeHook;
@@ -50,21 +54,22 @@ namespace LlamaLibrary.Helpers
                 {
                     try
                     {
-                        _getCurrentAreaName = (Func<string>) Delegate.CreateDelegate(typeof(Func<string>), apiObject, "GetCurrentAreaName");
-                        _stopGently = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGently");
+                        _getCurrentAreaName = (Func<string>)Delegate.CreateDelegate(typeof(Func<string>), apiObject, "GetCurrentAreaName");
+                        _stopGently = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGently");
+
                         //_stopGentlyAndWait = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGentlyAndWait");
-                        _addHook = (Action<string, Func<Task>>) Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddHook");
-                        _removeHook = (Action<string>) Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveHook");
-                        _getHookList = (Func<List<string>>) Delegate.CreateDelegate(typeof(Func<List<string>>), apiObject, "GetHookList");
-                        _exitCrafting = (Func<Task<bool>>) Delegate.CreateDelegate(typeof(Func<Task<bool>>), apiObject, "ExitCrafting");
-                        _equipOptimalGear = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "EquipOptimalGear");
-                        _extractMateria = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "ExtractMateria");
-                        _selfRepair = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepair");
-                        _selfRepairWithMenderFallback = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepairWithMenderFallback");
-                        _travelTo = (Func<uint, uint, Vector3, Task<bool>>) Delegate.CreateDelegate(typeof(Func<uint, uint, Vector3, Task<bool>>), apiObject, "TravelTo");
-                        _travelToWithArea = (Func<string, Vector3, Task<bool>>) Delegate.CreateDelegate(typeof(Func<string, Vector3, Task<bool>>), apiObject, "TravelToWithArea");
-                        _travelToWithoutSubzone = (Func<uint, Vector3, Task<bool>>) Delegate.CreateDelegate(typeof(Func<uint, Vector3, Task<bool>>), apiObject, "TravelToWithoutSubzone");
-                        _openWindow = (System.Action) Delegate.CreateDelegate(typeof(System.Action), apiObject, "OpenWindow");
+                        _addHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddHook");
+                        _removeHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveHook");
+                        _getHookList = (Func<List<string>>)Delegate.CreateDelegate(typeof(Func<List<string>>), apiObject, "GetHookList");
+                        _exitCrafting = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), apiObject, "ExitCrafting");
+                        _equipOptimalGear = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "EquipOptimalGear");
+                        _extractMateria = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "ExtractMateria");
+                        _selfRepair = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepair");
+                        _selfRepairWithMenderFallback = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepairWithMenderFallback");
+                        _travelTo = (Func<uint, uint, Vector3, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, uint, Vector3, Task<bool>>), apiObject, "TravelTo");
+                        _travelToWithArea = (Func<string, Vector3, Task<bool>>)Delegate.CreateDelegate(typeof(Func<string, Vector3, Task<bool>>), apiObject, "TravelToWithArea");
+                        _travelToWithoutSubzone = (Func<uint, Vector3, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, Vector3, Task<bool>>), apiObject, "TravelToWithoutSubzone");
+                        _openWindow = (System.Action)Delegate.CreateDelegate(typeof(System.Action), apiObject, "OpenWindow");
                     }
                     catch (Exception e)
                     {
@@ -75,6 +80,7 @@ namespace LlamaLibrary.Helpers
 
             _orderMethod = orderMethod;
             _lisbeth = lisbeth;
+
             //_travelMethod = travelMethod;
 
             Logging.Write("Lisbeth found.");
@@ -84,24 +90,24 @@ namespace LlamaLibrary.Helpers
 
         internal static async Task<bool> ExecuteOrders(string json)
         {
-            if (_orderMethod != null) return await (Task<bool>) _orderMethod.Invoke(_lisbeth, new object[] {json, false});
+            if (_orderMethod != null) return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false });
 
             FindLisbeth();
             if (_orderMethod == null)
                 return false;
 
-            return await (Task<bool>) _orderMethod.Invoke(_lisbeth, new object[] {json, false});
+            return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false });
         }
 
         internal static async Task<bool> ExecuteOrdersIgnoreHome(string json)
         {
-            if (_orderMethod != null) return await (Task<bool>) _orderMethod.Invoke(_lisbeth, new object[] {json, true});
+            if (_orderMethod != null) return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true });
 
             FindLisbeth();
             if (_orderMethod == null)
                 return false;
 
-            return await (Task<bool>) _orderMethod.Invoke(_lisbeth, new object[] {json, true});
+            return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true });
         }
 
         internal static async Task<bool> TravelTo(string area, Vector3 position)
@@ -130,12 +136,11 @@ namespace LlamaLibrary.Helpers
         {
             await _stopGently();
         }
-        
+
         public static void OpenSettings()
         {
             _openWindow();
         }
-
 
         public static void AddHook(string name, Func<Task> function)
         {

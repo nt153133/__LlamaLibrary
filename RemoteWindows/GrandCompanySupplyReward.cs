@@ -1,6 +1,6 @@
 ﻿namespace LlamaLibrary.RemoteWindows
 {
-    public class GrandCompanySupplyReward: RemoteWindow<GrandCompanySupplyReward>
+    public class GrandCompanySupplyReward : RemoteWindow<GrandCompanySupplyReward>
     {
         private const string WindowName = "GrandCompanySupplyReward";
 
@@ -11,7 +11,7 @@
 
         public void Confirm()
         {
-            SendAction(1,3,0);
+            SendAction(1, 3, 0);
         }
     }
 }

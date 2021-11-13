@@ -8,7 +8,6 @@
         public int Slot;
         public bool HQ => TrueItemID != RawItemID;
 
-
         public RetainerInventoryItem(uint trueItemId, uint rawItemId, uint count, int slot)
         {
             TrueItemID = trueItemId;
@@ -39,15 +38,15 @@
                 return false;
             }
 
-            return Equals((RetainerInventoryItem) obj);
+            return Equals((RetainerInventoryItem)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                var hashCode = (int) TrueItemID;
-                hashCode = (hashCode * 397) ^ (int) Count;
+                var hashCode = (int)TrueItemID;
+                hashCode = (hashCode * 397) ^ (int)Count;
                 hashCode = (hashCode * 397) ^ Slot;
                 return hashCode;
             }

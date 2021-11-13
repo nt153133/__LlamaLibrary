@@ -49,7 +49,7 @@ namespace LlamaLibrary.GCExpertTurnin
                 settings.Show();
                 settings.Activate();
             }
-            catch (ArgumentOutOfRangeException ee)
+            catch (ArgumentOutOfRangeException)
             {
             }
         }
@@ -87,18 +87,17 @@ namespace LlamaLibrary.GCExpertTurnin
                 {
                     Log("Generating Lisbeth order");
                     var currentSeals = Core.Me.GCSeals();
-                    var neededSeals = (Core.Me.MaxGCSeals() - currentSeals) - (GCExpertSettings.Instance.SealReward * ConditionParser.ItemCount((uint) GCExpertSettings.Instance.ItemId));
-                    var qty = (int) ((neededSeals) / GCExpertSettings.Instance.SealReward);
+                    var neededSeals = (Core.Me.MaxGCSeals() - currentSeals) - (GCExpertSettings.Instance.SealReward * ConditionParser.ItemCount((uint)GCExpertSettings.Instance.ItemId));
+                    var qty = (int)(neededSeals / GCExpertSettings.Instance.SealReward);
                     Log($"Need {qty}");
                     var freeSlots = InventoryManager.FreeSlots;
-                    var couldCraft = Math.Min((freeSlots - 10), qty);
+                    var couldCraft = Math.Min(freeSlots - 10, qty);
                     Log($"Order Would be for {couldCraft}");
 
                     var outList = new List<LisbethOrder>
                     {
-                        new LisbethOrder(0, 1, (int) GCExpertSettings.Instance.ItemId, (int) couldCraft, ((ClassJobType) DataManager.GetItem((uint) GCExpertSettings.Instance.ItemId).RepairClass).ToString(), true)
+                        new LisbethOrder(0, 1, (int)GCExpertSettings.Instance.ItemId, (int)couldCraft, ((ClassJobType)DataManager.GetItem((uint)GCExpertSettings.Instance.ItemId).RepairClass).ToString(), true)
                     };
-
 
                     var order = JsonConvert.SerializeObject(outList, Formatting.None);
 
@@ -112,6 +111,7 @@ namespace LlamaLibrary.GCExpertTurnin
                     {
                         Log($"{e}");
                     }
+
                     await GeneralFunctions.StopBusy();
                     await HandInExpert();
                 }
@@ -121,11 +121,9 @@ namespace LlamaLibrary.GCExpertTurnin
             return true;
         }
 
-
         public static async Task HandInExpert()
         {
-            if (GCExpertSettings.Instance.Craft && ConditionParser.ItemCount((uint) GCExpertSettings.Instance.ItemId) == 0) return;
-
+            if (GCExpertSettings.Instance.Craft && ConditionParser.ItemCount((uint)GCExpertSettings.Instance.ItemId) == 0) return;
 
             if (!GrandCompanySupplyList.Instance.IsOpen)
             {
@@ -154,11 +152,13 @@ namespace LlamaLibrary.GCExpertTurnin
                 var windowItemIds = GrandCompanySupplyList.Instance.GetTurninItemsIds();
                 var required = GrandCompanySupplyList.Instance.GetTurninRequired();
                 var maxSeals = Core.Me.MaxGCSeals();*/
+
                 //var items = Core.Memory.ReadArray<GCTurninItem>(Offsets.GCTurnin, Offsets.GCTurninCount);
                 int i = 0;
-                int count = GrandCompanySupplyList.Instance.GetNumberOfTurnins();//ConditionParser.ItemCount((uint) GCExpertSettings.Instance.ItemId);
+                int count = GrandCompanySupplyList.Instance.GetNumberOfTurnins(); //ConditionParser.ItemCount((uint) GCExpertSettings.Instance.ItemId);
 
                 if (count > 0)
+                {
                     for (var index = 0; index < count; index++)
                     {
                         //var item = windowItemIds[index];
@@ -176,6 +176,7 @@ namespace LlamaLibrary.GCExpertTurnin
                         i += 1;
                         await Coroutine.Sleep(500);
                     }
+                }
 
                 if (GrandCompanySupplyList.Instance.IsOpen)
                 {
@@ -183,7 +184,7 @@ namespace LlamaLibrary.GCExpertTurnin
                     await Coroutine.Wait(5000, () => SelectString.IsOpen);
                     if (SelectString.IsOpen)
                     {
-                        SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+                        SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
                     }
                 }
 
@@ -199,6 +200,7 @@ namespace LlamaLibrary.GCExpertTurnin
             var msg = $"[{_name}] {text}";
             Logging.Write(Colors.SeaGreen, msg);
         }
+
         private static void LogBold(string text)
         {
             var msg = $"[{_name}] {text}";

@@ -45,16 +45,21 @@ namespace LlamaLibrary.OrderbotTags
         {
             get
             {
-                return new PrioritySelector(new PrioritySelector(new Decorator(r => RecommendEquip.Instance.IsOpen,
-                                                                               new Sequence(new Action(r => Log($"{RecommendEquip.Instance.Name} Window open")),
+                return new PrioritySelector(new PrioritySelector(
+                    new Decorator(
+                    r => RecommendEquip.Instance.IsOpen,
+                                                                               new Sequence(
+                                                                                   new Action(r => Log($"{RecommendEquip.Instance.Name} Window open")),
                                                                                             new Action(r => RecommendEquip.Instance.Confirm()),
                                                                                             new Sleep(1000),
                                                                                             new Action(r => _isOpening = false),
                                                                                             new Action(r => _isDone = true),
                                                                                             new Decorator(r => UpdateGearSet, new Action(async r => await ScriptConditions.Helpers.UpdateGearSet())))),
 
-                                                                 new Decorator(r => !RecommendEquip.Instance.IsOpen && !IsDone && !_isOpening,
-                                                                               new Sequence(new Action(r => AgentRecommendEquip.Instance.Toggle()),
+                                                                 new Decorator(
+                                                                     r => !RecommendEquip.Instance.IsOpen && !IsDone && !_isOpening,
+                                                                               new Sequence(
+                                                                                   new Action(r => AgentRecommendEquip.Instance.Toggle()),
                                                                                             new Action(r => _isOpening = true)))));
             }
         }

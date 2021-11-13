@@ -19,11 +19,11 @@ namespace LlamaLibrary.Helpers
         }
 
         private const int MaxRows = 6;
+        private static readonly string[] Description = { "", "Duty/Beast Tribe Dailies", "Weekly Reset", "Unknown", "GC/Rowena", "Unknown" };
         private static string Name => "Timers";
         private static CycleTime[] _cycles = new CycleTime[MaxRows];
-        private static readonly string[] Description = {"","Duty/Beast Tribe Dailies", "Weekly Reset", "Unknown", "GC/Rowena", "Unknown"};
 
-        public static DateTimeOffset CurrentTime => DateTimeOffset.FromUnixTimeSeconds((long) CurrentTimeStamp).LocalDateTime;
+        public static DateTimeOffset CurrentTime => DateTimeOffset.FromUnixTimeSeconds((long)CurrentTimeStamp).LocalDateTime;
 
         static Timers()
         {
@@ -35,12 +35,12 @@ namespace LlamaLibrary.Helpers
 
         public static void PrintTimers()
         {
-            Log($"Current Time: ({CurrentTime.LocalDateTime})"); 
+            Log($"Current Time: ({CurrentTime.LocalDateTime})");
             for (int i = 1; i < MaxRows; i++)
             {
                 var time = DateTimeOffset.FromUnixTimeSeconds(GetNextCycle(i));
 
-                Log($"{time.LocalDateTime} ({Description[i]})"); 
+                Log($"{time.LocalDateTime} ({Description[i]})");
             }
         }
 
@@ -58,8 +58,8 @@ namespace LlamaLibrary.Helpers
         internal static long GetNextCycle(int index)
         {
             var row = _cycles[index];
-            Log($"Getting Cycle: ({index})"); 
-            return row.FirstCycle + row.Cycle * ((uint)(ushort)(((uint)CurrentTimeStamp - row.FirstCycle) / row.Cycle) + 1);
+            Log($"Getting Cycle: ({index})");
+            return row.FirstCycle + (row.Cycle * ((uint)(ushort)(((uint)CurrentTimeStamp - row.FirstCycle) / row.Cycle) + 1));
         }
 
         private static void Log(string text)
@@ -76,7 +76,7 @@ namespace LlamaLibrary.Helpers
             if (CyclePtr != IntPtr.Zero)
                 return Core.Memory.Read<CycleTime>(CyclePtr);
 
-            return new CycleTime();
+            return default(CycleTime);
         }
 
         [StructLayout(LayoutKind.Explicit, Size = 0x8)]
@@ -88,8 +88,5 @@ namespace LlamaLibrary.Helpers
             [FieldOffset(0x4)]
             public uint Cycle;
         }
-
     }
-
-
 }

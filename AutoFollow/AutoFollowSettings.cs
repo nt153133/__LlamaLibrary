@@ -4,7 +4,7 @@ using ff14bot.Helpers;
 
 namespace LlamaLibrary
 {
-    public class AutoFollowSettings: JsonSettings
+    public class AutoFollowSettings : JsonSettings
     {
         private static AutoFollowSettings _settings;
         private bool _followLeader;
@@ -13,11 +13,9 @@ namespace LlamaLibrary
 
         public AutoFollowSettings() : base(Path.Combine(CharacterSettingsDirectory, "AutoFollow.json"))
         {
-
         }
 
         public static AutoFollowSettings Instance => _settings ?? (_settings = new AutoFollowSettings());
-
 
         [Description("Follow the Party Leader")]
         [DefaultValue(true)] //shift +x
@@ -43,7 +41,7 @@ namespace LlamaLibrary
                 _isPaused = value;
                 Save();
             }
-        } 
+        }
 
         [Description("Follow target name")]
         public string FollowTargetName
@@ -56,6 +54,5 @@ namespace LlamaLibrary
                 Save();
             }
         }
-
     }
 }

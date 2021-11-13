@@ -14,16 +14,19 @@ using System.Linq;
 using System.Text;
 using Clio.Utilities;
 using Clio.XmlEngine;
+using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Enums;
 using ff14bot.Managers;
+using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using TreeSharp;
 
-namespace ff14bot.NeoProfiles.Tags
+namespace Ff14bot.NeoProfiles.Tags
 {
     [XmlElement("LLHandOver")]
+
     // ReSharper disable once InconsistentNaming
     public class LLHandOverTag : ProfileBehavior
     {
@@ -31,7 +34,7 @@ namespace ff14bot.NeoProfiles.Tags
 
         private bool _doneTalking;
 
-        protected bool IsDoneOverride;
+        protected bool isDoneOverride;
         private string _itemNames;
         public Vector3 Position = Vector3.Zero;
 
@@ -46,10 +49,10 @@ namespace ff14bot.NeoProfiles.Tags
         [XmlAttribute("DialogOption")]
         public int DialogOption { get; set; }
 
-        [XmlAttribute("RequiresHq")] 
+        [XmlAttribute("RequiresHq")]
         public bool[] RequiresHq { get; set; }
 
-        [XmlAttribute("Amount")] 
+        [XmlAttribute("Amount")]
         public int[] Amount { get; set; }
 
         [XmlAttribute("InteractDistance")]
@@ -63,9 +66,8 @@ namespace ff14bot.NeoProfiles.Tags
             set => Position = value;
         }
 
-        [XmlAttribute("NpcId")] public int NpcId { get; set; }
-
-        #region Overrides of ProfileBehavior
+        [XmlAttribute("NpcId")]
+        public int NpcId { get; set; }
 
         public override bool IsDone
         {
@@ -82,12 +84,9 @@ namespace ff14bot.NeoProfiles.Tags
             }
         }
 
-        #endregion
-
-
         public override string StatusText => "Talking to " + _questGiver;
 
-        public GameObject NPC => GameObjectManager.GameObjects.FirstOrDefault(i=> i.NpcId == (uint) NpcId && i.IsVisible && i.IsTargetable);
+        public GameObject NPC => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == (uint)NpcId && i.IsVisible && i.IsTargetable);
 
         protected override void OnStart()
         {
@@ -111,15 +110,17 @@ namespace ff14bot.NeoProfiles.Tags
 
             var sb = new StringBuilder();
             if (ItemIds != null)
+            {
                 for (var i = 0; i < ItemIds.Length; i++)
                 {
-                    var item = DataManager.GetItem((uint) ItemIds[i], RequiresHq[i]);
+                    var item = DataManager.GetItem((uint)ItemIds[i], RequiresHq[i]);
 
                     if (i == ItemIds.Length - 1)
                         sb.Append($"{item.CurrentLocaleName}");
                     else
                         sb.Append($"{item.CurrentLocaleName},");
                 }
+            }
 
             _itemNames = sb.ToString();
         }
@@ -134,11 +135,13 @@ namespace ff14bot.NeoProfiles.Tags
         {
             return new PrioritySelector(
                 ctx => NPC,
-                new Decorator(ret => SelectYesno.IsOpen,
+                new Decorator(
+                    ret => SelectYesno.IsOpen,
                     new Action(r => { SelectYesno.ClickYes(); })
                 ),
-                new Decorator(ret => SelectString.IsOpen,
-                    new Action(r => { SelectString.ClickSlot((uint) DialogOption); })
+                new Decorator(
+                    ret => SelectString.IsOpen,
+                    new Action(r => { SelectString.ClickSlot((uint)DialogOption); })
                 ),
                 new Decorator(r => Talk.DialogOpen, new Action(r =>
                 {
@@ -156,7 +159,6 @@ namespace ff14bot.NeoProfiles.Tags
                             item = items.FirstOrDefault(z => z.RawItemId == ItemIds[i] && z.IsHighQuality && !_usedSlots.Contains(z));
                         else
                             item = items.FirstOrDefault(z => z.RawItemId == ItemIds[i] && !_usedSlots.Contains(z));
-
 
                         if (item == null)
                         {
@@ -187,8 +189,10 @@ namespace ff14bot.NeoProfiles.Tags
                     SelectIconString.ClickLineEquals(QuestName);
                     return RunStatus.Success;
                 })),
+
                 // If we're in interact range, and the NPC/Placeable isn't here... wait 30s.
                 CommonBehaviors.MoveAndStop(ret => XYZ, ret => InteractDistance, true, ret => $"[{GetType().Name}] Moving to {XYZ} so we can give {_itemNames} to {_questGiver} for {QuestName}"),
+
                 // If we're in interact range, and the NPC/Placeable isn't here... wait 30s.
                 new Decorator(ret => NPC == null, new Sequence(new SucceedLogger(r => $"Waiting at {Core.Player.Location} for {_questGiver} to spawn"), new WaitContinue(5, ret => NPC != null, new Action(ret => RunStatus.Failure)))),
                 new Action(ret => NPC.Interact())

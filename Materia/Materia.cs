@@ -59,7 +59,7 @@ namespace LlamaLibrary.Materia
                 _settings.Show();
                 _settings.Activate();
             }
-            catch (ArgumentOutOfRangeException ee)
+            catch (ArgumentOutOfRangeException)
             {
             }
         }
@@ -80,7 +80,9 @@ namespace LlamaLibrary.Materia
             if (MateriaTask == MateriaTask.Remove)
             {
                 if (ItemToRemoveMateria != null && ItemToRemoveMateria.IsValid)
+                {
                     await RemoveMateria(ItemToRemoveMateria);
+                }
                 else
                 {
                     Log("Error: Choose an item in the settings and click Remove Materia");
@@ -90,7 +92,9 @@ namespace LlamaLibrary.Materia
             if (MateriaTask == MateriaTask.Affix)
             {
                 if (ItemToAffixMateria != null && ItemToAffixMateria.IsValid)
+                {
                     await AffixMateria(ItemToAffixMateria, MateriaToAdd);
+                }
                 else
                 {
                     Log("Error: Choose an item in the settings and click Affix Materia");
@@ -185,21 +189,23 @@ namespace LlamaLibrary.Materia
                         //Log($"{Offsets.AffixMateriaFunc.ToInt64():X}  {Offsets.AffixMateriaParam.ToInt64():X}   {bagSlot.Pointer.ToInt64():X}  {materiaList[i].Pointer.ToInt64():X}");
                         Log("Wait Ready");
                         await Coroutine.Wait(7000, () => MateriaAttachDialog.Instance.IsOpen);
-                       // await Coroutine.Wait(7000, () => AgentMeld.Instance.Ready);
-                       // Log("Wait CanMeld");
-                       // await Coroutine.Wait(7000, () => AgentMeld.Instance.CanMeld);
+
+                        // await Coroutine.Wait(7000, () => AgentMeld.Instance.Ready);
+                        // Log("Wait CanMeld");
+                        // await Coroutine.Wait(7000, () => AgentMeld.Instance.CanMeld);
                         bagSlot.AffixMateria(materiaList[i]);
                         Log("Clicked affix wait not Ready");
                         await Coroutine.Wait(7000, () => AgentMeld.Instance.Ready);
                         Log("Clicked affix wait Ready");
                         await Coroutine.Wait(7000, () => !AgentMeld.Instance.Ready);
+
                         // await Coroutine.Sleep(7000);
                         Log("Clicked wait window");
                         await Coroutine.Wait(7000, () => !MateriaAttachDialog.Instance.IsOpen);
                         Log("Wait 2 windows");
                         await Coroutine.Wait(5000, () => MateriaAttachDialog.Instance.IsOpen || MateriaAttach.Instance.IsOpen);
-                        //    await Coroutine.Sleep(1000);
 
+                        //    await Coroutine.Sleep(1000);
 
                         while (MateriaAttachDialog.Instance.IsOpen)
                         {
@@ -207,21 +213,21 @@ namespace LlamaLibrary.Materia
                             MateriaAttachDialog.Instance.ClickAttach();
                             await Coroutine.Wait(7000, () => !AgentMeld.Instance.CanMeld);
                             await Coroutine.Wait(7000, () => AgentMeld.Instance.CanMeld);
+
                             //await Coroutine.Wait(7000, () => !MateriaAttachDialog.Instance.IsOpen);
                             await Coroutine.Wait(7000, () => MateriaAttachDialog.Instance.IsOpen || MateriaAttach.Instance.IsOpen);
                         }
-
 
                         if (MateriaAttach.Instance.IsOpen)
                         {
                             Log("Closing window");
                             MateriaAttach.Instance.Close();
                             await Coroutine.Wait(7000, () => !MateriaAttach.Instance.IsOpen);
+
                             //await Coroutine.Wait(7000, () => !AgentMeld.Instance.Ready);
                             //await Coroutine.Sleep(1000);
                         }
                     }
-
 
                     if (!materiaList[i].IsFilled)
                         return false;

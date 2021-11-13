@@ -55,6 +55,7 @@ namespace LlamaLibrary.AutoRetainerSort
                 AutoRetainerSortSettings.Instance.InventoryOptions.Add(addNewForm.Index, new InventorySortInfo(addNewForm.RetainerName));
                 ResetBindingSource();
             }
+
             AutoRetainerSortSettings.Instance.Save();
         }
 
@@ -96,6 +97,7 @@ namespace LlamaLibrary.AutoRetainerSort
             {
                 AutoRetainerSort.LogCritical($"Something went wrong with trying to remove {selectedItem.Value.Name} from the list... Index: {selectedItem.Key.ToString()}");
             }
+
             AutoRetainerSortSettings.Instance.Save();
             ResetBindingSource();
         }
@@ -116,7 +118,7 @@ namespace LlamaLibrary.AutoRetainerSort
                     AutoRetainerSortSettings.Instance.InventoryOptions.Add(ItemSortStatus.PlayerInventoryIndex, new InventorySortInfo("Player Inventory"));
                 }
             }
-            
+
             if (!AutoRetainerSortSettings.Instance.InventoryOptions.ContainsKey(ItemSortStatus.SaddlebagInventoryIndex))
             {
                 DialogResult dr = MessageBox.Show(
@@ -131,7 +133,7 @@ namespace LlamaLibrary.AutoRetainerSort
                     AutoRetainerSortSettings.Instance.InventoryOptions.Add(ItemSortStatus.SaddlebagInventoryIndex, new InventorySortInfo("Chocobo Saddlebag"));
                 }
             }
-            
+
             MessageBox.Show(
                 Strings.AutoSetup_CacheAdvice,
                 "Careful!",

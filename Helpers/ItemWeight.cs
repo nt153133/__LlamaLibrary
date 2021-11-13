@@ -33,21 +33,22 @@ namespace LlamaLibrary.Helpers
                     weight += itemStat.Value * value;
                 }
             }
+
             return weight;
         }
 
         private static readonly Dictionary<ItemAttribute, float> DoHWeights = new Dictionary<ItemAttribute, float>
         {
-            {ItemAttribute.Craftsmanship, 1},
-            {ItemAttribute.Control, 1},
-            {ItemAttribute.CP, 1}
+            { ItemAttribute.Craftsmanship, 1 },
+            { ItemAttribute.Control, 1 },
+            { ItemAttribute.CP, 1 }
         };
 
         private static readonly Dictionary<ItemAttribute, float> DoLWeights = new Dictionary<ItemAttribute, float>
         {
-            {ItemAttribute.Gathering, 1},
-            {ItemAttribute.Perception, 1},
-            {ItemAttribute.GP, 1}
+            { ItemAttribute.Gathering, 1 },
+            { ItemAttribute.Perception, 1 },
+            { ItemAttribute.GP, 1 }
         };
 
         public static ushort ClassJobLevel(ClassJobType job)

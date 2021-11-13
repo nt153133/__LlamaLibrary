@@ -9,10 +9,11 @@ using TreeSharp;
 namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("SetBluActive")]
-    public class SetBluSpells: ProfileBehavior
+    public class SetBluSpells : ProfileBehavior
     {
         private bool _isDone;
-        [XmlAttribute("Spells")] public int[] Spells { get; set; }
+        [XmlAttribute("Spells")]
+        public int[] Spells { get; set; }
 
         [XmlAttribute("Clear")]
         [DefaultValue(false)]
@@ -43,14 +44,18 @@ namespace LlamaLibrary.OrderbotTags
             uint[] newSpells = new uint[spells.Length];
             for (int i = 0; i < spells.Length; i++)
             {
-                newSpells[i] = (uint) spells[i];
+                newSpells[i] = (uint)spells[i];
             }
+
             if (Clear)
+            {
                 await BlueMageSpellBook.SetAllSpells(newSpells);
+            }
             else
             {
                 await BlueMageSpellBook.SetSpells(newSpells);
             }
+
             await Coroutine.Sleep(100);
             _isDone = true;
         }

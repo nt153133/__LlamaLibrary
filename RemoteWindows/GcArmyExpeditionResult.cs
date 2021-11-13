@@ -1,6 +1,6 @@
 ﻿namespace LlamaLibrary.RemoteWindows
 {
-    public class GcArmyExpeditionResult: RemoteWindow<GcArmyExpeditionResult>
+    public class GcArmyExpeditionResult : RemoteWindow<GcArmyExpeditionResult>
     {
         private const string WindowName = "GcArmyExpeditionResult";
 
@@ -9,11 +9,9 @@
             _name = WindowName;
         }
 
-
         public override void Close()
         {
-            SendAction(1,3,0);
+            SendAction(1, 3, 0);
         }
-
     }
 }

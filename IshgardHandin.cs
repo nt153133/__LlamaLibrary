@@ -26,7 +26,7 @@ namespace LlamaLibrary
         public uint FoundationZoneId;
 
         //public uint NpcId = 1031690;
-        public uint[] ids = {1031690, 1031677};
+        public uint[] ids = { 1031690, 1031677 };
         public uint ZoneId;
 
         private GameObject Npc => GameObjectManager.GameObjects.FirstOrDefault(i => ids.Contains(i.NpcId) && i.IsVisible);
@@ -38,8 +38,8 @@ namespace LlamaLibrary
 
         public async Task<bool> HandInGatheringItem(int job)
         {
-            if ((!HWDGathereInspect.Instance.IsOpen && GatherNpc == null) || GatherNpc.Location.Distance(Core.Me.Location) > 5f) 
-                await Navigation.GetTo(886,new Vector3(-20.04274f, -16f, 141.3337f));
+            if ((!HWDGathereInspect.Instance.IsOpen && GatherNpc == null) || GatherNpc.Location.Distance(Core.Me.Location) > 5f)
+                await Navigation.GetTo(886, new Vector3(-20.04274f, -16f, 141.3337f));
 
             if (!HWDGathereInspect.Instance.IsOpen && GatherNpc.Location.Distance(Core.Me.Location) > 4f)
             {
@@ -67,24 +67,29 @@ namespace LlamaLibrary
                 HWDGathereInspect.Instance.ClickClass(job);
                 await Coroutine.Sleep(500);
 
-                if(HWDGathereInspect.Instance.CanAutoSubmit());
+                if (HWDGathereInspect.Instance.CanAutoSubmit())
                 {
-                   HWDGathereInspect.Instance.ClickAutoSubmit();
-                   await Coroutine.Wait(6000, () => HWDGathereInspect.Instance.CanRequestInspection());
-                   if (HWDGathereInspect.Instance.CanRequestInspection())
-                   {
-                       HWDGathereInspect.Instance.ClickRequestInspection();
-                       if (ScriptConditions.Helpers.GetSkybuilderScrips() > 9000 )
-                           await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
-                       else
-                       {
-                           await Coroutine.Sleep(100);
-                       }
-                       if (SelectYesno.IsOpen)
-                       {
-                           SelectYesno.Yes();
-                       }
-                   }
+                }
+                {
+                    HWDGathereInspect.Instance.ClickAutoSubmit();
+                    await Coroutine.Wait(6000, () => HWDGathereInspect.Instance.CanRequestInspection());
+                    if (HWDGathereInspect.Instance.CanRequestInspection())
+                    {
+                        HWDGathereInspect.Instance.ClickRequestInspection();
+                        if (ScriptConditions.Helpers.GetSkybuilderScrips() > 9000)
+                        {
+                            await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
+                        }
+                        else
+                        {
+                            await Coroutine.Sleep(100);
+                        }
+
+                        if (SelectYesno.IsOpen)
+                        {
+                            SelectYesno.Yes();
+                        }
+                    }
                 }
             }
 
@@ -93,8 +98,8 @@ namespace LlamaLibrary
 
         public async Task<bool> HandInKupoTicket(int slot)
         {
-            if ((!HWDLottery.Instance.IsOpen && KupoNpc == null) || KupoNpc.Location.Distance(Core.Me.Location) > 5f) 
-                await Navigation.GetTo(886,new Vector3(43.59162f, -16f, 170.3864f));
+            if ((!HWDLottery.Instance.IsOpen && KupoNpc == null) || KupoNpc.Location.Distance(Core.Me.Location) > 5f)
+                await Navigation.GetTo(886, new Vector3(43.59162f, -16f, 170.3864f));
 
             if (!HWDLottery.Instance.IsOpen && KupoNpc.Location.Distance(Core.Me.Location) > 4f)
             {
@@ -114,6 +119,7 @@ namespace LlamaLibrary
                     Talk.Next();
                     await Coroutine.Wait(5000, () => !Talk.DialogOpen);
                 }
+
                 Log("Talking done");
                 await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
 
@@ -153,19 +159,20 @@ namespace LlamaLibrary
                 await Coroutine.Sleep(500);
 
                 await HandInKupoTicket(slot);
-
             }
             else
             {
                 Log("Out of Tickets");
             }
+
             Log("Done with Kupo Tickets");
             return false;
         }
+
         public async Task<bool> HandInItem(uint itemId, int index, int job, bool stopScripMax = false)
         {
-            if ((!HWDSupply.Instance.IsOpen && Npc == null) || Npc.Location.Distance(Core.Me.Location) > 5f) 
-                await Navigation.GetTo(886,new Vector3(43.59162f, -16f, 170.3864f));
+            if ((!HWDSupply.Instance.IsOpen && Npc == null) || Npc.Location.Distance(Core.Me.Location) > 5f)
+                await Navigation.GetTo(886, new Vector3(43.59162f, -16f, 170.3864f));
 
             if (!HWDSupply.Instance.IsOpen && Npc.Location.Distance(Core.Me.Location) > 4f)
             {
@@ -196,6 +203,7 @@ namespace LlamaLibrary
                     HWDSupply.Instance.ClassSelected = job;
                     await Coroutine.Sleep(1000);
                 }
+
                 //var item = InventoryManager.FilledSlots.FirstOrDefault(i => i.RawItemId == itemId);
                 var items = InventoryManager.FilledSlots.Where(i => i.RawItemId == itemId);
                 foreach (var item in items)
@@ -208,7 +216,6 @@ namespace LlamaLibrary
                     await Coroutine.Sleep(100);
                     await Coroutine.Wait(5000, () => Request.HandOverButtonClickable);
                     Request.HandOver();
-
 
                     if (ScriptConditions.Helpers.GetSkybuilderScrips() > 9000)
                     {
@@ -237,7 +244,6 @@ namespace LlamaLibrary
                             await Coroutine.Sleep(2000);
                             await HandInKupoTicket(1);
                             break;
-
                         }
                     }
 
@@ -282,6 +288,7 @@ namespace LlamaLibrary
                             HWDSupply.Instance.Close();
                             await Coroutine.Wait(2000, () => !HWDSupply.Instance.IsOpen);
                         }
+
                         break;
                     }
                 }
@@ -305,9 +312,8 @@ namespace LlamaLibrary
 
         public async Task<bool> BuyItem(uint itemId, int SelectStringLine = 0)
         {
-
-            if ((!ShopExchangeCurrency.Open && VendorNpc == null) || VendorNpc.Location.Distance(Core.Me.Location) > 5f) 
-                await Navigation.GetTo(886,new Vector3(36.33978f, -16f, 145.3877f));
+            if ((!ShopExchangeCurrency.Open && VendorNpc == null) || VendorNpc.Location.Distance(Core.Me.Location) > 5f)
+                await Navigation.GetTo(886, new Vector3(36.33978f, -16f, 145.3877f));
 
             if (!ShopExchangeCurrency.Open && VendorNpc.Location.Distance(Core.Me.Location) > 4f)
             {
@@ -321,7 +327,7 @@ namespace LlamaLibrary
                 await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open || Talk.DialogOpen || Conversation.IsOpen);
                 if (Conversation.IsOpen)
                 {
-                    Conversation.SelectLine((uint) SelectStringLine);
+                    Conversation.SelectLine((uint)SelectStringLine);
                     await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open);
                 }
             }
@@ -353,9 +359,8 @@ namespace LlamaLibrary
 
         public async Task<bool> BuyItem(uint itemId, int maxCount, int SelectStringLine = 0)
         {
-
-            if ((!ShopExchangeCurrency.Open && VendorNpc == null) || VendorNpc.Location.Distance(Core.Me.Location) > 5f) 
-                await Navigation.GetTo(886,new Vector3(36.33978f, -16f, 145.3877f));
+            if ((!ShopExchangeCurrency.Open && VendorNpc == null) || VendorNpc.Location.Distance(Core.Me.Location) > 5f)
+                await Navigation.GetTo(886, new Vector3(36.33978f, -16f, 145.3877f));
 
             if (!ShopExchangeCurrency.Open && VendorNpc.Location.Distance(Core.Me.Location) > 4f)
             {
@@ -369,7 +374,7 @@ namespace LlamaLibrary
                 await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open || Talk.DialogOpen || Conversation.IsOpen);
                 if (Conversation.IsOpen)
                 {
-                    Conversation.SelectLine((uint) SelectStringLine);
+                    Conversation.SelectLine((uint)SelectStringLine);
                     await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open);
                 }
             }
@@ -381,9 +386,9 @@ namespace LlamaLibrary
 
                 if (!specialShopItem.HasValue) return false;
 
-                var count = Math.Min(CanAffordScrip(specialShopItem.Value),maxCount);
+                var count = Math.Min(CanAffordScrip(specialShopItem.Value), maxCount);
 
-                if (count > 0) Purchase(itemId, (uint) count);
+                if (count > 0) Purchase(itemId, (uint)count);
 
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
 
@@ -435,7 +440,7 @@ namespace LlamaLibrary
                 0uL,
                 0uL
             };
-            obj[3] = (uint) index;
+            obj[3] = (uint)index;
             obj[5] = itemCount;
             windowByName.SendAction(4, obj);
             return itemCount;
@@ -443,7 +448,7 @@ namespace LlamaLibrary
 
         private static uint CanAffordScrip(SpecialShopItem item)
         {
-            var scrips = SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency) 28063);
+            var scrips = SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)28063);
             if (scrips == 0) return 0u;
             return scrips / item.CurrencyCosts[0];
         }
@@ -526,7 +531,6 @@ namespace LlamaLibrary
 
             Navigator.PlayerMover.MoveStop();
 
-
             target = VendorNpc.Location;
             Navigator.PlayerMover.MoveTowards(target);
             while (target.Distance2D(Core.Me.Location) >= 4)
@@ -555,11 +559,13 @@ namespace LlamaLibrary
                 }
 
                 if (!ConditionParser.HasAetheryte(AetheryteId))
+
                     //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
                     //TreeRoot.Stop();
                     return false;
 
                 if (!WorldManager.TeleportById(AetheryteId))
+
                     //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
                     //TreeRoot.Stop();
                     return false;
@@ -608,7 +614,6 @@ namespace LlamaLibrary
             }
 
             //await CommonTasks.MoveTo(Npc.Location, "Moving To HandinVendor");
-
 
             if (Npc.Location.Distance(Core.Me.Location) > 5f)
             {
@@ -646,11 +651,13 @@ namespace LlamaLibrary
                 }
 
                 if (!ConditionParser.HasAetheryte(AetheryteId))
+
                     //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
                     //TreeRoot.Stop();
                     return false;
 
                 if (!WorldManager.TeleportById(AetheryteId))
+
                     //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
                     //TreeRoot.Stop();
                     return false;
@@ -699,7 +706,6 @@ namespace LlamaLibrary
             }
 
             //await CommonTasks.MoveTo(Npc.Location, "Moving To HandinVendor");
-
 
             if (GatherNpc.Location.Distance(Core.Me.Location) > 5f)
             {

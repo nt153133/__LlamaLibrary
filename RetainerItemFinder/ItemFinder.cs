@@ -43,7 +43,7 @@ namespace LlamaLibrary.RetainerItemFinder
             if (retData.Length == 0)
             {
                 Logging.Write(Colors.OrangeRed, $"You don't have any retainers");
-                return new Dictionary<ulong, StoredRetainerInventory>(); 
+                return new Dictionary<ulong, StoredRetainerInventory>();
             }
 
             return GetCachedRetainerInventories();
@@ -136,7 +136,7 @@ namespace LlamaLibrary.RetainerItemFinder
                 }
                 else
                 {
-                    result.Add(ids[i],qtys[i]);
+                    result.Add(ids[i], qtys[i]);
                 }
             }
 

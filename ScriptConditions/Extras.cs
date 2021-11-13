@@ -26,7 +26,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int SphereCompletion(int itemID)
         {
-            return (int) (InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint)itemID).SpiritBond);
+            return (int)InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint)itemID).SpiritBond;
         }
 
         public static int HighestILvl(ClassJobType job)
@@ -42,7 +42,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool HasLearnedMount(int mountID)
         {
-            return ActionManager.AvailableMounts.Any(i=> i.Id == ((uint)mountID));
+            return ActionManager.AvailableMounts.Any(i => i.Id == ((uint)mountID));
         }
 
         public static int BeastTribeRank(int tribeID)
@@ -52,38 +52,37 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int DailyQuestAllowance()
         {
-            return (int) BeastTribeHelper.DailyQuestAllowance();
+            return (int)BeastTribeHelper.DailyQuestAllowance();
         }
 
-		public static bool LisbethPresent()
+        public static bool LisbethPresent()
         {
             var loader = BotManager.Bots
                 .FirstOrDefault(c => c.Name == "Lisbeth");
 
             if (loader == null) return false;
-			return true;
-
+            return true;
         }
 
         public static bool IsTargetableNPC(int npcID)
         {
-            return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint) npcID && i.IsVisible && i.IsTargetable);
-        }	
+            return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint)npcID && i.IsVisible && i.IsTargetable);
+        }
 
         public static bool IsDutyEnded()
         {
-			if (DirectorManager.ActiveDirector != null)
-			{
-				var instanceDirector = (ff14bot.Directors.InstanceContentDirector) DirectorManager.ActiveDirector;
-				return instanceDirector.InstanceEnded;
-			}
+            if (DirectorManager.ActiveDirector != null)
+            {
+                var instanceDirector = (ff14bot.Directors.InstanceContentDirector)DirectorManager.ActiveDirector;
+                return instanceDirector.InstanceEnded;
+            }
 
-			return true;
-        }		
+            return true;
+        }
 
         public static int SharedFateRank(int zoneID)
         {
-            return SharedFateHelper.CachedProgress.FirstOrDefault(i => i.Zone == (uint) zoneID).Rank;
+            return SharedFateHelper.CachedProgress.FirstOrDefault(i => i.Zone == (uint)zoneID).Rank;
         }
 
         public static async Task UpdateSharedFates()

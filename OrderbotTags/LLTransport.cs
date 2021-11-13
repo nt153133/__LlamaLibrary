@@ -1,18 +1,19 @@
-﻿using Buddy.Coroutines;
+﻿using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using Buddy.Coroutines;
 using Clio.Utilities;
 using Clio.XmlEngine;
 using ff14bot.Behavior;
 using ff14bot.Managers;
+using ff14bot.NeoProfiles;
 using ff14bot.Objects;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
 
-namespace ff14bot.NeoProfiles.Tags
+namespace Ff14bot.NeoProfiles.Tags
 {
-	[XmlElement("LLTransport")]	
+    [XmlElement("LLTransport")]
     [XmlElement("SoTransport")]
     public class SoTransport : ProfileBehavior
     {
@@ -64,7 +65,7 @@ namespace ff14bot.NeoProfiles.Tags
         {
             get
             {
-				if (_done) return null;
+                if (_done) return null;
                 var npc = GameObjectManager.GetObjectsByNPCId((uint)NpcId).FirstOrDefault(r => r.IsVisible && r.IsTargetable);
                 return npc;
             }
@@ -75,11 +76,15 @@ namespace ff14bot.NeoProfiles.Tags
             return new ActionRunCoroutine(r => LLTransportTask());
         }
 
-        private  async Task LLTransportTask()
+        private async Task LLTransportTask()
         {
-            var gameobj = GameObjectManager.GetObjectByNPCId((uint) NpcId);
+            var gameobj = GameObjectManager.GetObjectByNPCId((uint)NpcId);
 
-            if (gameobj == default(GameObject)) {_done = true; return;}
+            if (gameobj == default(GameObject))
+            {
+                _done = true;
+                return;
+            }
 
             await LlamaLibrary.Helpers.Navigation.OffMeshMoveInteract(gameobj);
 
@@ -92,7 +97,7 @@ namespace ff14bot.NeoProfiles.Tags
                 {
                     if (DialogOption != -1)
                     {
-                        var option = ((uint)DialogOption);
+                        var option = (uint)DialogOption;
                         Conversation.SelectLine(option);
                     }
                     else
@@ -101,7 +106,6 @@ namespace ff14bot.NeoProfiles.Tags
                     }
 
                     await Coroutine.Wait(20000, () => !Conversation.IsOpen || CommonBehaviors.IsLoading);
-
                 }
             }
 
@@ -110,17 +114,14 @@ namespace ff14bot.NeoProfiles.Tags
 
         protected override void OnStart()
         {
-
         }
 
         protected override void OnDone()
         {
-
         }
 
         protected override void OnResetCachedDone()
         {
-
         }
     }
 }

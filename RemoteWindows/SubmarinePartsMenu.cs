@@ -18,7 +18,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public void ClickItem(int index)
         {
-            SendAction(3,3,0,4,(ulong) index,4,6);
+            SendAction(3, 3, 0, 4, (ulong)index, 4, 6);
         }
 
         public int GetNumberOfTurnins()
@@ -37,7 +37,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 12, GetNumberOfTurnins());
 
-            return itemElements.Select(item => DataManager.GetItem((uint) item.TrimmedData)).ToList();
+            return itemElements.Select(item => DataManager.GetItem((uint)item.TrimmedData)).ToList();
         }
 
         public List<int> GetTurninItemsIds()

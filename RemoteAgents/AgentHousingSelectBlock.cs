@@ -5,7 +5,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    public class AgentHousingSelectBlock: AgentInterface<AgentHousingSelectBlock>, IAgent
+    public class AgentHousingSelectBlock : AgentInterface<AgentHousingSelectBlock>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
         private static class Offsets
@@ -17,6 +17,7 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 4D 8D 6C 24 ? C7 44 24 ? ? ? ? Add 4 Read8")]
             internal static int PlotOffset;
         }
+
         protected AgentHousingSelectBlock(IntPtr pointer) : base(pointer)
         {
         }
@@ -29,7 +30,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public byte[] ReadPlots(int count)
         {
-            return Core.Memory.ReadArray<byte>(Pointer+ Offsets.PlotOffset, count);
+            return Core.Memory.ReadArray<byte>(Pointer + Offsets.PlotOffset, count);
         }
     }
 }

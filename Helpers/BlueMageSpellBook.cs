@@ -24,10 +24,10 @@ namespace LlamaLibrary.Helpers
 
             [Offset("Search 8B 84 81 ? ? ? ? C3 33 C0 C3 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 6C 24 ? Add 3 Read32")]
             [OffsetCN("Search 8B 94 B5 ? ? ? ? 48 8B CD Add 3 Read32")]
-            internal static int BluSpellActiveOffset ;
+            internal static int BluSpellActiveOffset;
         }
 
-        public static uint[] ActiveSpells => Core.Memory.ReadArray<uint>(SpellLocation, Offsets.MaxActive +1);
+        public static uint[] ActiveSpells => Core.Memory.ReadArray<uint>(SpellLocation, Offsets.MaxActive + 1);
 
         public static IntPtr SpellLocation => Offsets.ActionManager + Offsets.BluSpellActiveOffset;
 
@@ -69,7 +69,7 @@ namespace LlamaLibrary.Helpers
 
             var spellsToAdd = spells.Except(currentSpells);
 
-            List<(int, uint)> spellsToModify = new List<(int, uint)>(); 
+            List<(int, uint)> spellsToModify = new List<(int, uint)>();
 
             foreach (var spell in spellsToAdd)
             {
@@ -78,14 +78,14 @@ namespace LlamaLibrary.Helpers
                     if (currentSpells[i] == 0)
                     {
                         currentSpells[i] = spell;
-                        spellsToModify.Add((i,spell));
+                        spellsToModify.Add((i, spell));
                         break;
                     }
 
                     if (!spells.Contains(spell))
                     {
                         currentSpells[i] = spell;
-                        spellsToModify.Add((i,spell));
+                        spellsToModify.Add((i, spell));
                         break;
                     }
                 }

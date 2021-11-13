@@ -22,16 +22,16 @@ namespace LlamaLibrary.Reduce
 {
     public class Reduce : BotBase
     {
-        private static readonly string botName = "Aetherial Reduction";
+        private static readonly string BotName = "Aetherial Reduction";
+
+        private static readonly Version V = new Version(1, 0, 3);
 
         private static bool done;
-
-        private static readonly Version v = new Version(1, 0, 3);
 
         public static bool IsBusy => DutyManager.InInstance || DutyManager.InQueue || DutyManager.DutyReady || Core.Me.IsCasting || Core.Me.IsMounted || Core.Me.InCombat || Talk.DialogOpen || MovementManager.IsMoving ||
                                      MovementManager.IsOccupied;
 
-        private static readonly InventoryBagId[] inventoryBagIds = new InventoryBagId[4]
+        private static readonly InventoryBagId[] InventoryBagIds = new InventoryBagId[4]
         {
             InventoryBagId.Bag1,
             InventoryBagId.Bag2,
@@ -39,7 +39,7 @@ namespace LlamaLibrary.Reduce
             InventoryBagId.Bag4
         };
 
-        private static readonly InventoryBagId[] armoryBagIds = new InventoryBagId[12]
+        private static readonly InventoryBagId[] ArmoryBagIds = new InventoryBagId[12]
         {
             InventoryBagId.Armory_MainHand,
             InventoryBagId.Armory_OffHand,
@@ -55,7 +55,7 @@ namespace LlamaLibrary.Reduce
             InventoryBagId.Armory_Rings
         };
 
-        private static readonly List<string> desynthList = new List<string>
+        private static readonly List<string> DesynthList = new List<string>
         {
             "Warg",
             "Amaurotine",
@@ -93,6 +93,7 @@ namespace LlamaLibrary.Reduce
         //private readonly IntPtr offset = patternFinder.Find("48 85 D2 0F 84 ? ? ? ? 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 7A ? ? 41 8B E8 48 8B FA 48 8B F1 74 ? 48 8B CA E8 ? ? ? ? 48 8B C8 E8 ? ? ? ? EB ? 0F B6 42 ? A8 ? 74 ? 8B 42 ? 05 ? ? ? ? EB ? A8 ? 8B 42 ? 74 ? 05 ? ? ? ? 85 C0 0F 84 ? ? ? ? 48 89 9C 24 ? ? ? ? 48 8B CE 4C 89 B4 24 ? ? ? ? E8 ? ? ? ? 8B 9E ? ? ? ?");
         //private IntPtr offsetInt = Core.Memory.GetAbsolute(new IntPtr(0xA6E170)); //0xA90fd0;
 #endif
+
         //private const int offsetInt = 0xa910c0;
 
         public override bool WantButton => true;
@@ -112,7 +113,7 @@ namespace LlamaLibrary.Reduce
 
         private static bool ShouldDesynth(string name)
         {
-            return desynthList.Any(name.Contains);
+            return DesynthList.Any(name.Contains);
         }
 
         public override void OnButtonPress()
@@ -121,7 +122,7 @@ namespace LlamaLibrary.Reduce
             {
                 _settings = new Settings
                 {
-                    Text = "Reduce and Desynth v" + v //title
+                    Text = "Reduce and Desynth v" + V //title
                 };
 
                 _settings.Closed += (o, e) => { _settings = null; };
@@ -139,13 +140,13 @@ namespace LlamaLibrary.Reduce
 
         private static void Log(string text, params object[] args)
         {
-            var msg = string.Format("[" + botName + "] " + text, args);
+            var msg = string.Format("[" + BotName + "] " + text, args);
             Logging.Write(Colors.Green, msg);
         }
 
         private static void LogVerbose(string text, params object[] args)
         {
-            var msg = string.Format("[" + botName + "] " + text, args);
+            var msg = string.Format("[" + BotName + "] " + text, args);
             Logging.WriteVerbose(msg);
         }
 
@@ -196,6 +197,7 @@ namespace LlamaLibrary.Reduce
 
                 if (InventoryManager.EquippedItems.Any(i => i.Condition < 30))
                     await LlamaLibrary.Helpers.Lisbeth.SelfRepair();
+
                 //ReduceSettings.Instance.Save();
             }
 
@@ -211,15 +213,15 @@ namespace LlamaLibrary.Reduce
             //Reduce
             if (ReduceSettings.Instance.AEZoneCheck && ReduceSettings.Instance.AEZone != 0)
             {
-                if (WorldManager.ZoneId != (ushort) ReduceSettings.Instance.AEZone) return false;
+                if (WorldManager.ZoneId != (ushort)ReduceSettings.Instance.AEZone) return false;
                 await Coroutine.Sleep(5000);
             }
 
             await GeneralFunctions.StopBusy(false, true, true);
 
-            while (InventoryManager.FilledSlots.Any(x => inventoryBagIds.Contains(x.BagId) && x.IsReducable)) //&& WorldManager.ZoneId == (ushort) ReduceSettings.Instance.AEZone )
+            while (InventoryManager.FilledSlots.Any(x => InventoryBagIds.Contains(x.BagId) && x.IsReducable)) //&& WorldManager.ZoneId == (ushort) ReduceSettings.Instance.AEZone )
             {
-                var item = InventoryManager.FilledSlots.FirstOrDefault(x => inventoryBagIds.Contains(x.BagId) && x.IsReducable);
+                var item = InventoryManager.FilledSlots.FirstOrDefault(x => InventoryBagIds.Contains(x.BagId) && x.IsReducable);
 
                 if (item == null) break;
                 Log($"Reducing - Name: {item.Item.CurrentLocaleName}");
@@ -241,7 +243,7 @@ namespace LlamaLibrary.Reduce
         {
             if (IsBusy)
             {
-                await GeneralFunctions.StopBusy(leaveDuty:false);
+                await GeneralFunctions.StopBusy(leaveDuty: false);
                 if (IsBusy)
                 {
                     Log("Can't desynth right now, we're busy.");
@@ -260,9 +262,9 @@ namespace LlamaLibrary.Reduce
             Log($"# of slots to Desynth: {toDesynthList.Count()}");
             foreach (var bagSlot in toDesynthList)
             {
-                    bagSlot.Desynth();
-                    await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) != 0);
-                    await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) == 0);
+                bagSlot.Desynth();
+                await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) != 0);
+                await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) == 0);
             }
 
             if (SalvageResult.IsOpen)
@@ -284,7 +286,7 @@ namespace LlamaLibrary.Reduce
         {
             if (IsBusy)
             {
-                await GeneralFunctions.StopBusy(leaveDuty:false);
+                await GeneralFunctions.StopBusy(leaveDuty: false);
                 if (IsBusy)
                 {
                     Log("Can't desynth right now, we're busy.");
@@ -299,12 +301,9 @@ namespace LlamaLibrary.Reduce
             //if (MovementManager.IsOccupied) return false;
             //          if (!InventoryManager.GetBagsByInventoryBagId(BagsToCheck()).Any(bag => bag.FilledSlots.Any(bs => bs.IsDesynthesizable)))
 
-
             /*            var itemsToDesynth = InventoryManager.GetBagsByInventoryBagId(BagsToCheck())
                             .SelectMany(bag => bag.FilledSlots
                                 .FindAll(bs => bs.IsDesynthesizable && (ShouldDesynth(bs.Item.EnglishName) || ExtraCheck(bs))));*/
-
-
 
             if (!toDesynthList.Any())
             {
@@ -355,6 +354,7 @@ namespace LlamaLibrary.Reduce
                 }
 
                 await Coroutine.Sleep(200);
+
                 // Log($"Waiting for SalvageDialog.");
                 await Coroutine.Wait(5000, () => SalvageDialog.IsOpen);
 
@@ -367,11 +367,11 @@ namespace LlamaLibrary.Reduce
 
                 // Log($"Wait for DesynthLock byte 1.");
                 await Coroutine.Wait(5000, () => Core.Memory.NoCacheRead<uint>(Offsets.Conditions + Offsets.DesynthLock) != 0);
+
                 // Log($"Wait for DesynthLock byte 0");
                 await Coroutine.Wait(6000, () => Core.Memory.NoCacheRead<uint>(Offsets.Conditions + Offsets.DesynthLock) == 0);
                 await Coroutine.Sleep(100);
                 await Coroutine.Wait(6000, () => SalvageResult.IsOpen || SalvageAutoDialog.Instance.IsOpen);
-
 
                 if (SalvageAutoDialog.Instance.IsOpen)
                 {
@@ -392,7 +392,7 @@ namespace LlamaLibrary.Reduce
             if (IsBusy)
             {
                 await GeneralFunctions.SmallTalk();
-                await GeneralFunctions.StopBusy(leaveDuty:false);
+                await GeneralFunctions.StopBusy(leaveDuty: false);
                 if (IsBusy) return;
             }
 
@@ -421,7 +421,8 @@ namespace LlamaLibrary.Reduce
 
         private static InventoryBagId[] BagsToCheck()
         {
-            return ReduceSettings.Instance.IncludeArmory ? inventoryBagIds.Concat(armoryBagIds).ToArray() : inventoryBagIds;
+            return ReduceSettings.Instance.IncludeArmory ? InventoryBagIds.Concat(ArmoryBagIds).ToArray() : InventoryBagIds;
+
             //return inventoryBagIds;
         }
     }

@@ -8,16 +8,18 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
+using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.BotBases;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.NeoProfile;
+using ff14bot.NeoProfiles;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TreeSharp;
 
-namespace ff14bot.NeoProfiles
+namespace Ff14bot.NeoProfiles
 {
     [XmlElement("LLisbeth")]
     public class LisbethOrderBot : ProfileBehavior
@@ -28,7 +30,8 @@ namespace ff14bot.NeoProfiles
 
         public override bool HighPriority => true;
 
-        [XmlAttribute("Json")] public string Json { get; set; }
+        [XmlAttribute("Json")]
+        public string Json { get; set; }
 
         public override bool IsDone => _isDone;
 
@@ -94,7 +97,6 @@ namespace ff14bot.NeoProfiles
                     {
                         Logging.Write(Colors.Chocolate, "[LisbethOrderTag] LastBot Null: Starting Orderbot");
                         BotManager.SetCurrent(new OrderBot());
-                        ;
                         BotManager.Current.Start();
                     }
                 }
@@ -121,11 +123,11 @@ namespace ff14bot.NeoProfiles
 
             Logging.Write(Colors.Chocolate, $"[LisbethOrderTag] Lisbeth Type {BotType.FullName}");
 
-            var settingsFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), (string) BotType.GetProperty("SettingsPath").GetValue(null));
+            var settingsFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), (string)BotType.GetProperty("SettingsPath").GetValue(null));
             var resumePath = Path.Combine(Path.GetDirectoryName(settingsFilePath), "lisbeth-resume.json");
             using (var reader = File.OpenText(settingsFilePath))
             {
-                settings = (JObject) JToken.ReadFrom(new JsonTextReader(reader));
+                settings = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
                 settings["Orders"] = JToken.Parse(Json);
             }
 
@@ -177,7 +179,7 @@ namespace ff14bot.NeoProfiles
         /// <param name="frequency">The frequency at which the condition will be check, in milliseconds.</param>
         /// <param name="timeout">Timeout in milliseconds.</param>
         /// <exception cref="TimeoutException"></exception>
-        /// <returns></returns>
+        /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
         public static async Task WaitWhile(Func<bool> condition, int frequency = 25, int timeout = -1)
         {
             var waitTask = Task.Run(async () =>
@@ -198,7 +200,7 @@ namespace ff14bot.NeoProfiles
         /// <param name="condition">The break condition.</param>
         /// <param name="frequency">The frequency at which the condition will be checked.</param>
         /// <param name="timeout">The timeout in milliseconds.</param>
-        /// <returns></returns>
+        /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
         public static async Task WaitUntil(Func<bool> condition, int frequency = 25, int timeout = -1)
         {
             var waitTask = Task.Run(async () =>
@@ -209,7 +211,8 @@ namespace ff14bot.NeoProfiles
                 }
             });
 
-            if (waitTask != await Task.WhenAny(waitTask,
+            if (waitTask != await Task.WhenAny(
+                waitTask,
                     Task.Delay(timeout)))
                 throw new TimeoutException();
         }

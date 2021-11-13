@@ -1,20 +1,22 @@
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
 using Clio.Utilities;
 using Clio.XmlEngine;
+using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
+using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
-using System;
-using System.ComponentModel;
-using System.Linq;
 using TreeSharp;
 using Action = TreeSharp.Action;
-namespace ff14bot.NeoProfiles
+namespace Ff14bot.NeoProfiles
 {
     [XmlElement("LLUseSpell")]
-	[XmlElement("SoUseSpell")]
+    [XmlElement("SoUseSpell")]
     public class LLUseSpellTag : ProfileBehavior
     {
         protected LLUseSpellTag() { Hotspots = new IndexedList<HotSpot>(); }
@@ -29,9 +31,15 @@ namespace ff14bot.NeoProfiles
         {
             get
             {
-                if (IsQuestComplete) { return true; }
+                if (IsQuestComplete)
+                {
+                    return true;
+                }
 
-                if (IsStepComplete) { return true; }
+                if (IsStepComplete)
+                {
+                    return true;
+                }
 
                 if (Conditional != null)
                 {
@@ -76,7 +84,10 @@ namespace ff14bot.NeoProfiles
         {
             try
             {
-                if (Conditional == null && !string.IsNullOrEmpty(Condition)) { Conditional = ScriptManager.GetCondition(Condition); }
+                if (Conditional == null && !string.IsNullOrEmpty(Condition))
+                {
+                    Conditional = ScriptManager.GetCondition(Condition);
+                }
             }
             catch (Exception ex)
             {
@@ -89,9 +100,11 @@ namespace ff14bot.NeoProfiles
         protected override Composite CreateBehavior()
         {
             return
-                new PrioritySelector(ctx => Target,
+                new PrioritySelector(
+                    ctx => Target,
                     CustomLogic,
-                    new Decorator(ret => Hotspots.Count != 0 && Navigator.InPosition(Position, Core.Me.Location, 5f),
+                    new Decorator(
+                        ret => Hotspots.Count != 0 && Navigator.InPosition(Position, Core.Me.Location, 5f),
                         new Action(ret => Hotspots.Next())
                     ),
                     CommonBehaviors.MoveAndStop(ret => Position, 3f, true)
@@ -100,9 +113,15 @@ namespace ff14bot.NeoProfiles
 
         protected bool ShortCircuit(GameObject obj)
         {
-            if (!obj.IsValid || !obj.IsTargetable || !obj.IsVisible) { return true; }
+            if (!obj.IsValid || !obj.IsTargetable || !obj.IsVisible)
+            {
+                return true;
+            }
 
-            if (Talk.DialogOpen) { return true; }
+            if (Talk.DialogOpen)
+            {
+                return true;
+            }
 
             return false;
         }
@@ -112,7 +131,8 @@ namespace ff14bot.NeoProfiles
             get
             {
                 return
-                    new Decorator(r => (r as GameObject) != null,
+                    new Decorator(
+                        r => (r as GameObject) != null,
                         new PrioritySelector(
                             CommonBehaviors.MoveAndStop(ret => ((GameObject)ret).Location, UseDistance, true),
                             CreateUseSpell()
@@ -128,10 +148,10 @@ namespace ff14bot.NeoProfiles
                     new Action(ret => Navigator.PlayerMover.MoveStop()),
                     new WaitContinue(5, ret => !MovementManager.IsMoving, new Action(ret => RunStatus.Success)),
                     new Sleep(1000),
-                    new DecoratorContinue(ret => ShortCircuit((ret as GameObject)), new Action(ret => RunStatus.Failure)),
-                    new DecoratorContinue(r => !Spell.GroundTarget, new Action(ret => ActionManager.DoAction(Spell, ((GameObject)ret)))),
+                    new DecoratorContinue(ret => ShortCircuit(ret as GameObject), new Action(ret => RunStatus.Failure)),
+                    new DecoratorContinue(r => !Spell.GroundTarget, new Action(ret => ActionManager.DoAction(Spell, (GameObject)ret))),
                     new DecoratorContinue(r => Spell.GroundTarget, new Action(ret => ActionManager.DoActionLocation(Spell.Id, ((GameObject)ret).Location))),
-                    new Wait(5, ret => Core.Me.IsCasting || ShortCircuit((ret as GameObject)), new Action(ret => RunStatus.Success)),
+                    new Wait(5, ret => Core.Me.IsCasting || ShortCircuit(ret as GameObject), new Action(ret => RunStatus.Success)),
                     new Sleep(WaitTime)
                 );
         }
@@ -143,13 +163,22 @@ namespace ff14bot.NeoProfiles
             {
                 if (_target != null)
                 {
-                    if (!_target.IsValid || !_target.IsTargetable || !_target.IsVisible) { _target = null; }
-                    else { return _target; }
+                    if (!_target.IsValid || !_target.IsTargetable || !_target.IsVisible)
+                    {
+                        _target = null;
+                    }
+                    else
+                    {
+                        return _target;
+                    }
                 }
 
                 _target = GetObject();
 
-                if (_target != null) { Log($"Target set to {_target.EnglishName}."); }
+                if (_target != null)
+                {
+                    Log($"Target set to {_target.EnglishName}.");
+                }
                 return _target;
             }
         }
@@ -161,7 +190,10 @@ namespace ff14bot.NeoProfiles
             float closest = float.MaxValue;
             foreach (var obj in possible)
             {
-                if (obj.DistanceSqr() < 1) { return obj; }
+                if (obj.DistanceSqr() < 1)
+                {
+                    return obj;
+                }
 
                 HotSpot target = null;
                 foreach (var hotspot in Hotspots)
@@ -179,10 +211,14 @@ namespace ff14bot.NeoProfiles
 
                 if (target != null)
                 {
-                    while (Hotspots.Current != target) { Hotspots.Next(); }
+                    while (Hotspots.Current != target)
+                    {
+                        Hotspots.Next();
+                    }
                     return obj;
                 }
             }
+
             return null;
         }
 

@@ -37,12 +37,13 @@ namespace LlamaLibrary.Helpers
 
         static BeastTribeHelper()
         {
-            List<BeastTribeExd> tribes= new List<BeastTribeExd>();
+            List<BeastTribeExd> tribes = new List<BeastTribeExd>();
 
-						for (int i = 1; i <= Offsets.BeastTribeCount; i++)
+            for (int i = 1; i <= Offsets.BeastTribeCount; i++)
             {
                 var result = Core.Memory.CallInjected64<IntPtr>(Offsets.GetBeastTribeExd, i);
                 tribes.Add(Core.Memory.Read<BeastTribeExd>(result));
+
                 //Log($"{Core.Memory.Read<BeastTribeExd>(result)}") ;
             }
 
@@ -64,17 +65,16 @@ namespace LlamaLibrary.Helpers
             var dailies = GetCurrentDailies();
             var accepted = dailies.Where(i => i.Accepted).Count();
             var finished = dailies.Where(i => i.Accepted && i.IsComplete).Count();
-            var unfinished = dailies.Where(i => i.Accepted && !i.IsComplete).Select(i=> i.ID);
+            var unfinished = dailies.Where(i => i.Accepted && !i.IsComplete).Select(i => i.ID);
 
             Log($"Daily quests left: {Offsets.DailyQuestCount - accepted}\n\tAccepted: {accepted}\n\tFinished: {finished}\n\tCurrentDailies: {string.Join(",", unfinished)}");
-
         }
 
         public static int DailyQuestAllowance()
         {
             var dailies = GetCurrentDailies();
             var accepted = dailies.Where(i => i.Accepted).Count();
-            return (Offsets.DailyQuestCount - accepted);
+            return Offsets.DailyQuestCount - accepted;
         }
 
         public static string GetBeastTribeName(int index)
@@ -104,7 +104,7 @@ namespace LlamaLibrary.Helpers
         public static int GetBeastTribeRank(int tribe)
         {
             var tribes = GetBeastTribes();
-            return tribes[tribe-1].Rank;
+            return tribes[tribe - 1].Rank;
         }
 
         private static void Log(string text)
@@ -123,7 +123,7 @@ namespace LlamaLibrary.Helpers
 
             public bool IsComplete => CompleteRaw == 1;
 
-            public int ID         
+            public int ID
             {
                 get
                 {
@@ -150,7 +150,7 @@ namespace LlamaLibrary.Helpers
             [FieldOffset(0x2)]
             public ushort Reputation;
 
-            public ushort Rank => (ushort) (_Rank & 0x7F);
+            public ushort Rank => (ushort)(_Rank & 0x7F);
             public bool Unlocked => Rank != 0;
 
             public override string ToString()
@@ -177,7 +177,7 @@ namespace LlamaLibrary.Helpers
 
             public override string ToString()
             {
-                return $"MaxRank: {MaxRank} Expansion: {Expansion} Currency: {Currency} Name: {Name}";//Name: {Name}
+                return $"MaxRank: {MaxRank} Expansion: {Expansion} Currency: {Currency} Name: {Name}"; //Name: {Name}
             }
         }
     }

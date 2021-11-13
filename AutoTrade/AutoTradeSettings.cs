@@ -23,11 +23,12 @@ namespace LlamaLibrary.AutoTrade
 
         private static void SetDoubleBuffer(Control dataGridView, bool doublebuffered)
         {
-            typeof(Control).InvokeMember("DoubleBuffered",
+            typeof(Control).InvokeMember(
+                "DoubleBuffered",
                 BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
                 null,
                 dataGridView,
-                new object[] {doublebuffered});
+                new object[] { doublebuffered });
         }
 
         private static void ResizeAndRefreshGrid(DataGridView grid)
@@ -36,6 +37,7 @@ namespace LlamaLibrary.AutoTrade
             {
                 if (col.DataPropertyName == "ItemName") col.ReadOnly = true;
             }
+
             grid.ResetBindings();
             grid.AutoResizeColumns();
             grid.Refresh();
@@ -50,7 +52,8 @@ namespace LlamaLibrary.AutoTrade
             ResizeAndRefreshGrid(dataGridToTrade);
         }
 
-        private static readonly InventoryBagId[] MainBags = {
+        private static readonly InventoryBagId[] MainBags =
+        {
             InventoryBagId.Bag1,
             InventoryBagId.Bag2,
             InventoryBagId.Bag3,
@@ -94,6 +97,7 @@ namespace LlamaLibrary.AutoTrade
         {
             // Remove any missing BagSlots from the inventory listbox if it's been previously generated already. Additionally remove Shards/etc. for before we sort & re-add.
             _inventoryItems.RemoveAll(lbItem => lbItem.BagSlot == null || !lbItem.BagSlot.IsFilled || lbItem.BagSlot.TrueItemId != lbItem.TrueItemId || lbItem.TrueItemId < 20 || lbItem.QtyAvailable == 0);
+
             // Fill inventory listbox with data.
             foreach (BagSlot slot in MainBagsFilledSlots.Where(i => i.CanTrade() && i.TrueItemId > 19))
             {
@@ -101,14 +105,17 @@ namespace LlamaLibrary.AutoTrade
                 _inventoryItems.Add(new ItemToTrade(slot));
                 _shouldSort = true;
             }
+
             // Sort by category, then by name to make it pretty.
             if (_shouldSort)
             {
                 _inventoryItems = _inventoryItems.OrderBy(x => x.BagSlot.Item.EquipmentCatagory).ThenBy(x => x.ItemName).ToList();
                 _shouldSort = false;
             }
+
             // Add Shards/etc. to the end.
             _inventoryItems.AddRange(_crystalList);
+
             // Refresh Trade Qty values.
             ItemsToTrade.RemoveAll(x => x.QtyAvailable == 0);
             foreach (ItemToTrade item in ItemsToTrade.Where(item => item.QtyToTrade > item.QtyAvailable))
@@ -132,6 +139,7 @@ namespace LlamaLibrary.AutoTrade
             {
                 return;
             }
+
             MessageBox.Show("You're trying to trade more gil than you currently have!");
             txtBoxGil.Text = string.Format(_culture, "{0:N0}", CurrentGil);
             txtBoxGil.Focus();
@@ -145,25 +153,27 @@ namespace LlamaLibrary.AutoTrade
                 if (ItemsToTrade.Contains(lbItem)) continue;
                 ItemsToTrade.Add(lbItem);
             }
+
             UpdateUI();
         }
 
         private void dataGridToTrade_DataError(object sender, DataGridViewDataErrorEventArgs anError)
         {
-            DataGridView view = (DataGridView) sender;
+            DataGridView view = (DataGridView)sender;
             view.Rows[anError.RowIndex].Cells[anError.ColumnIndex].Value = 0;
         }
 
         private void dataGridToTrade_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            DataGridView view = (DataGridView) sender;
+            DataGridView view = (DataGridView)sender;
             if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
             if (view.Columns[e.ColumnIndex].DataPropertyName != "QtyToTrade") return;
-            ItemToTrade item = (ItemToTrade) view.Rows[e.RowIndex].DataBoundItem;
+            ItemToTrade item = (ItemToTrade)view.Rows[e.RowIndex].DataBoundItem;
             if (item.QtyToTrade > item.QtyAvailable)
             {
                 item.QtyToTrade = item.QtyAvailable;
             }
+
             UpdateUI();
         }
 
@@ -203,14 +213,15 @@ namespace LlamaLibrary.AutoTrade
         private void dataGridToTrade_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode != Keys.Delete) return;
-            DataGridView g = (DataGridView) sender;
+            DataGridView g = (DataGridView)sender;
             if (g.SelectedCells.Count <= 0) return;
             List<DataGridViewRow> rows = (from DataGridViewCell cell in g.SelectedCells let rowIndex = cell.RowIndex select g.Rows[cell.RowIndex]).Distinct().ToList();
             if (!rows.Any()) return;
-            foreach (ItemToTrade rowData in rows.Select(row => (ItemToTrade) row.DataBoundItem))
+            foreach (ItemToTrade rowData in rows.Select(row => (ItemToTrade)row.DataBoundItem))
             {
                 ItemsToTrade.Remove(rowData);
             }
+
             UpdateUI();
         }
 
@@ -229,9 +240,11 @@ namespace LlamaLibrary.AutoTrade
             if (string.IsNullOrEmpty(txtBoxFilter.Text))
                 bindingSourceInventory.DataSource = _inventoryItems;
             else
+            {
                 bindingSourceInventory.DataSource = _inventoryItems
                     .Where(x => x.ItemName.IndexOf(txtBoxFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
+            }
 
             UpdateUI();
         }
@@ -253,13 +266,13 @@ namespace LlamaLibrary.AutoTrade
         public readonly int StackSize;
 
         [Browsable(false)]
-        public int QtyAvailable => AutoTradeSettings.MainBagsFilledSlots.Where(x => x.TrueItemId == TrueItemId).Select(x => (int) x.Count).Sum();
+        public int QtyAvailable => AutoTradeSettings.MainBagsFilledSlots.Where(x => x.TrueItemId == TrueItemId).Select(x => (int)x.Count).Sum();
 
         internal ItemToTrade(BagSlot bagSlot)
         {
             BagSlot = bagSlot;
             TrueItemId = bagSlot.TrueItemId;
-            StackSize = (int) bagSlot.Item.StackSize;
+            StackSize = (int)bagSlot.Item.StackSize;
             if (TrueItemId > 1000000) ItemName = bagSlot.Item.CurrentLocaleName + " [HQ]";
             else ItemName = bagSlot.Item.CurrentLocaleName;
             QtyToTrade = QtyAvailable;

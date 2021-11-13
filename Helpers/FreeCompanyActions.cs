@@ -26,16 +26,18 @@ namespace LlamaLibrary.Helpers
                     FreeCompany.Instance.Close();
                 return;
             }
-            await GeneralFunctions.StopBusy(dismount: false);
-            var buffs1 = fcActions.Select((n,index) => new {Action = n, Index = index}).FirstOrDefault(n => n.Action.id == buff1);
-            var buffs2 = fcActions.Select((n,index) => new {Action = n, Index = index}).FirstOrDefault(n => n.Action.id == buff2);
 
-            if (buffs1 == null && !curActions.Any(i=> i.id == buff1))
+            await GeneralFunctions.StopBusy(dismount: false);
+            var buffs1 = fcActions.Select((n, index) => new { Action = n, Index = index }).FirstOrDefault(n => n.Action.id == buff1);
+            var buffs2 = fcActions.Select((n, index) => new { Action = n, Index = index }).FirstOrDefault(n => n.Action.id == buff2);
+
+            if (buffs1 == null && !curActions.Any(i => i.id == buff1))
             {
                 if (FreeCompany.Instance.IsOpen)
                     FreeCompany.Instance.Close();
                 await GrandCompanyHelper.BuyFCAction(grandCompany, buff1);
                 await Coroutine.Sleep(1000);
+
                 //Logger.Info("Bought buff1");
                 if (!FreeCompany.Instance.IsOpen)
                 {
@@ -48,20 +50,21 @@ namespace LlamaLibrary.Helpers
                         FreeCompany.Instance.SelectActions();
                         await Coroutine.Wait(5000, () => FreeCompanyAction.Instance.IsOpen);
                         fcActions = await AgentFreeCompany.Instance.GetAvailableActions();
-                        buffs1 = fcActions.Select((n,index) => new {Action = n, Index = index}).FirstOrDefault(n => n.Action.id == buff1);
+                        buffs1 = fcActions.Select((n, index) => new { Action = n, Index = index }).FirstOrDefault(n => n.Action.id == buff1);
                     }
                 }
-
             }
+
             await Coroutine.Sleep(500);
             fcActions = await AgentFreeCompany.Instance.GetAvailableActions();
-            buffs2 = fcActions.Select((n,index) => new {Action = n, Index = index}).FirstOrDefault(n => n.Action.id == buff2);
-            if (buffs2 == null && !curActions.Any(i=> i.id == buff2))
+            buffs2 = fcActions.Select((n, index) => new { Action = n, Index = index }).FirstOrDefault(n => n.Action.id == buff2);
+            if (buffs2 == null && !curActions.Any(i => i.id == buff2))
             {
                 if (FreeCompany.Instance.IsOpen)
                     FreeCompany.Instance.Close();
                 await GrandCompanyHelper.BuyFCAction(grandCompany, buff2);
                 await Coroutine.Sleep(1000);
+
                 //Logger.Info("Bought buff2");
                 if (!FreeCompany.Instance.IsOpen)
                 {
@@ -74,10 +77,9 @@ namespace LlamaLibrary.Helpers
                         FreeCompany.Instance.SelectActions();
                         await Coroutine.Wait(5000, () => FreeCompanyAction.Instance.IsOpen);
                         fcActions = await AgentFreeCompany.Instance.GetAvailableActions();
-                        buffs2 = fcActions.Select((n,index) => new {Action = n, Index = index}).FirstOrDefault(n => n.Action.id == buff2);
+                        buffs2 = fcActions.Select((n, index) => new { Action = n, Index = index }).FirstOrDefault(n => n.Action.id == buff2);
                     }
                 }
-
             }
 
             if (curActions.Length == 0)
@@ -98,7 +100,7 @@ namespace LlamaLibrary.Helpers
 
                     await Coroutine.Sleep(500);
                     fcActions = await AgentFreeCompany.Instance.GetAvailableActions();
-                    buffs2 = fcActions.Select((n,index) => new {Action = n, Index = index}).FirstOrDefault(n => n.Action.id == buff2);
+                    buffs2 = fcActions.Select((n, index) => new { Action = n, Index = index }).FirstOrDefault(n => n.Action.id == buff2);
                     if (buffs2 != null)
                     {
                         await FreeCompanyAction.Instance.EnableAction(buffs2.Index);
@@ -107,7 +109,7 @@ namespace LlamaLibrary.Helpers
             }
             else
             {
-                if (!curActions.Any(i=> i.id == buff1))
+                if (!curActions.Any(i => i.id == buff1))
                 {
                     Logger.Info("Buff 1 not active");
                     if (!FreeCompanyAction.Instance.IsOpen)

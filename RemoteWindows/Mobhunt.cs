@@ -3,7 +3,7 @@ using ff14bot.Managers;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    public class Mobhunt: RemoteWindow<Mobhunt>
+    public class Mobhunt : RemoteWindow<Mobhunt>
     {
         private AtkAddonControl _windowByName;
         private const string WindowName = "Mobhunt";
@@ -13,12 +13,11 @@ namespace LlamaLibrary.RemoteWindows
         public Mobhunt() : base(WindowName)
         {
             _name = WindowName;
-
         }
 
         public void Accept()
         {
-            SendAction(1,3,0);
+            SendAction(1, 3, 0);
         }
     }
 }

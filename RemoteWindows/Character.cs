@@ -1,8 +1,7 @@
 ﻿namespace LlamaLibrary.RemoteWindows
 {
-    public class Character: RemoteWindow<Character>
+    public class Character : RemoteWindow<Character>
     {
-
         private const string WindowName = "Character";
 
         public Character() : base(WindowName)
@@ -12,7 +11,7 @@
 
         public void UpdateGearSet()
         {
-            SendAction(1,3,0xF);
+            SendAction(1, 3, 0xF);
         }
 
         public bool CanUpdateGearSet()

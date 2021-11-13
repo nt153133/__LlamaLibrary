@@ -62,7 +62,7 @@ namespace LlamaLibrary.OrderbotTags
 
         private async Task BuyItem(int itemId, int npcId, int count, int selectString, bool dialog)
         {
-            var unit = GameObjectManager.GetObjectsByNPCId((uint) npcId).OrderBy(r => r.Distance()).FirstOrDefault();
+            var unit = GameObjectManager.GetObjectsByNPCId((uint)npcId).OrderBy(r => r.Distance()).FirstOrDefault();
 
             if (unit == null)
             {
@@ -93,7 +93,7 @@ namespace LlamaLibrary.OrderbotTags
 
             if (Conversation.IsOpen)
             {
-                Conversation.SelectLine((uint) selectString);
+                Conversation.SelectLine((uint)selectString);
 
                 if (dialog)
                 {
@@ -106,14 +106,12 @@ namespace LlamaLibrary.OrderbotTags
                     }
                 }
 
-
                 await Coroutine.Wait(5000, () => ShopExchangeItem.Instance.IsOpen);
-
 
                 if (ShopExchangeItem.Instance.IsOpen)
                 {
                     //Log("Opened");
-                    await ShopExchangeItem.Instance.Purchase((uint) itemId, (uint) count);
+                    await ShopExchangeItem.Instance.Purchase((uint)itemId, (uint)count);
                 }
 
                 await Coroutine.Wait(2000, () => ShopExchangeItem.Instance.IsOpen);
@@ -124,7 +122,7 @@ namespace LlamaLibrary.OrderbotTags
             }
             else if (ShopExchangeItem.Instance.IsOpen)
             {
-                await ShopExchangeItem.Instance.Purchase((uint) itemId, (uint) count);
+                await ShopExchangeItem.Instance.Purchase((uint)itemId, (uint)count);
             }
 
             _isDone = true;

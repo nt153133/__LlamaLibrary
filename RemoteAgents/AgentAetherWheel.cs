@@ -7,7 +7,7 @@ using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    public class AgentAetherWheel: AgentInterface<AgentAetherWheel>, IAgent
+    public class AgentAetherWheel : AgentInterface<AgentAetherWheel>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
         private static class Offsets
@@ -30,9 +30,8 @@ namespace LlamaLibrary.RemoteAgents
 
             using (Core.Memory.TemporaryCacheState(enabledTemporarily: false))
             {
-                return Core.Memory.ReadArray<AetherWheelSlot>(Pointer + Offsets.ArrayOffset, count); 
+                return Core.Memory.ReadArray<AetherWheelSlot>(Pointer + Offsets.ArrayOffset, count);
             }
         }
-
     }
 }

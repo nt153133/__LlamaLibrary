@@ -12,9 +12,10 @@ namespace LlamaLibrary.OrderbotTags
     {
         private bool _isDone;
 
-        [XmlAttribute("ItemId")] public int ItemId { get; set; }
+        [XmlAttribute("ItemId")]
+        public int ItemId { get; set; }
 
-        [XmlAttribute("SelectString")] 
+        [XmlAttribute("SelectString")]
         [DefaultValue(0)]
         public int SelectStringLine { get; set; }
 
@@ -43,7 +44,7 @@ namespace LlamaLibrary.OrderbotTags
         private async Task BuyWhiteScrip(int itemId)
         {
             await Coroutine.Sleep(500);
-            await IshgardHandinBase.BuyItem((uint) itemId,SelectStringLine);
+            await IshgardHandinBase.BuyItem((uint)itemId, SelectStringLine);
 
             _isDone = true;
         }

@@ -4,7 +4,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    public class AgentItemAppraisal: AgentInterface<AgentItemAppraisal>, IAgent
+    public class AgentItemAppraisal : AgentInterface<AgentItemAppraisal>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
 

@@ -44,6 +44,7 @@ namespace LlamaLibrary.AutoRetainerSort
                 int ownerCenterY = Owner.Location.Y + (Owner.Height / 2) - (Width / 2);
                 Location = new Point(ownerCenterX, ownerCenterY);
             }
+
             listBoxSearchResults.DataSource = _bsSearchResults;
         }
 
@@ -64,6 +65,7 @@ namespace LlamaLibrary.AutoRetainerSort
                     if (itemName.IndexOf(splitSearchText[i], StringComparison.OrdinalIgnoreCase) < 0) continue;
                     matchCount++;
                 }
+
                 if (matchCount < splitSearchText.Length) continue;
                 searchResults.Add(new SearchResult(idNamePair.Key, itemName));
                 if (++foundCount >= 10) break;
@@ -130,7 +132,7 @@ namespace LlamaLibrary.AutoRetainerSort
 
     public class SearchResult
     {
-        public readonly string Name; 
+        public readonly string Name;
 
         public uint RawItemId;
 

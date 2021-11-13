@@ -39,7 +39,7 @@ namespace LlamaLibrary.AutoRetainerSort
             OffsetManager.Init();
         }
 
-        public override async void OnButtonPress()
+        public override void OnButtonPress()
         {
             HelperFunctions.ForceGetRetainerDataSync();
             if (_settingsForm == null || _settingsForm.IsDisposed)
@@ -52,6 +52,7 @@ namespace LlamaLibrary.AutoRetainerSort
                     AutoRetainerSortSettings.Instance.InventoryOptions.Add(ItemSortStatus.PlayerInventoryIndex, new InventorySortInfo("Player Inventory"));
                     AutoRetainerSortSettings.Instance.InventoryOptions.Add(ItemSortStatus.SaddlebagInventoryIndex, new InventorySortInfo("Chocobo Saddlebag"));
                 }
+
                 _settingsForm.Show();
                 _settingsForm.Activate();
                 ItemSortStatus.UpdateFromCache(RetainerList.Instance.OrderedRetainerList);
@@ -75,14 +76,14 @@ namespace LlamaLibrary.AutoRetainerSort
                 TreeRoot.Stop("No sort settings.");
                 return false;
             }
-            
+
             if (!ItemSortStatus.AnyRulesExist())
             {
                 LogCritical("You don't have any sorting rules set up... maybe go hit the Auto-Setup button?");
                 TreeRoot.Stop("No sort settings.");
                 return false;
             }
-            
+
             LogCritical($"The journey begins! {Strings.AutoSetup_CacheAdvice}");
             await GeneralFunctions.StopBusy(true, true, false);
 
@@ -112,7 +113,7 @@ namespace LlamaLibrary.AutoRetainerSort
                     return false;
                 }
             }
-            
+
             ItemSortStatus.ItemSortInfoCache.Clear();
 
             await ItemFinder.FlashSaddlebags();
@@ -121,7 +122,7 @@ namespace LlamaLibrary.AutoRetainerSort
 
             if (AutoRetainerSortSettings.Instance.PrintMoves)
             {
-                alreadyPrintedUniques.Clear();
+                AlreadyPrintedUniques.Clear();
                 foreach (CachedInventory cachedInventory in ItemSortStatus.GetAllInventories())
                 {
                     PrintMoves(cachedInventory.Index);
@@ -201,18 +202,18 @@ namespace LlamaLibrary.AutoRetainerSort
             return false;
         }
 
-        private static readonly HashSet<uint> alreadyPrintedUniques = new HashSet<uint>();
+        private static readonly HashSet<uint> AlreadyPrintedUniques = new HashSet<uint>();
 
         private static void PrintMoves(int index)
         {
             foreach (ItemSortInfo sortInfo in ItemSortStatus.GetByIndex(index).ItemCounts.Select(x => ItemSortStatus.GetSortInfo(x.Key)))
             {
                 if (sortInfo.SortStatus(index) != SortStatus.Move) continue;
-                if (alreadyPrintedUniques.Contains(sortInfo.TrueItemId)) continue;
+                if (AlreadyPrintedUniques.Contains(sortInfo.TrueItemId)) continue;
 
                 if (sortInfo.ItemInfo.Unique)
                 {
-                    alreadyPrintedUniques.Add(sortInfo.TrueItemId);
+                    AlreadyPrintedUniques.Add(sortInfo.TrueItemId);
                 }
 
                 int[] localIndexCache = sortInfo.MatchingIndexes.ToArray();
@@ -229,6 +230,7 @@ namespace LlamaLibrary.AutoRetainerSort
                         uniqueNoSpace = false;
                         break;
                     }
+
                     isFull = uniqueNoSpace;
                 }
                 else
@@ -291,7 +293,7 @@ namespace LlamaLibrary.AutoRetainerSort
         private static async Task SortLoop(int index)
         {
             LogDebug($"We're gonna go try to sort {ItemSortStatus.GetByIndex(index).Name}!");
-            
+
             if (index < ItemSortStatus.PlayerInventoryIndex)
             {
                 LogCritical($"Tried to sort index of #{index.ToString()} but that's out of range...");
@@ -340,7 +342,7 @@ namespace LlamaLibrary.AutoRetainerSort
 
             await CombineStacks(GeneralFunctions.MainBagsFilledSlots());
             await CombineStacks(InventoryManager.GetBagsByInventoryBagId(BagIdsByIndex(index)).SelectMany(x => x.FilledSlots));
-            
+
             while (ShouldSortLoop(index))
             {
                 bool depositResult = await DepositLoop(index);
@@ -392,17 +394,19 @@ namespace LlamaLibrary.AutoRetainerSort
         private static async Task<bool> DepositLoop(int index)
         {
             string name = ItemSortStatus.GetByIndex(index).Name;
-            
+
             if (ItemSortStatus.GetByIndex(ItemSortStatus.PlayerInventoryIndex).AllBelong())
             {
                 LogCritical($"We tried depositing to {name} but everything in the Player Inventory belongs there...?");
                 return false;
             }
+
             if (BagsFreeSlotCount(index) == 0)
             {
                 LogCritical($"We tried depositing to {name} but their inventory was full!");
                 return false;
             }
+
             Log($"Depositing items to {name}...");
             var moveCount = 0;
             foreach (BagSlot bagSlot in GeneralFunctions.MainBagsFilledSlots())
@@ -412,6 +416,7 @@ namespace LlamaLibrary.AutoRetainerSort
                     LogCritical($"Stopping deposits to {name} because their inventory is full!");
                     return false;
                 }
+
                 var sortInfo = ItemSortStatus.GetSortInfo(bagSlot.TrueItemId);
                 if (sortInfo.SortStatus(index) == SortStatus.BelongsInIndex)
                 {
@@ -454,6 +459,7 @@ namespace LlamaLibrary.AutoRetainerSort
                 LogCritical($"We tried to retrieve items from {name} but everything in their inventory already belongs there...?");
                 return false;
             }
+
             if (InventoryManager.FreeSlots == 0)
             {
                 LogCritical($"We tried to retrieve items from {name} but our player inventory is full!");
@@ -469,6 +475,7 @@ namespace LlamaLibrary.AutoRetainerSort
                     LogCritical($"Stopping retrievals from {name} because our player inventory is full!");
                     return false;
                 }
+
                 var sortInfo = ItemSortStatus.GetSortInfo(bagSlot.TrueItemId);
                 if (sortInfo.ItemInfo.Unique && InventoryManager.FilledSlots.Any(x => x.TrueItemId == sortInfo.TrueItemId)) continue;
                 if (sortInfo.SortStatus(index) == SortStatus.Move)
@@ -497,6 +504,7 @@ namespace LlamaLibrary.AutoRetainerSort
                                 break;
                             }
                         }
+
                         LogSuccess($"Retrieved {sortInfo.Name}. It belongs in {belongsInName}.");
                         if (sortInfo.ItemInfo.Unique)
                         {

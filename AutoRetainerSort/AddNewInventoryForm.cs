@@ -49,6 +49,7 @@ namespace LlamaLibrary.AutoRetainerSort
             {
                 cmbRetainers.Items.Add(retainer);
             }
+
             cmbRetainers.SelectedIndex = 0;
             cmbRetainers.DisplayMember = "DisplayName";
 

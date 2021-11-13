@@ -2,7 +2,7 @@
 
 namespace LlamaLibrary.RemoteWindows
 {
-    public class FishGuide: RemoteWindow<FishGuide>
+    public class FishGuide : RemoteWindow<FishGuide>
     {
         private AtkAddonControl _windowByName;
         private const string WindowName = "FishGuide";
@@ -10,17 +10,11 @@ namespace LlamaLibrary.RemoteWindows
         public FishGuide() : base(WindowName)
         {
             _name = WindowName;
-
         }
 
         public void ClickTab(int index)
         {
-            SendAction(2,3,8,3,(ulong) index);
+            SendAction(2, 3, 8, 3, (ulong)index);
         }
-
-
-
     }
-
-
 }

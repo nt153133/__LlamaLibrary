@@ -14,12 +14,12 @@ using Clio.Utilities;
 using Clio.XmlEngine;
 using ff14bot.Behavior;
 using ff14bot.Navigation;
-using TreeSharp;
+using ff14bot.NeoProfiles;
 using LlamaLibrary.Helpers;
+using TreeSharp;
 
-namespace ff14bot.NeoProfiles.Tags
+namespace Ff14bot.NeoProfiles.Tags
 {
-
     [XmlElement("LLGetTo")]
     public class GetTo : ProfileBehavior
     {
@@ -28,7 +28,6 @@ namespace ff14bot.NeoProfiles.Tags
 
         [XmlAttribute("ZoneId")]
         public int ZoneId { get; set; }
-
 
         private bool _generatedNodes = false;
         private bool _isdone;
@@ -61,8 +60,6 @@ namespace ff14bot.NeoProfiles.Tags
         {
         }
 
-
-
         private async Task<bool> GenerateNodes()
         {
             var path = await NavGraph.GetPathAsync((uint)ZoneId, XYZ);
@@ -71,6 +68,7 @@ namespace ff14bot.NeoProfiles.Tags
                 LogError($"Couldn't get a path to {XYZ} on {ZoneId}, Stopping.");
                 return true;
             }
+
             _generatedNodes = true;
             FinalizedPath = path;
             return true;
@@ -86,7 +84,5 @@ namespace ff14bot.NeoProfiles.Tags
                 new Decorator(r => !_generatedNodes, new ActionRunCoroutine(t => Lisbeth.TravelTo(ZoneId.ToString(), XYZ)))
                 );
         }
-
-
     }
 }

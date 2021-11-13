@@ -10,7 +10,6 @@ namespace LlamaLibrary
             InitializeComponent();
         }
 
-
         private void AutoFollowSettingsFrm_Load(object sender, EventArgs e)
         {
             //bsFollowTarget.DataSource = AutoFollowSettings.Instance.IsPaused;

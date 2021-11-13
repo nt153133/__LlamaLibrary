@@ -1,26 +1,25 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
+using Clio.Utilities;
 using ff14bot;
+using ff14bot.Behavior;
 using ff14bot.Enums;
 using ff14bot.Helpers;
 using ff14bot.Managers;
-using ff14bot.RemoteWindows;
-using System;
-using System.Collections.Generic;
-using Clio.Utilities;
-using ff14bot.Behavior;
 using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteAgents;
+using ff14bot.RemoteWindows;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Helpers
-{	
-
+{
     public static class GardenHelper
     {
         private static class Offsets
@@ -31,8 +30,8 @@ namespace LlamaLibrary.Helpers
             internal static int StructOffset;
         }
 
-        public static HousingPlantSelectedItemStruct SoilStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + Offsets.StructOffset );
-        public static HousingPlantSelectedItemStruct SeedStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + Offsets.StructOffset  + GreyMagic.MarshalCache<HousingPlantSelectedItemStruct>.Size);
+        public static HousingPlantSelectedItemStruct SoilStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + Offsets.StructOffset);
+        public static HousingPlantSelectedItemStruct SeedStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + Offsets.StructOffset + GreyMagic.MarshalCache<HousingPlantSelectedItemStruct>.Size);
 
         /*
         public static async Task GoGarden(uint AE, Vector3 gardenLoc)
@@ -52,12 +51,12 @@ namespace LlamaLibrary.Helpers
             if (gardenLoc != null)
             {
                 await Navigation.FlightorMove(gardenLoc);
-                await GardenHelper.Main(gardenLoc); 
+                await GardenHelper.Main(gardenLoc);
             }
         }
-				*/
+                */
 
-				public static async Task GoGarden(uint AE, Vector3 gardenLoc, List<Tuple<uint, uint>> plantPlan)
+        public static async Task GoGarden(uint AE, Vector3 gardenLoc, List<Tuple<uint, uint>> plantPlan)
         {
             if (gardenLoc != default(Vector3))
             {
@@ -66,7 +65,7 @@ namespace LlamaLibrary.Helpers
                 var house = WorldManager.AvailableLocations.FirstOrDefault(i => i.AetheryteId == AE);
 
                 Log($"Teleporting to housing: {house.Name} (Zone: {DataManager.ZoneNameResults[house.ZoneId]}, Aetheryte: {house.AetheryteId})");
-								await GeneralFunctions.StopBusy(dismount: false);
+                await GeneralFunctions.StopBusy(dismount: false);
                 await CommonTasks.Teleport(house.AetheryteId);
 
                 Log("Waiting for zone to change.");
@@ -80,9 +79,9 @@ namespace LlamaLibrary.Helpers
             {
                 Log("No Garden Location set. Exiting Task.");
             }
-        }		
+        }
 
-         public static bool AlwaysWater { get; set; }
+        public static bool AlwaysWater { get; set; }
 
         //public static void Log(string text, params object[] args) { Logger.Info(text, args); }
 
@@ -90,6 +89,7 @@ namespace LlamaLibrary.Helpers
         {
             var watering = GardenManager.Plants.Where(r => !Blacklist.Contains(r) && r.Distance2D(gardenLoc) < 10).ToArray();
             foreach (var plant in watering)
+            {
                 //Water it if it needs it or if we have fertilized it 5 or more times.
                 if (AlwaysWater || GardenManager.NeedsWatering(plant))
                 {
@@ -97,7 +97,7 @@ namespace LlamaLibrary.Helpers
                     if (result != null)
                     {
                         Log($"Watering {result} {plant.ObjectId:X}");
-						await Navigation.FlightorMove(plant.Location);
+                        await Navigation.FlightorMove(plant.Location);
                         plant.Interact();
                         if (!await Coroutine.Wait(5000, () => Talk.DialogOpen)) continue;
                         Talk.Next();
@@ -112,7 +112,7 @@ namespace LlamaLibrary.Helpers
                         {
                             Log("Plant is ready to be harvested");
                             SelectString.ClickSlot(1);
-							await Coroutine.Sleep(1000);
+                            await Coroutine.Sleep(1000);
                         }
                     }
                     else
@@ -120,13 +120,15 @@ namespace LlamaLibrary.Helpers
                         Log($"GardenManager.GetCrop returned null {plant.ObjectId:X}");
                     }
                 }
+            }
+
             var plants = GardenManager.Plants.Where(r => r.Distance2D(gardenLoc) < 10).ToArray();
             foreach (var plant in plants)
             {
                 var result = GardenManager.GetCrop(plant);
                 if (result == null) continue;
                 Log($"Fertilizing {GardenManager.GetCrop(plant)} {plant.ObjectId:X}");
-				await Navigation.FlightorMove(plant.Location);
+                await Navigation.FlightorMove(plant.Location);
                 plant.Interact();
                 if (!await Coroutine.Wait(5000, () => Talk.DialogOpen)) continue;
                 Talk.Next();
@@ -150,15 +152,16 @@ namespace LlamaLibrary.Helpers
                 {
                     Log("Plant is ready to be harvested");
                     SelectString.ClickSlot(1);
-					await Coroutine.Sleep(1000);
+                    await Coroutine.Sleep(1000);
                 }
             }
+
             return true;
         }
 
         public static async Task Plant(BagSlot seeds, BagSlot soil)
         {
-            var result = Core.Memory.CallInjected64<IntPtr>(Offsets.PlantFunction , new object[3]
+            var result = Core.Memory.CallInjected64<IntPtr>(Offsets.PlantFunction, new object[3]
             {
                 AgentHousingPlant.Instance.Pointer,
                 (uint)soil.BagId,
@@ -178,6 +181,7 @@ namespace LlamaLibrary.Helpers
             {
                 SelectYesno.Yes();
             }
+
             await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
         }
 

@@ -84,7 +84,7 @@ namespace LlamaLibrary.AutoRetainerSort
                 Save();
             }
         }
-        
+
         [Setting]
         [DisplayName("Print Moves")]
         [Description("Print to console all the moves we want to perform. A little spammy, but can help figure out what, if anything, might be going wrong.")]
@@ -122,7 +122,7 @@ namespace LlamaLibrary.AutoRetainerSort
                 Save();
             }
         }
-        
+
         [Setting]
         [DisplayName("Debug Logging")]
         [Description("Whether or not to print debug logs to console... lots of info.")]

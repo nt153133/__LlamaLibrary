@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using ff14bot;
 
@@ -9,7 +9,7 @@ namespace LlamaLibrary.Structs
     {
         [FieldOffset(0x0)]
         public IntPtr ZonePtr;
-        
+
         [FieldOffset(0x8)]
         public IntPtr ZoneNamePtr;
 
@@ -18,10 +18,10 @@ namespace LlamaLibrary.Structs
 
         [FieldOffset(0x74)]
         public int CurrentFateAmount;
-        
+
         [FieldOffset(0x78)]
         public int FatesNeeded;
-        
+
         [FieldOffset(0x7C)]
         public int DisplayOrder;
 

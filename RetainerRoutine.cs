@@ -15,8 +15,8 @@ using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Retainers;
 using LlamaLibrary.Structs;
-using static LlamaLibrary.Retainers.HelperFunctions;
 using static ff14bot.RemoteWindows.Talk;
+using static LlamaLibrary.Retainers.HelperFunctions;
 
 namespace LlamaLibrary
 {
@@ -26,7 +26,7 @@ namespace LlamaLibrary
 
         private static readonly InventoryBagId[] SaddlebagIds =
         {
-            (InventoryBagId) 0xFA0,(InventoryBagId) 0xFA1//, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005 
+            (InventoryBagId)0xFA0, (InventoryBagId)0xFA1//, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005
         };
 
         internal static async Task<bool> ReadRetainers(Task retainerTask)
@@ -36,7 +36,7 @@ namespace LlamaLibrary
                 return false;
             }
 
-            foreach (var retainer in RetainerList.Instance.OrderedRetainerList.Where(i=> i.Active))
+            foreach (var retainer in RetainerList.Instance.OrderedRetainerList.Where(i => i.Active))
             {
                 Log($"Selecting {retainer.Name}");
                 await SelectRetainer(retainer.Unique);
@@ -46,6 +46,7 @@ namespace LlamaLibrary
                 await DeSelectRetainer();
                 Log($"Done with {retainer.Name}");
             }
+
             if (!await CloseRetainerList())
             {
                 LogCritical("Could not close retainer list");
@@ -62,7 +63,7 @@ namespace LlamaLibrary
                 return false;
             }
 
-            foreach (var retainer in RetainerList.Instance.OrderedRetainerList.Where(i=> i.Active))
+            foreach (var retainer in RetainerList.Instance.OrderedRetainerList.Where(i => i.Active))
             {
                 Log($"Selecting {retainer.Name}");
                 await SelectRetainer(retainer.Unique);
@@ -184,7 +185,7 @@ namespace LlamaLibrary
                 return false;
             }
 
-            foreach (var retainer in RetainerList.Instance.OrderedRetainerList.Where(i=> i.Active))
+            foreach (var retainer in RetainerList.Instance.OrderedRetainerList.Where(i => i.Active))
             {
                 Log($"Selecting {retainer.Name}");
                 await SelectRetainer(retainer.Unique);
@@ -216,7 +217,7 @@ namespace LlamaLibrary
             foreach (var slot in sameItems)
             {
                 LogLoud($"Want to move {slot}");
-                slot.RetainerEntrustQuantity((int) slot.Count);
+                slot.RetainerEntrustQuantity((int)slot.Count);
                 await Coroutine.Sleep(100);
             }
 
@@ -281,7 +282,7 @@ namespace LlamaLibrary
 
             if (await OpenRetainerList())
             {
-                return await RetainerList.Instance.SelectRetainer(retainerContentId);                    
+                return await RetainerList.Instance.SelectRetainer(retainerContentId);
             }
 
             return false;
@@ -307,6 +308,7 @@ namespace LlamaLibrary
                     Next();
                     await Coroutine.Sleep(100);
                 }
+
                 await Coroutine.Wait(3000, () => DialogOpen || RetainerList.Instance.IsOpen);
             }
 
@@ -319,7 +321,7 @@ namespace LlamaLibrary
             {
                 if (retainer.VentureTask != 0)
                 {
-                    var now = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                    var now = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
                     var timeLeft = retainer.VentureEndTimestamp - now;
 
                     if (timeLeft <= 0 && SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.Venture) > 2)
@@ -388,7 +390,6 @@ namespace LlamaLibrary
             {
                 Log("Venture Not Done");
             }
-
 
             return true;
         }

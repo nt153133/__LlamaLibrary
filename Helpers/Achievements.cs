@@ -20,9 +20,13 @@ namespace LlamaLibrary.Helpers
         {
             bool done;
             lock (Core.Memory.Executor.AssemblyLock)
-                done = Core.Memory.CallInjected64<bool>(Offsets.CheckById,
+            {
+                done = Core.Memory.CallInjected64<bool>(
+                    Offsets.CheckById,
                                                         Offsets.Achieve,
                                                         achievementId);
+            }
+
             return done;
         }
     }

@@ -17,7 +17,6 @@ namespace LlamaLibrary.RemoteWindows
             _name = WindowName;
         }
 
-
         public async Task<bool> Open()
         {
             if (IsOpen)
@@ -41,7 +40,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public string GetElementString(int index)
         {
-            return ___Elements()[index].Data != 0 ? Core.Memory.ReadString((IntPtr) ___Elements()[index].Data, Encoding.UTF8) : "";
+            return ___Elements()[index].Data != 0 ? Core.Memory.ReadString((IntPtr)___Elements()[index].Data, Encoding.UTF8) : "";
         }
 
         public int GetNumberOfBeastTribeAllowance()

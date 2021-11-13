@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,28 +43,28 @@ namespace LlamaLibrary.Retainers
 
         private static readonly List<(uint, Vector3)> SummoningBells = new List<(uint, Vector3)>
         {
-            (129, new Vector3(-223.743042f, 16.006714f, 41.306152f)), //Limsa Lominsa Lower Decks(Limsa Lominsa) 
-            (129, new Vector3(-266.376831f, 16.006714f, 41.275635f)), //Limsa Lominsa Lower Decks(Limsa Lominsa) 
-            (129, new Vector3(-149.279053f, 18.203979f, 20.553894f)), //Limsa Lominsa Lower Decks(Limsa Lominsa) 
-            (129, new Vector3(-123.888062f, 17.990356f, 21.469421f)), //Limsa Lominsa Lower Decks(Limsa Lominsa) 
-            (131, new Vector3(148.91272f, 3.982544f, -44.205383f)), //Ul'dah - Steps of Thal(Ul'dah) 
-            (131, new Vector3(111.161987f, 4.104675f, -72.343079f)), //Ul'dah - Steps of Thal(Ul'dah) 
-            (131, new Vector3(153.185303f, 3.982544f, 13.229492f)), //Ul'dah - Steps of Thal(Ul'dah) 
-            (131, new Vector3(118.547363f, 4.013123f, -93.003784f)), //Ul'dah - Steps of Thal(Ul'dah) 
-            (133, new Vector3(160.234863f, 15.671021f, -55.649719f)), //Old Gridania(Gridania) 
-            (133, new Vector3(169.726074f, 15.487854f, -81.895203f)), //Old Gridania(Gridania) 
-            (133, new Vector3(171.007812f, 15.487854f, -101.487854f)), //Old Gridania(Gridania) 
-            (133, new Vector3(160.234863f, 15.671021f, -136.369934f)), //Old Gridania(Gridania) 
-            (156, new Vector3(34.50061f, 28.976807f, -762.233948f)), //Mor Dhona(Mor Dhona) 
-            (156, new Vector3(11.001709f, 28.976807f, -734.554077f)), //Mor Dhona(Mor Dhona) 
-            (419, new Vector3(-151.171204f, -12.64978f, -11.764771f)), //The Pillars(Ishgard) 
-            (478, new Vector3(34.775269f, 208.148193f, -50.858398f)), //Idyllshire(Dravania) 
-            (478, new Vector3(0.38147f, 206.469727f, 51.407593f)), //Idyllshire(Dravania) 
-            (628, new Vector3(19.394226f, 4.043579f, 53.025024f)), //Kugane(Kugane) 
-            (635, new Vector3(-57.633362f, -0.01532f, 49.30188f)), //Rhalgr's Reach(Gyr Abania) 
-            (819, new Vector3(-69.840576f, -7.705872f, 123.491211f)), //The Crystarium(The Crystarium) 
-            (819, new Vector3(-64.255798f, 19.97406f, -144.274109f)), //The Crystarium(The Crystarium) 
-            (820, new Vector3(7.186951f, 83.17688f, 31.448853f)) //Eulmore(Eulmore) 
+            (129, new Vector3(-223.743042f, 16.006714f, 41.306152f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
+            (129, new Vector3(-266.376831f, 16.006714f, 41.275635f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
+            (129, new Vector3(-149.279053f, 18.203979f, 20.553894f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
+            (129, new Vector3(-123.888062f, 17.990356f, 21.469421f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
+            (131, new Vector3(148.91272f, 3.982544f, -44.205383f)), //Ul'dah - Steps of Thal(Ul'dah)
+            (131, new Vector3(111.161987f, 4.104675f, -72.343079f)), //Ul'dah - Steps of Thal(Ul'dah)
+            (131, new Vector3(153.185303f, 3.982544f, 13.229492f)), //Ul'dah - Steps of Thal(Ul'dah)
+            (131, new Vector3(118.547363f, 4.013123f, -93.003784f)), //Ul'dah - Steps of Thal(Ul'dah)
+            (133, new Vector3(160.234863f, 15.671021f, -55.649719f)), //Old Gridania(Gridania)
+            (133, new Vector3(169.726074f, 15.487854f, -81.895203f)), //Old Gridania(Gridania)
+            (133, new Vector3(171.007812f, 15.487854f, -101.487854f)), //Old Gridania(Gridania)
+            (133, new Vector3(160.234863f, 15.671021f, -136.369934f)), //Old Gridania(Gridania)
+            (156, new Vector3(34.50061f, 28.976807f, -762.233948f)), //Mor Dhona(Mor Dhona)
+            (156, new Vector3(11.001709f, 28.976807f, -734.554077f)), //Mor Dhona(Mor Dhona)
+            (419, new Vector3(-151.171204f, -12.64978f, -11.764771f)), //The Pillars(Ishgard)
+            (478, new Vector3(34.775269f, 208.148193f, -50.858398f)), //Idyllshire(Dravania)
+            (478, new Vector3(0.38147f, 206.469727f, 51.407593f)), //Idyllshire(Dravania)
+            (628, new Vector3(19.394226f, 4.043579f, 53.025024f)), //Kugane(Kugane)
+            (635, new Vector3(-57.633362f, -0.01532f, 49.30188f)), //Rhalgr's Reach(Gyr Abania)
+            (819, new Vector3(-69.840576f, -7.705872f, 123.491211f)), //The Crystarium(The Crystarium)
+            (819, new Vector3(-64.255798f, 19.97406f, -144.274109f)), //The Crystarium(The Crystarium)
+            (820, new Vector3(7.186951f, 83.17688f, 31.448853f)) //Eulmore(Eulmore)
         };
 
         internal static readonly uint GilItemId = DataManager.GetItem("Gil").Id; // 1;
@@ -102,7 +102,7 @@ namespace LlamaLibrary.Retainers
 
             return trueItemId;
         }
-        
+
         public static GameObject NearestSummoningBell()
         {
             var list = GameObjectManager.GameObjects
@@ -325,8 +325,8 @@ namespace LlamaLibrary.Retainers
         public static void ForceGetRetainerDataSync()
         {
             RequestRetainerData();
-            WaitUntil( () => Core.Memory.Read<uint>(Offsets.RetainerData) != 0, timeout:3000);
-            WaitUntil( () => Core.Memory.Read<byte>(Offsets.RetainerData + Offsets.RetainerDataLoaded) != 0, timeout:3000);
+            WaitUntil(() => Core.Memory.Read<uint>(Offsets.RetainerData) != 0, timeout: 3000);
+            WaitUntil(() => Core.Memory.Read<byte>(Offsets.RetainerData + Offsets.RetainerDataLoaded) != 0, timeout: 3000);
         }
 
         public static RetainerInfo[] ReadRetainerArray()
@@ -412,7 +412,8 @@ namespace LlamaLibrary.Retainers
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                return Core.Memory.CallInjected64<int>(Offsets.GetNumberOfRetainers,
+                return Core.Memory.CallInjected64<int>(
+                    Offsets.GetNumberOfRetainers,
                                                        Offsets.RetainerData);
             }
         }
@@ -432,12 +433,13 @@ namespace LlamaLibrary.Retainers
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<IntPtr>(Offsets.ExecuteCommand,
+                Core.Memory.CallInjected64<IntPtr>(
+                    Offsets.ExecuteCommand,
                                                    (uint)Offsets.RetainerNetworkPacket,
-                                                   (uint)0,
-                                                   (uint)0,
-                                                   (uint)0,
-                                                   (uint)0);
+0U,
+0U,
+0U,
+0U);
             }
         }
 

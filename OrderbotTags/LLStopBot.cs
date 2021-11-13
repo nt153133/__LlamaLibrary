@@ -1,11 +1,13 @@
-using Clio.XmlEngine;
+﻿using Clio.XmlEngine;
+using ff14bot;
+using ff14bot.NeoProfiles;
 using TreeSharp;
 using Action = TreeSharp.Action;
 
-namespace ff14bot.NeoProfiles
+namespace Ff14bot.NeoProfiles
 {
     [XmlElement("LLStopBot")]
-	[XmlElement("StopBot")]
+    [XmlElement("StopBot")]
 
     public class LLStopBotTag : ProfileBehavior
     {
@@ -16,7 +18,8 @@ namespace ff14bot.NeoProfiles
         protected override Composite CreateBehavior()
         {
             return new PrioritySelector(
-                new Decorator(ret => TreeRoot.IsRunning,
+                new Decorator(
+                    ret => TreeRoot.IsRunning,
                     new Action(r =>
                     {
                         TreeRoot.Stop();
@@ -27,7 +30,7 @@ namespace ff14bot.NeoProfiles
         }
 
         /// <summary>
-        /// This gets called when a while loop starts over so reset anything that is used inside the IsDone check
+        /// This gets called when a while loop starts over so reset anything that is used inside the IsDone check.
         /// </summary>
         protected override void OnResetCachedDone()
         {
@@ -36,7 +39,6 @@ namespace ff14bot.NeoProfiles
 
         protected override void OnDone()
         {
-
         }
     }
 }

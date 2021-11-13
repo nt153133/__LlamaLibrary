@@ -1,39 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using Clio.XmlEngine;
+using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.BotBases;
 using ff14bot.Enums;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
+using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.Pathing;
 using ff14bot.RemoteWindows;
 using ff14bot.Settings;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using LlamaLibrary.Helpers;
 using TreeSharp;
 using Action = TreeSharp.Action;
 /***
  * Modified version of Y2krazy's Fate tag
  *
- * 
+ *
  */
 
-
-namespace ff14bot.NeoProfiles
+namespace Ff14bot.NeoProfiles
 {
     [XmlElement("LLFate")]
     public class LLFate : ProfileBehavior
     {
         private bool _done;
-        private int _min, _max, _timeout;
+        private int _min;
+        private int _max;
+        private int _timeout;
         private uint localindex = 0;
 
         [XmlAttribute("MaxLevel")]
@@ -71,28 +74,28 @@ namespace ff14bot.NeoProfiles
 
         [XmlAttribute("MinProgress")]
         [DefaultValue(0)]
-        public int MinProgress { get; set; }	
-        
+        public int MinProgress { get; set; }
+
         [XmlAttribute("CheckShareFate")]
         [DefaultValue(false)]
-        public bool SharedFate { get; set; }    
+        public bool SharedFate { get; set; }
 
         private BattleCharacter npc;
         private FatebotSettings fatebotInstance = FatebotSettings.Instance;
 
         //private int timeout = 100;
-        private uint LastFateId = 0;
+        private uint lastFateId = 0;
 
         private DateTime saveNow = DateTime.Now;
-        private bool Hunting = false;
+        private bool hunting = false;
         public override bool IsDone { get { return _done; } }
 
         //some Statistics
         private FateData currentfate;
 
-        private int FatesDone;
-        private int MobsHunted;
-        private int Died;
+        private int fatesDone;
+        private int mobsHunted;
+        private int died;
 
         //----------------------
         public bool IsCompleted = false;
@@ -101,40 +104,40 @@ namespace ff14bot.NeoProfiles
         public static Vector3 Position = new Vector3(0f, 0f, 0f);
 
         private uint fateid = 0;
-        private string FateName = "";
-        private string FateStatus = "";
+        private string fateName = "";
+        private string fateStatus = "";
         private ITargetingProvider tempProvider;
 
         //-------
         public static int currentstep = 0;  //currentstep 1 we are in a fate / currentstep 0 we are not in a fate
 
         private static readonly Stopwatch ClusterTimer = Stopwatch.StartNew();
-        private int Distance = 2;
-        protected Func<bool> Condition;
+        private int distance = 2;
+        protected Func<bool> condition;
 
         private bool ShouldStop()
         {
             if (GetCondition() != null)
             {
-                return (!GetCondition()());
-
+                return !GetCondition()();
             }
 
             return false;
         }
 
-		private Func<bool> GetCondition()
+        private Func<bool> GetCondition()
         {
             try
             {
-                if (Condition == null)
+                if (condition == null)
                 {
-                    if (!String.IsNullOrWhiteSpace(WhileCondition))
+                    if (!string.IsNullOrWhiteSpace(WhileCondition))
                     {
-                        Condition = ScriptManager.GetCondition(WhileCondition);
+                        condition = ScriptManager.GetCondition(WhileCondition);
                     }
                 }
-                return Condition;
+
+                return condition;
             }
             catch (Exception ex)
             {
@@ -147,21 +150,25 @@ namespace ff14bot.NeoProfiles
         protected override Composite CreateBehavior()
         {
             return new PrioritySelector(
-                new Decorator(ret => ShouldStop(),
+                new Decorator(
+                    ret => ShouldStop(),
                                                       new Action(r => OnDoneWhile())),
-                 new Decorator(ret => DateTime.Now > saveNow + TimeSpan.FromSeconds(_timeout) && currentstep == 0,
+                new Decorator(
+                    ret => DateTime.Now > saveNow + TimeSpan.FromSeconds(_timeout) && currentstep == 0,
                                new Action(r => OnTimeout())),
+
                  // This one will run always kind of a pulse one
-                 new Sequence(
+                new Sequence(
                     new Action(r => CountDeath()),
                     new Action(r => IsFateStillActive()),
                     new Action(r => UpdateFateData()),
                     new ActionAlwaysFail() //always fail that the rest of the tree is traveresd
                  ),
-                 //Start fighting Fate Mobs but only when we are in close range to the fate position.TBD enhance this filter
 
-            #region sync        //level Sync
-                new Decorator(r => currentfate != null && FateManager.WithinFate && Core.Me.ElementalLevel > 0 && currentfate.MaxLevel < Core.Me.ElementalLevel,
+                            //Start fighting Fate Mobs but only when we are in close range to the fate position.TBD enhance this filter
+
+                            new Decorator(
+                    r => currentfate != null && FateManager.WithinFate && Core.Me.ElementalLevel > 0 && currentfate.MaxLevel < Core.Me.ElementalLevel,
                               new ActionRunCoroutine(async r =>
                               {
                                   Logging.Write("Applying Eureka Level Sync.");
@@ -172,15 +179,16 @@ namespace ff14bot.NeoProfiles
 
                                   return false;
                               })),
-                new Decorator(r => currentfate != null && FateManager.WithinFate,
-                              new ActionRunCoroutine(async r =>
+                new Decorator(
+                    r => currentfate != null && FateManager.WithinFate,
+                              new ActionRunCoroutine(r =>
                               {
                                   Logging.Write($"In fate {Core.Me.ElementalLevel} > 0 && {currentfate.MaxLevel} < {Core.Me.ElementalLevel}.");
 
-
-                                  return false;
+                                  return Task.FromResult(false);
                               })),
-                new Decorator(r => currentfate != null && FateManager.WithinFate && currentfate.MaxLevel < Core.Player.ClassLevel && !Core.Me.IsLevelSynced,
+                new Decorator(
+                    r => currentfate != null && FateManager.WithinFate && currentfate.MaxLevel < Core.Player.ClassLevel && !Core.Me.IsLevelSynced,
                               new ActionRunCoroutine(async r =>
                               {
                                   Logging.Write("Applying Level Sync.");
@@ -193,19 +201,17 @@ namespace ff14bot.NeoProfiles
                               })
                              ),
 
-            #endregion sync        //level Sync
 
-            #region Movment
 
-                  new Decorator(
+                new Decorator(
                       ret => currentstep == 1 && Vector3.Distance(Core.Player.Location, Position) > (currentfate.Radius - 10),
-                         UseFlight ? new ActionRunCoroutine(obj => Lisbeth.TravelToZones(WorldManager.ZoneId, Position)) :new ActionRunCoroutine(obj=> LlamaLibrary.Helpers.Navigation.FlightorMove(currentfate))// CommonBehaviors.MoveAndStop(ret => Position, Distance, stopInRange: true, destinationName: "Moving to Fates.")
+                      UseFlight ? new ActionRunCoroutine(obj => Lisbeth.TravelToZones(WorldManager.ZoneId, Position)) : new ActionRunCoroutine(obj => LlamaLibrary.Helpers.Navigation.FlightorMove(currentfate))// CommonBehaviors.MoveAndStop(ret => Position, Distance, stopInRange: true, destinationName: "Moving to Fates.")
 
                                                                                                                                                 ),
 
-            #region Handin
 
-                  new Decorator(r => currentfate != null && FateManager.WithinFate && currentfate.Icon == FateIconType.KillHandIn && currentfate.TimeLeft.Minutes <= 8,
+                new Decorator(
+                    r => currentfate != null && FateManager.WithinFate && currentfate.Icon == FateIconType.KillHandIn && currentfate.TimeLeft.Minutes <= 8,
                      new Sequence(
                           new Action(r =>
                          {
@@ -224,6 +230,7 @@ namespace ff14bot.NeoProfiles
                                  Logging.Write("Could not find handin NPC. Something is wrong.");
                                  return;
                              }
+
                              tempProvider = CombatTargeting.Instance.Provider;
                              CombatTargeting.Instance.Provider = new NullTargetingProvider();
                              MoveTo(q.LastOrDefault().Location);
@@ -236,12 +243,14 @@ namespace ff14bot.NeoProfiles
                           new ActionAlwaysFail() //always fail that the rest of the tree is traveresd
                           )),
 
-                          new Decorator(ret => Talk.DialogOpen,
+                new Decorator(
+                    ret => Talk.DialogOpen,
                             new Action(r =>
                             {
                                 Talk.Next();
                             })),
-                            new Decorator(ret => Request.IsOpen,
+                new Decorator(
+                    ret => Request.IsOpen,
                             new Action(r =>
                             {
                                 GameObjectManager.GetObjectByNPCId(npc.NpcId).Interact();
@@ -249,46 +258,57 @@ namespace ff14bot.NeoProfiles
                                 Request.HandOver();
                             })),
 
-                  //Find fates
+                //Find fates
 
-            #endregion Handin
 
-            #endregion Movment
 
-            #region escort
 
-                  new Decorator(r => currentfate != null && fateid != 0 && Poi.Current.Type != PoiType.Kill,
-                  new ActionRunCoroutine(async r => MoveToFocusedFate())
+                new Decorator(
+                    r => currentfate != null && fateid != 0 && Poi.Current.Type != PoiType.Kill,
+                  new ActionRunCoroutine(r =>
+                    {
+                        MoveToFocusedFate();
+                      return Task.CompletedTask;
+                    })
 
                 ),
 
-            #endregion escort
 
-                  new Decorator(ret => currentfate == null && currentstep == 0,
+                new Decorator(
+                    ret => currentfate == null && currentstep == 0,
                   new Sequence(
                   new ActionRunCoroutine(async r =>
                   {
                       await getFates();
                       if (currentfate != null)
-                      { GoFate(); }
+                        {
+                            GoFate();
+                        }
                       else
-                      { GoHunting(); }
+                        {
+                            GoHunting();
+                        }
                   }
                             )
             )),
-                     new ActionAlwaysSucceed()
+                new ActionAlwaysSucceed()
             );
         }
 
         // End of B Tree
 
-        #region FlightMovement
 
         private static async Task<bool> FlyTo(Vector3 destination, bool land = false, bool dismount = false, bool ignoreIndoors = true, float minHeight = 0f)
         {
-            if (destination == Vector3.Zero) { return false; }
+            if (destination == Vector3.Zero)
+            {
+                return false;
+            }
 
-            if (Core.Me.InCombat) { return false; }
+            if (Core.Me.InCombat)
+            {
+                return false;
+            }
 
             while (!Core.Me.IsDead)
             {
@@ -339,7 +359,10 @@ namespace ff14bot.NeoProfiles
         {
             if (!MovementManager.IsFlying)
             {
-                if (!MovementManager.IsMoving) { return true; }
+                if (!MovementManager.IsMoving)
+                {
+                    return true;
+                }
 
                 int ticks = 0;
                 while (MovementManager.IsMoving && ticks < 100)
@@ -349,7 +372,10 @@ namespace ff14bot.NeoProfiles
                     ticks++;
                 }
 
-                if (ticks >= 100) { Logging.WriteVerbose("Timeout whilst trying to stop movement."); }
+                if (ticks >= 100)
+                {
+                    Logging.WriteVerbose("Timeout whilst trying to stop movement.");
+                }
 
                 return true;
             }
@@ -363,19 +389,28 @@ namespace ff14bot.NeoProfiles
 
         private static async Task<bool> Land()
         {
-            if (!MovementManager.IsFlying || MovementManager.IsSwimming) { return true; }
+            if (!MovementManager.IsFlying || MovementManager.IsSwimming)
+            {
+                return true;
+            }
 
             int ticks = 0;
             if (await CommonTasks.CanLand() == CanLandResult.Yes)
             {
                 while (ticks < 100 && await CommonTasks.Land())
                 {
-                    if (!MovementManager.IsFlying) { break; }
+                    if (!MovementManager.IsFlying)
+                    {
+                        break;
+                    }
                     await Coroutine.Sleep(100);
                     ticks++;
                 }
 
-                if (ticks >= 100) { Logging.WriteVerbose("Timeout whilst trying to land."); }
+                if (ticks >= 100)
+                {
+                    Logging.WriteVerbose("Timeout whilst trying to land.");
+                }
             }
             else
             {
@@ -385,7 +420,6 @@ namespace ff14bot.NeoProfiles
                     MovementManager.StopDescending();
                     Logging.WriteVerbose("Manual descend complete.");
                 }
-
             }
 
             return true;
@@ -393,7 +427,10 @@ namespace ff14bot.NeoProfiles
 
         private static async Task<bool> Dismount()
         {
-            if (!Core.Me.IsMounted) { return true; }
+            if (!Core.Me.IsMounted)
+            {
+                return true;
+            }
 
             int ticks = 0;
             while (Core.Me.IsMounted && ticks < 100)
@@ -403,22 +440,27 @@ namespace ff14bot.NeoProfiles
                 ticks++;
             }
 
-            if (ticks >= 100) { Logging.WriteVerbose("Timeout whilst trying to dismount."); }
+            if (ticks >= 100)
+            {
+                Logging.WriteVerbose("Timeout whilst trying to dismount.");
+            }
 
             return true;
         }
 
         private static bool InPosition(Vector3 location)
         {
-            if (Core.Me.Location.Distance2DSqr(location) > 5.0f * 5.0f) { return false; }
+            if (Core.Me.Location.Distance2DSqr(location) > 5.0f * 5.0f)
+            {
+                return false;
+            }
 
             var yTolerance = Math.Max(3.5f, 5.0f);
             return Math.Abs(location.Y - Core.Me.Location.Y) < yTolerance;
         }
 
-        #endregion FlightMovement
-
-        private async Task MoveToFocusedFate()
+        [Obsolete]
+        private Task MoveToFocusedFate()
         {
             Vector3 currentMove;
             if (currentfate.Icon == FateIconType.ProtectNPC || currentfate.Icon == FateIconType.ProtectNPC2)
@@ -454,6 +496,8 @@ namespace ff14bot.NeoProfiles
             {
                 Poi.Current = new Poi(getFateTargets(), PoiType.Kill);
             }
+
+            return Task.CompletedTask;
         }
 
         private void GoFate()
@@ -464,8 +508,6 @@ namespace ff14bot.NeoProfiles
                 Position = currentfate.Location;
                 fateid = currentfate.Id;
                 currentstep = 1;
-
-
             }
         }
 
@@ -473,15 +515,16 @@ namespace ff14bot.NeoProfiles
         {
             if (currentfate == null)
             {
-                if (Hunting)
+                if (hunting)
                 {
                     Logging.Write("Let's pass some time with hunting!");
                     var target = getNormalTargets();
                     if (target != null)
                     {
                         Poi.Current = new Poi(target, PoiType.Kill);
-                        MobsHunted++;
+                        mobsHunted++;
                     }
+
                     if (Poi.Current != null)
                         Poi.Current.BattleCharacter.Target();
                 }
@@ -490,7 +533,7 @@ namespace ff14bot.NeoProfiles
 
         private void SetLastFate()
         {
-            LastFateId = currentfate.Id;
+            lastFateId = currentfate.Id;
             Logging.Write("Setting last Fate to {0}.", currentfate.Name);
         }
 
@@ -501,8 +544,8 @@ namespace ff14bot.NeoProfiles
                 if (item.Id == fateid)
                 {
                     Position = item.Location;
-                    FateName = item.Name;
-                    FateStatus = item.Status.ToString();
+                    fateName = item.Name;
+                    fateStatus = item.Status.ToString();
                 }
             }
         }
@@ -514,8 +557,12 @@ namespace ff14bot.NeoProfiles
                 int found = 0;
                 foreach (FateData item in FateManager.ActiveFates)
                 {
-                    if (item.Id == fateid) { found = 1; }
+                    if (item.Id == fateid)
+                    {
+                        found = 1;
+                    }
                 }
+
                 if (found == 0)
                 {
                     if (currentfate != null)
@@ -531,9 +578,12 @@ namespace ff14bot.NeoProfiles
         private void CountDeath()
         {
             if (Core.Me.IsDead)
-            { Died++; }
+            {
+                died++;
+            }
         }
 
+        [Obsolete]
         private async Task<bool> EscortFate()
         {
             Logging.Write("ESCORT");
@@ -564,6 +614,7 @@ namespace ff14bot.NeoProfiles
                             MovementManager.MoveForwardStart();
                         await Coroutine.Sleep(200);
                     }
+
                     Logging.Write("M3");
                     await Coroutine.Sleep(700);
                     MovementManager.MoveForwardStop();
@@ -586,6 +637,7 @@ namespace ff14bot.NeoProfiles
             return true;
         }
 
+        [Obsolete]
         private void OnTimeout()
         {
             Logging.Write("TREE: Decorator1, Action 1");
@@ -598,12 +650,13 @@ namespace ff14bot.NeoProfiles
                 .FirstOrDefault();
             Navigator.MoveToPointWithin(destination, 30);
             Logging.Write("--------------------------------------");
-            Logging.Write("I did {0} Fates this session.", FatesDone);
-            Logging.Write("I hunted and killed {0} mobs.", MobsHunted);
-            Logging.Write("I died {0} times.", Died);
+            Logging.Write("I did {0} Fates this session.", fatesDone);
+            Logging.Write("I hunted and killed {0} mobs.", mobsHunted);
+            Logging.Write("I died {0} times.", died);
             Logging.Write("--------------------------------------");
         }
 
+        [Obsolete]
         private void OnDoneWhile()
         {
             Logging.Write("TREE: Decorator1, Action 1");
@@ -616,9 +669,9 @@ namespace ff14bot.NeoProfiles
                 .FirstOrDefault();
             Navigator.MoveToPointWithin(destination, 30);
             Logging.Write("--------------------------------------");
-            Logging.Write("I did {0} Fates this session.", FatesDone);
-            Logging.Write("I hunted and killed {0} mobs.", MobsHunted);
-            Logging.Write("I died {0} times.", Died);
+            Logging.Write("I did {0} Fates this session.", fatesDone);
+            Logging.Write("I hunted and killed {0} mobs.", mobsHunted);
+            Logging.Write("I died {0} times.", died);
             Logging.Write("--------------------------------------");
         }
 
@@ -628,7 +681,14 @@ namespace ff14bot.NeoProfiles
                                                                          && (unit as BattleCharacter).FateId != 0 && !(unit as BattleCharacter).IsDead).OrderBy(unit => unit.Distance(Core.Player.Location)).Take(1);
             Logging.Write("Analyzing Fate Targets.");
             var targetArray = _target as GameObject[] ?? _target.ToArray();
-            if (targetArray.Length > 0) { return targetArray[0]; } else { return null; }
+            if (targetArray.Length > 0)
+            {
+                return targetArray[0];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public GameObject getNormalTargets()
@@ -636,9 +696,18 @@ namespace ff14bot.NeoProfiles
             var _target = GameObjectManager.GameObjects.Where(unit => (unit as BattleCharacter) != null && unit.CanAttack && unit.IsTargetable && unit.IsVisible
                                                                     && (unit as BattleCharacter).FateId == 0 && !(unit as BattleCharacter).IsDead).OrderBy(unit => unit.Distance(Core.Player.Location)).Take(3);
             var targetArray = _target as GameObject[] ?? _target.ToArray();
-            if (targetArray.Length > 0 && targetArray[0].MaxHealth > Core.Me.CurrentHealth * 3) { return null; }
-            if (targetArray.Length > 0 && targetArray[0].NpcId == 541) { return null; }
-            if (targetArray.Length > 0) { return targetArray[0]; }
+            if (targetArray.Length > 0 && targetArray[0].MaxHealth > Core.Me.CurrentHealth * 3)
+            {
+                return null;
+            }
+            if (targetArray.Length > 0 && targetArray[0].NpcId == 541)
+            {
+                return null;
+            }
+            if (targetArray.Length > 0)
+            {
+                return targetArray[0];
+            }
             return null;  // pick a random target
         }
 
@@ -662,6 +731,7 @@ namespace ff14bot.NeoProfiles
                     Logging.Write("Adding Fate: {0}. Distance is {1}.", f.Name, Core.Me.Distance(f.Location));
                 }
             }
+
             return ReturnList;
         }
 
@@ -669,14 +739,13 @@ namespace ff14bot.NeoProfiles
         {
             if (SharedFate)
                 await LlamaLibrary.ScriptConditions.Extras.UpdateSharedFates();
-            
+
             if (FateIds.Length > 0)
             {
                 //Logging.Write("Looking for Fate: {0}.", FateID);
                 currentfate = IsFateActive(FateIds);
                 if (currentfate == null)
                 {
-
                     return false;
                 }
                 else
@@ -685,11 +754,15 @@ namespace ff14bot.NeoProfiles
                     return true;
                 }
             }
+
             List<FateData> FateCandidates = FateManager.ActiveFates.ToList();
             var FateList = MyFilter(FateCandidates);
 
             currentfate = FateList.OrderBy(fate => Core.Me.Distance(fate.Location)).FirstOrDefault(fate => fate.Level < _max && fate.Level > _min);
-            if (currentfate == null) { return false; }
+            if (currentfate == null)
+            {
+                return false;
+            }
 
             return true;
         }
@@ -700,17 +773,23 @@ namespace ff14bot.NeoProfiles
             var _fate = FateManager.ActiveFates.Where(fate => ids.Contains((int)fate.Id) && fate.Progress >= ((int)MinProgress)).Take(1);
             var fateArray = _fate as FateData[] ?? _fate.ToArray();
             if (fateArray.Length > 0)
-            { return fateArray[0]; }
+            {
+                return fateArray[0];
+            }
 
             return null;
         }
 
+        [Obsolete]
         public static async Task<bool> MoveTo(Vector3 location)
         {
             bool goalReached = false;
 
             float distance = Core.Me.Location.Distance(location);
-            if (distance < 3f) { return true; }
+            if (distance < 3f)
+            {
+                return true;
+            }
 
             while (Core.Me.IsAlive && !goalReached)
             {
@@ -720,8 +799,14 @@ namespace ff14bot.NeoProfiles
 
                 if (MovementManager.IsMoving && !Core.Me.IsMounted)
                 {
-                    if (ActionManager.IsSprintReady && WorldManager.InSanctuary) { ActionManager.Sprint(); }
-                    else if (ActionManager.IsSprintReady && !WorldManager.InSanctuary && Core.Me.InCombat) { ActionManager.Sprint(); }
+                    if (ActionManager.IsSprintReady && WorldManager.InSanctuary)
+                    {
+                        ActionManager.Sprint();
+                    }
+                    else if (ActionManager.IsSprintReady && !WorldManager.InSanctuary && Core.Me.InCombat)
+                    {
+                        ActionManager.Sprint();
+                    }
                 }
 
                 await Coroutine.Yield();
@@ -735,7 +820,7 @@ namespace ff14bot.NeoProfiles
             _done = false;
         }
 
-        private ITargetingProvider CachedProvider;
+        private ITargetingProvider cachedProvider;
 
         protected override void OnStart()
         {
@@ -745,9 +830,10 @@ namespace ff14bot.NeoProfiles
             currentstep = 0;
             Logging.Write("Doing fates and hunt in between.");
             Logging.Write("Stats: MinFate level={0} MaxFatelvl={1}", _min, _max);
+
             // MaxLevel = "34";
             // MinLevel = "25";
-            CachedProvider = CombatTargeting.Instance.Provider;
+            cachedProvider = CombatTargeting.Instance.Provider;
             CombatTargeting.Instance.Provider = new MySuperAwesomeTargetingProvider();
             currentfate = null;
             Poi.Clear("Clearing POI");
@@ -758,7 +844,7 @@ namespace ff14bot.NeoProfiles
         {
             currentstep = 0;
 
-            CombatTargeting.Instance.Provider = CachedProvider;
+            CombatTargeting.Instance.Provider = cachedProvider;
         }
     }
 
@@ -831,7 +917,6 @@ namespace ff14bot.NeoProfiles
         /// <remarks> Nesox, 2013-06-29. </remarks>
         /// <param name="unit"> The unit. </param>
         /// <returns> The score for unit. </returns>
-
         private double GetScoreForUnit(BattleCharacter unit)
         {
             double weight = 200 - (2 * unit.Distance());
@@ -855,7 +940,7 @@ namespace ff14bot.NeoProfiles
             //Units that are targeting the player, focus on low health ones so that we can reduce the incoming damage
             if (unit.CurrentTargetId == Core.Player.ObjectId)
             {
-                weight += (100 - (unit.CurrentHealthPercent));
+                weight +=  100 - unit.CurrentHealthPercent;
             }
 
             // Less weight on out of combat targets.

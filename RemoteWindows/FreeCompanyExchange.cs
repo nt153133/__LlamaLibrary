@@ -8,7 +8,7 @@ using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    public class FreeCompanyExchange: RemoteWindow<FreeCompanyExchange>
+    public class FreeCompanyExchange : RemoteWindow<FreeCompanyExchange>
     {
         private const string WindowName = "FreeCompanyExchange";
 
@@ -50,7 +50,6 @@ namespace LlamaLibrary.RemoteWindows
             new FcActionShopItem(46, 8, 6020, 33, "Reduced Rates II")
         };
 
-
         public FreeCompanyExchange() : base(WindowName)
         {
             _name = WindowName;
@@ -60,8 +59,9 @@ namespace LlamaLibrary.RemoteWindows
         {
             if (IsOpen)
             {
-                Logging.Write($"Buying {FcShopActions.First(i=> i.ActionId == actionId).Name}");
-                ClickItem(FcShopActions.First(i=> i.ActionId == actionId).ShopIndex);
+                Logging.Write($"Buying {FcShopActions.First(i => i.ActionId == actionId).Name}");
+                ClickItem(FcShopActions.First(i => i.ActionId == actionId).ShopIndex);
+
                 //Logging.Write("Waiting for Yes/No");
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                 if (SelectYesno.IsOpen)
@@ -72,6 +72,7 @@ namespace LlamaLibrary.RemoteWindows
                     await Coroutine.Sleep(500);
                 }
             }
+
             return true;
         }
 
@@ -80,7 +81,7 @@ namespace LlamaLibrary.RemoteWindows
             if (index >= 0)
             {
                 //Logging.Write("Send Action");
-                SendAction(2, 3, 2, 4, (ulong) index);
+                SendAction(2, 3, 2, 4, (ulong)index);
             }
         }
     }

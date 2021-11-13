@@ -16,7 +16,7 @@ namespace LlamaLibrary.Extensions
 
         internal static uint IconId(this GameObject eventNpc)
         {
-            return eventNpc.Type == GameObjectType.EventNpc ? Core.Memory.Read<uint>(eventNpc.Pointer + Offsets.IconID) : (uint) 0;
+            return eventNpc.Type == GameObjectType.EventNpc ? Core.Memory.Read<uint>(eventNpc.Pointer + Offsets.IconID) : 0U;
         }
 
         internal static int OpenTradeWindow(this BattleCharacter otherPlayer)

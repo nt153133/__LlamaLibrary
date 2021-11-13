@@ -5,7 +5,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    public class AgentHWDScore: AgentInterface<AgentHWDScore>, IAgent
+    public class AgentHWDScore : AgentInterface<AgentHWDScore>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
 

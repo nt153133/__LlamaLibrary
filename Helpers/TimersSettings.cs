@@ -7,11 +7,11 @@ using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers
 {
-    public class TimersSettings: JsonSettings
+    public class TimersSettings : JsonSettings
     {
         private static TimersSettings _settings;
 
-        private Dictionary<int,SavedTimer> _savedTimers = new Dictionary<int, SavedTimer>();
+        private Dictionary<int, SavedTimer> _savedTimers = new Dictionary<int, SavedTimer>();
 
         private bool _debug;
 
@@ -29,7 +29,7 @@ namespace LlamaLibrary.Helpers
         {
         }
 
-        public Dictionary<int,SavedTimer> SavedTimers
+        public Dictionary<int, SavedTimer> SavedTimers
         {
             get => _savedTimers;
             set
@@ -52,6 +52,7 @@ namespace LlamaLibrary.Helpers
             {
                 _savedTimers.Add(cycle, new SavedTimer(time, Timers.CurrentTime));
             }
+
             Save();
         }
 
@@ -70,6 +71,7 @@ namespace LlamaLibrary.Helpers
                 Log($"No Timer saved for cycle: {cycle}");
                 _savedTimers.Add(cycle, new SavedTimer(DateTimeOffset.FromUnixTimeSeconds(Timers.GetNextCycle(cycle)).LocalDateTime, Timers.CurrentTime));
             }
+
             Save();
 
             return _savedTimers[cycle].ResetTime;

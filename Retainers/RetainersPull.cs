@@ -28,7 +28,7 @@ namespace LlamaLibrary.Retainers
 {
     public class RetainersPull : BotBase
     {
-        private static readonly string botName = "Retainers";
+        private static readonly string BotName = "Retainers";
 
         private bool _init = false;
 
@@ -42,6 +42,7 @@ namespace LlamaLibrary.Retainers
             //  {
             Init();
             _init = true;
+
             //     Log("INIT DONE");
             //   });
         }
@@ -68,7 +69,7 @@ namespace LlamaLibrary.Retainers
 
         public override Composite Root => _root;
 
-        private static Lazy<List<RetainerTaskData>> VentureData;
+        private static Lazy<List<RetainerTaskData>> ventureData;
 
         public override void Initialize()
         {
@@ -83,7 +84,7 @@ namespace LlamaLibrary.Retainers
                 _settings.Show();
                 _settings.Activate();
             }
-            catch (ArgumentOutOfRangeException ee)
+            catch (ArgumentOutOfRangeException)
             {
             }
         }
@@ -93,7 +94,7 @@ namespace LlamaLibrary.Retainers
             OffsetManager.Init();
 
             Log("Load venture.json");
-            VentureData = new Lazy<List<RetainerTaskData>>(() => loadResource<List<RetainerTaskData>>(Resources.Ventures));
+            ventureData = new Lazy<List<RetainerTaskData>>(() => loadResource<List<RetainerTaskData>>(Resources.Ventures));
             Log("Loaded venture.json");
         }
 
@@ -104,13 +105,13 @@ namespace LlamaLibrary.Retainers
 
         private static void Log(string text, params object[] args)
         {
-            var msg = string.Format("[" + botName + "] " + text, args);
+            var msg = string.Format("[" + BotName + "] " + text, args);
             Logging.Write(Colors.MediumSlateBlue, msg);
         }
 
         private static void LogCritical(string text, params object[] args)
         {
-            var msg = string.Format("[" + botName + "] " + text, args);
+            var msg = string.Format("[" + BotName + "] " + text, args);
             Logging.Write(Colors.OrangeRed, msg);
         }
 
@@ -137,11 +138,11 @@ namespace LlamaLibrary.Retainers
 
             var count = await HelperFunctions.GetNumberOfRetainers();
             var rets = Core.Memory.ReadArray<RetainerInfo>(Offsets.RetainerData, count);
-            var now = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            var now = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
-            if (rets.Any(i => i.Active && i.VentureTask !=0 && (i.VentureEndTimestamp - now) <= 0 && SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.Venture) > 2))
+            if (rets.Any(i => i.Active && i.VentureTask != 0 && (i.VentureEndTimestamp - now) <= 0 && SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.Venture) > 2))
             {
-                await GeneralFunctions.StopBusy(dismount:false);
+                await GeneralFunctions.StopBusy(dismount: false);
 
                 if (DutyManager.InInstance || CraftingLog.IsOpen || FishingManager.State != FishingState.None || MovementManager.IsOccupied || CraftingManager.IsCrafting)
                 {
@@ -156,6 +157,7 @@ namespace LlamaLibrary.Retainers
                     LogCritical("No summoning bell near by");
                     return;
                 }
+
                 await RetainerRoutine.ReadRetainers(RetainerCheckOnlyVenture);
             }
             else
@@ -211,7 +213,7 @@ namespace LlamaLibrary.Retainers
                 TreeRoot.Stop("Done playing with retainers");
             }
 
-            var now = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            var now = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             var timeLeft = nextVenture.VentureEndTimestamp - now;
 
             Log($"Waiting till {RetainerInfo.UnixTimeStampToDateTime(nextVenture.VentureEndTimestamp)}");
@@ -226,7 +228,7 @@ namespace LlamaLibrary.Retainers
             {
                 if (retainer.VentureTask != 0)
                 {
-                    var now = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                    var now = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
                     var timeLeft = retainer.VentureEndTimestamp - now;
 
                     if (timeLeft <= 0 && SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.Venture) > 2)
@@ -252,7 +254,7 @@ namespace LlamaLibrary.Retainers
         {
             if (retainer.VentureTask != 0)
             {
-                var now = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                var now = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
                 var timeLeft = retainer.VentureEndTimestamp - now;
 
                 if (timeLeft <= 0 && SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.Venture) > 2)
@@ -290,7 +292,7 @@ namespace LlamaLibrary.Retainers
 
                 var taskId = AgentRetainerVenture.Instance.RetainerTask;
 
-                var task = VentureData.Value.FirstOrDefault(i => i.Id == taskId);
+                var task = ventureData.Value.FirstOrDefault(i => i.Id == taskId);
 
                 if (task != default(RetainerTaskData))
                 {
@@ -333,7 +335,6 @@ namespace LlamaLibrary.Retainers
             {
                 Log("Venture Not Done");
             }
-
 
             return true;
         }

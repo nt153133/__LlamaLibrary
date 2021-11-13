@@ -8,7 +8,7 @@ using ff14bot.RemoteWindows;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    public class FreeShop: RemoteWindow<FreeShop>
+    public class FreeShop : RemoteWindow<FreeShop>
     {
         private const string WindowName = "FreeShop";
 
@@ -17,7 +17,7 @@ namespace LlamaLibrary.RemoteWindows
             _name = WindowName;
         }
 
-        public int NumberOfItems =>  ___Elements()[3].TrimmedData;
+        public int NumberOfItems => ___Elements()[3].TrimmedData;
 
         public List<Item> GetAvailItems()
         {
@@ -25,7 +25,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 65, NumberOfItems);
 
-            return itemElements.Select(item => DataManager.GetItem((uint) (item.TrimmedData))).ToList();
+            return itemElements.Select(item => DataManager.GetItem((uint)item.TrimmedData)).ToList();
         }
 
         public async Task<bool> BuyItem(uint itemId)
@@ -39,7 +39,7 @@ namespace LlamaLibrary.RemoteWindows
                 await Coroutine.Wait(5000, () => InventoryManager.FilledSlots.Any(i => i.RawItemId == itemId));
             }
 
-            return (InventoryManager.FilledSlots.Any(i => i.RawItemId == itemId));
+            return InventoryManager.FilledSlots.Any(i => i.RawItemId == itemId);
         }
 
         public int GetItemIndex(uint itemId)
@@ -56,8 +56,8 @@ namespace LlamaLibrary.RemoteWindows
 
         public void ClickItem(int index)
         {
-            if (index >=0)
-                SendAction(2,3,0,3,(ulong) index);
+            if (index >= 0)
+                SendAction(2, 3, 0, 3, (ulong)index);
         }
     }
 }

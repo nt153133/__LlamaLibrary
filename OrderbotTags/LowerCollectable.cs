@@ -13,11 +13,12 @@ using TreeSharp;
 namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LowerCollectables")]
-    public class LowerCollectable: ProfileBehavior
+    public class LowerCollectable : ProfileBehavior
     {
         private bool _isDone;
 
-        [XmlAttribute("Collectability")] public int MaxCollectability { get; set; }
+        [XmlAttribute("Collectability")]
+        public int MaxCollectability { get; set; }
 
         public override bool HighPriority => true;
 
@@ -55,11 +56,9 @@ namespace LlamaLibrary.OrderbotTags
                 }
             }
 
-
-
             foreach (var id in ids.Distinct())
             {
-                var NQslots = InventoryManager.FilledSlots.Where(slot => slot.RawItemId == id  && !slot.IsCollectable && !slot.IsHighQuality && slot.Item.StackSize > 1);
+                var NQslots = InventoryManager.FilledSlots.Where(slot => slot.RawItemId == id && !slot.IsCollectable && !slot.IsHighQuality && slot.Item.StackSize > 1);
 
                 if (NQslots.Count() > 1)
                 {
@@ -77,6 +76,4 @@ namespace LlamaLibrary.OrderbotTags
 
         public override bool IsDone => _isDone;
     }
-
-
 }

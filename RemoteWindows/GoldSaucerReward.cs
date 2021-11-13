@@ -1,6 +1,6 @@
 ﻿namespace LlamaLibrary.RemoteWindows
 {
-    public class GoldSaucerReward: RemoteWindow<GoldSaucerReward>
+    public class GoldSaucerReward : RemoteWindow<GoldSaucerReward>
     {
         private const string WindowName = "GoldSaucerReward";
 
@@ -8,7 +8,6 @@
         {
             _name = WindowName;
         }
-
 
         public int MGPReward => ___Elements()[1].TrimmedData;
     }

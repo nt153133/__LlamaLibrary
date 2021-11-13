@@ -34,10 +34,12 @@ namespace LlamaLibrary.AutoRetainerSort
             {
                 yield return PlayerInventory;
             }
+
             if (AutoRetainerSortSettings.Instance.InventoryOptions.ContainsKey(SaddlebagInventoryIndex))
             {
                 yield return SaddlebagInventory;
             }
+
             foreach (CachedInventory retainerInventory in RetainerInventories.Values)
             {
                 yield return retainerInventory;
@@ -65,6 +67,7 @@ namespace LlamaLibrary.AutoRetainerSort
             {
                 return sortInfo;
             }
+
             ItemSortInfoCache.Add(trueItemId, new ItemSortInfo(trueItemId));
             return ItemSortInfoCache[trueItemId];
         }

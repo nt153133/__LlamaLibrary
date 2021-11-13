@@ -25,7 +25,7 @@ namespace LlamaLibrary.Helpers
         public static ushort ItemCount => Core.Memory.Read<ushort>(Offsets.RequestInfo + Offsets.ItemCount);
         public static ushort ItemCount2 => Core.Memory.Read<ushort>(Offsets.RequestInfo + Offsets.ItemCount2);
 
-        public static IntPtr ItemListStart => new IntPtr((long) (Offsets.RequestInfo + Offsets.ItemListStart));
+        public static IntPtr ItemListStart => new IntPtr((long)(Offsets.RequestInfo + Offsets.ItemListStart));
 
         public static RequestItem[] GetItems()
         {
@@ -40,12 +40,15 @@ namespace LlamaLibrary.Helpers
             {
                 var items = InventoryManager.FilledSlots.Where(i => i.RawItemId == item.ItemId && i.Count >= item.Count);
                 if (item.HQ)
+                {
                     haveAll = haveAll && items.Any(i => i.IsHighQuality);
+                }
                 else
                 {
                     haveAll = haveAll && items.Any();
                 }
             }
+
             return haveAll;
         }
 
@@ -57,7 +60,9 @@ namespace LlamaLibrary.Helpers
             {
                 var items = InventoryManager.FilledSlots.Where(i => i.RawItemId == item.ItemId && i.Count >= item.Count);
                 if (item.HQ)
+                {
                     items.First(i => i.IsHighQuality).Handover();
+                }
                 else
                 {
                     items.First().Handover();

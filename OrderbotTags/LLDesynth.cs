@@ -52,6 +52,7 @@ namespace LlamaLibrary.OrderbotTags
             var itemsToDesynth = InventoryManager.FilledSlots.Where(bs => bs.IsDesynthesizable && itemId.Contains((int)bs.RawItemId));
             var agentSalvageInterface = AgentInterface<AgentSalvage>.Instance;
             var agentSalvage = Offsets.SalvageAgent;
+
             //Log($"{itemsToDesynth.Count()}");
 
             foreach (var item in itemsToDesynth)
@@ -60,22 +61,24 @@ namespace LlamaLibrary.OrderbotTags
 
                 lock (Core.Memory.Executor.AssemblyLock)
                 {
-                    Core.Memory.CallInjected64<int>(agentSalvage, agentSalvageInterface.Pointer, item.Pointer, 14,0);
+                    Core.Memory.CallInjected64<int>(agentSalvage, agentSalvageInterface.Pointer, item.Pointer, 14, 0);
                 }
-                // await Coroutine.Sleep(500);
 
+                // await Coroutine.Sleep(500);
 
                 await Coroutine.Wait(5000, () => SalvageDialog.IsOpen);
 
                 if (SalvageDialog.IsOpen)
                 {
                     RaptureAtkUnitManager.GetWindowByName("SalvageDialog").SendAction(1, 3, 0);
+
                     //await Coroutine.Sleep(500);
                     await Coroutine.Wait(10000, () => SalvageResult.IsOpen);
 
                     if (SalvageResult.IsOpen)
                     {
                         SalvageResult.Close();
+
                         //await Coroutine.Sleep(500);
                         await Coroutine.Wait(5000, () => !SalvageResult.IsOpen);
                     }

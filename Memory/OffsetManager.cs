@@ -25,13 +25,13 @@ using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteAgents;
 
- namespace LlamaLibrary.Memory
+namespace LlamaLibrary.Memory
 {
     internal class OffsetManager
     {
         private static string Name => "LLOffsetManager";
         private static bool initDone = false;
-        private static StringBuilder sb= new StringBuilder();
+        private static StringBuilder sb = new StringBuilder();
         public static Dictionary<string, string> patterns = new Dictionary<string, string>();
         public static Dictionary<string, string> constants = new Dictionary<string, string>();
 
@@ -47,12 +47,12 @@ using LlamaLibrary.RemoteAgents;
 
             var types = typeof(Offsets).GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance).Concat(q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)));
             using (var pf = new PatternFinder(Core.Memory))
+            {
                 Parallel.ForEach(types, type =>
                                  {
                                      if (type.FieldType.IsClass)
                                      {
                                          var instance = Activator.CreateInstance(type.FieldType);
-
 
                                          foreach (var field in type.FieldType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
                                          {
@@ -60,7 +60,7 @@ using LlamaLibrary.RemoteAgents;
                                              if (field.FieldType == typeof(IntPtr))
                                                  field.SetValue(instance, res);
                                              else
-                                                 field.SetValue(instance, (int) res);
+                                                 field.SetValue(instance, (int)res);
                                          }
 
                                          //set the value
@@ -70,22 +70,24 @@ using LlamaLibrary.RemoteAgents;
                                      {
                                          var res = ParseField(type, pf);
                                          if (type.FieldType == typeof(IntPtr))
+                                         {
                                              type.SetValue(null, res);
+                                         }
                                          else
                                          {
                                              try
                                              {
                                                  type.SetValue(null, res.ToInt32());
                                              }
-                                             catch (Exception e)
+                                             catch (Exception)
                                              {
                                                  LogError($"Error on {type.Name}");
                                              }
-
                                          }
                                      }
                                  }
                                 );
+            }
 
             Dictionary<IntPtr, int> vtables = new Dictionary<IntPtr, int>();
             for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
@@ -101,22 +103,26 @@ using LlamaLibrary.RemoteAgents;
             {
                 //Log(MyType.Name);
 
-                var test = (((IAgent) Activator.CreateInstance(MyType,
+                var test = ((IAgent)Activator.CreateInstance(
+                    MyType,
                                                                BindingFlags.Instance | BindingFlags.NonPublic,
                                                                null,
                                                                new object[]
                                                                {
                                                                    IntPtr.Zero
                                                                },
-                                                               null))).RegisteredVtable;
+                                                               null)).RegisteredVtable;
                 if (vtables.ContainsKey(test))
                 {
                     Log($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
                 }
                 else
+                {
                     Log($"\tFound one {test.ToString("X")} but no agent");
+                }
             }
-            AddNamespacesToScriptManager(new[] {"LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers","LlamaLibrary.ScriptConditions.Extras"});//
+
+            AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
             ScriptManager.Init(typeof(ScriptConditions.Helpers));
             initDone = true;
             if (_debug)
@@ -157,26 +163,25 @@ using LlamaLibrary.RemoteAgents;
             }
         }
 
-
         private static IntPtr ParseField(FieldInfo field, PatternFinder pf)
         {
-            var offset = (OffsetAttribute) Attribute.GetCustomAttributes(field, typeof(OffsetAttribute))
+            var offset = (OffsetAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetAttribute))
                 .FirstOrDefault();
-            var offsetCN = (OffsetCNAttribute) Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute))
+            var offsetCN = (OffsetCNAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute))
                 .FirstOrDefault();
-            var valcn = (OffsetValueCN) Attribute.GetCustomAttributes(field, typeof(OffsetValueCN))
+            var valcn = (OffsetValueCN)Attribute.GetCustomAttributes(field, typeof(OffsetValueCN))
                 .FirstOrDefault();
-            var valna = (OffsetValueNA) Attribute.GetCustomAttributes(field, typeof(OffsetValueNA))
+            var valna = (OffsetValueNA)Attribute.GetCustomAttributes(field, typeof(OffsetValueNA))
                 .FirstOrDefault();
 
             var result = IntPtr.Zero;
-            var lang = (Language) typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+            var lang = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
                 .First(i => i.FieldType == typeof(Language)).GetValue(null);
 
             if (lang == Language.Chn)
             {
                 if (valcn != null)
-                    return (IntPtr) valcn.Value;
+                    return (IntPtr)valcn.Value;
                 if (offset == null) return IntPtr.Zero;
 
                 //var b1 = true;
@@ -184,31 +189,34 @@ using LlamaLibrary.RemoteAgents;
                 {
                     result = pf.Find(offsetCN != null ? offsetCN.PatternCN : offset.Pattern);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    if(field.DeclaringType != null && field.DeclaringType.IsNested)
+                    if (field.DeclaringType != null && field.DeclaringType.IsNested)
+                    {
                         Log($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                    }
                     else
                     {
                         Log($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                 }
-
             }
             else
             {
                 if (valna != null)
-                    return (IntPtr) valna.Value;
+                    return (IntPtr)valna.Value;
                 if (offset == null) return IntPtr.Zero;
 
                 try
                 {
                     result = pf.Find(offset.Pattern);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    if(field.DeclaringType != null && field.DeclaringType.IsNested)
+                    if (field.DeclaringType != null && field.DeclaringType.IsNested)
+                    {
                         LogError($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                    }
                     else
                     {
                         LogError($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
@@ -233,7 +241,8 @@ using LlamaLibrary.RemoteAgents;
                 return result;
             }
 
-            if (offset!=null)
+            if (offset != null)
+            {
                 if (field.DeclaringType != null && field.DeclaringType.IsNested && field.FieldType != typeof(int))
                 {
                     sb.AppendLine($"{field.DeclaringType.DeclaringType.Name}_{field.Name}, {offset.Pattern} - {offset.PatternCN}");
@@ -254,17 +263,19 @@ using LlamaLibrary.RemoteAgents;
                     sb.AppendLine($"{field.Name}, {offset.Pattern} - {offsetCN?.PatternCN}");
                     constants.Add($"{field.Name}", offset.Pattern);
                 }
+            }
 
             if (valna != null)
                 sb.AppendLine($"{field.DeclaringType.Name},{field.Name},{valna}");
 
-            if(field.DeclaringType != null && field.DeclaringType.IsNested)
+            if (field.DeclaringType != null && field.DeclaringType.IsNested)
+            {
                 Log($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
+            }
             else
             {
                 Log($"[{field.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
             }
-
 
             return result;
         }

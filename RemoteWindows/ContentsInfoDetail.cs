@@ -51,7 +51,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 209, GetNumberOfCraftingTurnins());
 
-            return itemElements.Select(item => DataManager.GetItem((uint) (item.TrimmedData))).ToList();
+            return itemElements.Select(item => DataManager.GetItem((uint)item.TrimmedData)).ToList();
         }
 
         public List<Item> GetGatheringTurninItemsIds()
@@ -60,7 +60,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 268, GetNumberOfGatheringTurnins());
 
-            return itemElements.Select(item => DataManager.GetItem((uint) (item.TrimmedData))).ToList();
+            return itemElements.Select(item => DataManager.GetItem((uint)item.TrimmedData)).ToList();
         }
 
         public Dictionary<Item, KeyValuePair<int, string>> GetCraftingTurninItems()
@@ -73,7 +73,7 @@ namespace LlamaLibrary.RemoteWindows
 
             for (var i = 0; i < GetNumberOfCraftingTurnins(); i++)
             {
-                result.Add(DataManager.GetItem((uint) (itemElements[i].TrimmedData)), new KeyValuePair<int, string>(qtyElements[i].TrimmedData, ((RetainerRole) jobElements[i].TrimmedData).ToString()));
+                result.Add(DataManager.GetItem((uint)itemElements[i].TrimmedData), new KeyValuePair<int, string>(qtyElements[i].TrimmedData, ((RetainerRole)jobElements[i].TrimmedData).ToString()));
             }
 
             return result;
@@ -89,7 +89,7 @@ namespace LlamaLibrary.RemoteWindows
 
             for (var i = 0; i < GetNumberOfGatheringTurnins(); i++)
             {
-                result.Add(DataManager.GetItem((uint) (itemElements[i].TrimmedData)), new KeyValuePair<int, string>(qtyElements[i].TrimmedData, ((RetainerRole) jobElements[i].TrimmedData).ToString()));
+                result.Add(DataManager.GetItem((uint)itemElements[i].TrimmedData), new KeyValuePair<int, string>(qtyElements[i].TrimmedData, ((RetainerRole)jobElements[i].TrimmedData).ToString()));
             }
 
             return result;

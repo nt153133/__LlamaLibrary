@@ -3,7 +3,6 @@ using ff14bot.Managers;
 
 namespace LlamaLibrary.Structs
 {
-
     [StructLayout(LayoutKind.Explicit, Size = 0x130)]
     public struct GCShopItem
     {
@@ -19,15 +18,15 @@ namespace LlamaLibrary.Structs
         [FieldOffset(0x18)]
         public uint InBag;
 
-       // [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 0x44)]
-       // [FieldOffset(0x4C)]
-       // public byte Name;
+        // [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 0x44)]
+        // [FieldOffset(0x4C)]
+        // public byte Name;
 
-       public Item Item => DataManager.GetItem(ItemID);
+        public Item Item => DataManager.GetItem(ItemID);
 
-       public override string ToString()
-       {
-           return $"{ItemID} - {Cost} - {Index} - {InBag}";
-       }
+        public override string ToString()
+        {
+            return $"{ItemID} - {Cost} - {Index} - {InBag}";
+        }
     }
 }

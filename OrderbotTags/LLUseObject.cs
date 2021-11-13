@@ -19,7 +19,8 @@ namespace LlamaLibrary.OrderbotTags
 
         public override bool IsDone => _isDone;
 
-        [XmlAttribute("NpcId")] public int NpcId { get; set; }
+        [XmlAttribute("NpcId")]
+        public int NpcId { get; set; }
 
         protected override void OnStart()
         {
@@ -36,14 +37,18 @@ namespace LlamaLibrary.OrderbotTags
 
         protected override Composite CreateBehavior()
         {
-            return new ActionRunCoroutine(r => LLUseObjectTask((uint) NpcId));
+            return new ActionRunCoroutine(r => LLUseObjectTask((uint)NpcId));
         }
 
         private async Task LLUseObjectTask(uint NpcId)
         {
             var gameobj = GameObjectManager.GetObjectByNPCId(NpcId);
 
-            if (gameobj == default(GameObject)) {_isDone = true; return;}
+            if (gameobj == default(GameObject))
+            {
+                _isDone = true;
+                return;
+            }
 
             await Navigation.FlightorMove(gameobj.Location);
 
@@ -58,6 +63,7 @@ namespace LlamaLibrary.OrderbotTags
                     await Coroutine.Wait(20000, () => !SelectYesno.IsOpen);
                 }
             }
+
             _isDone = true;
         }
     }

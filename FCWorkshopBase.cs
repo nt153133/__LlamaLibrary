@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -64,34 +64,36 @@ namespace LlamaLibrary
         };
 
         public static List<uint> ItemsToLower = new List<uint>
-            {4835,4840,4843,4852,4858,4860,5118,5232,5259,5260,5270,5280,5282,5284,5291,5292,5296,5317,5326,5345,5350,5384,5385,5386,5389,5436,5491,5496,5508,5518,5525,5527,5536,7588,9518,12525,12539,12548,12565,12566,12569,12576,12583,12592,12602,12614,12615,12629,12630,12632,12639,12874,12936,12937,12939,15648,16729,19846,19865,19867,19869,19874,19891,19911,19913,19914,19915,19920,19928,19932,19933,19945,19947,19953,19954,19956,19957,19958,19959,19970,19971,19972,19973,19985,19987,19989,20006,20008,20014,20015,20016,21085,21180,22412,22416,22417,23183,24246,24250,24253,24255,27683,27690,27696,27697,27706,27708,27726,27727,27732,27738,27739,27746,27765,27766,27802,27820,27825,27827,27833,27850};
+            { 4835, 4840, 4843, 4852, 4858, 4860, 5118, 5232, 5259, 5260, 5270, 5280, 5282, 5284, 5291, 5292, 5296, 5317, 5326, 5345, 5350, 5384, 5385, 5386, 5389, 5436, 5491, 5496, 5508, 5518, 5525, 5527, 5536, 7588, 9518, 12525, 12539, 12548, 12565, 12566, 12569, 12576, 12583, 12592, 12602, 12614, 12615, 12629, 12630, 12632, 12639, 12874, 12936, 12937, 12939, 15648, 16729, 19846, 19865, 19867, 19869, 19874, 19891, 19911, 19913, 19914, 19915, 19920, 19928, 19932, 19933, 19945, 19947, 19953, 19954, 19956, 19957, 19958, 19959, 19970, 19971, 19972, 19973, 19985, 19987, 19989, 20006, 20008, 20014, 20015, 20016, 21085, 21180, 22412, 22416, 22417, 23183, 24246, 24250, 24253, 24255, 27683, 27690, 27696, 27697, 27706, 27708, 27726, 27727, 27732, 27738, 27739, 27746, 27765, 27766, 27802, 27820, 27825, 27827, 27833, 27850 };
 
-        private static Dictionary<int,List<ItemUiCategory>> retainerCategoryStorage = new Dictionary<int, List<ItemUiCategory>>
+        private static Dictionary<int, List<ItemUiCategory>> retainerCategoryStorage = new Dictionary<int, List<ItemUiCategory>>
         {
-            {0, new List<ItemUiCategory>{ItemUiCategory.Dye, ItemUiCategory.Medicine, ItemUiCategory.Miscellany, ItemUiCategory.Other, ItemUiCategory.Part}}, //Crick-t
-            {1, new List<ItemUiCategory>{ItemUiCategory.Lumber, ItemUiCategory.Reagent}}, //Pricksworth
-            {2, new List<ItemUiCategory>{ItemUiCategory.Metal,ItemUiCategory.Stone, ItemUiCategory.Catalyst}}, //RawMats
-            {3, new List<ItemUiCategory>{ItemUiCategory.Cloth, ItemUiCategory.Leather, ItemUiCategory.Bone}}, //Keshaa
-            {4, new List<ItemUiCategory>{ItemUiCategory.Demimateria,ItemUiCategory.Gardening, ItemUiCategory.Body, ItemUiCategory.Bracelets,ItemUiCategory.Earrings,ItemUiCategory.Feet,ItemUiCategory.Hands,ItemUiCategory.Head,ItemUiCategory.Legs,ItemUiCategory.Necklace,ItemUiCategory.Ring,ItemUiCategory.Shield}}, //Paige
-            {5, new List<ItemUiCategory>{ItemUiCategory.Ingredient, ItemUiCategory.Meal, ItemUiCategory.Seafood, ItemUiCategory.Furnishing}}, //Verit-y
+            { 0, new List<ItemUiCategory> { ItemUiCategory.Dye, ItemUiCategory.Medicine, ItemUiCategory.Miscellany, ItemUiCategory.Other, ItemUiCategory.Part } }, //Crick-t
+            { 1, new List<ItemUiCategory> { ItemUiCategory.Lumber, ItemUiCategory.Reagent } }, //Pricksworth
+            { 2, new List<ItemUiCategory> { ItemUiCategory.Metal, ItemUiCategory.Stone, ItemUiCategory.Catalyst } }, //RawMats
+            { 3, new List<ItemUiCategory> { ItemUiCategory.Cloth, ItemUiCategory.Leather, ItemUiCategory.Bone } }, //Keshaa
+            { 4, new List<ItemUiCategory> { ItemUiCategory.Demimateria, ItemUiCategory.Gardening, ItemUiCategory.Body, ItemUiCategory.Bracelets, ItemUiCategory.Earrings, ItemUiCategory.Feet, ItemUiCategory.Hands, ItemUiCategory.Head, ItemUiCategory.Legs, ItemUiCategory.Necklace, ItemUiCategory.Ring, ItemUiCategory.Shield } }, //Paige
+            { 5, new List<ItemUiCategory> { ItemUiCategory.Ingredient, ItemUiCategory.Meal, ItemUiCategory.Seafood, ItemUiCategory.Furnishing } }, //Verit-y
         };
 
-        private static uint[] npcids = new uint[] {2005236, 2005238, 2005240, 2007821};
+        private static uint[] npcids = new uint[] { 2005236, 2005238, 2005240, 2007821 };
+        private readonly bool readOrder = false;
+
         private bool _init;
         private Composite _root;
 
         private List<LisbethOrder> orderList;
 
-        private readonly bool readOrder = false;
-
         public FCWorkshopBase()
         {
             if (readOrder)
+            {
                 Task.Factory.StartNew(() =>
                 {
                     init();
                     _init = true;
                 });
+            }
         }
 
         public override string Name => "FCWorkshopBase";
@@ -121,9 +123,9 @@ namespace LlamaLibrary
 
             //await MoveItemsAroundMain();
 
-           // await Facet();
+            // await Facet();
 
-           // await LeveWindow(1018997);
+            // await LeveWindow(1018997);
 
             TreeRoot.Stop("Stop Requested");
             return true;
@@ -142,9 +144,10 @@ namespace LlamaLibrary
         internal void init()
         {
             OffsetManager.Init();
-           // var text = File.ReadAllText(@"G:\Order.json", Encoding.UTF8);
-           // orderList = loadResource<List<LisbethOrder>>(text);
-           // Logger.Info("Loaded Order.json");
+
+            // var text = File.ReadAllText(@"G:\Order.json", Encoding.UTF8);
+            // orderList = loadResource<List<LisbethOrder>>(text);
+            // Logger.Info("Loaded Order.json");
         }
 
         private static T loadResource<T>(string text)
@@ -156,14 +159,14 @@ namespace LlamaLibrary
         {
             foreach (var item in orderList)
             {
-                Logger.Info($"{DataManager.GetItem((uint) item.Item)}");
+                Logger.Info($"{DataManager.GetItem((uint)item.Item)}");
             }
 
             await RetainerRoutine.ReadRetainers(CheckForItems);
 
             foreach (var item in orderList.ToList())
             {
-                var itemCount = DataManager.GetItem((uint) item.Item).ItemCount();
+                var itemCount = DataManager.GetItem((uint)item.Item).ItemCount();
 
                 if (itemCount > 0)
                 {
@@ -174,8 +177,8 @@ namespace LlamaLibrary
                     }
                     else
                     {
-                        Logger.Info($"Changing amount of {item} to {item.Amount - (int) itemCount}");
-                        orderList.First(i => i.Item == item.Item).Amount = item.Amount - (int) itemCount;
+                        Logger.Info($"Changing amount of {item} to {item.Amount - (int)itemCount}");
+                        orderList.First(i => i.Item == item.Item).Amount = item.Amount - (int)itemCount;
                     }
                 }
                 else
@@ -213,7 +216,6 @@ namespace LlamaLibrary
                     {
                         outputFile.WriteLine($"{itemStored}");
                     }
-
                 }
             }
         }
@@ -228,8 +230,6 @@ namespace LlamaLibrary
                 gearSets.First().Activate();
                 await Coroutine.Sleep(1000);
             }
-
-
         }
 
         public async Task<bool> Facet()
@@ -268,7 +268,6 @@ namespace LlamaLibrary
                 {
                     Logger.Info($"Found {HugeCraftworksSupply.Instance.TurnInItemId}");
 
-
                     await HugeCraftworksSupply.Instance.HandOverItems();
                     return true;
                 }
@@ -280,8 +279,6 @@ namespace LlamaLibrary
 
             return false;
         }
-
-
 
         public async Task<bool> Shop()
         {
@@ -336,13 +333,12 @@ namespace LlamaLibrary
 
             await Coroutine.Wait(5000, () => SelectString.IsOpen);
 
-            SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+            SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
 
             await Coroutine.Sleep(700);
 
             return true;
         }
-
 
         public async Task<bool> CheckForItems()
         {
@@ -372,6 +368,7 @@ namespace LlamaLibrary
                 slot.LowerQuality();
                 await Coroutine.Sleep(1000);
             }
+
             await Coroutine.Sleep(1000);
 
             await RetainerRoutine.ReadRetainers(RetainerRoutine.DumpItems());
@@ -390,6 +387,7 @@ namespace LlamaLibrary
             {
                 Logger.Info($"Pulling {cat}");
             }
+
             await PullItemsByCategories(retainerCategoryStorage.Where(i => i.Key != index).SelectMany(x => x.Value).ToArray());
 
             await Coroutine.Sleep(1000);
@@ -414,12 +412,12 @@ namespace LlamaLibrary
         {
             var itemIds = ids.Select(x => x.Item).ToList(); // SelectMany(x => x.Id);
             Logger.Info($"Checking against {itemIds.Count()}");
-            var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Where(i => itemIds.Contains((int) i.RawItemId));
+            var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Where(i => itemIds.Contains((int)i.RawItemId));
 
             foreach (var slot in retItems)
             {
                 RetainerRoutine.LogLoud($"Want to move {slot}");
-                slot.RetainerRetrieveQuantity((int) Math.Min(ids.First(i => i.Item == slot.RawItemId).Amount, slot.Count));
+                slot.RetainerRetrieveQuantity((int)Math.Min(ids.First(i => i.Item == slot.RawItemId).Amount, slot.Count));
                 await Coroutine.Sleep(200);
             }
         }
@@ -428,11 +426,12 @@ namespace LlamaLibrary
         {
             //var itemIds = ids.Select(x => x.Item).ToList(); // SelectMany(x => x.Id);
             Logger.Info($"Checking against {ids.Count()}");
-            var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).AsParallel().Where(i => i.Count < 99 && i.Item.ItemLevel < 300 && i.Item.StackSize == 999).Where(k=> k.Item.EngName.Contains("Ore") || k.Item.EngName.Contains("Log")).Where(j => GatheringCategories.Contains(j.Item.EquipmentCatagory) && !ids.Contains(j.RawItemId));
+            var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).AsParallel().Where(i => i.Count < 99 && i.Item.ItemLevel < 300 && i.Item.StackSize == 999).Where(k => k.Item.EngName.Contains("Ore") || k.Item.EngName.Contains("Log")).Where(j => GatheringCategories.Contains(j.Item.EquipmentCatagory) && !ids.Contains(j.RawItemId));
 
             foreach (var slot in retItems)
             {
                 RetainerRoutine.LogLoud($"Want to move {slot} - {slot.Count}");
+
                 //slot.RetainerRetrieveQuantity((int) Math.Min(ids.First(i => i.Item == slot.RawItemId).Amount, slot.Count));
                 await Coroutine.Sleep(200);
             }
@@ -447,26 +446,26 @@ namespace LlamaLibrary
             foreach (var slot in retItems)
             {
                 RetainerRoutine.LogLoud($"Want to move {slot} - {slot.Count}");
-                slot.RetainerRetrieveQuantity( (int) slot.Count);
+                slot.RetainerRetrieveQuantity((int)slot.Count);
                 await Coroutine.Sleep(200);
             }
         }
 
-        internal static async Task ListItems()
+        internal static Task ListItems()
         {
-            var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Where(i=> i.Item.ItemLevel < 400 && i.Item.MyItemRole() == MyItemRole.CraftingMaterial).Select(y => new ItemStored(y.RawItemId, y.IsHighQuality, y.Count,y.Item.ItemLevel, y.Item.EquipmentCatagory.ToString(), y.EnglishName));
+            var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Where(i => i.Item.ItemLevel < 400 && i.Item.MyItemRole() == MyItemRole.CraftingMaterial).Select(y => new ItemStored(y.RawItemId, y.IsHighQuality, y.Count, y.Item.ItemLevel, y.Item.EquipmentCatagory.ToString(), y.EnglishName));
             retainerItems.AddRange(retItems);
+            return Task.CompletedTask;
         }
 
         internal static async Task ListItemsByCategories(ItemUiCategory[] categories)
         {
             foreach (var cat in categories)
             {
-                var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Where(i=> i.Item.EquipmentCatagory == cat).Select(y => new ItemStored(y.RawItemId, y.IsHighQuality, y.Count,y.Item.ItemLevel, y.Item.EquipmentCatagory.ToString(), y.EnglishName));
+                var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Where(i => i.Item.EquipmentCatagory == cat).Select(y => new ItemStored(y.RawItemId, y.IsHighQuality, y.Count, y.Item.ItemLevel, y.Item.EquipmentCatagory.ToString(), y.EnglishName));
                 categoryCount[cat].AddRange(retItems);
                 await Coroutine.Sleep(200);
             }
-
         }
 
         internal static async Task PullItemsByCategories(ItemUiCategory[] categories)
@@ -480,34 +479,35 @@ namespace LlamaLibrary
                 foreach (var slot in retItems)
                 {
                     RetainerRoutine.LogLoud($"Want to move PULL {slot} - {slot.Count}");
-                    slot.RetainerRetrieveQuantity( (int) slot.Count);
+                    slot.RetainerRetrieveQuantity((int)slot.Count);
                     await Coroutine.Sleep(700);
                 }
+
                 await Coroutine.Sleep(200);
             }
-
         }
 
         internal static async Task DumpItemsByCategories(ItemUiCategory[] categories)
         {
-                var myItems = InventoryManager.FilledSlots.Where(i => categories.Contains(i.Item.EquipmentCatagory) && i.Item.MyItemRole() != MyItemRole.Map);
+            var myItems = InventoryManager.FilledSlots.Where(i => categories.Contains(i.Item.EquipmentCatagory) && i.Item.MyItemRole() != MyItemRole.Map);
 
-                foreach (var slot in myItems)
+            foreach (var slot in myItems)
+            {
+                if (InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).FirstOrDefault(i => i.FreeSlots >= 1) != null)
                 {
-                    if (InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).FirstOrDefault(i => i.FreeSlots >= 1) != null)
-                    {
-                        RetainerRoutine.LogLoud($"Want to move DUMP {slot} - {slot.Count}");
-                        slot.Move(InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).First(i => i.FreeSlots >= 1).GetFirstFreeSlot());
-                        //slot.RetainerEntrustQuantity((int) slot.Count);
-                        await Coroutine.Sleep(700);
-                    }
-                    else
-                    {
-                        RetainerRoutine.LogLoud($"Not Enough room in retainer");
-                    }
-                }
+                    RetainerRoutine.LogLoud($"Want to move DUMP {slot} - {slot.Count}");
+                    slot.Move(InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).First(i => i.FreeSlots >= 1).GetFirstFreeSlot());
 
-                await RetainerRoutine.DumpItems();
+                    //slot.RetainerEntrustQuantity((int) slot.Count);
+                    await Coroutine.Sleep(700);
+                }
+                else
+                {
+                    RetainerRoutine.LogLoud($"Not Enough room in retainer");
+                }
+            }
+
+            await RetainerRoutine.DumpItems();
         }
 
         public async Task<bool> FCWorkshop()
@@ -532,15 +532,14 @@ namespace LlamaLibrary
                 return false;
             }
 
-
             //    List<LisbethOrder> outList = new List<LisbethOrder>();
             var id = 0;
             var counts = SubmarinePartsMenu.Instance.GetItemAvailCount();
             var done = SubmarinePartsMenu.Instance.GetTurninsDone();
             foreach (var item in SubmarinePartsMenu.Instance.GetCraftingTurninItems())
             {
-                var needed = item.Qty * item.TurnInsRequired - item.Qty * done[id];
-                var itemCount = (int) DataManager.GetItem((uint) item.ItemId).ItemCount();
+                var needed = (item.Qty * item.TurnInsRequired) - (item.Qty * done[id]);
+                var itemCount = (int)DataManager.GetItem((uint)item.ItemId).ItemCount();
 
                 var turnInsAvail = itemCount / item.Qty;
 
@@ -551,6 +550,7 @@ namespace LlamaLibrary
                 if (turnInsNeeded >= 1)
                 {
                     if (turnInsAvail >= 1)
+                    {
                         for (var i = 0; i < Math.Min(turnInsAvail, turnInsNeeded); i++)
                         {
                             BagSlot bagSlot = null;
@@ -559,7 +559,8 @@ namespace LlamaLibrary
                             {
                                 bagSlot = InventoryManager.FilledSlots.First(slot => slot.RawItemId == item.ItemId && slot.IsHighQuality && slot.Count >= item.Qty);
                                 Logging.Write($"Have HQ {bagSlot.Name}");
-//                                continue;
+
+                                //                                continue;
                             }
                             else if (ItemCount(item.ItemId) >= item.Qty)
                             {
@@ -629,6 +630,7 @@ namespace LlamaLibrary
                                 Logging.Write("Bagslot is null");
                             }
                         }
+                    }
                     else
                         Logging.Write($"No Turn ins available {turnInsAvail}");
                 }

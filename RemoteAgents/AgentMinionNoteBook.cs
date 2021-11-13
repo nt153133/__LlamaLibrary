@@ -7,7 +7,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    public class AgentMinionNoteBook: AgentInterface<AgentMinionNoteBook>, IAgent
+    public class AgentMinionNoteBook : AgentInterface<AgentMinionNoteBook>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
 
@@ -33,7 +33,7 @@ namespace LlamaLibrary.RemoteAgents
             var address = this.Pointer + Offsets.AgentOffset;
             var address1 = Core.Memory.Read<IntPtr>(address);
             var count = Core.Memory.Read<uint>(Offsets.MinionCount);
-            return Core.Memory.ReadArray<MinionStruct>(address1, (int) count);
+            return Core.Memory.ReadArray<MinionStruct>(address1, (int)count);
         }
 
         public static string GetMinionName(int index)
@@ -41,7 +41,6 @@ namespace LlamaLibrary.RemoteAgents
             var result = Core.Memory.CallInjected64<IntPtr>(Offsets.GetCompanion, index);
             return result != IntPtr.Zero ? Core.Memory.ReadString(result + 0x30, Encoding.UTF8) : "";
         }
-
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 0x4)]
@@ -53,5 +52,4 @@ namespace LlamaLibrary.RemoteAgents
         [FieldOffset(2)]
         public ushort unknown;
     }
-
 }

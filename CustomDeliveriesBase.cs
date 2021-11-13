@@ -41,7 +41,6 @@ namespace LlamaLibrary
 
         public override bool WantButton { get; } = false;
 
-
         public override void Start()
         {
             _root = new ActionRunCoroutine(r => Run());
@@ -65,12 +64,12 @@ namespace LlamaLibrary
             Navigator.NavigationProvider = new ServiceNavigationProvider();
             var DeliveryNpcs = new Dictionary<uint, (uint Zone, Vector3 location, string name, int requiredQuest, uint index)>
             {
-                { 1019615, (478, new Vector3(-71.68203f, 206.5714f, 29.38501f), "Zhloe Aliapoh", 67087, 1) }, //(Zhloe Aliapoh) Idyllshire(Dravania) 
-                { 1020337, (635, new Vector3(171.312988f, 13.02367f, -89.951965f), "M'naago", 68541, 2) }, //(M'naago) Rhalgr's Reach(Gyr Abania) 
-                { 1025878, (613, new Vector3(343.984009f, -120.329468f, -306.019714f), "Kurenai", 68675, 3) }, //(Kurenai) The Ruby Sea(Othard) 
-                { 1018393, (478, new Vector3(-62.3016f, 206.6002f, 23.893f), "Adkiragh", 68713, 4) }, //(Adkiragh) Idyllshire(Dravania) 
-                { 1031801, (820, new Vector3(52.811401f, 82.993774f, -65.384949f), "Kai-Shirr", 69265, 5) }, //(Kai-Shirr) Eulmore(Eulmore) 
-                { 1033543, (886, new Vector3(113.389771f, -20.004639f, -0.961365f), "Ehll Tou", 69425, 6) }, //(Ehll Tou) The Firmament(Ishgard) 
+                { 1019615, (478, new Vector3(-71.68203f, 206.5714f, 29.38501f), "Zhloe Aliapoh", 67087, 1) }, //(Zhloe Aliapoh) Idyllshire(Dravania)
+                { 1020337, (635, new Vector3(171.312988f, 13.02367f, -89.951965f), "M'naago", 68541, 2) }, //(M'naago) Rhalgr's Reach(Gyr Abania)
+                { 1025878, (613, new Vector3(343.984009f, -120.329468f, -306.019714f), "Kurenai", 68675, 3) }, //(Kurenai) The Ruby Sea(Othard)
+                { 1018393, (478, new Vector3(-62.3016f, 206.6002f, 23.893f), "Adkiragh", 68713, 4) }, //(Adkiragh) Idyllshire(Dravania)
+                { 1031801, (820, new Vector3(52.811401f, 82.993774f, -65.384949f), "Kai-Shirr", 69265, 5) }, //(Kai-Shirr) Eulmore(Eulmore)
+                { 1033543, (886, new Vector3(113.389771f, -20.004639f, -0.961365f), "Ehll Tou", 69425, 6) }, //(Ehll Tou) The Firmament(Ishgard)
                 { 1035211, (886, new Vector3(-115.1127f, 0f, -134.8367f), "Charlemend", 69615, 7) }
             };
 
@@ -83,6 +82,7 @@ namespace LlamaLibrary
                     Log($"Bad Npc ID: {AgentSatisfactionSupply.Instance.NpcId}");
                     break;
                 }
+
                 Log($"{DeliveryNpcs[AgentSatisfactionSupply.Instance.NpcId].name}");
                 Log($"\tHeartLevel:{AgentSatisfactionSupply.Instance.HeartLevel}");
                 Log($"\tRep:{AgentSatisfactionSupply.Instance.CurrentRep}/{AgentSatisfactionSupply.Instance.MaxRep}");
@@ -104,11 +104,11 @@ namespace LlamaLibrary
 
                 if (npc.Key == 1025878)
                 {
-                    outList.Add(new LisbethOrder(0, 1, (int) AgentSatisfactionSupply.Instance.DoLItemId, Math.Min(3, (int) AgentSatisfactionSupply.Instance.DeliveriesRemaining), "Gather", true));
+                    outList.Add(new LisbethOrder(0, 1, (int)AgentSatisfactionSupply.Instance.DoLItemId, Math.Min(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining), "Gather", true));
                 }
                 else
                 {
-                    outList.Add(new LisbethOrder(0, 1, (int) AgentSatisfactionSupply.Instance.DoHItemId, Math.Min(3, (int) AgentSatisfactionSupply.Instance.DeliveriesRemaining), "Carpenter", true));
+                    outList.Add(new LisbethOrder(0, 1, (int)AgentSatisfactionSupply.Instance.DoHItemId, Math.Min(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining), "Carpenter", true));
                 }
 
                 var order = JsonConvert.SerializeObject(outList, Formatting.None).Replace("Hq", "Collectable");
@@ -123,7 +123,7 @@ namespace LlamaLibrary
                         {
                             await Lisbeth.ExecuteOrdersIgnoreHome(order);
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                             continue;
                         }
@@ -185,12 +185,14 @@ namespace LlamaLibrary
             await Buddy.Coroutines.Coroutine.Wait(1000, () => Talk.DialogOpen);
 
             if (Talk.DialogOpen)
+            {
                 while (Talk.DialogOpen)
                 {
                     Talk.Next();
                     await Buddy.Coroutines.Coroutine.Sleep(200);
                     await Coroutine.Yield();
                 }
+            }
 
             await Coroutine.Wait(10000, () => SatisfactionSupply.Instance.IsOpen);
 
@@ -309,7 +311,7 @@ namespace LlamaLibrary
             await Coroutine.Wait(1000, () => Conversation.IsOpen);
             if (Conversation.IsOpen)
             {
-                Conversation.SelectLine((uint) (Conversation.GetConversationList.Count - 1));
+                Conversation.SelectLine((uint)(Conversation.GetConversationList.Count - 1));
             }
 
             return true;

@@ -40,7 +40,6 @@ namespace LlamaLibrary
 
         public override bool WantButton { get; } = false;
 
-
         public override void Start()
         {
             _root = new ActionRunCoroutine(r => Run());
@@ -53,16 +52,16 @@ namespace LlamaLibrary
 
         private async Task<bool> Run()
         {
-
             await CheckHousing();
-           // await Coroutine.Sleep(new TimeSpan(0, 1, 0));
-           TreeRoot.Stop("Stop Requested");
+
+            // await Coroutine.Sleep(new TimeSpan(0, 1, 0));
+            TreeRoot.Stop("Stop Requested");
             return true;
         }
 
         public static async Task CheckHousing()
         {
-                        Navigator.PlayerMover = new SlideMover();
+            Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
 
             var output = new List<string>();
@@ -90,8 +89,8 @@ namespace LlamaLibrary
 
             if (large)
             {
-                string message = string.Join("\n", outputLarge); 
-                string title = "Large";  
+                string message = string.Join("\n", outputLarge);
+                string title = "Large";
                 MessageBox.Show(message, title);
             }
 
@@ -112,11 +111,10 @@ namespace LlamaLibrary
                 }
             }
 
-
             if (large)
             {
-                string message = string.Join("\n", outputLarge); 
-                string title = "Large";  
+                string message = string.Join("\n", outputLarge);
+                string title = "Large";
                 MessageBox.Show(message, title);
             }
 
@@ -137,24 +135,25 @@ namespace LlamaLibrary
                 }
             }
 
-
             if (large)
             {
-                string message = string.Join("\n", outputLarge); 
-                string title = "Large";  
+                string message = string.Join("\n", outputLarge);
+                string title = "Large";
                 MessageBox.Show(message, title);
             }
 
             if (ConditionParser.HasAetheryte(111))
                 output.AddRange(await GetShiroganePlots());
 
-            if(!output.Any())
+            if (!output.Any())
                 Log1($"No Housing Plots For Sale");
 
             foreach (var line in output)
             {
                 if (line.Contains("Small"))
+                {
                     Log($"{line}");
+                }
                 else if (line.Contains("Medium"))
                 {
                     Log1($"{line}");
@@ -175,19 +174,18 @@ namespace LlamaLibrary
 
             if (medium)
             {
-                string message = string.Join("\n", outputMed); 
-                string title = "Medium";  
+                string message = string.Join("\n", outputMed);
+                string title = "Medium";
                 MessageBox.Show(message, title);
             }
 
             if (large)
             {
-                string message = string.Join("\n", outputLarge); 
-                string title = "Large";  
+                string message = string.Join("\n", outputLarge);
+                string title = "Large";
                 MessageBox.Show(message, title);
             }
         }
-
 
         public static async Task<List<string>> GetMistsPlots()
         {
@@ -282,7 +280,8 @@ namespace LlamaLibrary
             do
             {
                 await Coroutine.Sleep(2000);
-            } while (Core.Me.IsCasting);
+            }
+            while (Core.Me.IsCasting);
             await Coroutine.Sleep(2000);
             if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
 
@@ -294,23 +293,26 @@ namespace LlamaLibrary
             if (!unit.IsWithinInteractRange)
             {
                 Log($"Not in range {unit.Distance2D()}");
-                var target = unit.Location; 
+                var target = unit.Location;
                 if (WorldManager.RawZoneId == 129)
+                {
                     target = new Vector3(-89.30112f, 18.80033f, -2.019181f);
+                }
                 else if (WorldManager.RawZoneId == 628)
                 {
                     target = new Vector3(48.03579f, 4.549999f, -31.83851f);
                 }
+
                 //await CommonTasks.MoveAndStop(new MoveToParameters(target.FanOutRandom(2f), unit.Name), 2f, true);
                 await Navigation.GetTo(WorldManager.ZoneId, target);
-/*                Navigator.PlayerMover.MoveTowards(target);
-                while (!unit.IsWithinInteractRange)
-                {
-                    Navigator.PlayerMover.MoveTowards(target);
-                    await Coroutine.Sleep(100);
-                }
+                /*                Navigator.PlayerMover.MoveTowards(target);
+                                while (!unit.IsWithinInteractRange)
+                                {
+                                    Navigator.PlayerMover.MoveTowards(target);
+                                    await Coroutine.Sleep(100);
+                                }
 
-                Navigator.PlayerMover.MoveStop();*/
+                                Navigator.PlayerMover.MoveStop();*/
             }
             else
             {
@@ -359,8 +361,6 @@ namespace LlamaLibrary
 
             await Coroutine.Wait(5000, () => SelectIconString.IsOpen);
 
-
-
             if (SelectIconString.IsOpen)
             {
                 if (Translator.Language == Language.Chn)
@@ -384,7 +384,6 @@ namespace LlamaLibrary
                     SelectString.ClickLineContains("移动到指定小区");
                 else
                     SelectString.ClickLineContains("Go to specified");
-
 
                 await Coroutine.Wait(5000, () => HousingSelectBlock.Instance.IsOpen);
             }
@@ -465,7 +464,7 @@ namespace LlamaLibrary
 
                 if (SelectString.IsOpen)
                 {
-                    SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+                    SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
                     await Coroutine.Wait(5000, () => !SelectString.IsOpen);
                 }
 
@@ -485,7 +484,7 @@ namespace LlamaLibrary
 
                 if (SelectString.IsOpen)
                 {
-                    SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+                    SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
                     await Coroutine.Wait(5000, () => !SelectString.IsOpen);
                 }
 
@@ -497,11 +496,13 @@ namespace LlamaLibrary
         {
             var output = new List<string>();
             if (HousingSelectBlock.Instance.IsOpen)
+            {
                 for (var i = 0; i < HousingSelectBlock.Instance.NumberOfWards; i++)
                 {
                     HousingSelectBlock.Instance.SelectWard(i);
 
                     await Coroutine.Sleep(500);
+
                     //Log($"Ward {AgentHousingSelectBlock.Instance.WardNumber + 1}");
                     var plotStatus = AgentHousingSelectBlock.Instance.ReadPlots(HousingSelectBlock.Instance.NumberOfPlots);
 
@@ -514,6 +515,7 @@ namespace LlamaLibrary
 
                             var bytes = Encoding.ASCII.GetBytes(HousingSelectBlock.Instance.PlotString(j).Split(' ')[1]);
                             if (bytes.Length > 9)
+                            {
                                 switch (bytes[9])
                                 {
                                     case 72:
@@ -526,6 +528,7 @@ namespace LlamaLibrary
                                         size = " (Large) ";
                                         break;
                                 }
+                            }
 
                             //Log($"{HousingSelectBlock.Instance.HousingWard} Plot {j+1} {size} -  {price}");
                             output.Add($"{HousingSelectBlock.Instance.HousingWard} Plot {j + 1} {size} -  {price}");
@@ -534,6 +537,7 @@ namespace LlamaLibrary
 
                     await Coroutine.Sleep(200);
                 }
+            }
 
             return output;
         }

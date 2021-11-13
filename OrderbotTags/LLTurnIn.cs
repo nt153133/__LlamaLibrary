@@ -13,16 +13,19 @@ using System.ComponentModel;
 using System.Linq;
 using Clio.Utilities;
 using Clio.XmlEngine;
+using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Enums;
 using ff14bot.Managers;
+using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using TreeSharp;
 
-namespace ff14bot.NeoProfiles
+namespace Ff14bot.NeoProfiles
 {
     [XmlElement("LLTurnIn")]
+
     // ReSharper disable once InconsistentNaming
     public class LLTurnInTag : ProfileBehavior
     {
@@ -31,7 +34,7 @@ namespace ff14bot.NeoProfiles
         private bool _doneEmote;
         private bool _doneTalking;
         public bool hasrewards;
-        protected bool IsDoneOverride;
+        protected bool isDoneOverride;
         public Vector3 Position = Vector3.Zero;
         private QuestResult _questdata;
 
@@ -47,7 +50,8 @@ namespace ff14bot.NeoProfiles
         [XmlAttribute("ItemId")]
         public int[] ItemIds { get; set; }
 
-        [XmlAttribute("RequiresHq")] public bool[] RequiresHq { get; set; }
+        [XmlAttribute("RequiresHq")]
+        public bool[] RequiresHq { get; set; }
 
         [DefaultValue(new int[0])]
         [XmlAttribute("DialogOption")]
@@ -56,8 +60,6 @@ namespace ff14bot.NeoProfiles
         [DefaultValue("")]
         [XmlAttribute("Emote")]
         public string Emote { get; set; }
-
-        #region Overrides of ProfileBehavior
 
         public override bool IsDone
         {
@@ -69,9 +71,8 @@ namespace ff14bot.NeoProfiles
             }
         }
 
-        #endregion
-
-        [XmlAttribute("NpcId")] public int NpcId { get; set; }
+        [XmlAttribute("NpcId")]
+        public int NpcId { get; set; }
 
         [XmlAttribute("InteractDistance")]
         [DefaultValue(5f)]
@@ -84,28 +85,28 @@ namespace ff14bot.NeoProfiles
             set => Position = value;
         }
 
-
         public override string StatusText => "Talking to " + _questGiver;
 
-
-        public GameObject NPC => GameObjectManager.GetObjectByNPCId((uint) NpcId);
+        public GameObject NPC => GameObjectManager.GetObjectByNPCId((uint)NpcId);
 
         protected override void OnStart()
         {
             if (DialogOption.Length > 0)
+            {
                 foreach (var i in DialogOption)
                 {
                     _selectStringIndex.Enqueue(i);
                 }
+            }
 
             _usedSlots = new HashSet<BagSlot>();
             _questGiver = DataManager.GetLocalizedNPCName(NpcId);
             if (RewardSlot == -1)
             {
                 if (QuestId > 65535)
-                    DataManager.QuestCache.TryGetValue((uint) QuestId, out _questdata);
+                    DataManager.QuestCache.TryGetValue((uint)QuestId, out _questdata);
                 else
-                    DataManager.QuestCache.TryGetValue((ushort) QuestId, out _questdata);
+                    DataManager.QuestCache.TryGetValue((ushort)QuestId, out _questdata);
 
                 if (_questdata != null && _questdata.Rewards.Any())
                 {
@@ -113,9 +114,11 @@ namespace ff14bot.NeoProfiles
 
                     //If everything is valued the same cause its items that are not equipment most likely
                     if (values.Select(r => r.Value).Distinct().Count() == 1) values = values.OrderByDescending(r => r.Reward.Worth).ToArray();
+
                     //Now in heavensward the rewardlist doesnt start at 0 for some reason
                     RewardSlot = _questdata.Rewards.IndexOf(values[0].Reward) + 5;
                     hasrewards = true;
+
                     //AsmManager.JournalResult_SelectItem(window, );
                 }
             }
@@ -124,7 +127,6 @@ namespace ff14bot.NeoProfiles
                 RewardSlot += 5;
                 hasrewards = true;
             }
-
 
             if (RequiresHq == null)
             {
@@ -135,10 +137,8 @@ namespace ff14bot.NeoProfiles
                 if (RequiresHq.Length != ItemIds.Length) LogError("RequiresHq must have the same number of items as ItemIds");
             }
 
-
             Log("Turning in quest {0}({1}) from {2} at {3}", QuestName, QuestId, _questGiver, Position);
         }
-
 
         protected override void OnResetCachedDone()
         {
@@ -151,22 +151,25 @@ namespace ff14bot.NeoProfiles
         {
             return new PrioritySelector(
                 ctx => NPC,
-                new Decorator(ret => !_doneEmote && !string.IsNullOrWhiteSpace(Emote),
+                new Decorator(
+                    ret => !_doneEmote && !string.IsNullOrWhiteSpace(Emote),
                     new Action(r =>
                     {
-                        GameObjectManager.GetObjectByNPCId((uint) NpcId).Target();
+                        GameObjectManager.GetObjectByNPCId((uint)NpcId).Target();
                         ChatManager.SendChat("/" + Emote);
                         _doneEmote = true;
                     })
                 ),
-                new Decorator(ret => SelectYesno.IsOpen,
+                new Decorator(
+                    ret => SelectYesno.IsOpen,
                     new Action(r => { SelectYesno.ClickYes(); })
                 ),
-                new Decorator(ret => SelectString.IsOpen,
+                new Decorator(
+                    ret => SelectString.IsOpen,
                     new Action(r =>
                     {
                         if (_selectStringIndex.Count > 0)
-                            SelectString.ClickSlot((uint) _selectStringIndex.Dequeue());
+                            SelectString.ClickSlot((uint)_selectStringIndex.Dequeue());
                         else
                             SelectString.ClickSlot(0);
                     })
@@ -198,7 +201,6 @@ namespace ff14bot.NeoProfiles
                         else
                             item = items.FirstOrDefault(z => z.RawItemId == ItemIds[i] && !_usedSlots.Contains(z));
 
-
                         if (item == null)
                         {
                             if (RequiresHq[i])
@@ -225,9 +227,11 @@ namespace ff14bot.NeoProfiles
                     SelectIconString.ClickLineEquals(QuestName);
                     return RunStatus.Success;
                 })),
+
                 // If we're in interact range, and the NPC/Placeable isn't here... wait 30s.
                 new Decorator(r => QuestLogManager.InCutscene, new ActionAlwaysSucceed()),
                 CommonBehaviors.MoveAndStop(ret => XYZ, ret => InteractDistance, true, ret => $"[{GetType().Name}] Moving to {XYZ} so we can turnin {QuestName} to {_questGiver}"),
+
                 // If we're in interact range, and the NPC/Placeable isn't here... wait 30s.
                 new Decorator(ret => NPC == null, new Sequence(new SucceedLogger(r => $"Waiting at {Core.Player.Location} for {_questGiver} to spawn"), new WaitContinue(5, ret => NPC != null, new Action(ret => RunStatus.Failure)))),
                 new Decorator(ret => !Talk.ConvoLock && !SelectIconString.IsOpen, new Action(ret => NPC.Interact()))

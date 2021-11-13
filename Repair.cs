@@ -32,7 +32,7 @@ namespace AutoRepair
         private static IntPtr func;
         private static IntPtr vtable;
 
-        private static ActionRunCoroutine s_hook;
+        private static ActionRunCoroutine hook;
 
         private Composite _root;
         public override string Author => "Kayla D'orden";
@@ -41,18 +41,19 @@ namespace AutoRepair
         public override bool WantButton => false;
         public static string _Name => "AutoRepair";
 
-
-
         public Composite CreateVendorBehavior
         {
             get
             {
-                return new Decorator(r => !Core.Me.InCombat && !MovementManager.IsOccupied && !Repairing,
+                return new Decorator(
+                    r => !Core.Me.InCombat && !MovementManager.IsOccupied && !Repairing,
                     new PrioritySelector(
-                        new Decorator(r => InventoryManager.EquippedItems.Any(item => item.Item != null && item.Item.RepairItemId != 0 && item.Condition < RepairThreshold),
+                        new Decorator(
+                            r => InventoryManager.EquippedItems.Any(item => item.Item != null && item.Item.RepairItemId != 0 && item.Condition < RepairThreshold),
                             new Sequence(
                                 new Action(r => Log("Start")),
                                 new Action(r => TreeRoot.StatusText = "Should be repairing"),
+
                                 //new Action(r => Run()),
                                 new Action(r => Repairing = true),
                                 new Action(r => Log("Stop")),
@@ -69,12 +70,15 @@ namespace AutoRepair
             get
             {
                 return new PrioritySelector(
-                    new Decorator(r => Repairing,
+                    new Decorator(
+                        r => Repairing,
                         new PrioritySelector(
-                            new Decorator(r => SelectYesno.IsOpen,
+                            new Decorator(
+                                r => SelectYesno.IsOpen,
                                 new Sequence(
                                     new Action(r => Log("At Select Yes/No")),
                                     new Sleep(500),
+
                                     //new Action(r => Thread.Sleep(1000)),
                                     new Action(r => SelectYesno.ClickYes()),
                                     new Sleep(1000),
@@ -82,13 +86,15 @@ namespace AutoRepair
                                     new Action(r => Repair.Close())
                                 )
                             ),
-                            new Decorator(r => Repair.IsOpen,
+                            new Decorator(
+                                r => Repair.IsOpen,
                                 new Sequence(
                                     new Action(r => Log("Window open so repairing")),
                                     new Action(r => Repair.RepairAll())
                                 )
                             ),
-                            new Decorator(r => !Repair.IsOpen,
+                            new Decorator(
+                                r => !Repair.IsOpen,
                                 new Sequence(
                                     new Action(r => Log("Window not open so opening")),
                                     new Action(r => OpenRepair()),
@@ -122,14 +128,13 @@ namespace AutoRepair
             AgentId = repairAgent;
 
             _root = new Decorator(r => Repairing, RepairBehavior);
+
             //_root = new Decorator(r => Repairing, new ActionAlwaysSucceed());
         }
 
         private void OnBotStop(BotBase bot)
         {
             RemoveHooks();
-
-
         }
 
         private void OnBotStart(BotBase bot)
@@ -182,7 +187,7 @@ namespace AutoRepair
             RemoveHooks();
         }
 
-        public async static Task OpenRepair()
+        public static async Task OpenRepair()
         {
             Core.Memory.CallInjected64<IntPtr>(func, AgentModule.GetAgentInterfaceById(AgentId).Pointer, 0, 0, off);
 

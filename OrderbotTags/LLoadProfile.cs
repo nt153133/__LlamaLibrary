@@ -1,13 +1,15 @@
-using System;
+﻿using System;
 using System.IO;
 using Clio.XmlEngine;
+using ff14bot;
+using ff14bot.NeoProfiles;
 using TreeSharp;
 using Action = TreeSharp.Action;
 
-namespace ff14bot.NeoProfiles
+namespace Ff14bot.NeoProfiles
 {
     [XmlElement("ALoadProfile")]
-	[XmlElement("LLoadProfile")]
+    [XmlElement("LLoadProfile")]
 
     public class LLoadProfileTag : ProfileBehavior
     {
@@ -21,10 +23,11 @@ namespace ff14bot.NeoProfiles
         protected override Composite CreateBehavior()
         {
             return new PrioritySelector(
-                new Decorator(ret => TreeRoot.IsRunning,
+                new Decorator(
+                    ret => TreeRoot.IsRunning,
                     new Action(r =>
                     {
-                        NeoProfileManager.Load(NewProfilePath, true);
+                        NeoProfileManager.Load(newProfilePath, true);
                         NeoProfileManager.UpdateCurrentProfileBehavior();
                         _done = true;
                     })
@@ -32,23 +35,23 @@ namespace ff14bot.NeoProfiles
             );
         }
 
-		private string NewProfilePath;
-		protected override void OnStart()
+        private string newProfilePath;
+        protected override void OnStart()
         {
+            var CurrentProfile = NeoProfileManager.CurrentProfile.Path;
 
-			var CurrentProfile = NeoProfileManager.CurrentProfile.Path;
             // Support for store profiles.
             // Absolute path to a store profile.
             if (IsStoreProfile(ProfileName))
             {
-                NewProfilePath = Slashify(ProfileName);
+                newProfilePath = Slashify(ProfileName);
                 return;
             }
 
             // Relative path to a store profile
             if (IsStoreProfile(CurrentProfile))
             {
-                NewProfilePath = Slashify(CurrentProfile + "/../" + ProfileName);
+                newProfilePath = Slashify(CurrentProfile + "/../" + ProfileName);
                 return;
             }
 
@@ -56,13 +59,13 @@ namespace ff14bot.NeoProfiles
             var absolutePath = Path.Combine(Path.GetDirectoryName(CurrentProfile), ProfileName);
             absolutePath = Path.GetFullPath(absolutePath);
             var canonicalPath = new Uri(absolutePath).LocalPath;
-            NewProfilePath = Slashify(canonicalPath);
+            newProfilePath = Slashify(canonicalPath);
 
-			Log("Changing profile to {0}",ProfileName);
+            Log("Changing profile to {0}", ProfileName);
         }
 
         /// <summary>
-        /// This gets called when a while loop starts over so reset anything that is used inside the IsDone check
+        /// This gets called when a while loop starts over so reset anything that is used inside the IsDone check.
         /// </summary>
         protected override void OnResetCachedDone()
         {
@@ -71,11 +74,9 @@ namespace ff14bot.NeoProfiles
 
         protected override void OnDone()
         {
-
         }
 
-
-		private bool IsStoreProfile(string path)
+        private bool IsStoreProfile(string path)
         {
             return path.StartsWith("store://");
         }

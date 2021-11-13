@@ -1,6 +1,6 @@
 ﻿namespace LlamaLibrary.RemoteWindows
 {
-    public class SatisfactionSupplyResult: RemoteWindow<SatisfactionSupplyResult>
+    public class SatisfactionSupplyResult : RemoteWindow<SatisfactionSupplyResult>
     {
         private const string WindowName = "SatisfactionSupplyResult";
 
@@ -11,7 +11,7 @@
 
         public void Confirm()
         {
-            SendAction(1,3,1);
+            SendAction(1, 3, 1);
         }
     }
 }

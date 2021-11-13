@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
@@ -22,7 +22,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class Navigation
     {
-        public static readonly WaitTimer waitTimer_0 = new WaitTimer(new TimeSpan(0, 0, 0, 15));
+        public static readonly WaitTimer WaitTimer_0 = new WaitTimer(new TimeSpan(0, 0, 0, 15));
         internal static async Task<Queue<NavGraph.INode>> GenerateNodes(uint ZoneId, Vector3 xyz)
         {
             return await NavGraph.GetPathAsync((uint)ZoneId, xyz);
@@ -44,7 +44,8 @@ namespace LlamaLibrary.Helpers
             {
                 return await FlightorMove(XYZ);
             }
-            var path = await GenerateNodes(ZoneId, XYZ );
+
+            var path = await GenerateNodes(ZoneId, XYZ);
 
             if (ZoneId == 399 && path == null && WorldManager.ZoneId != ZoneId)
             {
@@ -56,6 +57,7 @@ namespace LlamaLibrary.Helpers
                 if (WorldManager.AetheryteIdsForZone(ZoneId).Length >= 1)
                 {
                     var AE = WorldManager.AetheryteIdsForZone(ZoneId).OrderBy(i => i.Item2.DistanceSqr(XYZ)).First();
+
                     //LogCritical("Can teleport to AE");
                     WorldManager.TeleportById(AE.Item1);
                     await Coroutine.Wait(20000, () => WorldManager.ZoneId == AE.Item1);
@@ -66,7 +68,6 @@ namespace LlamaLibrary.Helpers
                 {
                     return false;
                 }
-
             }
 
             if (path == null)
@@ -83,7 +84,7 @@ namespace LlamaLibrary.Helpers
             }
 
             object object_0 = new object();
-            var composite =  NavGraph.NavGraphConsumer(j => path);
+            var composite = NavGraph.NavGraphConsumer(j => path);
 
             while (path.Count > 0)
             {
@@ -93,6 +94,7 @@ namespace LlamaLibrary.Helpers
                 {
                     await Coroutine.Yield();
                 }
+
                 composite.Stop(object_0);
                 await Coroutine.Yield();
             }
@@ -109,9 +111,9 @@ namespace LlamaLibrary.Helpers
 
         public static async Task OffMeshMove(Vector3 _target)
         {
-            waitTimer_0.Reset();
+            WaitTimer_0.Reset();
             Navigator.PlayerMover.MoveTowards(_target);
-            while (_target.Distance2D(Core.Me.Location) >= 4 && !waitTimer_0.IsFinished)
+            while (_target.Distance2D(Core.Me.Location) >= 4 && !WaitTimer_0.IsFinished)
             {
                 Navigator.PlayerMover.MoveTowards(_target);
                 await Coroutine.Sleep(100);
@@ -122,9 +124,9 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> OffMeshMoveInteract(GameObject _target)
         {
-            waitTimer_0.Reset();
+            WaitTimer_0.Reset();
             Navigator.PlayerMover.MoveTowards(_target.Location);
-            while (!_target.IsWithinInteractRange && !waitTimer_0.IsFinished)
+            while (!_target.IsWithinInteractRange && !WaitTimer_0.IsFinished)
             {
                 Navigator.PlayerMover.MoveTowards(_target.Location);
                 await Coroutine.Sleep(100);
@@ -156,7 +158,7 @@ namespace LlamaLibrary.Helpers
             {
                 SelectIconString.ClickSlot(dialogOption);
 
-                await Coroutine.Wait(5000, () => DialogOpen ||SelectYesno.IsOpen);
+                await Coroutine.Wait(5000, () => DialogOpen || SelectYesno.IsOpen);
             }
 
             if (DialogOpen) Next();
@@ -177,7 +179,7 @@ namespace LlamaLibrary.Helpers
             await Coroutine.Sleep(1000);
 
             if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
-            return (WorldManager.ZoneId == 399);
+            return WorldManager.ZoneId == 399;
         }
 
         internal static async Task<bool> FlightorMove(Vector3 loc)
@@ -194,6 +196,7 @@ namespace LlamaLibrary.Helpers
 
                 await Coroutine.Yield();
             }
+
             Navigator.PlayerMover.MoveStop();
             return moving == MoveResult.ReachedDestination;
         }
@@ -207,12 +210,13 @@ namespace LlamaLibrary.Helpers
                      moving == MoveResult.ReachedDestination ||
                      moving == MoveResult.Failed ||
                      moving == MoveResult.Failure ||
-                     moving == MoveResult.PathGenerationFailed)) && FateManager.ActiveFates.Any(i=> i.Id == fate.Id && i.IsValid))
+                     moving == MoveResult.PathGenerationFailed)) && FateManager.ActiveFates.Any(i => i.Id == fate.Id && i.IsValid))
             {
                 moving = Flightor.MoveTo(target);
 
                 await Coroutine.Yield();
             }
+
             Navigator.PlayerMover.MoveStop();
             return moving == MoveResult.ReachedDestination;
         }
@@ -229,7 +233,7 @@ namespace LlamaLibrary.Helpers
 
             if (CommonBehaviors.IsLoading) await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
             await Coroutine.Sleep(1000);
-            return (WorldManager.ZoneId == 138 && (WorldManager.SubZoneId == 461 || WorldManager.SubZoneId == 228));
+            return WorldManager.ZoneId == 138 && (WorldManager.SubZoneId == 461 || WorldManager.SubZoneId == 228);
         }
     }
 }
