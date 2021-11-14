@@ -14,6 +14,7 @@ using Character = LlamaLibrary.RemoteWindows.Character;
 
 namespace LlamaLibrary.ScriptConditions
 {
+    //TODO FML with this ishgard handin hardcoded values
     public static class Helpers
     {
         private static readonly uint[] IdList =

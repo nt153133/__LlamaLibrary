@@ -4,6 +4,7 @@ using ff14bot.Managers;
 
 namespace LlamaLibrary.Retainers
 {
+    //TODO Chopping block, Tuck's botbase handles retainer inventories now
     public class RetainerInventory
     {
         private IDictionary<uint, BagSlot> dict = new Dictionary<uint, BagSlot>();

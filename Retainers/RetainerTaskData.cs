@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 
 namespace LlamaLibrary.Retainers
 {
+    //TODO This needs to be somewhere else, Maybe a DataClass folder/namespace
     public class RetainerTaskData
     {
         public int Id { get; set; }

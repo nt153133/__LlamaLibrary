@@ -71,12 +71,7 @@ namespace LlamaLibrary.ScriptConditions
             var loader = BotManager.Bots
                 .FirstOrDefault(c => c.Name == "Lisbeth");
 
-            if (loader == null)
-            {
-                return false;
-            }
-
-            return true;
+            return loader != null;
         }
 
         public static bool IsTargetableNPC(int npcID)
@@ -86,13 +81,13 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsDutyEnded()
         {
-            if (DirectorManager.ActiveDirector != null)
+            if (DirectorManager.ActiveDirector == null)
             {
-                var instanceDirector = (ff14bot.Directors.InstanceContentDirector)DirectorManager.ActiveDirector;
-                return instanceDirector.InstanceEnded;
+                return true;
             }
 
-            return true;
+            var instanceDirector = (ff14bot.Directors.InstanceContentDirector)DirectorManager.ActiveDirector;
+            return instanceDirector.InstanceEnded;
         }
 
         public static int SharedFateRank(int zoneID)

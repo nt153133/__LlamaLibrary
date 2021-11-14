@@ -8,13 +8,13 @@ namespace LlamaLibrary.Extensions
 {
     public static class EventNpcExtensions
     {
-        internal static class Offsets
+        public static class Offsets
         {
             [Offset("Search 44 89 BF ?? ?? ?? ?? 83 BF ?? ?? ?? ?? ?? Add 3 Read32")]
             internal static int IconID;
         }
 
-        internal static uint IconId(this GameObject eventNpc)
+        public static uint IconId(this GameObject eventNpc)
         {
             return eventNpc.Type == GameObjectType.EventNpc ? Core.Memory.Read<uint>(eventNpc.Pointer + Offsets.IconID) : 0U;
         }

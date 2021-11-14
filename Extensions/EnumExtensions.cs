@@ -11,7 +11,7 @@ namespace LlamaLibrary.Extensions
         /// </summary>
         /// <param name="type">The <see cref="ClassJobType"/> to be categorized.</param>
         /// <returns><see langword="true"/> if class is a Disciple of War.</returns>
-        internal static bool IsDow(this ClassJobType type)
+        public static bool IsDow(this ClassJobType type)
         {
             return !IsDoh(type) && !IsDol(type);
         }
@@ -21,7 +21,7 @@ namespace LlamaLibrary.Extensions
         /// </summary>
         /// <param name="type">The <see cref="ClassJobType"/> to be categorized.</param>
         /// <returns><see langword="true"/> if class is a Disciple of the Hand.</returns>
-        internal static bool IsDoh(this ClassJobType type)
+        public static bool IsDoh(this ClassJobType type)
         {
             return type == ClassJobType.Carpenter ||
                    type == ClassJobType.Blacksmith ||
@@ -38,19 +38,19 @@ namespace LlamaLibrary.Extensions
         /// </summary>
         /// <param name="type">The <see cref="ClassJobType"/> to be categorized.</param>
         /// <returns><see langword="true"/> if class is a Disciple of the Land.</returns>
-        internal static bool IsDol(this ClassJobType type)
+        public static bool IsDol(this ClassJobType type)
         {
             return type == ClassJobType.Miner ||
                    type == ClassJobType.Botanist ||
                    type == ClassJobType.Fisher;
         }
 
-        internal static ClassJobType ClassJob(this RetainerRole type)
+        public static ClassJobType ClassJob(this RetainerRole type)
         {
             return (ClassJobType)Enum.Parse(typeof(ClassJobType), type.ToString());
         }
 
-        internal static ClassJobCategory ClassJobCategory(this RetainerRole type)
+        public static ClassJobCategory ClassJobCategory(this RetainerRole type)
         {
             if (type.ClassJob().IsDow())
             {

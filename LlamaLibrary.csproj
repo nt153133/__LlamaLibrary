@@ -50,7 +50,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Enums\ClassJobCategory.cs" />
     <Compile Include="Enums\GCNpc.cs" />
     <Compile Include="Enums\MiniGameResult.cs" />

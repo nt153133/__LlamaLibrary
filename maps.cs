@@ -8,6 +8,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary
 {
+    //TODO This was ZZI's mess, maybe we can just move it to Helpers and leave the class name the same and just fix the file name. IDK where else it's used or where the values come from
     public static class TreasureMap
     {
         internal static class Offsets

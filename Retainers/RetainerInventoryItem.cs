@@ -1,5 +1,6 @@
 ﻿namespace LlamaLibrary.Retainers
 {
+    //TODO I'm baffled on how this is actually used right now
     public class RetainerInventoryItem
     {
         public uint TrueItemID;

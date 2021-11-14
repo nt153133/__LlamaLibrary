@@ -4,6 +4,7 @@ using ff14bot.RemoteWindows;
 
 namespace LlamaLibrary.Retainers
 {
+    //TODO this is a sad copy of a window since it's only a select string window. I think i have better code for it somewhere.
     public class RetainerTasks
     {
         public static bool IsOpen => SelectString.IsOpen;

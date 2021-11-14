@@ -18,6 +18,7 @@ using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.Retainers
 {
+    //TODO This whole shitshow needs to get moved to a Helper class but it is used in a lot of external things including MB so it's going to be messy
     public static class HelperFunctions
     {
         public const InventoryBagId RetainerGilId = InventoryBagId.Retainer_Gil;
@@ -67,7 +68,7 @@ namespace LlamaLibrary.Retainers
             (820, new Vector3(7.186951f, 83.17688f, 31.448853f)) //Eulmore(Eulmore)
         };
 
-        internal static readonly uint GilItemId = DataManager.GetItem("Gil").Id; // 1;
+        public static readonly uint GilItemId = DataManager.GetItem("Gil").Id; // 1;
 
         public static int UnixTimestamp => (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
