@@ -69,7 +69,7 @@ namespace LlamaLibrary.OrderbotTags
 
         [XmlAttribute("Timeout")]
         [DefaultValue("600")]
-        public string timeout { get; set; }
+        public string Timeout { get; set; }
 
         [XmlAttribute("MinProgress")]
         [DefaultValue(0)]
@@ -145,6 +145,7 @@ namespace LlamaLibrary.OrderbotTags
             }
         }
 
+        [Obsolete]
         protected override Composite CreateBehavior()
         {
             return new PrioritySelector(
@@ -277,7 +278,7 @@ namespace LlamaLibrary.OrderbotTags
                     new Sequence(
                         new ActionRunCoroutine(async r =>
                         {
-                            await getFates();
+                            await GetFates();
                             if (currentfate != null)
                             {
                                 GoFate();
@@ -499,7 +500,7 @@ namespace LlamaLibrary.OrderbotTags
             }
             else
             {
-                Poi.Current = new Poi(getFateTargets(), PoiType.Kill);
+                Poi.Current = new Poi(GetFateTargets(), PoiType.Kill);
             }
 
             return Task.CompletedTask;
@@ -523,7 +524,7 @@ namespace LlamaLibrary.OrderbotTags
                 if (hunting)
                 {
                     Logging.Write("Let's pass some time with hunting!");
-                    var target = getNormalTargets();
+                    var target = GetNormalTargets();
                     if (target != null)
                     {
                         Poi.Current = new Poi(target, PoiType.Kill);
@@ -648,7 +649,7 @@ namespace LlamaLibrary.OrderbotTags
             }
             else
             {
-                Poi.Current = new Poi(getFateTargets(), PoiType.Kill);
+                Poi.Current = new Poi(GetFateTargets(), PoiType.Kill);
             }
 
             return true;
@@ -692,7 +693,7 @@ namespace LlamaLibrary.OrderbotTags
             Logging.Write("--------------------------------------");
         }
 
-        public static GameObject getFateTargets()
+        public static GameObject GetFateTargets()
         {
             var _target = GameObjectManager.GameObjects.Where(unit => (unit as BattleCharacter) != null && unit.CanAttack && unit.IsTargetable && unit.IsVisible
                                                                          && (unit as BattleCharacter).FateId != 0 && !(unit as BattleCharacter).IsDead).OrderBy(unit => unit.Distance(Core.Player.Location)).Take(1);
@@ -708,7 +709,7 @@ namespace LlamaLibrary.OrderbotTags
             }
         }
 
-        public GameObject getNormalTargets()
+        public GameObject GetNormalTargets()
         {
             var _target = GameObjectManager.GameObjects.Where(unit => (unit as BattleCharacter) != null && unit.CanAttack && unit.IsTargetable && unit.IsVisible
                                                                     && (unit as BattleCharacter).FateId == 0 && !(unit as BattleCharacter).IsDead).OrderBy(unit => unit.Distance(Core.Player.Location)).Take(3);
@@ -755,7 +756,7 @@ namespace LlamaLibrary.OrderbotTags
             return ReturnList;
         }
 
-        public async Task<bool> getFates()
+        public async Task<bool> GetFates()
         {
             if (SharedFate)
             {
@@ -848,7 +849,7 @@ namespace LlamaLibrary.OrderbotTags
         {
             _min = Convert.ToInt32(MinLevel);
             _max = Convert.ToInt32(MaxLevel);
-            _timeout = Convert.ToInt32(timeout);
+            _timeout = Convert.ToInt32(Timeout);
             currentstep = 0;
             Logging.Write("Doing fates and hunt in between.");
             Logging.Write("Stats: MinFate level={0} MaxFatelvl={1}", _min, _max);

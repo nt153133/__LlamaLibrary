@@ -18,6 +18,6 @@ namespace LlamaLibrary.RemoteAgents
         {
         }
 
-        public int iLvl => Core.Memory.Read<byte>(Pointer + 0xa78);
+        public int ILvl => Core.Memory.Read<byte>(Pointer + 0xa78);
     }
 }

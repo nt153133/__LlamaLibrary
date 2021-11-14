@@ -23,17 +23,17 @@ namespace LlamaLibrary.RemoteWindows
 
         public int GetNumberOfTurnins()
         {
-            return IsOpen ? ___Elements()[11].TrimmedData : 0;
+            return IsOpen ? Elements()[11].TrimmedData : 0;
         }
 
         public int GetCraftItemID()
         {
-            return IsOpen ? ___Elements()[0].TrimmedData : 0;
+            return IsOpen ? Elements()[0].TrimmedData : 0;
         }
 
         public List<Item> GetTurninItemsObjs()
         {
-            var currentElements = ___Elements();
+            var currentElements = Elements();
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 12, GetNumberOfTurnins());
 
@@ -42,7 +42,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<int> GetTurninItemsIds()
         {
-            var currentElements = ___Elements();
+            var currentElements = Elements();
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 12, GetNumberOfTurnins());
 
@@ -51,7 +51,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<int> GetTurninItemsQty()
         {
-            var currentElements = ___Elements();
+            var currentElements = Elements();
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 60, GetNumberOfTurnins());
 
@@ -60,7 +60,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<int> GetTurninsRequired()
         {
-            var currentElements = ___Elements();
+            var currentElements = Elements();
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 120, GetNumberOfTurnins());
 
@@ -69,7 +69,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<int> GetTurninsDone()
         {
-            var currentElements = ___Elements();
+            var currentElements = Elements();
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 108, GetNumberOfTurnins());
 
@@ -78,7 +78,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<int> GetItemAvailCount()
         {
-            var currentElements = ___Elements();
+            var currentElements = Elements();
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 72, GetNumberOfTurnins());
 

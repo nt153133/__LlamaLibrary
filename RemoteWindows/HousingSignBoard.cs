@@ -13,7 +13,7 @@ namespace LlamaLibrary.RemoteWindows
             _name = WindowName;
         }
 
-        public bool IsForSale => Core.Memory.ReadString((IntPtr)___Elements()[1].Data, Encoding.UTF8).Contains("Sale");
+        public bool IsForSale => Core.Memory.ReadString((IntPtr)Elements()[1].Data, Encoding.UTF8).Contains("Sale");
 
         public void ClickBuy()
         {

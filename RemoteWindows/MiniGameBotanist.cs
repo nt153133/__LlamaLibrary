@@ -31,17 +31,17 @@ namespace LlamaLibrary.RemoteWindows
             SendAction(1, 3, 0xF);
         }
 
-        public int GetNumberOfTriesLeft => IsOpen ? ___Elements()[11].TrimmedData : 0;
+        public int GetNumberOfTriesLeft => IsOpen ? Elements()[11].TrimmedData : 0;
 
-        public int GetProgressLeft => IsOpen ? ___Elements()[12].TrimmedData : 0;
+        public int GetProgressLeft => IsOpen ? Elements()[12].TrimmedData : 0;
 
-        public int GetProgressTotal => IsOpen ? ___Elements()[13].TrimmedData : 0;
+        public int GetProgressTotal => IsOpen ? Elements()[13].TrimmedData : 0;
 
         public int GetTimeLeft
         {
             get
             {
-                var data = Core.Memory.ReadString((IntPtr)___Elements()[15].Data, Encoding.UTF8);
+                var data = Core.Memory.ReadString((IntPtr)Elements()[15].Data, Encoding.UTF8);
 
                 if (!_timeRegex.IsMatch(data))
                 {

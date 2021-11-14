@@ -9,7 +9,7 @@
             _name = WindowName;
         }
 
-        public int NumberOfItems => ___Elements()[3].TrimmedData;
+        public int NumberOfItems => Elements()[3].TrimmedData;
 
         public uint[] ItemIds
         {
@@ -19,7 +19,7 @@
                 var j = 0;
                 for (var i = 7; i < NumberOfItems; i += 7)
                 {
-                    result[j] = (uint)___Elements()[i].TrimmedData;
+                    result[j] = (uint)Elements()[i].TrimmedData;
                     j++;
                 }
 

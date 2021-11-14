@@ -7,8 +7,8 @@ namespace LlamaLibrary.RemoteWindows
     {
         private const string WindowName = "CollectablesShop";
 
-        public int RowCount => ___Elements()[20].TrimmedData - 1;
-        public int TurninCount => ___Elements()[4843].TrimmedData;
+        public int RowCount => Elements()[20].TrimmedData - 1;
+        public int TurninCount => Elements()[4843].TrimmedData;
         public CollectablesShop() : base(WindowName)
         {
             _name = WindowName;
@@ -31,12 +31,12 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<string> ListItems()
         {
-            var count = ___Elements()[20].TrimmedData - 1;
-            var currentElements = ___Elements();
+            var count = Elements()[20].TrimmedData - 1;
+            var currentElements = Elements();
             var result = new List<string>();
             for (var j = 0; j < count; j++)
             {
-                if (currentElements[32 + (j * 11)].TrimmedData == ___Elements()[21].TrimmedData)
+                if (currentElements[32 + (j * 11)].TrimmedData == Elements()[21].TrimmedData)
                 {
                     continue; //IconID
                 }

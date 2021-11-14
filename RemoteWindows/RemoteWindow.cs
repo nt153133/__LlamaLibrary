@@ -78,7 +78,7 @@ namespace LlamaLibrary.RemoteWindows
             return IsOpen;
         }
 
-        protected TwoInt[] ___Elements()
+        protected TwoInt[] Elements()
         {
             if (WindowByName == null)
             {

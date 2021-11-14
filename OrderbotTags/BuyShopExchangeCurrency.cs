@@ -29,16 +29,16 @@ namespace LlamaLibrary.OrderbotTags
         public int ItemId { get; set; }
 
         [XmlAttribute("SelectString")]
-        public int selectString { get; set; }
+        public int SelectString { get; set; }
 
         [XmlAttribute("Count")]
         [DefaultValue(1)]
-        public int count { get; set; }
+        public int Count { get; set; }
 
         [XmlAttribute("Dialog")]
         [XmlAttribute("dialog")]
         [DefaultValue(false)]
-        public bool dialog { get; set; } = false;
+        public bool Dialog { get; set; } = false;
 
         public override bool HighPriority => true;
 
@@ -57,7 +57,7 @@ namespace LlamaLibrary.OrderbotTags
 
         protected override Composite CreateBehavior()
         {
-            return new ActionRunCoroutine(r => BuyItem(ItemId, NpcId, count, selectString));
+            return new ActionRunCoroutine(r => BuyItem(ItemId, NpcId, Count, SelectString));
         }
 
         private async Task BuyItem(int itemId, int npcId, int count, int selectString)
@@ -78,7 +78,7 @@ namespace LlamaLibrary.OrderbotTags
 
             unit.Interact();
 
-            if (dialog)
+            if (Dialog)
             {
                 await Coroutine.Wait(5000, () => Talk.DialogOpen);
 
@@ -95,7 +95,7 @@ namespace LlamaLibrary.OrderbotTags
             {
                 Conversation.SelectLine((uint)selectString);
 
-                if (dialog)
+                if (Dialog)
                 {
                     await Coroutine.Wait(5000, () => Talk.DialogOpen);
 

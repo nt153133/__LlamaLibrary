@@ -16,7 +16,7 @@ namespace LlamaLibrary.RemoteWindows
             _name = WindowName;
         }
 
-        public int TurnInItemId => ___Elements()[9].TrimmedData;
+        public int TurnInItemId => Elements()[9].TrimmedData;
 
         public void Deliver()
         {

@@ -25,12 +25,12 @@ namespace LlamaLibrary.OrderbotTags
         public override bool HighPriority => true;
 
         [XmlAttribute("Job")]
-        public string job { get; set; }
+        public string Job { get; set; }
 
         [XmlAttribute("Force")]
         [XmlAttribute("force")]
         [DefaultValue(false)]
-        public bool force { get; set; }
+        public bool Force { get; set; }
 
         protected override void OnStart()
         {
@@ -48,9 +48,9 @@ namespace LlamaLibrary.OrderbotTags
         private async Task ChangeJob()
         {
             var gearSets = GearsetManager.GearSets.Where(i => i.InUse);
-            var foundJob = Enum.TryParse(job.Trim(), true, out ClassJobType newjob);
+            var foundJob = Enum.TryParse(Job.Trim(), true, out ClassJobType newjob);
 
-            if (Core.Me.CurrentJob == newjob && !force)
+            if (Core.Me.CurrentJob == newjob && !Force)
             {
                 _isDone = true;
                 return;
@@ -74,9 +74,9 @@ namespace LlamaLibrary.OrderbotTags
             }
             else if (foundJob)
             {
-                job = job.Trim() + "s_Primary_Tool";
+                Job = Job.Trim() + "s_Primary_Tool";
 
-                var categoryFound = Enum.TryParse(job, true, out
+                var categoryFound = Enum.TryParse(Job, true, out
                 ItemUiCategory category);
 
                 if (categoryFound)

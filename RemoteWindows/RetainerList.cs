@@ -24,7 +24,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public int NumberOfRetainers => OrderedRetainerList.Length;
 
-        public int NumberOfVentures => ___Elements()[1].TrimmedData;
+        public int NumberOfVentures => Elements()[1].TrimmedData;
 
         public string RetainerName(int index)
         {
@@ -43,7 +43,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public RetainerRole RetainerRole(int index)
         {
-            return (RetainerRole)___Elements()[(index * 9) + 4].TrimmedData;
+            return (RetainerRole)Elements()[(index * 9) + 4].TrimmedData;
         }
 
         public async Task<bool> SelectRetainer(ulong retainerContentId)

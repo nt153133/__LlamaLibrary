@@ -8,7 +8,7 @@ namespace LlamaLibrary
 {
     public class Class1
     {
-        public void test()
+        public void Test()
         {
             if (!HWDSupply.Instance.IsOpen)
             {

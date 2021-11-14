@@ -31,24 +31,24 @@ namespace LlamaLibrary.RemoteWindows
             _name = WindowName;
         }
 
-        public int NumberOfTrustsAvailable => ___Elements()[73].TrimmedData;
-        public int SelectedTrustId => ___Elements()[74].TrimmedData;
-        public string SelectedTrustName => Core.Memory.ReadString((IntPtr)___Elements()[75].Data, Encoding.UTF8);
+        public int NumberOfTrustsAvailable => Elements()[73].TrimmedData;
+        public int SelectedTrustId => Elements()[74].TrimmedData;
+        public string SelectedTrustName => Core.Memory.ReadString((IntPtr)Elements()[75].Data, Encoding.UTF8);
 
-        public TrustNPC SelectedNpc1 => GetTrustNpc(___Elements()[34].TrimmedData);
-        public TrustNPC SelectedNpc2 => GetTrustNpc(___Elements()[35].TrimmedData);
-        public TrustNPC SelectedNpc3 => GetTrustNpc(___Elements()[36].TrimmedData);
+        public TrustNPC SelectedNpc1 => GetTrustNpc(Elements()[34].TrimmedData);
+        public TrustNPC SelectedNpc2 => GetTrustNpc(Elements()[35].TrimmedData);
+        public TrustNPC SelectedNpc3 => GetTrustNpc(Elements()[36].TrimmedData);
 
-        public TrustNPC Npc1 => GetTrustNpc(___Elements()[10].TrimmedData);
-        public TrustNPC Npc2 => GetTrustNpc(___Elements()[11].TrimmedData);
-        public TrustNPC Npc3 => GetTrustNpc(___Elements()[12].TrimmedData);
-        public TrustNPC Npc4 => GetTrustNpc(___Elements()[13].TrimmedData);
-        public TrustNPC Npc5 => GetTrustNpc(___Elements()[14].TrimmedData);
-        public TrustNPC Npc6 => GetTrustNpc(___Elements()[15].TrimmedData);
+        public TrustNPC Npc1 => GetTrustNpc(Elements()[10].TrimmedData);
+        public TrustNPC Npc2 => GetTrustNpc(Elements()[11].TrimmedData);
+        public TrustNPC Npc3 => GetTrustNpc(Elements()[12].TrimmedData);
+        public TrustNPC Npc4 => GetTrustNpc(Elements()[13].TrimmedData);
+        public TrustNPC Npc5 => GetTrustNpc(Elements()[14].TrimmedData);
+        public TrustNPC Npc6 => GetTrustNpc(Elements()[15].TrimmedData);
 
-        public int Npc1Level => ___Elements()[43].TrimmedData;
-        public int Npc1Leve2 => ___Elements()[44].TrimmedData;
-        public int Npc1Leve3 => ___Elements()[45].TrimmedData;
+        public int Npc1Level => Elements()[43].TrimmedData;
+        public int Npc1Leve2 => Elements()[44].TrimmedData;
+        public int Npc1Leve3 => Elements()[45].TrimmedData;
 
         public bool CanRegister()
         {

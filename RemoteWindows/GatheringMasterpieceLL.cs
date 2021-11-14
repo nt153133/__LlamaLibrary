@@ -54,16 +54,16 @@ namespace LlamaLibrary.RemoteWindows
             }
         };
 
-        public int Collectability => ___Elements()[Properties["Collectability"]].TrimmedData;
-        public int MaxCollectability => ___Elements()[Properties["MaxCollectability"]].TrimmedData;
-        public int Integrity => ___Elements()[Properties["Integrity"]].TrimmedData;
-        public int MaxIntegrity => ___Elements()[Properties["MaxIntegrity"]].TrimmedData;
-        public int ItemID => ___Elements()[Properties["ItemID"]].TrimmedData;
-        public int Scour => ___Elements()[Properties["Skill1"]].TrimmedData;
-        public int BrazenEstimate => ___Elements()[Properties["Skill2Estimate"]].TrimmedData;
-        public int Brazen2Max => ___Elements()[Properties["Skill2Max"]].TrimmedData;
-        public int Meticulous => ___Elements()[Properties["Skill3"]].TrimmedData;
-        public int IntuitionRate => ___Elements()[Properties["IntuitionRate"]].TrimmedData;
+        public int Collectability => Elements()[Properties["Collectability"]].TrimmedData;
+        public int MaxCollectability => Elements()[Properties["MaxCollectability"]].TrimmedData;
+        public int Integrity => Elements()[Properties["Integrity"]].TrimmedData;
+        public int MaxIntegrity => Elements()[Properties["MaxIntegrity"]].TrimmedData;
+        public int ItemID => Elements()[Properties["ItemID"]].TrimmedData;
+        public int Scour => Elements()[Properties["Skill1"]].TrimmedData;
+        public int BrazenEstimate => Elements()[Properties["Skill2Estimate"]].TrimmedData;
+        public int Brazen2Max => Elements()[Properties["Skill2Max"]].TrimmedData;
+        public int Meticulous => Elements()[Properties["Skill3"]].TrimmedData;
+        public int IntuitionRate => Elements()[Properties["IntuitionRate"]].TrimmedData;
 
         public void Collect()
         {

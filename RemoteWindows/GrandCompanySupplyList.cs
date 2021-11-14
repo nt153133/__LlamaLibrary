@@ -17,12 +17,12 @@ namespace LlamaLibrary.RemoteWindows
 
         public int GetNumberOfTurnins()
         {
-            return IsOpen ? ___Elements()[7].TrimmedData : 0;
+            return IsOpen ? Elements()[7].TrimmedData : 0;
         }
 
         public bool[] GetTurninBools()
         {
-            var currentElements = ___Elements();
+            var currentElements = Elements();
             var numberTurnins = GetNumberOfTurnins();
 
             var canHandInElements = new ArraySegment<TwoInt>(currentElements, 346, numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
@@ -40,7 +40,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public uint[] GetTurninItemsIds()
         {
-            var currentElements = ___Elements();
+            var currentElements = Elements();
             var numberTurnins = GetNumberOfTurnins();
 
             var turninIdElements = new ArraySegment<TwoInt>(currentElements, 426, numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
@@ -50,7 +50,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public uint[] GetTurninRequired()
         {
-            var currentElements = ___Elements();
+            var currentElements = Elements();
             var numberTurnins = GetNumberOfTurnins();
 
             var reqElements = new ArraySegment<TwoInt>(currentElements, 386, numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();

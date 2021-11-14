@@ -29,7 +29,7 @@ namespace LlamaLibrary.OrderbotTags
         public int ItemId { get; set; }
 
         [XmlAttribute("SelectString")]
-        public int selectString { get; set; }
+        public int SelectString { get; set; }
 
         public override bool HighPriority => true;
 
@@ -48,7 +48,7 @@ namespace LlamaLibrary.OrderbotTags
 
         protected override Composite CreateBehavior()
         {
-            return new ActionRunCoroutine(r => BuyItem(ItemId, NpcId, selectString));
+            return new ActionRunCoroutine(r => BuyItem(ItemId, NpcId, SelectString));
         }
 
         private async Task BuyItem(int itemId, int npcId, int selectString)

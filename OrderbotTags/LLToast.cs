@@ -14,7 +14,7 @@ namespace LlamaLibrary.OrderbotTags
 
         [XmlAttribute("Message")]
         [XmlAttribute("message")]
-        public string message { get; set; }
+        public string Message { get; set; }
 
         public override bool HighPriority => true;
 
@@ -35,7 +35,7 @@ namespace LlamaLibrary.OrderbotTags
 
         protected override Composite CreateBehavior()
         {
-            return new ActionRunCoroutine(r => SendToast(message));
+            return new ActionRunCoroutine(r => SendToast(Message));
         }
 
         private Task SendToast(string message)

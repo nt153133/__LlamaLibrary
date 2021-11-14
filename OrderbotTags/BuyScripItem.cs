@@ -26,10 +26,10 @@ namespace LlamaLibrary.OrderbotTags
         public int ItemId { get; set; }
 
         [XmlAttribute("SelectString")]
-        public int selectString { get; set; }
+        public int SelectString { get; set; }
 
         [XmlAttribute("Count")]
-        public int count { get; set; }
+        public int Count { get; set; }
 
         public override bool HighPriority => true;
 
@@ -48,7 +48,7 @@ namespace LlamaLibrary.OrderbotTags
 
         protected override Composite CreateBehavior()
         {
-            return new ActionRunCoroutine(r => BuyScrip(ItemId, count, selectString));
+            return new ActionRunCoroutine(r => BuyScrip(ItemId, Count, SelectString));
         }
 
         private async Task BuyScrip(int itemId, int count, int selectString)
@@ -77,9 +77,9 @@ namespace LlamaLibrary.OrderbotTags
             {
                 SelectIconString.ClickSlot(0U);
 
-                await Coroutine.Wait(5000, () => SelectString.IsOpen);
+                await Coroutine.Wait(5000, () => ff14bot.RemoteWindows.SelectString.IsOpen);
 
-                SelectString.ClickSlot((uint)selectString);
+                ff14bot.RemoteWindows.SelectString.ClickSlot((uint)selectString);
 
                 await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open);
 
@@ -95,11 +95,11 @@ namespace LlamaLibrary.OrderbotTags
 
                     ShopExchangeCurrency.Close();
 
-                    await Coroutine.Wait(5000, () => SelectString.IsOpen);
+                    await Coroutine.Wait(5000, () => ff14bot.RemoteWindows.SelectString.IsOpen);
 
-                    SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
+                    ff14bot.RemoteWindows.SelectString.ClickSlot((uint)(ff14bot.RemoteWindows.SelectString.LineCount - 1));
 
-                    await Coroutine.Wait(5000, () => SelectString.IsOpen);
+                    await Coroutine.Wait(5000, () => ff14bot.RemoteWindows.SelectString.IsOpen);
                 }
             }
 
