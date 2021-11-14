@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot.Enums;
 using LlamaLibrary.RemoteAgents;
@@ -9,6 +10,10 @@ namespace LlamaLibrary.Helpers
 {
     public static class FreeCompanyActions
     {
+        private static readonly string Name = "FreeCompanyActions";
+        private static readonly Color LogColor = Colors.DarkTurquoise;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         public static async Task ActivateBuffs(int buff1, int buff2, GrandCompany grandCompany)
         {
             if (!FreeCompany.Instance.IsOpen)
@@ -44,15 +49,15 @@ namespace LlamaLibrary.Helpers
                 await GrandCompanyHelper.BuyFCAction(grandCompany, buff1);
                 await Coroutine.Sleep(1000);
 
-                //Logger.Info("Bought buff1");
+                Log.Verbose("Bought buff1");
                 if (!FreeCompany.Instance.IsOpen)
                 {
-                    //Logger.Info("Opening window after buy");
+                    Log.Verbose("Opening window after buy");
                     AgentFreeCompany.Instance.Toggle();
                     await Coroutine.Wait(5000, () => FreeCompany.Instance.IsOpen);
                     if (FreeCompany.Instance.IsOpen)
                     {
-                        //Logger.Info("Buff 1 bought checking again");
+                        Log.Verbose("Buff 1 bought checking again");
                         FreeCompany.Instance.SelectActions();
                         await Coroutine.Wait(5000, () => FreeCompanyAction.Instance.IsOpen);
                         fcActions = await AgentFreeCompany.Instance.GetAvailableActions();
@@ -74,15 +79,15 @@ namespace LlamaLibrary.Helpers
                 await GrandCompanyHelper.BuyFCAction(grandCompany, buff2);
                 await Coroutine.Sleep(1000);
 
-                //Logger.Info("Bought buff2");
+                Log.Verbose("Bought buff2");
                 if (!FreeCompany.Instance.IsOpen)
                 {
-                    //Logger.Info("Opening window after buy");
+                    Log.Verbose("Opening window after buy");
                     AgentFreeCompany.Instance.Toggle();
                     await Coroutine.Wait(5000, () => FreeCompany.Instance.IsOpen);
                     if (FreeCompany.Instance.IsOpen)
                     {
-                        //Logger.Info("Buff 2 bought checking again");
+                        Log.Verbose("Buff 2 bought checking again");
                         FreeCompany.Instance.SelectActions();
                         await Coroutine.Wait(5000, () => FreeCompanyAction.Instance.IsOpen);
                         fcActions = await AgentFreeCompany.Instance.GetAvailableActions();
@@ -93,7 +98,7 @@ namespace LlamaLibrary.Helpers
 
             if (curActions.Length == 0)
             {
-                //Log($"No Buffs: Activating");
+                Log.Verbose($"No Buffs: Activating");
                 if (!FreeCompanyAction.Instance.IsOpen)
                 {
                     FreeCompany.Instance.SelectActions();
@@ -120,7 +125,7 @@ namespace LlamaLibrary.Helpers
             {
                 if (!curActions.Any(i => i.id == buff1))
                 {
-                    Logger.Info("Buff 1 not active");
+                    Log.Information("Buff 1 not active");
                     if (!FreeCompanyAction.Instance.IsOpen)
                     {
                         FreeCompany.Instance.SelectActions();
@@ -137,7 +142,7 @@ namespace LlamaLibrary.Helpers
                 }
                 else
                 {
-                    Logger.Info("Buff 2 not active");
+                    Log.Information("Buff 2 not active");
                     if (!FreeCompanyAction.Instance.IsOpen)
                     {
                         FreeCompany.Instance.SelectActions();

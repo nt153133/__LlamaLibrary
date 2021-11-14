@@ -26,6 +26,10 @@ namespace LlamaLibrary.Helpers
 {
     public static class GeneralFunctions
     {
+        private static readonly string Name = "GeneralFunctions";
+        private static readonly Color LogColor = Colors.Aquamarine;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         public static readonly InventoryBagId[] MainBags = { InventoryBagId.Bag1, InventoryBagId.Bag2, InventoryBagId.Bag3, InventoryBagId.Bag4 };
 
         public static readonly InventoryBagId[] SaddlebagIds =
@@ -89,14 +93,14 @@ namespace LlamaLibrary.Helpers
                     break;
                 }
 
-                Log($"We're occupied. Trying to exit out. Attempt #{tryStep}");
+                Log.Information($"We're occupied. Trying to exit out. Attempt #{tryStep}");
 
                 if (stopFishing && FishingManager.State != FishingState.None)
                 {
                     var quit = ActionManager.CurrentActions.Values.FirstOrDefault(i => i.Id == 299);
                     if (quit != default(SpellData))
                     {
-                        Log($"Exiting Fishing.");
+                        Log.Information($"Exiting Fishing.");
                         if (ActionManager.CanCast(quit, Core.Me))
                         {
                             ActionManager.DoAction(quit, Core.Me);
@@ -107,7 +111,7 @@ namespace LlamaLibrary.Helpers
 
                 if (CraftingLog.IsOpen || CraftingManager.IsCrafting || Synthesis.IsOpen)
                 {
-                    Log($"Closing Crafting Window.");
+                    Log.Information($"Closing Crafting Window.");
                     await Lisbeth.ExitCrafting();
                     Synthesis.Close();
                     await Coroutine.Wait(6000, () => !Synthesis.IsOpen);
@@ -119,7 +123,7 @@ namespace LlamaLibrary.Helpers
 
                 if (leaveDuty && DutyManager.InInstance)
                 {
-                    Log($"Leaving Diadem.");
+                    Log.Information($"Leaving Diadem.");
                     DutyManager.LeaveActiveDuty();
 
                     if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
@@ -132,14 +136,14 @@ namespace LlamaLibrary.Helpers
 
                 if (dismount && Core.Me.IsMounted)
                 {
-                    Log("Dismounting.");
+                    Log.Information("Dismounting.");
                     ActionManager.Dismount();
                     await Coroutine.Wait(3000, () => !Core.Me.IsMounted);
                 }
 
                 if (InSmallTalk)
                 {
-                    Log("Skipping smalltalk.");
+                    Log.Information("Skipping smalltalk.");
                     await SmallTalk();
                 }
 
@@ -148,7 +152,7 @@ namespace LlamaLibrary.Helpers
 
             if (CheckIfBusy(leaveDuty, stopFishing, dismount))
             {
-                Log("Something went wrong, we're still occupied.");
+                Log.Error("Something went wrong, we're still occupied.");
                 TreeRoot.Stop("Stopping bot.");
             }
         }
@@ -296,7 +300,7 @@ namespace LlamaLibrary.Helpers
 
                     if (bagSlot.Slot == 0 && !bagSlot.IsFilled)
                     {
-                        Log("MainHand slot isn't filled. How?");
+                        Log.Error("MainHand slot isn't filled. How?");
                         continue;
                     }
 
@@ -341,7 +345,7 @@ namespace LlamaLibrary.Helpers
 
                 if (bagSlot.Slot == 0 && !bagSlot.IsFilled)
                 {
-                    Log("MainHand slot isn't filled. How?");
+                    Log.Error("MainHand slot isn't filled. How?");
                     continue;
                 }
 
@@ -365,13 +369,13 @@ namespace LlamaLibrary.Helpers
                     continue;
                 }
 
-                Log(bagSlot.IsFilled ? $"Equipping {betterItem.Name} over {bagSlot.Name}." : $"Equipping {betterItem.Name}.");
+                Log.Information(bagSlot.IsFilled ? $"Equipping {betterItem.Name} over {bagSlot.Name}." : $"Equipping {betterItem.Name}.");
                 var currentItem = bagSlot.Item;
                 betterItem.Move(bagSlot);
                 await Coroutine.Wait(3000, () => bagSlot.Item != currentItem);
                 if (bagSlot.Item == currentItem)
                 {
-                    Log("Something went wrong. Item remained unchanged.");
+                    Log.Error("Something went wrong. Item remained unchanged.");
                     continue;
                 }
 
@@ -406,7 +410,7 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Wait(10000, () => Character.Instance.IsOpen);
                 if (!Character.Instance.IsOpen)
                 {
-                    Log("Character window didn't open.");
+                    Log.Error("Character window didn't open.");
                     return false;
                 }
             }
@@ -497,21 +501,21 @@ namespace LlamaLibrary.Helpers
         {
             if (await HelperFunctions.GetNumberOfRetainers() == 0)
             {
-                Log("No retainers found to sell items to.");
+                Log.Error("No retainers found to sell items to.");
                 return;
             }
 
             var bagSlots = items.ToList();
             if (!bagSlots.Any())
             {
-                Log("No items found to sell.");
+                Log.Information("No items found to sell.");
                 return;
             }
 
             await StopBusy();
             if (!await HelperFunctions.UseSummoningBell())
             {
-                Log("Couldn't get to summoning bell.");
+                Log.Error("Couldn't get to summoning bell.");
                 return;
             }
 
@@ -519,7 +523,7 @@ namespace LlamaLibrary.Helpers
             RetainerTasks.OpenInventory();
             if (!await Coroutine.Wait(3000, RetainerTasks.IsInventoryOpen))
             {
-                Log("Couldn't get Retainer inventory open.");
+                Log.Information("Couldn't get Retainer inventory open.");
                 RetainerTasks.CloseInventory();
                 await Coroutine.Wait(3000, () => RetainerTasks.IsOpen);
                 RetainerTasks.CloseTasks();
@@ -540,13 +544,13 @@ namespace LlamaLibrary.Helpers
             {
                 if (!bagSlot.IsValid || !bagSlot.IsFilled)
                 {
-                    Log("BagSlot isn't valid or filled.");
+                    Log.Information("BagSlot isn't valid or filled.");
                     i++;
                     continue;
                 }
 
                 var name = bagSlot.Name;
-                Log($"Attempting to sell #{i++} of {itemCount}: {name}");
+                Log.Information($"Attempting to sell #{i++} of {itemCount}: {name}");
                 var waitTime = 600;
 
                 bagSlot.RetainerSellItem();
@@ -562,11 +566,11 @@ namespace LlamaLibrary.Helpers
 
                 if (!await Coroutine.Wait(5000, () => !bagSlot.IsValid || !bagSlot.IsFilled))
                 {
-                    Log($"We couldn't sell {name}.");
+                    Log.Error($"We couldn't sell {name}.");
                 }
                 else
                 {
-                    Log($"Sold {name}.");
+                    Log.Information($"Sold {name}.");
                 }
 
                 await Coroutine.Sleep(waitTime);
@@ -628,7 +632,7 @@ namespace LlamaLibrary.Helpers
         {
             if (InventoryManager.EquippedItems.Any(item => item.Item != null && item.Item.RepairItemId != 0 && item.Condition < 50))
             {
-                Log("Repairing items.");
+                Log.Information("Repairing items.");
                 await StopBusy(leaveDuty: false, stopFishing: false, dismount: false);
                 if (!Repair.IsOpen)
                 {
@@ -637,19 +641,15 @@ namespace LlamaLibrary.Helpers
                     var repairWindow = Offsets.RepairWindowOpen;
                     var repairAgent = AgentModule.FindAgentIdByVtable(repairVTable);
                     var AgentId = repairAgent;
-                    Log($"OPEN: AgentId {AgentId} Offset {repairVendor.ToInt64():X} Func {repairWindow.ToInt64():X}");
+                    Log.Information($"OPEN: AgentId {AgentId} Offset {repairVendor.ToInt64():X} Func {repairWindow.ToInt64():X}");
                     lock (Core.Memory.Executor.AssemblyLock)
                     {
                         Core.Memory.CallInjected64<IntPtr>(
                             repairWindow,
-                            new object[4]
-                            {
-                                ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
-                                0,
-                                0,
-                                repairVendor
-                            }
-                        );
+                            ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
+                            0,
+                            0,
+                            repairVendor);
                     }
 
                     await Coroutine.Wait(1500, () => Repair.IsOpen);
@@ -662,7 +662,7 @@ namespace LlamaLibrary.Helpers
             }
             else
             {
-                Log("No items to repair.");
+                Log.Information("No items to repair.");
             }
         }
 
@@ -680,39 +680,39 @@ namespace LlamaLibrary.Helpers
         public static async Task GoHome()
         {
             var privateHousing = new uint[] { 59, 60, 61, 97 };
-            var FCHousing = new uint[] { 56, 57, 58, 96 };
+            var fcHousing = new uint[] { 56, 57, 58, 96 };
 
-            var AE = WorldManager.AvailableLocations;
+            var ae = WorldManager.AvailableLocations;
 
-            var PrivateHouses = AE.Where(x => privateHousing.Contains(x.AetheryteId)).OrderBy(x => x.GilCost);
-            var FCHouses = AE.Where(x => FCHousing.Contains(x.AetheryteId)).OrderBy(x => x.GilCost);
+            var privateHouses = ae.Where(x => privateHousing.Contains(x.AetheryteId)).OrderBy(x => x.GilCost);
+            var fcHouses = ae.Where(x => fcHousing.Contains(x.AetheryteId)).OrderBy(x => x.GilCost);
 
-            var HavePrivateHousing = PrivateHouses.Any();
-            var HaveFCHousing = FCHouses.Any();
+            var havePrivateHousing = privateHouses.Any();
+            var haveFcHousing = fcHouses.Any();
 
-            Log($"Private House Access: {HavePrivateHousing} FC House Access: {HaveFCHousing}");
+            Log.Information($"Private House Access: {havePrivateHousing} FC House Access: {haveFcHousing}");
 
             //await GoToHousingBell(FCHouses.First());
 
-            if (HavePrivateHousing)
+            if (havePrivateHousing)
             {
-                await GoToHousingBell(PrivateHouses.First());
+                await GoToHousingBell(privateHouses.First());
             }
-            else if (HaveFCHousing)
+            else if (haveFcHousing)
             {
-                await GoToHousingBell(FCHouses.First());
+                await GoToHousingBell(fcHouses.First());
             }
         }
 
         private static async Task<bool> GoToHousingBell(WorldManager.TeleportLocation house)
         {
-            Log($"Teleporting to housing: (ZID: {house.ZoneId}, AID: {house.AetheryteId}) {house.Name}");
+            Log.Information($"Teleporting to housing: (ZID: {house.ZoneId}, AID: {house.AetheryteId}) {house.Name}");
             await CommonTasks.Teleport(house.AetheryteId);
 
-            Log("Waiting for zone to change");
+            Log.Information("Waiting for zone to change");
             await Coroutine.Wait(20000, () => WorldManager.ZoneId == house.ZoneId);
 
-            Log("Getting closest housing entrance");
+            Log.Information("Getting closest housing entrance");
             uint houseEntranceId = 2002737;
             uint aptEntranceId = 2007402;
 
@@ -721,7 +721,7 @@ namespace LlamaLibrary.Helpers
             var entrance = GameObjectManager.GetObjectsByNPCIds<GameObject>(entranceIds).OrderBy(x => x.Distance2D()).FirstOrDefault();
             if (entrance != null)
             {
-                Log("Found housing entrance, approaching");
+                Log.Information("Found housing entrance, approaching");
                 await Navigation.FlightorMove(entrance.Location);
 
                 if (entrance.IsWithinInteractRange)
@@ -735,7 +735,7 @@ namespace LlamaLibrary.Helpers
                     // Handle different housing entrance menus
                     if (entrance.NpcId == houseEntranceId)
                     {
-                        Log("Entering house");
+                        Log.Information("Entering house");
 
                         await Coroutine.Wait(10000, () => SelectYesno.IsOpen);
                         if (SelectYesno.IsOpen)
@@ -745,7 +745,7 @@ namespace LlamaLibrary.Helpers
                     }
                     else if (entrance.NpcId == aptEntranceId)
                     {
-                        Log("Entering apartment");
+                        Log.Information("Entering apartment");
 
                         await Coroutine.Wait(10000, () => SelectString.IsOpen);
                         if (SelectString.IsOpen)
@@ -756,23 +756,23 @@ namespace LlamaLibrary.Helpers
 
                     await CommonTasks.HandleLoading();
 
-                    Log("Getting best summoning bell");
+                    Log.Information("Getting best summoning bell");
                     var bell = HelperFunctions.FindSummoningBell();
                     if (bell != null)
                     {
-                        Log("Found summoning bell, approaching");
+                        Log.Information("Found summoning bell, approaching");
                         await HelperFunctions.GoToSummoningBell();
                         return true;
                     }
                     else
                     {
-                        Log("Couldn't find any summoning bells");
+                        Log.Error("Couldn't find any summoning bells");
                     }
                 }
             }
             else
             {
-                Log($"Couldn't find any housing entrances.  Are we in the right zone?  Current: ({WorldManager.ZoneId}) {WorldManager.CurrentZoneName}");
+                Log.Error($"Couldn't find any housing entrances.  Are we in the right zone?  Current: ({WorldManager.ZoneId}) {WorldManager.CurrentZoneName}");
             }
 
             return false;
@@ -780,7 +780,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task TurninOddlyDelicate()
         {
-            var TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
+            var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
             {
                 // BaseItemID, Tab, Index, Mini Collectability, RewardItemID
                 { 31750, new CraftingRelicTurnin(31750, 0, 0, 2500, 31736) }, //Carpenter Oddly Delicate Pine Lumber --> Oddly Delicate Saw Part
@@ -801,17 +801,17 @@ namespace LlamaLibrary.Helpers
             var collectablesAll = InventoryManager.FilledSlots.Where(i => i.IsCollectable);
             var npcId = GameObjectManager.GetObjectByNPCId(1035014);
 
-            if (collectables.Any(i => TurnItemList.Keys.Contains(i)))
+            if (collectables.Any(i => turnItemList.Keys.Contains(i)))
             {
-                Log("Have collectables");
+                Log.Information("Have collectables");
                 foreach (var collectable in collectablesAll)
                 {
-                    if (TurnItemList.Keys.Contains(collectable.RawItemId))
+                    if (turnItemList.Keys.Contains(collectable.RawItemId))
                     {
-                        var turnin = TurnItemList[collectable.RawItemId];
+                        var turnin = turnItemList[collectable.RawItemId];
                         if (collectable.Collectability < turnin.MinCollectability)
                         {
-                            Log($"Discarding {collectable.Name} is at {collectable.Collectability} which is under {turnin.MinCollectability}");
+                            Log.Information($"Discarding {collectable.Name} is at {collectable.Collectability} which is under {turnin.MinCollectability}");
                             collectable.Discard();
                         }
                     }
@@ -821,11 +821,11 @@ namespace LlamaLibrary.Helpers
 
                 if (!npcId.IsWithinInteractRange)
                 {
-                    var _target = npcId.Location;
-                    Navigator.PlayerMover.MoveTowards(_target);
-                    while (_target.Distance2D(Core.Me.Location) >= 4)
+                    var target = npcId.Location;
+                    Navigator.PlayerMover.MoveTowards(target);
+                    while (target.Distance2D(Core.Me.Location) >= 4)
                     {
-                        Navigator.PlayerMover.MoveTowards(_target);
+                        Navigator.PlayerMover.MoveTowards(target);
                         await Coroutine.Sleep(100);
                     }
 
@@ -855,13 +855,13 @@ namespace LlamaLibrary.Helpers
                     // Log("Window open");
                     foreach (var item in collectables)
                     {
-                        if (!TurnItemList.Keys.Contains(item))
+                        if (!turnItemList.Keys.Contains(item))
                         {
                             continue;
                         }
 
-                        Log($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
-                        var turnin = TurnItemList[item];
+                        Log.Information($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
+                        var turnin = turnItemList[item];
 
                         // Log($"Pressing job {turnin.Job}");
                         CollectablesShop.Instance.SelectJob(turnin.Job);
@@ -888,7 +888,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task TurninResplendentCrafting()
         {
-            var TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
+            var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
             {
                 { 33162, new CraftingRelicTurnin(33162, 0, 2, 6300, 33194) },
                 { 33163, new CraftingRelicTurnin(33163, 1, 2, 6300, 33195) },
@@ -921,17 +921,17 @@ namespace LlamaLibrary.Helpers
             var collectables = InventoryManager.FilledSlots.Where(i => i.IsCollectable).Select(x => x.RawItemId).Distinct();
             var collectablesAll = InventoryManager.FilledSlots.Where(i => i.IsCollectable);
 
-            if (collectables.Any(i => TurnItemList.Keys.Contains(i)))
+            if (collectables.Any(i => turnItemList.Keys.Contains(i)))
             {
-                Log("Have collectables");
+                Log.Information("Have collectables");
                 foreach (var collectable in collectablesAll)
                 {
-                    if (TurnItemList.Keys.Contains(collectable.RawItemId))
+                    if (turnItemList.Keys.Contains(collectable.RawItemId))
                     {
-                        var turnin = TurnItemList[collectable.RawItemId];
+                        var turnin = turnItemList[collectable.RawItemId];
                         if (collectable.Collectability < turnin.MinCollectability)
                         {
-                            Log($"Discarding {collectable.Name} is at {collectable.Collectability} which is under {turnin.MinCollectability}");
+                            Log.Information($"Discarding {collectable.Name} is at {collectable.Collectability} which is under {turnin.MinCollectability}");
                             collectable.Discard();
                         }
                     }
@@ -968,13 +968,13 @@ namespace LlamaLibrary.Helpers
                     // Log("Window open");
                     foreach (var item in collectables)
                     {
-                        if (!TurnItemList.Keys.Contains(item))
+                        if (!turnItemList.Keys.Contains(item))
                         {
                             continue;
                         }
 
-                        Log($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
-                        var turnin = TurnItemList[item];
+                        Log.Information($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
+                        var turnin = turnItemList[item];
 
                         // Log($"Pressing job {turnin.Job}");
                         CollectablesShop.Instance.SelectJob(turnin.Job);
@@ -997,12 +997,6 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Wait(10000, () => !CollectablesShop.Instance.IsOpen);
                 }
             }
-        }
-
-        private static void Log(string text, params object[] args)
-        {
-            var msg = string.Format("[GeneralFunctions] " + text, args);
-            Logging.Write(Colors.Aquamarine, msg);
         }
     }
 }

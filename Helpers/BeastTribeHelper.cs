@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Media;
 using ff14bot;
-using ff14bot.Helpers;
 using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Helpers
 {
-    public class BeastTribeHelper
+    public static class BeastTribeHelper
     {
+        private static readonly string Name = "BeastTribeHelper";
+        private static readonly Color LogColor = Colors.Gold;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
         private static class Offsets
         {
             [Offset("Search E8 ? ? ? ? BA ? ? ? ? 48 8B C8 48 83 C4 ? E9 ? ? ? ? ? ? ? ? ? ? E9 ? ? ? ? TraceCall")]
@@ -32,7 +33,6 @@ namespace LlamaLibrary.Helpers
             internal static int BeastTribeCount;
         }
 
-        private static string Name => "BeastTribeHelper";
         private static BeastTribeExd[] _beastTribes;
 
         static BeastTribeHelper()
@@ -56,24 +56,24 @@ namespace LlamaLibrary.Helpers
 
             for (var i = 0; i < tribes.Length; i++)
             {
-                Log(tribes[i].Unlocked ? $"{_beastTribes[i].Name} - {tribes[i]} MaxRank: {_beastTribes[i].MaxRank}" : $"{_beastTribes[i].Name} - Not Unlocked");
+                Log.Information(tribes[i].Unlocked ? $"{_beastTribes[i].Name} - {tribes[i]} MaxRank: {_beastTribes[i].MaxRank}" : $"{_beastTribes[i].Name} - Not Unlocked");
             }
         }
 
         public static void PrintDailies()
         {
             var dailies = GetCurrentDailies();
-            var accepted = dailies.Where(i => i.Accepted).Count();
-            var finished = dailies.Where(i => i.Accepted && i.IsComplete).Count();
+            var accepted = dailies.Count(i => i.Accepted);
+            var finished = dailies.Count(i => i.Accepted && i.IsComplete);
             var unfinished = dailies.Where(i => i.Accepted && !i.IsComplete).Select(i => i.ID);
 
-            Log($"Daily quests left: {Offsets.DailyQuestCount - accepted}\n\tAccepted: {accepted}\n\tFinished: {finished}\n\tCurrentDailies: {string.Join(",", unfinished)}");
+            Log.Information($"Daily quests left: {Offsets.DailyQuestCount - accepted}\n\tAccepted: {accepted}\n\tFinished: {finished}\n\tCurrentDailies: {string.Join(",", unfinished)}");
         }
 
         public static int DailyQuestAllowance()
         {
             var dailies = GetCurrentDailies();
-            var accepted = dailies.Where(i => i.Accepted).Count();
+            var accepted = dailies.Count(i => i.Accepted);
             return Offsets.DailyQuestCount - accepted;
         }
 
@@ -91,13 +91,13 @@ namespace LlamaLibrary.Helpers
 
         public static DailyQuestRead[] GetCurrentDailies()
         {
-            //Log($"{(Offsets.QuestPointer + Offsets.DailyQuestOffset).ToString("X")}");
+            Log.Verbose($"{(Offsets.QuestPointer + Offsets.DailyQuestOffset).ToString("X")}");
             return Core.Memory.ReadArray<DailyQuestRead>(Offsets.QuestPointer + Offsets.DailyQuestOffset, Offsets.DailyQuestCount);
         }
 
         public static BeastTribeStat[] GetBeastTribes()
         {
-            //Log($"{(Offsets.QuestPointer + Offsets.BeastTribeStart).ToString("X")} {Offsets.BeastTribeStart}");
+            Log.Verbose($"{(Offsets.QuestPointer + Offsets.BeastTribeStart).ToString("X")} {Offsets.BeastTribeStart}");
             return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + Offsets.BeastTribeStart, Offsets.BeastTribeCount);
         }
 
@@ -105,80 +105,6 @@ namespace LlamaLibrary.Helpers
         {
             var tribes = GetBeastTribes();
             return tribes[tribe - 1].Rank;
-        }
-
-        private static void Log(string text)
-        {
-            Logging.Write(Colors.Gold, $"[{Name}] {text}");
-        }
-
-        [StructLayout(LayoutKind.Explicit, Size = 0x10)]
-        public struct DailyQuestRead
-        {
-            [FieldOffset(8)]
-            public ushort IDRaw;
-
-            [FieldOffset(0xA)]
-            public ushort CompleteRaw;
-
-            public bool IsComplete => CompleteRaw == 1;
-
-            public int ID
-            {
-                get
-                {
-                    if (IDRaw != 0)
-                    {
-                        return IDRaw + 0x10000;
-                    }
-                    else
-                    {
-                        return 0;
-                    }
-                }
-            }
-
-            public bool Accepted => IDRaw != 0;
-        }
-
-        [StructLayout(LayoutKind.Explicit, Size = 0x10)]
-        public struct BeastTribeStat
-        {
-            [FieldOffset(0)]
-            public ushort _Rank;
-
-            [FieldOffset(0x2)]
-            public ushort Reputation;
-
-            public ushort Rank => (ushort)(_Rank & 0x7F);
-            public bool Unlocked => Rank != 0;
-
-            public override string ToString()
-            {
-                return $"Rank: {Rank} Reputation: {Reputation}";
-            }
-        }
-
-        [StructLayout(LayoutKind.Explicit, Size = 0x60)]
-        public struct BeastTribeExd
-        {
-            [FieldOffset(0x22)]
-            public byte MaxRank;
-
-            [FieldOffset(0x23)]
-            public byte Expansion;
-
-            [FieldOffset(0x1C)]
-            public ushort Currency;
-
-            [FieldOffset(0x28)]
-            [MarshalAs(UnmanagedType.LPUTF8Str)]
-            public string Name;
-
-            public override string ToString()
-            {
-                return $"MaxRank: {MaxRank} Expansion: {Expansion} Currency: {Currency} Name: {Name}"; //Name: {Name}
-            }
         }
     }
 }

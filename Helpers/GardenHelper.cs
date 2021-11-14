@@ -22,6 +22,10 @@ namespace LlamaLibrary.Helpers
 {
     public static class GardenHelper
     {
+        private static readonly string Name = "FreeCompanyActions";
+        private static readonly Color LogColor = Colors.LawnGreen;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         private static class Offsets
         {
             [Offset("Search 48 89 5C 24 ? 56 48 83 EC ? 48 8B F1 41 0F B7 D8 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ?")]
@@ -65,20 +69,20 @@ namespace LlamaLibrary.Helpers
                 Navigator.NavigationProvider = new ServiceNavigationProvider();
                 var house = WorldManager.AvailableLocations.FirstOrDefault(i => i.AetheryteId == AE);
 
-                Log($"Teleporting to housing: {house.Name} (Zone: {DataManager.ZoneNameResults[house.ZoneId]}, Aetheryte: {house.AetheryteId})");
+                Log.Information($"Teleporting to housing: {house.Name} (Zone: {DataManager.ZoneNameResults[house.ZoneId]}, Aetheryte: {house.AetheryteId})");
                 await GeneralFunctions.StopBusy(dismount: false);
                 await CommonTasks.Teleport(house.AetheryteId);
 
-                Log("Waiting for zone to change.");
+                Log.Information("Waiting for zone to change.");
                 await Coroutine.Wait(20000, () => WorldManager.ZoneId == house.ZoneId);
 
-                Log("Moving to selected garden plot.");
+                Log.Information("Moving to selected garden plot.");
                 await Navigation.FlightorMove(gardenLoc);
                 await Main(gardenLoc);
             }
             else
             {
-                Log("No Garden Location set. Exiting Task.");
+                Log.Information("No Garden Location set. Exiting Task.");
             }
         }
 
@@ -95,7 +99,7 @@ namespace LlamaLibrary.Helpers
                     var result = GardenManager.GetCrop(plant);
                     if (result != null)
                     {
-                        Log($"Watering {result} {plant.ObjectId:X}");
+                        Log.Information($"Watering {result} {plant.ObjectId:X}");
                         await Navigation.FlightorMove(plant.Location);
                         plant.Interact();
                         if (!await Coroutine.Wait(5000, () => Talk.DialogOpen))
@@ -121,14 +125,14 @@ namespace LlamaLibrary.Helpers
                         }
                         else
                         {
-                            Log("Plant is ready to be harvested");
+                            Log.Information("Plant is ready to be harvested");
                             SelectString.ClickSlot(1);
                             await Coroutine.Sleep(1000);
                         }
                     }
                     else
                     {
-                        Log($"GardenManager.GetCrop returned null {plant.ObjectId:X}");
+                        Log.Error($"GardenManager.GetCrop returned null {plant.ObjectId:X}");
                     }
                 }
             }
@@ -142,7 +146,7 @@ namespace LlamaLibrary.Helpers
                     continue;
                 }
 
-                Log($"Fertilizing {GardenManager.GetCrop(plant)} {plant.ObjectId:X}");
+                Log.Information($"Fertilizing {GardenManager.GetCrop(plant)} {plant.ObjectId:X}");
                 await Navigation.FlightorMove(plant.Location);
                 plant.Interact();
                 if (!await Coroutine.Wait(5000, () => Talk.DialogOpen))
@@ -171,17 +175,17 @@ namespace LlamaLibrary.Helpers
                             continue;
                         }
 
-                        Log($"Plant with objectId {plant.ObjectId:X} was fertilized");
+                        Log.Information($"Plant with objectId {plant.ObjectId:X} was fertilized");
                         await Coroutine.Sleep(2300);
                     }
                     else
                     {
-                        Log($"Plant with objectId {plant.ObjectId:X} not able to be fertilized, trying again later");
+                        Log.Information($"Plant with objectId {plant.ObjectId:X} not able to be fertilized, trying again later");
                     }
                 }
                 else
                 {
-                    Log("Plant is ready to be harvested");
+                    Log.Information("Plant is ready to be harvested");
                     SelectString.ClickSlot(1);
                     await Coroutine.Sleep(1000);
                 }
@@ -279,11 +283,6 @@ namespace LlamaLibrary.Helpers
                     }
                 }
             }
-        }
-
-        public static void Log(string text)
-        {
-            Logging.Write(Colors.LawnGreen, text);
         }
     }
 }

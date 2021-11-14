@@ -69,6 +69,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\InventoryHelpers.cs" />
     <Compile Include="Helpers\IshgardHandin.cs" />
+    <Compile Include="Helpers\LLogger.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
     <Compile Include="Retainers\CompleteRetainer.cs" />
@@ -77,6 +78,12 @@
     <Compile Include="Retainers\RetainerInventoryItem.cs" />
     <Compile Include="Retainers\RetainerTaskData.cs" />
     <Compile Include="Retainers\RetainerTasks.cs" />
+    <Compile Include="Structs\BeastTribeExd.cs" />
+    <Compile Include="Structs\BeastTribeStat.cs" />
+    <Compile Include="Structs\DailyQuestRead.cs" />
+    <Compile Include="Structs\MobHuntOrder.cs" />
+    <Compile Include="Structs\MobHuntOrderType.cs" />
+    <Compile Include="Structs\MobHuntTarget.cs" />
     <Compile Include="Structs\SharedFateProgress.cs" />
     <Compile Include="Helpers\SharedFateHelper.cs" />
     <Compile Include="Helpers\Achievements.cs" />

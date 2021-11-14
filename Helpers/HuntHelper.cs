@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
@@ -24,6 +24,10 @@ namespace LlamaLibrary.Helpers
     {
         private const int MaxOrderTypes = 0xE;
 
+        private static readonly string Name = "HuntHelper";
+        private static readonly Color LogColor = Colors.Gold;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         public static readonly SortedDictionary<int, StoredHuntLocation> DailyHunts;
 
         public static readonly List<HuntBoardNpc> HuntBoards = new List<HuntBoardNpc>()
@@ -37,6 +41,7 @@ namespace LlamaLibrary.Helpers
             new HuntBoardNpc(2010340, 819, new Vector3(-83.604248f, -0.01532f, -90.745422f), new uint[] { 10, 11, 12, 13 }) //Nuts Board  The Crystarium(The Crystarium) };
         };
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private static class Offsets
         {
             [Offset("Search 89 84 2A ?? ?? ?? ?? 41 0F B6 D6 Add 3 Read32")]
@@ -75,8 +80,6 @@ namespace LlamaLibrary.Helpers
             DailyHunts = LoadResource<SortedDictionary<int, StoredHuntLocation>>(Resources.AllHunts);
         }
 
-        private static string Name => "HuntHelper";
-
         public static void Test()
         {
             for (var j = 0; j < MaxOrderTypes; j++)
@@ -87,14 +90,14 @@ namespace LlamaLibrary.Helpers
 
                 if (!unlocked)
                 {
-                    Log(string.Format("Not Unlocked {0}", orderType.Item.CurrentLocaleName));
+                    Log.Information($"Not Unlocked {orderType.Item.CurrentLocaleName}");
                     continue;
                 }
 
                 var listStart = orderType.OrderStart - 1;
                 var dailyNum = Core.Memory.Read<byte>(Offsets.HuntData + 8 + j);
 
-                Log(string.Format("{0}", orderType.Item.CurrentLocaleName));
+                Log.Information($"{orderType.Item.CurrentLocaleName}");
                 var max = 5;
                 if (orderType.Type == MobHuntType.Weekly)
                 {
@@ -106,15 +109,15 @@ namespace LlamaLibrary.Helpers
                     var hunt = GetMobHuntOrder((uint)listStart + dailyNum, (uint)i);
                     var target = GetMobHuntTarget(hunt.MobHuntTarget);
                     var fate = target.FateRequired ? string.Format("Fate {0}", target.Fate) : "";
-                    Log(string.Format("\t{0} ({1}) {2}", target.Name, hunt.MobHuntTarget, fate));
+                    Log.Information($"\t{target.Name} ({hunt.MobHuntTarget}) {fate}");
                     var location = DailyHunts.FirstOrDefault(h => h.Key == hunt.MobHuntTarget).Value;
                     if (location != default(StoredHuntLocation))
                     {
-                        Log($"\t\t {DataManager.ZoneNameResults[location.Map].CurrentLocaleName} {location.Location}");
+                        Log.Information($"\t\t {DataManager.ZoneNameResults[location.Map].CurrentLocaleName} {location.Location}");
                     }
                     else
                     {
-                        Log("No Location");
+                        Log.Information("No Location");
                     }
                 }
             }
@@ -132,22 +135,14 @@ namespace LlamaLibrary.Helpers
 
                 if (!unlocked)
                 {
-                    Log(string.Format("Not Unlocked {0}", orderType.Item.CurrentLocaleName));
+                    Log.Information($"Not Unlocked {orderType.Item.CurrentLocaleName}");
                     continue;
                 }
-
-                //      if (!accepted[j])
-                //      {
-                //           Log(string.Format("Not Accepted {0}", orderType.Item.CurrentLocaleName));
-                //           continue;
-                //      }
 
                 var listStart = orderType.OrderStart - 1;
                 var v8 = Core.Memory.Read<byte>(Offsets.HuntData + j + 0x16);
 
-                //var dailyNum = Core.Memory.Read<byte>(Offsets.HuntData + 8 + j);
-
-                Log(string.Format("{0}", orderType.Item.CurrentLocaleName));
+                Log.Information($"{orderType.Item.CurrentLocaleName}");
                 var max = 5;
                 if (orderType.Type == MobHuntType.Weekly)
                 {
@@ -159,7 +154,7 @@ namespace LlamaLibrary.Helpers
                     var hunt = GetMobHuntOrder((uint)listStart + v8, (uint)i);
                     var target = GetMobHuntTarget(hunt.MobHuntTarget);
                     var fate = target.FateRequired ? string.Format("Fate {0}", target.Fate) : "";
-                    Log(string.Format("\t{0} ({1}) {2}", target.Name, hunt.MobHuntTarget, fate));
+                    Log.Information($"\t{target.Name} ({hunt.MobHuntTarget}) {fate}");
                 }
             }
         }
@@ -176,7 +171,7 @@ namespace LlamaLibrary.Helpers
             //|| !accepted[orderTypeIndex]
             if (!unlocked || orderType.Type == MobHuntType.Weekly)
             {
-                Log($"Weekly or not unlocked");
+                Log.Information($"Weekly or not unlocked");
                 return result;
             }
 
@@ -199,7 +194,7 @@ namespace LlamaLibrary.Helpers
 
                 if (!DailyHunts.ContainsKey(hunt.MobHuntTarget))
                 {
-                    Log($"MobHuntTarget {hunt.MobHuntTarget} Not Found!, please walk into nearest traffic");
+                    Log.Information($"MobHuntTarget {hunt.MobHuntTarget} Not Found!, please walk into nearest traffic");
                     continue;
                 }
 
@@ -263,7 +258,7 @@ namespace LlamaLibrary.Helpers
 
                 if (!DailyHunts.ContainsKey(hunt.MobHuntTarget))
                 {
-                    Log($"MobHuntTarget {hunt.MobHuntTarget} Not Found!, please walk into nearest traffic");
+                    Log.Information($"MobHuntTarget {hunt.MobHuntTarget} Not Found!, please walk into nearest traffic");
                     continue;
                 }
 
@@ -308,7 +303,7 @@ namespace LlamaLibrary.Helpers
 
                 if (!DailyHunts.ContainsKey(hunt.MobHuntTarget))
                 {
-                    Log($"MobHuntTarget {hunt.MobHuntTarget} Not Found!, please walk into nearest traffic");
+                    Log.Information($"MobHuntTarget {hunt.MobHuntTarget} Not Found!, please walk into nearest traffic");
                     continue;
                 }
 
@@ -328,7 +323,7 @@ namespace LlamaLibrary.Helpers
             for (var orderType = 0; orderType < MaxOrderTypes; orderType++)
             {
                 var orderTypeObj = GetMobHuntOrderType(orderType);
-                Log($"--{orderTypeObj.Item.CurrentLocaleName}-- Accepted ({accepted[orderType]})");
+                Log.Information($"--{orderTypeObj.Item.CurrentLocaleName}-- Accepted ({accepted[orderType]})");
                 if (!accepted[orderType])
                 {
                     continue;
@@ -344,7 +339,7 @@ namespace LlamaLibrary.Helpers
                 {
                     var v1 = mobIndex + (orderType * 5);
                     var v3 = (v1 * 4) + Offsets.KillCountOffset;
-                    Log($"{mobIndex} - Killed: {Core.Memory.Read<byte>(Offsets.HuntData + v3)}");
+                    Log.Information($"{mobIndex} - Killed: {Core.Memory.Read<byte>(Offsets.HuntData + v3)}");
                 }
             }
         }
@@ -355,11 +350,11 @@ namespace LlamaLibrary.Helpers
 
             var bit = Core.Memory.Read<int>(Offsets.HuntData + Offsets.AcceptedHuntBitfieldOffset);
             var myInts = new int[1] { bit };
-            var myBA5 = new BitArray(myInts);
+            var myBa5 = new BitArray(myInts);
 
             for (var j = 0; j < MaxOrderTypes; j++)
             {
-                accepted[j] = myBA5.Get(j);
+                accepted[j] = myBa5.Get(j);
             }
 
             return accepted;
@@ -411,7 +406,7 @@ namespace LlamaLibrary.Helpers
             );
         }
 
-        public static List<(uint, HuntOrderStatus)> GetDailyStatus()
+        public static List<(uint OrderType, HuntOrderStatus HuntOrderStatus)> GetDailyStatus()
         {
             var dailyOrderTypes = new[] { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
             var result = new List<(uint, HuntOrderStatus)>();
@@ -498,103 +493,9 @@ namespace LlamaLibrary.Helpers
             }
         }
 
-        private static void Log(object read)
-        {
-            Logging.Write(Colors.Gold, $"[{Name}] {read}");
-        }
-
-        private static void Log(string text, params object[] args)
-        {
-            var msg = string.Format("[" + Name + "] " + text, args);
-            Logging.Write(Colors.Gold, msg);
-        }
-
-        private static void Log(string text)
-        {
-            Logging.Write(Colors.Gold, $"[{Name}] {text}");
-        }
-
-        private void Log(IntPtr ptr)
-        {
-            Logging.Write(Colors.Gold, $"[{Name}] {ptr.ToString("X")}");
-        }
-
         private static T LoadResource<T>(string text)
         {
             return JsonConvert.DeserializeObject<T>(text);
-        }
-    }
-
-    [StructLayout(LayoutKind.Explicit, Size = 0xB)]
-    public struct MobHuntOrderType
-    {
-        [FieldOffset(0)]
-        public uint QuestId;
-
-        [FieldOffset(4)]
-        public uint EventItem;
-
-        [FieldOffset(8)]
-        public short OrderStart;
-
-        [FieldOffset(10)]
-        public MobHuntType Type;
-
-        [FieldOffset(11)]
-        public byte Amount;
-
-        public Item Item => DataManager.GetItem(EventItem);
-
-        public override string ToString()
-        {
-            return $"{QuestId} Item: {DataManager.GetItem(EventItem).CurrentLocaleName} {OrderStart} {Type} {Amount}";
-        }
-    }
-
-    [StructLayout(LayoutKind.Sequential, Size = 0x6)]
-    public struct MobHuntOrder
-    {
-        //[FieldOffset(0)]
-        public short MobHuntTarget;
-
-        // [FieldOffset(4)]
-        public byte NeededKills;
-
-        // [FieldOffset(8)]
-        public MobHuntTypeARR Type;
-
-        //  [FieldOffset(10)]
-        public byte Rank;
-
-        //  [FieldOffset(11)]
-        public byte MobHuntReward;
-
-        //public Item Item => DataManager.GetItem(EventItem);
-        public override string ToString()
-        {
-            return $"{MobHuntTarget} Kills: {NeededKills} {Type} {Rank} {MobHuntReward}";
-        }
-    }
-
-    [StructLayout(LayoutKind.Explicit)]
-    public struct MobHuntTarget
-    {
-        [FieldOffset(4)]
-        public short BNpcName;
-
-        [FieldOffset(6)]
-        public short Fate;
-
-        [FieldOffset(8)]
-        public short Territory;
-
-        public bool FateRequired => Fate > 0;
-
-        public string Name => DataManager.GetBattleNPCData((uint)BNpcName).CurrentLocaleName;
-
-        public override string ToString()
-        {
-            return $"{BNpcName} {Territory} {Fate}";
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media;
 using ff14bot;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
@@ -9,6 +10,10 @@ namespace LlamaLibrary.Helpers
 {
     public static class CraftingHelper
     {
+        private static readonly string Name = "CraftingHelper";
+        private static readonly Color LogColor = Colors.Bisque;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         private static class Offsets
         {
             [Offset("Search 4C 8D 0D ?? ?? ?? ?? 4D 8B 13 49 8B CB Add 3 TraceRelative")]
@@ -19,10 +24,9 @@ namespace LlamaLibrary.Helpers
 
         public static bool AnimationLocked => CraftingManager.AnimationLocked;
 
-        // TODO: arg `statis` is unused here in favor of property `Status`, but method is public.  Safe to remove anyway?
-        public static bool IsValid(CraftingStatus statis)
+        public static bool IsValid(CraftingStatus status)
         {
-            if (Status.Stage == 9 || Status.Stage == 10)
+            if (status.Stage == 9 || status.Stage == 10)
             {
                 return true;
             }

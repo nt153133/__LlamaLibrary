@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
@@ -13,14 +14,18 @@ namespace LlamaLibrary.Helpers
 {
     public static class GrandCompanyHelper
     {
-        internal static Dictionary<GrandCompany, KeyValuePair<uint, Vector3>> BaseLocations = new Dictionary<GrandCompany, KeyValuePair<uint, Vector3>>
+        private static readonly string Name = "GrandCompanyHelper";
+        private static readonly Color LogColor = Colors.LimeGreen;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
+        public static Dictionary<GrandCompany, KeyValuePair<uint, Vector3>> BaseLocations = new Dictionary<GrandCompany, KeyValuePair<uint, Vector3>>
         {
             { GrandCompany.Immortal_Flames, new KeyValuePair<uint, Vector3>(130, new Vector3(-139.3435f, 4.1f, -100.8658f)) },
             { GrandCompany.Order_Of_The_Twin_Adder, new KeyValuePair<uint, Vector3>(132, new Vector3(-67.49361f, -0.5035391f, -2.149932f)) },
             { GrandCompany.Maelstrom, new KeyValuePair<uint, Vector3>(128, new Vector3(88.8576f, 40.24876f, 71.6758f)) }
         };
 
-        internal static Dictionary<GCNpc, uint> MaelstromNPCs = new Dictionary<GCNpc, uint>
+        public static Dictionary<GCNpc, uint> MaelstromNPCs = new Dictionary<GCNpc, uint>
         {
             { GCNpc.Flyer, 1011820 },
             { GCNpc.Mage, 1003248 },
@@ -37,7 +42,7 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Hunt_Billmaster, 1009552 }
         };
 
-        internal static Dictionary<GCNpc, uint> FlameNPCs = new Dictionary<GCNpc, uint>
+        public static Dictionary<GCNpc, uint> FlameNPCs = new Dictionary<GCNpc, uint>
         {
             { GCNpc.Flyer, 1011818 },
             { GCNpc.Mage, 1004380 },
@@ -54,7 +59,7 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Hunt_Billmaster, 1001379 }
         };
 
-        internal static Dictionary<GCNpc, uint> TwinAdderNPCs = new Dictionary<GCNpc, uint>
+        public static Dictionary<GCNpc, uint> TwinAdderNPCs = new Dictionary<GCNpc, uint>
         {
             { GCNpc.Flyer, 1011819 },
             { GCNpc.Mage, 1004381 },
@@ -71,7 +76,7 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Entrance_to_the_Barracks, 2006962 }
         };
 
-        internal static Dictionary<GrandCompany, Dictionary<GCNpc, uint>> NpcList = new Dictionary<GrandCompany, Dictionary<GCNpc, uint>>
+        public static Dictionary<GrandCompany, Dictionary<GCNpc, uint>> NpcList = new Dictionary<GrandCompany, Dictionary<GCNpc, uint>>
         {
             { GrandCompany.Immortal_Flames, FlameNPCs },
             { GrandCompany.Order_Of_The_Twin_Adder, TwinAdderNPCs },
@@ -85,9 +90,9 @@ namespace LlamaLibrary.Helpers
                 return;
             }
 
-            var GcBase = BaseLocations[Core.Me.GrandCompany];
-            Logger.Info($"{Core.Me.GrandCompany} {GcBase.Key} {GcBase.Value}");
-            await Navigation.GetTo(GcBase.Key, GcBase.Value);
+            var gcBase = BaseLocations[Core.Me.GrandCompany];
+            Log.Information($"{Core.Me.GrandCompany} {gcBase.Key} {gcBase.Value}");
+            await Navigation.GetTo(gcBase.Key, gcBase.Value);
         }
 
         public static uint GetNpcByType(GCNpc npc)
@@ -127,9 +132,9 @@ namespace LlamaLibrary.Helpers
 
         public static async Task GetToGCBase(GrandCompany grandCompany)
         {
-            var GcBase = BaseLocations[grandCompany];
-            Logger.Info($"{grandCompany} {GcBase.Key} {GcBase.Value}");
-            await Navigation.GetTo(GcBase.Key, GcBase.Value);
+            var gcBase = BaseLocations[grandCompany];
+            Log.Information($"{grandCompany} {gcBase.Key} {gcBase.Value}");
+            await Navigation.GetTo(gcBase.Key, gcBase.Value);
         }
 
         public static uint GetNpcByType(GCNpc npc, GrandCompany grandCompany)

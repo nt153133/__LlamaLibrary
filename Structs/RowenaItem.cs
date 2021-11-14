@@ -94,10 +94,6 @@ namespace LlamaLibrary.Structs
         [FieldOffset(0x9C)]
         public readonly byte N000000BF;
 
-        [FieldOffset(0x60)]
-        [MarshalAs(UnmanagedType.LPUTF8Str, SizeConst = 0x30)]
-        public string _name;
-
         [FieldOffset(0x9D)]
         public readonly byte N000000C4;
 
@@ -115,6 +111,10 @@ namespace LlamaLibrary.Structs
 
         [FieldOffset(0xa6)]
         public readonly short short3;
+
+        [FieldOffset(0x60)]
+        [MarshalAs(UnmanagedType.LPUTF8Str, SizeConst = 0x30)]
+        public string _name;
 
         public bool Starred => _Starred > 0;
 

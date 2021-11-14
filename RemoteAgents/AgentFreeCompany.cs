@@ -50,12 +50,12 @@ namespace LlamaLibrary.RemoteAgents
             return ptr2;
         }
 
-        public List<(string, bool)> GetMembers()
+        public List<(string Name, bool Online)> GetMembers()
         {
             var i = 0;
             var result = new List<(string, bool)>();
             var start = GetRosterPtr();
-            byte testByte = 0;
+            byte testByte;
             do
             {
                 var addr = start + (i * 0x60);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Navigation;
@@ -17,6 +18,10 @@ namespace LlamaLibrary.Helpers
 {
     public static class GrandCompanyShop
     {
+        private static readonly string Name = "GrandCompanyShop";
+        private static readonly Color LogColor = Colors.SeaGreen;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         internal static class Offsets
         {
             [Offset("Search 0F B6 15 ? ? ? ? 8D 42 ? 3C ? 77 ? FE CA 48 8D 0D ? ? ? ? Add 3 TraceRelative")]
@@ -52,17 +57,17 @@ namespace LlamaLibrary.Helpers
             }
 
             var item = Items.FirstOrDefault(i => i.ItemID == ItemId);
-            Logger.Info($"Itemid {item.ItemID}");
+            Log.Information($"Itemid {item.ItemID}");
             if (item.ItemID != 0)
             {
                 var qtyCanBuy = Math.Min(qty, CanAfford(item));
-                Logger.Info($"CanBuy {qtyCanBuy}");
+                Log.Information($"CanBuy {qtyCanBuy}");
                 GrandCompanyExchange.Instance.BuyItemByIndex(item.Index, qtyCanBuy);
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                 if (SelectYesno.IsOpen)
                 {
                     SelectYesno.Yes();
-                    Logger.Info($"Clicked Yes");
+                    Log.Information($"Clicked Yes");
                 }
 
                 await Coroutine.Sleep(800);
@@ -74,10 +79,10 @@ namespace LlamaLibrary.Helpers
             }
             else
             {
-                Logger.Info($"{(ActiveShopPtr + Offsets.GCArrayStart).ToString("X")}");
+                Log.Error($"{(ActiveShopPtr + Offsets.GCArrayStart).ToString("X")}");
                 foreach (var item1 in Items)
                 {
-                    Logger.Info($"{item1}");
+                    Log.Error($"{item1}");
                 }
             }
 
@@ -92,7 +97,7 @@ namespace LlamaLibrary.Helpers
         {
             if (knownItems.TryGetValue(ItemId, out var itemInfo))
             {
-                Logger.Info($"Found Known item {ItemId}");
+                Log.Information($"Found Known item {ItemId}");
                 return await BuyItem(ItemId, qty, itemInfo.Item1, itemInfo.Item2);
             }
 
@@ -105,12 +110,12 @@ namespace LlamaLibrary.Helpers
             {
                 if (GrandCompanyExchange.Instance.GCRankGroup != GCRankGroup)
                 {
-                    Logger.Info($"Change GC Rank to {GCRankGroup}");
+                    Log.Information($"Change GC Rank to {GCRankGroup}");
                     GrandCompanyExchange.Instance.ChangeRankGroup(GCRankGroup);
                     await Coroutine.Sleep(500);
                 }
 
-                Logger.Info($"Change ChangeItemGroup to {category}");
+                Log.Information($"Change ChangeItemGroup to {category}");
                 GrandCompanyExchange.Instance.ChangeItemGroup((int)category);
                 await Coroutine.Sleep(5000);
                 return await BuyItem(ItemId, qty);
