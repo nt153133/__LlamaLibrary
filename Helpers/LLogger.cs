@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Media;
-using ff14bot.Helpers;
 
 namespace LlamaLibrary.Helpers
 {
@@ -45,7 +44,7 @@ namespace LlamaLibrary.Helpers
 
         public void Log(string text, Color logColor)
         {
-            Logging.Write(logColor, $"[{name}] {text}");
+            ff14bot.Helpers.Logging.Write(logColor, $"[{name}] {text}");
         }
     }
 

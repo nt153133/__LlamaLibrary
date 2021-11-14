@@ -109,6 +109,8 @@
     <Compile Include="Helpers\Translator.cs" />
     <Compile Include="Helpers\GardenHelper.cs" />
     <Compile Include="Helpers\WorldHelper.cs" />
+    <Compile Include="Logging\Llogger.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="RetainerItemFinder\IStoredInventory.cs" />
     <Compile Include="RetainerItemFinder\ItemFinder.cs" />
     <Compile Include="RetainerItemFinder\ItemFinderPtrNode.cs" />
