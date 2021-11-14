@@ -583,7 +583,7 @@ namespace LlamaBotBases.OutOnALimb
 
             //Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft}");
             var stops1 = new List<int> { 20, 60, 40, 80 };
-            stops1.Shuffle();
+            Shuffle(stops1);
             foreach (var stopLoc in stops1)
             {
                 if (MiniGameBotanist.Instance.IsOpen && MiniGameBotanist.Instance.GetNumberOfTriesLeft < 1)
@@ -681,7 +681,7 @@ namespace LlamaBotBases.OutOnALimb
             if (lastCloseLocation < 1 && lastVeryCloseLocation < 1)
             {
                 var stops = new List<int> { 5, 95, 50, 10, 70, 30, 0 };
-                stops.Shuffle();
+                Shuffle(stops);
                 foreach (var stopLoc in stops)
                 {
                     if (MiniGameBotanist.Instance.IsOpen && MiniGameBotanist.Instance.GetNumberOfTriesLeft < 1)
@@ -745,7 +745,7 @@ namespace LlamaBotBases.OutOnALimb
                     lastVeryCloseLocation,
                     lastVeryCloseLocation + 5
                 };
-                locations.Shuffle();
+                Shuffle(locations);
                 var i = 0;
                 while (MiniGameBotanist.Instance.GetProgressLeft > 0 || !SelectYesno.IsOpen || i >= (locations.Count - 1))
                 {
@@ -903,6 +903,22 @@ namespace LlamaBotBases.OutOnALimb
             }
 
             return count;
+        }
+
+
+        private static readonly Random rng = new Random();
+
+        private static void Shuffle<T>(IList<T> list)
+        {
+            var n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                var k = rng.Next(n + 1);
+                var value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
         }
     }
 }
