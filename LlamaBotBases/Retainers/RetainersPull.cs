@@ -84,7 +84,7 @@ namespace LlamaBotBases.Retainers
             OffsetManager.Init();
 
             Log("Load venture.json");
-            ventureData = new Lazy<List<RetainerTaskData>>(() => LoadResource<List<RetainerTaskData>>(LlamaLibrary.Resources.Ventures));
+            ventureData = new Lazy<List<RetainerTaskData>>(() => LoadResource<List<RetainerTaskData>>(LlamaLibrary.Properties.Resources.Ventures));
             Log("Loaded venture.json");
         }
 

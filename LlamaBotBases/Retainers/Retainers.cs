@@ -79,7 +79,7 @@ namespace LlamaBotBases.Retainers
         internal void VenturesInit()
         {
             Log("Load venture.json");
-            VentureData = new Lazy<List<RetainerTaskData>>(() => LoadResource<List<RetainerTaskData>>(LlamaLibrary.Resources.Ventures));
+            VentureData = new Lazy<List<RetainerTaskData>>(() => LoadResource<List<RetainerTaskData>>(LlamaLibrary.Properties.Resources.Ventures));
             Log("Loaded venture.json");
         }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using LlamaLibrary.BotBases.AutoRetainerSort.Classes;
+using LlamaBotBases.AutoRetainerSort.Classes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

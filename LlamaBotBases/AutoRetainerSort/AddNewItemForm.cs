@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using ff14bot.Managers;
-using static LlamaLibrary.BotBases.AutoRetainerSort.Classes.ItemSortInfo;
+using static LlamaBotBases.AutoRetainerSort.Classes.ItemSortInfo;
 
 namespace LlamaBotBases.AutoRetainerSort
 {

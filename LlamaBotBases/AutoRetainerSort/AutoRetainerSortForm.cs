@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using LlamaLibrary.BotBases.AutoRetainerSort.Classes;
+using LlamaBotBases.AutoRetainerSort.Classes;
 using LlamaLibrary.RemoteWindows;
 
 namespace LlamaBotBases.AutoRetainerSort

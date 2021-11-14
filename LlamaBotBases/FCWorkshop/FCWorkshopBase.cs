@@ -575,7 +575,7 @@ namespace LlamaBotBases.FCWorkshop
                                 {
                                     await CloseFCCraftingStation();
 
-                                    await LowerQualityAndCombine(item.ItemId);
+                                    await InventoryHelpers.LowerQualityAndCombine(item.ItemId);
 
                                     // var nqSlot = InventoryManager.FilledSlots.FirstOrDefault(slot => slot.RawItemId == item.ItemId && slot.IsHighQuality && slot.Count < item.Qty);
 

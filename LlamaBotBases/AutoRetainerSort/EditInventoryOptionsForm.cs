@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using LlamaLibrary.BotBases.AutoRetainerSort.Classes;
-using static LlamaLibrary.BotBases.AutoRetainerSort.Classes.ItemSortInfo;
+using LlamaBotBases.AutoRetainerSort.Classes;
+using static LlamaBotBases.AutoRetainerSort.Classes.ItemSortInfo;
 
 namespace LlamaBotBases.AutoRetainerSort
 {

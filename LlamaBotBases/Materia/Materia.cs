@@ -11,7 +11,6 @@ using ff14bot.Helpers;
 using ff14bot.Managers;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Memory;
-using LlamaLibrary.Properties;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using Newtonsoft.Json;
@@ -127,7 +126,7 @@ namespace LlamaBotBases.Materia
             OffsetManager.Init();
 
             Log("Load Materia.json");
-            MateriaList = LoadResource<Dictionary<int, List<MateriaItem>>>(Resources.Materia);
+            MateriaList = LoadResource<Dictionary<int, List<MateriaItem>>>(LlamaLibrary.Properties.Resources.Materia);
             Log("Loaded Materia.json");
         }
 

@@ -10,8 +10,8 @@
 
 namespace LlamaLibrary.Properties {
     using System;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,24 +19,24 @@ namespace LlamaLibrary.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
-
+    public class Resources {
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LlamaLibrary.Properties.Resources", typeof(Resources).Assembly);
@@ -45,13 +45,13 @@ namespace LlamaLibrary.Properties {
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -59,25 +59,25 @@ namespace LlamaLibrary.Properties {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to {&quot;1&quot;:{&quot;BNpcNameKey&quot;:785,&quot;Location&quot;:{&quot;X&quot;:-279.682159,&quot;Y&quot;:256.4128,&quot;Z&quot;:339.207031,&quot;MagnitudeSqr&quot;:259031.047,&quot;Magnitude&quot;:508.950928},&quot;Map&quot;:155},&quot;2&quot;:{&quot;BNpcNameKey&quot;:1809,&quot;Location&quot;:{&quot;X&quot;:-425.2555,&quot;Y&quot;:-15.8549,&quot;Z&quot;:-426.810364,&quot;MagnitudeSqr&quot;:363260.7,&quot;Magnitude&quot;:602.7111},&quot;Map&quot;:156},&quot;3&quot;:{&quot;BNpcNameKey&quot;:1829,&quot;Location&quot;:{&quot;X&quot;:-292.6528,&quot;Y&quot;:-41.6489868,&quot;Z&quot;:-327.657,&quot;MagnitudeSqr&quot;:194739.422,&quot;Magnitude&quot;:441.2929},&quot;Map&quot;:138},&quot;4&quot;:{&quot;BNpcNameKey&quot;:869,&quot;Location&quot;:{&quot;X&quot;:-356.110168,&quot;Y&quot;:14.98069,&quot;Z&quot;:-737.064331,&quot;MagnitudeSqr&quot;:67 [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string AllHunts {
+        public static string AllHunts {
             get {
                 return ResourceManager.GetString("AllHunts", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to {&quot;1&quot;:[{&quot;Key&quot;:5724,&quot;Tier&quot;:0,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;},{&quot;Key&quot;:5725,&quot;Tier&quot;:1,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;},{&quot;Key&quot;:5726,&quot;Tier&quot;:2,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;},{&quot;Key&quot;:5727,&quot;Tier&quot;:3,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;}],&quot;2&quot;:[{&quot;Key&quot;:5604,&quot;Tier&quot;:0,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5605,&quot;Tier&quot;:1,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5606,&quot;Tier&quot;:2,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5607,&quot;Tier&quot;:3,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5608,&quot;Tier&quot;:4,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:18006,&quot;Tier&quot;:5,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;}],&quot;3&quot;:[{&qu....
         /// </summary>
-        internal static string Materia {
+        public static string Materia {
             get {
                 return ResourceManager.GetString("Materia", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to [
         ///  {
@@ -105,7 +105,7 @@ namespace LlamaLibrary.Properties {
         ///    &quot;RequiredGathering&quot;: 0,
         ///    &quot;N [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Ventures {
+        public static string Ventures {
             get {
                 return ResourceManager.GetString("Ventures", resourceCulture);
             }

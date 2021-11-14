@@ -137,7 +137,7 @@ namespace LlamaBotBases.Tester
             OffsetManager.Init();
 
             Log("Load venture.json");
-            VentureData = LoadResource<List<RetainerTaskData>>(LlamaLibrary.Resources.Ventures);
+            VentureData = LoadResource<List<RetainerTaskData>>(LlamaLibrary.Properties.Resources.Ventures);
             Log("Loaded venture.json");
         }
 

@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using ff14bot.Helpers;
 using ff14bot.Managers;
-using LlamaLibrary.BotBases.AutoRetainerSort.Classes;
+using LlamaBotBases.AutoRetainerSort.Classes;
 using LlamaLibrary.Helpers;
 using Newtonsoft.Json;
 

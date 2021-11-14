@@ -6,6 +6,7 @@ using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
+using LlamaLibrary.Helpers;
 using TreeSharp;
 using static LlamaLibrary.Helpers.GeneralFunctions;
 
@@ -108,7 +109,7 @@ namespace LlamaLibrary.OrderbotTags
 
             foreach (var itemId in toLower)
             {
-                await FCWorkshopBase.LowerQualityAndCombine((int)itemId);
+                await InventoryHelpers.LowerQualityAndCombine((int)itemId);
                 await Coroutine.Sleep(200);
             }
 

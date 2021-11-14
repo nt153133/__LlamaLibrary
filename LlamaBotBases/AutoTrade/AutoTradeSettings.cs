@@ -66,7 +66,7 @@ namespace LlamaBotBases.AutoTrade
 
         public static ParallelQuery<BagSlot> MainBagsFilledSlots => InventoryManager.GetBagsByInventoryBagId(MainBags).AsParallel().SelectMany(x => x.FilledSlots);
 
-        internal static int CurrentGil => ScriptConditions.Helpers.GilCount();
+        internal static int CurrentGil => LlamaLibrary.ScriptConditions.Helpers.GilCount();
 
         private CultureInfo _culture;
 
