@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Objects;
@@ -17,6 +17,7 @@ using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Retainers;
@@ -28,6 +29,8 @@ namespace LlamaBotBases.FCWorkshop
 {
     public class FCWorkshopBase : BotBase
     {
+        private static readonly LLogger Log = new LLogger(typeof(FCWorkshopBase).Name, Colors.White);
+
         public static List<Item> itemList = new List<Item>();
 
         private static readonly InventoryBagId[] RetainerBagIds =
@@ -145,19 +148,14 @@ namespace LlamaBotBases.FCWorkshop
 
             // var text = File.ReadAllText(@"G:\Order.json", Encoding.UTF8);
             // orderList = loadResource<List<LisbethOrder>>(text);
-            // Logger.Info("Loaded Order.json");
-        }
-
-        private static T LoadResource<T>(string text)
-        {
-            return JsonConvert.DeserializeObject<T>(text);
+            // Log.Information("Loaded Order.json");
         }
 
         public async Task Pullorder()
         {
             foreach (var item in orderList)
             {
-                Logger.Info($"{DataManager.GetItem((uint)item.Item)}");
+                Log.Information($"{DataManager.GetItem((uint)item.Item)}");
             }
 
             await RetainerRoutine.ReadRetainers(CheckForItems);
@@ -170,18 +168,18 @@ namespace LlamaBotBases.FCWorkshop
                 {
                     if (itemCount >= item.Amount)
                     {
-                        Logger.Info($"Removing {item}");
+                        Log.Information($"Removing {item}");
                         orderList.Remove(item);
                     }
                     else
                     {
-                        Logger.Info($"Changing amount of {item} to {item.Amount - (int)itemCount}");
+                        Log.Information($"Changing amount of {item} to {item.Amount - (int)itemCount}");
                         orderList.First(i => i.Item == item.Item).Amount = item.Amount - (int)itemCount;
                     }
                 }
                 else
                 {
-                    Logger.Info($"Have no {item}");
+                    Log.Information($"Have no {item}");
                 }
             }
 
@@ -261,10 +259,10 @@ namespace LlamaBotBases.FCWorkshop
 
             if (HugeCraftworksSupply.Instance.IsOpen)
             {
-                Logger.Info($"Checking against {HugeCraftworksSupply.Instance.TurnInItemId}");
+                Log.Information($"Checking against {HugeCraftworksSupply.Instance.TurnInItemId}");
                 if (InventoryManager.FilledSlots.Count(i => i.RawItemId == HugeCraftworksSupply.Instance.TurnInItemId) > 0)
                 {
-                    Logger.Info($"Found {HugeCraftworksSupply.Instance.TurnInItemId}");
+                    Log.Information($"Found {HugeCraftworksSupply.Instance.TurnInItemId}");
 
                     await HugeCraftworksSupply.Instance.HandOverItems();
                     return true;
@@ -369,7 +367,7 @@ namespace LlamaBotBases.FCWorkshop
             await Coroutine.Sleep(1000);
             foreach (var slot in InventoryManager.FilledSlots.Where(i => i.IsHighQuality && ItemsToLower.Contains(i.RawItemId)))
             {
-                RetainerRoutine.LogLoud($"Lowering {slot}");
+                Log.Information($"Lowering {slot}");
                 slot.LowerQuality();
                 await Coroutine.Sleep(1000);
             }
@@ -390,7 +388,7 @@ namespace LlamaBotBases.FCWorkshop
             var cats = retainerCategoryStorage.Where(i => i.Key != index).SelectMany(x => x.Value).ToArray();
             foreach (var cat in cats)
             {
-                Logger.Info($"Pulling {cat}");
+                Log.Information($"Pulling {cat}");
             }
 
             await PullItemsByCategories(retainerCategoryStorage.Where(i => i.Key != index).SelectMany(x => x.Value).ToArray());
@@ -416,12 +414,12 @@ namespace LlamaBotBases.FCWorkshop
         internal static async Task PullItems(List<LisbethOrder> ids)
         {
             var itemIds = ids.Select(x => x.Item).ToList(); // SelectMany(x => x.Id);
-            Logger.Info($"Checking against {itemIds.Count()}");
+            Log.Information($"Checking against {itemIds.Count()}");
             var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Where(i => itemIds.Contains((int)i.RawItemId));
 
             foreach (var slot in retItems)
             {
-                RetainerRoutine.LogLoud($"Want to move {slot}");
+                Log.Information($"Want to move {slot}");
                 slot.RetainerRetrieveQuantity((int)Math.Min(ids.First(i => i.Item == slot.RawItemId).Amount, slot.Count));
                 await Coroutine.Sleep(200);
             }
@@ -430,12 +428,12 @@ namespace LlamaBotBases.FCWorkshop
         internal static async Task PullItems(List<uint> ids)
         {
             //var itemIds = ids.Select(x => x.Item).ToList(); // SelectMany(x => x.Id);
-            Logger.Info($"Checking against {ids.Count()}");
+            Log.Information($"Checking against {ids.Count()}");
             var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).AsParallel().Where(i => i.Count < 99 && i.Item.ItemLevel < 300 && i.Item.StackSize == 999).Where(k => k.Item.EngName.Contains("Ore") || k.Item.EngName.Contains("Log")).Where(j => GatheringCategories.Contains(j.Item.EquipmentCatagory) && !ids.Contains(j.RawItemId));
 
             foreach (var slot in retItems)
             {
-                RetainerRoutine.LogLoud($"Want to move {slot} - {slot.Count}");
+                Log.Information($"Want to move {slot} - {slot.Count}");
 
                 //slot.RetainerRetrieveQuantity((int) Math.Min(ids.First(i => i.Item == slot.RawItemId).Amount, slot.Count));
                 await Coroutine.Sleep(200);
@@ -445,12 +443,12 @@ namespace LlamaBotBases.FCWorkshop
         internal static async Task PullItemsByID(List<uint> ids)
         {
             //var itemIds = ids.Select(x => x.Item).ToList(); // SelectMany(x => x.Id);
-            Logger.Info($"Checking against {ids.Count()}");
+            Log.Information($"Checking against {ids.Count()}");
             var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Where(i => i.IsHighQuality && ids.Contains(i.RawItemId)).AsParallel();
 
             foreach (var slot in retItems)
             {
-                RetainerRoutine.LogLoud($"Want to move {slot} - {slot.Count}");
+                Log.Information($"Want to move {slot} - {slot.Count}");
                 slot.RetainerRetrieveQuantity((int)slot.Count);
                 await Coroutine.Sleep(200);
             }
@@ -477,13 +475,13 @@ namespace LlamaBotBases.FCWorkshop
         {
             foreach (var cat in categories)
             {
-                RetainerRoutine.LogLoud($"Category {cat}");
+                Log.Information($"Category {cat}");
                 var retItems = InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Select(i => i.FilledSlots).SelectMany(x => x).Where(i => i.Item.EquipmentCatagory == cat && i.Item.MyItemRole() != MyItemRole.Map);
-                RetainerRoutine.LogLoud($"Category {retItems.Count()}");
+                Log.Information($"Category {retItems.Count()}");
 
                 foreach (var slot in retItems)
                 {
-                    RetainerRoutine.LogLoud($"Want to move PULL {slot} - {slot.Count}");
+                    Log.Information($"Want to move PULL {slot} - {slot.Count}");
                     slot.RetainerRetrieveQuantity((int)slot.Count);
                     await Coroutine.Sleep(700);
                 }
@@ -500,7 +498,7 @@ namespace LlamaBotBases.FCWorkshop
             {
                 if (InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).FirstOrDefault(i => i.FreeSlots >= 1) != null)
                 {
-                    RetainerRoutine.LogLoud($"Want to move DUMP {slot} - {slot.Count}");
+                    Log.Information($"Want to move DUMP {slot} - {slot.Count}");
                     slot.Move(InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).First(i => i.FreeSlots >= 1).GetFirstFreeSlot());
 
                     //slot.RetainerEntrustQuantity((int) slot.Count);
@@ -508,7 +506,7 @@ namespace LlamaBotBases.FCWorkshop
                 }
                 else
                 {
-                    RetainerRoutine.LogLoud($"Not Enough room in retainer");
+                    Log.Error($"Not Enough room in retainer");
                 }
             }
 
@@ -522,18 +520,18 @@ namespace LlamaBotBases.FCWorkshop
 
             if (!SubmarinePartsMenu.Instance.IsOpen)
             {
-                Logging.Write("Trying to open window");
+                Log.Verbose("Trying to open FC Workshop window.");
 
                 if (!await OpenFCCraftingStation())
                 {
-                    Logging.Write("Nope failed opening FC Workshop window");
+                    Log.Error("Failed to open FC Workshop window.");
                     return false;
                 }
             }
 
             if (!SubmarinePartsMenu.Instance.IsOpen)
             {
-                Logging.Write("Nope failed");
+                Log.Error("Failed to open FC Workshop window.");
                 return false;
             }
 
@@ -548,8 +546,8 @@ namespace LlamaBotBases.FCWorkshop
 
                 var turnInsAvail = itemCount / item.Qty;
 
-                Logging.Write($"{item}");
-                Logging.Write($"Player has {itemCount} and {needed} are still needed and can do {turnInsAvail} turnins");
+                Log.Information($"{item}");
+                Log.Information($"Player has {itemCount} and {needed} are still needed and can do {turnInsAvail} turnins");
                 var turnInsNeeded = item.TurnInsRequired - done[id];
 
                 if (turnInsNeeded >= 1)
@@ -563,9 +561,9 @@ namespace LlamaBotBases.FCWorkshop
                             if (HqItemCount(item.ItemId) >= item.Qty)
                             {
                                 bagSlot = InventoryManager.FilledSlots.First(slot => slot.RawItemId == item.ItemId && slot.IsHighQuality && slot.Count >= item.Qty);
-                                Logging.Write($"Have HQ {bagSlot.Name}");
+                                Log.Information($"Have HQ {bagSlot.Name}");
 
-                                //                                continue;
+                                // continue;
                             }
                             else if (ItemCount(item.ItemId) >= item.Qty)
                             {
@@ -581,21 +579,21 @@ namespace LlamaBotBases.FCWorkshop
 
                                     await OpenFCCraftingStation();
                                     bagSlot = InventoryManager.FilledSlots.FirstOrDefault(slot => slot.RawItemId == item.ItemId && !slot.IsHighQuality && slot.Count >= item.Qty);
-                                    Logging.Write($"Need To Lower Quality {bagSlot.Name}");
+                                    Log.Information($"Need To Lower Quality {bagSlot.Name}");
                                 }
                                 else
                                 {
-                                    Logging.Write($"Have NQ {bagSlot.Name}");
+                                    Log.Information($"Have NQ {bagSlot.Name}");
                                 }
                             }
                             else
                             {
-                                Logging.Write($"Something went wrong {ItemCount(item.ItemId)}");
+                                Log.Warning($"Something went wrong {ItemCount(item.ItemId)}");
                             }
 
                             if (bagSlot != null)
                             {
-                                Logging.Write($"Turn in {bagSlot.Name} HQ({bagSlot.IsHighQuality})");
+                                Log.Information($"Turn in {bagSlot.Name} HQ({bagSlot.IsHighQuality})");
                                 await Coroutine.Sleep(500);
                                 SubmarinePartsMenu.Instance.ClickItem(id);
 
@@ -634,27 +632,27 @@ namespace LlamaBotBases.FCWorkshop
                                 }
                                 else
                                 {
-                                    Logging.Write("HandOver Stuck");
+                                    Log.Error("HandOver Stuck");
                                     return false;
                                 }
                             }
                             else
                             {
-                                Logging.Write("Bagslot is null");
+                                Log.Error("Bagslot is null");
                             }
                         }
                     }
                     else
                     {
-                        Logging.Write($"No Turn ins available {turnInsAvail}");
+                        Log.Information($"No Turn ins available {turnInsAvail}");
                     }
                 }
                 else
                 {
-                    Logging.Write($"turnInsNeeded {turnInsNeeded}");
+                    Log.Information($"turnInsNeeded {turnInsNeeded}");
                 }
 
-                Logging.Write("--------------");
+                Log.Information("--------------");
                 id++;
             }
 
@@ -667,7 +665,7 @@ namespace LlamaBotBases.FCWorkshop
         {
             if (!GameObjectManager.GetObjectsByNPCIds<GameObject>(npcids).Any())
             {
-                Logging.Write("Can't find Fabrication Station");
+                Log.Error("Can't find Fabrication Station");
                 return false;
             }
 

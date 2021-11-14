@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Media;
 using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers
 {
     public static class ItemWeight
     {
+        private static readonly LLogger Log = new LLogger(typeof(ItemWeight).Name, Colors.Aquamarine);
+
         public static float GetItemWeight(Item item, ClassJobType job = ClassJobType.Adventurer)
         {
             if (!MainHandsAndOffHands.Contains(item.EquipmentCatagory) && !item.IsArmor && !item.IsWeapon)
@@ -122,7 +126,7 @@ namespace LlamaLibrary.Helpers
                     case ClassJobType.Ninja:
                         return Core.Me.Levels[ClassJobType.Rogue];
                     default:
-                        Logger.LogCritical($"Couldn't find level for {job}.");
+                        Log.Error($"Couldn't find level for {job}.");
                         return 1;
                 }
             }

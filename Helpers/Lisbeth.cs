@@ -5,8 +5,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Clio.Utilities;
-using ff14bot.Helpers;
 using ff14bot.Managers;
+using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers
 {

@@ -7,12 +7,12 @@ using Clio.Utilities;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Helpers
@@ -20,9 +20,7 @@ namespace LlamaLibrary.Helpers
     //TODO So many hardcoded values...
     public static class IshgardHandin
     {
-        private static readonly string Name = "IshgardHandin";
-        private static readonly Color LogColor = Colors.Aquamarine;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new LLogger(typeof(IshgardHandin).Name, Colors.Aquamarine);
 
         public static uint AetheryteId = 70;
         public static string EnglishName = "Potkin";
@@ -80,7 +78,7 @@ namespace LlamaLibrary.Helpers
                     if (HWDGathereInspect.Instance.CanRequestInspection())
                     {
                         HWDGathereInspect.Instance.ClickRequestInspection();
-                        if (LlamaLibrary.ScriptConditions.Helpers.GetSkybuilderScrips() > 9000)
+                        if (ScriptConditions.Helpers.GetSkybuilderScrips() > 9000)
                         {
                             await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
                         }
@@ -511,14 +509,14 @@ namespace LlamaLibrary.Helpers
 
                 if (!ConditionParser.HasAetheryte(AetheryteId))
                 {
-                    Logger.LogCritical("We can't get to Foundation. You don't have that Aetheryte so do something about it...");
+                    Log.Error("We can't get to Foundation. You don't have that Aetheryte so do something about it...");
                     TreeRoot.Stop();
                     return false;
                 }
 
                 if (!WorldManager.TeleportById(AetheryteId))
                 {
-                    Logger.LogCritical($"We can't get to {AetheryteId}. something is very wrong...");
+                    Log.Error($"We can't get to {AetheryteId}. something is very wrong...");
                     TreeRoot.Stop();
                     return false;
                 }
@@ -618,14 +616,14 @@ namespace LlamaLibrary.Helpers
 
                 if (!ConditionParser.HasAetheryte(AetheryteId))
                 {
-                    //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
+                    //LogError($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
                     //TreeRoot.Stop();
                     return false;
                 }
 
                 if (!WorldManager.TeleportById(AetheryteId))
                 {
-                    //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
+                    //Log.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
                     //TreeRoot.Stop();
                     return false;
                 }
@@ -727,7 +725,7 @@ namespace LlamaLibrary.Helpers
 
                 if (!WorldManager.TeleportById(AetheryteId))
                 {
-                    //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
+                    //Log.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
                     //TreeRoot.Stop();
                     return false;
                 }

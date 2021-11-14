@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
-using ff14bot.Helpers;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.RemoteWindows
@@ -11,6 +12,7 @@ namespace LlamaLibrary.RemoteWindows
     public class FreeCompanyExchange : RemoteWindow<FreeCompanyExchange>
     {
         private const string WindowName = "FreeCompanyExchange";
+        private static readonly LLogger Log = new LLogger(WindowName, Colors.Aquamarine);
 
         public static List<FcActionShopItem> FcShopActions = new List<FcActionShopItem>()
         {
@@ -59,7 +61,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             if (IsOpen)
             {
-                Logging.Write($"Buying {FcShopActions.First(i => i.ActionId == actionId).Name}");
+                Log.Information($"Buying {FcShopActions.First(i => i.ActionId == actionId).Name}");
                 ClickItem(FcShopActions.First(i => i.ActionId == actionId).ShopIndex);
 
                 //Logging.Write("Waiting for Yes/No");

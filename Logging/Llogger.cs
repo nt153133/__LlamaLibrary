@@ -6,7 +6,7 @@ namespace LlamaLibrary.Logging
     /// <summary>
     /// Custom logger that writes to bot logs + console and general terminal.
     /// </summary>
-    public class Llogger
+    public class LLogger
     {
         /// <summary>
         /// Gets or sets <see cref="System.Windows.Media.Color"/> of log lines displayed in bot console.
@@ -25,19 +25,19 @@ namespace LlamaLibrary.Logging
         private readonly string _name;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Llogger"/> class.
+        /// Initializes a new instance of the <see cref="LLogger"/> class.
         /// </summary>
         /// <param name="color">Log line <see cref="System.Windows.Media.Color"/>.</param>
         /// <param name="name">Display name for this logging category.</param>
         /// <param name="logLevel"><see cref="LogLevel"/> for this logging category.</param>
-        public Llogger(string name, Color color, LogLevel logLevel = LogLevel.Information)
+        public LLogger(string name, Color color, LogLevel logLevel = LogLevel.Information)
         {
             _name = name;
             Color = color;
             LogLevel = logLevel;
         }
 
-        // TODO: Decide if worth adding to Llogger's API or elsewhere.
+        // TODO: Decide if worth adding to LLogger's API or elsewhere.
 
         /// <summary>
         /// Writes a hexadecimal-formatted <see cref="IntPtr"/> to log.
@@ -49,7 +49,7 @@ namespace LlamaLibrary.Logging
         }
 
         /// <summary>
-        /// Checks if <see cref="LogLevel"/> will print from this <see cref="Llogger"/>.
+        /// Checks if <see cref="LogLevel"/> will print from this <see cref="LLogger"/>.
         /// </summary>
         /// <param name="logLevel"><see cref="LogLevel"/> to evaluate.</param>
         /// <returns><see langword="true"/> if enabled.</returns>

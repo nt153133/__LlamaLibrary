@@ -4,6 +4,7 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot.Managers;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers
 {

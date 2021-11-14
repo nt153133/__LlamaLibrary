@@ -3,6 +3,7 @@ using System.Windows.Media;
 using ff14bot;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 

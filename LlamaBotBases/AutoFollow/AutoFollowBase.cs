@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
@@ -9,7 +10,7 @@ using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.Pathing.Service_Navigation;
-using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.AutoFollow
@@ -19,6 +20,7 @@ namespace LlamaBotBases.AutoFollow
         private AutoFollowSettingsFrm _settings;
 
         public override string Name { get; } = "AutoFollow";
+        private static readonly LLogger Log = new LLogger("AutoFollow", Colors.White);
 
         public override PulseFlags PulseFlags { get; } = PulseFlags.All;
         private Composite _root;
@@ -70,13 +72,13 @@ namespace LlamaBotBases.AutoFollow
 
         public static async Task<bool> MoveToTask(BattleCharacter target, float distance)
         {
-            //Logger.LogCritical($"Move To task");
+            Log.Verbose($"MoveToTask({target}, {distance})");
             if (target.Location == Vector3.Zero)
             {
                 return false;
             }
 
-            //Logger.LogCritical($"move to {location}");
+            Log.Verbose($"Moving to location: {target.Location}");
             while (target.Location.Distance2DSqr(Core.Me.Location) >= distance)
             {
                 Navigator.PlayerMover.MoveTowards(target.Location);
@@ -94,7 +96,7 @@ namespace LlamaBotBases.AutoFollow
         {
             if (PartyManager.IsInParty && AutoFollowSettings.Instance.FollowLeader)
             {
-                Logger.LogCritical($"set target location {PartyManager.PartyLeader.BattleCharacter.Location}");
+                Log.Verbose($"Set target location {PartyManager.PartyLeader.BattleCharacter.Location}");
                 return PartyManager.PartyLeader.BattleCharacter.Location;
             }
 

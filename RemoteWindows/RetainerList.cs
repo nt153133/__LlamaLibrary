@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
-using ff14bot.Helpers;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Retainers;
 using LlamaLibrary.Structs;
 using static ff14bot.RemoteWindows.Talk;
@@ -15,6 +16,7 @@ namespace LlamaLibrary.RemoteWindows
     public class RetainerList : RemoteWindow<RetainerList>
     {
         private const string WindowName = "RetainerList";
+        private static readonly LLogger Log = new LLogger(WindowName, Colors.White);
 
         public RetainerList() : base(WindowName)
         {
@@ -62,7 +64,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             if (!IsOpen)
             {
-                Logging.Write("Retainer selection window not open");
+                Log.Warning("Retainer selection window not open");
                 return false;
             }
 
@@ -93,7 +95,7 @@ namespace LlamaLibrary.RemoteWindows
             }
             catch (Exception ex)
             {
-                Logging.Write("Error selecting retainer: {0}", ex);
+                Log.Error($"Error selecting retainer: {ex}");
             }
 
             return SelectString.IsOpen;

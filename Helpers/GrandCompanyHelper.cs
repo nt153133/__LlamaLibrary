@@ -8,6 +8,7 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Helpers

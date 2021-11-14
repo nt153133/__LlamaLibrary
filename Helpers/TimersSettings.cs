@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Media;
 using ff14bot.Helpers;
+using LlamaLibrary.Logging;
 using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers
 {
     public class TimersSettings : JsonSettings
     {
+        private static readonly LLogger Log = new LLogger(typeof(TimersSettings).Name, Colors.Tomato);
+
         private static TimersSettings _settings;
 
         private Dictionary<int, SavedTimer> _savedTimers = new Dictionary<int, SavedTimer>();
@@ -65,23 +68,18 @@ namespace LlamaLibrary.Helpers
                     return _savedTimers[cycle].ResetTime;
                 }
 
-                Log($"Timer Invalid getting new one for cycle: {cycle}");
+                Log.Information($"Timer Invalid getting new one for cycle: {cycle}");
                 _savedTimers[cycle] = new SavedTimer(DateTimeOffset.FromUnixTimeSeconds(Timers.GetNextCycle(cycle)).LocalDateTime, Timers.CurrentTime);
             }
             else
             {
-                Log($"No Timer saved for cycle: {cycle}");
+                Log.Information($"No Timer saved for cycle: {cycle}");
                 _savedTimers.Add(cycle, new SavedTimer(DateTimeOffset.FromUnixTimeSeconds(Timers.GetNextCycle(cycle)).LocalDateTime, Timers.CurrentTime));
             }
 
             Save();
 
             return _savedTimers[cycle].ResetTime;
-        }
-
-        private void Log(string text)
-        {
-            Logging.Write(Colors.Tomato, $"[{GetType().Name}] {text}");
         }
     }
 

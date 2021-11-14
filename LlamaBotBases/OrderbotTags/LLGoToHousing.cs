@@ -1,29 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
-using ff14bot;
 using ff14bot.Behavior;
-using ff14bot.Enums;
-using ff14bot.Helpers;
-using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
-using TreeSharp;
-using LlamaLibrary.Helpers;
-using LlamaBotBases.HousingChecker;
-using LlamaLibrary.RemoteAgents;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
+using TreeSharp;
 
 namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LLGoToHousing")]
     public class LLGoToHousing : ProfileBehavior
     {
+        private new static readonly LLogger Log = new LLogger(typeof(LLGoToHousing).Name, Colors.White);
+
         private bool _isDone;
 
         [XmlAttribute("District")]
@@ -65,15 +61,15 @@ namespace LlamaLibrary.OrderbotTags
             Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
 
-            if (District.Equals("Lavendar Beds", StringComparison.InvariantCultureIgnoreCase))
+            if (District.Equals("Lavender Beds", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (ConditionParser.IsQuestCompleted(66748))
                 {
                     await LlamaBotBases.HousingChecker.aHouseChecker.GetToResidential(2);
                     await LlamaBotBases.HousingChecker.aHouseChecker.OpenHousingWards();
-                    Log($"Traveling to ward {District} Ward - {Ward}");
+                    Log.Information($"Traveling to ward {District} Ward - {Ward}");
                     HousingSelectBlock.Instance.SelectWard(Ward - 1);
-                    LlamaLibrary.RemoteWindows.HousingSelectBlock.Instance.GoToWard(Ward - 1);
+                    HousingSelectBlock.Instance.GoToWard(Ward - 1);
                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                     if (SelectYesno.IsOpen)
                     {
@@ -89,7 +85,7 @@ namespace LlamaLibrary.OrderbotTags
                 }
                 else
                 {
-                    Logging.WriteDiagnostic("Please complete the quest 'Where the Heart Is (The Lavender Beds)'");
+                    Log.Error("Please complete the quest 'Where the Heart Is (The Lavender Beds)'");
                 }
 
 
@@ -101,9 +97,9 @@ namespace LlamaLibrary.OrderbotTags
                 {
                     await LlamaBotBases.HousingChecker.aHouseChecker.GetToResidential(8);
                     await LlamaBotBases.HousingChecker.aHouseChecker.OpenHousingWards();
-                    Log($"Traveling to ward {District} Ward - {Ward}");
+                    Log.Information($"Traveling to ward {District} Ward - {Ward}");
                     HousingSelectBlock.Instance.SelectWard(Ward - 1);
-                    LlamaLibrary.RemoteWindows.HousingSelectBlock.Instance.GoToWard(Ward - 1);
+                    HousingSelectBlock.Instance.GoToWard(Ward - 1);
                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                     if (SelectYesno.IsOpen)
                     {
@@ -119,10 +115,8 @@ namespace LlamaLibrary.OrderbotTags
                 }
                 else
                 {
-                    Logging.WriteDiagnostic("Please complete the quest 'Where the Heart Is (The Mists)'");
+                    Log.Error("Please complete the quest 'Where the Heart Is (The Mists)'");
                 }
-
-
             }
 
             if (District.Equals("Goblet", StringComparison.InvariantCultureIgnoreCase))
@@ -131,9 +125,9 @@ namespace LlamaLibrary.OrderbotTags
                 {
                     await LlamaBotBases.HousingChecker.aHouseChecker.GetToResidential(9);
                     await LlamaBotBases.HousingChecker.aHouseChecker.OpenHousingWards();
-                    Log($"Traveling to ward {District} Ward - {Ward}");
+                    Log.Information($"Traveling to ward {District} Ward - {Ward}");
                     HousingSelectBlock.Instance.SelectWard(Ward - 1);
-                    LlamaLibrary.RemoteWindows.HousingSelectBlock.Instance.GoToWard(Ward - 1);
+                    HousingSelectBlock.Instance.GoToWard(Ward - 1);
                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                     if (SelectYesno.IsOpen)
                     {
@@ -149,7 +143,7 @@ namespace LlamaLibrary.OrderbotTags
                 }
                 else
                 {
-                    Logging.WriteDiagnostic("Please complete the quest 'Where the Heart Is (The Goblet)'");
+                    Log.Error("Please complete the quest 'Where the Heart Is (The Goblet)'");
                 }
             }
 
@@ -159,9 +153,9 @@ namespace LlamaLibrary.OrderbotTags
                 {
                     await LlamaBotBases.HousingChecker.aHouseChecker.GetToResidential(111);
                     await LlamaBotBases.HousingChecker.aHouseChecker.OpenHousingWards();
-                    Log($"Traveling to ward {District} Ward - {Ward}");
+                    Log.Information($"Traveling to ward {District} Ward - {Ward}");
                     HousingSelectBlock.Instance.SelectWard(Ward - 1);
-                    LlamaLibrary.RemoteWindows.HousingSelectBlock.Instance.GoToWard(Ward - 1);
+                    HousingSelectBlock.Instance.GoToWard(Ward - 1);
                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                     if (SelectYesno.IsOpen)
                     {
@@ -177,10 +171,9 @@ namespace LlamaLibrary.OrderbotTags
                 }
                 else
                 {
-                    Logging.WriteDiagnostic("Please complete the quest 'I Dream of Shirogane'");
+                    Log.Error("Please complete the quest 'I Dream of Shirogane'");
                 }
             }
-
 
             _isDone = true;
         }

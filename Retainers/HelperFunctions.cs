@@ -7,11 +7,11 @@ using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
@@ -21,6 +21,8 @@ namespace LlamaLibrary.Retainers
     //TODO This whole shitshow needs to get moved to a Helper class but it is used in a lot of external things including MB so it's going to be messy
     public static class HelperFunctions
     {
+        private static readonly LLogger Log = new LLogger("Helpers", Colors.Pink);
+
         public const InventoryBagId RetainerGilId = InventoryBagId.Retainer_Gil;
 
         public const InventoryBagId PlayerGilId = InventoryBagId.Currency;
@@ -113,21 +115,15 @@ namespace LlamaLibrary.Retainers
 
             if (list.Count <= 0)
             {
-                LogCritical("No Summoning Bell Found");
+                Log.Error("No Summoning Bell Found");
                 return null;
             }
 
             var bell = list[0];
 
-            LogCritical($"Found nearest bell: {bell} Distance: {bell.Distance2D(Core.Me.Location)}");
+            Log.Information($"Found nearest bell: {bell} Distance: {bell.Distance2D(Core.Me.Location)}");
 
             return bell;
-        }
-
-        private static void LogCritical(string text)
-        {
-            var msg = $"[Helpers] {text}";
-            Logging.Write(Colors.OrangeRed, msg);
         }
 
         public static bool GetRetainerGil()
@@ -140,7 +136,7 @@ namespace LlamaLibrary.Retainers
                 return false;
             }
 
-            LogCritical($"Retainer: {retainerGilSlot.Count:n0}  Player: {playerGilSlot.Count:n0}");
+            Log.Information($"Retainer: {retainerGilSlot.Count:n0}  Player: {playerGilSlot.Count:n0}");
 
             return retainerGilSlot.Move(playerGilSlot);
         }
@@ -152,7 +148,7 @@ namespace LlamaLibrary.Retainers
 
             if (bell == null || !bell.IsWithinInteractRange)
             {
-                LogCritical("No summoning bell near by");
+                Log.Error("No summoning bell near by");
                 return false;
             }
 
@@ -174,13 +170,13 @@ namespace LlamaLibrary.Retainers
             {
                 if (searchBell.IsWithinInteractRange)
                 {
-                    Log("Found bell in Interact Range");
+                    Log.Information("Found bell in Interact Range");
                     return true;
                 }
 
                 if (await Navigation.GetTo(WorldManager.ZoneId, searchBell.Location))
                 {
-                    Log("Used Navgraph/Flightor to get there");
+                    Log.Information("Used Navgraph/Flightor to get there");
                     if (searchBell.IsWithinInteractRange)
                     {
                         return true;
@@ -192,7 +188,7 @@ namespace LlamaLibrary.Retainers
             var tries = 0;
             if (SummoningBells.Any(i => i.Item1 == WorldManager.ZoneId))
             {
-                Log("Found a bell in our zone");
+                Log.Information("Found a bell in our zone");
                 bellLocation = SummoningBells.Where(i => i.Item1 == WorldManager.ZoneId).OrderBy(r => Core.Me.Location.DistanceSqr(r.Item2)).First();
             }
             else
@@ -226,23 +222,31 @@ namespace LlamaLibrary.Retainers
                     {
                         if (ConditionParser.HasAetheryte(ae.Id))
                         {
-                            Log($"{bellLocation.Item1} can get to ConditionParser.HasAetheryte({ae.Id}) = {ConditionParser.HasAetheryte(ae.Id)} {ae.EnglishName}");
+                            Log.Information($"{bellLocation.Item1} can get to ConditionParser.HasAetheryte({ae.Id}) = {ConditionParser.HasAetheryte(ae.Id)} {ae.EnglishName}");
                             foundBell = true;
                         }
                     }
                     else
                     {
-                        Log($"{bellLocation.Item1} can't find AE");
+                        Log.Warning($"{bellLocation.Item1} can't find AE");
                     }
                 }
                 while (!foundBell && tries < 5);
             }
 
-            Log($"Going to bell {bellLocation.Item1} {bellLocation.Item2}");
+            Log.Information($"Going to bell {bellLocation.Item1} {bellLocation.Item2}");
             if (await Navigation.GetTo(bellLocation.Item1, bellLocation.Item2))
             {
                 var bell = FindSummoningBell();
-                Log(bell != null ? $"{bell.Name} {bell.Location} {WorldManager.CurrentZoneName} {bell.IsWithinInteractRange}" : $"Couldn't find bell at {bellLocation.Item2} {bellLocation.Item1}");
+                if (bell != null)
+                {
+                    Log.Information($"{bell.Name} {bell.Location} {WorldManager.CurrentZoneName} {bell.IsWithinInteractRange}");
+                }
+                else
+                {
+                    Log.Warning($"Couldn't find bell at {bellLocation.Item2} {bellLocation.Item1}");
+                }
+
                 return bell != null;
             }
 
@@ -265,7 +269,7 @@ namespace LlamaLibrary.Retainers
 
             if (!RetainerList.Instance.IsOpen)
             {
-                LogCritical("Can't find open bell either you have none or not near a bell");
+                Log.Error("Can't find open bell either you have none or not near a bell");
             }
 
             return RetainerList.Instance.IsOpen;
@@ -280,12 +284,6 @@ namespace LlamaLibrary.Retainers
             }
 
             return !RetainerList.Instance.IsOpen;
-        }
-
-        private static void Log(string test)
-        {
-            var msg = string.Format("[Helper] " + test);
-            Logging.Write(Colors.Pink, msg);
         }
 
         public static async Task<bool> VerifiedRetainerData()

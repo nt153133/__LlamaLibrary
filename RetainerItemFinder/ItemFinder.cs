@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
-using ff14bot.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Retainers;
@@ -15,6 +15,8 @@ namespace LlamaLibrary.RetainerItemFinder
 {
     public static class ItemFinder
     {
+        private static readonly LLogger Log = new LLogger(typeof(ItemFinder).Name, Colors.Pink);
+
         internal static IntPtr Pointer;
 
         internal static IntPtr TreeStart => Core.Memory.ReadArray<IntPtr>(ParentStart, 3)[1];
@@ -42,7 +44,7 @@ namespace LlamaLibrary.RetainerItemFinder
 
             if (retData.Length == 0)
             {
-                Logging.Write(Colors.OrangeRed, $"You don't have any retainers");
+                Log.Error($"You don't have any retainers");
                 return new Dictionary<ulong, StoredRetainerInventory>();
             }
 

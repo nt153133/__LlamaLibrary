@@ -21,7 +21,7 @@ using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using GreyMagic;
-using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteAgents;
 
@@ -40,6 +40,8 @@ namespace LlamaLibrary.Memory
         public static Dictionary<string, string> constants = new Dictionary<string, string>();
 
         private static readonly bool _debug = false;
+
+        public static LLogger Log1 => Log;
 
         public static void Init()
         {
@@ -98,7 +100,7 @@ namespace LlamaLibrary.Memory
                                              }
                                              catch (Exception)
                                              {
-                                                 Log.Error($"Error on {type.Name}");
+                                                 Log1.Error($"Error on {type.Name}");
                                              }
                                          }
                                      }
@@ -131,11 +133,11 @@ namespace LlamaLibrary.Memory
 
                 if (vtables.ContainsKey(test))
                 {
-                    Log.Information($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
+                    Log1.Information($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
                 }
                 else
                 {
-                    Log.Error($"\tFound one {test.ToString("X")} but no agent");
+                    Log1.Error($"\tFound one {test.ToString("X")} but no agent");
                 }
             }
 
@@ -144,7 +146,7 @@ namespace LlamaLibrary.Memory
             initDone = true;
             if (_debug)
             {
-                Log.Information($"\n {Sb}");
+                Log1.Information($"\n {Sb}");
             }
         }
 
@@ -171,13 +173,13 @@ namespace LlamaLibrary.Memory
                     if (!list.Contains(ns))
                     {
                         list.Add(ns);
-                        Log.Information($"Added namespace '{ns}' to ScriptManager");
+                        Log1.Information($"Added namespace '{ns}' to ScriptManager");
                     }
                 }
             }
             catch
             {
-                Log.Error("Failed to add namespaces to ScriptManager, this can cause issues with some profiles.");
+                Log1.Error("Failed to add namespaces to ScriptManager, this can cause issues with some profiles.");
             }
         }
 
@@ -217,11 +219,11 @@ namespace LlamaLibrary.Memory
                 {
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
-                        Log.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Log1.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                     else
                     {
-                        Log.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Log1.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                 }
             }
@@ -245,11 +247,11 @@ namespace LlamaLibrary.Memory
                 {
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
-                        Log.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Log1.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                     else
                     {
-                        Log.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Log1.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                 }
             }
@@ -302,11 +304,11 @@ namespace LlamaLibrary.Memory
 
             if (field.DeclaringType != null && field.DeclaringType.IsNested)
             {
-                Log.Information($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
+                Log1.Information($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
             }
             else
             {
-                Log.Information($"[{field.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
+                Log1.Information($"[{field.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
             }
 
             return result;

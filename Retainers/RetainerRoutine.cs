@@ -6,11 +6,11 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
@@ -20,7 +20,7 @@ namespace LlamaLibrary.Retainers
 {
     public static class RetainerRoutine
     {
-        public static string Name = "RetainerRoutine";
+        private static readonly LLogger Log = new LLogger(typeof(RetainerRoutine).Name, Colors.DodgerBlue);
 
         private static readonly InventoryBagId[] SaddlebagIds =
         {
@@ -36,18 +36,18 @@ namespace LlamaLibrary.Retainers
 
             foreach (var retainer in RetainerList.Instance.OrderedRetainerList.Where(i => i.Active))
             {
-                Log($"Selecting {retainer.Name}");
+                Log.Information($"Selecting {retainer.Name}");
                 await SelectRetainer(retainer.Unique);
 
                 await retainerTask;
 
                 await DeSelectRetainer();
-                Log($"Done with {retainer.Name}");
+                Log.Information($"Done with {retainer.Name}");
             }
 
             if (!await HelperFunctions.CloseRetainerList())
             {
-                LogCritical("Could not close retainer list");
+                Log.Error("Could not close retainer list");
                 return false;
             }
 
@@ -63,18 +63,18 @@ namespace LlamaLibrary.Retainers
 
             foreach (var retainer in RetainerList.Instance.OrderedRetainerList.Where(i => i.Active))
             {
-                Log($"Selecting {retainer.Name}");
+                Log.Information($"Selecting {retainer.Name}");
                 await SelectRetainer(retainer.Unique);
 
                 await retainerTask();
 
                 await DeSelectRetainer();
-                Log($"Done with {retainer.Name}");
+                Log.Information($"Done with {retainer.Name}");
             }
 
             if (!await HelperFunctions.CloseRetainerList())
             {
-                LogCritical("Could not close retainer list");
+                Log.Error("Could not close retainer list");
                 return false;
             }
 
@@ -99,18 +99,18 @@ namespace LlamaLibrary.Retainers
                     continue;
                 }
 
-                Log($"Selecting {ordered[retainerIndex].Name}");
+                Log.Information($"Selecting {ordered[retainerIndex].Name}");
                 await SelectRetainer(retainerIndex);
 
                 await retainerTask(retainerIndex);
 
                 await DeSelectRetainer();
-                Log($"Done with {ordered[retainerIndex].Name}");
+                Log.Information($"Done with {ordered[retainerIndex].Name}");
             }
 
             if (!await HelperFunctions.CloseRetainerList())
             {
-                LogCritical("Could not close retainer list");
+                Log.Error("Could not close retainer list");
                 return false;
             }
 
@@ -132,7 +132,7 @@ namespace LlamaLibrary.Retainers
 
             if (numRetainers <= 0)
             {
-                LogCritical("Can't find number of retainers either you have none or not near a bell");
+                Log.Error("Can't find number of retainers either you have none or not near a bell");
                 RetainerList.Instance.Close();
                 TreeRoot.Stop("Failed: Find a bell or some retainers");
                 return retainers;
@@ -145,18 +145,18 @@ namespace LlamaLibrary.Retainers
                     continue;
                 }
 
-                Log($"Selecting {ordered[retainerIndex].Name}");
+                Log.Information($"Selecting {ordered[retainerIndex].Name}");
                 await SelectRetainer(retainerIndex);
 
                 retainers.Add(await retainerTask(ordered[retainerIndex], retainerIndex));
 
                 await DeSelectRetainer();
-                Log($"Done with {ordered[retainerIndex].Name}");
+                Log.Information($"Done with {ordered[retainerIndex].Name}");
             }
 
             if (!await HelperFunctions.CloseRetainerList())
             {
-                LogCritical("Could not close retainer list");
+                Log.Error("Could not close retainer list");
             }
 
             return retainers;
@@ -193,18 +193,18 @@ namespace LlamaLibrary.Retainers
 
             foreach (var retainer in RetainerList.Instance.OrderedRetainerList.Where(i => i.Active))
             {
-                Log($"Selecting {retainer.Name}");
+                Log.Information($"Selecting {retainer.Name}");
                 await SelectRetainer(retainer.Unique);
 
                 await retainerTask(retainer);
 
                 await DeSelectRetainer();
-                Log($"Done with {retainer.Name}");
+                Log.Information($"Done with {retainer.Name}");
             }
 
             if (!await HelperFunctions.CloseRetainerList())
             {
-                LogCritical("Could not close retainer list");
+                Log.Error("Could not close retainer list");
                 return false;
             }
 
@@ -222,7 +222,7 @@ namespace LlamaLibrary.Retainers
             var sameItems = playerItems.Intersect(retItems, new BagSlotComparer());
             foreach (var slot in sameItems)
             {
-                LogLoud($"Want to move {slot}");
+                Log.Information($"Want to move {slot}");
                 slot.RetainerEntrustQuantity((int)slot.Count);
                 await Coroutine.Sleep(100);
             }
@@ -237,7 +237,7 @@ namespace LlamaLibrary.Retainers
         {
             if (await InventoryBuddy.Instance.Open())
             {
-                Log("Saddlebags window open");
+                Log.Debug("Saddlebags window open");
 
                 var saddleInventory = InventoryManager.GetBagsByInventoryBagId(SaddlebagIds).SelectMany(i => i.FilledSlots);
 
@@ -255,7 +255,7 @@ namespace LlamaLibrary.Retainers
 
                         slot.RetainerEntrustQuantity(Math.Min(haveSlot.Item.StackSize - haveSlot.Count, slot.Count));
 
-                        Log($"(Saddlebag) Entrust {slot.Item.CurrentLocaleName}");
+                        Log.Information($"(Saddlebag) Entrust {slot.Item.CurrentLocaleName}");
 
                         await Coroutine.Sleep(500);
                     }
@@ -263,7 +263,7 @@ namespace LlamaLibrary.Retainers
 
                 InventoryBuddy.Instance.Close();
                 await Coroutine.Wait(5000, () => !InventoryBuddy.Instance.IsOpen);
-                Log("Saddlebags window closed");
+                Log.Debug("Saddlebags window closed");
             }
         }
 
@@ -349,7 +349,7 @@ namespace LlamaLibrary.Retainers
                     }
                     else
                     {
-                        Log($"Venture will be done at {RetainerInfo.UnixTimeStampToDateTime(retainer.VentureEndTimestamp)}");
+                        Log.Information($"Venture will be done at {RetainerInfo.UnixTimeStampToDateTime(retainer.VentureEndTimestamp)}");
                     }
                 }
             }
@@ -373,7 +373,7 @@ namespace LlamaLibrary.Retainers
 
                 if (!RetainerTaskResult.IsOpen)
                 {
-                    Log("RetainerTaskResult didn't open");
+                    Log.Error("RetainerTaskResult didn't open");
                     return false;
                 }
 
@@ -384,7 +384,7 @@ namespace LlamaLibrary.Retainers
                 await Coroutine.Wait(5000, () => RetainerTaskAsk.IsOpen);
                 if (!RetainerTaskAsk.IsOpen)
                 {
-                    Log("RetainerTaskAsk didn't open");
+                    Log.Error("RetainerTaskAsk didn't open");
                     return false;
                 }
 
@@ -395,7 +395,7 @@ namespace LlamaLibrary.Retainers
                 }
                 else
                 {
-                    Log($"RetainerTaskAsk Error: {RetainerTaskAskExtensions.GetErrorReason()}");
+                    Log.Error($"RetainerTaskAsk Error: {RetainerTaskAskExtensions.GetErrorReason()}");
                     RetainerTaskAsk.Close();
                 }
 
@@ -411,27 +411,10 @@ namespace LlamaLibrary.Retainers
             }
             else
             {
-                Log("Venture Not Done");
+                Log.Information("Venture Not Done");
             }
 
             return true;
-        }
-
-        public static void Log(string text, params object[] args)
-        {
-            var msg = string.Format("[" + Name + "] " + text, args);
-            Logging.Write(Colors.DodgerBlue, msg);
-        }
-
-        public static void LogLoud(string text, params object[] args)
-        {
-            var msg = string.Format("[" + Name + "] " + text, args);
-            Logging.Write(Colors.Goldenrod, msg);
-        }
-
-        public static void LogCritical(string text)
-        {
-            Logging.Write(Colors.OrangeRed, "[" + Name + "] " + text);
         }
 
         private class BagSlotComparer : IEqualityComparer<BagSlot>

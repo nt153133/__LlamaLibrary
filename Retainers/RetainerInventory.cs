@@ -1,20 +1,22 @@
 ﻿using System.Collections.Generic;
-using ff14bot.Helpers;
+using System.Windows.Media;
 using ff14bot.Managers;
+using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Retainers
 {
     //TODO Chopping block, Tuck's botbase handles retainer inventories now
     public class RetainerInventory
     {
+        private static readonly LLogger Log = new LLogger(typeof(RetainerInventory).Name, Colors.White);
+
         private IDictionary<uint, BagSlot> dict = new Dictionary<uint, BagSlot>();
 
         public void AddItem(BagSlot slot)
         {
             if (HasItem(slot.TrueItemId))
             {
-                Logging.Write(
-                $"ERROR: Trying to add item twice \t Name: {slot.Item.CurrentLocaleName} Count: {slot.Count} BagId: {slot.BagId} IsHQ: {slot.Item.IsHighQuality}");
+                Log.Error($"Trying to add item twice \t Name: {slot.Item.CurrentLocaleName} Count: {slot.Count} BagId: {slot.BagId} IsHQ: {slot.Item.IsHighQuality}");
                 return;
             }
 
@@ -36,7 +38,7 @@ namespace LlamaLibrary.Retainers
             foreach (var slot in dict)
             {
                 var item = slot.Value;
-                Logging.Write($"Name: {item.Item.CurrentLocaleName} Count: {item.Count} RawId: {item.RawItemId} IsHQ: {item.Item.IsHighQuality} TrueID: {item.TrueItemId}");
+                Log.Information($"Name: {item.Item.CurrentLocaleName} Count: {item.Count} RawId: {item.RawItemId} IsHQ: {item.Item.IsHighQuality} TrueID: {item.TrueItemId}");
             }
         }
     }

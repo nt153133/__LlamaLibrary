@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Helpers
 {
     public static class BlueMageSpellBook
     {
-        private static readonly string Name = "BlueMageSpellBook";
-        private static readonly Color LogColor = Colors.CornflowerBlue;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new LLogger(typeof(BlueMageSpellBook).Name, Colors.CornflowerBlue);
+
         private static class Offsets
         {
             [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 85 C0 74 ? FF C3 83 FB ? 72 ? 49 8B CF Add 3 TraceRelative")]

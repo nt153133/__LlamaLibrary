@@ -6,6 +6,7 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Helpers

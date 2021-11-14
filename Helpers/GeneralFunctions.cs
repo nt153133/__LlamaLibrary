@@ -8,13 +8,13 @@ using Clio.Utilities;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
@@ -842,10 +842,10 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Wait(10000, () => SelectIconString.IsOpen);
                 }
 
-                await Buddy.Coroutines.Coroutine.Sleep(500);
+                await Coroutine.Sleep(500);
                 {
-                    Logging.WriteDiagnostic("Choosing 'Oddly Delicate Materials Exchange'.");
-                    ff14bot.RemoteWindows.SelectIconString.ClickSlot(0);
+                    Log.Debug("Choosing 'Oddly Delicate Materials Exchange'.");
+                    SelectIconString.ClickSlot(0);
                 }
 
                 await Coroutine.Wait(10000, () => CollectablesShop.Instance.IsOpen);

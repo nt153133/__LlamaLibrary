@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 using ff14bot;
-using ff14bot.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 

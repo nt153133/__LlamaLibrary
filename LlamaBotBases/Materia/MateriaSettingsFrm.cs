@@ -7,12 +7,14 @@ using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.Extensions;
-using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 
 namespace LlamaBotBases.Materia
 {
     public partial class MateriaSettingsFrm : Form
     {
+        private static readonly LLogger Log = new LLogger("Materia Settings", Colors.Blue);
+
         private BagSlot _selectedBagSlot;
         private BagSlot _selectedBagSlotAffix;
 
@@ -63,7 +65,7 @@ namespace LlamaBotBases.Materia
         {
             MateriaBase.ItemToRemoveMateria = _selectedBagSlot;
             MateriaBase.MateriaTask = MateriaTask.Remove;
-            Logger.External("Materia Settings", "Click", Colors.Blue);
+            Log.Verbose("Click");
 
             if (BotManager.Current.Name == "Materia")
             {

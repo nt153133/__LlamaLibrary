@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
@@ -17,6 +18,7 @@ using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
@@ -25,6 +27,8 @@ namespace LlamaBotBases.OutOnALimb
 {
     public class OutOnALimbBase : BotBase
     {
+        private static readonly LLogger Log = new LLogger("Out On A Limb", Colors.Aquamarine);
+
         private static readonly Random _random = new Random();
         private static readonly int BaseDelay = 500; //600
         private static readonly int MaxDelay = 800; //800
@@ -43,7 +47,7 @@ namespace LlamaBotBases.OutOnALimb
             new Vector3(23.81929f, 0.008272052f, 20.41006f)
         };
 
-        private int threashold;
+        private int threshold;
 
         private static int totalMGP;
 #if RB_CN
@@ -72,19 +76,19 @@ namespace LlamaBotBases.OutOnALimb
 
             await StartOutOnLimb();
 
-            //Logger.LogCritical("Start Done");
+            Log.Verbose("Start Done");
             await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
 
-            //Logger.LogCritical("Ready");
+            Log.Verbose("Ready");
             if (await PlayBotanist())
             {
-                Logger.LogCritical("First win");
+                Log.Information("First win");
                 do
                 {
-                    Logger.LogCritical("Loop");
+                    Log.Verbose("Loop");
                     if (!SelectYesno.IsOpen)
                     {
-                        Logger.LogCritical("Waiting on window");
+                        Log.Debug("Waiting on window");
                         await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                         await Coroutine.Sleep(_random.Next(300, 500));
                     }
@@ -92,7 +96,7 @@ namespace LlamaBotBases.OutOnALimb
                     if (SelectYesno.IsOpen && GetDoubleDownReward() == 0)
                     {
                         SelectYesno.No();
-                        Logger.LogCritical($"Won Nothing Reward: {GetDoubleDownReward()} total so far {totalMGP}");
+                        Log.Information($"Won Nothing Reward: {GetDoubleDownReward()} total so far {totalMGP}");
                         await Coroutine.Sleep(_random.Next(300, 500));
 
                         //await Coroutine.Sleep(_random.Next(4000,5000));
@@ -102,14 +106,14 @@ namespace LlamaBotBases.OutOnALimb
                     if (SelectYesno.IsOpen && (GetDoubleDownInfo().Key <= 2 || GetDoubleDownInfo().Value < 15))
                     {
                         SelectYesno.No();
-                        Logger.LogCritical($"Click No Reward: {GetDoubleDownReward()}");
+                        Log.Information($"Click No Reward: {GetDoubleDownReward()}");
                         await Coroutine.Sleep(_random.Next(300, 500));
                         break;
                     }
 
                     if (SelectYesno.IsOpen && GetDoubleDownInfo().Key > 1 && GetDoubleDownInfo().Value > 15)
                     {
-                        Logger.LogCritical($"Click Yes Reward: {GetDoubleDownReward()}");
+                        Log.Information($"Click Yes Reward: {GetDoubleDownReward()}");
                         await Coroutine.Sleep(_random.Next(500, 1000));
                         SelectYesno.ClickYes();
                         await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
@@ -118,7 +122,7 @@ namespace LlamaBotBases.OutOnALimb
                     }
                     else if (SelectYesno.IsOpen)
                     {
-                        Logger.LogCritical($"Click No Reward: {GetDoubleDownReward()}");
+                        Log.Information($"Click No Reward: {GetDoubleDownReward()}");
                         SelectYesno.No();
                         await Coroutine.Sleep(_random.Next(300, 500));
                         break;
@@ -132,16 +136,16 @@ namespace LlamaBotBases.OutOnALimb
                 {
                     var gained = GoldSaucerReward.Instance.MGPReward;
                     totalMGP += gained;
-                    Logger.LogCritical($"Won {gained} - Total {totalMGP}");
+                    Log.Information($"Won {gained} - Total {totalMGP}");
 
                     if (gained == 0)
                     {
-                        Logger.LogCritical($"Won {gained}");
+                        Log.Information($"Won {gained}");
                         TreeRoot.Stop("Won zero...issue");
                     }
                 }
 
-                Logger.LogCritical("Starting over");
+                Log.Information("Starting over");
             }
 
             if (GoldSaucerReward.Instance.IsOpen)
@@ -150,13 +154,13 @@ namespace LlamaBotBases.OutOnALimb
             }
 
             await Coroutine.Wait(5000, () => !GoldSaucerReward.Instance.IsOpen);
-            Logger.LogCritical("Done");
+            Log.Information("Done");
             await Coroutine.Sleep(_random.Next(1500, 3000));
 
-            if (totalMGP > threashold)
+            if (totalMGP > threshold)
             {
                 var _target = playLocations[_random.Next(0, playLocations.Count - 1)];
-                Logger.LogCritical($"Moving to {_target}");
+                Log.Information($"Moving to {_target}");
                 Navigator.PlayerMover.MoveTowards(_target);
                 while (_target.Distance2D(Core.Me.Location) >= 4)
                 {
@@ -165,11 +169,10 @@ namespace LlamaBotBases.OutOnALimb
                 }
 
                 Navigator.PlayerMover.MoveStop();
-                threashold = _random.Next(totalMGP + 3000, totalMGP + 6000);
-                Logger.LogCritical($"At to {Core.Me.Location} new Threshold set to {threashold}");
+                threshold = _random.Next(totalMGP + 3000, totalMGP + 6000);
+                Log.Information($"At location {Core.Me.Location}. Set new threshold: {threshold}");
             }
 
-            //TreeRoot.Stop("Stop Requested");
             return true;
         }
 
@@ -187,19 +190,19 @@ namespace LlamaBotBases.OutOnALimb
             {
                 await StartOutOnLimbHome();
 
-                //Logger.LogCritical("Start Done");
+                Log.Verbose("Start Done");
                 await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
 
-                //Logger.LogCritical("Ready");
+                Log.Verbose("Ready");
                 if (await PlayBotanist())
                 {
-                    Logger.LogCritical("First win");
+                    Log.Information("First win");
                     do
                     {
-                        Logger.LogCritical("Loop");
+                        Log.Verbose("Loop");
                         if (!SelectYesno.IsOpen)
                         {
-                            Logger.LogCritical("Waiting on window");
+                            Log.Debug("Waiting on window");
                             await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                             await Coroutine.Sleep(_random.Next(300, 500));
                         }
@@ -207,7 +210,7 @@ namespace LlamaBotBases.OutOnALimb
                         if (SelectYesno.IsOpen && GetDoubleDownReward() == 0)
                         {
                             SelectYesno.No();
-                            Logger.LogCritical($"Won Nothing Reward: {GetDoubleDownReward()} total so far {totalMGP}");
+                            Log.Information($"Won Nothing Reward: {GetDoubleDownReward()} total so far {totalMGP}");
                             await Coroutine.Sleep(_random.Next(300, 500));
 
                             //await Coroutine.Sleep(_random.Next(4000,5000));
@@ -217,14 +220,14 @@ namespace LlamaBotBases.OutOnALimb
                         if (SelectYesno.IsOpen && (GetDoubleDownInfo().Key <= 2 || GetDoubleDownInfo().Value < 15))
                         {
                             SelectYesno.No();
-                            Logger.LogCritical($"Click No Reward: {GetDoubleDownReward()} TimeLeft: {GetDoubleDownInfo().Value}");
+                            Log.Information($"Click No Reward: {GetDoubleDownReward()} TimeLeft: {GetDoubleDownInfo().Value}");
                             await Coroutine.Sleep(_random.Next(300, 500));
                             break;
                         }
 
                         if (SelectYesno.IsOpen && GetDoubleDownInfo().Key > 1 && GetDoubleDownInfo().Value > 15)
                         {
-                            Logger.LogCritical($"Click Yes Reward: {GetDoubleDownReward()}");
+                            Log.Information($"Click Yes Reward: {GetDoubleDownReward()}");
                             await Coroutine.Sleep(_random.Next(300, 500));
                             SelectYesno.ClickYes();
                             await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
@@ -233,7 +236,7 @@ namespace LlamaBotBases.OutOnALimb
                         }
                         else if (SelectYesno.IsOpen)
                         {
-                            Logger.LogCritical($"Click No Reward: {GetDoubleDownReward()} TimeLeft: {GetDoubleDownInfo().Value}");
+                            Log.Information($"Click No Reward: {GetDoubleDownReward()} TimeLeft: {GetDoubleDownInfo().Value}");
                             SelectYesno.No();
                             await Coroutine.Sleep(_random.Next(300, 500));
                             break;
@@ -247,18 +250,18 @@ namespace LlamaBotBases.OutOnALimb
                     {
                         var gained = GoldSaucerReward.Instance.MGPReward;
                         totalMGP += gained;
-                        Logger.LogCritical($"Won {gained} - Total {totalMGP}");
+                        Log.Information($"Won {gained} - Total {totalMGP}");
 
                         if (gained == 0)
                         {
-                            Logger.LogCritical($"Won {gained}");
+                            Log.Information($"Won {gained}");
 
                             //TreeRoot.Stop("Won zero...issue");
                             break;
                         }
                     }
 
-                    Logger.LogCritical("Starting over");
+                    Log.Information("Starting over");
                 }
 
                 if (GoldSaucerReward.Instance.IsOpen)
@@ -267,7 +270,7 @@ namespace LlamaBotBases.OutOnALimb
                 }
 
                 await Coroutine.Wait(5000, () => !GoldSaucerReward.Instance.IsOpen);
-                Logger.LogCritical("Done");
+                Log.Information("Done");
                 await Coroutine.Sleep(_random.Next(8000, 11500));
             }
 
@@ -281,7 +284,7 @@ namespace LlamaBotBases.OutOnALimb
         {
             // GamelogManager.MessageRecevied += GamelogManagerOnMessageRecevied;
             totalMGP = 0;
-            threashold = 5000;
+            threshold = 5000;
             _root = new ActionRunCoroutine(r => Run());
         }
 
@@ -300,7 +303,7 @@ namespace LlamaBotBases.OutOnALimb
 
             if (GameObjectManager.GetObjectByNPCId(npcid) == null)
             {
-                Logger.LogCritical("Not Near Machine");
+                Log.Information("Not Near Machine");
                 if (WorldManager.ZoneId != 388)
                 {
                     await GetToMinionSquare();
@@ -374,7 +377,7 @@ namespace LlamaBotBases.OutOnALimb
 
             if (GameObjectManager.GetObjectByNPCId(npcid) == null)
             {
-                Logger.LogCritical("Not Near Machine");
+                Log.Information("Not Near Machine");
                 await GeneralFunctions.GoHome();
             }
 
@@ -413,7 +416,7 @@ namespace LlamaBotBases.OutOnALimb
         {
             if (!WorldManager.TeleportById(62))
             {
-                //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
+                //Log.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
                 //TreeRoot.Stop();
                 return false;
             }
@@ -501,8 +504,8 @@ namespace LlamaBotBases.OutOnALimb
                 if (e.ChatLogEntry.FullLine.IndexOf("hatchet", StringComparison.OrdinalIgnoreCase) >= 0)
 #endif
                 {
-                    Logger.Info("Ready");
-                    Logger.Info(e.ChatLogEntry.FullLine);
+                    Log.Information("Ready");
+                    Log.Information(e.ChatLogEntry.FullLine);
                 }
             }
 
@@ -512,25 +515,25 @@ namespace LlamaBotBases.OutOnALimb
             {
                 if (e.ChatLogEntry.FullLine.IndexOf("手感", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    //Logger.Info("Not Close");
+                    Log.Verbose("Not Close");
                     HitResult = MiniGameResult.NotClose;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
                 else if (e.ChatLogEntry.FullLine.IndexOf("什么东西", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    //Logger.Info("Close");
+                    Log.Verbose("Close");
                     HitResult = MiniGameResult.Close;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
                 else if (e.ChatLogEntry.FullLine.IndexOf("相当接近", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    //Logger.Info("Very Close");
+                    Log.Verbose("Very Close");
                     HitResult = MiniGameResult.VeryClose;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
                 else if (e.ChatLogEntry.FullLine.IndexOf("正中目标", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    //Logger.Info("On Top");
+                    Log.Verbose("On Top");
                     HitResult = MiniGameResult.OnTop;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
@@ -540,25 +543,25 @@ namespace LlamaBotBases.OutOnALimb
             {
                 if (e.ChatLogEntry.FullLine.IndexOf("nothing", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    //Logger.Info("Not Close");
+                    Log.Verbose("Not Close");
                     hitResult = MiniGameResult.NotClose;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
                 else if (e.ChatLogEntry.FullLine.IndexOf("something close", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    //Logger.Info("Close");
+                    Log.Verbose("Close");
                     hitResult = MiniGameResult.Close;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
                 else if (e.ChatLogEntry.FullLine.IndexOf("very", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    //Logger.Info("Very Close");
+                    Log.Verbose("Very Close");
                     hitResult = MiniGameResult.VeryClose;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
                 else if (e.ChatLogEntry.FullLine.IndexOf("right on", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    //Logger.Info("On Top");
+                    Log.Verbose("On Top");
                     hitResult = MiniGameResult.OnTop;
                     GamelogManager.MessageRecevied -= GamelogManagerOnMessageRecevied;
                 }
@@ -581,7 +584,7 @@ namespace LlamaBotBases.OutOnALimb
             var lastCloseLocation = -1;
             var lastLocation = -1;
 
-            //Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft}");
+            Log.Verbose($"Progress {MiniGameBotanist.Instance.GetProgressLeft}");
             var stops1 = new List<int> { 20, 60, 40, 80 };
             Shuffle(stops1);
             foreach (var stopLoc in stops1)
@@ -596,13 +599,13 @@ namespace LlamaBotBases.OutOnALimb
                     return true;
                 }
 
-                Logger.LogCritical($"Pointer Loc: {AgentOutOnLimb.Instance.addressLocation.ToString("X")} AgentPointer: {AgentOutOnLimb.Instance.Pointer.ToString("X")}");
+                Log.Information($"Pointer Loc: {AgentOutOnLimb.Instance.addressLocation.ToString("X")} AgentPointer: {AgentOutOnLimb.Instance.Pointer.ToString("X")}");
                 var result = await StopAtLocation(_random.Next(stopLoc - 1, stopLoc + 1));
                 var stop = false;
                 switch (result)
                 {
                     case MiniGameResult.Error:
-                        Logger.LogCritical("Error");
+                        Log.Error("Error");
                         return false;
                     case MiniGameResult.OnTop:
                         return true;
@@ -620,7 +623,7 @@ namespace LlamaBotBases.OutOnALimb
 
                 lastLocation = stopLoc;
 
-                //Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft}");
+                Log.Verbose($"Progress {MiniGameBotanist.Instance.GetProgressLeft}");
                 await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
                 await Coroutine.Sleep(_random.Next(BaseDelay, MaxDelay));
                 if (stop)
@@ -629,7 +632,7 @@ namespace LlamaBotBases.OutOnALimb
                 }
             }
 
-            // Logger.LogCritical("endFor");
+            Log.Verbose("endFor");
             if (lastCloseLocation > 1 && lastVeryCloseLocation < 1)
             {
                 var stops = new List<int> { lastCloseLocation - 12, lastCloseLocation + 12, lastCloseLocation - 7, lastCloseLocation + 17 };
@@ -651,7 +654,7 @@ namespace LlamaBotBases.OutOnALimb
                     switch (result)
                     {
                         case MiniGameResult.Error:
-                            Logger.LogCritical("Error");
+                            Log.Error("Error");
                             return false;
                         case MiniGameResult.OnTop:
                             return true;
@@ -668,7 +671,7 @@ namespace LlamaBotBases.OutOnALimb
 
                     lastLocation = stopLoc;
 
-                    // Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft} stop {stopLoc}");
+                    Log.Verbose($"Progress {MiniGameBotanist.Instance.GetProgressLeft} stop {stopLoc}");
                     await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist);
                     await Coroutine.Sleep(_random.Next(BaseDelay, MaxDelay));
                     if (stop)
@@ -699,7 +702,7 @@ namespace LlamaBotBases.OutOnALimb
                     switch (result)
                     {
                         case MiniGameResult.Error:
-                            Logger.LogCritical("Error");
+                            Log.Error("Error");
                             return false;
                         case MiniGameResult.OnTop:
                             return true;
@@ -716,7 +719,7 @@ namespace LlamaBotBases.OutOnALimb
 
                     lastLocation = stopLoc;
 
-                    //Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft}");
+                    Log.Verbose($"Progress {MiniGameBotanist.Instance.GetProgressLeft}");
                     if (MiniGameBotanist.Instance.GetProgressLeft == 0)
                     {
                         return true;
@@ -731,13 +734,12 @@ namespace LlamaBotBases.OutOnALimb
                 }
             }
 
-            // Logger.Info($"Last Location {lastLocation}");
-
-            // Logger.Info($"Last Close Location {lastCloseLocation}");
+            Log.Verbose($"Last Location {lastLocation}");
+            Log.Verbose($"Last Close Location {lastCloseLocation}");
 
             if (lastVeryCloseLocation > 1)
             {
-                // Logger.Info($"\tVery Close set location {lastVeryCloseLocation}");
+                Log.Verbose($"\tVery Close set location {lastVeryCloseLocation}");
                 var locations = new List<int>
                 {
                     lastVeryCloseLocation - 7,
@@ -750,10 +752,10 @@ namespace LlamaBotBases.OutOnALimb
                 while (MiniGameBotanist.Instance.GetProgressLeft > 0 || !SelectYesno.IsOpen || i >= (locations.Count - 1))
                 {
                     //var location = _random.Next(lastVeryCloseLocation - 5, lastVeryCloseLocation + 5);
-                    //Logger.Info($"Very Close location {locations[i]}");
+                    Log.Verbose($"Very Close location {locations[i]}");
                     var result = await StopAtLocation(locations[i]);
 
-                    //Logger.Info($"Progress {MiniGameBotanist.Instance.GetProgressLeft} result {result}");
+                    Log.Verbose($"Progress {MiniGameBotanist.Instance.GetProgressLeft} result {result}");
                     if (MiniGameBotanist.Instance.GetProgressLeft == 0)
                     {
                         return true;
@@ -761,7 +763,7 @@ namespace LlamaBotBases.OutOnALimb
 
                     await Coroutine.Wait(5000, () => AgentOutOnLimb.Instance.IsReadyBotanist || SelectYesno.IsOpen);
 
-                    //Logger.Info($"IsReady {AgentOutOnLimb.Instance.IsReadyBotanist}");
+                    Log.Verbose($"IsReady {AgentOutOnLimb.Instance.IsReadyBotanist}");
                     if (!AgentOutOnLimb.Instance.IsReadyBotanist)
                     {
                         break;
@@ -771,7 +773,7 @@ namespace LlamaBotBases.OutOnALimb
                     i++;
                 }
 
-                // Logger.Info($"Done very close");
+                Log.Verbose($"Done very close");
             }
 
             if (MiniGameBotanist.Instance.GetProgressLeft == 0)
@@ -797,7 +799,7 @@ namespace LlamaBotBases.OutOnALimb
 
             if (!AgentOutOnLimb.Instance.CursorLocked)
             {
-                // Logger.Info("Lock Cursor");
+                Log.Verbose("Lock Cursor");
                 MiniGameBotanist.Instance.PauseCursor();
                 await Coroutine.Sleep(200);
             }

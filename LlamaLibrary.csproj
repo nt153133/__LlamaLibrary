@@ -68,7 +68,6 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\InventoryHelpers.cs" />
     <Compile Include="Helpers\IshgardHandin.cs" />
-    <Compile Include="Helpers\LLogger.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
     <Compile Include="Retainers\CompleteRetainer.cs" />
@@ -109,7 +108,7 @@
     <Compile Include="Helpers\Translator.cs" />
     <Compile Include="Helpers\GardenHelper.cs" />
     <Compile Include="Helpers\WorldHelper.cs" />
-    <Compile Include="Logging\Llogger.cs" />
+    <Compile Include="Logging\LLogger.cs" />
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="RetainerItemFinder\IStoredInventory.cs" />
     <Compile Include="RetainerItemFinder\ItemFinder.cs" />
