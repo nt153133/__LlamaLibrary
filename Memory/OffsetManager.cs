@@ -27,11 +27,15 @@ using LlamaLibrary.RemoteAgents;
 
 namespace LlamaLibrary.Memory
 {
-    public class OffsetManager
+    public static class OffsetManager
     {
         private static readonly StringBuilder Sb = new StringBuilder();
-        private static string Name => "LLOffsetManager";
-        private static bool initDone = false;
+        private static readonly string Name = "LLOffsetManager";
+        private static readonly Color LogColor = Colors.RosyBrown;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
+        private static bool initDone;
+        private static object initLock = new object();
         public static Dictionary<string, string> patterns = new Dictionary<string, string>();
         public static Dictionary<string, string> constants = new Dictionary<string, string>();
 
@@ -39,16 +43,22 @@ namespace LlamaLibrary.Memory
 
         public static void Init()
         {
-            if (initDone)
+            lock (initLock)
             {
-                return;
+                if (initDone)
+                {
+                    return;
+                }
+
+                initDone = true;
             }
 
             var q1 = from t in Assembly.GetExecutingAssembly().GetTypes()
                      where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static).Any(i => i.Name == "Offsets"))
                      select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static);
 
-            var types = typeof(Offsets).GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance).Concat(q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)));
+            var types = typeof(Offsets).GetFields().Concat(q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public)));
+
             using (var pf = new PatternFinder(Core.Memory))
             {
                 Parallel.ForEach(types, type =>
@@ -57,7 +67,7 @@ namespace LlamaLibrary.Memory
                                      {
                                          var instance = Activator.CreateInstance(type.FieldType);
 
-                                         foreach (var field in type.FieldType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
+                                         foreach (var field in type.FieldType.GetFields(BindingFlags.Instance))
                                          {
                                              var res = ParseField(field, pf);
                                              if (field.FieldType == typeof(IntPtr))
@@ -88,7 +98,7 @@ namespace LlamaLibrary.Memory
                                              }
                                              catch (Exception)
                                              {
-                                                 LogError($"Error on {type.Name}");
+                                                 Log.Error($"Error on {type.Name}");
                                              }
                                          }
                                      }
@@ -121,11 +131,11 @@ namespace LlamaLibrary.Memory
 
                 if (vtables.ContainsKey(test))
                 {
-                    Log($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
+                    Log.Information($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
                 }
                 else
                 {
-                    Log($"\tFound one {test.ToString("X")} but no agent");
+                    Log.Error($"\tFound one {test.ToString("X")} but no agent");
                 }
             }
 
@@ -134,7 +144,7 @@ namespace LlamaLibrary.Memory
             initDone = true;
             if (_debug)
             {
-                Log($"\n {Sb}");
+                Log.Information($"\n {Sb}");
             }
         }
 
@@ -161,13 +171,13 @@ namespace LlamaLibrary.Memory
                     if (!list.Contains(ns))
                     {
                         list.Add(ns);
-                        Log($"Added namespace '{ns}' to ScriptManager");
+                        Log.Information($"Added namespace '{ns}' to ScriptManager");
                     }
                 }
             }
             catch
             {
-                Log("Failed to add namespaces to ScriptManager, this can cause issues with some profiles.");
+                Log.Error("Failed to add namespaces to ScriptManager, this can cause issues with some profiles.");
             }
         }
 
@@ -207,11 +217,11 @@ namespace LlamaLibrary.Memory
                 {
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
-                        Log($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Log.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                     else
                     {
-                        Log($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Log.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                 }
             }
@@ -235,11 +245,11 @@ namespace LlamaLibrary.Memory
                 {
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
-                        LogError($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Log.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                     else
                     {
-                        LogError($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Log.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                 }
             }
@@ -292,24 +302,14 @@ namespace LlamaLibrary.Memory
 
             if (field.DeclaringType != null && field.DeclaringType.IsNested)
             {
-                Log($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
+                Log.Information($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
             }
             else
             {
-                Log($"[{field.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
+                Log.Information($"[{field.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
             }
 
             return result;
-        }
-
-        private static void Log(string text)
-        {
-            Logger.External(Name, text, Colors.RosyBrown);
-        }
-
-        private static void LogError(string text)
-        {
-            Logger.External(Name, text, Colors.Red);
         }
     }
 }

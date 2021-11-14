@@ -1,14 +1,18 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Windows.Media;
 using ff14bot;
 using ff14bot.Helpers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.Helpers
 {
     public static class Timers
     {
+        private static readonly string Name = "TimersHelper";
+        private static readonly Color LogColor = Colors.Peru;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         internal static class Offsets
         {
             [Offset("Search 48 83 EC ? 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 48 8B C8 48 83 C4 ? E9 ? ? ? ? E8 ? ? ? ?")]
@@ -20,7 +24,7 @@ namespace LlamaLibrary.Helpers
 
         private const int MaxRows = 6;
         private static readonly string[] Description = { "", "Duty/Beast Tribe Dailies", "Weekly Reset", "Unknown", "GC/Rowena", "Unknown" };
-        private static string Name => "Timers";
+
         private static CycleTime[] _cycles = new CycleTime[MaxRows];
 
         public static DateTimeOffset CurrentTime => DateTimeOffset.FromUnixTimeSeconds((long)CurrentTimeStamp).LocalDateTime;
@@ -35,16 +39,16 @@ namespace LlamaLibrary.Helpers
 
         public static void PrintTimers()
         {
-            Log($"Current Time: ({CurrentTime.LocalDateTime})");
+            Log.Information($"Current Time: ({CurrentTime.LocalDateTime})");
             for (var i = 1; i < MaxRows; i++)
             {
                 var time = DateTimeOffset.FromUnixTimeSeconds(GetNextCycle(i));
 
-                Log($"{time.LocalDateTime} ({Description[i]})");
+                Log.Information($"{time.LocalDateTime} ({Description[i]})");
             }
         }
 
-        internal static ulong CurrentTimeStamp
+        public static ulong CurrentTimeStamp
         {
             get
             {
@@ -58,19 +62,14 @@ namespace LlamaLibrary.Helpers
             }
         }
 
-        internal static long GetNextCycle(int index)
+        public static long GetNextCycle(int index)
         {
             var row = _cycles[index];
-            Log($"Getting Cycle: ({index})");
+            Log.Information($"Getting Cycle: ({index})");
             return row.FirstCycle + (row.Cycle * ((uint)(ushort)(((uint)CurrentTimeStamp - row.FirstCycle) / row.Cycle) + 1));
         }
 
-        private static void Log(string text)
-        {
-            Logging.Write(Colors.Peru, $"[{Name}] {text}");
-        }
-
-        internal static CycleTime GetCycleRow(int index)
+        public static CycleTime GetCycleRow(int index)
         {
             IntPtr CyclePtr;
             lock (Core.Memory.Executor.AssemblyLock)
@@ -84,16 +83,6 @@ namespace LlamaLibrary.Helpers
             }
 
             return default;
-        }
-
-        [StructLayout(LayoutKind.Explicit, Size = 0x8)]
-        public struct CycleTime
-        {
-            [FieldOffset(0)]
-            public uint FirstCycle;
-
-            [FieldOffset(0x4)]
-            public uint Cycle;
         }
     }
 }

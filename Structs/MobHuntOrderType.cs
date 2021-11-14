@@ -1,7 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using ff14bot.Managers;
+using LlamaLibrary.Helpers;
 
-namespace LlamaLibrary.Helpers
+namespace LlamaLibrary.Structs
 {
     [StructLayout(LayoutKind.Explicit, Size = 0xB)]
     public struct MobHuntOrderType

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace LlamaLibrary.Helpers
+namespace LlamaLibrary.Structs
 {
     [StructLayout(LayoutKind.Explicit, Size = 0x10)]
     public struct DailyQuestRead

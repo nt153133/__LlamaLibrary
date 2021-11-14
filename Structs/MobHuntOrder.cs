@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
+using LlamaLibrary.Helpers;
 
-namespace LlamaLibrary.Helpers
+namespace LlamaLibrary.Structs
 {
     [StructLayout(LayoutKind.Sequential, Size = 0x6)]
     public struct MobHuntOrder

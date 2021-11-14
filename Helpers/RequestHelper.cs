@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Media;
 using ff14bot;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
@@ -10,6 +11,10 @@ namespace LlamaLibrary.Helpers
 {
     public static class RequestHelper
     {
+        private static readonly string Name = "RequestHelper";
+        private static readonly Color LogColor = Colors.MediumPurple;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         internal static class Offsets
         {
             [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 0F B6 D8 EB ? Add 3 TraceRelative")]

@@ -16,6 +16,7 @@ using LlamaLibrary.Enums;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Properties;
 using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.Structs;
 using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers
@@ -644,7 +645,8 @@ namespace LlamaLibrary.Helpers
         {
             await Navigation.GetTo(ZoneId, Location);
             await Navigation.OffMeshMoveInteract(GetNpc);
-            Navigation.LogCritical("GoTo");
+
+            //Navigation.LogCritical("GoTo");
             return GetNpc.IsWithinInteractRange;
         }
 
@@ -684,9 +686,11 @@ namespace LlamaLibrary.Helpers
 
             SelectString.ClickSlot(slot);
             await Coroutine.Wait(5000, () => Mobhunt.Instance.IsOpen);
-            Navigation.LogCritical($"is open {Mobhunt.Instance.IsOpen}");
+
+            //Navigation.LogCritical($"is open {Mobhunt.Instance.IsOpen}");
             Mobhunt.Instance.Accept();
-            Navigation.LogCritical($"accepted");
+
+            //Navigation.LogCritical($"accepted");
             await Coroutine.Sleep(1000);
 
             return HuntHelper.GetAcceptedHunts()[orderType];

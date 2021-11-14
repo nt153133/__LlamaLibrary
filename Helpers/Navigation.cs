@@ -22,6 +22,10 @@ namespace LlamaLibrary.Helpers
 {
     public static class Navigation
     {
+        private static readonly string Name = "NavigationHelper";
+        private static readonly Color LogColor = Colors.MediumPurple;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         public static readonly WaitTimer WaitTimer_0 = new WaitTimer(new TimeSpan(0, 0, 0, 15));
         internal static async Task<Queue<NavGraph.INode>> GenerateNodes(uint ZoneId, Vector3 xyz)
         {
@@ -79,7 +83,7 @@ namespace LlamaLibrary.Helpers
 
             if (path.Count < 1)
             {
-                LogCritical($"Couldn't get a path to {XYZ} on {ZoneId}, Stopping.");
+                Log.Error($"Couldn't get a path to {XYZ} on {ZoneId}, Stopping.");
                 return false;
             }
 
@@ -102,11 +106,6 @@ namespace LlamaLibrary.Helpers
             Navigator.Stop();
 
             return Navigator.InPosition(Core.Me.Location, XYZ, 3);
-        }
-
-        public static void LogCritical(string text)
-        {
-            Logging.Write(Colors.OrangeRed, text);
         }
 
         public static async Task OffMeshMove(Vector3 _target)
@@ -214,7 +213,7 @@ namespace LlamaLibrary.Helpers
             return moving == MoveResult.ReachedDestination;
         }
 
-        internal static async Task<bool> FlightorMove(FateData fate)
+        public static async Task<bool> FlightorMove(FateData fate)
         {
             if (fate == null)
             {

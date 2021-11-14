@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Media;
 using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
@@ -11,6 +12,10 @@ namespace LlamaLibrary.Helpers
 {
     public static class ActionHelper
     {
+        private static readonly string Name = "ActionHelper";
+        private static readonly Color LogColor = Colors.Gold;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         internal static class Offsets
         {
             [Offset("Search 40 53 55 57 41 54 41 57 48 83 EC ? 83 BC 24 ? ? ? ? ?")]

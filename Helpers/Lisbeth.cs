@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Clio.Utilities;
 using ff14bot.Helpers;
 using ff14bot.Managers;
@@ -11,6 +12,10 @@ namespace LlamaLibrary.Helpers
 {
     public static class Lisbeth
     {
+        private static readonly string Name = "LisbethHelper";
+        private static readonly Color LogColor = Colors.MediumPurple;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         private static object _lisbeth;
         private static MethodInfo _orderMethod;
         private static MethodInfo _travelMethod;
@@ -80,7 +85,7 @@ namespace LlamaLibrary.Helpers
                     }
                     catch (Exception e)
                     {
-                        Logger.LogCritical(e.ToString());
+                        Log.Error(e.ToString());
                     }
                 }
             }
@@ -90,7 +95,7 @@ namespace LlamaLibrary.Helpers
 
             //_travelMethod = travelMethod;
 
-            Logging.Write("Lisbeth found.");
+            Log.Information("Lisbeth found.");
         }
 
         public static string GetCurrentAreaName => _getCurrentAreaName.Invoke();
@@ -150,7 +155,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> TravelToZones(uint zoneId, Vector3 position)
         {
-            Logging.Write($"Lisbeth Travel: Zone:{zoneId}  Pos:{position}");
+            Log.Information($"Lisbeth Travel: Zone:{zoneId}  Pos:{position}");
             return await _travelToWithoutSubzone(zoneId, position);
         }
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Media;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.Helpers
 {

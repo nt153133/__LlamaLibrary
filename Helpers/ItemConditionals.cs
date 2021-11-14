@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers
 {
+    //TODO Wtf did I make this class for? and why is it in Helpers
     public class ItemRoleConditional : Conditional
     {
         public ItemRoleConditional(string name, ActionType action, List<string> parameters) : base(name, action, parameters)

@@ -14,7 +14,7 @@ namespace LlamaLibrary.Helpers
 
         public static SharedFateProgress[] CachedProgress;
 
-        private static TimeSpan cachePeriod = new TimeSpan(0, 1, 0);
+        private static readonly TimeSpan CachePeriod = new TimeSpan(0, 1, 0);
 
         static SharedFateHelper()
         {
@@ -28,7 +28,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<SharedFateProgress[]> CachedRead()
         {
-            if (DateTime.Now - lastWindowCheck < cachePeriod)
+            if (DateTime.Now - lastWindowCheck < CachePeriod)
             {
                 return CachedProgress;
             }

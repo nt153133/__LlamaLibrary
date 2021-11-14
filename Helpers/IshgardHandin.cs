@@ -17,8 +17,13 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Helpers
 {
+    //TODO So many hardcoded values...
     public static class IshgardHandin
     {
+        private static readonly string Name = "IshgardHandin";
+        private static readonly Color LogColor = Colors.Aquamarine;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         public static uint AetheryteId = 70;
         public static string EnglishName = "Potkin";
 
@@ -111,7 +116,7 @@ namespace LlamaLibrary.Helpers
             if (!HWDLottery.Instance.IsOpen && KupoNpc != null)
             {
                 KupoNpc.Interact();
-                Log("Interact with npc");
+                Log.Information("Interact with npc");
                 await Coroutine.Wait(5000, () => HWDLottery.Instance.IsOpen || Talk.DialogOpen);
                 await Coroutine.Sleep(100);
 
@@ -121,35 +126,35 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Wait(5000, () => !Talk.DialogOpen);
                 }
 
-                Log("Talking done");
+                Log.Information("Talking done");
                 await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
 
                 if (SelectYesno.IsOpen)
                 {
                     SelectYesno.Yes();
-                    Log("Select Yes/No open");
+                    Log.Information("Select Yes/No open");
                     await Coroutine.Wait(5000, () => HWDLottery.Instance.IsOpen);
                     await Coroutine.Sleep(4000);
-                    Log("Ticket Should be loaded");
+                    Log.Information("Ticket Should be loaded");
                 }
             }
 
             if (HWDLottery.Instance.IsOpen)
             {
-                Log("Clicking");
+                Log.Information("Clicking");
                 await HWDLottery.Instance.ClickSpot(slot);
                 await Coroutine.Sleep(700);
-                Log("Closing");
+                Log.Information("Closing");
                 HWDLottery.Instance.Close();
                 await Coroutine.Wait(2000, () => !HWDLottery.Instance.IsOpen);
                 if (HWDLottery.Instance.IsOpen)
                 {
-                    Log("Closing Again");
+                    Log.Information("Closing Again");
                     HWDLottery.Instance.Close();
                 }
 
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen || Talk.DialogOpen);
-                Log($"Select Yes/No {SelectYesno.IsOpen} Talk {Talk.DialogOpen}");
+                Log.Information($"Select Yes/No {SelectYesno.IsOpen} Talk {Talk.DialogOpen}");
                 while (Talk.DialogOpen)
                 {
                     Talk.Next();
@@ -163,10 +168,10 @@ namespace LlamaLibrary.Helpers
             }
             else
             {
-                Log("Out of Tickets");
+                Log.Information("Out of Tickets");
             }
 
-            Log("Done with Kupo Tickets");
+            Log.Information("Done with Kupo Tickets");
             return false;
         }
 
@@ -232,11 +237,11 @@ namespace LlamaLibrary.Helpers
 
                     if (Translator.Language != Language.Chn)
                     {
-                        Log($"Kupo Tickets: {HWDSupply.Instance.NumberOfKupoTickets()}");
+                        Log.Information($"Kupo Tickets: {HWDSupply.Instance.NumberOfKupoTickets()}");
 
                         if (HWDSupply.Instance.NumberOfKupoTickets() >= 9)
                         {
-                            Log($"Going to turn in Kupo Tickets: {HWDSupply.Instance.NumberOfKupoTickets()}");
+                            Log.Information($"Going to turn in Kupo Tickets: {HWDSupply.Instance.NumberOfKupoTickets()}");
                             if (SelectYesno.IsOpen)
                             {
                                 SelectYesno.Yes();
@@ -715,7 +720,7 @@ namespace LlamaLibrary.Helpers
 
                 if (!ConditionParser.HasAetheryte(AetheryteId))
                 {
-                    //Logger.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
+                    //Log.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
                     //TreeRoot.Stop();
                     return false;
                 }
@@ -804,12 +809,6 @@ namespace LlamaLibrary.Helpers
             }
 
             return Npc.Location.Distance(Core.Me.Location) <= 5f;
-        }
-
-        private static void Log(string text, params object[] args)
-        {
-            var msg = string.Format("[Ishgard Handin] " + text, args);
-            Logging.Write(Colors.Aquamarine, msg);
         }
     }
 }

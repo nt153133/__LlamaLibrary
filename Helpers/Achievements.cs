@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
 
@@ -6,6 +7,10 @@ namespace LlamaLibrary.Helpers
 {
     public static class Achievements
     {
+        private static readonly string Name = "Achievements";
+        private static readonly Color LogColor = Colors.Gold;
+        private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         private static class Offsets
         {
             [Offset("Search 48 8D 0D ? ? ? ? E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 80 39 ? Add 3 TraceRelative")]
