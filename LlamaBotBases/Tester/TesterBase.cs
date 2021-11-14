@@ -1459,11 +1459,10 @@ namespace LlamaBotBases.Tester
 
         public async Task testKupoTickets()
         {
-            var ishgard = new LlamaLibrary.Helpers.IshgardHandin();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
             Navigator.PlayerMover = new SlideMover();
 
-            await ishgard.HandInKupoTicket(1);
+            await IshgardHandin.HandInKupoTicket(1);
         }
 
         public Task<bool> testFacetCheck()

@@ -17,25 +17,25 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Helpers
 {
-    public class IshgardHandin
+    public static class IshgardHandin
     {
-        public uint AetheryteId = 70;
-        public string EnglishName = "Potkin";
+        public static uint AetheryteId = 70;
+        public static string EnglishName = "Potkin";
 
-        public uint FoundationZoneId;
+        public static uint FoundationZoneId;
 
         //public uint NpcId = 1031690;
-        public uint[] ids = { 1031690, 1031677 };
-        public uint ZoneId;
+        public static uint[] ids = { 1031690, 1031677 };
+        public static uint ZoneId;
 
-        private GameObject Npc => GameObjectManager.GameObjects.FirstOrDefault(i => ids.Contains(i.NpcId) && i.IsVisible);
-        private GameObject VendorNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031680 && i.IsVisible);
+        private static GameObject Npc => GameObjectManager.GameObjects.FirstOrDefault(i => ids.Contains(i.NpcId) && i.IsVisible);
+        private static GameObject VendorNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031680 && i.IsVisible);
 
-        private GameObject GatherNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031693 && i.IsVisible);
+        private static GameObject GatherNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031693 && i.IsVisible);
 
-        private GameObject KupoNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031692 && i.IsVisible);
+        private static GameObject KupoNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031692 && i.IsVisible);
 
-        public async Task<bool> HandInGatheringItem(int job)
+        public static async Task<bool> HandInGatheringItem(int job)
         {
             if ((!HWDGathereInspect.Instance.IsOpen && GatherNpc == null) || GatherNpc.Location.Distance(Core.Me.Location) > 5f)
             {
@@ -95,7 +95,7 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
-        public async Task<bool> HandInKupoTicket(int slot)
+        public static async Task<bool> HandInKupoTicket(int slot)
         {
             if ((!HWDLottery.Instance.IsOpen && KupoNpc == null) || KupoNpc.Location.Distance(Core.Me.Location) > 5f)
             {
@@ -170,7 +170,7 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
-        public async Task<bool> HandInItem(uint itemId, int index, int job, bool stopScripMax = false)
+        public static async Task<bool> HandInItem(uint itemId, int index, int job, bool stopScripMax = false)
         {
             if ((!HWDSupply.Instance.IsOpen && Npc == null) || Npc.Location.Distance(Core.Me.Location) > 5f)
             {
@@ -319,7 +319,7 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
-        public async Task<bool> BuyItem(uint itemId, int SelectStringLine = 0)
+        public static async Task<bool> BuyItem(uint itemId, int SelectStringLine = 0)
         {
             if ((!ShopExchangeCurrency.Open && VendorNpc == null) || VendorNpc.Location.Distance(Core.Me.Location) > 5f)
             {
@@ -374,7 +374,7 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
-        public async Task<bool> BuyItem(uint itemId, int maxCount, int SelectStringLine = 0)
+        public static async Task<bool> BuyItem(uint itemId, int maxCount, int SelectStringLine = 0)
         {
             if ((!ShopExchangeCurrency.Open && VendorNpc == null) || VendorNpc.Location.Distance(Core.Me.Location) > 5f)
             {
@@ -495,7 +495,7 @@ namespace LlamaLibrary.Helpers
             return scrips / item.CurrencyCosts[0];
         }
 
-        public async Task<bool> GetToVendorNpc()
+        public static async Task<bool> GetToVendorNpc()
         {
             if (WorldManager.ZoneId != ZoneId && WorldManager.ZoneId != 886)
             {
@@ -602,7 +602,7 @@ namespace LlamaLibrary.Helpers
             return Npc.Location.Distance(Core.Me.Location) <= 5f;
         }
 
-        public async Task<bool> GetToNpc()
+        public static async Task<bool> GetToNpc()
         {
             if (WorldManager.ZoneId != ZoneId && WorldManager.ZoneId != 886)
             {
@@ -704,7 +704,7 @@ namespace LlamaLibrary.Helpers
             return Npc.Location.Distance(Core.Me.Location) <= 5f;
         }
 
-        public async Task<bool> GetToGatherNpc()
+        public static async Task<bool> GetToGatherNpc()
         {
             if (WorldManager.ZoneId != ZoneId && WorldManager.ZoneId != 886)
             {

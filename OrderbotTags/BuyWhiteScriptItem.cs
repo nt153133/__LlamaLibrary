@@ -5,6 +5,7 @@ using Clio.XmlEngine;
 using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
 using ff14bot.Pathing.Service_Navigation;
+using LlamaLibrary.Helpers;
 using TreeSharp;
 
 namespace LlamaLibrary.OrderbotTags
@@ -50,8 +51,7 @@ namespace LlamaLibrary.OrderbotTags
             Navigator.NavigationProvider = Navigator.NavigationProvider ?? new ServiceNavigationProvider();
             Navigator.PlayerMover = Navigator.PlayerMover ?? new SlideMover();
 
-            var ishgardHandin = new Helpers.IshgardHandin();
-            await ishgardHandin.BuyItem((uint)itemId, SelectStringLine);
+            await IshgardHandin.BuyItem((uint)itemId, SelectStringLine);
 
             _isDone = true;
         }
