@@ -10,6 +10,7 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.RemoteAgents
 {
+    //TODO This agent has way too many hardcoded memory offsets
     public class AgentFreeCompany : AgentInterface<AgentFreeCompany>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;

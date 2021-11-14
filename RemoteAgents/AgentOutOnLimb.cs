@@ -5,6 +5,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteAgents
 {
+    //TODO This agent has stupid hardcoded memory offsets in Refresh()
     public class AgentOutOnLimb : AgentInterface<AgentOutOnLimb>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;

@@ -7,6 +7,7 @@ using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.RemoteAgents
 {
+    //TODO This agent might be completely useless given the current way I get the retainers
     public class AgentRetainerList : AgentInterface<AgentRetainerList>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;

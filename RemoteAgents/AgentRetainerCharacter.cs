@@ -5,6 +5,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteAgents
 {
+    //TODO This agent has hardcoded memory offsets and i'm not actually sure why it's here
     public class AgentRetainerCharacter : AgentInterface<AgentRetainerCharacter>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;

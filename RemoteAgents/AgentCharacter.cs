@@ -9,13 +9,13 @@ namespace LlamaLibrary.RemoteAgents
         private static class Offsets
         {
             [Offset("Search 48 8D 05 ? ? ? ? 89 77 ? Add 3 TraceRelative")]
-            internal static IntPtr vtable;
+            internal static IntPtr Vtable;
         }
 
         protected AgentCharacter(IntPtr pointer) : base(pointer)
         {
         }
 
-        public IntPtr RegisteredVtable => Offsets.vtable;
+        public IntPtr RegisteredVtable => Offsets.Vtable;
     }
 }

@@ -137,7 +137,6 @@
     <Compile Include="RemoteAgents\AgentInventoryBuddy.cs" />
     <Compile Include="RemoteAgents\AgentBagSlot.cs" />
     <Compile Include="RemoteAgents\AgentItemAppraisal.cs" />
-    <Compile Include="RemoteAgents\AgentMasterPieceSupply.cs" />
     <Compile Include="RemoteAgents\AgentMeld.cs" />
     <Compile Include="RemoteAgents\AgentMinionNoteBook.cs" />
     <Compile Include="RemoteAgents\AgentOutOnLimb.cs" />

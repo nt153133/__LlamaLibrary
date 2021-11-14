@@ -26,12 +26,11 @@ namespace LlamaLibrary.RemoteAgents
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<uint>(Offsets.HandInFunc, new object[3]
-                {
+                Core.Memory.CallInjected64<uint>(
+                    Offsets.HandInFunc,
                     Pointer + Offsets.HandinParmOffset,
                     slot.Slot,
-                    (int)slot.BagId
-                });
+                    (int)slot.BagId);
             }
         }
     }
