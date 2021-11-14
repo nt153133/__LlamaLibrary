@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TreeSharp;
 
-namespace ff14bot.NeoProfiles.Tags
+namespace LlamaLibrary.OrderbotTags
 {
 	[XmlElement("LLUseItem")]	
     [XmlElement("SoUseItem")]

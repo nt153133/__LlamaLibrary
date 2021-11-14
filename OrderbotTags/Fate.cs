@@ -28,7 +28,7 @@ using Action = TreeSharp.Action;
  *
  */
 
-namespace Ff14bot.NeoProfiles
+namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LLFate")]
     public class LLFate : ProfileBehavior

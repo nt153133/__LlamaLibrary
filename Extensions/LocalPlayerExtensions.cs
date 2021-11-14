@@ -29,14 +29,14 @@ namespace LlamaLibrary.Extensions
             return Core.Memory.Read<byte>(player.Pointer + Offsets.GatheringStateOffset);
         }*/
 
-        internal static uint GCSeals(this LocalPlayer player)
+        public static uint GCSeals(this LocalPlayer player)
         {
             uint[] sealTypes = { 20, 21, 22 };
             var bagslot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.Currency).FirstOrDefault(i => i.RawItemId == sealTypes[(int)Core.Me.GrandCompany - 1]);
             return bagslot?.Count ?? 0U;
         }
 
-        internal static int MaxGCSeals(this LocalPlayer player)
+        public static int MaxGCSeals(this LocalPlayer player)
         {
             var gc = Core.Memory.Read<byte>(Offsets.CurrentGC);
             if (gc == 0)

@@ -1,4 +1,4 @@
-﻿namespace LlamaLibrary.PersonalTester
+﻿namespace LlamaLibrary.Enums
 {
     public enum RetainerCity : byte
     {

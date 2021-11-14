@@ -11,7 +11,7 @@ using ff14bot.Managers;
 using ff14bot.NeoProfiles;
 using TreeSharp;
 
-namespace Ff14bot.NeoProfiles
+namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LLSendChat")]
     [XmlElement("SoSendChat")]

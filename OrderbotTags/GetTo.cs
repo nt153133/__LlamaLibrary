@@ -18,7 +18,7 @@ using ff14bot.NeoProfiles;
 using LlamaLibrary.Helpers;
 using TreeSharp;
 
-namespace Ff14bot.NeoProfiles.Tags
+namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LLGetTo")]
     public class GetTo : ProfileBehavior

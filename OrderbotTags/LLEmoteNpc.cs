@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using TreeSharp;
 using Action = TreeSharp.Action;
 
-namespace ff14bot.NeoProfiles
+namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LLEmoteNpc")]
 	[XmlElement("SoEmoteNpc")]

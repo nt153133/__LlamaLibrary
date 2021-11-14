@@ -144,7 +144,7 @@ namespace LlamaLibrary.Retainers
             return retainerGilSlot.Move(playerGilSlot);
         }
 
-        internal static async Task<bool> UseSummoningBell()
+        public static async Task<bool> UseSummoningBell()
         {
             await GoToSummoningBell();
             var bell = FindSummoningBell();
@@ -287,7 +287,7 @@ namespace LlamaLibrary.Retainers
             Logging.Write(Colors.Pink, msg);
         }
 
-        internal static async Task<bool> VerifiedRetainerData()
+        public static async Task<bool> VerifiedRetainerData()
         {
             if (Core.Memory.Read<uint>(Offsets.RetainerData) != 0)
             {

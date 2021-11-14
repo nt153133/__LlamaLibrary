@@ -23,7 +23,7 @@ using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using TreeSharp;
 
-namespace Ff14bot.NeoProfiles.Tags
+namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LLHandOver")]
 

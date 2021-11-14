@@ -11,7 +11,7 @@ using ff14bot.Objects;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
 
-namespace Ff14bot.NeoProfiles.Tags
+namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LLTransport")]
     [XmlElement("SoTransport")]

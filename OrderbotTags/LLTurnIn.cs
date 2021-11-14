@@ -22,7 +22,7 @@ using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using TreeSharp;
 
-namespace Ff14bot.NeoProfiles
+namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LLTurnIn")]
 

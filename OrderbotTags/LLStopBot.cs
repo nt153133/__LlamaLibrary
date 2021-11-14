@@ -4,7 +4,7 @@ using ff14bot.NeoProfiles;
 using TreeSharp;
 using Action = TreeSharp.Action;
 
-namespace Ff14bot.NeoProfiles
+namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LLStopBot")]
     [XmlElement("StopBot")]

@@ -27,16 +27,17 @@ using LlamaLibrary.RemoteAgents;
 
 namespace LlamaLibrary.Memory
 {
-    internal class OffsetManager
+    public class OffsetManager
     {
         private static string Name => "LLOffsetManager";
         private static bool initDone = false;
-        private static StringBuilder sb = new StringBuilder();
+        private static readonly StringBuilder Sb = new StringBuilder();
         public static Dictionary<string, string> patterns = new Dictionary<string, string>();
         public static Dictionary<string, string> constants = new Dictionary<string, string>();
 
         private static readonly bool _debug = false;
-        internal static void Init()
+
+        public static void Init()
         {
             if (initDone)
             {
@@ -133,7 +134,7 @@ namespace LlamaLibrary.Memory
             initDone = true;
             if (_debug)
             {
-                Log($"\n {sb}");
+                Log($"\n {Sb}");
             }
         }
 
@@ -264,7 +265,7 @@ namespace LlamaLibrary.Memory
             {
                 if (field.DeclaringType != null && field.DeclaringType.IsNested && field.FieldType != typeof(int))
                 {
-                    sb.AppendLine($"{field.DeclaringType.DeclaringType.Name}_{field.Name}, {offset.Pattern} - {offset.PatternCN}");
+                    Sb.AppendLine($"{field.DeclaringType.DeclaringType.Name}_{field.Name}, {offset.Pattern} - {offset.PatternCN}");
                     patterns.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", offset.Pattern);
                 }
                 else if (field.DeclaringType != null && field.DeclaringType.IsNested && field.FieldType == typeof(int))
@@ -274,19 +275,19 @@ namespace LlamaLibrary.Memory
                 }
                 else if (field.FieldType != typeof(int))
                 {
-                    sb.AppendLine($"{field.Name}, {offset.Pattern} - {offset.PatternCN}");
+                    Sb.AppendLine($"{field.Name}, {offset.Pattern} - {offset.PatternCN}");
                     patterns.Add($"{field.Name}", offset.Pattern);
                 }
                 else
                 {
-                    sb.AppendLine($"{field.Name}, {offset.Pattern} - {offsetCN?.PatternCN}");
+                    Sb.AppendLine($"{field.Name}, {offset.Pattern} - {offsetCN?.PatternCN}");
                     constants.Add($"{field.Name}", offset.Pattern);
                 }
             }
 
             if (valna != null)
             {
-                sb.AppendLine($"{field.DeclaringType.Name},{field.Name},{valna}");
+                Sb.AppendLine($"{field.DeclaringType.Name},{field.Name},{valna}");
             }
 
             if (field.DeclaringType != null && field.DeclaringType.IsNested)

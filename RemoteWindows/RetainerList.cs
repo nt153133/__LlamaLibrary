@@ -11,7 +11,7 @@ using static ff14bot.RemoteWindows.Talk;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    internal class RetainerList : RemoteWindow<RetainerList>
+    public class RetainerList : RemoteWindow<RetainerList>
     {
         private const string WindowName = "RetainerList";
 

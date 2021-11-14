@@ -4,7 +4,7 @@ using ff14bot.Managers;
 
 namespace LlamaLibrary.Retainers
 {
-    internal class RetainerInventory
+    public class RetainerInventory
     {
         private IDictionary<uint, BagSlot> dict = new Dictionary<uint, BagSlot>();
 

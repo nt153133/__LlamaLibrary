@@ -195,7 +195,7 @@ namespace LlamaLibrary.Helpers
             return WorldManager.ZoneId == 399;
         }
 
-        internal static async Task<bool> FlightorMove(Vector3 loc)
+        public static async Task<bool> FlightorMove(Vector3 loc)
         {
             var moving = MoveResult.GeneratingPath;
             var target = new FlyToParameters(loc);

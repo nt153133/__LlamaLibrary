@@ -13,7 +13,7 @@ using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using TreeSharp;
 using Action = TreeSharp.Action;
-namespace Ff14bot.NeoProfiles
+namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LLUseSpell")]
     [XmlElement("SoUseSpell")]

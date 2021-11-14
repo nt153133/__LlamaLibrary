@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TreeSharp;
 
-namespace Ff14bot.NeoProfiles
+namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("LLisbeth")]
     public class LisbethOrderBot : ProfileBehavior

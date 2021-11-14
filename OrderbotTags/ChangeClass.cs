@@ -13,7 +13,7 @@ using ff14bot.NeoProfiles;
 using ff14bot.RemoteWindows;
 using TreeSharp;
 
-namespace Ff14bot
+namespace LlamaLibrary.OrderbotTags
 {
     [XmlElement("ChangeClass")]
     public class ChangeClass : ProfileBehavior

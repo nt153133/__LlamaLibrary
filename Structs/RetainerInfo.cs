@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Clio.Utilities;
 using ff14bot.Enums;
-using LlamaLibrary.PersonalTester;
+using LlamaLibrary.Enums;
 
 namespace LlamaLibrary.Structs
 {

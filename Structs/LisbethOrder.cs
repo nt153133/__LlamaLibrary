@@ -1,4 +1,4 @@
-﻿namespace Generate
+﻿namespace LlamaLibrary.Structs
 {
     public class LisbethOrder
     {

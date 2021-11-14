@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
+using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
+using ff14bot.Pathing.Service_Navigation;
 using TreeSharp;
 
 namespace LlamaLibrary.OrderbotTags
@@ -44,7 +46,12 @@ namespace LlamaLibrary.OrderbotTags
         private async Task BuyWhiteScrip(int itemId)
         {
             await Coroutine.Sleep(500);
-            await IshgardHandinBase.BuyItem((uint)itemId, SelectStringLine);
+
+            Navigator.NavigationProvider = Navigator.NavigationProvider ?? new ServiceNavigationProvider();
+            Navigator.PlayerMover = Navigator.PlayerMover ?? new SlideMover();
+
+            var ishgardHandin = new Helpers.IshgardHandin();
+            await ishgardHandin.BuyItem((uint)itemId, SelectStringLine);
 
             _isDone = true;
         }

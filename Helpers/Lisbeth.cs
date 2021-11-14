@@ -95,7 +95,7 @@ namespace LlamaLibrary.Helpers
 
         public static string GetCurrentAreaName => _getCurrentAreaName.Invoke();
 
-        internal static async Task<bool> ExecuteOrders(string json)
+        public static async Task<bool> ExecuteOrders(string json)
         {
             if (_orderMethod != null)
             {
@@ -111,7 +111,7 @@ namespace LlamaLibrary.Helpers
             return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false });
         }
 
-        internal static async Task<bool> ExecuteOrdersIgnoreHome(string json)
+        public static async Task<bool> ExecuteOrdersIgnoreHome(string json)
         {
             if (_orderMethod != null)
             {
@@ -127,7 +127,7 @@ namespace LlamaLibrary.Helpers
             return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true });
         }
 
-        internal static async Task<bool> TravelTo(string area, Vector3 position)
+        public static async Task<bool> TravelTo(string area, Vector3 position)
         {
             if (_travelToWithArea != null)
             {
