@@ -17,7 +17,7 @@ using LlamaLibrary.Helpers;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
 
-namespace LlamaLibrary.OrderbotTags
+namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLGcExpeditionResult")]
     public class LLGcExpeditionResult : ProfileBehavior

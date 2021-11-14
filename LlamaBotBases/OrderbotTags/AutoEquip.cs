@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using Clio.XmlEngine;
-using ff14bot.NeoProfiles;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
@@ -9,7 +8,7 @@ using Action = TreeSharp.Action;
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("AutoEquip")]
-    public class AutoEquip : ProfileBehavior
+    public class AutoEquip : LLProfileBehavior
     {
         private bool _isDone;
         private bool _isOpening;
@@ -21,6 +20,8 @@ namespace LlamaBotBases.OrderbotTags
         public bool UpdateGearSet { get; set; } = false;
 
         public override bool HighPriority => true;
+
+        public AutoEquip() : base() { }
 
         protected override void OnStart()
         {
@@ -47,7 +48,7 @@ namespace LlamaBotBases.OrderbotTags
                     new Decorator(
                         r => RecommendEquip.Instance.IsOpen,
                         new Sequence(
-                            new Action(r => Log($"{RecommendEquip.Instance.Name} Window open")),
+                            new Action(r => Log.Verbose($"{RecommendEquip.Instance.Name} Window open")),
                             new Action(r => RecommendEquip.Instance.Confirm()),
                             new Sleep(1000),
                             new Action(r => _isOpening = false),

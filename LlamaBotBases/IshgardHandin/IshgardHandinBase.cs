@@ -5,12 +5,12 @@ using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.ScriptConditions;
@@ -20,6 +20,8 @@ namespace LlamaBotBases.IshgardHandinBase
 {
     public class IshgardHandinBase : BotBase
     {
+        private static readonly LLogger Log = new LLogger("Ishgard Handin", Colors.Aquamarine);
+
         private Composite _root;
         public override string Name => "Ishgard Handin";
         public override PulseFlags PulseFlags => PulseFlags.All;
@@ -99,42 +101,42 @@ namespace LlamaBotBases.IshgardHandinBase
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items20Old.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 50))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items40Old.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 90))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items150Old.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 300))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items290Old.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 480))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items430Old.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 1350))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items481Old.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 4500))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
             }
@@ -963,7 +965,7 @@ namespace LlamaBotBases.IshgardHandinBase
 
         public static async Task<bool> GatheringHandin()
         {
-            Log($"Gathering Started");
+            Log.Information($"Gathering Started");
             Navigator.NavigationProvider = new ServiceNavigationProvider();
             Navigator.PlayerMover = new SlideMover();
             while (Helpers.HasIshgardGatheringBotanist())
@@ -989,7 +991,7 @@ namespace LlamaBotBases.IshgardHandinBase
                 HWDGathereInspect.Instance.Close();
             }
 
-            Log($"Gathering Done");
+            Log.Information($"Gathering Done");
             return false;
         }
 
@@ -998,63 +1000,63 @@ namespace LlamaBotBases.IshgardHandinBase
             Navigator.NavigationProvider = new ServiceNavigationProvider();
             Navigator.PlayerMover = new SlideMover();
 
-            Log("Started");
+            Log.Information("Started");
 
             if (DiscardCollectable)
             {
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items20.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 50))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items40.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 90))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items150.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 300))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items290.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 480))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items430.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 1350))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items481.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 4500))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items511.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 5800))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
                 foreach (var item in InventoryManager.FilledSlots.Where(i => items513.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 5800))
                 {
                     item.Discard();
-                    Log($"Discarding {item.Name}");
+                    Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
             }
@@ -2164,7 +2166,7 @@ namespace LlamaBotBases.IshgardHandinBase
             }
 
             HWDSupply.Instance.Close();
-            Log($"Done");
+            Log.Information($"Done");
 
             //TreeRoot.Stop("Stop Requested");
             return true;
@@ -2188,12 +2190,6 @@ namespace LlamaBotBases.IshgardHandinBase
             await IshgardHandin.BuyItem(ItemId, maxCount, SelectStringLine);
 
             return true;
-        }
-
-        private static void Log(string text, params object[] args)
-        {
-            var msg = string.Format("[Ishgard Handin] " + text, args);
-            Logging.Write(Colors.Aquamarine, msg);
         }
     }
 }

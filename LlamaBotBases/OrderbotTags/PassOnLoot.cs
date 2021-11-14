@@ -2,7 +2,6 @@
 using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
@@ -10,11 +9,13 @@ using TreeSharp;
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("PassOnLoot")]
-    public class PassOnLoot : ProfileBehavior
+    public class PassOnLoot : LLProfileBehavior
     {
         private bool _isDone;
 
         public override bool HighPriority => true;
+
+        public PassOnLoot() : base() { }
 
         protected override void OnStart()
         {

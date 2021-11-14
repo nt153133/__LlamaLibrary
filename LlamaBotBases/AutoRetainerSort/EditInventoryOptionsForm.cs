@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Windows.Media;
 using LlamaBotBases.AutoRetainerSort.Classes;
+using LlamaLibrary.Logging;
 using static LlamaBotBases.AutoRetainerSort.Classes.ItemSortInfo;
 
 namespace LlamaBotBases.AutoRetainerSort
 {
     public partial class EditInventoryOptionsForm : Form
     {
+        private static readonly LLogger Log = new LLogger(Strings.LogPrefix, Colors.Orange);
+
         public EditInventoryOptionsForm()
         {
             InitializeComponent();
@@ -194,7 +198,7 @@ namespace LlamaBotBases.AutoRetainerSort
                     continue;
                 }
 
-                AutoRetainerSort.LogSuccess($"Added {sortInfo.Name} to {_sortInfo.Name}!");
+                Log.Information($"Added {sortInfo.Name} to {_sortInfo.Name}!");
                 _bsItems.Add(sortInfo);
             }
 

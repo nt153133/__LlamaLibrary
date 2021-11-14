@@ -1,15 +1,16 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
-using ff14bot.NeoProfiles;
+using LlamaLibrary.Logging;
 using TreeSharp;
 using static LlamaLibrary.Helpers.GeneralFunctions;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLSmallTalk")]
-    public class LLSmallTalk : ProfileBehavior
+    public class LLSmallTalk : LLProfileBehavior
     {
         [XmlAttribute("WaitTime")]
         [XmlAttribute("waittime")]
@@ -21,6 +22,8 @@ namespace LlamaBotBases.OrderbotTags
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public LLSmallTalk() : base() { }
 
         protected override void OnStart()
         {

@@ -2,14 +2,13 @@
 using System.Threading.Tasks;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
-using ff14bot.NeoProfiles;
 using LlamaLibrary.Helpers;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("SetBluActive")]
-    public class SetBluSpells : ProfileBehavior
+    public class SetBluSpells : LLProfileBehavior
     {
         private bool _isDone;
         [XmlAttribute("Spells")]
@@ -20,6 +19,8 @@ namespace LlamaBotBases.OrderbotTags
         public bool Clear { get; set; }
 
         public override bool HighPriority => true;
+
+        public SetBluSpells() : base() { }
 
         protected override void OnStart()
         {

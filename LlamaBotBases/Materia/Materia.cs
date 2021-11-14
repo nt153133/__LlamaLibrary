@@ -7,9 +7,9 @@ using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
@@ -20,6 +20,8 @@ namespace LlamaBotBases.Materia
 {
     public class MateriaBase : BotBase
     {
+        private static readonly LLogger Log = new LLogger("Materia", Colors.Fuchsia);
+
         public static Dictionary<int, List<MateriaItem>> MateriaList;
         private static bool _init;
         private PulseFlags _pulseFlags;
@@ -36,7 +38,7 @@ namespace LlamaBotBases.Materia
             {
                 Init();
                 _init = true;
-                Log("INIT DONE");
+                Log.Information("INIT DONE");
             });
         }
 
@@ -75,7 +77,7 @@ namespace LlamaBotBases.Materia
         {
             if (!_init)
             {
-                Log("Wait for initialization to finish");
+                Log.Warning("Wait for initialization to finish");
                 return false;
             }
 
@@ -87,7 +89,7 @@ namespace LlamaBotBases.Materia
                 }
                 else
                 {
-                    Log("Error: Choose an item in the settings and click Remove Materia");
+                    Log.Error("Choose an item in the settings and click Remove Materia");
                 }
             }
 
@@ -99,7 +101,7 @@ namespace LlamaBotBases.Materia
                 }
                 else
                 {
-                    Log("Error: Choose an item in the settings and click Affix Materia");
+                    Log.Error("Choose an item in the settings and click Affix Materia");
                 }
             }
 
@@ -109,25 +111,13 @@ namespace LlamaBotBases.Materia
             return false;
         }
 
-        private static void Log(string text)
-        {
-            var msg = string.Format("[Materia] " + text);
-            Logging.Write(Colors.Fuchsia, msg);
-        }
-
-        private void Log1(string text)
-        {
-            var msg = string.Format("[" + Name + "] " + text);
-            Logging.Write(Colors.Aquamarine, msg);
-        }
-
         internal void Init()
         {
             OffsetManager.Init();
 
-            Log("Load Materia.json");
+            Log.Information("Load Materia.json");
             MateriaList = LoadResource<Dictionary<int, List<MateriaItem>>>(LlamaLibrary.Properties.Resources.Materia);
-            Log("Loaded Materia.json");
+            Log.Information("Loaded Materia.json");
         }
 
         private static T LoadResource<T>(string text)
@@ -137,10 +127,10 @@ namespace LlamaBotBases.Materia
 
         public static async Task<bool> AffixMateria(BagSlot bagSlot, List<BagSlot> materiaList)
         {
-            Log($"MateriaList count {materiaList.Count}");
+            Log.Information($"MateriaList count {materiaList.Count}");
             if (bagSlot != null && bagSlot.IsValid)
             {
-                Log($"Want to affix Materia to {bagSlot}");
+                Log.Information($"Want to affix Materia to {bagSlot}");
 
                 for (var i = 0; i < materiaList.Count; i++)
                 {
@@ -149,7 +139,7 @@ namespace LlamaBotBases.Materia
                         break;
                     }
 
-                    Log($"Want to affix materia {i} {materiaList[i]}");
+                    Log.Information($"Want to affix materia {i} {materiaList[i]}");
 
                     if (!materiaList[i].IsFilled)
                     {
@@ -167,7 +157,7 @@ namespace LlamaBotBases.Materia
 
                             if (!MateriaAttach.Instance.IsOpen)
                             {
-                                Log($"Can't open meld window");
+                                Log.Error($"Can't open meld window");
                                 return false;
                             }
 
@@ -188,35 +178,35 @@ namespace LlamaBotBases.Materia
                             await Coroutine.Wait(7000, () => AgentMeld.Instance.Ready);
                             if (!MateriaAttachDialog.Instance.IsOpen)
                             {
-                                Log($"Can't open meld dialog");
+                                Log.Error($"Can't open meld dialog");
                                 return false;
                             }
                         }
 
-                        //Log($"{Offsets.AffixMateriaFunc.ToInt64():X}  {Offsets.AffixMateriaParam.ToInt64():X}   {bagSlot.Pointer.ToInt64():X}  {materiaList[i].Pointer.ToInt64():X}");
-                        Log("Wait Ready");
+                        //Log.Information($"{Offsets.AffixMateriaFunc.ToInt64():X}  {Offsets.AffixMateriaParam.ToInt64():X}   {bagSlot.Pointer.ToInt64():X}  {materiaList[i].Pointer.ToInt64():X}");
+                        Log.Information("Wait Ready");
                         await Coroutine.Wait(7000, () => MateriaAttachDialog.Instance.IsOpen);
 
                         // await Coroutine.Wait(7000, () => AgentMeld.Instance.Ready);
-                        // Log("Wait CanMeld");
+                        // Log.Verbose("Wait CanMeld");
                         // await Coroutine.Wait(7000, () => AgentMeld.Instance.CanMeld);
                         bagSlot.AffixMateria(materiaList[i]);
-                        Log("Clicked affix wait not Ready");
+                        Log.Verbose("Clicked affix wait not Ready");
                         await Coroutine.Wait(7000, () => AgentMeld.Instance.Ready);
-                        Log("Clicked affix wait Ready");
+                        Log.Verbose("Clicked affix wait Ready");
                         await Coroutine.Wait(7000, () => !AgentMeld.Instance.Ready);
 
                         // await Coroutine.Sleep(7000);
-                        Log("Clicked wait window");
+                        Log.Verbose("Clicked wait window");
                         await Coroutine.Wait(7000, () => !MateriaAttachDialog.Instance.IsOpen);
-                        Log("Wait 2 windows");
+                        Log.Verbose("Wait 2 windows");
                         await Coroutine.Wait(5000, () => MateriaAttachDialog.Instance.IsOpen || MateriaAttach.Instance.IsOpen);
 
                         //    await Coroutine.Sleep(1000);
 
                         while (MateriaAttachDialog.Instance.IsOpen)
                         {
-                            Log("While window");
+                            Log.Verbose("While window");
                             MateriaAttachDialog.Instance.ClickAttach();
                             await Coroutine.Wait(7000, () => !AgentMeld.Instance.CanMeld);
                             await Coroutine.Wait(7000, () => AgentMeld.Instance.CanMeld);
@@ -227,7 +217,7 @@ namespace LlamaBotBases.Materia
 
                         if (MateriaAttach.Instance.IsOpen)
                         {
-                            Log("Closing window");
+                            Log.Verbose("Closing window");
                             MateriaAttach.Instance.Close();
                             await Coroutine.Wait(7000, () => !MateriaAttach.Instance.IsOpen);
 
@@ -250,17 +240,17 @@ namespace LlamaBotBases.Materia
         {
             if (bagSlot != null && bagSlot.IsValid)
             {
-                Log($"Want to remove Materia from {bagSlot}");
+                Log.Information($"Want to remove Materia from {bagSlot}");
                 var count = MateriaCount(bagSlot);
                 for (var i = 0; i < count; i++)
                 {
-                    Log($"Removing materia {count - i}");
+                    Log.Information($"Removing materia {count - i}");
                     bagSlot.RemoveMateria();
                     await Coroutine.Sleep(6000);
                 }
             }
 
-            Log($"Materia now has {MateriaCount(ItemToRemoveMateria)}");
+            Log.Information($"Materia now has {MateriaCount(ItemToRemoveMateria)}");
 
             return true;
         }

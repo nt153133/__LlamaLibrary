@@ -1,18 +1,19 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Logging;
 using TreeSharp;
 using static LlamaLibrary.Helpers.GeneralFunctions;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("GearSetEquipAll")]
-    public class GearSetEquipAll : ProfileBehavior
+    public class GearSetEquipAll : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -24,6 +25,8 @@ namespace LlamaBotBases.OrderbotTags
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public GearSetEquipAll() : base() { }
 
         protected override void OnStart()
         {

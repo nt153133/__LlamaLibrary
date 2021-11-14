@@ -7,7 +7,6 @@ using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
@@ -16,6 +15,7 @@ using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
 using Newtonsoft.Json;
@@ -27,6 +27,7 @@ namespace LlamaBotBases.GCExpertTurnin
     {
         private static string _name = "GCExpertGrind";
         public override string Name => _name;
+
         public override PulseFlags PulseFlags => PulseFlags.All;
 
         public override bool IsAutonomous => true;
@@ -39,6 +40,8 @@ namespace LlamaBotBases.GCExpertTurnin
         private Composite _root;
 
         public override bool WantButton => true;
+
+        private static readonly LLogger Log = new LLogger(_name, Colors.SeaGreen);
 
         public override void OnButtonPress()
         {
@@ -68,34 +71,34 @@ namespace LlamaBotBases.GCExpertTurnin
         {
             if (!GCExpertSettings.Instance.AcceptedRisk)
             {
-                LogBold("**************************Attention*********************************");
-                LogBold("Please go to settings");
-                LogBold("This botbase will turn in any gear that's in your inventory to the GC expert delivery npc");
-                LogBold("You need to set Accepted to true to show you understand the risk");
+                Log.Error("**************************Attention*********************************");
+                Log.Error("Please go to settings");
+                Log.Error("This botbase will turn in any gear that's in your inventory to the GC expert delivery npc");
+                Log.Error("You need to set Accepted to true to show you understand the risk");
                 TreeRoot.Stop("Stop Requested");
                 return true;
             }
 
             await GeneralFunctions.StopBusy();
 
-            Log("Turning in current items:");
+            Log.Information("Turning in current items:");
 
             await HandInExpert();
 
             if (GCExpertSettings.Instance.Craft)
             {
-                Log("Crafting set to true");
-                Log($"{Core.Me.MaxGCSeals()} - {GCExpertSettings.Instance.SealReward} < {Core.Me.GCSeals()}");
+                Log.Information("Crafting set to true");
+                Log.Information($"{Core.Me.MaxGCSeals()} - {GCExpertSettings.Instance.SealReward} < {Core.Me.GCSeals()}");
                 while (Core.Me.GCSeals() < Core.Me.MaxGCSeals() - GCExpertSettings.Instance.SealReward)
                 {
-                    Log("Generating Lisbeth order");
+                    Log.Information("Generating Lisbeth order");
                     var currentSeals = Core.Me.GCSeals();
                     var neededSeals = (Core.Me.MaxGCSeals() - currentSeals) - (GCExpertSettings.Instance.SealReward * ConditionParser.ItemCount((uint)GCExpertSettings.Instance.ItemId));
                     var qty = (int)(neededSeals / GCExpertSettings.Instance.SealReward);
-                    Log($"Need {qty}");
+                    Log.Information($"Need {qty}");
                     var freeSlots = InventoryManager.FreeSlots;
                     var couldCraft = Math.Min(freeSlots - 10, qty);
-                    Log($"Order Would be for {couldCraft}");
+                    Log.Information($"Order Would be for {couldCraft}");
 
                     var outList = new List<LisbethOrder>
                     {
@@ -105,14 +108,14 @@ namespace LlamaBotBases.GCExpertTurnin
                     var order = JsonConvert.SerializeObject(outList, Formatting.None);
 
                     await GeneralFunctions.StopBusy();
-                    Log($"Calling Lisbeth with {order}");
+                    Log.Information($"Calling Lisbeth with {order}");
                     try
                     {
                         await Lisbeth.ExecuteOrders(order);
                     }
                     catch (Exception e)
                     {
-                        Log($"{e}");
+                        Log.Error($"{e}");
                     }
 
                     await GeneralFunctions.StopBusy();
@@ -137,14 +140,14 @@ namespace LlamaBotBases.GCExpertTurnin
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
                 if (!SelectString.IsOpen)
                 {
-                    Log("Window is not open...maybe it didn't get to npc?");
+                    Log.Error("Window is not open...maybe it didn't get to npc?");
                 }
 
                 SelectString.ClickSlot(0);
                 await Coroutine.Wait(5000, () => GrandCompanySupplyList.Instance.IsOpen);
                 if (!GrandCompanySupplyList.Instance.IsOpen)
                 {
-                    Log("Window is not open...maybe it didn't get to npc?");
+                    Log.Information("Window is not open...maybe it didn't get to npc?");
                 }
             }
 
@@ -168,7 +171,7 @@ namespace LlamaBotBases.GCExpertTurnin
                     for (var index = 0; index < count; index++)
                     {
                         //var item = windowItemIds[index];
-                        //Log($"{index}");
+                        //Log.Information($"{index}");
                         GrandCompanySupplyList.Instance.ClickItem(0);
                         await Coroutine.Wait(1000, () => SelectYesno.IsOpen);
                         if (SelectYesno.IsOpen)
@@ -199,18 +202,6 @@ namespace LlamaBotBases.GCExpertTurnin
                     await GrandCompanyShop.BuyKnownItem(21072, (int) (Core.Me.GCSeals() / 200));
                 }*/
             }
-        }
-
-        private static void Log(string text)
-        {
-            var msg = $"[{_name}] {text}";
-            Logging.Write(Colors.SeaGreen, msg);
-        }
-
-        private static void LogBold(string text)
-        {
-            var msg = $"[{_name}] {text}";
-            Logging.Write(Colors.Red, msg);
         }
     }
 }

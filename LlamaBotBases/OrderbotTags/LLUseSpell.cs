@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Media;
 using Clio.Utilities;
 using Clio.XmlEngine;
 using ff14bot;
@@ -8,19 +9,17 @@ using ff14bot.Behavior;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
-using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Logging;
 using TreeSharp;
 using Action = TreeSharp.Action;
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLUseSpell")]
     [XmlElement("SoUseSpell")]
-    public class LLUseSpellTag : ProfileBehavior
+    public class LLUseSpellTag : LLProfileBehavior
     {
-        protected LLUseSpellTag() { Hotspots = new IndexedList<HotSpot>(); }
-
         public override bool HighPriority => true;
 
         private SpellData Spell => DataManager.GetSpellData(SpellId);
@@ -79,6 +78,11 @@ namespace LlamaBotBases.OrderbotTags
         [XmlAttribute("Condition")]
         public string Condition { get; set; }
         public Func<bool> Conditional { get; set; }
+
+        public LLUseSpellTag() : base()
+        {
+            Hotspots = new IndexedList<HotSpot>();
+        }
 
         public void SetupConditional()
         {

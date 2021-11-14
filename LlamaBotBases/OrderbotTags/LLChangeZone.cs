@@ -1,15 +1,16 @@
 ﻿using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot.Behavior;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLChangeZone")]
-    public class LLChangeZone : ProfileBehavior
+    public class LLChangeZone : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -19,6 +20,8 @@ namespace LlamaBotBases.OrderbotTags
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public LLChangeZone() : base() { }
 
         protected override void OnStart()
         {

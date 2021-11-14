@@ -45,13 +45,13 @@ namespace LlamaLibrary.Helpers
             Navigator.NavigationProvider = new ServiceNavigationProvider();
             var house = WorldManager.AvailableLocations.FirstOrDefault(i => i.AetheryteId == AE);
 
-            Log($"Teleporting to housing: (ZID: {DataManager.ZoneNameResults[house.ZoneId]}, AID: {house.AetheryteId}) {house.Name}");
+            Log.Information($"Teleporting to housing: (ZID: {DataManager.ZoneNameResults[house.ZoneId]}, AID: {house.AetheryteId}) {house.Name}");
             await CommonTasks.Teleport(house.AetheryteId);
 
-            Log("Waiting for zone to change.");
+            Log.Debug("Waiting for zone to change.");
             await Coroutine.Wait(20000, () => WorldManager.ZoneId == house.ZoneId);
 
-            Log("Moving to selected garden plot.");
+            Log.Information("Moving to selected garden plot.");
 
             if (gardenLoc != null)
             {

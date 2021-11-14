@@ -46,7 +46,7 @@ namespace LlamaLibrary.Helpers
                 var result = Core.Memory.CallInjected64<IntPtr>(Offsets.GetBeastTribeExd, i);
                 tribes.Add(Core.Memory.Read<BeastTribeExd>(result));
 
-                //Log($"{Core.Memory.Read<BeastTribeExd>(result)}") ;
+                Log.Verbose($"{Core.Memory.Read<BeastTribeExd>(result)}");
             }
 
             _beastTribes = tribes.ToArray();

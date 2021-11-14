@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Clio.XmlEngine;
 using ff14bot;
-using ff14bot.NeoProfiles;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLToast")]
-    public class LLToast : ProfileBehavior
+    public class LLToast : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -19,6 +20,8 @@ namespace LlamaBotBases.OrderbotTags
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public LLToast() : base() { }
 
         protected override void OnStart()
         {

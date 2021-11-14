@@ -8,7 +8,6 @@ using Clio.Utilities;
 using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
@@ -16,6 +15,7 @@ using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
@@ -26,6 +26,8 @@ namespace LlamaBotBases.CustomDeliveries
 {
     public class CustomDeliveriesBase : BotBase
     {
+        private static readonly LLogger Log = new LLogger("Custom Deliveries", Colors.Gold);
+
         private Composite _root;
 
         public override string Name => NameStatic;
@@ -78,24 +80,24 @@ namespace LlamaBotBases.CustomDeliveries
                 var items = new List<uint>();
                 if (!DeliveryNpcs.ContainsKey(AgentSatisfactionSupply.Instance.NpcId))
                 {
-                    Log($"Bad Npc ID: {AgentSatisfactionSupply.Instance.NpcId}");
+                    Log.Information($"Bad Npc ID: {AgentSatisfactionSupply.Instance.NpcId}");
                     break;
                 }
 
-                Log($"{DeliveryNpcs[AgentSatisfactionSupply.Instance.NpcId].Name}");
-                Log($"\tHeartLevel:{AgentSatisfactionSupply.Instance.HeartLevel}");
-                Log($"\tRep:{AgentSatisfactionSupply.Instance.CurrentRep}/{AgentSatisfactionSupply.Instance.MaxRep}");
-                Log($"\tDeliveries Remaining:{AgentSatisfactionSupply.Instance.DeliveriesRemaining}");
-                Log($"\tDoH: {DataManager.GetItem(AgentSatisfactionSupply.Instance.DoHItemId)}");
+                Log.Information($"{DeliveryNpcs[AgentSatisfactionSupply.Instance.NpcId].Name}");
+                Log.Information($"\tHeartLevel:{AgentSatisfactionSupply.Instance.HeartLevel}");
+                Log.Information($"\tRep:{AgentSatisfactionSupply.Instance.CurrentRep}/{AgentSatisfactionSupply.Instance.MaxRep}");
+                Log.Information($"\tDeliveries Remaining:{AgentSatisfactionSupply.Instance.DeliveriesRemaining}");
+                Log.Information($"\tDoH: {DataManager.GetItem(AgentSatisfactionSupply.Instance.DoHItemId)}");
                 items.Add(AgentSatisfactionSupply.Instance.DoHItemId);
-                Log($"\tDoL: {DataManager.GetItem(AgentSatisfactionSupply.Instance.DoLItemId)}");
+                Log.Information($"\tDoL: {DataManager.GetItem(AgentSatisfactionSupply.Instance.DoLItemId)}");
                 items.Add(AgentSatisfactionSupply.Instance.DoLItemId);
-                Log($"\tFsh: {DataManager.GetItem(AgentSatisfactionSupply.Instance.FshItemId)}");
+                Log.Information($"\tFsh: {DataManager.GetItem(AgentSatisfactionSupply.Instance.FshItemId)}");
                 items.Add(AgentSatisfactionSupply.Instance.FshItemId);
 
                 if (AgentSatisfactionSupply.Instance.HeartLevel == 5 || AgentSatisfactionSupply.Instance.DeliveriesRemaining == 0)
                 {
-                    Log($"{DeliveryNpcs[AgentSatisfactionSupply.Instance.NpcId].Name} Satisfaction Level is Maxed or out of deliveries, skipping");
+                    Log.Information($"{DeliveryNpcs[AgentSatisfactionSupply.Instance.NpcId].Name} Satisfaction Level is Maxed or out of deliveries, skipping");
                     continue;
                 }
 
@@ -117,7 +119,7 @@ namespace LlamaBotBases.CustomDeliveries
                     if (order != "" && !InventoryManager.FilledSlots.Any(i => items.Contains(i.RawItemId)))
                     {
                         await GeneralFunctions.StopBusy();
-                        Log($"Calling Lisbeth with {order}");
+                        Log.Information($"Calling Lisbeth with {order}");
                         try
                         {
                             await Lisbeth.ExecuteOrdersIgnoreHome(order);
@@ -131,13 +133,13 @@ namespace LlamaBotBases.CustomDeliveries
 
                 if (InventoryManager.FilledSlots.Any(i => items.Contains(i.RawItemId)) && AgentSatisfactionSupply.Instance.DeliveriesRemaining > 0)
                 {
-                    Log("Have items to turn in");
+                    Log.Information("Have items to turn in");
                     await HandInCustomNpc(npc.Key, (npc.Value.Zone, npc.Value.Location));
                 }
 
                 /*if (AgentSatisfactionSupply.Instance.DeliveriesRemaining == 0)
                 {
-                    Log("Out of delivery allowances");
+                    Log.Information("Out of delivery allowances");
                     break;
                 }*/
             }
@@ -182,7 +184,7 @@ namespace LlamaBotBases.CustomDeliveries
             await Coroutine.Wait(10000, () => Conversation.IsOpen);
             await Coroutine.Sleep(500);
 
-            Logging.WriteDiagnostic("Choosing 'Make a delivery.'");
+            Log.Information("Choosing 'Make a delivery.'");
             Conversation.SelectLine(0);
             await Coroutine.Wait(1000, () => Talk.DialogOpen);
 
@@ -202,7 +204,7 @@ namespace LlamaBotBases.CustomDeliveries
             {
                 do
                 {
-                    Logging.WriteDiagnostic("Turning in items");
+                    Log.Information("Turning in items");
 
                     if (AgentSatisfactionSupply.Instance.DeliveriesRemaining < 1)
                     {
@@ -224,7 +226,7 @@ namespace LlamaBotBases.CustomDeliveries
 
                     await Coroutine.Wait(10000, () => Request.IsOpen);
 
-                    Logging.WriteDiagnostic("Selecting items.");
+                    Log.Information("Selecting items.");
                     await CommonTasks.HandOverRequestedItems();
                     await Coroutine.Sleep(500);
 
@@ -249,7 +251,7 @@ namespace LlamaBotBases.CustomDeliveries
                     {
                         while (!SatisfactionSupplyResult.Instance.IsOpen && QuestLogManager.InCutscene)
                         {
-                            Logging.WriteDiagnostic("Dealing with cutscene.");
+                            Log.Information("Dealing with cutscene.");
                             if (QuestLogManager.InCutscene && AgentCutScene.Instance.CanSkip)
                             {
                                 AgentCutScene.Instance.PromptSkip();
@@ -271,7 +273,7 @@ namespace LlamaBotBases.CustomDeliveries
 
                         if (SatisfactionSupplyResult.Instance.IsOpen)
                         {
-                            Logging.WriteDiagnostic("Clicking Accept.");
+                            Log.Debug("Clicking Accept.");
                             SatisfactionSupplyResult.Instance.Confirm();
                         }
 
@@ -332,11 +334,6 @@ namespace LlamaBotBases.CustomDeliveries
             }
 
             return true;
-        }
-
-        private static void Log(string text)
-        {
-            Logging.Write(Colors.Gold, text);
         }
     }
 }

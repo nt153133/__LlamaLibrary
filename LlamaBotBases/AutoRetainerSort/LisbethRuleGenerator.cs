@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Media;
 using LlamaBotBases.AutoRetainerSort.Classes;
+using LlamaLibrary.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -11,6 +13,8 @@ namespace LlamaBotBases.AutoRetainerSort
 {
     public static class LisbethRuleGenerator
     {
+        private static readonly LLogger Log = new LLogger(Strings.LogPrefix, Colors.Orange);
+
         public static string GetSettingsPath()
         {
             var botType = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(i => i.FullName.Contains("Lisbeth.Reborn"))?.DefinedTypes.FirstOrDefault(i => i.Name == "Directories")
@@ -18,11 +22,11 @@ namespace LlamaBotBases.AutoRetainerSort
 
             if (botType == null)
             {
-                AutoRetainerSort.LogCritical($"Couldn't find our Lisbeth install, but we're supposed to generate rules for it...?");
+                Log.Error($"Couldn't find our Lisbeth install, but we're supposed to generate rules for it...?");
                 return string.Empty;
             }
 
-            AutoRetainerSort.Log($"Lisbeth Type {botType.FullName}");
+            Log.Debug($"Lisbeth Type {botType.FullName}");
 
             var assemblyLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location ?? string.Empty);
             var settingsPath = botType.GetProperty("SettingsPath")?.GetValue(null) as string ?? string.Empty;
@@ -48,7 +52,7 @@ namespace LlamaBotBases.AutoRetainerSort
         {
             if (string.IsNullOrEmpty(settingsPath))
             {
-                AutoRetainerSort.LogCritical("Provided Lisbeth settings path is invalid!");
+                Log.Error("Provided Lisbeth settings path is invalid!");
                 return;
             }
 
@@ -108,6 +112,8 @@ namespace LlamaBotBases.AutoRetainerSort
 
     public class LisbethRetainerRules
     {
+        private static readonly LLogger Log = new LLogger(Strings.LogPrefix, Colors.Orange);
+
         public Dictionary<int, HashSet<ItemRule>> RulesByIndex;
 
         [JsonObject(MemberSerialization.OptIn)]
@@ -172,7 +178,7 @@ namespace LlamaBotBases.AutoRetainerSort
             var retainerSettings = lisbethSettings["Retainers"];
             if (retainerSettings == null)
             {
-                AutoRetainerSort.LogCritical("No retainers found in Lisbeth's settings!");
+                Log.Warning("No retainers found in Lisbeth's settings!");
                 return;
             }
 
@@ -184,7 +190,7 @@ namespace LlamaBotBases.AutoRetainerSort
                 var currentRules = retainerInfo["Rules"];
                 if (currentRules == null)
                 {
-                    AutoRetainerSort.LogCritical("RetainerInfo didn't contain any rules array!");
+                    Log.Warning("RetainerInfo didn't contain any rules array!");
                     return;
                 }
 
@@ -194,7 +200,7 @@ namespace LlamaBotBases.AutoRetainerSort
                     if (itemRule == null)
                     {
                         var itemIdToken = rule["Item"];
-                        AutoRetainerSort.LogCritical(itemIdToken == null ? "Couldn't parse rule! ID is null?" : $"Couldn't parse rule for ID {itemIdToken.ToObject<uint>()}");
+                        Log.Error(itemIdToken == null ? "Couldn't parse rule! ID is null?" : $"Couldn't parse rule for ID {itemIdToken.ToObject<uint>()}");
                         continue;
                     }
 

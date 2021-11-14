@@ -1,12 +1,13 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
 using static ff14bot.RemoteWindows.Talk;
@@ -15,7 +16,7 @@ using Character = ff14bot.Objects.Character;
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("BuyBluTotem")]
-    public class BuyBluTotem : ProfileBehavior
+    public class BuyBluTotem : LLProfileBehavior
     {
         private bool _isDone;
         private bool _isOpening;
@@ -32,6 +33,8 @@ namespace LlamaBotBases.OrderbotTags
         public int SelectString { get; set; }
 
         public override bool HighPriority => true;
+
+        public BuyBluTotem() : base() { }
 
         protected override void OnStart()
         {
@@ -86,7 +89,7 @@ namespace LlamaBotBases.OrderbotTags
 
                 if (FreeShop.Instance.IsOpen)
                 {
-                    //Log("Opened");
+                    Log.Verbose("FreeShop opened");
                     await FreeShop.Instance.BuyItem((uint)itemId);
                 }
 

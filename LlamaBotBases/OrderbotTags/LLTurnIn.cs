@@ -11,15 +11,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Media;
 using Clio.Utilities;
 using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Enums;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
@@ -27,7 +28,7 @@ namespace LlamaBotBases.OrderbotTags
     [XmlElement("LLTurnIn")]
 
     // ReSharper disable once InconsistentNaming
-    public class LLTurnInTag : ProfileBehavior
+    public class LLTurnInTag : LLProfileBehavior
     {
         private readonly Queue<int> _selectStringIndex = new Queue<int>();
         private bool _dialogwasopen;
@@ -91,6 +92,8 @@ namespace LlamaBotBases.OrderbotTags
         public override string StatusText => "Talking to " + _questGiver;
 
         public GameObject NPC => GameObjectManager.GetObjectByNPCId((uint)NpcId);
+
+        public LLTurnInTag() : base() { }
 
         protected override void OnStart()
         {

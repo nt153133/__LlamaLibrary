@@ -10,11 +10,11 @@ using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using LlamaBotBases.AutoRetainerSort.Classes;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.RetainerItemFinder;
@@ -25,6 +25,8 @@ namespace LlamaBotBases.AutoRetainerSort
 {
     public class AutoRetainerSort : BotBase
     {
+        private static readonly LLogger Log = new LLogger(Strings.LogPrefix, Colors.Orange);
+
         private Composite _root;
         public override string Name => "AutoRetainerSort";
         public override PulseFlags PulseFlags => PulseFlags.All;
@@ -51,7 +53,7 @@ namespace LlamaBotBases.AutoRetainerSort
             {
                 if (AutoRetainerSortSettings.Instance.InventoryOptions.Count == 0)
                 {
-                    LogCritical("We had no inventories set up, so I've gone ahead and added the Player Inventory and Chocobo Saddlebag for you! <3");
+                    Log.Information("We had no inventories set up, so I've gone ahead and added the Player Inventory and Chocobo Saddlebag for you! <3");
                     AutoRetainerSortSettings.Instance.InventoryOptions.Add(ItemSortStatus.PlayerInventoryIndex, new InventorySortInfo("Player Inventory"));
                     AutoRetainerSortSettings.Instance.InventoryOptions.Add(ItemSortStatus.SaddlebagInventoryIndex, new InventorySortInfo("Chocobo Saddlebag"));
                 }
@@ -67,7 +69,7 @@ namespace LlamaBotBases.AutoRetainerSort
 
         public override void Start()
         {
-            LogSuccess("Sorting retainers...");
+            Log.Information("Sorting retainers...");
             _root = new ActionRunCoroutine(r => Run());
         }
 
@@ -75,25 +77,25 @@ namespace LlamaBotBases.AutoRetainerSort
         {
             if (AutoRetainerSortSettings.Instance.InventoryOptions.Count == 0)
             {
-                LogCritical("You don't have any inventories (or sorting rules for them) added yet! Go check the settings?");
+                Log.Error("You don't have any inventories (or sorting rules for them) added yet! Go check the settings?");
                 TreeRoot.Stop("No sort settings.");
                 return false;
             }
 
             if (!ItemSortStatus.AnyRulesExist())
             {
-                LogCritical("You don't have any sorting rules set up... maybe go hit the Auto-Setup button?");
+                Log.Error("You don't have any sorting rules set up... maybe go hit the Auto-Setup button?");
                 TreeRoot.Stop("No sort settings.");
                 return false;
             }
 
-            LogCritical($"The journey begins! {Strings.AutoSetup_CacheAdvice}");
+            Log.Information($"The journey begins! {Strings.AutoSetup_CacheAdvice}");
             await GeneralFunctions.StopBusy(true, true, false);
 
             var retData = await HelperFunctions.GetOrderedRetainerArray(true);
             if (retData.Length == 0)
             {
-                LogCritical("No retainers. Exiting.");
+                Log.Error("No retainers. Exiting.");
                 TreeRoot.Stop("No retainer data found.");
                 return false;
             }
@@ -107,14 +109,14 @@ namespace LlamaBotBases.AutoRetainerSort
 
                 if (pair.Key >= retData.Length)
                 {
-                    LogCritical($"{pair.Value.Name}'s index of {pair.Key} doesn't exist in retainer data.");
+                    Log.Error($"{pair.Value.Name}'s index of {pair.Key} doesn't exist in retainer data.");
                     TreeRoot.Stop("Invalid index.");
                     return false;
                 }
 
                 if (!retData[pair.Key].Active)
                 {
-                    LogCritical($"{pair.Value.Name} isn't an active retainer!");
+                    Log.Error($"{pair.Value.Name} isn't an active retainer!");
                     TreeRoot.Stop("Retainer inactive.");
                     return false;
                 }
@@ -139,7 +141,7 @@ namespace LlamaBotBases.AutoRetainerSort
             {
                 if (ItemSortStatus.FilledAndSortedInventories.Contains(ItemSortStatus.PlayerInventoryIndex))
                 {
-                    LogCritical("Everything currently in the player's inventory belongs there, but it's full! Can't move items like this. I quit.");
+                    Log.Error("Everything currently in the player's inventory belongs there, but it's full! Can't move items like this. I quit.");
                     break;
                 }
 
@@ -165,22 +167,22 @@ namespace LlamaBotBases.AutoRetainerSort
                     {
                         if (ItemSortStatus.FilledAndSortedInventories.Contains(cachedInventory.Index) || (cachedInventory.FreeSlots == 0 && cachedInventory.AllBelong()))
                         {
-                            LogCritical($"We want to move {sortInfo.Name} to {ItemSortStatus.GetByIndex(localIndexCache[0]).Name} but it's full and everything there belongs. Too bad!");
+                            Log.Error($"We want to move {sortInfo.Name} to {ItemSortStatus.GetByIndex(localIndexCache[0]).Name} but it's full and everything there belongs. Too bad!");
                         }
                         else if (sortInfo.ItemInfo.Unique)
                         {
                             if (localIndexCache.Length == 1)
                             {
-                                LogCritical($"We want to move {sortInfo.Name} to {ItemSortStatus.GetByIndex(localIndexCache[0]).Name} but it's unique and that inventory already has one. Too bad!");
+                                Log.Error($"We want to move {sortInfo.Name} to {ItemSortStatus.GetByIndex(localIndexCache[0]).Name} but it's unique and that inventory already has one. Too bad!");
                             }
                             else
                             {
-                                LogCritical($"We want to move {sortInfo.Name} but it's unique and all inventories set for it already have one. Too bad!");
+                                Log.Error($"We want to move {sortInfo.Name} but it's unique and all inventories set for it already have one. Too bad!");
                             }
                         }
                         else
                         {
-                            LogCritical($"We want to move {sortInfo.Name} to {ItemSortStatus.GetByIndex(localIndexCache[0]).Name} " +
+                            Log.Error($"We want to move {sortInfo.Name} to {ItemSortStatus.GetByIndex(localIndexCache[0]).Name} " +
                                         $"but it can't be moved there for... some reason. IndexStatus: {sortInfo.IndexStatus(cachedInventory.Index)}");
                         }
                     }
@@ -195,7 +197,7 @@ namespace LlamaBotBases.AutoRetainerSort
                 if (!string.IsNullOrEmpty(lisbethSettingsPath))
                 {
                     LisbethRuleGenerator.PopulateSettings(lisbethSettingsPath);
-                    LogSuccess("Auto-populated Lisbeth's retainer item rules!");
+                    Log.Information("Auto-populated Lisbeth's retainer item rules!");
                     MessageBox.Show(
                         Strings.LisbethRules_RestartRB,
                         "Just Letting You Know...",
@@ -204,7 +206,7 @@ namespace LlamaBotBases.AutoRetainerSort
                 }
                 else
                 {
-                    LogCritical("Couldn't find Lisbeth settings path! We won't auto-generate retainer rules.");
+                    Log.Warning("Couldn't find Lisbeth settings path! We won't auto-generate retainer rules.");
                 }
             }
 
@@ -274,11 +276,11 @@ namespace LlamaBotBases.AutoRetainerSort
 
                 if (isFull)
                 {
-                    LogCritical(sb.ToString());
+                    Log.Error(sb.ToString());
                 }
                 else
                 {
-                    Log(sb.ToString());
+                    Log.Information(sb.ToString());
                 }
             }
         }
@@ -287,7 +289,7 @@ namespace LlamaBotBases.AutoRetainerSort
         {
             if (ItemSortStatus.PlayerInventory.AllBelong())
             {
-                LogCritical("Everything in our player inventory belongs there already! How am I supposed to deposit items like this?");
+                Log.Error("Everything in our player inventory belongs there already! How am I supposed to deposit items like this?");
                 return;
             }
 
@@ -325,23 +327,23 @@ namespace LlamaBotBases.AutoRetainerSort
 
         private static async Task SortLoop(int index)
         {
-            LogDebug($"We're gonna go try to sort {ItemSortStatus.GetByIndex(index).Name}!");
+            Log.Debug($"We're gonna go try to sort {ItemSortStatus.GetByIndex(index).Name}!");
 
             if (index < ItemSortStatus.PlayerInventoryIndex)
             {
-                LogCritical($"Tried to sort index of #{index} but that's out of range...");
+                Log.Error($"Tried to sort index of #{index} but that's out of range...");
                 return;
             }
 
             if (index < ItemSortStatus.SaddlebagInventoryIndex)
             {
-                LogCritical($"Tried to sort the player's inventory, but we can't do anything with that alone...");
+                Log.Error($"Tried to sort the player's inventory, but we can't do anything with that alone...");
                 return;
             }
 
             if (InventoryManager.FreeSlots == 0 && ItemSortStatus.GetByIndex(index).FreeSlots == 0)
             {
-                LogCritical($"Both our player inventory and {ItemSortStatus.GetByIndex(index).Name} are completely full! Can't move anything around like this.");
+                Log.Error($"Both our player inventory and {ItemSortStatus.GetByIndex(index).Name} are completely full! Can't move anything around like this.");
                 return;
             }
 
@@ -354,7 +356,7 @@ namespace LlamaBotBases.AutoRetainerSort
 
                 if (!InventoryBuddy.Instance.IsOpen)
                 {
-                    LogCritical($"We were unable to open the saddlebag!");
+                    Log.Error($"We were unable to open the saddlebag!");
                     return;
                 }
             }
@@ -366,7 +368,7 @@ namespace LlamaBotBases.AutoRetainerSort
 
                 if (!RetainerTasks.IsInventoryOpen())
                 {
-                    LogCritical($"We were unable to open Retainer #{index}!");
+                    Log.Error($"We were unable to open Retainer #{index}!");
                     return;
                 }
             }
@@ -444,23 +446,23 @@ namespace LlamaBotBases.AutoRetainerSort
 
             if (ItemSortStatus.GetByIndex(ItemSortStatus.PlayerInventoryIndex).AllBelong())
             {
-                LogCritical($"We tried depositing to {name} but everything in the Player Inventory belongs there...?");
+                Log.Error($"We tried depositing to {name} but everything in the Player Inventory belongs there...?");
                 return false;
             }
 
             if (BagsFreeSlotCount(index) == 0)
             {
-                LogCritical($"We tried depositing to {name} but their inventory was full!");
+                Log.Error($"We tried depositing to {name} but their inventory was full!");
                 return false;
             }
 
-            Log($"Depositing items to {name}...");
+            Log.Information($"Depositing items to {name}...");
             var moveCount = 0;
             foreach (var bagSlot in GeneralFunctions.MainBagsFilledSlots())
             {
                 if (BagsFreeSlotCount(index) == 0)
                 {
-                    LogCritical($"Stopping deposits to {name} because their inventory is full!");
+                    Log.Error($"Stopping deposits to {name} because their inventory is full!");
                     return false;
                 }
 
@@ -479,7 +481,7 @@ namespace LlamaBotBases.AutoRetainerSort
 
                     if (moveResult)
                     {
-                        LogSuccess($"Deposited {sortInfo.Name}.");
+                        Log.Information($"Deposited {sortInfo.Name}.");
                         if (sortInfo.ItemInfo.Unique)
                         {
                             ItemSortStatus.PlayerInventoryUniques.Remove(sortInfo.TrueItemId);
@@ -490,7 +492,7 @@ namespace LlamaBotBases.AutoRetainerSort
                     }
                     else
                     {
-                        LogCritical($"Something went wrong with depositing {sortInfo.Name}, it's still in the same slot!");
+                        Log.Error($"Something went wrong with depositing {sortInfo.Name}, it's still in the same slot!");
                     }
                 }
             }
@@ -503,23 +505,23 @@ namespace LlamaBotBases.AutoRetainerSort
             var name = ItemSortStatus.GetByIndex(index).Name;
             if (ItemSortStatus.GetByIndex(index).AllBelong())
             {
-                LogCritical($"We tried to retrieve items from {name} but everything in their inventory already belongs there...?");
+                Log.Error($"We tried to retrieve items from {name} but everything in their inventory already belongs there...?");
                 return false;
             }
 
             if (InventoryManager.FreeSlots == 0)
             {
-                LogCritical($"We tried to retrieve items from {name} but our player inventory is full!");
+                Log.Error($"We tried to retrieve items from {name} but our player inventory is full!");
                 return false;
             }
 
-            Log($"Retrieving items from {name}...");
+            Log.Information($"Retrieving items from {name}...");
             var movedCount = 0;
             foreach (var bagSlot in InventoryManager.GetBagsByInventoryBagId(BagIdsByIndex(index)).SelectMany(x => x.FilledSlots))
             {
                 if (InventoryManager.FreeSlots == 0)
                 {
-                    LogCritical($"Stopping retrievals from {name} because our player inventory is full!");
+                    Log.Error($"Stopping retrievals from {name} because our player inventory is full!");
                     return false;
                 }
 
@@ -560,7 +562,7 @@ namespace LlamaBotBases.AutoRetainerSort
                             }
                         }
 
-                        LogSuccess($"Retrieved {sortInfo.Name}. It belongs in {belongsInName}.");
+                        Log.Information($"Retrieved {sortInfo.Name}. It belongs in {belongsInName}.");
                         if (sortInfo.ItemInfo.Unique)
                         {
                             ItemSortStatus.PlayerInventoryUniques.Add(sortInfo.TrueItemId);
@@ -571,7 +573,7 @@ namespace LlamaBotBases.AutoRetainerSort
                     }
                     else
                     {
-                        LogCritical($"Something went wrong with retrieving {sortInfo.Name}, it's still in the same slot!");
+                        Log.Error($"Something went wrong with retrieving {sortInfo.Name}, it's still in the same slot!");
                     }
                 }
             }
@@ -617,7 +619,7 @@ namespace LlamaBotBases.AutoRetainerSort
                     continue;
                 }
 
-                LogSuccess($"Combining stacks of {ItemSortStatus.GetSortInfo(slotGrouping.Key).Name}");
+                Log.Information($"Combining stacks of {ItemSortStatus.GetSortInfo(slotGrouping.Key).Name}");
 
                 var bagSlotArray = slotGrouping.OrderByDescending(x => x.Count).ToArray();
                 var moveToIndex = Array.FindIndex(bagSlotArray, x => x.Count < x.Item.StackSize);
@@ -655,31 +657,6 @@ namespace LlamaBotBases.AutoRetainerSort
         public override void Stop()
         {
             _root = null;
-        }
-
-        public static void Log(string text)
-        {
-            Logging.Write(Colors.Orange, Strings.LogPrefix + text);
-        }
-
-        public static void LogCritical(string text)
-        {
-            Logging.Write(Colors.OrangeRed, Strings.LogPrefix + text);
-        }
-
-        public static void LogSuccess(string text)
-        {
-            Logging.Write(Colors.Green, Strings.LogPrefix + text);
-        }
-
-        public static void LogDebug(string text)
-        {
-            if (!AutoRetainerSortSettings.Instance.DebugLogging)
-            {
-                return;
-            }
-
-            Logging.Write(Colors.Aquamarine, Strings.LogPrefix + text);
         }
     }
 }

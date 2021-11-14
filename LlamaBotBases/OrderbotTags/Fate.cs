@@ -31,7 +31,7 @@ using Action = TreeSharp.Action;
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLFate")]
-    public class LLFate : ProfileBehavior
+    public class LLFate : LLProfileBehavior
     {
         private bool _done;
         private int _min;
@@ -113,6 +113,8 @@ namespace LlamaBotBases.OrderbotTags
         private static readonly Stopwatch ClusterTimer = Stopwatch.StartNew();
         protected Func<bool> condition;
 
+        public LLFate() : base() { }
+
         private bool ShouldStop()
         {
             if (GetCondition() != null)
@@ -139,7 +141,7 @@ namespace LlamaBotBases.OrderbotTags
             }
             catch (Exception ex)
             {
-                Logging.WriteDiagnostic(ScriptManager.FormatSyntaxErrorException(ex));
+                Log.Error(ScriptManager.FormatSyntaxErrorException(ex));
                 TreeRoot.Stop("Unable to compile condition for GrindTag!");
                 throw;
             }
@@ -172,7 +174,7 @@ namespace LlamaBotBases.OrderbotTags
                     r => currentfate != null && FateManager.WithinFate && Core.Me.ElementalLevel > 0 && currentfate.MaxLevel < Core.Me.ElementalLevel,
                     new ActionRunCoroutine(async r =>
                     {
-                        Logging.Write("Applying Eureka Level Sync.");
+                        Log.Information("Applying Eureka Level Sync.");
 
                         ToDoList.LevelSync();
 
@@ -185,7 +187,7 @@ namespace LlamaBotBases.OrderbotTags
                     r => currentfate != null && FateManager.WithinFate,
                     new ActionRunCoroutine(r =>
                     {
-                        Logging.Write($"In fate {Core.Me.ElementalLevel} > 0 && {currentfate.MaxLevel} < {Core.Me.ElementalLevel}.");
+                        Log.Information($"In fate {Core.Me.ElementalLevel} > 0 && {currentfate.MaxLevel} < {Core.Me.ElementalLevel}.");
 
                         return Task.FromResult(false);
                     })
@@ -194,7 +196,7 @@ namespace LlamaBotBases.OrderbotTags
                     r => currentfate != null && FateManager.WithinFate && currentfate.MaxLevel < Core.Player.ClassLevel && !Core.Me.IsLevelSynced,
                     new ActionRunCoroutine(async r =>
                     {
-                        Logging.Write("Applying Level Sync.");
+                        Log.Information("Applying Level Sync.");
 
                         ToDoList.LevelSync();
 
@@ -215,7 +217,7 @@ namespace LlamaBotBases.OrderbotTags
                         new Action(async r =>
                         {
                             Poi.Clear("Handing in items.");
-                            Logging.Write("Hand-in Fate");
+                            Log.Information("Hand-in Fate");
 
                             var fateNpcs = GameObjectManager
                                 .GetObjectsOfType<BattleCharacter>()
@@ -228,7 +230,7 @@ namespace LlamaBotBases.OrderbotTags
 
                             if (handinNpc == null)
                             {
-                                Logging.Write("Could not find handin NPC. Something is wrong.");
+                                Log.Error("Could not find handin NPC. Something is wrong.");
                                 return;
                             }
 
@@ -296,7 +298,7 @@ namespace LlamaBotBases.OrderbotTags
 
         // End of B Tree
 
-        private static async Task<bool> FlyTo(Vector3 destination, bool land = false, bool dismount = false, bool ignoreIndoors = true, float minHeight = 0f)
+        private async Task<bool> FlyTo(Vector3 destination, bool land = false, bool dismount = false, bool ignoreIndoors = true, float minHeight = 0f)
         {
             if (destination == Vector3.Zero)
             {
@@ -360,7 +362,7 @@ namespace LlamaBotBases.OrderbotTags
             return true;
         }
 
-        private static async Task<bool> StopMovement()
+        private async Task<bool> StopMovement()
         {
             if (!MovementManager.IsFlying)
             {
@@ -379,7 +381,7 @@ namespace LlamaBotBases.OrderbotTags
 
                 if (ticks >= 100)
                 {
-                    Logging.WriteVerbose("Timeout whilst trying to stop movement.");
+                    Log.Verbose("Timeout whilst trying to stop movement.");
                 }
 
                 return true;
@@ -392,7 +394,7 @@ namespace LlamaBotBases.OrderbotTags
             }
         }
 
-        private static async Task<bool> Land()
+        private async Task<bool> Land()
         {
             if (!MovementManager.IsFlying || MovementManager.IsSwimming)
             {
@@ -415,7 +417,7 @@ namespace LlamaBotBases.OrderbotTags
 
                 if (ticks >= 100)
                 {
-                    Logging.WriteVerbose("Timeout whilst trying to land.");
+                    Log.Verbose("Timeout whilst trying to land.");
                 }
             }
             else
@@ -424,14 +426,14 @@ namespace LlamaBotBases.OrderbotTags
                 if (await CommonTasks.DescendTo(closestObject.Y) == DescendToResult.Success)
                 {
                     MovementManager.StopDescending();
-                    Logging.WriteVerbose("Manual descend complete.");
+                    Log.Verbose("Manual descend complete.");
                 }
             }
 
             return true;
         }
 
-        private static async Task<bool> Dismount()
+        private async Task<bool> Dismount()
         {
             if (!Core.Me.IsMounted)
             {
@@ -448,7 +450,7 @@ namespace LlamaBotBases.OrderbotTags
 
             if (ticks >= 100)
             {
-                Logging.WriteVerbose("Timeout whilst trying to dismount.");
+                Log.Verbose("Timeout whilst trying to dismount.");
             }
 
             return true;
@@ -473,7 +475,7 @@ namespace LlamaBotBases.OrderbotTags
             {
                 if (ClusterTimer.ElapsedMilliseconds > 5000)
                 {
-                    Logging.Write("Moving using cluster logic.");
+                    Log.Information("Moving using cluster logic.");
 
                     var x = 0.0f;
                     var y = 0.0f;
@@ -510,7 +512,7 @@ namespace LlamaBotBases.OrderbotTags
         {
             if (currentfate != null)
             {
-                Logging.Write("Fate Details: {0}", currentfate);
+                Log.Information($"Fate Details: {currentfate}");
                 Position = currentfate.Location;
                 fateid = currentfate.Id;
                 currentstep = 1;
@@ -523,7 +525,7 @@ namespace LlamaBotBases.OrderbotTags
             {
                 if (hunting)
                 {
-                    Logging.Write("Let's pass some time with hunting!");
+                    Log.Information("Let's pass some time with hunting!");
                     var target = GetNormalTargets();
                     if (target != null)
                     {
@@ -542,7 +544,7 @@ namespace LlamaBotBases.OrderbotTags
         private void SetLastFate()
         {
             lastFateId = currentfate.Id;
-            Logging.Write("Setting last Fate to {0}.", currentfate.Name);
+            Log.Information($"Setting last Fate to {currentfate.Name}.");
         }
 
         private void UpdateFateData()
@@ -581,7 +583,7 @@ namespace LlamaBotBases.OrderbotTags
                     currentstep = 0;
                     fateid = 0;
                     currentfate = null;
-                    Logging.Write("Fate no longer active.");
+                    Log.Information("Fate no longer active.");
                 }
             }
         }
@@ -597,7 +599,7 @@ namespace LlamaBotBases.OrderbotTags
         [Obsolete]
         private async Task<bool> EscortFate()
         {
-            Logging.Write("ESCORT");
+            Log.Information("Escort FATE");
 
             if (currentfate.Icon == FateIconType.ProtectNPC ||
                     currentfate.Icon == FateIconType.ProtectNPC2)
@@ -606,11 +608,11 @@ namespace LlamaBotBases.OrderbotTags
                     .GetObjectsOfType<BattleCharacter>()
                     .FirstOrDefault(
                         b => b.IsFate && !b.CanAttack && b.FateId == currentfate.Id);
-                Logging.Write("NPC ={0}", npc);
+                Log.Information($"NPC = {npc}");
                 if (npc != null && npc.IsValid && (npc.IsBehind || npc.IsFlanking) &&
                     Core.Me.Distance(npc) > 7)
                 {
-                    Logging.Write("Moving using escort fate logic.");
+                    Log.Information("Moving using escort FATE logic.");
                     Navigator.Stop();
 
                     bool IsInFront()
@@ -618,9 +620,9 @@ namespace LlamaBotBases.OrderbotTags
                         return !npc.IsBehind;
                     }
 
-                    Logging.Write("M1");
+                    Log.Verbose("M1");
                     await Coroutine.Sleep(500);
-                    Logging.Write("M2");
+                    Log.Verbose("M2");
                     MovementManager.MoveForwardStart();
                     while (npc.IsValid && (Core.Me.Distance(npc) > 1 || !IsInFront()))
                     {
@@ -633,17 +635,17 @@ namespace LlamaBotBases.OrderbotTags
                         await Coroutine.Sleep(200);
                     }
 
-                    Logging.Write("M3");
+                    Log.Verbose("M3");
                     await Coroutine.Sleep(700);
                     MovementManager.MoveForwardStop();
 
-                    Logging.Write("Reached destination, moving stopped.");
+                    Log.Information("Reached destination, moving stopped.");
                 }
                 else
                 {
                     if (FateManager.WithinFate)
                     {
-                        Logging.Write("Idle in escort fate.");
+                        Log.Information("Idle in escort fate.");
                     }
                 }
             }
@@ -658,46 +660,46 @@ namespace LlamaBotBases.OrderbotTags
         [Obsolete]
         private void OnTimeout()
         {
-            Logging.Write("TREE: Decorator1, Action 1");
+            Log.Information("TREE: Decorator1, Action 1");
             _done = true;
-            Logging.Write("Timeout we are done for now.");
-            Logging.Write("Moving to the nearest Aetheryte.");
+            Log.Information("Timeout we are done for now.");
+            Log.Information("Moving to the nearest Aetheryte.");
             var destination = WorldManager.AetheryteIdsForZone(WorldManager.ZoneId)
                 .Select(a => a.Item2)
                 .OrderBy(a => Core.Me.Distance(a))
                 .FirstOrDefault();
             Navigator.MoveToPointWithin(destination, 30);
-            Logging.Write("--------------------------------------");
-            Logging.Write("I did {0} Fates this session.", fatesDone);
-            Logging.Write("I hunted and killed {0} mobs.", mobsHunted);
-            Logging.Write("I died {0} times.", died);
-            Logging.Write("--------------------------------------");
+            Log.Information("--------------------------------------");
+            Log.Information($"I did {fatesDone} Fates this session.");
+            Log.Information($"I hunted and killed {mobsHunted} mobs.");
+            Log.Information($"I died {died} times.");
+            Log.Information("--------------------------------------");
         }
 
         [Obsolete]
         private void OnDoneWhile()
         {
-            Logging.Write("TREE: Decorator1, Action 1");
+            Log.Information("TREE: Decorator1, Action 1");
             _done = true;
-            Logging.Write("Completed While Condition");
-            Logging.Write("Moving to the nearest Aetheryte.");
+            Log.Information("Completed While Condition");
+            Log.Information("Moving to the nearest Aetheryte.");
             var destination = WorldManager.AetheryteIdsForZone(WorldManager.ZoneId)
                 .Select(a => a.Item2)
                 .OrderBy(a => Core.Me.Distance(a))
                 .FirstOrDefault();
             Navigator.MoveToPointWithin(destination, 30);
-            Logging.Write("--------------------------------------");
-            Logging.Write("I did {0} Fates this session.", fatesDone);
-            Logging.Write("I hunted and killed {0} mobs.", mobsHunted);
-            Logging.Write("I died {0} times.", died);
-            Logging.Write("--------------------------------------");
+            Log.Information("--------------------------------------");
+            Log.Information($"I did {fatesDone} Fates this session.");
+            Log.Information($"I hunted and killed {mobsHunted} mobs.");
+            Log.Information($"I died {died} times.");
+            Log.Information("--------------------------------------");
         }
 
-        public static GameObject GetFateTargets()
+        public GameObject GetFateTargets()
         {
             var _target = GameObjectManager.GameObjects.Where(unit => (unit as BattleCharacter) != null && unit.CanAttack && unit.IsTargetable && unit.IsVisible
                                                                          && (unit as BattleCharacter).FateId != 0 && !(unit as BattleCharacter).IsDead).OrderBy(unit => unit.Distance(Core.Player.Location)).Take(1);
-            Logging.Write("Analyzing Fate Targets.");
+            Log.Information("Analyzing Fate Targets.");
             var targetArray = _target as GameObject[] ?? _target.ToArray();
             if (targetArray.Length > 0)
             {
@@ -739,17 +741,17 @@ namespace LlamaBotBases.OrderbotTags
             {
                 if (f.Icon.ToString() == "Boss" && f.Progress > 85)
                 {
-                    Logging.Write("Skipping Fate {0}. Boss fate progress is greater than 85%.", f.Name);
+                    Log.Information($"Skipping FATE \"{f.Name}\". Boss FATE progress is greater than 85%.");
                 }
                 else if (fatebotInstance.BlackListedFates.Contains(f.Name) || BlacklistIds.Contains((int)f.Id))
                 {
-                    //Logging.Write("Skipping Fate {0}. Fate is blacklisted.", f.Name);
+                    //Log.Information($"Skipping FATE {f.Name}. FATE is blacklisted");
                 }
                 else
                 {
                     ReturnList.Add(f);
 
-                    Logging.Write("Adding Fate: {0}. Distance is {1}.", f.Name, Core.Me.Distance(f.Location));
+                    Log.Information($"Adding FATE \"{f.Name}\". Distance is {Core.Me.Distance(f.Location)}.");
                 }
             }
 
@@ -765,7 +767,6 @@ namespace LlamaBotBases.OrderbotTags
 
             if (FateIds.Length > 0)
             {
-                //Logging.Write("Looking for Fate: {0}.", FateID);
                 currentfate = IsFateActive(FateIds);
                 if (currentfate == null)
                 {
@@ -773,7 +774,7 @@ namespace LlamaBotBases.OrderbotTags
                 }
                 else
                 {
-                    Logging.Write("Adding Focused Fate: {0}. Distance is {1}.", currentfate.Name, Core.Me.Distance(currentfate.Location));
+                    Log.Information($"Adding Focused FATE: {currentfate.Name}. Distance is {Core.Me.Distance(currentfate.Location)}.");
                     return true;
                 }
             }
@@ -851,8 +852,8 @@ namespace LlamaBotBases.OrderbotTags
             _max = Convert.ToInt32(MaxLevel);
             _timeout = Convert.ToInt32(Timeout);
             currentstep = 0;
-            Logging.Write("Doing fates and hunt in between.");
-            Logging.Write("Stats: MinFate level={0} MaxFatelvl={1}", _min, _max);
+            Log.Information("Doing fates and hunt in between.");
+            Log.Information($"Stats: MinFate level={_min} MaxFatelvl={_max}");
 
             // MaxLevel = "34";
             // MinLevel = "25";

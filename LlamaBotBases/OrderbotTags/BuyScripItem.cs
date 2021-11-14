@@ -1,22 +1,22 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("BuyScripItem")]
-    public class BuyScripItem : ProfileBehavior
+    public class BuyScripItem : LLProfileBehavior
     {
         private bool _isDone;
-        private bool _isOpening;
 
         public override bool IsDone => _isDone;
 
@@ -32,6 +32,8 @@ namespace LlamaBotBases.OrderbotTags
         public int Count { get; set; }
 
         public override bool HighPriority => true;
+
+        public BuyScripItem() : base() { }
 
         protected override void OnStart()
         {

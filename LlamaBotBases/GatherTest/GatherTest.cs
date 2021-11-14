@@ -11,7 +11,6 @@ using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Objects;
@@ -20,6 +19,7 @@ using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using TreeSharp;
 
@@ -27,6 +27,8 @@ namespace LlamaBotBases.GatherTest
 {
     public class GatherTest : BotBase
     {
+        private static readonly LLogger Log = new LLogger(typeof(GatherTest).Name, Colors.Pink);
+
         // public static InstanceContentDirector Director => DirectorManager.ActiveDirector as InstanceContentDirector;
         public int TimerOffset;
 
@@ -163,13 +165,13 @@ namespace LlamaBotBases.GatherTest
             if (WorldManager.RawZoneId != 901)
             {
                 await EnterDiadem();
-                Log($"Waiting for instance time");
+                Log.Information($"Waiting for instance time");
                 await Coroutine.Wait(5000, () => TimeLeftInDiadem.TotalMinutes > 1);
-                Log($"Time left {TimeLeftInDiadem:hh\\:mm\\:ss}");
+                Log.Information($"Time left {TimeLeftInDiadem:hh\\:mm\\:ss}");
             }
 
             lastChange = new WaitTimer(new TimeSpan(0, 7, 0));
-            Log($"Current Weather: {WorldManager.CurrentWeather}  {WorldManager.CurrentWeatherId}");
+            Log.Information($"Current Weather: {WorldManager.CurrentWeather}  {WorldManager.CurrentWeatherId}");
 
             var time = new Random();
 
@@ -230,7 +232,7 @@ namespace LlamaBotBases.GatherTest
                             lastWeather = 0;
                         }
 
-                        /*Log($"New instance: {TimeLeftInDiadem:hh\\:mm\\:ss} Left");
+                        /*Log.Information($"New instance: {TimeLeftInDiadem:hh\\:mm\\:ss} Left");
                         DutyManager.LeaveActiveDuty();
 
                         if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
@@ -250,7 +252,7 @@ namespace LlamaBotBases.GatherTest
 
             if (DutyManager.InInstance)
             {
-                Log($"Out of time: {TimeLeftInDiadem:hh\\:mm\\:ss} Left");
+                Log.Information($"Out of time: {TimeLeftInDiadem:hh\\:mm\\:ss} Left");
                 DutyManager.LeaveActiveDuty();
 
                 if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
@@ -283,11 +285,11 @@ namespace LlamaBotBases.GatherTest
             {
                 if (weatherNodes.Contains(node.Base()))
                 {
-                    Log($"Weather Node Found: {node.Name} ({node.EnglishName}) Base: {node.Base()} Visible: {node.CanGather}");
+                    Log.Information($"Weather Node Found: {node.Name} ({node.EnglishName}) Base: {node.Base()} Visible: {node.CanGather}");
                 }
                 else
                 {
-                    Log($"Node Found: {node.Name} ({node.EnglishName})  Base: {node.Base()} Visible {node.CanGather}");
+                    Log.Information($"Node Found: {node.Name} ({node.EnglishName})  Base: {node.Base()} Visible {node.CanGather}");
                 }
             }
         }
@@ -309,15 +311,15 @@ namespace LlamaBotBases.GatherTest
             //await FlyTo(above);
             var safeSpot = safeSpots.ToList().OrderBy(i => i.DistanceSqr(Core.Me.Location)).First();
             await FlyTo(safeSpot);
-            Log("Near Node Location");
-            Log($"Current Weather: {WorldManager.CurrentWeather}  {WorldManager.CurrentWeatherId}");
+            Log.Information("Near Node Location");
+            Log.Information($"Current Weather: {WorldManager.CurrentWeather}  {WorldManager.CurrentWeatherId}");
             GetNodes();
             var node = WeatherNodeList.FirstOrDefault();
 
             if (node != null)
             {
                 //safeSpot = safeSpots.ToList().OrderBy(i => i.DistanceSqr(node.Location)).First();
-                //Log("Node Found");
+                //Log.Information("Node Found");
                 await FlyTo(node.Location);
 
                 /*if (MovementManager.IsFlying)
@@ -362,7 +364,7 @@ namespace LlamaBotBases.GatherTest
                 }
 
                 //await UseCordial();
-                Log("Done Test Gather");
+                Log.Information("Done Test Gather");
                 /*DutyManager.LeaveActiveDuty();
                 if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
                 {
@@ -384,7 +386,7 @@ namespace LlamaBotBases.GatherTest
 
             if (gearSets.Any(gs => gs.Class == job))
             {
-                Logging.Write(Colors.Fuchsia, $"[ChangeJob] Found GearSet");
+                Log.Information("Found GearSet");
                 gearSets.First(gs => gs.Class == job).Activate();
                 await Coroutine.Sleep(1000);
             }
@@ -397,12 +399,12 @@ namespace LlamaBotBases.GatherTest
         public async Task testGather()
         {
             var GatherLock = Core.Memory.Read<uint>(Offsets.Conditions + 0x2A);
-            Log("in Test Gather");
+            Log.Information("in Test Gather");
             if (GatheringManager.WindowOpen)
             {
                 var items = GatheringManager.GatheringWindowItems.FirstOrDefault(i => i.IsFilled && i.CanGather);
 
-                Log($"Gathering: {items}");
+                Log.Information($"Gathering: {items}");
 
                 while (GatheringManager.SwingsRemaining > 0)
                 {
@@ -415,7 +417,7 @@ namespace LlamaBotBases.GatherTest
 
         public async Task testMine()
         {
-            //Log("in Test Gather");
+            //Log.Information("in Test Gather");
             if (GatheringManager.WindowOpen)
             {
                 var items = GatheringManager.GatheringWindowItems.Where(i => i.IsFilled && i.CanGather).OrderByDescending(s => s.Stars).FirstOrDefault();
@@ -436,7 +438,7 @@ namespace LlamaBotBases.GatherTest
                 }
                 */
 
-                Log($"Gathering: {items}");
+                Log.Information($"Gathering: {items}");
 
                 while (GatheringManager.SwingsRemaining > 0 && GatheringManager.WindowOpen)
                 {
@@ -457,7 +459,7 @@ namespace LlamaBotBases.GatherTest
 
         public async Task testBtn()
         {
-            //Log("in Test Gather");
+            //Log.Information("in Test Gather");
             if (GatheringManager.WindowOpen)
             {
                 var items = GatheringManager.GatheringWindowItems.Where(i => i.IsFilled && i.CanGather).OrderByDescending(s => s.Stars).FirstOrDefault();
@@ -477,7 +479,7 @@ namespace LlamaBotBases.GatherTest
                 }
                 */
 
-                Log($"Gathering: {items}");
+                Log.Information($"Gathering: {items}");
 
                 while (GatheringManager.SwingsRemaining > 0)
                 {
@@ -494,12 +496,6 @@ namespace LlamaBotBases.GatherTest
                     await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + 0x2A) == 0);
                 }
             }
-        }
-
-        private void Log(string text, params object[] args)
-        {
-            var msg = string.Format("[" + Name + "] " + text, args);
-            Logging.Write(Colors.Pink, msg);
         }
 
         private static async Task EnterDiadem()

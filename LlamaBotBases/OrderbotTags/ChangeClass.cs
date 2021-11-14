@@ -7,16 +7,15 @@ using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("ChangeClass")]
-    public class ChangeClass : ProfileBehavior
+    public class ChangeClass : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -31,6 +30,8 @@ namespace LlamaBotBases.OrderbotTags
         [XmlAttribute("force")]
         [DefaultValue(false)]
         public bool Force { get; set; }
+
+        public ChangeClass() : base() { }
 
         protected override void OnStart()
         {
@@ -56,11 +57,11 @@ namespace LlamaBotBases.OrderbotTags
                 return;
             }
 
-            Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Started");
-            Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Found job: {foundJob} Job:{newjob}");
+            Log.Information("Started");
+            Log.Information($"Found job: {foundJob} Job:{newjob}");
             if (foundJob && gearSets.Any(gs => gs.Class == newjob))
             {
-                Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Found GearSet");
+                Log.Information($"Found GearSet");
                 gearSets.First(gs => gs.Class == newjob).Activate();
 
                 await Coroutine.Wait(3000, () => SelectYesno.IsOpen);
@@ -76,16 +77,15 @@ namespace LlamaBotBases.OrderbotTags
             {
                 Job = Job.Trim() + "s_Primary_Tool";
 
-                var categoryFound = Enum.TryParse(Job, true, out
-                ItemUiCategory category);
+                var categoryFound = Enum.TryParse(Job, true, out ItemUiCategory category);
 
                 if (categoryFound)
                 {
-                    Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Found Item Category: {categoryFound} Category:{category}");
+                    Log.Information($"Found Item Category: {categoryFound} Category:{category}");
                     var item = InventoryManager.FilledInventoryAndArmory.Where(i => i.Item.EquipmentCatagory == category).OrderByDescending(i => i.Item.ItemLevel).FirstOrDefault();
                     var EquipSlot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.EquippedItems)[EquipmentSlot.MainHand];
 
-                    Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Found Item {item}");
+                    Log.Information($"Found Item {item}");
                     if (item != null)
                     {
                         item.Move(EquipSlot);
@@ -99,7 +99,7 @@ namespace LlamaBotBases.OrderbotTags
                 }
                 else
                 {
-                    Logging.Write(Colors.Fuchsia, $"[ChangeJobTag] Couldn't find item category'");
+                    Log.Error($"Couldn't find item category for {Job}");
                 }
             }
 

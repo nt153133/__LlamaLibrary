@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Media;
 using LlamaBotBases.AutoRetainerSort.Classes;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
 
 namespace LlamaBotBases.AutoRetainerSort
 {
     public partial class AutoRetainerSortForm : Form
     {
+        private static readonly LLogger Log = new LLogger(Strings.LogPrefix, Colors.Orange);
+
         public AutoRetainerSortForm()
         {
             InitializeComponent();
@@ -99,11 +103,11 @@ namespace LlamaBotBases.AutoRetainerSort
 
             if (AutoRetainerSortSettings.Instance.InventoryOptions.Remove(selectedItem.Key))
             {
-                AutoRetainerSort.LogSuccess($"We've removed {selectedItem.Value.Name} from the list. Good bye, so long!");
+                Log.Information($"We've removed {selectedItem.Value.Name} from the list. Good bye, so long!");
             }
             else
             {
-                AutoRetainerSort.LogCritical($"Something went wrong with trying to remove {selectedItem.Value.Name} from the list... Index: {selectedItem.Key}");
+                Log.Information($"Something went wrong with trying to remove {selectedItem.Value.Name} from the list... Index: {selectedItem.Key}");
             }
 
             AutoRetainerSortSettings.Instance.Save();
@@ -236,7 +240,7 @@ namespace LlamaBotBases.AutoRetainerSort
 
             ResetBindingSource();
             AutoRetainerSortSettings.Instance.Save();
-            AutoRetainerSort.LogSuccess("Auto-Setup done!");
+            Log.Information("Auto-Setup done!");
         }
     }
 }

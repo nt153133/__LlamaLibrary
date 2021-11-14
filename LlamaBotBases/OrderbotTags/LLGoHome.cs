@@ -1,18 +1,19 @@
 ﻿using System.Threading.Tasks;
 using Clio.XmlEngine;
-using ff14bot.NeoProfiles;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLGoHome")]
-    public class LLGoHome : ProfileBehavior
+    public class LLGoHome : LLProfileBehavior
     {
         private bool _isDone;
 
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public LLGoHome() : base() { }
 
         protected override void OnStart()
         {

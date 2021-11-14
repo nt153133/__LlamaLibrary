@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Media;
 using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.NeoProfiles;
+using LlamaLibrary.Logging;
 using TreeSharp;
 using Action = TreeSharp.Action;
 
@@ -11,7 +13,7 @@ namespace LlamaBotBases.OrderbotTags
     [XmlElement("ALoadProfile")]
     [XmlElement("LLoadProfile")]
 
-    public class LLoadProfileTag : ProfileBehavior
+    public class LLoadProfileTag : LLProfileBehavior
     {
         private bool _done;
 
@@ -19,6 +21,8 @@ namespace LlamaBotBases.OrderbotTags
         public string ProfileName { get; set; }
 
         public override bool IsDone => _done;
+
+        public LLoadProfileTag() : base() { }
 
         protected override Composite CreateBehavior()
         {

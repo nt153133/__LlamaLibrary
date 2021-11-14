@@ -359,11 +359,17 @@ namespace LlamaLibrary.Helpers
                                bs.BagId != InventoryBagId.EquippedItems)
                     .OrderByDescending(r => ItemWeight.GetItemWeight(r.Item))
                     .FirstOrDefault();
-                /*
-                Log($"# of Candidates: {betterItemCount}");
-                if (betterItem != null) Log($"{betterItem.Name}");
-                else Log("Betteritem was null.");
-                */
+
+                /*Log.Information($"# of Candidates: {betterItemCount}");
+                if (betterItem != null)
+                {
+                    Log.Information($"{betterItem.Name}");
+                }
+                else
+                {
+                    Log.Warning("betterItem was null.");
+                }*/
+
                 if (betterItem == null || !betterItem.IsValid || !betterItem.IsFilled || betterItem == bagSlot || itemWeight >= ItemWeight.GetItemWeight(betterItem.Item))
                 {
                     continue;
@@ -852,7 +858,7 @@ namespace LlamaLibrary.Helpers
 
                 if (CollectablesShop.Instance.IsOpen)
                 {
-                    // Log("Window open");
+                    Log.Verbose("Collectable window open");
                     foreach (var item in collectables)
                     {
                         if (!turnItemList.Keys.Contains(item))
@@ -863,17 +869,17 @@ namespace LlamaLibrary.Helpers
                         Log.Information($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
                         var turnin = turnItemList[item];
 
-                        // Log($"Pressing job {turnin.Job}");
+                        Log.Verbose($"Pressing job {turnin.Job}");
                         CollectablesShop.Instance.SelectJob(turnin.Job);
                         await Coroutine.Sleep(500);
 
-                        //  Log($"Pressing position {turnin.Position}");
+                        Log.Verbose($"Pressing position {turnin.Position}");
                         CollectablesShop.Instance.SelectItem(turnin.Position);
                         await Coroutine.Sleep(1000);
                         var i = 0;
                         while (CollectablesShop.Instance.TurninCount > 0)
                         {
-                            // Log($"Pressing trade {i}");
+                            Log.Verbose($"Pressing trade {i}");
                             i++;
                             CollectablesShop.Instance.Trade();
                             await Coroutine.Sleep(100);
@@ -965,7 +971,7 @@ namespace LlamaLibrary.Helpers
 
                 if (CollectablesShop.Instance.IsOpen)
                 {
-                    // Log("Window open");
+                    Log.Verbose("CollectableShop window open");
                     foreach (var item in collectables)
                     {
                         if (!turnItemList.Keys.Contains(item))
@@ -976,17 +982,17 @@ namespace LlamaLibrary.Helpers
                         Log.Information($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
                         var turnin = turnItemList[item];
 
-                        // Log($"Pressing job {turnin.Job}");
+                        Log.Verbose($"Pressing job {turnin.Job}");
                         CollectablesShop.Instance.SelectJob(turnin.Job);
                         await Coroutine.Sleep(500);
 
-                        //  Log($"Pressing position {turnin.Position}");
+                        Log.Verbose($"Pressing position {turnin.Position}");
                         CollectablesShop.Instance.SelectItem(turnin.Position);
                         await Coroutine.Sleep(1000);
                         var i = 0;
                         while (CollectablesShop.Instance.TurninCount > 0)
                         {
-                            // Log($"Pressing trade {i}");
+                            Log.Verbose($"Pressing trade {i}");
                             i++;
                             CollectablesShop.Instance.Trade();
                             await Coroutine.Sleep(100);

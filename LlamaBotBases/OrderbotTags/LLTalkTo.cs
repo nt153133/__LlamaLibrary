@@ -6,7 +6,7 @@ using TreeSharp;
 using Action = TreeSharp.Action;
 using ff14bot.NeoProfiles.Tags;
 
-namespace LlamaLibrary.OrderbotTags
+namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLTalkTo")]
 

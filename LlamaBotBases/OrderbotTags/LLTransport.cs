@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using Clio.XmlEngine;
 using ff14bot.Behavior;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.Objects;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
 
@@ -15,7 +16,7 @@ namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLTransport")]
     [XmlElement("SoTransport")]
-    public class SoTransport : ProfileBehavior
+    public class SoTransport : LLProfileBehavior
     {
         public override bool HighPriority => true;
 
@@ -56,6 +57,8 @@ namespace LlamaBotBases.OrderbotTags
                 return npc;
             }
         }
+
+        public SoTransport() : base() { }
 
         protected override Composite CreateBehavior()
         {

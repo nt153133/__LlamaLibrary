@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
 using Character = ff14bot.Objects.Character;
@@ -15,7 +16,7 @@ using Character = ff14bot.Objects.Character;
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("BuyShopExchangeCurrency")]
-    public class BuyShopExchangeCurrency : ProfileBehavior
+    public class BuyShopExchangeCurrency : LLProfileBehavior
     {
         private bool _isDone;
         private bool _isOpening;
@@ -41,6 +42,8 @@ namespace LlamaBotBases.OrderbotTags
         public bool Dialog { get; set; } = false;
 
         public override bool HighPriority => true;
+
+        public BuyShopExchangeCurrency() : base() { }
 
         protected override void OnStart()
         {
@@ -110,7 +113,7 @@ namespace LlamaBotBases.OrderbotTags
 
                 if (ShopExchangeCurrency.Open)
                 {
-                    //Log("Opened");
+                    //Log.Information("ShopExchangeCurrency opened");
                     ShopExchangeCurrency.Purchase((uint)itemId, (uint)count);
                     await Coroutine.Wait(2000, () => SelectYesno.IsOpen || Request.IsOpen);
 

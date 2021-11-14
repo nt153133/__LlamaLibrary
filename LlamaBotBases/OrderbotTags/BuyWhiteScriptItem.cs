@@ -1,17 +1,18 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot.Navigation;
-using ff14bot.NeoProfiles;
 using ff14bot.Pathing.Service_Navigation;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("BuyWhiteScriptItem")]
-    public class BuyWhiteScriptItem : ProfileBehavior
+    public class BuyWhiteScriptItem : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -25,6 +26,8 @@ namespace LlamaBotBases.OrderbotTags
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public BuyWhiteScriptItem() : base() { }
 
         protected override void OnStart()
         {

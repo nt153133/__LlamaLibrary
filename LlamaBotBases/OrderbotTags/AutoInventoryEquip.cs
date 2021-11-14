@@ -2,14 +2,13 @@
 using System.Threading.Tasks;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
-using ff14bot.NeoProfiles;
 using TreeSharp;
 using static LlamaLibrary.Helpers.GeneralFunctions;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("AutoInventoryEquip")]
-    public class AutoInventoryEquip : ProfileBehavior
+    public class AutoInventoryEquip : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -26,6 +25,8 @@ namespace LlamaBotBases.OrderbotTags
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public AutoInventoryEquip() : base() { }
 
         protected override void OnStart()
         {

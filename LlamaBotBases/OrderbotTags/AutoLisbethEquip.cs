@@ -1,20 +1,21 @@
 ﻿using System.Threading.Tasks;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
-using ff14bot.NeoProfiles;
 using LlamaLibrary.Helpers;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("AutoLisbethEquip")]
-    public class AutoLisbethEquip : ProfileBehavior
+    public class AutoLisbethEquip : LLProfileBehavior
     {
         private bool _isDone;
 
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public AutoLisbethEquip() : base() { }
 
         protected override void OnStart()
         {

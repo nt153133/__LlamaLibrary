@@ -147,6 +147,7 @@
     <Compile Include="OrderbotTags\LLHandOver.cs" />
     <Compile Include="OrderbotTags\LLoadProfile.cs" />
     <Compile Include="OrderbotTags\LLOpenChest.cs" />
+    <Compile Include="OrderbotTags\LLProfileBehavior.cs" />
     <Compile Include="OrderbotTags\LLQualityLower.cs" />
     <Compile Include="OrderbotTags\LLSellItem.cs" />
     <Compile Include="OrderbotTags\LLSendChat.cs" />

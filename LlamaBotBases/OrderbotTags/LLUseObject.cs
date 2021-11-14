@@ -1,16 +1,17 @@
 ﻿using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLUseObject")]
-    public class LLUseObject : ProfileBehavior
+    public class LLUseObject : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -20,6 +21,8 @@ namespace LlamaBotBases.OrderbotTags
 
         [XmlAttribute("NpcId")]
         public int NpcId { get; set; }
+
+        public LLUseObject() : base() { }
 
         protected override void OnStart()
         {

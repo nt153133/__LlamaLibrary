@@ -8,14 +8,13 @@ using ff14bot.Behavior;
 using ff14bot.Enums;
 using ff14bot.Helpers;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.RemoteWindows;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLJoinDuty")]
-    public class LLJoinDuty : ProfileBehavior
+    public class LLJoinDuty : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -37,6 +36,8 @@ namespace LlamaBotBases.OrderbotTags
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public LLJoinDuty() : base() { }
 
         protected override void OnStart()
         {

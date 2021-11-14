@@ -12,15 +12,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 using Clio.Utilities;
 using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Enums;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
@@ -28,7 +29,7 @@ namespace LlamaBotBases.OrderbotTags
     [XmlElement("LLHandOver")]
 
     // ReSharper disable once InconsistentNaming
-    public class LLHandOverTag : ProfileBehavior
+    public class LLHandOverTag : LLProfileBehavior
     {
         private bool _dialogwasopen;
 
@@ -95,6 +96,8 @@ namespace LlamaBotBases.OrderbotTags
         public override string StatusText => "Talking to " + _questGiver;
 
         public GameObject NPC => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == (uint)NpcId && i.IsVisible && i.IsTargetable);
+
+        public LLHandOverTag() : base() { }
 
         protected override void OnStart()
         {

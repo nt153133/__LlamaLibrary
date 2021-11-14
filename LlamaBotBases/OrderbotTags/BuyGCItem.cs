@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Clio.XmlEngine;
-using ff14bot.NeoProfiles;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("BuyGCItem")]
-    public class BuyGCItem : ProfileBehavior
+    public class BuyGCItem : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -21,6 +22,8 @@ namespace LlamaBotBases.OrderbotTags
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public BuyGCItem() : base() { }
 
         protected override void OnStart()
         {

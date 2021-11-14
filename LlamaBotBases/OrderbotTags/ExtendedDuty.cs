@@ -21,7 +21,7 @@ using ff14bot.NeoProfiles.Tags;
 using TreeSharp;
 using Action = TreeSharp.Action;
 
-namespace LlamaLibrary.OrderbotTags
+namespace LlamaBotBases.OrderbotTags
 {	
     [XmlElement("ExtendedDuty")]
 

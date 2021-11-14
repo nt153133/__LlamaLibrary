@@ -2,20 +2,21 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLSendChat")]
     [XmlElement("SoSendChat")]
-    public class LLSendChat : ProfileBehavior
+    public class LLSendChat : LLProfileBehavior
     {
         [XmlAttribute("NpcId")]
         [DefaultValue(0)]
@@ -67,6 +68,8 @@ namespace LlamaBotBases.OrderbotTags
         public int Delay { get; set; }
 
         private string currentPrefRoutine = null;
+
+        public LLSendChat() : base() { }
         protected override void OnStart()
         {
             if (GearSet > 0)

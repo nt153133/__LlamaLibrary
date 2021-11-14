@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 using ff14bot.Managers;
+using LlamaLibrary.Logging;
 using Newtonsoft.Json;
 
 namespace LlamaBotBases.AutoRetainerSort.Classes
@@ -10,6 +12,8 @@ namespace LlamaBotBases.AutoRetainerSort.Classes
     [JsonObject(MemberSerialization.OptIn)]
     public class ItemSortInfo : IEquatable<ItemSortInfo>
     {
+        private static readonly LLogger Log = new LLogger(Strings.LogPrefix, Colors.Orange);
+
         private Item _itemInfo;
 
         public Item ItemInfo
@@ -24,7 +28,7 @@ namespace LlamaBotBases.AutoRetainerSort.Classes
                     }
                     catch (Exception ex)
                     {
-                        AutoRetainerSort.LogCritical($"Error! Couldn't get item data for ID {RawItemId}.");
+                        Log.Error($"Error! Couldn't get item data for ID {RawItemId}.");
                         throw new ArgumentException($"Unable to get ItemInfo. TrueId: {TrueItemId}, RawId: {RawItemId}", "ItemInfo", ex);
                     }
                 }
@@ -32,7 +36,7 @@ namespace LlamaBotBases.AutoRetainerSort.Classes
                 // Check again to make sure it's not still null.
                 if (_itemInfo == null)
                 {
-                    AutoRetainerSort.LogCritical($"Error! Couldn't get item data for ID {RawItemId}.");
+                    Log.Error($"Error! Couldn't get item data for ID {RawItemId}.");
                     throw new ArgumentException($"Unable to get ItemInfo. TrueId: {TrueItemId}, RawId: {RawItemId}", "ItemInfo");
                 }
 

@@ -23,11 +23,9 @@ namespace LlamaLibrary.Helpers
 {
     public class HuntHelper
     {
-        private const int MaxOrderTypes = 0xE;
+        private static readonly LLogger Log = new LLogger(typeof(HuntHelper).Name, Colors.Gold);
 
-        private static readonly string Name = "HuntHelper";
-        private static readonly Color LogColor = Colors.Gold;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private const int MaxOrderTypes = 0xE;
 
         public static readonly SortedDictionary<int, StoredHuntLocation> DailyHunts;
 
@@ -185,11 +183,11 @@ namespace LlamaLibrary.Helpers
             {
                 var hunt = GetMobHuntOrder((uint)listStart + dailyNum, i);
 
-                // Log($"Server Hunt {hunt}");
+                Log.Verbose($"Server Hunt {hunt}");
                 var target = GetMobHuntTarget(hunt.MobHuntTarget);
                 if (target.FateRequired)
                 {
-                    //      Log($"Fate Required {hunt}");
+                    Log.Verbose($"Fate Required {hunt}");
                     continue;
                 }
 
@@ -217,7 +215,7 @@ namespace LlamaLibrary.Helpers
             //|| !accepted[orderTypeIndex]
             if (!unlocked || orderType.Type == MobHuntType.Weekly)
             {
-                //  Log($"not unlocked or weekly");
+                Log.Verbose($"Hunt is Weekly or not unlocked.");
                 return result;
             }
 
@@ -225,7 +223,7 @@ namespace LlamaLibrary.Helpers
             var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x16);
             if ((listStart + v8 > 620) && !accepted[orderTypeIndex])
             {
-                // Log($"Have not been picked up {orderTypeIndex} {listStart + v8 } {accepted[orderTypeIndex]}");
+                Log.Verbose($"Have not been picked up {orderTypeIndex} {listStart + v8} {accepted[orderTypeIndex]}");
                 return result;
             }
 
@@ -233,7 +231,7 @@ namespace LlamaLibrary.Helpers
 
             for (byte i = 0; i < max; i++)
             {
-                //Log($"Read hunt {listStart + v8} {i}");
+                Log.Verbose($"Read hunt {listStart + v8} {i}");
                 MobHuntOrder hunt;
                 try
                 {
@@ -252,7 +250,7 @@ namespace LlamaLibrary.Helpers
 
                 if (hunt.MobHuntTarget == 0 && orderTypeIndex == 0)
                 {
-                    //Log($"Going to get GC hunts");
+                    //Log.Information($"Going to get GC hunts");
                     //GetHuntsByOrderType(0).Wait();
                     return new List<DailyHuntOrder>();
                 }
@@ -267,7 +265,7 @@ namespace LlamaLibrary.Helpers
 
                 result.Add(new DailyHuntOrder(hunt, target, orderTypeIndex, i, DailyHunts[hunt.MobHuntTarget]));
 
-                //Log(string.Format("\t{0} ({1}) {2}", target.Name, hunt.MobHuntTarget, fate));
+                //Log.Information(string.Format("\t{0} ({1}) {2}", target.Name, hunt.MobHuntTarget, fate));
             }
 
             return result;
@@ -312,7 +310,7 @@ namespace LlamaLibrary.Helpers
 
                 result.Add(new DailyHuntOrder(hunt, target, orderTypeIndex, i, DailyHunts[hunt.MobHuntTarget]));
 
-                //Log(string.Format("\t{0} ({1}) {2}", target.Name, hunt.MobHuntTarget, fate));
+                //Log.Information(string.Format("\t{0} ({1}) {2}", target.Name, hunt.MobHuntTarget, fate));
             }
 
             return result;
@@ -426,33 +424,33 @@ namespace LlamaLibrary.Helpers
                     continue;
                 }
 
-                //LogCritical($"oldDilies = {oldDailies} count server {serverDailies.Count}");
+                //Log.Debug($"oldDilies = {oldDailies} count server {serverDailies.Count}");
 
                 if ((accepted && dailies.All(i => i.IsFinished)) || !accepted)
                 {
                     if (accepted && dailies.All(i => i.IsFinished) && !oldDailies)
                     {
-                        // Log($"{orderTypeObj.Item.CurrentLocaleName} - Only Fates left for today's dailies so done");
+                        Log.Verbose($"{orderTypeObj.Item.CurrentLocaleName} - Only Fates left for today's dailies so done");
                         result.Add(((uint, HuntOrderStatus))(orderType, HuntOrderStatus.OnlyFatesLeft));
                     }
                     else if (accepted && dailies.All(i => i.IsFinished))
                     {
-                        // Log($"{orderTypeObj.Item.CurrentLocaleName} - Only Fates left for old dailies so should yeet and get new ones");
+                        Log.Verbose($"{orderTypeObj.Item.CurrentLocaleName} - Only Fates left for old dailies so should yeet and get new ones");
                         result.Add(((uint, HuntOrderStatus))(orderType, HuntOrderStatus.OnlyFatesLeftOld));
                     }
                     else if (!accepted && dailies.All(i => i.IsFinished && i.CurrentKills > 0) && oldDailies)
                     {
-                        // Log($"{orderTypeObj.Item.CurrentLocaleName} - Not Accepted and last accepted were old and we so should get new ones?");
+                        Log.Verbose($"{orderTypeObj.Item.CurrentLocaleName} - Not Accepted and last accepted were old and we so should get new ones?");
                         result.Add(((uint, HuntOrderStatus))(orderType, HuntOrderStatus.NotAcceptedOld));
                     }
                     else if (!accepted && dailies.All(i => i.IsFinished && i.CurrentKills > 0) && !oldDailies)
                     {
-                        //Log($"{orderTypeObj.Item.CurrentLocaleName} - Finished today's dailies");
+                        Log.Verbose($"{orderTypeObj.Item.CurrentLocaleName} - Finished today's dailies");
                         result.Add(((uint, HuntOrderStatus))(orderType, HuntOrderStatus.Complete));
                     }
                     else
                     {
-                        //Log($"{orderTypeObj.Item.CurrentLocaleName} - {dailies.All(i => i.IsFinished && i.CurrentKills > 0)} {dailies.All(i => i.IsFinished)} {oldDailies} Have not accepted today's hunts");
+                        Log.Verbose($"{orderTypeObj.Item.CurrentLocaleName} - {dailies.All(i => i.IsFinished && i.CurrentKills > 0)} {dailies.All(i => i.IsFinished)} {oldDailies} Have not accepted today's hunts");
                         result.Add(((uint, HuntOrderStatus))(orderType, HuntOrderStatus.NotAccepted));
                     }
 
@@ -461,17 +459,17 @@ namespace LlamaLibrary.Helpers
 
                 if (dailies.Any(i => !i.IsFinished) && oldDailies)
                 {
-                    // Log($"{orderTypeObj.Item.CurrentLocaleName} - Unfinished old dailies");
+                    Log.Verbose($"{orderTypeObj.Item.CurrentLocaleName} - Unfinished old dailies");
                     result.Add(((uint, HuntOrderStatus))(orderType, HuntOrderStatus.UnFinishedOld));
                 }
                 else if (dailies.Any(i => !i.IsFinished) && !oldDailies)
                 {
-                    // Log($"{orderTypeObj.Item.CurrentLocaleName} - Unfinished current dailies");
+                    Log.Verbose($"{orderTypeObj.Item.CurrentLocaleName} - Unfinished current dailies");
                     result.Add(((uint, HuntOrderStatus))(orderType, HuntOrderStatus.Unfinished));
                 }
                 else
                 {
-                    //  Log($"All possible {orderTypeObj.Item.CurrentLocaleName} dailies done {dailies.Count()}");
+                    Log.Verbose($"All possible {orderTypeObj.Item.CurrentLocaleName} dailies done {dailies.Count()}");
                     result.Add(((uint, HuntOrderStatus))(orderType, HuntOrderStatus.Complete));
                 }
             }
@@ -524,6 +522,8 @@ namespace LlamaLibrary.Helpers
             fate = huntTarget.Fate;
             Type = type;
         }
+
+        public string MobName => DataManager.GetBattleNPCData(NpcID).CurrentLocaleName;
 
         public byte CurrentKills => HuntHelper.GetKillCount(OrderTypeIndex, MobIndex);
 
@@ -628,6 +628,8 @@ namespace LlamaLibrary.Helpers
 
     public class HuntBoardNpc
     {
+        private static readonly LLogger Log = new LLogger(typeof(HuntBoardNpc).Name, Colors.Gold);
+
         public uint NpcId;
         public uint ZoneId;
         public Vector3 Location;
@@ -643,10 +645,10 @@ namespace LlamaLibrary.Helpers
 
         public async Task<bool> GetTo()
         {
+            Log.Verbose("GetTo()");
             await Navigation.GetTo(ZoneId, Location);
             await Navigation.OffMeshMoveInteract(GetNpc);
 
-            //Navigation.LogCritical("GoTo");
             return GetNpc.IsWithinInteractRange;
         }
 
@@ -654,7 +656,6 @@ namespace LlamaLibrary.Helpers
         {
             if (GetNpc == null || !GetNpc.IsWithinInteractRange)
             {
-                //Navigation.LogCritical("GoTo");
                 await GetTo();
             }
 
@@ -686,11 +687,10 @@ namespace LlamaLibrary.Helpers
 
             SelectString.ClickSlot(slot);
             await Coroutine.Wait(5000, () => Mobhunt.Instance.IsOpen);
+            Log.Debug($"Mobhunt Window IsOpen == {Mobhunt.Instance.IsOpen}");
 
-            //Navigation.LogCritical($"is open {Mobhunt.Instance.IsOpen}");
             Mobhunt.Instance.Accept();
-
-            //Navigation.LogCritical($"accepted");
+            Log.Verbose($"Hunt accepted");
             await Coroutine.Sleep(1000);
 
             return HuntHelper.GetAcceptedHunts()[orderType];

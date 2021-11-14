@@ -1,20 +1,23 @@
 ﻿using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot.Behavior;
-using ff14bot.NeoProfiles;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLLeaveDuty")]
-    public class LeaveDuty : ProfileBehavior
+    public class LeaveDuty : LLProfileBehavior
     {
         private bool _isDone;
 
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public LeaveDuty() : base() { }
 
         protected override void OnStart()
         {

@@ -8,11 +8,11 @@ using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using TreeSharp;
 using Action = TreeSharp.Action;
@@ -21,6 +21,8 @@ namespace LlamaBotBases.AutoTrade
 {
     public class AutoTrade : BotBase
     {
+        private static readonly LLogger Log = new LLogger(typeof(AutoTrade).Name, Colors.Orange);
+
         private static readonly Queue<QueuedTradeItem> TradeQueue = new Queue<QueuedTradeItem>();
 
         private Composite _root;
@@ -66,7 +68,7 @@ namespace LlamaBotBases.AutoTrade
                             new Decorator(
                                 r => SelectYesno.IsOpen && Trade.TradeStage == 5,
                                 new Sequence(
-                                    new Action(r => Log("At Select Yes/No")),
+                                    new Action(r => Log.Verbose("At Select Yes/No")),
                                     new Sleep(200),
                                     new Action(r => SelectYesno.ClickYes())
                                 )
@@ -74,7 +76,7 @@ namespace LlamaBotBases.AutoTrade
                             new Decorator(
                                 r => Trade.IsOpen && Trade.TradeStage == 3,
                                 new Sequence(
-                                    new Action(r => Log($"Window open accepting from {Trade.Trader}")),
+                                    new Action(r => Log.Information($"Trade window open with {Trade.Trader}")),
                                     new Sleep(500),
                                     new Action(r => RaptureAtkUnitManager.GetWindowByName("Trade").SendAction(1, 3uL, 0))
                                 )
@@ -87,7 +89,7 @@ namespace LlamaBotBases.AutoTrade
         {
             if (AutoTradeSettings.AcceptTrades)
             {
-                LogSuccess("Accepting trades...");
+                Log.Information("Accepting trades...");
                 _root = TradeAcceptBehavior;
             }
             else
@@ -103,29 +105,29 @@ namespace LlamaBotBases.AutoTrade
 
             if (target == null)
             {
-                Log("No target found to trade to.");
+                Log.Warning("No target found to trade to.");
                 return false;
             }
 
             if (target.IsMe)
             {
-                Log("We can't trade with ourselves.");
+                Log.Warning("We can't trade with ourselves.");
                 return false;
             }
 
             if (target.Type != GameObjectType.Pc)
             {
-                Log("We can't trade with an NPC.");
+                Log.Warning("We can't trade with an NPC.");
                 return false;
             }
 
             if (!target.IsWithinInteractRange)
             {
-                Log("Target is too far away to interact with.");
+                Log.Warning("Target is too far away to interact with.");
                 return false;
             }
 
-            Log($"Starting to trade with {target.Name}.");
+            Log.Information($"Starting to trade with {target.Name}.");
 
             await QueueTradeItems(AutoTradeSettings.ItemsToTrade);
 
@@ -133,15 +135,15 @@ namespace LlamaBotBases.AutoTrade
 
             if (failedTradeCount >= 5)
             {
-                LogCritical("Too many failed trades, exiting.");
+                Log.Error("Too many failed trades, exiting.");
             }
             else if (!TradeQueue.Any())
             {
-                LogSuccess("Done trading!");
+                Log.Information("Done trading!");
             }
             else
             {
-                LogCritical("We're done trading, but didn't trip FailedTradeCount and have items still in the queue?");
+                Log.Error("We're done trading, but didn't trip FailedTradeCount and have items still in the queue?");
             }
 
             if (InputNumeric.IsOpen)
@@ -171,15 +173,15 @@ namespace LlamaBotBases.AutoTrade
             var gilToTrade = AutoTradeSettings.GilToTrade;
             if (gilToTrade > 0)
             {
-                LogSuccess($"We want to trade a total of {gilToTrade:N0} gil.");
+                Log.Information($"We want to trade a total of {gilToTrade:N0} gil.");
             }
 
-            LogSuccess("---Starting Trades---");
+            Log.Information("---Starting Trades---");
             while ((TradeQueue.Any() || gilToTrade > 0) && failedTradeCount < 3)
             {
                 if (!target.IsWithinInteractRange)
                 {
-                    LogCritical("Our trading partner ran away from us!");
+                    Log.Error("Our trading partner ran away from us!");
                     break;
                 }
 
@@ -188,7 +190,7 @@ namespace LlamaBotBases.AutoTrade
                 if (result != 0)
                 {
                     failedTradeCount++;
-                    LogCritical("Couldn't open trade window. Pausing to retry...");
+                    Log.Warning("Couldn't open trade window. Pausing to retry...");
                     await Coroutine.Sleep(3000);
                     continue;
                 }
@@ -197,12 +199,12 @@ namespace LlamaBotBases.AutoTrade
                 if (!Trade.IsOpen)
                 {
                     failedTradeCount++;
-                    LogCritical("Trade window never opened. Pausing to retry...");
+                    Log.Warning("Trade window never opened. Pausing to retry...");
                     await Coroutine.Sleep(3000);
                     continue;
                 }
 
-                LogSuccess("Trading window opened.");
+                Log.Information("Trading window opened.");
 
                 var gilAmount = 0;
                 var currentGil = AutoTradeSettings.CurrentGil;
@@ -210,7 +212,7 @@ namespace LlamaBotBases.AutoTrade
                 if (gilToTrade > 0)
                 {
                     gilAmount = Math.Min(gilToTrade, 1000000);
-                    LogSuccess($"Adding {gilAmount:N0} gil.");
+                    Log.Information($"Adding {gilAmount:N0} gil.");
                     RaptureAtkUnitManager.GetWindowByName("Trade").SendAction(1, 3, 2);
                     await WaitForInputNumeric((uint)gilAmount);
                     await Coroutine.Sleep(250);
@@ -234,14 +236,14 @@ namespace LlamaBotBases.AutoTrade
                             .FirstOrDefault();
                         if (itemSlot?.BagSlot == null || !itemSlot.BagSlot.IsFilled)
                         {
-                            LogCritical($"Couldn't find any ID: {itemToTrade.TrueItemId} in our inventory.");
+                            Log.Error($"Couldn't find any ID: {itemToTrade.TrueItemId} in our inventory.");
                             i--;
                             continue;
                         }
 
                         itemSlot.BeingTraded = true;
                         WatchedBagSlots.Add(new WatchedBagSlot(itemSlot.BagSlot));
-                        LogSuccess($"Adding x{itemToTrade.QtyToTrade} {itemToTrade.ItemName} to Slot {i + 1}.");
+                        Log.Information($"Adding x{itemToTrade.QtyToTrade} {itemToTrade.ItemName} to Slot {i + 1}.");
                         itemSlot.BagSlot.TradeItem();
                         if (itemToTrade.QtyToTrade > 1 && itemToTrade.StackSize > 1)
                         {
@@ -256,7 +258,7 @@ namespace LlamaBotBases.AutoTrade
                 await Coroutine.Wait(30000, () => Trade.TradeStage == 5);
                 if (Trade.TradeStage != 5)
                 {
-                    LogCritical("Our target still hasn't accepted the trade... aborting.");
+                    Log.Error("Our target still hasn't accepted the trade... aborting.");
                     break;
                 }
 
@@ -270,18 +272,18 @@ namespace LlamaBotBases.AutoTrade
                 await Coroutine.Wait(30000, () => Trade.TradeStage == 1);
                 if (Trade.TradeStage == 6)
                 {
-                    LogCritical("Our target still hasn't accepted the trade... aborting.");
+                    Log.Error("Our target still hasn't accepted the trade... aborting.");
                     break;
                 }
 
-                LogSuccess("Trade completed.");
+                Log.Information("Trade completed.");
 
                 // Arbitrary wait to let values update after trade is complete.
                 await Coroutine.Sleep(1500);
 
                 if (gilToTrade > 0 && currentGil == AutoTradeSettings.CurrentGil)
                 {
-                    LogCritical("Trading gil didn't go through.");
+                    Log.Error("Trading gil didn't go through.");
                     failedTradeCount++;
                     continue;
                 }
@@ -289,7 +291,7 @@ namespace LlamaBotBases.AutoTrade
                 gilToTrade -= gilAmount;
                 if (WatchedSlotsUnchanged(WatchedBagSlots))
                 {
-                    LogCritical("Some items were unchanged, even though they should have been traded.");
+                    Log.Error("Some items were unchanged, even though they should have been traded.");
                     failedTradeCount++;
                     continue;
                 }
@@ -306,7 +308,7 @@ namespace LlamaBotBases.AutoTrade
             }
             else
             {
-                LogCritical("InputNumeric never opened!");
+                Log.Error("InputNumeric never opened!");
             }
         }
 
@@ -361,7 +363,7 @@ namespace LlamaBotBases.AutoTrade
                     TradeQueue.Enqueue(new QueuedTradeItem(item, remainder));
                 }
 
-                LogSuccess($"Queued x{item.QtyToTrade} {item.ItemName} to trade.");
+                Log.Information($"Queued x{item.QtyToTrade} {item.ItemName} to trade.");
             }
         }
 
@@ -391,21 +393,6 @@ namespace LlamaBotBases.AutoTrade
         public override void Stop()
         {
             _root = null;
-        }
-
-        private static void Log(string text)
-        {
-            Logging.Write(Colors.Orange, "[AutoTrade] " + text);
-        }
-
-        public static void LogCritical(string text)
-        {
-            Logging.Write(Colors.OrangeRed, "[AutoTrade] " + text);
-        }
-
-        public static void LogSuccess(string text)
-        {
-            Logging.Write(Colors.Green, "[AutoTrade] " + text);
         }
 
         private class MarkedBagSlot

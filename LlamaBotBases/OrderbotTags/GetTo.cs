@@ -10,18 +10,19 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Clio.Utilities;
 using Clio.XmlEngine;
 using ff14bot.Behavior;
 using ff14bot.Navigation;
-using ff14bot.NeoProfiles;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLGetTo")]
-    public class GetTo : ProfileBehavior
+    public class GetTo : LLProfileBehavior
     {
         [XmlAttribute("XYZ")]
         public Vector3 XYZ { get; set; }
@@ -34,6 +35,8 @@ namespace LlamaBotBases.OrderbotTags
         public override bool IsDone => FinalizedPath?.Count == 0;
 
         public override bool HighPriority => true;
+
+        public GetTo() : base() { }
 
         protected override void OnResetCachedDone()
         {

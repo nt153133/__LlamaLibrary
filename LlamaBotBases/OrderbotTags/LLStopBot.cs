@@ -1,6 +1,7 @@
-﻿using Clio.XmlEngine;
+﻿using System.Windows.Media;
+using Clio.XmlEngine;
 using ff14bot;
-using ff14bot.NeoProfiles;
+using LlamaLibrary.Logging;
 using TreeSharp;
 using Action = TreeSharp.Action;
 
@@ -9,11 +10,13 @@ namespace LlamaBotBases.OrderbotTags
     [XmlElement("LLStopBot")]
     [XmlElement("StopBot")]
 
-    public class LLStopBotTag : ProfileBehavior
+    public class LLStopBotTag : LLProfileBehavior
     {
         private bool _done;
 
         public override bool IsDone => _done;
+
+        public LLStopBotTag() : base() { }
 
         protected override Composite CreateBehavior()
         {

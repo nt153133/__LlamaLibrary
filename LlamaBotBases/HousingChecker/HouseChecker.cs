@@ -10,13 +10,13 @@ using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
@@ -30,7 +30,7 @@ namespace LlamaBotBases.HousingChecker
 
         public override string Name => NameStatic;
 
-        public static string NameStatic => "Housing Checker";
+        public static string NameStatic = "Housing Checker";
         public override PulseFlags PulseFlags => PulseFlags.All;
 
         public override bool IsAutonomous => true;
@@ -39,6 +39,8 @@ namespace LlamaBotBases.HousingChecker
         public override Composite Root => _root;
 
         public override bool WantButton { get; } = false;
+
+        private static readonly LLogger Log = new LLogger(NameStatic, Colors.Pink);
 
         public override void Start()
         {
@@ -155,30 +157,30 @@ namespace LlamaBotBases.HousingChecker
 
             if (!output.Any())
             {
-                Log1($"No Housing Plots For Sale");
+                Log.Warning($"No Housing Plots For Sale");
             }
 
             foreach (var line in output)
             {
                 if (line.Contains("Small"))
                 {
-                    Log($"{line}");
+                    Log.Information($"{line}");
                 }
                 else if (line.Contains("Medium"))
                 {
-                    Log1($"{line}");
+                    Log.Information($"{line}");
                     medium = true;
                     outputMed.Add(line);
                 }
                 else if (line.Contains("Large"))
                 {
-                    Log1($"{line}");
+                    Log.Information($"{line}");
                     large = true;
                     outputLarge.Add(line);
                 }
                 else
                 {
-                    Log($"{line}");
+                    Log.Information($"{line}");
                 }
             }
 
@@ -351,7 +353,7 @@ namespace LlamaBotBases.HousingChecker
 
             if (!unit.IsWithinInteractRange)
             {
-                Log($"Not in range {unit.Distance2D()}");
+                Log.Warning($"Not in range {unit.Distance2D()}");
                 var target = unit.Location;
                 if (WorldManager.RawZoneId == 129)
                 {
@@ -375,7 +377,7 @@ namespace LlamaBotBases.HousingChecker
             }
             else
             {
-                Log($"In range {unit.Distance2D()}");
+                Log.Verbose($"In range {unit.Distance2D()}");
             }
 
             unit.Target();
@@ -583,7 +585,7 @@ namespace LlamaBotBases.HousingChecker
 
                     await Coroutine.Sleep(500);
 
-                    //Log($"Ward {AgentHousingSelectBlock.Instance.WardNumber + 1}");
+                    //Log.Information($"Ward {AgentHousingSelectBlock.Instance.WardNumber + 1}");
                     var plotStatus = AgentHousingSelectBlock.Instance.ReadPlots(HousingSelectBlock.Instance.NumberOfPlots);
 
                     for (var j = 0; j < plotStatus.Length; j++)
@@ -610,7 +612,7 @@ namespace LlamaBotBases.HousingChecker
                                 }
                             }
 
-                            //Log($"{HousingSelectBlock.Instance.HousingWard} Plot {j+1} {size} -  {price}");
+                            //Log.Information($"{HousingSelectBlock.Instance.HousingWard} Plot {j+1} {size} -  {price}");
                             output.Add($"{HousingSelectBlock.Instance.HousingWard} Plot {j + 1} {size} -  {price}");
                         }
                     }
@@ -620,24 +622,6 @@ namespace LlamaBotBases.HousingChecker
             }
 
             return output;
-        }
-
-        private static void Log(string text, params object[] args)
-        {
-            var msg = string.Format("[Housing Checker] " + text, args);
-            Logging.Write(Colors.Pink, msg);
-        }
-
-        private static void Log1(string text, params object[] args)
-        {
-            var msg = string.Format("[" + NameStatic + "] " + text, args);
-            Logging.Write(Colors.Yellow, msg);
-        }
-
-        private void Log2(string text, params object[] args)
-        {
-            var msg = string.Format("[" + NameStatic + "] " + text, args);
-            Logging.Write(Colors.Red, msg);
         }
     }
 }

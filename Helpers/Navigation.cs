@@ -22,9 +22,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class Navigation
     {
-        private static readonly string Name = "NavigationHelper";
-        private static readonly Color LogColor = Colors.MediumPurple;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new LLogger("NavigationHelper", Colors.MediumPurple);
 
         public static readonly WaitTimer WaitTimer_0 = new WaitTimer(new TimeSpan(0, 0, 0, 15));
         internal static async Task<Queue<NavGraph.INode>> GenerateNodes(uint ZoneId, Vector3 xyz)
@@ -37,7 +35,7 @@ namespace LlamaLibrary.Helpers
             /*if (ZoneId == 620)
             {
                 var AE = WorldManager.AetheryteIdsForZone(ZoneId).OrderBy(i => i.Item2.DistanceSqr(XYZ)).First();
-                //LogCritical("Can teleport to AE");
+                Log.Debug("Can teleport to AE");
                 WorldManager.TeleportById(AE.Item1);
                 await Coroutine.Wait(20000, () => WorldManager.ZoneId == AE.Item1);
                 await Coroutine.Sleep(2000);
@@ -62,7 +60,7 @@ namespace LlamaLibrary.Helpers
                 {
                     var AE = WorldManager.AetheryteIdsForZone(ZoneId).OrderBy(i => i.Item2.DistanceSqr(XYZ)).First();
 
-                    //LogCritical("Can teleport to AE");
+                    Log.Verbose("Can teleport to AE");
                     WorldManager.TeleportById(AE.Item1);
                     await Coroutine.Wait(20000, () => WorldManager.ZoneId == AE.Item1);
                     await Coroutine.Sleep(2000);

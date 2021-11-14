@@ -13,13 +13,11 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
 
-namespace LlamaLibrary.OrderbotTags
+namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLGoToHousing")]
-    public class LLGoToHousing : ProfileBehavior
+    public class LLGoToHousing : LLProfileBehavior
     {
-        private new static readonly LLogger Log = new LLogger(typeof(LLGoToHousing).Name, Colors.White);
-
         private bool _isDone;
 
         [XmlAttribute("District")]
@@ -36,6 +34,8 @@ namespace LlamaLibrary.OrderbotTags
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public LLGoToHousing() : base() { }
 
         protected override void OnStart()
         {

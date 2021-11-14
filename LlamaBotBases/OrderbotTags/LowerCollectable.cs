@@ -8,12 +8,13 @@ using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LowerCollectables")]
-    public class LowerCollectable : ProfileBehavior
+    public class LowerCollectable : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -21,6 +22,8 @@ namespace LlamaBotBases.OrderbotTags
         public int MaxCollectability { get; set; }
 
         public override bool HighPriority => true;
+
+        public LowerCollectable() : base() { }
 
         protected override void OnStart()
         {

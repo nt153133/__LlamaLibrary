@@ -15,6 +15,7 @@ using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.NeoProfile;
 using ff14bot.NeoProfiles;
+using LlamaLibrary.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TreeSharp;
@@ -22,7 +23,7 @@ using TreeSharp;
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLisbeth")]
-    public class LisbethOrderBot : ProfileBehavior
+    public class LisbethOrderBot : LLProfileBehavior
     {
         public static bool loaded;
         public static bool tempbool;
@@ -34,6 +35,8 @@ namespace LlamaBotBases.OrderbotTags
         public string Json { get; set; }
 
         public override bool IsDone => _isDone;
+
+        public LisbethOrderBot() : base() { }
 
         private static async void MyThread()
         {

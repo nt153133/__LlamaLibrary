@@ -15,6 +15,7 @@ using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.Pathing.Service_Navigation;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using TreeSharp;
 using Action = TreeSharp.Action;
@@ -23,6 +24,8 @@ namespace LlamaBotBases.DailyHunts
 {
     public class HuntBase : BotBase
     {
+        private static readonly LLogger Log = new LLogger("Daily Hunts", Colors.Pink);
+
         private static readonly List<uint> Blacklist = new List<uint>();
         private static List<BagSlot> _playerItems;
         public static float PostCombatDelay = 0f;
@@ -106,33 +109,33 @@ namespace LlamaBotBases.DailyHunts
                 switch (huntOrderStatus)
                 {
                     case HuntOrderStatus.OnlyFatesLeft:
-                        Log($"{orderTypeObj.Item.CurrentLocaleName} - Only Fates left for today's dailies so done");
+                        Log.Information($"{orderTypeObj.Item.CurrentLocaleName} - Only Fates left for today's dailies so done");
                         break;
                     case HuntOrderStatus.OnlyFatesLeftOld:
-                        Log($"{orderTypeObj.Item.CurrentLocaleName} - Only Fates left for old dailies so should yeet them and get new ones");
+                        Log.Information($"{orderTypeObj.Item.CurrentLocaleName} - Only Fates left for old dailies so should yeet them and get new ones");
                         HuntHelper.DiscardMobHuntType(orderType);
                         await HuntHelper.GetHuntsByOrderType(orderType);
                         break;
                     case HuntOrderStatus.NotAccepted:
-                        Log($"{orderTypeObj.Item.CurrentLocaleName} - Have not accepted today's hunts");
+                        Log.Information($"{orderTypeObj.Item.CurrentLocaleName} - Have not accepted today's hunts");
                         await HuntHelper.GetHuntsByOrderType(orderType);
                         break;
                     case HuntOrderStatus.NotAcceptedOld:
-                        Log($"{orderTypeObj.Item.CurrentLocaleName} - Not Accepted and last accepted were old and so should get new ones");
+                        Log.Information($"{orderTypeObj.Item.CurrentLocaleName} - Not Accepted and last accepted were old and so should get new ones");
                         await HuntHelper.GetHuntsByOrderType(orderType);
                         break;
                     case HuntOrderStatus.Complete:
-                        Log($"{orderTypeObj.Item.CurrentLocaleName} - Finished today's dailies");
+                        Log.Information($"{orderTypeObj.Item.CurrentLocaleName} - Finished today's dailies");
                         break;
                     case HuntOrderStatus.CompleteOld:
-                        Log($"{orderTypeObj.Item.CurrentLocaleName} - Finished  old dailies");
+                        Log.Information($"{orderTypeObj.Item.CurrentLocaleName} - Finished  old dailies");
                         await HuntHelper.GetHuntsByOrderType(orderType);
                         break;
                     case HuntOrderStatus.Unfinished:
-                        Log($"{orderTypeObj.Item.CurrentLocaleName} - Unfinished current dailies");
+                        Log.Information($"{orderTypeObj.Item.CurrentLocaleName} - Unfinished current dailies");
                         break;
                     case HuntOrderStatus.UnFinishedOld:
-                        Log($"{orderTypeObj.Item.CurrentLocaleName} - Unfinished old dailies");
+                        Log.Information($"{orderTypeObj.Item.CurrentLocaleName} - Unfinished old dailies");
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -155,7 +158,7 @@ namespace LlamaBotBases.DailyHunts
 
             foreach (var hunt in hunts.OrderBy(i => i.MapId).ThenBy(j => j.Location.X))
             {
-                Log($"{hunt}");
+                Log.Information($"hunt: {hunt}");
                 while (Core.Me.InCombat)
                 {
                     var target = GameObjectManager.Attackers.FirstOrDefault(i => i.InCombat && i.IsAlive);
@@ -207,7 +210,7 @@ namespace LlamaBotBases.DailyHunts
                     {
                         if (await FindAndKillMob(hunt.NpcID))
                         {
-                            Log("Killed one");
+                            Log.Information($"Killed a {hunt.MobName}");
                             await Coroutine.Sleep(1000);
                             if (!Core.Me.InCombat)
                             {
@@ -216,7 +219,7 @@ namespace LlamaBotBases.DailyHunts
                         }
                         else
                         {
-                            Log("None found, sleeping 10 sec.");
+                            Log.Warning("None found, sleeping 10 sec.");
                             await Coroutine.Sleep(10000);
                         }
                     }
@@ -230,7 +233,7 @@ namespace LlamaBotBases.DailyHunts
                         {
                             if (await FindAndKillMob(hunt.NpcID))
                             {
-                                Log("Killed one");
+                                Log.Information($"Killed a {hunt.MobName}");
                                 await Coroutine.Sleep(1000);
                                 if (!Core.Me.InCombat)
                                 {
@@ -239,7 +242,7 @@ namespace LlamaBotBases.DailyHunts
                             }
                             else
                             {
-                                Log("None found, sleeping 10 sec.");
+                                Log.Warning("None found, sleeping 10 sec.");
                                 await Coroutine.Sleep(10000);
                             }
                         }
@@ -254,7 +257,7 @@ namespace LlamaBotBases.DailyHunts
                         {
                             if (await FindAndKillMob(hunt.NpcID))
                             {
-                                Log("Killed one");
+                                Log.Information($"Killed a {hunt.MobName}");
                                 await Coroutine.Sleep(1000);
                                 if (!Core.Me.InCombat)
                                 {
@@ -263,7 +266,7 @@ namespace LlamaBotBases.DailyHunts
                             }
                             else
                             {
-                                Log("None found, sleeping 10 sec.");
+                                Log.Error("None found, sleeping 10 sec.");
                                 await Coroutine.Sleep(10000);
                             }
                         }
@@ -275,7 +278,7 @@ namespace LlamaBotBases.DailyHunts
                     {
                         if (await FindAndKillMob(hunt.NpcID))
                         {
-                            Log("Killed one");
+                            Log.Information($"Killed a {hunt.MobName}");
                             await Coroutine.Sleep(1000);
                             if (!Core.Me.InCombat)
                             {
@@ -284,7 +287,7 @@ namespace LlamaBotBases.DailyHunts
                         }
                         else
                         {
-                            Log("None found, sleeping max 10 sec.");
+                            Log.Warning("None found, sleeping max 10 sec.");
                             await Coroutine.Wait(10000, () => FindMob(hunt.NpcID));
                         }
                     }
@@ -295,7 +298,7 @@ namespace LlamaBotBases.DailyHunts
                     {
                         if (await FindAndKillMob(hunt.NpcID))
                         {
-                            Log("Killed one");
+                            Log.Information($"Killed a {hunt.MobName}");
                             await Coroutine.Sleep(1000);
                             if (!Core.Me.InCombat)
                             {
@@ -304,17 +307,17 @@ namespace LlamaBotBases.DailyHunts
                         }
                         else
                         {
-                            Log("None found, sleeping max 10 sec.");
+                            Log.Warning("None found, sleeping max 10 sec.");
                             await Coroutine.Wait(10000, () => FindMob(hunt.NpcID));
                         }
                     }
                 }
 
-                Log($"Done: {hunt}");
+                Log.Information($"Done: {hunt}");
                 var newPlayerItems = InventoryManager.GetBagsByInventoryBagId(PlayerInventoryBagIds).Select(i => i.FilledSlots).SelectMany(x => x).AsParallel().ToList();
                 var newitems = newPlayerItems.Except(_playerItems, new BagSlotComparer());
-                Log("New loot");
-                Log($"{string.Join(",", newitems)}");
+                Log.Information("New loot");
+                Log.Information($"{string.Join(",", newitems)}");
                 Blacklist.Clear();
                 await Coroutine.Sleep(1000);
             }
@@ -352,7 +355,7 @@ namespace LlamaBotBases.DailyHunts
 
             if (mob == default(BattleCharacter))
             {
-                LogCritical($"Couldn't find mob with NPCID {npcId}");
+                Log.Error($"Couldn't find mob with NPCID {npcId}");
                 return false;
             }
             else
@@ -379,21 +382,21 @@ namespace LlamaBotBases.DailyHunts
 
             if (mob == default(BattleCharacter))
             {
-                LogCritical($"Couldn't find mob with NPCID {npcId}");
+                Log.Error($"Couldn't find mob with NPCID {npcId}");
                 return false;
             }
             else
             {
-                LogSucess($"Found mob {mob}");
+                Log.Information($"Found mob {mob}");
                 if (!await Navigation.GetTo(WorldManager.ZoneId, mob.Location))
                 {
-                    LogCritical("Can't get to, blacklisting mob");
+                    Log.Warning("Can't get to, blacklisting mob");
                     Blacklist.Add(mob.ObjectId);
                     return false;
                 }
 
                 await KillMob(mob);
-                LogSucess($"Did we kill it? {!(mob.IsValid && mob.IsAlive)}");
+                Log.Debug($"Did we kill it? {!(mob.IsValid && mob.IsAlive)}");
                 Navigator.PlayerMover.MoveStop();
                 return true;
             }
@@ -413,7 +416,7 @@ namespace LlamaBotBases.DailyHunts
                 //("Looping combat");
                 if (!await CombatCoroutine().ExecuteCoroutine())
                 {
-                    LogCritical("Looping combat Composite False");
+                    Log.Debug("Looping combat Composite False");
                     break;
                 }
 
@@ -421,13 +424,13 @@ namespace LlamaBotBases.DailyHunts
                 await Coroutine.Yield();
                 if (mob.IsValid && mob.IsAlive && Poi.Current != null && Poi.Current.Unit != null)
                 {
-                    LogCritical($"Looping combat {mob} {Poi.Current} {mob.IsValid && mob.IsAlive && Poi.Current != null && Poi.Current.Unit != null} ");
+                    Log.Debug($"Looping combat {mob} {Poi.Current} {mob.IsValid && mob.IsAlive && Poi.Current != null && Poi.Current.Unit != null} ");
                     await Coroutine.Sleep(500);
-                    LogCritical($"Looping combat {mob.IsValid && mob.IsAlive && Poi.Current != null && Poi.Current.Unit != null} ");
+                    Log.Debug($"Looping combat {mob.IsValid && mob.IsAlive && Poi.Current != null && Poi.Current.Unit != null} ");
                 }
                 else
                 {
-                    LogCritical("Combat Done");
+                    Log.Information("Combat Done");
                     break;
                 }
 
@@ -505,22 +508,6 @@ namespace LlamaBotBases.DailyHunts
                     ),
                 new Action(object0 => RunStatus.Success)
             );
-        }
-
-        private void Log(string text)
-        {
-            var msg = "[" + Name + "] " + text;
-            Logging.Write(Colors.Pink, msg);
-        }
-
-        public static void LogCritical(string text)
-        {
-            Logging.Write(Colors.OrangeRed, text);
-        }
-
-        public static void LogSucess(string text)
-        {
-            Logging.Write(Colors.Green, text);
         }
 
         private class BagSlotComparer : IEqualityComparer<BagSlot>

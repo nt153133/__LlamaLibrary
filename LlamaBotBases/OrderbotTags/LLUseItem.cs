@@ -14,7 +14,7 @@ using ff14bot.Behavior;
 using TreeSharp;
 using ff14bot.NeoProfiles.Tags;
 
-namespace LlamaLibrary.OrderbotTags
+namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLUseItem")]
     [XmlElement("SoUseItem")]

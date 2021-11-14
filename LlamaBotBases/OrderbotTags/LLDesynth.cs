@@ -1,20 +1,21 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("LLDesynth")]
-    public class LLDesynth : ProfileBehavior
+    public class LLDesynth : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -28,6 +29,8 @@ namespace LlamaBotBases.OrderbotTags
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        public LLDesynth() : base() { }
 
         protected override void OnStart()
         {

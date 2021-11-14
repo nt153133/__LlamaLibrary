@@ -8,7 +8,6 @@ using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
@@ -16,6 +15,7 @@ using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
@@ -28,6 +28,8 @@ namespace LlamaBotBases.GCDailyLisbeth
 {
     public class MasterPieceSupplyTester : BotBase
     {
+        private static readonly LLogger Log = new LLogger("GCDailyLisbeth", Colors.Gold);
+
         private Composite _root;
         public override string Name => _name;
 
@@ -70,12 +72,12 @@ namespace LlamaBotBases.GCDailyLisbeth
             /*
             foreach (var item in items)
             {
-                Logging.Write(item.ItemID);
+                Log.Information(item.ItemID);
             }*/
 
             if (!items.Any(i => i.CanHandin))
             {
-                Log("All done.");
+                Log.Information("All done.");
                 return;
             }
 
@@ -83,15 +85,15 @@ namespace LlamaBotBases.GCDailyLisbeth
 
             if (lisbethOrder == "")
             {
-                Log("Not Calling lisbeth.");
+                Log.Information("Not Calling lisbeth.");
             }
             else
             {
-                //Log(lisbethOrder);
-                Log("Calling lisbeth");
+                Log.Verbose(lisbethOrder);
+                Log.Information("Calling lisbeth");
                 if (!await Lisbeth.ExecuteOrders(lisbethOrder))
                 {
-                    Log("Lisbeth order failed, Dumping order to GCSupply.json");
+                    Log.Error("Lisbeth order failed, Dumping order to GCSupply.json");
                     using (var outputFile = new StreamWriter("GCSupply.json", false))
                     {
                         await outputFile.WriteAsync(lisbethOrder);
@@ -99,7 +101,7 @@ namespace LlamaBotBases.GCDailyLisbeth
                 }
                 else
                 {
-                    Log("Lisbeth order should be done");
+                    Log.Information("Lisbeth order should be done");
                 }
             }
 
@@ -107,7 +109,7 @@ namespace LlamaBotBases.GCDailyLisbeth
 
             if (!items.Any(i => i.CanHandin && InventoryManager.FilledSlots.Any(j => j.RawItemId == i.ItemID && !j.HasMateria() && j.Count >= i.ReqCount)))
             {
-                Log("No items available to hand in");
+                Log.Information("No items available to hand in");
                 return;
             }
 
@@ -117,7 +119,7 @@ namespace LlamaBotBases.GCDailyLisbeth
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
                 if (!SelectString.IsOpen)
                 {
-                    Log("Window is not open...maybe it didn't get to npc?");
+                    Log.Error("Window is not open...maybe it didn't get to npc?");
                     return;
                 }
 
@@ -125,7 +127,7 @@ namespace LlamaBotBases.GCDailyLisbeth
                 await Coroutine.Wait(5000, () => GrandCompanySupplyList.Instance.IsOpen);
                 if (!GrandCompanySupplyList.Instance.IsOpen)
                 {
-                    Log("Window is not open...maybe it didn't get to npc?");
+                    Log.Error("Window is not open...maybe it didn't get to npc?");
                     return;
                 }
             }
@@ -171,7 +173,7 @@ namespace LlamaBotBases.GCDailyLisbeth
                     continue;
                 }
 
-                Log($"{handover.Name} {handover.IsHighQuality}");
+                Log.Information($"{handover.Name} {handover.IsHighQuality}");
                 if (handover.IsHighQuality)
                 {
                     if (Core.Me.GCSeals() + (item.Seals * 2) < maxSeals)
@@ -198,7 +200,7 @@ namespace LlamaBotBases.GCDailyLisbeth
                     }
                     else
                     {
-                        Log($"Would get {item.Seals * 2} and we have {Core.Me.GCSeals()} out of {maxSeals}...too many");
+                        Log.Warning($"Would get {item.Seals * 2} and we have {Core.Me.GCSeals()} out of {maxSeals}...too many");
                     }
                 }
                 else
@@ -221,7 +223,7 @@ namespace LlamaBotBases.GCDailyLisbeth
                     }
                     else
                     {
-                        Log($"Would get {item.Seals} and we have {Core.Me.GCSeals()} out of {maxSeals}...too many");
+                        Log.Warning($"Would get {item.Seals} and we have {Core.Me.GCSeals()} out of {maxSeals}...too many");
                     }
                 }
             }
@@ -231,7 +233,7 @@ namespace LlamaBotBases.GCDailyLisbeth
         {
             if (!ContentsInfoDetail.Instance.IsOpen)
             {
-                Logging.Write($"Trying to open window");
+                Log.Verbose($"Trying to open GC Supply window");
 
                 if (!ContentsInfo.Instance.IsOpen)
                 {
@@ -242,25 +244,19 @@ namespace LlamaBotBases.GCDailyLisbeth
                 }
 
                 await Coroutine.Wait(5000, () => ContentsInfoDetail.Instance.IsOpen);
-
-                if (!ContentsInfoDetail.Instance.IsOpen)
-                {
-                    Logging.Write($"Nope failed opening GC Supply window");
-                    return "";
-                }
             }
 
             if (!ContentsInfoDetail.Instance.IsOpen)
             {
-                Logging.Write($"Nope failed");
-                return "";
+                Log.Error($"Nope failed opening GC Supply window");
+                return string.Empty;
             }
 
             var outList = new List<LisbethOrder>();
             var id = 0;
             foreach (var item in ContentsInfoDetail.Instance.GetCraftingTurninItems().Where(item => !InventoryManager.FilledSlots.Any(i => i.RawItemId == item.Key.Id && !i.HasMateria() && i.Count >= item.Value.Key)))
             {
-                Logging.Write($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
+                Log.Information($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
                 var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, item.Value.Value);
                 outList.Add(order);
 
@@ -269,7 +265,7 @@ namespace LlamaBotBases.GCDailyLisbeth
 
             foreach (var item in ContentsInfoDetail.Instance.GetGatheringTurninItems().Where(item => !InventoryManager.FilledSlots.Any(i => i.RawItemId == item.Key.Id && i.Count >= item.Value.Key)))
             {
-                Logging.Write($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
+                Log.Information($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
                 var type = "Gather";
                 if (item.Value.Value.Equals("Fisher"))
                 {
@@ -287,7 +283,7 @@ namespace LlamaBotBases.GCDailyLisbeth
 
             /*foreach (var order in outList)
             {
-                Logging.Write($"{order}");
+                Log.Information($"{order}");
             }*/
             if (outList.Count == 0)
             {
@@ -297,17 +293,11 @@ namespace LlamaBotBases.GCDailyLisbeth
             return JsonConvert.SerializeObject(outList, Formatting.None);
         }
 
-        private static void Log(string text, params object[] args)
-        {
-            var msg = string.Format("[" + _name + "] " + text, args);
-            Logging.Write(Colors.Gold, msg);
-        }
-
         public async Task<bool> PrintGCSupplyList()
         {
             if (!ContentsInfoDetail.Instance.IsOpen)
             {
-                Logging.Write($"Trying to open window");
+                Log.Verbose($"Trying to open GC Supply window");
 
                 if (!ContentsInfo.Instance.IsOpen)
                 {
@@ -318,17 +308,11 @@ namespace LlamaBotBases.GCDailyLisbeth
                 }
 
                 await Coroutine.Wait(5000, () => ContentsInfoDetail.Instance.IsOpen);
-
-                if (!ContentsInfoDetail.Instance.IsOpen)
-                {
-                    Logging.Write($"Nope failed opening GC Supply window");
-                    return false;
-                }
             }
 
             if (!ContentsInfoDetail.Instance.IsOpen)
             {
-                Logging.Write($"Nope failed");
+                Log.Error($"Nope failed opening GC Supply window");
                 return false;
             }
 
@@ -336,7 +320,7 @@ namespace LlamaBotBases.GCDailyLisbeth
             var id = 0;
             foreach (var item in ContentsInfoDetail.Instance.GetCraftingTurninItems())
             {
-                Logging.Write($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
+                Log.Information($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
                 var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, item.Value.Value);
                 outList.Add(order);
 
@@ -345,7 +329,7 @@ namespace LlamaBotBases.GCDailyLisbeth
 
             foreach (var item in ContentsInfoDetail.Instance.GetGatheringTurninItems())
             {
-                Logging.Write($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
+                Log.Information($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
                 var type = "Gather";
                 if (item.Value.Value.Equals("Fisher"))
                 {
@@ -363,7 +347,7 @@ namespace LlamaBotBases.GCDailyLisbeth
 
             foreach (var order in outList)
             {
-                Logging.Write($"{order}");
+                Log.Information($"{order}");
             }
 
             using (var outputFile = new StreamWriter("GCSupply.json", false))
@@ -393,7 +377,7 @@ namespace LlamaBotBases.GCDailyLisbeth
 
             if (!MasterPieceSupply.Instance.IsOpen)
             {
-                Logging.Write($"Trying to open window");
+                Log.Verbose($"Trying to open window");
 
                 AgentModule.ToggleAgentInterfaceById(95);
                 await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("ContentsInfo") != null);
@@ -401,7 +385,7 @@ namespace LlamaBotBases.GCDailyLisbeth
 
                 if (RaptureAtkUnitManager.GetWindowByName("ContentsInfo") == null)
                 {
-                    Logging.Write($"Nope failed opening timer window");
+                    Log.Error($"Nope failed opening timer window");
                     return false;
                 }
 
@@ -413,13 +397,13 @@ namespace LlamaBotBases.GCDailyLisbeth
 
             if (!MasterPieceSupply.Instance.IsOpen)
             {
-                Logging.Write($"Nope failed");
+                Log.Error($"Nope failed to open window");
                 return false;
             }
 
             foreach (var job in Classes)
             {
-                Logging.Write($"{job.Key}:");
+                Log.Information($"{job.Key}:");
 
                 MasterPieceSupply.Instance.ClassSelected = job.Value;
                 await Coroutine.Sleep(1000);
@@ -427,7 +411,7 @@ namespace LlamaBotBases.GCDailyLisbeth
                 //Can also use MasterPieceSupply.GetTurninItems() if you don't wanted starred info
                 foreach (var item in MasterPieceSupply.Instance.GetTurninItemsStarred())
                 {
-                    Logging.Write($"{item.Key} Starred: {item.Value}");
+                    Log.Information($"{item.Key} Starred: {item.Value}");
                 }
             }
 

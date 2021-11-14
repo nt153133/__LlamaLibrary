@@ -1,15 +1,16 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Clio.XmlEngine;
 using ff14bot.Enums;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
+using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
 {
     [XmlElement("EquipWeapon")]
-    public class EquipWeapon : ProfileBehavior
+    public class EquipWeapon : LLProfileBehavior
     {
         private bool _isDone;
 
@@ -20,6 +21,8 @@ namespace LlamaBotBases.OrderbotTags
         public int[] Item { get; set; }
 
         public override bool HighPriority => true;
+
+        public EquipWeapon() : base() { }
 
         protected override void OnStart()
         {
