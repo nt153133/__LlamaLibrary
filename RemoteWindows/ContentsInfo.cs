@@ -24,7 +24,7 @@ namespace LlamaLibrary.RemoteWindows
                 return true;
             }
 
-            AgentInterface<AgentContentsInfo>.Instance.Toggle();
+            AgentContentsInfo.Instance.Toggle();
             await Coroutine.Wait(5000, () => IsOpen);
 
             return IsOpen;

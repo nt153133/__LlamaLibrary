@@ -2,6 +2,9 @@
 
 namespace LlamaLibrary.RemoteWindows
 {
+    /// <summary>
+    ///     Window that is displayed when dealing with FC Aetherial Wheels.
+    /// </summary>
     public class AetherialWheel : RemoteWindow<AetherialWheel>
     {
         private const string WindowName = "AetherialWheel";
