@@ -3,12 +3,13 @@ using ff14bot.Managers;
 
 namespace LlamaLibrary.RemoteWindows
 {
+    //TODO Move element numbers to dictionary
     public class CollectablesShop : RemoteWindow<CollectablesShop>
     {
         private const string WindowName = "CollectablesShop";
 
-        public int RowCount => Elements()[20].TrimmedData - 1;
-        public int TurninCount => Elements()[4843].TrimmedData;
+        public int RowCount => Elements[20].TrimmedData - 1;
+        public int TurninCount => Elements[4843].TrimmedData;
         public CollectablesShop() : base(WindowName)
         {
             _name = WindowName;
@@ -31,12 +32,12 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<string> ListItems()
         {
-            var count = Elements()[20].TrimmedData - 1;
-            var currentElements = Elements();
+            var count = Elements[20].TrimmedData - 1;
+            var currentElements = Elements;
             var result = new List<string>();
             for (var j = 0; j < count; j++)
             {
-                if (currentElements[32 + (j * 11)].TrimmedData == Elements()[21].TrimmedData)
+                if (currentElements[32 + (j * 11)].TrimmedData == Elements[21].TrimmedData)
                 {
                     continue; //IconID
                 }

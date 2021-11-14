@@ -1,5 +1,6 @@
 ﻿namespace LlamaLibrary.RemoteWindows
 {
+    //TODO Move element numbers to dictionary
     public class GoldSaucerReward : RemoteWindow<GoldSaucerReward>
     {
         private const string WindowName = "GoldSaucerReward";
@@ -9,6 +10,6 @@
             _name = WindowName;
         }
 
-        public int MGPReward => Elements()[1].TrimmedData;
+        public int MGPReward => Elements[1].TrimmedData;
     }
 }

@@ -11,6 +11,7 @@ using static ff14bot.RemoteWindows.Talk;
 
 namespace LlamaLibrary.RemoteWindows
 {
+    //TODO Move element numbers to dictionary
     public class RetainerList : RemoteWindow<RetainerList>
     {
         private const string WindowName = "RetainerList";
@@ -24,7 +25,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public int NumberOfRetainers => OrderedRetainerList.Length;
 
-        public int NumberOfVentures => Elements()[1].TrimmedData;
+        public int NumberOfVentures => Elements[1].TrimmedData;
 
         public string RetainerName(int index)
         {
@@ -43,7 +44,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public RetainerRole RetainerRole(int index)
         {
-            return (RetainerRole)Elements()[(index * 9) + 4].TrimmedData;
+            return (RetainerRole)Elements[(index * 9) + 4].TrimmedData;
         }
 
         public async Task<bool> SelectRetainer(ulong retainerContentId)
@@ -99,6 +100,7 @@ namespace LlamaLibrary.RemoteWindows
         }
     }
 
+    //TODO this seems like it should be moved to extensions or just made into a function in RetainerInfo
     public static class Extensions
     {
         public static int IndexInList(this RetainerInfo[] list, ulong contentId)

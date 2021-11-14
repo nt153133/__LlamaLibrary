@@ -6,6 +6,7 @@ using ff14bot.RemoteWindows;
 
 namespace LlamaLibrary.RemoteWindows
 {
+    //TODO Move element numbers to dictionary
     public class MasterPieceSupply : RemoteWindow<MasterPieceSupply>
     {
         private const string WindowName = "MasterPieceSupply";
@@ -17,10 +18,10 @@ namespace LlamaLibrary.RemoteWindows
 
         public int ClassSelected
         {
-            get => Elements()[45].TrimmedData;
+            get => Elements[45].TrimmedData;
             set
             {
-                if (WindowByName != null && Elements()[45].TrimmedData != value)
+                if (WindowByName != null && Elements[45].TrimmedData != value)
                 {
                     SendAction(2, 1, 2, 1, (ulong)value);
                 }
@@ -29,12 +30,12 @@ namespace LlamaLibrary.RemoteWindows
 
         public int GetNumberOfTurnins()
         {
-            return IsOpen ? Elements()[0].TrimmedData : 0;
+            return IsOpen ? Elements[0].TrimmedData : 0;
         }
 
         public List<Item> GetTurninItems()
         {
-            var currentElements = Elements();
+            var currentElements = Elements;
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 87, GetNumberOfTurnins());
 
@@ -45,7 +46,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             var result = new Dictionary<Item, bool>();
 
-            var currentElements = Elements();
+            var currentElements = Elements;
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 87, GetNumberOfTurnins()).ToArray();
             var starElements = new ArraySegment<TwoInt>(currentElements, 447, GetNumberOfTurnins()).ToArray();

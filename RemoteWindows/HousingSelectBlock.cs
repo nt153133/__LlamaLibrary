@@ -4,6 +4,7 @@ using ff14bot;
 
 namespace LlamaLibrary.RemoteWindows
 {
+    //TODO Move element numbers to dictionary
     public class HousingSelectBlock : RemoteWindow<HousingSelectBlock>
     {
         private const string WindowName = "HousingSelectBlock";
@@ -13,25 +14,25 @@ namespace LlamaLibrary.RemoteWindows
             _name = WindowName;
         }
 
-        public int NumberOfWards => Elements()[3].TrimmedData;
+        public int NumberOfWards => Elements[3].TrimmedData;
 
-        public int NumberOfPlots => Elements()[34].TrimmedData;
+        public int NumberOfPlots => Elements[34].TrimmedData;
 
-        public string HousingWard => Core.Memory.ReadString((IntPtr)Elements()[2].Data, Encoding.UTF8);
+        public string HousingWard => Core.Memory.ReadString((IntPtr)Elements[2].Data, Encoding.UTF8);
 
         public string PlotPrice(int plot)
         {
-            return Core.Memory.ReadString((IntPtr)Elements()[37 + (plot * 7)].Data, Encoding.UTF8);
+            return Core.Memory.ReadString((IntPtr)Elements[37 + (plot * 7)].Data, Encoding.UTF8);
         }
 
         public string PlotString(int plot)
         {
-            return Core.Memory.ReadString((IntPtr)Elements()[36 + (plot * 7)].Data, Encoding.UTF8);
+            return Core.Memory.ReadString((IntPtr)Elements[36 + (plot * 7)].Data, Encoding.UTF8);
         }
 
         public string PlotString1(int plot)
         {
-            return Core.Memory.ReadString((IntPtr)Elements()[36 + (plot * 7)].Data, Encoding.Unicode);
+            return Core.Memory.ReadString((IntPtr)Elements[36 + (plot * 7)].Data, Encoding.Unicode);
         }
 
         public void SelectWard(int index)

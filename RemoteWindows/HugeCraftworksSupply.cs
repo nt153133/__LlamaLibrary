@@ -7,6 +7,7 @@ using LlamaLibrary.RemoteAgents;
 
 namespace LlamaLibrary.RemoteWindows
 {
+    //TODO Move element numbers to dictionary
     public class HugeCraftworksSupply : RemoteWindow<HugeCraftworksSupply>
     {
         private const string WindowName = "HugeCraftworksSupply";
@@ -16,7 +17,7 @@ namespace LlamaLibrary.RemoteWindows
             _name = WindowName;
         }
 
-        public int TurnInItemId => Elements()[9].TrimmedData;
+        public int TurnInItemId => Elements[9].TrimmedData;
 
         public void Deliver()
         {

@@ -7,6 +7,7 @@ using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.RemoteWindows
 {
+    //TODO Move element numbers to dictionary, though this one will be rough with the element offsets for the arrays
     public class SubmarinePartsMenu : RemoteWindow<SubmarinePartsMenu>
     {
         private const string WindowName = "SubmarinePartsMenu";
@@ -23,17 +24,17 @@ namespace LlamaLibrary.RemoteWindows
 
         public int GetNumberOfTurnins()
         {
-            return IsOpen ? Elements()[11].TrimmedData : 0;
+            return IsOpen ? Elements[11].TrimmedData : 0;
         }
 
         public int GetCraftItemID()
         {
-            return IsOpen ? Elements()[0].TrimmedData : 0;
+            return IsOpen ? Elements[0].TrimmedData : 0;
         }
 
         public List<Item> GetTurninItemsObjs()
         {
-            var currentElements = Elements();
+            var currentElements = Elements;
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 12, GetNumberOfTurnins());
 
@@ -42,7 +43,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<int> GetTurninItemsIds()
         {
-            var currentElements = Elements();
+            var currentElements = Elements;
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 12, GetNumberOfTurnins());
 
@@ -51,7 +52,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<int> GetTurninItemsQty()
         {
-            var currentElements = Elements();
+            var currentElements = Elements;
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 60, GetNumberOfTurnins());
 
@@ -60,7 +61,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<int> GetTurninsRequired()
         {
-            var currentElements = Elements();
+            var currentElements = Elements;
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 120, GetNumberOfTurnins());
 
@@ -69,7 +70,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<int> GetTurninsDone()
         {
-            var currentElements = Elements();
+            var currentElements = Elements;
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 108, GetNumberOfTurnins());
 
@@ -78,7 +79,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<int> GetItemAvailCount()
         {
-            var currentElements = Elements();
+            var currentElements = Elements;
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 72, GetNumberOfTurnins());
 

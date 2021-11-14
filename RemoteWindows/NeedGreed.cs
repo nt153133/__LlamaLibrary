@@ -1,5 +1,6 @@
 ﻿namespace LlamaLibrary.RemoteWindows
 {
+    //TODO Move element numbers to dictionary
     public class NeedGreed : RemoteWindow<NeedGreed>
     {
         private const string WindowName = "NeedGreed";
@@ -9,7 +10,7 @@
             _name = WindowName;
         }
 
-        public int NumberOfItems => Elements()[3].TrimmedData;
+        public int NumberOfItems => Elements[3].TrimmedData;
 
         public uint[] ItemIds
         {
@@ -19,7 +20,7 @@
                 var j = 0;
                 for (var i = 7; i < NumberOfItems; i += 7)
                 {
-                    result[j] = (uint)Elements()[i].TrimmedData;
+                    result[j] = (uint)Elements[i].TrimmedData;
                     j++;
                 }
 

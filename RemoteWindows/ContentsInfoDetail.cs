@@ -7,6 +7,7 @@ using LlamaLibrary.Enums;
 
 namespace LlamaLibrary.RemoteWindows
 {
+    //TODO Move element numbers to dictionary...Also wtf is this mess
     public class ContentsInfoDetail : RemoteWindow<ContentsInfoDetail>
     {
         private const string WindowName = "ContentsInfoDetail";
@@ -37,17 +38,17 @@ namespace LlamaLibrary.RemoteWindows
 
         public int GetNumberOfCraftingTurnins()
         {
-            return IsOpen ? Elements()[eleNumCrafting].TrimmedData : 0;
+            return IsOpen ? Elements[eleNumCrafting].TrimmedData : 0;
         }
 
         public int GetNumberOfGatheringTurnins()
         {
-            return IsOpen ? Elements()[eleNumGathering].TrimmedData : 0;
+            return IsOpen ? Elements[eleNumGathering].TrimmedData : 0;
         }
 
         public List<Item> GetCraftingTurninItemsIds()
         {
-            var currentElements = Elements();
+            var currentElements = Elements;
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 209, GetNumberOfCraftingTurnins());
 
@@ -56,7 +57,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<Item> GetGatheringTurninItemsIds()
         {
-            var currentElements = Elements();
+            var currentElements = Elements;
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 268, GetNumberOfGatheringTurnins());
 
@@ -66,7 +67,7 @@ namespace LlamaLibrary.RemoteWindows
         public Dictionary<Item, KeyValuePair<int, string>> GetCraftingTurninItems()
         {
             var result = new Dictionary<Item, KeyValuePair<int, string>>();
-            var currentElements = Elements();
+            var currentElements = Elements;
             var itemElements = new ArraySegment<TwoInt>(currentElements, eleCraftingItem, GetNumberOfCraftingTurnins()).ToArray();
             var jobElements = new ArraySegment<TwoInt>(currentElements, eleCraftingJob, GetNumberOfCraftingTurnins()).ToArray();
             var qtyElements = new ArraySegment<TwoInt>(currentElements, eleCraftingQty, GetNumberOfCraftingTurnins()).ToArray();
@@ -82,7 +83,7 @@ namespace LlamaLibrary.RemoteWindows
         public Dictionary<Item, KeyValuePair<int, string>> GetGatheringTurninItems()
         {
             var result = new Dictionary<Item, KeyValuePair<int, string>>();
-            var currentElements = Elements();
+            var currentElements = Elements;
             var itemElements = new ArraySegment<TwoInt>(currentElements, eleGatheringItem, GetNumberOfGatheringTurnins()).ToArray();
             var jobElements = new ArraySegment<TwoInt>(currentElements, eleGatheringJob, GetNumberOfGatheringTurnins()).ToArray();
             var qtyElements = new ArraySegment<TwoInt>(currentElements, eleGatheringQty, GetNumberOfGatheringTurnins()).ToArray();

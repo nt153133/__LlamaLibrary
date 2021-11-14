@@ -42,7 +42,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public string GetElementString(int index)
         {
-            return Elements()[index].Data != 0 ? Core.Memory.ReadString((IntPtr)Elements()[index].Data, Encoding.UTF8) : "";
+            return Elements[index].Data != 0 ? Core.Memory.ReadString((IntPtr)Elements[index].Data, Encoding.UTF8) : "";
         }
 
         public int GetNumberOfBeastTribeAllowance()

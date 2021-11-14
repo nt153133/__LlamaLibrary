@@ -8,6 +8,7 @@ using ff14bot.RemoteWindows;
 
 namespace LlamaLibrary.RemoteWindows
 {
+    //TODO Move element numbers to dictionary
     public class FreeShop : RemoteWindow<FreeShop>
     {
         private const string WindowName = "FreeShop";
@@ -17,11 +18,11 @@ namespace LlamaLibrary.RemoteWindows
             _name = WindowName;
         }
 
-        public int NumberOfItems => Elements()[3].TrimmedData;
+        public int NumberOfItems => Elements[3].TrimmedData;
 
         public List<Item> GetAvailItems()
         {
-            var currentElements = Elements();
+            var currentElements = Elements;
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 65, NumberOfItems);
 

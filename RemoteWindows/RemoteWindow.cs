@@ -78,22 +78,22 @@ namespace LlamaLibrary.RemoteWindows
             return IsOpen;
         }
 
-        protected TwoInt[] Elements()
+        protected TwoInt[] Elements
         {
-            if (WindowByName == null)
+            get
             {
-                return null;
+                if (WindowByName == null)
+                {
+                    return null;
+                }
+
+                var elementCount = ElementCount;
+                var addr = Core.Memory.Read<IntPtr>(WindowByName.Pointer + Offset2);
+                return Core.Memory.ReadArray<TwoInt>(addr, elementCount);
             }
-
-            var elementCount = ElementCount();
-            var addr = Core.Memory.Read<IntPtr>(WindowByName.Pointer + Offset2);
-            return Core.Memory.ReadArray<TwoInt>(addr, elementCount);
         }
 
-        protected ushort ElementCount()
-        {
-            return WindowByName != null ? Core.Memory.Read<ushort>(WindowByName.Pointer + Offset0) : (ushort)0;
-        }
+        protected ushort ElementCount => WindowByName != null ? Core.Memory.Read<ushort>(WindowByName.Pointer + Offset0) : (ushort)0;
 
         protected void SendAction(int pairCount, params ulong[] param)
         {
