@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Windows.Media;
 using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.NeoProfiles;
-using LlamaLibrary.Logging;
 using TreeSharp;
 using Action = TreeSharp.Action;
 
@@ -65,7 +63,7 @@ namespace LlamaBotBases.OrderbotTags
             var canonicalPath = new Uri(absolutePath).LocalPath;
             newProfilePath = Slashify(canonicalPath);
 
-            Log.Information("Changing profile to {0}", ProfileName);
+            Log.Information($"Changing profile to {ProfileName}");
         }
 
         /// <summary>

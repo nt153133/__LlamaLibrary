@@ -34,12 +34,9 @@ namespace LlamaBotBases.OrderbotTags
 
         public override bool IsDone => _isDone;
 
+        protected override Color LogColor => Colors.Chocolate;
 
-
-        public LisbethOrderBot() : base()
-        {
-            LogColor = Colors.Chocolate;
-        }
+        public LisbethOrderBot() : base() { }
 
         private async void MyThread()
         {

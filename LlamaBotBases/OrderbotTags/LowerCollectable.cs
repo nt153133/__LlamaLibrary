@@ -20,10 +20,9 @@ namespace LlamaBotBases.OrderbotTags
 
         public override bool HighPriority => true;
 
-        public LowerCollectable() : base()
-        {
-            LogColor = Colors.Chocolate;
-        }
+        protected override Color LogColor => Colors.Chocolate;
+
+        public LowerCollectable() : base() { }
 
         protected override void OnStart()
         {
