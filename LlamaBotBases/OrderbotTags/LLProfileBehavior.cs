@@ -17,8 +17,8 @@ namespace LlamaBotBases.OrderbotTags
         /// </summary>
         protected new readonly LLogger Log;
 
-        protected string Name => ((XmlElementAttribute)Attribute.GetCustomAttributes(GetType(), typeof(XmlElementAttribute)).FirstOrDefault()).Name;
-        protected Color LogColor = Colors.White;
+        protected virtual string Name => ((XmlElementAttribute)Attribute.GetCustomAttributes(GetType(), typeof(XmlElementAttribute)).FirstOrDefault()).Name;
+        protected virtual Color LogColor => Colors.White;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LLProfileBehavior"/> class.

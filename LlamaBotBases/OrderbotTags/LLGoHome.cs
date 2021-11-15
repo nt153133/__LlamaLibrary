@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Windows.Media;
 using Clio.XmlEngine;
 using TreeSharp;
 
@@ -12,6 +13,8 @@ namespace LlamaBotBases.OrderbotTags
         public override bool HighPriority => true;
 
         public override bool IsDone => _isDone;
+
+        protected override Color LogColor => Colors.Chartreuse;
 
         public LLGoHome() : base() { }
 
@@ -35,6 +38,7 @@ namespace LlamaBotBases.OrderbotTags
 
         private async Task LLGoHomeTask()
         {
+            Log.Information("Going Home");
             await LlamaLibrary.Helpers.GeneralFunctions.GoHome();
 
             _isDone = true;
