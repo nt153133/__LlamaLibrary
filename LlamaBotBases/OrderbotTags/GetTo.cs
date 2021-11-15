@@ -58,7 +58,7 @@ namespace LlamaBotBases.OrderbotTags
             var path = await NavGraph.GetPathAsync((uint)ZoneId, XYZ);
             if (path == null)
             {
-                LogError($"Couldn't get a path to {XYZ} on {ZoneId}, Stopping.");
+                Log.Error($"Couldn't get a path to {XYZ} on {ZoneId}, Stopping.");
                 return true;
             }
 

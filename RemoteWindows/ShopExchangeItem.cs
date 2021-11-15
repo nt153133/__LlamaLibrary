@@ -1,15 +1,19 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot.Behavior;
 using ff14bot.Managers;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.RemoteWindows
 {
     public class ShopExchangeItem : RemoteWindow<ShopExchangeItem>
     {
+        private static readonly LLogger Log = new LLogger(WindowName, Colors.Fuchsia);
+
         private const string WindowName = "ShopExchangeItem";
 
         public ShopExchangeItem() : base(WindowName)
@@ -28,7 +32,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var specialShopItem = items?.Cast<SpecialShopItem?>().FirstOrDefault(i => i.HasValue && i.Value.ItemIds.Contains(itemId));
 
-            //Logging.Write(Colors.Fuchsia, $"[ShopExchangeItem] Buying {specialShopItem}");
+            Log.Verbose($"Buying {specialShopItem}");
             if (!specialShopItem.HasValue)
             {
                 return 0u;
@@ -44,7 +48,7 @@ namespace LlamaLibrary.RemoteWindows
                 return 0;
             }
 
-            // Logging.Write(Colors.Fuchsia, $"[Purchase] Can afford {CanAfford(specialShopItem.Value)}");
+            Log.Verbose($"Can afford {CanAfford(specialShopItem.Value)}");
             var index = items.IndexOf(specialShopItem.Value);
             var obj = new ulong[8]
             {
@@ -59,14 +63,15 @@ namespace LlamaLibrary.RemoteWindows
             };
             obj[3] = (uint)index;
             obj[5] = itemCount;
-            SendAction(4, obj);
 
-            // Logging.Write(Colors.Fuchsia, $"[Purchase] Sent Action");
+            SendAction(4, obj);
+            Log.Verbose($"Sent Action for purchase");
+
             await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog") != null);
 
             if (RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog") != null)
             {
-                //Logging.Write(Colors.Fuchsia, $"[Purchase] ShopExchangeItemDialog Open");
+                Log.Verbose($"ShopExchangeItemDialog Open");
                 RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog").SendAction(1, 3, 0);
                 await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog") == null);
 
@@ -74,7 +79,7 @@ namespace LlamaLibrary.RemoteWindows
 
                 if (SelectYesno.IsOpen)
                 {
-                    //Logging.Write(Colors.Fuchsia, $"[Purchase] Yes/no");
+                    Log.Verbose($"SelectYesno open");
                     SelectYesno.Yes();
                     await Coroutine.Wait(2000, () => !SelectYesno.IsOpen);
 
@@ -83,7 +88,7 @@ namespace LlamaLibrary.RemoteWindows
 
                 if (Request.IsOpen)
                 {
-                    // Logging.Write(Colors.Fuchsia, $"[Purchase] Request");
+                    Log.Verbose("Purchase request");
                     for (var i = 0; i < 3; i++)
                     {
                         BagSlot item;
@@ -96,7 +101,7 @@ namespace LlamaLibrary.RemoteWindows
                             item = InventoryManager.FilledInventoryAndArmory.FirstOrDefault(j => j.RawItemId == specialShopItem.Value.CurrencyTypes[i] && j.Count >= specialShopItem.Value.CurrencyCosts[i]);
                         }
 
-                        // Logging.Write(Colors.Fuchsia, $"[Purchase] Request item {item}");
+                        Log.Verbose($"[Purchase] Request item {item}");
                         if (item != null)
                         {
                             item.Handover();
@@ -113,7 +118,7 @@ namespace LlamaLibrary.RemoteWindows
                 }
                 else
                 {
-                    //Logging.Write(Colors.Fuchsia, $"[Purchase] Request Not open");
+                    Log.Debug($"[Purchase] Request Not open");
                 }
 
                 if (QuestLogManager.InCutscene && AgentInterface<AgentCutScene>.Instance.CanSkip && !SelectString.IsOpen)

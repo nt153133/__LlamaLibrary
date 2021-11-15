@@ -11,7 +11,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Media;
 using Clio.Utilities;
 using Clio.XmlEngine;
 using ff14bot;
@@ -20,7 +19,6 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
-using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
@@ -152,11 +150,11 @@ namespace LlamaBotBases.OrderbotTags
             {
                 if (RequiresHq.Length != ItemIds.Length)
                 {
-                    LogError("RequiresHq must have the same number of items as ItemIds");
+                    Log.Error("RequiresHq must have the same number of items as ItemIds");
                 }
             }
 
-            Log("Turning in quest {0}({1}) from {2} at {3}", QuestName, QuestId, _questGiver, Position);
+            Log.Information($"Turning in quest {QuestName} (ID: {QuestId}) from {_questGiver} at {Position}");
         }
 
         protected override void OnResetCachedDone()
@@ -232,11 +230,11 @@ namespace LlamaBotBases.OrderbotTags
                         {
                             if (RequiresHq[i])
                             {
-                                LogError("We don't have any high quality items with an id of {0}", ItemIds[i]);
+                                Log.Error($"We don't have any high quality items with an id of {ItemIds[i]}");
                             }
                             else
                             {
-                                LogError("We don't have any items with an id of {0}", ItemIds[i]);
+                                Log.Error($"We don't have any items with an id of {ItemIds[i]}");
                             }
                         }
                         else

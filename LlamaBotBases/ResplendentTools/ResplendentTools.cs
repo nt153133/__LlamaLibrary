@@ -8,12 +8,12 @@ using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
 using ff14bot.Pathing.Service_Navigation;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Structs;
 using Newtonsoft.Json;
 using TreeSharp;
@@ -24,6 +24,8 @@ namespace LlamaBotBases.ResplendentTools
 {
     public class ResplendentToolsCrafter : BotBase
     {
+        private static readonly LLogger Log = new LLogger(_name, Colors.Gold);
+
         private Composite _root;
         public override string Name => _name;
 
@@ -151,20 +153,20 @@ namespace LlamaBotBases.ResplendentTools
             return Math.Min(30 - (finalItemCount / 2), currentIngredientCount / 2);
         }
 
-        public static async Task DoResplendentCrafting()
+        public async Task DoResplendentCrafting()
         {
             var lisbethOrder = await GetLisbethResplendentOrder();
 
             if (lisbethOrder == "")
             {
-                Log("Not Calling lisbeth.");
+                Log.Warning("Not Calling lisbeth.");
             }
             else
             {
-                Log("Calling lisbeth");
+                Log.Information("Calling lisbeth");
                 if (!await Lisbeth.ExecuteOrders(lisbethOrder))
                 {
-                    Log("Lisbeth order failed, Dumping order to GCSupply.json");
+                    Log.Error("Lisbeth order failed, Dumping order to GCSupply.json");
                     using (var outputFile = new StreamWriter("GCSupply.json", false))
                     {
                         await outputFile.WriteAsync(lisbethOrder);
@@ -172,7 +174,7 @@ namespace LlamaBotBases.ResplendentTools
                 }
                 else
                 {
-                    Log("Lisbeth order should be done");
+                    Log.Information("Lisbeth order should be done");
                 }
             }
         }
@@ -180,12 +182,6 @@ namespace LlamaBotBases.ResplendentTools
         public static async Task TurninResplendentCrafting()
         {
             await GeneralFunctions.TurninResplendentCrafting();
-        }
-
-        private static void Log(string text, params object[] args)
-        {
-            var msg = string.Format("[" + _name + "] " + text, args);
-            Logging.Write(Colors.Gold, msg);
         }
     }
 }

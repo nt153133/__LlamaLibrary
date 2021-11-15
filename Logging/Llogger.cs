@@ -37,17 +37,6 @@ namespace LlamaLibrary.Logging
             LogLevel = logLevel;
         }
 
-        // TODO: Decide if worth adding to LLogger's API or elsewhere.
-
-        /// <summary>
-        /// Writes a hexadecimal-formatted <see cref="IntPtr"/> to log.
-        /// </summary>
-        /// <param name="pointer"><see cref="IntPtr"/> to log.</param>
-        public void Log(IntPtr pointer)
-        {
-            Information(pointer.ToString("X"));
-        }
-
         /// <summary>
         /// Checks if <see cref="LogLevel"/> will print from this <see cref="LLogger"/>.
         /// </summary>

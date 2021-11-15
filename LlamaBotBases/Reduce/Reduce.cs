@@ -8,12 +8,12 @@ using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
@@ -23,8 +23,9 @@ namespace LlamaBotBases.Reduce
     public class Reduce : BotBase
     {
         private static readonly string BotName = "Aetherial Reduction";
-
         private static readonly Version V = new Version(1, 0, 3);
+
+        private static readonly LLogger Log = new LLogger(BotName, Colors.Green);
 
         public static bool IsBusy => DutyManager.InInstance || DutyManager.InQueue || DutyManager.DutyReady || Core.Me.IsCasting || Core.Me.IsMounted || Core.Me.InCombat || Talk.DialogOpen || MovementManager.IsMoving ||
                                      MovementManager.IsOccupied;
@@ -131,18 +132,6 @@ namespace LlamaBotBases.Reduce
             }
         }
 
-        private static void Log(string text, params object[] args)
-        {
-            var msg = string.Format("[" + BotName + "] " + text, args);
-            Logging.Write(Colors.Green, msg);
-        }
-
-        private static void LogVerbose(string text, params object[] args)
-        {
-            var msg = string.Format("[" + BotName + "] " + text, args);
-            Logging.WriteVerbose(msg);
-        }
-
         public override void Initialize()
         {
             OffsetManager.Init();
@@ -152,7 +141,7 @@ namespace LlamaBotBases.Reduce
         {
             foreach (var bagslot in InventoryManager.FilledSlots.Where(bagslot => bagslot.Item.ItemAction == 388))
             {
-                Log(string.Format("Opening Coffer {0}", bagslot.Name));
+                Log.Information($"Opening Coffer {bagslot.Name}");
                 bagslot.UseItem();
                 await Coroutine.Sleep(5000);
             }
@@ -162,12 +151,12 @@ namespace LlamaBotBases.Reduce
 
         public override void Start()
         {
-            Log("Settings:");
-            Log($"Armory: {ReduceSettings.Instance.IncludeArmory}");
-            Log($"Include DE index < 10000: {ReduceSettings.Instance.IncludeDE10000}");
-            Log($"Stay running: {ReduceSettings.Instance.StayRunning}");
-            Log($"Zone: {ReduceSettings.Instance.AEZoneCheck} {ReduceSettings.Instance.AEZone}");
-            Log($"Offset Desynth: {Offsets.SalvageAgent.ToInt64():x}");
+            Log.Information("Settings:");
+            Log.Information($"Armory: {ReduceSettings.Instance.IncludeArmory}");
+            Log.Information($"Include DE index < 10000: {ReduceSettings.Instance.IncludeDE10000}");
+            Log.Information($"Stay running: {ReduceSettings.Instance.StayRunning}");
+            Log.Information($"Zone: {ReduceSettings.Instance.AEZoneCheck} {ReduceSettings.Instance.AEZone}");
+            Log.Information($"Offset Desynth: {Offsets.SalvageAgent.ToInt64():x}");
             _root = new ActionRunCoroutine(r => Run());
         }
 
@@ -233,7 +222,7 @@ namespace LlamaBotBases.Reduce
                     break;
                 }
 
-                Log($"Reducing - Name: {item.Item.CurrentLocaleName}");
+                Log.Information($"Reducing - Name: {item.Item.CurrentLocaleName}");
                 item.Reduce();
                 await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) != 0);
                 await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) == 0);
@@ -255,7 +244,7 @@ namespace LlamaBotBases.Reduce
                 await GeneralFunctions.StopBusy(leaveDuty: false);
                 if (IsBusy)
                 {
-                    Log("Can't desynth right now, we're busy.");
+                    Log.Information("Can't desynth right now, we're busy.");
                     return false;
                 }
             }
@@ -264,11 +253,11 @@ namespace LlamaBotBases.Reduce
 
             if (!toDesynthList.Any())
             {
-                Log("No items to desynth.");
+                Log.Warning("No items to desynth.");
                 return false;
             }
 
-            Log($"# of slots to Desynth: {toDesynthList.Count()}");
+            Log.Warning($"# of slots to Desynth: {toDesynthList.Count()}");
             foreach (var bagSlot in toDesynthList)
             {
                 bagSlot.Desynth();
@@ -298,7 +287,7 @@ namespace LlamaBotBases.Reduce
                 await GeneralFunctions.StopBusy(leaveDuty: false);
                 if (IsBusy)
                 {
-                    Log("Can't desynth right now, we're busy.");
+                    Log.Warning("Can't desynth right now, we're busy.");
                     return false;
                 }
             }
@@ -316,11 +305,11 @@ namespace LlamaBotBases.Reduce
 
             if (!toDesynthList.Any())
             {
-                Log("No items to desynth.");
+                Log.Warning("No items to desynth.");
                 return false;
             }
 
-            Log($"# of slots to Desynth: {toDesynthList.Count()}");
+            Log.Information($"# of slots to Desynth: {toDesynthList.Count()}");
 
             foreach (var bagSlot in toDesynthList)
             {
@@ -353,7 +342,7 @@ namespace LlamaBotBases.Reduce
             var agentSalvageInterface = AgentInterface<AgentSalvage>.Instance;
             var agentSalvage = Offsets.SalvageAgent;
 
-            Log($"Desynthesize Item - Name: {slot.Item.CurrentLocaleName}{(slot.Item.IsHighQuality ? " HQ" : string.Empty)}");
+            Log.Information($"Desynthesize Item - Name: {slot.Item.CurrentLocaleName}{(slot.Item.IsHighQuality ? " HQ" : string.Empty)}");
             var itemId = slot.RawItemId;
             while (slot.IsValid && slot.IsFilled && slot.RawItemId == itemId)
             {
@@ -364,20 +353,20 @@ namespace LlamaBotBases.Reduce
 
                 await Coroutine.Sleep(200);
 
-                // Log($"Waiting for SalvageDialog.");
+                Log.Verbose($"Waiting for SalvageDialog.");
                 await Coroutine.Wait(5000, () => SalvageDialog.IsOpen);
 
                 if (SalvageDialog.IsOpen)
                 {
-                    //  Log($"Sending Desynth action.");
+                    Log.Verbose($"Sending Desynth action.");
                     RaptureAtkUnitManager.GetWindowByName("SalvageDialog").SendAction(1, 3, 0);
                     await Coroutine.Sleep(500);
                 }
 
-                // Log($"Wait for DesynthLock byte 1.");
+                Log.Verbose($"Wait for DesynthLock byte 1.");
                 await Coroutine.Wait(5000, () => Core.Memory.NoCacheRead<uint>(Offsets.Conditions + Offsets.DesynthLock) != 0);
 
-                // Log($"Wait for DesynthLock byte 0");
+                Log.Verbose($"Wait for DesynthLock byte 0");
                 await Coroutine.Wait(6000, () => Core.Memory.NoCacheRead<uint>(Offsets.Conditions + Offsets.DesynthLock) == 0);
                 await Coroutine.Sleep(100);
                 await Coroutine.Wait(6000, () => SalvageResult.IsOpen || SalvageAutoDialog.Instance.IsOpen);
@@ -415,7 +404,7 @@ namespace LlamaBotBases.Reduce
             {
                 foreach (var slot in gear)
                 {
-                    Log($"Extract Materia from: {slot}");
+                    Log.Information($"Extract Materia from: {slot}");
                     slot.ExtractMateria();
                     await Coroutine.Wait(5000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) != 0);
                     await Coroutine.Wait(6000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) == 0);

@@ -65,7 +65,7 @@ namespace LlamaBotBases.OrderbotTags
             var canonicalPath = new Uri(absolutePath).LocalPath;
             newProfilePath = Slashify(canonicalPath);
 
-            Log("Changing profile to {0}", ProfileName);
+            Log.Information("Changing profile to {0}", ProfileName);
         }
 
         /// <summary>

@@ -29,7 +29,7 @@ namespace LlamaLibrary.RemoteAgents
         {
             using (Core.Memory.TemporaryCacheState(enabledTemporarily: false))
             {
-                //Logging.Write($"{Pointer + Offsets.TabStart - 0x6} {Offsets.TabSlotCount}");
+                //Log.Information($"{Pointer + Offsets.TabStart - 0x6} {Offsets.TabSlotCount}");
                 return Core.Memory.ReadArray<FishGuideItem>(Pointer + Offsets.TabStart - 0x6, Offsets.TabSlotCount); //.Select(x => x.FishItem) as List<uint>;
             }
         }

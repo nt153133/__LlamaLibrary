@@ -58,7 +58,7 @@ namespace LlamaLibrary.RetainerItemFinder
 
             VisitedNodes.Add(ParentStart);
 
-            //Logging.Write(Colors.OrangeRed, $"ParentStart {ParentStart.ToString("X")}");
+            Log.Information($"ParentStart {ParentStart.ToString("X")}");
 
             Visit(TreeStart);
 
@@ -163,7 +163,7 @@ namespace LlamaLibrary.RetainerItemFinder
             }
             else
             {
-                //Logging.Write(Colors.OrangeRed, $"Adding node");
+                Log.Verbose($"Adding node");
                 RetainerInventoryPointers.Add(node.RetainerId, new StoredRetainerInventory(node.RetainerInventory));
             }
 

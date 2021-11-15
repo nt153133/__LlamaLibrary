@@ -276,7 +276,7 @@ namespace LlamaLibrary.Retainers
 
         public static async Task<bool> SelectRetainer(ulong retainerContentId)
         {
-            //Log($"Selecting retainer {retainerContentId}");
+            Log.Information($"Selecting retainer {retainerContentId}");
             if (RetainerList.Instance.IsOpen)
             {
                 return await RetainerList.Instance.SelectRetainer(retainerContentId);
@@ -366,7 +366,7 @@ namespace LlamaLibrary.Retainers
 
             if (SelectString.Lines().Contains(Translator.VentureCompleteText))
             {
-                //Log("Venture Done");
+                Log.Verbose("Venture Done");
                 SelectString.ClickLineEquals(Translator.VentureCompleteText);
 
                 await Coroutine.Wait(5000, () => RetainerTaskResult.IsOpen);

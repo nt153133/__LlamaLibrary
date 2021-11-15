@@ -72,12 +72,12 @@ namespace LlamaBotBases.OrderbotTags
                 slot.Discard();
                 if (await Coroutine.Wait(5000, () => !slot.IsValid || !slot.IsFilled))
                 {
-                    Log($"Discarded item: {name}.");
+                    Log.Information($"Discarded item: {name}.");
                     await Coroutine.Sleep(800);
                 }
                 else
                 {
-                    Log($"Could not discard item: {name}.");
+                    Log.Error($"Could not discard item: {name}.");
                 }
             }
 

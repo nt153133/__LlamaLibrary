@@ -260,10 +260,10 @@ namespace LlamaLibrary.Memory
             if (result == IntPtr.Zero)
             {
                 if(field.DeclaringType != null && field.DeclaringType.IsNested)
-                    Log($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                    Log.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
                 else
                 {
-                    Log($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                    Log.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
                 }
             }
             */

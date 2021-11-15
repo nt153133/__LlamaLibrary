@@ -43,11 +43,8 @@ namespace LlamaLibrary.RemoteAgents
         public IntPtr GetRosterPtr()
         {
             var ptr1 = Core.Memory.Read<IntPtr>(Pointer + 0x48);
-
-            //  Log(ptr1);
             var ptr2 = Core.Memory.Read<IntPtr>(ptr1 + 0x98);
 
-            // Log(ptr2);
             return ptr2;
         }
 

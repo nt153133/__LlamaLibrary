@@ -56,11 +56,11 @@ namespace LlamaBotBases.OrderbotTags
             var agentSalvageInterface = AgentInterface<AgentSalvage>.Instance;
             var agentSalvage = Offsets.SalvageAgent;
 
-            //Log($"{itemsToDesynth.Count()}");
+            //Log.Information($"{itemsToDesynth.Count()}");
 
             foreach (var item in itemsToDesynth)
             {
-                Log($"Desynthesize Item - Name: {item.Item.CurrentLocaleName}");
+                Log.Information($"Desynthesize Item - Name: {item.Item.CurrentLocaleName}");
 
                 lock (Core.Memory.Executor.AssemblyLock)
                 {
@@ -87,13 +87,13 @@ namespace LlamaBotBases.OrderbotTags
                     }
                     else
                     {
-                        Log("Result didn't open");
+                        Log.Error("Result didn't open");
                         break;
                     }
                 }
                 else
                 {
-                    Log("SalvageDialog didn't open");
+                    Log.Error("SalvageDialog didn't open");
                     break;
                 }
             }

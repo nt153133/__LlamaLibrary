@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -13,19 +12,14 @@ using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
-using ff14bot.NeoProfiles;
-using ff14bot.Objects;
-using ff14bot.Pathing;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
-using GreyMagic;
 using LlamaBotBases.Retainers;
-using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
@@ -34,13 +28,13 @@ using LlamaLibrary.Structs;
 using Newtonsoft.Json;
 using TreeSharp;
 using static ff14bot.RemoteWindows.Talk;
-using static LlamaLibrary.Retainers.HelperFunctions;
-using RemoteWindows = LlamaLibrary.RemoteWindows;
 
 namespace LlamaBotBases.Tester
 {
     public class TesterBase : BotBase
     {
+        private static readonly LLogger Log = new LLogger("Tester", Colors.Pink);
+
         internal static List<RetainerTaskData> VentureData;
 
         private readonly SortedDictionary<string, List<string>> luaFunctions = new SortedDictionary<string, List<string>>();
@@ -66,7 +60,7 @@ namespace LlamaBotBases.Tester
             Task.Factory.StartNew(() =>
             {
                 Init();
-                Log("INIT DONE");
+                Log.Information("INIT DONE");
             });
         }
 
@@ -96,7 +90,7 @@ namespace LlamaBotBases.Tester
                 }
             }
 
-            Log($"\n {sb1}");
+            Log.Information($"\n {sb1}");
             */
             DumpOffsets();
             DumpLLOffsets();
@@ -106,9 +100,9 @@ namespace LlamaBotBases.Tester
         {
             OffsetManager.Init();
 
-            Log("Load venture.json");
+            Log.Information("Load venture.json");
             VentureData = LoadResource<List<RetainerTaskData>>(LlamaLibrary.Properties.Resources.Ventures);
-            Log("Loaded venture.json");
+            Log.Information("Loaded venture.json");
         }
 
         private static T LoadResource<T>(string text)
@@ -173,12 +167,12 @@ namespace LlamaBotBases.Tester
                 await Coroutine.Wait(10000, () => ShopExchangeItem.Instance.IsOpen);
                 if (ShopExchangeItem.Instance.IsOpen)
                 {
-                    Log($"Window Open");
+                    Log.Verbose($"Window Open");
                     foreach (var turnin in turninItems)
                     {
                         var reward = GatheringItems[turnin.RawItemId].Reward;
                         var amt = turnin.Count / GatheringItems[turnin.RawItemId].Cost;
-                        Log($"Buying {amt}x{DataManager.GetItem(reward).CurrentLocaleName}");
+                        Log.Information($"Buying {amt}x{DataManager.GetItem(reward).CurrentLocaleName}");
                         await ShopExchangeItem.Instance.Purchase(reward, amt);
                         await Coroutine.Sleep(500);
                     }
@@ -217,7 +211,7 @@ namespace LlamaBotBases.Tester
 
             if (collectables.Any(i => TurnItemList.Keys.Contains(i)))
             {
-                Log("Have collectables");
+                Log.Information("Have collectables");
                 foreach (var collectable in collectablesAll)
                 {
                     if (TurnItemList.Keys.Contains(collectable.RawItemId))
@@ -225,7 +219,7 @@ namespace LlamaBotBases.Tester
                         var turnin = TurnItemList[collectable.RawItemId];
                         if (collectable.Collectability < turnin.MinCollectability)
                         {
-                            Log($"Discarding {collectable.Name} is at {collectable.Collectability} which is under {turnin.MinCollectability}");
+                            Log.Information($"Discarding {collectable.Name} is at {collectable.Collectability} which is under {turnin.MinCollectability}");
                             collectable.Discard();
                         }
                     }
@@ -238,23 +232,23 @@ namespace LlamaBotBases.Tester
 
                 if (CollectablesShop.Instance.IsOpen)
                 {
-                    // Log("Window open");
+                    Log.Verbose("Window open");
                     foreach (var item in collectables)
                     {
-                        Log($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
+                        Log.Information($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
                         var turnin = TurnItemList[item];
 
-                        // Log($"Pressing job {turnin.Job}");
+                        Log.Verbose($"Pressing job {turnin.Job}");
                         CollectablesShop.Instance.SelectJob(turnin.Job);
                         await Coroutine.Sleep(500);
 
-                        //  Log($"Pressing position {turnin.Position}");
+                        Log.Verbose($"Pressing position {turnin.Position}");
                         CollectablesShop.Instance.SelectItem(turnin.Position);
                         await Coroutine.Sleep(1000);
                         var i = 0;
                         while (CollectablesShop.Instance.TurninCount > 0)
                         {
-                            // Log($"Pressing trade {i}");
+                            Log.Verbose($"Pressing trade {i}");
                             i++;
                             CollectablesShop.Instance.Trade();
                             await Coroutine.Sleep(100);
@@ -269,7 +263,7 @@ namespace LlamaBotBases.Tester
 
         private Task<bool> Run()
         {
-            Log($"HomeWorldId: {WorldHelper.HomeWorldId}, CurrentWorldId: {WorldHelper.CurrentWorldId}, DataCenterId: {WorldHelper.DataCenterId}");
+            Log.Information($"HomeWorldId: {WorldHelper.HomeWorldId}, CurrentWorldId: {WorldHelper.CurrentWorldId}, DataCenterId: {WorldHelper.DataCenterId}");
 
             Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
@@ -279,19 +273,14 @@ namespace LlamaBotBases.Tester
             return Task.FromResult(true);
         }
 
-        private void Log(IntPtr instancePointer)
+        private void LogPtr(IntPtr instancePointer)
         {
-            Log($"{instancePointer.ToString("X")}");
-        }
-
-        private void LogPtr(IntPtr pointer)
-        {
-            Log(pointer.ToString("X"));
+            Log.Information(instancePointer.ToString("X"));
         }
 
         private Task TestHook()
         {
-            Log("LL hook");
+            Log.Information("LL hook");
             return Task.CompletedTask;
         }
 
@@ -307,12 +296,12 @@ namespace LlamaBotBases.Tester
 
                 if (name.ToLowerInvariant().Contains("vtable") && name.ToLowerInvariant().Contains("agent"))
                 {
-                    Log($"Agent_{name}, {pattern}");
+                    Log.Information($"Agent_{name}, {pattern}");
                     sb1.AppendLine($"{name.Replace("Vtable", "").Replace("vtable", "").Replace("VTable", "").Replace("_", "")}, {pattern}");
                 }
                 else if (!name.ToLowerInvariant().Contains("exd"))
                 {
-                    Log($"{name}, {pattern}");
+                    Log.Information($"{name}, {pattern}");
                     sb.AppendLine($"{name}, {pattern}");
                 }
             }
@@ -485,16 +474,6 @@ namespace LlamaBotBases.Tester
             return functions;
         }
 
-        public static void LogCritical(string text)
-        {
-            Logging.Write(Colors.OrangeRed, text);
-        }
-
-        public static void LogSucess(string text)
-        {
-            Logging.Write(Colors.Green, text);
-        }
-
         public async Task<bool> RetainerCheck(RetainerInfo retainer)
         {
             if (retainer.Job != ClassJobType.Adventurer)
@@ -510,7 +489,7 @@ namespace LlamaBotBases.Tester
                     }
                     else
                     {
-                        Log($"Venture will be done at {RetainerInfo.UnixTimeStampToDateTime(retainer.VentureEndTimestamp)}");
+                        Log.Information($"Venture will be done at {RetainerInfo.UnixTimeStampToDateTime(retainer.VentureEndTimestamp)}");
                     }
                 }
             }
@@ -520,9 +499,9 @@ namespace LlamaBotBases.Tester
                 await RetainerRoutine.DumpItems();
             }
 
-            Log("Done checking against player inventory");
+            Log.Information("Done checking against player inventory");
 
-            //Log($"{RetainerInfo.UnixTimeStampToDateTime(retainer.VentureEndTimestamp)}");
+            //Log.Debug($"{RetainerInfo.UnixTimeStampToDateTime(retainer.VentureEndTimestamp)}");
 
             return true;
         }
@@ -536,14 +515,14 @@ namespace LlamaBotBases.Tester
 
             if (SelectString.Lines().Contains(Translator.VentureCompleteText))
             {
-                Log("Venture Done");
+                Log.Information("Venture Done");
                 SelectString.ClickLineEquals(Translator.VentureCompleteText);
 
                 await Coroutine.Wait(5000, () => RetainerTaskResult.IsOpen);
 
                 if (!RetainerTaskResult.IsOpen)
                 {
-                    Log("RetainerTaskResult didn't open");
+                    Log.Error("RetainerTaskResult didn't open");
                     return false;
                 }
 
@@ -551,15 +530,15 @@ namespace LlamaBotBases.Tester
 
                 var task = VentureData.First(i => i.Id == taskId);
 
-                Log($"Finished Venture {task.Name}");
-                Log($"Reassigning Venture {task.Name}");
+                Log.Information($"Finished Venture {task.Name}");
+                Log.Information($"Reassigning Venture {task.Name}");
 
                 RetainerTaskResult.Reassign();
 
                 await Coroutine.Wait(5000, () => RetainerTaskAsk.IsOpen);
                 if (!RetainerTaskAsk.IsOpen)
                 {
-                    Log("RetainerTaskAsk didn't open");
+                    Log.Error("RetainerTaskAsk didn't open");
                     return false;
                 }
 
@@ -570,7 +549,7 @@ namespace LlamaBotBases.Tester
                 }
                 else
                 {
-                    Log($"RetainerTaskAsk Error: {RetainerTaskAskExtensions.GetErrorReason()}");
+                    Log.Error($"RetainerTaskAsk Error: {RetainerTaskAskExtensions.GetErrorReason()}");
                     RetainerTaskAsk.Close();
                 }
 
@@ -586,23 +565,10 @@ namespace LlamaBotBases.Tester
             }
             else
             {
-                Log("Venture Not Done");
+                Log.Information("Venture Not Done");
             }
 
             return true;
         }
-
-        private void Log(string text, params object[] args)
-        {
-            var msg = string.Format("[" + Name + "] " + text, args);
-            Logging.Write(Colors.Pink, msg);
-        }
-
-        private static void Log(string text)
-        {
-            var msg = "[Tester] " + text;
-            Logging.Write(Colors.Pink, msg);
-        }
-
     }
 }

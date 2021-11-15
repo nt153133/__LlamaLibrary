@@ -616,7 +616,7 @@ namespace LlamaLibrary.Helpers
 
                 if (!ConditionParser.HasAetheryte(AetheryteId))
                 {
-                    //LogError($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
+                    //Log.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
                     //TreeRoot.Stop();
                     return false;
                 }

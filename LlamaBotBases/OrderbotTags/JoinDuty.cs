@@ -6,7 +6,6 @@ using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
 using TreeSharp;
@@ -61,12 +60,12 @@ namespace LlamaBotBases.OrderbotTags
         {
             if (Undersized)
             {
-                Logging.WriteDiagnostic("Joining Duty as Undersized party.");
+                Log.Information("Joining Duty as Undersized party.");
                 GameSettingsManager.JoinWithUndersizedParty = true;
             }
             else
             {
-                Logging.WriteDiagnostic("Joining Duty as normal group.");
+                Log.Information("Joining Duty as normal group.");
                 GameSettingsManager.JoinWithUndersizedParty = false;
             }
 
@@ -74,34 +73,31 @@ namespace LlamaBotBases.OrderbotTags
             {
                 while (DutyManager.QueueState == QueueState.None)
                 {
-                    Logging.WriteDiagnostic("Queuing for " + DataManager.InstanceContentResults[(uint)DutyId].CurrentLocaleName);
+                    Log.Information("Queuing for " + DataManager.InstanceContentResults[(uint)DutyId].CurrentLocaleName);
                     DutyManager.Queue(DataManager.InstanceContentResults[(uint)DutyId]);
                     await Coroutine.Wait(10000, () => (DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance));
                     if (DutyManager.QueueState != QueueState.None)
                     {
-                        Logging.WriteDiagnostic("Queued for Dungeon");
+                        Log.Information("Queued for Dungeon");
                     }
-
-                    if (DutyManager.QueueState == QueueState.None)
+                    else if (DutyManager.QueueState == QueueState.None)
                     {
-                        Logging.WriteDiagnostic("Something went wrong, queueing again...");
-                        Logging.WriteDiagnostic("Queuing for " + DataManager.InstanceContentResults[(uint)DutyId].CurrentLocaleName);
-                        DutyManager.Queue(DataManager.InstanceContentResults[(uint)DutyId]);
+                        Log.Error("Something went wrong, queueing again...");
                     }
                 }
             }
             else
             {
-                Logging.WriteDiagnostic("Waiting for dungeon queue.");
+                Log.Information("Waiting for dungeon queue.");
                 await Coroutine.Wait(-1, () => (DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance));
-                Logging.WriteDiagnostic("Queued for Dungeon");
+                Log.Information("Queued for Dungeon");
             }
 
             while (DutyManager.QueueState != QueueState.None || DutyManager.QueueState != QueueState.InDungeon || CommonBehaviors.IsLoading)
             {
                 if (DutyManager.QueueState == QueueState.CommenceAvailable)
                 {
-                    Logging.WriteDiagnostic("Waiting for queue pop.");
+                    Log.Information("Waiting for queue pop.");
                     await Coroutine.Wait(
                         -1,
                         () => (DutyManager.QueueState == QueueState.JoiningInstance ||
@@ -110,7 +106,7 @@ namespace LlamaBotBases.OrderbotTags
 
                 if (DutyManager.QueueState == QueueState.JoiningInstance)
                 {
-                    Logging.WriteDiagnostic("Dungeon popped, commencing in 3.");
+                    Log.Information("Dungeon popped, commencing in 3 seconds.");
                     await Coroutine.Sleep(3000);
                     DutyManager.Commence();
                     await Coroutine.Wait(
@@ -121,7 +117,7 @@ namespace LlamaBotBases.OrderbotTags
 
                 if (DutyManager.QueueState == QueueState.LoadingContent)
                 {
-                    Logging.WriteDiagnostic("Waiting for everyone to accept");
+                    Log.Information("Waiting for everyone to accept queue.");
                     await Coroutine.Wait(-1, () => (CommonBehaviors.IsLoading || DutyManager.QueueState == QueueState.CommenceAvailable));
                     await Coroutine.Sleep(1000);
                 }
@@ -159,7 +155,7 @@ namespace LlamaBotBases.OrderbotTags
                 }
             }
 
-            Logging.WriteDiagnostic("Should be in duty");
+            Log.Information("Should be in duty");
 
             var director = (ff14bot.Directors.InstanceContentDirector)DirectorManager.ActiveDirector;
             if (director != null)
@@ -168,7 +164,7 @@ namespace LlamaBotBases.OrderbotTags
                 {
                     if (director.TimeLeftInDungeon >= new TimeSpan(0, 60, 0))
                     {
-                        Logging.WriteDiagnostic("Barrier up");
+                        Log.Information("Barrier up");
                         await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < new TimeSpan(0, 59, 58));
                     }
                 }
@@ -177,7 +173,7 @@ namespace LlamaBotBases.OrderbotTags
                 {
                     if (director.TimeLeftInDungeon >= new TimeSpan(2, 0, 0))
                     {
-                        Logging.WriteDiagnostic("Barrier up");
+                        Log.Information("Barrier up");
                         await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < new TimeSpan(1, 59, 58));
                     }
                 }
@@ -185,17 +181,17 @@ namespace LlamaBotBases.OrderbotTags
                 {
                     if (director.TimeLeftInDungeon >= new TimeSpan(1, 30, 0))
                     {
-                        Logging.WriteDiagnostic("Barrier up");
+                        Log.Information("Barrier up");
                         await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < new TimeSpan(1, 29, 58));
                     }
                 }
             }
             else
             {
-                Logging.WriteDiagnostic("Director is null");
+                Log.Error("Director is null");
             }
 
-            Logging.WriteDiagnostic("Should be ready");
+            Log.Information("Should be ready");
 
             _isDone = true;
         }

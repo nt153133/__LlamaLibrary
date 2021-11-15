@@ -11,11 +11,9 @@ using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.BotBases;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.NeoProfile;
 using ff14bot.NeoProfiles;
-using LlamaLibrary.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TreeSharp;
@@ -36,11 +34,16 @@ namespace LlamaBotBases.OrderbotTags
 
         public override bool IsDone => _isDone;
 
-        public LisbethOrderBot() : base() { }
 
-        private static async void MyThread()
+
+        public LisbethOrderBot() : base()
         {
-            Logging.Write(Colors.Chocolate, "[LisbethOrderTag] Thread Started");
+            LogColor = Colors.Chocolate;
+        }
+
+        private async void MyThread()
+        {
+            Log.Information("Thread Started");
 
             var profile = NeoProfileManager.CurrentProfile.Path;
 
@@ -52,7 +55,7 @@ namespace LlamaBotBases.OrderbotTags
 
             if (!TreeRoot.IsRunning)
             {
-                Logging.Write(Colors.Chocolate, $"[LisbethOrderTag] Bot Stopped: {lastBot.Name} {profile}");
+                Log.Information($"Bot Stopped: {lastBot.Name} {profile}");
 
                 var BotType = AppDomain.CurrentDomain.GetAssemblies().First(i => i.FullName.Contains("Lisbeth.Reborn")).DefinedTypes.First(i => i.Name == "LisbethBot");
 
@@ -70,13 +73,13 @@ namespace LlamaBotBases.OrderbotTags
             }
             else
             {
-                Logging.Write(Colors.Chocolate, "[LisbethOrderTag] Failed Stopping bot");
+                Log.Information($"Failed Stopping bot");
             }
 
             await WaitUntil(() => TreeRoot.IsRunning, timeout: 20000);
             if (TreeRoot.IsRunning)
             {
-                Logging.Write(Colors.Chocolate, "[LisbethOrderTag] Lisbeth Started");
+                Log.Information($"Lisbeth Started");
 
                 await WaitWhile(() => TreeRoot.IsRunning, 500);
 
@@ -84,7 +87,7 @@ namespace LlamaBotBases.OrderbotTags
                 {
                     if (lastBot != null)
                     {
-                        Logging.Write(Colors.Chocolate, $"[LisbethOrderTag] Restarting {lastBot.Name}");
+                        Log.Information($"Restarting {lastBot.Name}");
                         BotManager.SetCurrent(lastBot);
                         Thread.Sleep(1000);
                         loaded = false;
@@ -101,7 +104,7 @@ namespace LlamaBotBases.OrderbotTags
                     }
                     else
                     {
-                        Logging.Write(Colors.Chocolate, "[LisbethOrderTag] LastBot Null: Starting Orderbot");
+                        Log.Information($"LastBot Null: Starting Orderbot");
                         BotManager.SetCurrent(new OrderBot());
                         BotManager.Current.Start();
                     }
@@ -109,10 +112,10 @@ namespace LlamaBotBases.OrderbotTags
             }
             else
             {
-                Logging.Write(Colors.Chocolate, "[LisbethOrderTag] Failed To Start Lisbeth");
+                Log.Information($"Failed To Start Lisbeth");
             }
 
-            Logging.Write(Colors.Chocolate, "[LisbethOrderTag] Thread Stopped");
+            Log.Information($"Thread Stopped");
 
             //_isDone = true;
         }
@@ -130,7 +133,7 @@ namespace LlamaBotBases.OrderbotTags
                 BotType = AppDomain.CurrentDomain.GetAssemblies().First(i => i.FullName.Contains("Lisbeth")).DefinedTypes.FirstOrDefault(i => i.Name == "Directories");
             }
 
-            Logging.Write(Colors.Chocolate, $"[LisbethOrderTag] Lisbeth Type {BotType.FullName}");
+            Log.Information($"Lisbeth Type {BotType.FullName}");
 
             var settingsFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), (string)BotType.GetProperty("SettingsPath").GetValue(null));
             var resumePath = Path.Combine(Path.GetDirectoryName(settingsFilePath), "lisbeth-resume.json");
@@ -152,7 +155,7 @@ namespace LlamaBotBases.OrderbotTags
                 File.Delete(resumePath);
             }
 
-            Logging.Write(Colors.Chocolate, "[LisbethOrderTag] Settings Written");
+            Log.Information($"Settings Written");
 
             await Coroutine.Sleep(1000);
 
@@ -178,9 +181,9 @@ namespace LlamaBotBases.OrderbotTags
             return JsonConvert.SerializeObject(orders, Formatting.None);
         }
 
-        private static void OnBotStart(BotBase bot)
+        private void OnBotStart(BotBase bot)
         {
-            Logging.Write(Colors.Chocolate, $"[LisbethOrderTag] {bot.Name} Started");
+            Log.Information($"{bot.Name} Started");
             tempbool = true;
         }
 

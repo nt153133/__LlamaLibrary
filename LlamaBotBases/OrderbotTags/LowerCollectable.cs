@@ -4,11 +4,8 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
-using ff14bot.Helpers;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using LlamaLibrary.Extensions;
-using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
@@ -23,7 +20,10 @@ namespace LlamaBotBases.OrderbotTags
 
         public override bool HighPriority => true;
 
-        public LowerCollectable() : base() { }
+        public LowerCollectable() : base()
+        {
+            LogColor = Colors.Chocolate;
+        }
 
         protected override void OnStart()
         {
@@ -52,7 +52,7 @@ namespace LlamaBotBases.OrderbotTags
             {
                 foreach (var slot in HQslots)
                 {
-                    Logging.Write(Colors.Chocolate, $"[LowerQuality] Lower {slot}");
+                    Log.Information($"Lower {slot}");
                     slot.LowerQuality();
                     ids.Add(slot.RawItemId);
                     await Coroutine.Sleep(1000);

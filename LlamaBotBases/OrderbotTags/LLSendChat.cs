@@ -2,14 +2,12 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using Clio.XmlEngine;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Managers;
-using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
@@ -122,7 +120,7 @@ namespace LlamaBotBases.OrderbotTags
             {
                 if (GearsetManager.ActiveGearset.Index == GearSet)
                 {
-                    Log("Desired Gearset is already active");
+                    Log.Warning("Desired Gearset is already active");
                     _done = true;
                     return false;
                 }
@@ -131,7 +129,7 @@ namespace LlamaBotBases.OrderbotTags
                 {
                     if (gs.Index == GearSet)
                     {
-                        Log($"Changing your Gearset to {gs.Class}.");
+                        Log.Information($"Changing your Gearset to {gs.Class}.");
                         gs.Activate();
                     }
                 }
@@ -151,31 +149,31 @@ namespace LlamaBotBases.OrderbotTags
                     return false;
                 }
 
-                Log($"Removing Aura {thisAura}.");
+                Log.Information($"Removing Aura {thisAura}.");
                 ChatManager.SendChat("/statusoff \"" + thisAura + "\"");
             }
 
             if (DoAction != null)
             {
-                Log($"Using {DoAction} on Player.");
+                Log.Information($"Using {DoAction} on Player.");
                 ChatManager.SendChat("/ac \"" + DoAction + "\" <me>");
             }
 
             if (DoActionTarget != null)
             {
-                Log($"Using {DoActionTarget} on Current Target.");
+                Log.Information($"Using {DoActionTarget} on Current Target.");
                 ChatManager.SendChat("/ac \"" + DoActionTarget + "\" <target>");
             }
 
             if (Say != null)
             {
-                Log($"Saying {Say}.");
+                Log.Information($"Saying {Say}.");
                 ChatManager.SendChat("/s " + Say);
             }
 
             if (Shout != null)
             {
-                Log($"Shouting {Shout}.");
+                Log.Information($"Shouting {Shout}.");
                 ChatManager.SendChat("/shout " + Shout);
             }
 
@@ -184,18 +182,18 @@ namespace LlamaBotBases.OrderbotTags
                 if (NpcId > 0)
                 {
                     var obj = GameObjectManager.GetObjectByNPCId((uint)NpcId);
-                    Log($"Targeting {obj.EnglishName}.");
+                    Log.Information($"Targeting {obj.EnglishName}.");
                     obj.Target();
                 }
 
-                Log($"Using the {Emote} Emote.");
+                Log.Information($"Using the {Emote} Emote.");
                 ChatManager.SendChat("/" + Emote);
             }
 
             if (QuestItem > 0 && XYZ != null)
             {
                 var item = InventoryManager.FilledSlots.FirstOrDefault(r => r.RawItemId == QuestItem);
-                Log($"Using {item.EnglishName} on {XYZ}.");
+                Log.Information($"Using {item.EnglishName} on {XYZ}.");
                 ActionManager.DoActionLocation(ff14bot.Enums.ActionType.KeyItem, (uint)QuestItem, XYZ);
                 await Coroutine.Wait(10000, () => !Core.Player.IsCasting);
             }

@@ -64,11 +64,11 @@ namespace LlamaLibrary.RemoteWindows
                 Log.Information($"Buying {FcShopActions.First(i => i.ActionId == actionId).Name}");
                 ClickItem(FcShopActions.First(i => i.ActionId == actionId).ShopIndex);
 
-                //Logging.Write("Waiting for Yes/No");
+                //Log.Verbose("Waiting for Yes/No");
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                 if (SelectYesno.IsOpen)
                 {
-                    //Logging.Write("Yes/No Open");
+                    //Log.Verbose("Yes/No Open");
                     SelectYesno.Yes();
                     await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
                     await Coroutine.Sleep(500);
@@ -82,7 +82,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             if (index >= 0)
             {
-                //Logging.Write("Send Action");
+                //Log.Verbose("Send Action");
                 SendAction(2, 3, 2, 4, (ulong)index);
             }
         }
