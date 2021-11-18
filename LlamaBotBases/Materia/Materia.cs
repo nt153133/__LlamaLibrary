@@ -97,7 +97,7 @@ namespace LlamaBotBases.Materia
             {
                 if (ItemToAffixMateria != null && ItemToAffixMateria.IsValid)
                 {
-                    await AffixMateria(ItemToAffixMateria, MateriaToAdd);
+                    //await AffixMateria(ItemToAffixMateria, MateriaToAdd);
                 }
                 else
                 {
@@ -125,6 +125,7 @@ namespace LlamaBotBases.Materia
             return JsonConvert.DeserializeObject<T>(text);
         }
 
+        /*
         public static async Task<bool> AffixMateria(BagSlot bagSlot, List<BagSlot> materiaList)
         {
             Log.Information($"MateriaList count {materiaList.Count}");
@@ -234,7 +235,7 @@ namespace LlamaBotBases.Materia
             }
 
             return true;
-        }
+        }*/
 
         public static async Task<bool> RemoveMateria(BagSlot bagSlot)
         {

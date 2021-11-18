@@ -12,6 +12,7 @@ using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
+using LlamaLibrary;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
@@ -75,13 +76,13 @@ namespace LlamaBotBases.Retainers
 
         public override Composite Root => _root;
 
-        internal static Lazy<List<RetainerTaskData>> VentureData;
+
         private int ventures;
 
         internal void VenturesInit()
         {
             Log.Information("Load venture.json");
-            VentureData = new Lazy<List<RetainerTaskData>>(() => LoadResource<List<RetainerTaskData>>(LlamaLibrary.Properties.Resources.Ventures));
+
             Log.Information("Loaded venture.json");
         }
 
@@ -502,7 +503,7 @@ namespace LlamaBotBases.Retainers
 
                     var taskId = AgentRetainerVenture.Instance.RetainerTask;
 
-                    var task = VentureData.Value.FirstOrDefault(i => i.Id == taskId);
+                    var task = ResourceManager.VentureData.Value.FirstOrDefault(i => i.Id == taskId);
 
                     if (task != default(RetainerTaskData))
                     {
@@ -582,7 +583,7 @@ namespace LlamaBotBases.Retainers
 
                 var taskId = AgentRetainerVenture.Instance.RetainerTask;
 
-                var task = VentureData.Value.FirstOrDefault(i => i.Id == taskId);
+                var task = ResourceManager.VentureData.Value.FirstOrDefault(i => i.Id == taskId);
 
                 if (task != default(RetainerTaskData))
                 {

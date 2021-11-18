@@ -17,6 +17,7 @@ using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
 using LlamaBotBases.Retainers;
+using LlamaLibrary;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
@@ -34,8 +35,6 @@ namespace LlamaBotBases.Tester
     public class TesterBase : BotBase
     {
         private static readonly LLogger Log = new LLogger("Tester", Colors.Pink);
-
-        internal static List<RetainerTaskData> VentureData;
 
         private readonly SortedDictionary<string, List<string>> luaFunctions = new SortedDictionary<string, List<string>>();
 
@@ -100,9 +99,6 @@ namespace LlamaBotBases.Tester
         {
             OffsetManager.Init();
 
-            Log.Information("Load venture.json");
-            VentureData = LoadResource<List<RetainerTaskData>>(LlamaLibrary.Properties.Resources.Ventures);
-            Log.Information("Loaded venture.json");
         }
 
         private static T LoadResource<T>(string text)
@@ -528,7 +524,7 @@ namespace LlamaBotBases.Tester
 
                 var taskId = AgentRetainerVenture.Instance.RetainerTask;
 
-                var task = VentureData.First(i => i.Id == taskId);
+                var task = ResourceManager.VentureData.Value.First(i => i.Id == taskId);
 
                 Log.Information($"Finished Venture {task.Name}");
                 Log.Information($"Reassigning Venture {task.Name}");
