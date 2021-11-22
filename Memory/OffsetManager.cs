@@ -39,7 +39,7 @@ namespace LlamaLibrary.Memory
         public static Dictionary<string, string> patterns = new Dictionary<string, string>();
         public static Dictionary<string, string> constants = new Dictionary<string, string>();
 
-        private static readonly bool _debug = false;
+        private static readonly bool _debug = true;
 
         public static LLogger Log1 => Log;
 
@@ -56,8 +56,8 @@ namespace LlamaLibrary.Memory
             }
 
             var q1 = from t in Assembly.GetExecutingAssembly().GetTypes()
-                     where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static).Any(i => i.Name == "Offsets"))
-                     select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static);
+                     where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+                     select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public);
 
             var types = typeof(Offsets).GetFields().Concat(q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public)));
 

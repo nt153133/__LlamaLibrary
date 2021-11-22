@@ -327,7 +327,7 @@ namespace LlamaLibrary.Extensions
             return count;
         }
 
-        public static List<MateriaItem> Materia(BagSlot bagSlot)
+        public static List<MateriaItem> Materia(this BagSlot bagSlot)
         {
             var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + Offsets.BagSlotMateriaType, 5);
             var materiaLevel = Core.Memory.ReadArray<byte>(bagSlot.Pointer + Offsets.BagSlotMateriaLevel, 5);
