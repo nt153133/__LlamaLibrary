@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -10,9 +11,12 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
+using LlamaBotBases.Tester.Settings;
 using LlamaBotBases.Tester.Tasks;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
+using LlamaLibrary.Utilities;
 using Newtonsoft.Json;
 using TreeSharp;
 
@@ -41,8 +45,8 @@ namespace LlamaBotBases.Tester
 
         public override void Start()
         {
-            Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
+            Navigator.PlayerMover = new SlideMover();
 
             if (BotTask.Type == TaskType.None)
             {
@@ -62,7 +66,8 @@ namespace LlamaBotBases.Tester
 
         public override void Stop()
         {
-            base.Stop();
+            (Navigator.NavigationProvider as IDisposable)?.Dispose();
+            Navigator.NavigationProvider = null;
         }
 
         public override void OnButtonPress()
@@ -94,6 +99,35 @@ namespace LlamaBotBases.Tester
                 case TaskType.Reduce:
                     break;
                 case TaskType.Desynth:
+                    break;
+                case TaskType.None:
+                    break;
+                case TaskType.Hunts:
+                    var huntTypes = new List<int>();
+                    if (HuntsSettings.Instance.ARRHunts)
+                    {
+                        huntTypes.AddRange(HuntHelper.ARRHunts);
+                    }
+
+                    if (HuntsSettings.Instance.VerteranClanHunts)
+                    {
+                        huntTypes.AddRange(HuntHelper.VerteranClanHunts);
+                    }
+
+                    if (HuntsSettings.Instance.NutClanHunts)
+                    {
+                        huntTypes.AddRange(HuntHelper.NutClanHunts);
+                    }
+
+                    if (huntTypes.Count > 0)
+                    {
+                        await Hunts.DoHunts(huntTypes.ToArray());
+                    }
+                    else
+                    {
+                        Log.Error("Select some hunt types in settings");
+                    }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

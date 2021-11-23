@@ -6,6 +6,7 @@
         MateriaRemove,
         AutoFollow,
         Reduce,
-        Desynth
+        Desynth,
+        Hunts
     }
 }

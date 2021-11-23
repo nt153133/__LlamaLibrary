@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using ff14bot;
 using ff14bot.Managers;
 using LlamaBotBases.Materia;
+using LlamaBotBases.Tester.Settings;
 using LlamaBotBases.Tester.Tasks;
 using LlamaLibrary.Extensions;
 using Newtonsoft.Json;
@@ -100,6 +101,7 @@ namespace LlamaBotBases.Tester
         {
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;
             itemCb.SelectionChangeCommitted += new System.EventHandler(itemCb_SelectionChangeCommitted);
+            pgHunts.SelectedObject = HuntsSettings.Instance;
 
             bindingSourceInventory.Clear();
 
@@ -128,6 +130,18 @@ namespace LlamaBotBases.Tester
         private void bindingSourceInventory_CurrentChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnHuntStart_Click(object sender, EventArgs e)
+        {
+            var task = new BotTask()
+            {
+                Type = TaskType.Hunts,
+                TaskInfo = ""
+            };
+
+            UtilitiesBase.BotTask = task;
+            StartBotBase();
         }
     }
 }

@@ -182,6 +182,7 @@
     <Compile Include="Retainers\RetainersSettingsForm.designer.cs">
       <DependentUpon>RetainersSettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tester\Settings\HuntsSettings.cs" />
     <Compile Include="Tester\Tasks\BotTask.cs" />
     <Compile Include="Tester\Tasks\TaskType.cs" />
     <Compile Include="Tester\TesterBase.cs" />

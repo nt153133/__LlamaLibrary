@@ -212,6 +212,7 @@
     <Compile Include="Structs\RequestItem.cs" />
     <Compile Include="Structs\RetainerInfo.cs" />
     <Compile Include="Structs\RowenaItem.cs" />
+    <Compile Include="Utilities\Hunts.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
