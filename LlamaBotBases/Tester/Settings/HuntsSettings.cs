@@ -5,7 +5,7 @@ using LlamaLibrary.Helpers;
 
 namespace LlamaBotBases.Tester.Settings
 {
-    public class HuntsSettings: JsonSettings
+    public class HuntsSettings : JsonSettings
     {
         public static HuntsSettings Instance => _settings ?? (_settings = new HuntsSettings());
 

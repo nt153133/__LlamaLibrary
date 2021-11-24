@@ -34,9 +34,7 @@ namespace LlamaLibrary.Utilities
         internal static bool InFight => GameObjectManager.Attackers.Any();
         internal static BattleCharacter FirstAttacker => GameObjectManager.Attackers.FirstOrDefault();
 
-        static int[] dailyOrderTypes = { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
-
-
+        private static int[] dailyOrderTypes = { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
 
         public static async Task DoHunts(int[] huntTypes)
         {
@@ -109,14 +107,13 @@ namespace LlamaLibrary.Utilities
                 }
             }
 
-            return statues.Any(i => i.Item2 == HuntOrderStatus.UnFinishedOld);
+            return statues.Any(i => i.HuntOrderStatus == HuntOrderStatus.UnFinishedOld);
         }
 
         public static async Task CompleteHunts()
         {
             await CompleteHunts(dailyOrderTypes);
         }
-
 
         public static async Task CompleteHunts(int[] orderTypes)
         {

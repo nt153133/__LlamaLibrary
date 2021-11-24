@@ -26,6 +26,7 @@ using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Retainers;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Utilities;
 using Newtonsoft.Json;
 using TreeSharp;
 using static ff14bot.RemoteWindows.Talk;

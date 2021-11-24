@@ -297,7 +297,6 @@ namespace LlamaLibrary.Extensions
             }
         }
 
-        //TODO this stupid 0x20 should be a pattern
         public static bool HasMateria(this BagSlot bagSlot)
         {
             var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + Offsets.BagSlotMateriaType, 5);

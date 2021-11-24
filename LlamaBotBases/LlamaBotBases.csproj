@@ -99,9 +99,7 @@
       <DependentUpon>AutoTradeSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomDeliveries\CustomDeliveriesBase.cs" />
-    <Compile Include="DailyHunts\HuntBase.cs" />
     <Compile Include="FCWorkshop\FCWorkshopBase.cs" />
-    <Compile Include="GatherTest\GatherTest.cs" />
     <Compile Include="GCDailyLisbeth\GCSupplyBase.cs" />
     <Compile Include="GCExpertTurnin\GCExpertGrindBase.cs" />
     <Compile Include="GCExpertTurnin\GCExpertSettings.cs" />
@@ -113,14 +111,6 @@
     </Compile>
     <Compile Include="HousingChecker\HouseChecker.cs" />
     <Compile Include="IshgardHandin\IshgardHandinBase.cs" />
-    <Compile Include="Materia\Materia.cs" />
-    <Compile Include="Materia\MateriaItem.cs" />
-    <Compile Include="Materia\MateriaSettingsFrm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Materia\MateriaSettingsFrm.Designer.cs">
-      <DependentUpon>MateriaSettingsFrm.cs</DependentUpon>
-    </Compile>
     <Compile Include="OrderbotTags\AutoEquip.cs" />
     <Compile Include="OrderbotTags\AutoInventoryEquip.cs" />
     <Compile Include="OrderbotTags\AutoLisbethEquip.cs" />
@@ -213,9 +203,6 @@
     <EmbeddedResource Include="AutoRetainerSort\Strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Materia\MateriaSettingsFrm.resx">
-      <DependentUpon>MateriaSettingsFrm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reduce\ReduceSettingsForm.resx">
       <DependentUpon>ReduceSettingsForm.cs</DependentUpon>

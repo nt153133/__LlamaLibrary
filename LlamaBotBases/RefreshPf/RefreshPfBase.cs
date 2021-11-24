@@ -57,54 +57,54 @@ namespace LlamaBotBases.RefreshPf
                 case PlayerIcon.Trial_Adventurer:
                 case PlayerIcon.New_Adventurer:
                 case PlayerIcon.None:
-                {
-                    if (PfWindow == null)
                     {
-                        AgentModule.ToggleAgentInterfaceById(agentId);
-                        await Coroutine.Wait(5000, () => PfWindow != null);
-
-                        if (PfWindow != null)
+                        if (PfWindow == null)
                         {
-                            PfWindow.SendAction(1, 3, 0xE);
-                            await Coroutine.Wait(5000, () => PfConditionWindow != null);
+                            AgentModule.ToggleAgentInterfaceById(agentId);
+                            await Coroutine.Wait(5000, () => PfWindow != null);
 
-                            if (PfConditionWindow != null)
+                            if (PfWindow != null)
                             {
-                                var elements = ___Elements(PfConditionWindow);
-                                var data = Core.Memory.ReadString((IntPtr)elements[184].Data, Encoding.UTF8);
-                                if (data != "")
+                                PfWindow.SendAction(1, 3, 0xE);
+                                await Coroutine.Wait(5000, () => PfConditionWindow != null);
+
+                                if (PfConditionWindow != null)
                                 {
-                                    PfConditionWindow.SendAction(1, 3, 0x0);
-                                    Log.Information("Registering PF");
-                                    await Coroutine.Sleep(2000);
-                                    await Coroutine.Wait(5000, () => PfConditionWindow == null);
-                                    if (PfWindow != null)
+                                    var elements = ___Elements(PfConditionWindow);
+                                    var data = Core.Memory.ReadString((IntPtr)elements[184].Data, Encoding.UTF8);
+                                    if (data != "")
                                     {
-                                        Log.Information("Closing PF window");
-                                        PfWindow.SendAction(1, 3, uint.MaxValue);
+                                        PfConditionWindow.SendAction(1, 3, 0x0);
+                                        Log.Information("Registering PF");
+                                        await Coroutine.Sleep(2000);
+                                        await Coroutine.Wait(5000, () => PfConditionWindow == null);
+                                        if (PfWindow != null)
+                                        {
+                                            Log.Information("Closing PF window");
+                                            PfWindow.SendAction(1, 3, uint.MaxValue);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Log.Error("No Comment Setup. Quiting");
+                                        TreeRoot.Stop("No Comment Setup");
                                     }
                                 }
                                 else
                                 {
-                                    Log.Error("No Comment Setup. Quiting");
-                                    TreeRoot.Stop("No Comment Setup");
+                                    Log.Error("Condition window didn't open");
+                                    TreeRoot.Stop("Shit Happens");
                                 }
                             }
                             else
                             {
-                                Log.Error("Condition window didn't open");
+                                Log.Error("PF window didn't open");
                                 TreeRoot.Stop("Shit Happens");
                             }
                         }
-                        else
-                        {
-                            Log.Error("PF window didn't open");
-                            TreeRoot.Stop("Shit Happens");
-                        }
-                    }
 
-                    break;
-                }
+                        break;
+                    }
             }
 
             return true;

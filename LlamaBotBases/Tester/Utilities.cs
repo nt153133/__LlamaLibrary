@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ff14bot;
 using ff14bot.Managers;
-using LlamaBotBases.Materia;
 using LlamaBotBases.Tester.Settings;
 using LlamaBotBases.Tester.Tasks;
 using LlamaLibrary.Extensions;
@@ -53,7 +52,7 @@ namespace LlamaBotBases.Tester
                 return;
             }
 
-            (uint, ushort) stuff = ((uint) _selectedBagSlot.BagId, _selectedBagSlot.Slot);
+            (uint, ushort) stuff = ((uint)_selectedBagSlot.BagId, _selectedBagSlot.Slot);
             var taskInfo = JsonConvert.SerializeObject(stuff);
 
             var task = new BotTask()
@@ -105,7 +104,7 @@ namespace LlamaBotBases.Tester
 
             bindingSourceInventory.Clear();
 
-            foreach (var bagSlot in InventoryManager.EquippedItems.Where(MateriaBase.HasMateria))
+            foreach (var bagSlot in InventoryManager.EquippedItems.Where(i => i.HasMateria()))
             {
                 bindingSourceInventory.Add(bagSlot);
             }
@@ -115,7 +114,7 @@ namespace LlamaBotBases.Tester
 
             if (_selectedBagSlot != null)
             {
-                materiaListBox.DataSource = MateriaBase.Materia(_selectedBagSlot);
+                materiaListBox.DataSource = _selectedBagSlot.Materia();
                 materiaListBox.DisplayMember = "ItemName";
             }
         }

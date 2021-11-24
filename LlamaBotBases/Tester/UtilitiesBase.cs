@@ -22,7 +22,7 @@ using TreeSharp;
 
 namespace LlamaBotBases.Tester
 {
-    public class UtilitiesBase: BotBase
+    public class UtilitiesBase : BotBase
     {
         public static readonly string _name = "Llama Utilities";
         private static readonly LLogger Log = new LLogger(_name, Colors.Pink);
@@ -73,7 +73,10 @@ namespace LlamaBotBases.Tester
         public override void OnButtonPress()
         {
             if (settings == null || settings.IsDisposed)
+            {
                 settings = new Utilities();
+            }
+
             try
             {
                 settings.Show();
@@ -91,7 +94,7 @@ namespace LlamaBotBases.Tester
             {
                 case TaskType.MateriaRemove:
                     var bagInfo = JsonConvert.DeserializeObject<(uint, ushort)>(BotTask.TaskInfo);
-                    var slot = InventoryManager.GetBagByInventoryBagId((InventoryBagId) bagInfo.Item1).First(i => i.Slot == bagInfo.Item2);
+                    var slot = InventoryManager.GetBagByInventoryBagId((InventoryBagId)bagInfo.Item1).First(i => i.Slot == bagInfo.Item2);
                     await RemoveMateria(slot);
                     break;
                 case TaskType.AutoFollow:
