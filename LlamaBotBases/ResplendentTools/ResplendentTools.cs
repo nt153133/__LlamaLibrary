@@ -50,9 +50,6 @@ namespace LlamaBotBases.ResplendentTools
 
         private async Task<bool> Run()
         {
-            Navigator.PlayerMover = new SlideMover();
-            Navigator.NavigationProvider = new ServiceNavigationProvider();
-
             while (true)
             {
                 await TurninResplendentCrafting();
@@ -67,11 +64,15 @@ namespace LlamaBotBases.ResplendentTools
 
         public override void Start()
         {
+            Navigator.PlayerMover = new SlideMover();
+            Navigator.NavigationProvider = new ServiceNavigationProvider();
             _root = new ActionRunCoroutine(r => Run());
         }
 
         public override void Stop()
         {
+            (Navigator.NavigationProvider as IDisposable)?.Dispose();
+            Navigator.NavigationProvider = null;
             _root = null;
         }
 
@@ -80,14 +81,14 @@ namespace LlamaBotBases.ResplendentTools
             var outList = new List<LisbethOrder>();
 
             var item = InventoryManager.FilledSlots.FirstOrDefault(i => i.RawItemId == finalItemId);
-            var finalItemCount = (int)(item == null ? 0 : item.Count);
+            var finalItemCount = (int) (item == null ? 0 : item.Count);
 
             LisbethOrder order;
-            if (ConditionParser.HasAtLeast((uint)cMaterialId, 2))
+            if (ConditionParser.HasAtLeast((uint) cMaterialId, 2))
             {
                 order = new LisbethOrder(1, 1, cComponentId, NumberToCraft(finalItemCount, cMaterialId), job);
             }
-            else if (ConditionParser.HasAtLeast((uint)bMaterialId, 2))
+            else if (ConditionParser.HasAtLeast((uint) bMaterialId, 2))
             {
                 order = new LisbethOrder(1, 1, bComponentId, NumberToCraft(finalItemCount, bMaterialId), job);
             }
@@ -148,7 +149,7 @@ namespace LlamaBotBases.ResplendentTools
         private static int NumberToCraft(int finalItemCount, int currentIngredientId)
         {
             var currentIngredient = InventoryManager.FilledSlots.FirstOrDefault(i => i.RawItemId == currentIngredientId);
-            var currentIngredientCount = (int)(currentIngredient == null ? 0 : currentIngredient.Count);
+            var currentIngredientCount = (int) (currentIngredient == null ? 0 : currentIngredient.Count);
 
             return Math.Min(30 - (finalItemCount / 2), currentIngredientCount / 2);
         }
