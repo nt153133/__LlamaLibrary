@@ -6,7 +6,6 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
-using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Enums;
 using ff14bot.Helpers;
@@ -20,11 +19,11 @@ using LlamaLibrary.Memory;
 using TreeSharp;
 using Action = TreeSharp.Action;
 
-namespace LlamaBotBases.DailyHunts
+namespace LlamaLibrary.Utilities
 {
-    public class HuntBase : BotBase
+    public class Hunts
     {
-        private static readonly LLogger Log = new LLogger("Daily Hunts", Colors.Pink);
+        private static readonly LLogger Log = new LLogger("Hunts Utility", Colors.Pink);
 
         private static readonly List<uint> Blacklist = new List<uint>();
         private static List<BagSlot> _playerItems;
@@ -32,75 +31,41 @@ namespace LlamaBotBases.DailyHunts
 
         internal static bool Bool0;
 
-        public static readonly InventoryBagId[] PlayerInventoryBagIds =
-        {
-            InventoryBagId.Bag1,
-            InventoryBagId.Bag2,
-            InventoryBagId.Bag3,
-            InventoryBagId.Bag4
-        };
-
-        private Composite _root;
-
-        public HuntBase()
-        {
-            OffsetManager.Init();
-        }
-
-        public override string Name => @"Daily Hunts";
-        public override PulseFlags PulseFlags => PulseFlags.All;
-        public override bool IsAutonomous => true;
-        public override bool RequiresProfile => false;
-        public override Composite Root => _root;
-
-        public override bool WantButton { get; } = false;
         internal static bool InFight => GameObjectManager.Attackers.Any();
         internal static BattleCharacter FirstAttacker => GameObjectManager.Attackers.FirstOrDefault();
 
-        private async Task<bool> Run()
+        private static int[] dailyOrderTypes = { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
+
+        public static async Task DoHunts(int[] huntTypes)
         {
             Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
             ff14bot.Settings.CharacterSettings.Instance.UseMount = true;
 
-            _playerItems = InventoryManager.GetBagsByInventoryBagId(PlayerInventoryBagIds).Select(i => i.FilledSlots).SelectMany(x => x).AsParallel().ToList();
-            var hadOld = await GetHuntBills();
-            await CompleteHunts();
+            var hadOld = await GetHuntBills(huntTypes);
+            await CompleteHunts(huntTypes);
 
             if (hadOld)
             {
-                await GetHuntBills();
-                await CompleteHunts();
+                await GetHuntBills(huntTypes);
+                await CompleteHunts(huntTypes);
             }
 
             if (WorldManager.CanTeleport())
             {
                 WorldManager.TeleportById(Core.Me.HomePoint.Id);
                 await Coroutine.Sleep(5000);
-
+                await Coroutine.Wait(5000, () => CommonBehaviors.IsLoading);
                 if (CommonBehaviors.IsLoading)
                 {
                     await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
                 }
             }
-
-            TreeRoot.Stop($"Stop Requested");
-            return true;
         }
 
-        public override void Start()
+        public static async Task<bool> GetHuntBills(int[] huntTypes)
         {
-            _root = new ActionRunCoroutine(r => Run());
-        }
-
-        public override void Stop()
-        {
-            _root = null;
-        }
-
-        public async Task<bool> GetHuntBills()
-        {
-            var statues = HuntHelper.GetDailyStatus();
+            var statues = HuntHelper.GetDailyStatus(huntTypes);
 
             foreach ((var orderType, var huntOrderStatus) in statues)
             {
@@ -142,16 +107,20 @@ namespace LlamaBotBases.DailyHunts
                 }
             }
 
-            return statues.Any(i => i.Item2 == HuntOrderStatus.UnFinishedOld);
+            return statues.Any(i => i.HuntOrderStatus == HuntOrderStatus.UnFinishedOld);
         }
 
-        public async Task CompleteHunts()
+        public static async Task CompleteHunts()
         {
-            int[] dailyOrderTypes = { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
+            await CompleteHunts(dailyOrderTypes);
+        }
+
+        public static async Task CompleteHunts(int[] orderTypes)
+        {
             const int flytoHunt = 418;
             int[] umbra = { 107, 247 };
             var hunts = new List<DailyHuntOrder>();
-            foreach (var dailyOrderType in dailyOrderTypes)
+            foreach (var dailyOrderType in orderTypes)
             {
                 hunts.AddRange(HuntHelper.GetAcceptedDailyHunts(dailyOrderType).Where(i => !i.IsFinished));
             }
@@ -314,10 +283,6 @@ namespace LlamaBotBases.DailyHunts
                 }
 
                 Log.Information($"Done: {hunt}");
-                var newPlayerItems = InventoryManager.GetBagsByInventoryBagId(PlayerInventoryBagIds).Select(i => i.FilledSlots).SelectMany(x => x).AsParallel().ToList();
-                var newitems = newPlayerItems.Except(_playerItems, new BagSlotComparer());
-                Log.Information("New loot");
-                Log.Information($"{string.Join(",", newitems)}");
                 Blacklist.Clear();
                 await Coroutine.Sleep(1000);
             }
@@ -508,19 +473,6 @@ namespace LlamaBotBases.DailyHunts
                     ),
                 new Action(object0 => RunStatus.Success)
             );
-        }
-
-        private class BagSlotComparer : IEqualityComparer<BagSlot>
-        {
-            public bool Equals(BagSlot x, BagSlot y)
-            {
-                return y != null && (x != null && x.TrueItemId == y.TrueItemId);
-            }
-
-            public int GetHashCode(BagSlot obj)
-            {
-                return obj.Item.GetHashCode();
-            }
         }
     }
 }

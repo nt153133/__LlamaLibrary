@@ -14,16 +14,6 @@
     <FileAlignment>512</FileAlignment>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -33,6 +23,15 @@
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <OutputPath>bin\Debug\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GreyMagic, Version=1.0.48.0, Culture=neutral, PublicKeyToken=260525fa2b0e778a, processorArchitecture=AMD64">
@@ -68,8 +67,12 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\InventoryHelpers.cs" />
     <Compile Include="Helpers\IshgardHandin.cs" />
+    <Compile Include="JsonObjects\CustomDeliveryNpc.cs" />
+    <Compile Include="JsonObjects\MateriaItem.cs" />
+    <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
+    <Compile Include="ResourceManager.cs" />
     <Compile Include="Retainers\CompleteRetainer.cs" />
     <Compile Include="Retainers\HelperFunctions.cs" />
     <Compile Include="Retainers\RetainerInventory.cs" />
@@ -210,6 +213,11 @@
     <Compile Include="Structs\RequestItem.cs" />
     <Compile Include="Structs\RetainerInfo.cs" />
     <Compile Include="Structs\RowenaItem.cs" />
+    <Compile Include="Utilities\CustomDeliveries.cs" />
+    <Compile Include="Utilities\GCDailyTurnins.cs" />
+    <Compile Include="Utilities\Housing.cs" />
+    <Compile Include="Utilities\Hunts.cs" />
+    <Compile Include="Utilities\Inventory.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -220,6 +228,7 @@
   <ItemGroup>
     <Content Include=".editorconfig" />
     <Content Include="Resources\AllHunts.json" />
+    <Content Include="Resources\CustomDeliveryNpcs.json" />
     <Content Include="Resources\Materia.json" />
     <Content Include="Resources\Ventures.json" />
   </ItemGroup>

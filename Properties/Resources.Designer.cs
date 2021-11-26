@@ -70,6 +70,40 @@ namespace LlamaLibrary.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;npcId&quot;: 1019615,
+        ///    &quot;Zone&quot;: 478,
+        ///    &quot;Location&quot;: {
+        ///      &quot;X&quot;: -71.68203,
+        ///      &quot;Y&quot;: 206.5714,
+        ///      &quot;Z&quot;: 29.38501,
+        ///      &quot;MagnitudeSqr&quot;: 48673.5352,
+        ///      &quot;Magnitude&quot;: 220.620789
+        ///    },
+        ///    &quot;Name&quot;: &quot;Zhloe Aliapoh&quot;,
+        ///    &quot;RequiredQuest&quot;: 67087,
+        ///    &quot;Index&quot;: 1
+        ///  },
+        ///  {
+        ///    &quot;npcId&quot;: 1020337,
+        ///    &quot;Zone&quot;: 635,
+        ///    &quot;Location&quot;: {
+        ///      &quot;X&quot;: 171.312988,
+        ///      &quot;Y&quot;: 13.02367,
+        ///      &quot;Z&quot;: -89.9519653,
+        ///      &quot;MagnitudeSqr&quot;: 37609.1133,
+        ///      &quot;Magnitude&quot;: 193.9307
+        ///    },
+        ///    &quot;Name&quot;: &quot;M [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string CustomDeliveryNpcs {
+            get {
+                return ResourceManager.GetString("CustomDeliveryNpcs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;1&quot;:[{&quot;Key&quot;:5724,&quot;Tier&quot;:0,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;},{&quot;Key&quot;:5725,&quot;Tier&quot;:1,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;},{&quot;Key&quot;:5726,&quot;Tier&quot;:2,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;},{&quot;Key&quot;:5727,&quot;Tier&quot;:3,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;}],&quot;2&quot;:[{&quot;Key&quot;:5604,&quot;Tier&quot;:0,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5605,&quot;Tier&quot;:1,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5606,&quot;Tier&quot;:2,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5607,&quot;Tier&quot;:3,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5608,&quot;Tier&quot;:4,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:18006,&quot;Tier&quot;:5,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;}],&quot;3&quot;:[{&qu....
         /// </summary>
         public static string Materia {
@@ -103,7 +137,7 @@ namespace LlamaLibrary.Properties {
         ///    &quot;Experience&quot;: 1900,
         ///    &quot;RequiredItemLevel&quot;: 0,
         ///    &quot;RequiredGathering&quot;: 0,
-        ///    &quot;N [rest of string was truncated]&quot;;.
+        ///    &quot;NameRaw&quot;: &quot;Animal Sinew&quot;, [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Ventures {
             get {

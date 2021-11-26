@@ -50,9 +50,6 @@ namespace LlamaBotBases.ResplendentTools
 
         private async Task<bool> Run()
         {
-            Navigator.PlayerMover = new SlideMover();
-            Navigator.NavigationProvider = new ServiceNavigationProvider();
-
             while (true)
             {
                 await TurninResplendentCrafting();
@@ -67,11 +64,15 @@ namespace LlamaBotBases.ResplendentTools
 
         public override void Start()
         {
+            Navigator.PlayerMover = new SlideMover();
+            Navigator.NavigationProvider = new ServiceNavigationProvider();
             _root = new ActionRunCoroutine(r => Run());
         }
 
         public override void Stop()
         {
+            (Navigator.NavigationProvider as IDisposable)?.Dispose();
+            Navigator.NavigationProvider = null;
             _root = null;
         }
 

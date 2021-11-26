@@ -12,6 +12,7 @@ using ff14bot.Managers;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
+using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Properties;
@@ -27,8 +28,6 @@ namespace LlamaLibrary.Helpers
 
         private const int MaxOrderTypes = 0xE;
 
-        public static readonly SortedDictionary<int, StoredHuntLocation> DailyHunts;
-
         public static readonly List<HuntBoardNpc> HuntBoards = new List<HuntBoardNpc>()
         {
             new HuntBoardNpc(2004438, 128, new Vector3(94.346436f, 40.238037f, 60.471436f), new uint[] { 0, 4 }), //Hunt Board  Limsa Lominsa Upper Decks(Limsa Lominsa)
@@ -39,6 +38,10 @@ namespace LlamaLibrary.Helpers
             new HuntBoardNpc(2008654, 635, new Vector3(95.078857f, 0.62561f, 22.598572f), new uint[] { 6, 7, 8, 9 }), //Clan Hunt Board  Rhalgr's Reach(Gyr Abania)
             new HuntBoardNpc(2010340, 819, new Vector3(-83.604248f, -0.01532f, -90.745422f), new uint[] { 10, 11, 12, 13 }) //Nuts Board  The Crystarium(The Crystarium) };
         };
+
+        public static readonly int[] ARRHunts = new[] { 0, 1, 2, 3 };
+        public static readonly int[] VerteranClanHunts = new[] { 6, 7, 8 };
+        public static readonly int[] NutClanHunts = new[] { 10, 11, 12 };
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private static class Offsets
@@ -76,7 +79,6 @@ namespace LlamaLibrary.Helpers
 
         static HuntHelper()
         {
-            DailyHunts = LoadResource<SortedDictionary<int, StoredHuntLocation>>(Resources.AllHunts);
         }
 
         public static void Test()
@@ -109,7 +111,7 @@ namespace LlamaLibrary.Helpers
                     var target = GetMobHuntTarget(hunt.MobHuntTarget);
                     var fate = target.FateRequired ? string.Format("Fate {0}", target.Fate) : "";
                     Log.Information($"\t{target.Name} ({hunt.MobHuntTarget}) {fate}");
-                    var location = DailyHunts.FirstOrDefault(h => h.Key == hunt.MobHuntTarget).Value;
+                    var location = ResourceManager.DailyHunts.Value.FirstOrDefault(h => h.Key == hunt.MobHuntTarget).Value;
                     if (location != default(StoredHuntLocation))
                     {
                         Log.Information($"\t\t {DataManager.ZoneNameResults[location.Map].CurrentLocaleName} {location.Location}");
@@ -191,13 +193,13 @@ namespace LlamaLibrary.Helpers
                     continue;
                 }
 
-                if (!DailyHunts.ContainsKey(hunt.MobHuntTarget))
+                if (!ResourceManager.DailyHunts.Value.ContainsKey(hunt.MobHuntTarget))
                 {
                     Log.Information($"MobHuntTarget {hunt.MobHuntTarget} Not Found!, please walk into nearest traffic");
                     continue;
                 }
 
-                result.Add(new DailyHuntOrder(hunt, target, orderTypeIndex, i, DailyHunts[hunt.MobHuntTarget]));
+                result.Add(new DailyHuntOrder(hunt, target, orderTypeIndex, i, ResourceManager.DailyHunts.Value[hunt.MobHuntTarget]));
             }
 
             return result;
@@ -255,7 +257,7 @@ namespace LlamaLibrary.Helpers
                     return new List<DailyHuntOrder>();
                 }
 
-                if (!DailyHunts.ContainsKey(hunt.MobHuntTarget))
+                if (!ResourceManager.DailyHunts.Value.ContainsKey(hunt.MobHuntTarget))
                 {
                     Log.Information($"MobHuntTarget {hunt.MobHuntTarget} Not Found!, please walk into nearest traffic");
                     continue;
@@ -263,7 +265,7 @@ namespace LlamaLibrary.Helpers
 
                 // string fate = target.FateRequired ? string.Format("Fate {0}", target.Fate) : "";
 
-                result.Add(new DailyHuntOrder(hunt, target, orderTypeIndex, i, DailyHunts[hunt.MobHuntTarget]));
+                result.Add(new DailyHuntOrder(hunt, target, orderTypeIndex, i, ResourceManager.DailyHunts.Value[hunt.MobHuntTarget]));
 
                 //Log.Information(string.Format("\t{0} ({1}) {2}", target.Name, hunt.MobHuntTarget, fate));
             }
@@ -300,7 +302,7 @@ namespace LlamaLibrary.Helpers
                     continue;
                 }
 
-                if (!DailyHunts.ContainsKey(hunt.MobHuntTarget))
+                if (!ResourceManager.DailyHunts.Value.ContainsKey(hunt.MobHuntTarget))
                 {
                     Log.Information($"MobHuntTarget {hunt.MobHuntTarget} Not Found!, please walk into nearest traffic");
                     continue;
@@ -308,7 +310,7 @@ namespace LlamaLibrary.Helpers
 
                 // string fate = target.FateRequired ? string.Format("Fate {0}", target.Fate) : "";
 
-                result.Add(new DailyHuntOrder(hunt, target, orderTypeIndex, i, DailyHunts[hunt.MobHuntTarget]));
+                result.Add(new DailyHuntOrder(hunt, target, orderTypeIndex, i, ResourceManager.DailyHunts.Value[hunt.MobHuntTarget]));
 
                 //Log.Information(string.Format("\t{0} ({1}) {2}", target.Name, hunt.MobHuntTarget, fate));
             }
@@ -405,9 +407,8 @@ namespace LlamaLibrary.Helpers
             );
         }
 
-        public static List<(uint OrderType, HuntOrderStatus HuntOrderStatus)> GetDailyStatus()
+        public static List<(uint OrderType, HuntOrderStatus HuntOrderStatus)> GetDailyStatus(int[] dailyOrderTypes)
         {
-            var dailyOrderTypes = new[] { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
             var result = new List<(uint, HuntOrderStatus)>();
             foreach (var orderType in dailyOrderTypes.Where(HuntHelper.OrderTypeUnlocked))
             {
@@ -475,6 +476,12 @@ namespace LlamaLibrary.Helpers
             }
 
             return result;
+        }
+
+        public static List<(uint OrderType, HuntOrderStatus HuntOrderStatus)> GetDailyStatus()
+        {
+            var dailyOrderTypes = new[] { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
+            return GetDailyStatus(dailyOrderTypes);
         }
 
         public static async Task GetHuntsByOrderType(uint orderType)
@@ -594,36 +601,6 @@ namespace LlamaLibrary.Helpers
         CompleteOld,
         Unfinished,
         UnFinishedOld,
-    }
-
-    public class StoredHuntLocation
-    {
-        public int BNpcNameKey;
-        public Vector3 Location;
-        public uint Map;
-
-        public StoredHuntLocation(int name, uint mapId, Vector3 location)
-        {
-            Map = mapId;
-            Location = location;
-            BNpcNameKey = name;
-        }
-    }
-
-    public class StoredHuntLocationLisbeth
-    {
-        public int BNpcNameKey;
-        public Vector3 Location;
-        public uint Map;
-        public uint SubMap;
-
-        public StoredHuntLocationLisbeth(int name, uint mapId, uint subMapId, Vector3 location)
-        {
-            Map = mapId;
-            SubMap = subMapId;
-            Location = location;
-            BNpcNameKey = name;
-        }
     }
 
     public class HuntBoardNpc

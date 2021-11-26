@@ -1,6 +1,6 @@
 ﻿using ff14bot.Managers;
 
-namespace LlamaBotBases.Materia
+namespace LlamaLibrary.JsonObjects
 {
     public class MateriaItem
     {

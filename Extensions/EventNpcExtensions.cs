@@ -21,7 +21,7 @@ namespace LlamaLibrary.Extensions
 
         public static int OpenTradeWindow(this BattleCharacter otherPlayer)
         {
-            return otherPlayer.Type == GameObjectType.Pc ? Core.Memory.CallInjected64<IntPtr>(Memory.Offsets.OpenTradeWindow, Memory.Offsets.ItemFuncParam, otherPlayer.ObjectId).ToInt32() : -1;
+            return otherPlayer.Type == GameObjectType.Pc ? Core.Memory.CallInjected64<IntPtr>(Memory.Offsets.OpenTradeWindow, Memory.Offsets.g_InventoryManager, otherPlayer.ObjectId).ToInt32() : -1;
         }
     }
 }

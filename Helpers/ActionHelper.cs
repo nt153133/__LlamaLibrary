@@ -11,6 +11,9 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// RB's ActionManager won't do the map decipher action on an item so this reimplements DoAction just for that reason.
+    /// </summary>
     public static class ActionHelper
     {
         private static readonly string Name = "ActionHelper";
