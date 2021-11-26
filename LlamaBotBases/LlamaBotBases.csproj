@@ -98,9 +98,7 @@
     <Compile Include="AutoTrade\AutoTradeSettings.Designer.cs">
       <DependentUpon>AutoTradeSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomDeliveries\CustomDeliveriesBase.cs" />
     <Compile Include="FCWorkshop\FCWorkshopBase.cs" />
-    <Compile Include="GCDailyLisbeth\GCSupplyBase.cs" />
     <Compile Include="GCExpertTurnin\GCExpertGrindBase.cs" />
     <Compile Include="GCExpertTurnin\GCExpertSettings.cs" />
     <Compile Include="GCExpertTurnin\GCExpertSettingsFrm.cs">
@@ -109,7 +107,6 @@
     <Compile Include="GCExpertTurnin\GCExpertSettingsFrm.Designer.cs">
       <DependentUpon>GCExpertSettingsFrm.cs</DependentUpon>
     </Compile>
-    <Compile Include="HousingChecker\HouseChecker.cs" />
     <Compile Include="IshgardHandin\IshgardHandinBase.cs" />
     <Compile Include="OrderbotTags\AutoEquip.cs" />
     <Compile Include="OrderbotTags\AutoInventoryEquip.cs" />
@@ -161,7 +158,6 @@
     <Compile Include="Reduce\ReduceSettingsForm.designer.cs">
       <DependentUpon>ReduceSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="RefreshPf\RefreshPfBase.cs" />
     <Compile Include="ResplendentTools\ResplendentTools.cs" />
     <Compile Include="Retainers\Retainers.cs" />
     <Compile Include="Retainers\RetainerSettings.cs" />

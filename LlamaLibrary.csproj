@@ -67,6 +67,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\InventoryHelpers.cs" />
     <Compile Include="Helpers\IshgardHandin.cs" />
+    <Compile Include="JsonObjects\CustomDeliveryNpc.cs" />
     <Compile Include="JsonObjects\MateriaItem.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
@@ -212,6 +213,9 @@
     <Compile Include="Structs\RequestItem.cs" />
     <Compile Include="Structs\RetainerInfo.cs" />
     <Compile Include="Structs\RowenaItem.cs" />
+    <Compile Include="Utilities\CustomDeliveries.cs" />
+    <Compile Include="Utilities\GCDailyTurnins.cs" />
+    <Compile Include="Utilities\Housing.cs" />
     <Compile Include="Utilities\Hunts.cs" />
     <Compile Include="Utilities\Inventory.cs" />
   </ItemGroup>
@@ -224,6 +228,7 @@
   <ItemGroup>
     <Content Include=".editorconfig" />
     <Content Include="Resources\AllHunts.json" />
+    <Content Include="Resources\CustomDeliveryNpcs.json" />
     <Content Include="Resources\Materia.json" />
     <Content Include="Resources\Ventures.json" />
   </ItemGroup>

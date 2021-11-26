@@ -5,9 +5,6 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
-using ff14bot.AClasses;
-using ff14bot.Behavior;
-using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
@@ -20,53 +17,16 @@ using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
 using Newtonsoft.Json;
-using TreeSharp;
 
-//using UI_Checker;
-
-namespace LlamaBotBases.GCDailyLisbeth
+namespace LlamaLibrary.Utilities
 {
-    public class MasterPieceSupplyTester : BotBase
+    public static class GCDailyTurnins
     {
-        private static readonly LLogger Log = new LLogger("GCDailyLisbeth", Colors.Gold);
-
-        private Composite _root;
-        public override string Name => _name;
-
-        public static string _name => "GCDailyLisbeth";
-        public override PulseFlags PulseFlags => PulseFlags.All;
-
-        public override bool IsAutonomous => true;
-        public override bool RequiresProfile => false;
-
-        public override Composite Root => _root;
-
-        public override bool WantButton { get; } = false;
-
-        private async Task<bool> Run()
-        {
-            //await PrintMasterPieceList();
-            await DoGCDailyTurnins();
-
-            TreeRoot.Stop("Stop Requested");
-            return true;
-        }
-
-        public override void Start()
-        {
-            _root = new ActionRunCoroutine(r => Run());
-        }
-
-        public override void Stop()
-        {
-            _root = null;
-        }
+        public static string NameStatic => "GCDailyTurnins";
+        private static readonly LLogger Log = new LLogger(NameStatic, Colors.Gold);
 
         public static async Task DoGCDailyTurnins()
         {
-            Navigator.PlayerMover = new SlideMover();
-            Navigator.NavigationProvider = new ServiceNavigationProvider();
-
             var items = Core.Memory.ReadArray<GCTurninItem>(Offsets.GCTurnin, Offsets.GCTurninCount);
 
             /*
@@ -146,7 +106,7 @@ namespace LlamaBotBases.GCDailyLisbeth
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
                 if (SelectString.IsOpen)
                 {
-                    SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
+                    SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
                 }
             }
         }
@@ -257,7 +217,7 @@ namespace LlamaBotBases.GCDailyLisbeth
             foreach (var item in ContentsInfoDetail.Instance.GetCraftingTurninItems().Where(item => !InventoryManager.FilledSlots.Any(i => i.RawItemId == item.Key.Id && !i.HasMateria() && i.Count >= item.Value.Key)))
             {
                 Log.Information($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
-                var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, item.Value.Value);
+                var order = new LisbethOrder(id, 1, (int) item.Key.Id, item.Value.Key, item.Value.Value);
                 outList.Add(order);
 
                 id++;
@@ -272,7 +232,7 @@ namespace LlamaBotBases.GCDailyLisbeth
                     continue; //type = "Fisher";
                 }
 
-                var order = new LisbethOrder(id, 2, (int)item.Key.Id, item.Value.Key, type, true);
+                var order = new LisbethOrder(id, 2, (int) item.Key.Id, item.Value.Key, type, true);
 
                 outList.Add(order);
                 id++;
@@ -293,7 +253,7 @@ namespace LlamaBotBases.GCDailyLisbeth
             return JsonConvert.SerializeObject(outList, Formatting.None);
         }
 
-        public async Task<bool> PrintGCSupplyList()
+        public static async Task<bool> PrintGCSupplyList()
         {
             if (!ContentsInfoDetail.Instance.IsOpen)
             {
@@ -321,7 +281,7 @@ namespace LlamaBotBases.GCDailyLisbeth
             foreach (var item in ContentsInfoDetail.Instance.GetCraftingTurninItems())
             {
                 Log.Information($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
-                var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, item.Value.Value);
+                var order = new LisbethOrder(id, 1, (int) item.Key.Id, item.Value.Key, item.Value.Value);
                 outList.Add(order);
 
                 id++;
@@ -336,7 +296,7 @@ namespace LlamaBotBases.GCDailyLisbeth
                     type = "Fisher";
                 }
 
-                var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, type);
+                var order = new LisbethOrder(id, 1, (int) item.Key.Id, item.Value.Key, type);
 
                 outList.Add(order);
                 id++;
@@ -354,68 +314,6 @@ namespace LlamaBotBases.GCDailyLisbeth
             {
                 await outputFile.WriteAsync(JsonConvert.SerializeObject(outList, Formatting.None));
             }
-
-            return true;
-        }
-
-        public async Task<bool> PrintMasterPieceList()
-        {
-            var Classes = new Dictionary<ClassJobType, int>
-            {
-                { ClassJobType.Carpenter, 0 },
-                { ClassJobType.Blacksmith, 1 },
-                { ClassJobType.Armorer, 2 },
-                { ClassJobType.Goldsmith, 3 },
-                { ClassJobType.Leatherworker, 4 },
-                { ClassJobType.Weaver, 5 },
-                { ClassJobType.Alchemist, 6 },
-                { ClassJobType.Culinarian, 7 },
-                { ClassJobType.Miner, 8 },
-                { ClassJobType.Botanist, 9 },
-                { ClassJobType.Fisher, 10 },
-            };
-
-            if (!MasterPieceSupply.Instance.IsOpen)
-            {
-                Log.Verbose($"Trying to open window");
-
-                AgentModule.ToggleAgentInterfaceById(95);
-                await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("ContentsInfo") != null);
-                await Coroutine.Sleep(500);
-
-                if (RaptureAtkUnitManager.GetWindowByName("ContentsInfo") == null)
-                {
-                    Log.Error($"Nope failed opening timer window");
-                    return false;
-                }
-
-                await Coroutine.Sleep(500);
-                RaptureAtkUnitManager.GetWindowByName("ContentsInfo").SendAction(2, 3, 0xC, 3, 6);
-                await Coroutine.Wait(5000, () => MasterPieceSupply.Instance.IsOpen);
-                await Coroutine.Sleep(500);
-            }
-
-            if (!MasterPieceSupply.Instance.IsOpen)
-            {
-                Log.Error($"Nope failed to open window");
-                return false;
-            }
-
-            foreach (var job in Classes)
-            {
-                Log.Information($"{job.Key}:");
-
-                MasterPieceSupply.Instance.ClassSelected = job.Value;
-                await Coroutine.Sleep(1000);
-
-                //Can also use MasterPieceSupply.GetTurninItems() if you don't wanted starred info
-                foreach (var item in MasterPieceSupply.Instance.GetTurninItemsStarred())
-                {
-                    Log.Information($"{item.Key} Starred: {item.Value}");
-                }
-            }
-
-            MasterPieceSupply.Instance.Close();
 
             return true;
         }

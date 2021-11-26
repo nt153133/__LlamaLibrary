@@ -100,6 +100,7 @@ namespace LlamaBotBases.Tester
                 case TaskType.AutoFollow:
                     break;
                 case TaskType.Reduce:
+                    await Inventory.ReduceAll();
                     break;
                 case TaskType.Desynth:
                     break;
@@ -131,6 +132,21 @@ namespace LlamaBotBases.Tester
                         Log.Error("Select some hunt types in settings");
                     }
 
+                    break;
+                case TaskType.Extract:
+                    await Inventory.ExtractFromAllGear();
+                    break;
+                case TaskType.Coffers:
+                    await Inventory.CofferTask();
+                    break;
+                case TaskType.Housing:
+                    await Housing.CheckHousing();
+                    break;
+                case TaskType.CustomDeliveries:
+                    await LlamaLibrary.Utilities.CustomDeliveries.RunCustomDeliveries();
+                    break;
+                case TaskType.GcTurnin:
+                    await GCDailyTurnins.DoGCDailyTurnins();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

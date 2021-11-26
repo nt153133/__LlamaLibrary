@@ -1,0 +1,100 @@
+[
+  {
+    "npcId": 1019615,
+    "Zone": 478,
+    "Location": {
+      "X": -71.68203,
+      "Y": 206.5714,
+      "Z": 29.38501,
+      "MagnitudeSqr": 48673.5352,
+      "Magnitude": 220.620789
+    },
+    "Name": "Zhloe Aliapoh",
+    "RequiredQuest": 67087,
+    "Index": 1
+  },
+  {
+    "npcId": 1020337,
+    "Zone": 635,
+    "Location": {
+      "X": 171.312988,
+      "Y": 13.02367,
+      "Z": -89.9519653,
+      "MagnitudeSqr": 37609.1133,
+      "Magnitude": 193.9307
+    },
+    "Name": "M'naago",
+    "RequiredQuest": 68541,
+    "Index": 2
+  },
+  {
+    "npcId": 1025878,
+    "Zone": 613,
+    "Location": {
+      "X": 343.984,
+      "Y": -120.329468,
+      "Z": -306.0197,
+      "MagnitudeSqr": 226452.25,
+      "Magnitude": 475.87
+    },
+    "Name": "Kurenai",
+    "RequiredQuest": 68675,
+    "Index": 3
+  },
+  {
+    "npcId": 1018393,
+    "Zone": 478,
+    "Location": {
+      "X": -62.3016,
+      "Y": 206.6002,
+      "Z": 23.893,
+      "MagnitudeSqr": 47136.0078,
+      "Magnitude": 217.108292
+    },
+    "Name": "Adkiragh",
+    "RequiredQuest": 68713,
+    "Index": 4
+  },
+  {
+    "npcId": 1031801,
+    "Zone": 820,
+    "Location": {
+      "X": 52.8114,
+      "Y": 82.9937744,
+      "Z": -65.38495,
+      "MagnitudeSqr": 13952.2021,
+      "Magnitude": 118.119438
+    },
+    "Name": "Kai-Shirr",
+    "RequiredQuest": 69265,
+    "Index": 5
+  },
+  {
+    "npcId": 1033543,
+    "Zone": 886,
+    "Location": {
+      "X": 113.389771,
+      "Y": -20.0046387,
+      "Z": -0.961365,
+      "MagnitudeSqr": 13258.35,
+      "Magnitude": 115.144905
+    },
+    "Name": "Ehll Tou",
+    "RequiredQuest": 69425,
+    "Index": 6
+  },
+  {
+    "npcId": 1035211,
+    "Zone": 886,
+    "Location": {
+      "X": -115.1127,
+      "Y": 0.0,
+      "Z": -134.8367,
+      "MagnitudeSqr": 31431.87,
+      "Magnitude": 177.290359
+    },
+    "Name": "Charlemend",
+    "RequiredQuest": 69615,
+    "Index": 7
+  }
+]

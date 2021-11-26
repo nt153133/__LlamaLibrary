@@ -142,5 +142,77 @@ namespace LlamaBotBases.Tester
             UtilitiesBase.BotTask = task;
             StartBotBase();
         }
+
+        private void btnReduce_Click(object sender, EventArgs e)
+        {
+            var task = new BotTask()
+            {
+                Type = TaskType.Reduce,
+                TaskInfo = ""
+            };
+
+            UtilitiesBase.BotTask = task;
+            StartBotBase();
+        }
+
+        private void btnExtract_Click(object sender, EventArgs e)
+        {
+            var task = new BotTask()
+            {
+                Type = TaskType.Extract,
+                TaskInfo = ""
+            };
+
+            UtilitiesBase.BotTask = task;
+            StartBotBase();
+        }
+
+        private void btnCoffers_Click(object sender, EventArgs e)
+        {
+            var task = new BotTask()
+            {
+                Type = TaskType.Coffers,
+                TaskInfo = ""
+            };
+
+            UtilitiesBase.BotTask = task;
+            StartBotBase();
+        }
+
+        private void btnHousing_Click(object sender, EventArgs e)
+        {
+            var task = new BotTask()
+            {
+                Type = TaskType.Housing,
+                TaskInfo = ""
+            };
+
+            UtilitiesBase.BotTask = task;
+            StartBotBase();
+        }
+
+        private void btnCustomDeliveries_Click(object sender, EventArgs e)
+        {
+            var task = new BotTask()
+            {
+                Type = TaskType.CustomDeliveries,
+                TaskInfo = ""
+            };
+
+            UtilitiesBase.BotTask = task;
+            StartBotBase();
+        }
+
+        private void btnGcTurin_Click(object sender, EventArgs e)
+        {
+            var task = new BotTask()
+            {
+                Type = TaskType.GcTurnin,
+                TaskInfo = ""
+            };
+
+            UtilitiesBase.BotTask = task;
+            StartBotBase();
+        }
     }
 }

@@ -7,6 +7,11 @@
         AutoFollow,
         Reduce,
         Desynth,
-        Hunts
+        Hunts,
+        Extract,
+        Coffers,
+        Housing,
+        CustomDeliveries,
+        GcTurnin
     }
 }

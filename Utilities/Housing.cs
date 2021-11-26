@@ -7,7 +7,6 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
-using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Enums;
 using ff14bot.Managers;
@@ -19,47 +18,14 @@ using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
-using TreeSharp;
 using static ff14bot.RemoteWindows.Talk;
 
-namespace LlamaBotBases.HousingChecker
+namespace LlamaLibrary.Utilities
 {
-    public class aHouseChecker : BotBase
+    public class Housing
     {
-        private Composite _root;
-
-        public override string Name => NameStatic;
-
-        public static string NameStatic = "Housing Checker";
-        public override PulseFlags PulseFlags => PulseFlags.All;
-
-        public override bool IsAutonomous => true;
-        public override bool RequiresProfile => false;
-
-        public override Composite Root => _root;
-
-        public override bool WantButton { get; } = false;
-
+        public static string NameStatic = "Housing Utility";
         private static readonly LLogger Log = new LLogger(NameStatic, Colors.Pink);
-
-        public override void Start()
-        {
-            _root = new ActionRunCoroutine(r => Run());
-        }
-
-        public override void Stop()
-        {
-            _root = null;
-        }
-
-        private async Task<bool> Run()
-        {
-            await CheckHousing();
-
-            // await Coroutine.Sleep(new TimeSpan(0, 1, 0));
-            TreeRoot.Stop("Stop Requested");
-            return true;
-        }
 
         public static async Task CheckHousing()
         {
@@ -340,6 +306,7 @@ namespace LlamaBotBases.HousingChecker
                 await Coroutine.Sleep(2000);
             }
             while (Core.Me.IsCasting);
+
             await Coroutine.Sleep(2000);
             if (CommonBehaviors.IsLoading)
             {
@@ -543,7 +510,7 @@ namespace LlamaBotBases.HousingChecker
 
                 if (SelectString.IsOpen)
                 {
-                    SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
+                    SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
                     await Coroutine.Wait(5000, () => !SelectString.IsOpen);
                 }
 
@@ -566,7 +533,7 @@ namespace LlamaBotBases.HousingChecker
 
                 if (SelectString.IsOpen)
                 {
-                    SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
+                    SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
                     await Coroutine.Wait(5000, () => !SelectString.IsOpen);
                 }
 

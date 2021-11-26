@@ -20,6 +20,7 @@ using LlamaBotBases.Retainers;
 using LlamaLibrary;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteAgents;
@@ -264,9 +265,24 @@ namespace LlamaBotBases.Tester
 
             Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
+            var DeliveryNpcs = new List<CustomDeliveryNpc>()
+            {
+                new CustomDeliveryNpc( 1019615,478, new Vector3(-71.68203f, 206.5714f, 29.38501f), "Zhloe Aliapoh", 67087, 1), //(Zhloe Aliapoh) Idyllshire(Dravania)
+                new CustomDeliveryNpc( 1020337,635, new Vector3(171.312988f, 13.02367f, -89.951965f), "M'naago", 68541, 2), //(M'naago) Rhalgr's Reach(Gyr Abania)
+                new CustomDeliveryNpc( 1025878,613, new Vector3(343.984009f, -120.329468f, -306.019714f), "Kurenai", 68675, 3), //(Kurenai) The Ruby Sea(Othard)
+                new CustomDeliveryNpc( 1018393,478, new Vector3(-62.3016f, 206.6002f, 23.893f), "Adkiragh", 68713, 4), //(Adkiragh) Idyllshire(Dravania)
+                new CustomDeliveryNpc( 1031801,820, new Vector3(52.811401f, 82.993774f, -65.384949f), "Kai-Shirr", 69265, 5), //(Kai-Shirr) Eulmore(Eulmore)
+                new CustomDeliveryNpc( 1033543,886, new Vector3(113.389771f, -20.004639f, -0.961365f), "Ehll Tou", 69425, 6), //(Ehll Tou) The Firmament(Ishgard)
+                new CustomDeliveryNpc( 1035211,886, new Vector3(-115.1127f, 0f, -134.8367f), "Charlemend", 69615, 7)
+            };
 
+            using (var outputFile = new StreamWriter(@"G:\CustomDeliveryNpcs.json", false))
+            {
+                outputFile.Write(JsonConvert.SerializeObject(DeliveryNpcs, (Formatting) System.Xml.Formatting.Indented));
+            }
 
             TreeRoot.Stop("Stop Requested");
+
             return Task.FromResult(true);
         }
 

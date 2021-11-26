@@ -11,6 +11,7 @@ using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.Utilities;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
@@ -55,21 +56,21 @@ namespace LlamaBotBases.OrderbotTags
             return new ActionRunCoroutine(r => GoToWard(Ward, District));
         }
 
-        private async Task GoToWard(int Ward, string District)
+        private async Task GoToWard(int ward, string district)
         {
 
             Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
 
-            if (District.Equals("Lavender Beds", StringComparison.InvariantCultureIgnoreCase))
+            if (district.Equals("Lavender Beds", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (ConditionParser.IsQuestCompleted(66748))
                 {
-                    await LlamaBotBases.HousingChecker.aHouseChecker.GetToResidential(2);
-                    await LlamaBotBases.HousingChecker.aHouseChecker.OpenHousingWards();
-                    Log.Information($"Traveling to ward {District} Ward - {Ward}");
-                    HousingSelectBlock.Instance.SelectWard(Ward - 1);
-                    HousingSelectBlock.Instance.GoToWard(Ward - 1);
+                    await Housing.GetToResidential(2);
+                    await Housing.OpenHousingWards();
+                    Log.Information($"Traveling to ward {district} Ward - {ward}");
+                    HousingSelectBlock.Instance.SelectWard(ward - 1);
+                    HousingSelectBlock.Instance.GoToWard(ward - 1);
                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                     if (SelectYesno.IsOpen)
                     {
@@ -91,15 +92,15 @@ namespace LlamaBotBases.OrderbotTags
 
             }
 
-            if (District.Equals("Mists", StringComparison.InvariantCultureIgnoreCase))
+            if (district.Equals("Mists", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (ConditionParser.IsQuestCompleted(66750))
                 {
-                    await LlamaBotBases.HousingChecker.aHouseChecker.GetToResidential(8);
-                    await LlamaBotBases.HousingChecker.aHouseChecker.OpenHousingWards();
-                    Log.Information($"Traveling to ward {District} Ward - {Ward}");
-                    HousingSelectBlock.Instance.SelectWard(Ward - 1);
-                    HousingSelectBlock.Instance.GoToWard(Ward - 1);
+                    await Housing.GetToResidential(8);
+                    await Housing.OpenHousingWards();
+                    Log.Information($"Traveling to ward {district} Ward - {ward}");
+                    HousingSelectBlock.Instance.SelectWard(ward - 1);
+                    HousingSelectBlock.Instance.GoToWard(ward - 1);
                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                     if (SelectYesno.IsOpen)
                     {
@@ -119,15 +120,15 @@ namespace LlamaBotBases.OrderbotTags
                 }
             }
 
-            if (District.Equals("Goblet", StringComparison.InvariantCultureIgnoreCase))
+            if (district.Equals("Goblet", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (ConditionParser.IsQuestCompleted(66749))
                 {
-                    await LlamaBotBases.HousingChecker.aHouseChecker.GetToResidential(9);
-                    await LlamaBotBases.HousingChecker.aHouseChecker.OpenHousingWards();
-                    Log.Information($"Traveling to ward {District} Ward - {Ward}");
-                    HousingSelectBlock.Instance.SelectWard(Ward - 1);
-                    HousingSelectBlock.Instance.GoToWard(Ward - 1);
+                    await Housing.GetToResidential(9);
+                    await Housing.OpenHousingWards();
+                    Log.Information($"Traveling to ward {district} Ward - {ward}");
+                    HousingSelectBlock.Instance.SelectWard(ward - 1);
+                    HousingSelectBlock.Instance.GoToWard(ward - 1);
                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                     if (SelectYesno.IsOpen)
                     {
@@ -147,15 +148,15 @@ namespace LlamaBotBases.OrderbotTags
                 }
             }
 
-            if (District.Equals("Shirogane", StringComparison.InvariantCultureIgnoreCase))
+            if (district.Equals("Shirogane", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (ConditionParser.IsQuestCompleted(68167))
                 {
-                    await LlamaBotBases.HousingChecker.aHouseChecker.GetToResidential(111);
-                    await LlamaBotBases.HousingChecker.aHouseChecker.OpenHousingWards();
-                    Log.Information($"Traveling to ward {District} Ward - {Ward}");
-                    HousingSelectBlock.Instance.SelectWard(Ward - 1);
-                    HousingSelectBlock.Instance.GoToWard(Ward - 1);
+                    await Housing.GetToResidential(111);
+                    await Housing.OpenHousingWards();
+                    Log.Information($"Traveling to ward {district} Ward - {ward}");
+                    HousingSelectBlock.Instance.SelectWard(ward - 1);
+                    HousingSelectBlock.Instance.GoToWard(ward - 1);
                     await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                     if (SelectYesno.IsOpen)
                     {
