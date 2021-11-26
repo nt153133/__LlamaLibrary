@@ -1,4 +1,4 @@
-﻿namespace LlamaBotBases.Tester.Tasks
+﻿namespace LlamaBotBases.LlamaUtilities.Tasks
 {
     public enum TaskType
     {

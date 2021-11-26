@@ -108,6 +108,16 @@
       <DependentUpon>GCExpertSettingsFrm.cs</DependentUpon>
     </Compile>
     <Compile Include="IshgardHandin\IshgardHandinBase.cs" />
+    <Compile Include="LlamaUtilities\Settings\HuntsSettings.cs" />
+    <Compile Include="LlamaUtilities\Tasks\BotTask.cs" />
+    <Compile Include="LlamaUtilities\Tasks\TaskType.cs" />
+    <Compile Include="LlamaUtilities\Utilities.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LlamaUtilities\Utilities.Designer.cs">
+      <DependentUpon>Utilities.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LlamaUtilities\UtilitiesBase.cs" />
     <Compile Include="OrderbotTags\AutoEquip.cs" />
     <Compile Include="OrderbotTags\AutoInventoryEquip.cs" />
     <Compile Include="OrderbotTags\AutoLisbethEquip.cs" />
@@ -168,17 +178,7 @@
     <Compile Include="Retainers\RetainersSettingsForm.designer.cs">
       <DependentUpon>RetainersSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Tester\Settings\HuntsSettings.cs" />
-    <Compile Include="Tester\Tasks\BotTask.cs" />
-    <Compile Include="Tester\Tasks\TaskType.cs" />
     <Compile Include="Tester\TesterBase.cs" />
-    <Compile Include="Tester\Utilities.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Tester\Utilities.Designer.cs">
-      <DependentUpon>Utilities.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Tester\UtilitiesBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AutoFollow\AutoFollowSettingsFrm.resx">
@@ -200,14 +200,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="LlamaUtilities\Utilities.resx">
+      <DependentUpon>Utilities.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reduce\ReduceSettingsForm.resx">
       <DependentUpon>ReduceSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Retainers\RetainersSettingsForm.resx">
       <DependentUpon>RetainersSettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Tester\Utilities.resx">
-      <DependentUpon>Utilities.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

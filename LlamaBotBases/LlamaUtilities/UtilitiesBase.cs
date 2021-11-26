@@ -11,8 +11,8 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
-using LlamaBotBases.Tester.Settings;
-using LlamaBotBases.Tester.Tasks;
+using LlamaBotBases.LlamaUtilities.Settings;
+using LlamaBotBases.LlamaUtilities.Tasks;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
@@ -20,7 +20,7 @@ using LlamaLibrary.Utilities;
 using Newtonsoft.Json;
 using TreeSharp;
 
-namespace LlamaBotBases.Tester
+namespace LlamaBotBases.LlamaUtilities
 {
     public class UtilitiesBase : BotBase
     {

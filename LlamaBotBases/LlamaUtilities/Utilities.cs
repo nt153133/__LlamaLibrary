@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using ff14bot;
 using ff14bot.Managers;
-using LlamaBotBases.Tester.Settings;
-using LlamaBotBases.Tester.Tasks;
+using LlamaBotBases.LlamaUtilities.Settings;
+using LlamaBotBases.LlamaUtilities.Tasks;
 using LlamaLibrary.Extensions;
 using Newtonsoft.Json;
 
-namespace LlamaBotBases.Tester
+namespace LlamaBotBases.LlamaUtilities
 {
     public partial class Utilities : Form
     {

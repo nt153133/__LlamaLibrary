@@ -1,5 +1,5 @@
 ﻿
-namespace LlamaBotBases.Tester
+namespace LlamaBotBases.LlamaUtilities
 {
     partial class Utilities
     {
