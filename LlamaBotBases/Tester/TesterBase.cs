@@ -278,7 +278,7 @@ namespace LlamaBotBases.Tester
 
             using (var outputFile = new StreamWriter(@"G:\CustomDeliveryNpcs.json", false))
             {
-                outputFile.Write(JsonConvert.SerializeObject(DeliveryNpcs, (Formatting) System.Xml.Formatting.Indented));
+                outputFile.Write(JsonConvert.SerializeObject(DeliveryNpcs, (Formatting)System.Xml.Formatting.Indented));
             }
 
             TreeRoot.Stop("Stop Requested");

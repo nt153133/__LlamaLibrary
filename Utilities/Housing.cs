@@ -510,7 +510,7 @@ namespace LlamaLibrary.Utilities
 
                 if (SelectString.IsOpen)
                 {
-                    SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+                    SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
                     await Coroutine.Wait(5000, () => !SelectString.IsOpen);
                 }
 
@@ -533,7 +533,7 @@ namespace LlamaLibrary.Utilities
 
                 if (SelectString.IsOpen)
                 {
-                    SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+                    SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
                     await Coroutine.Wait(5000, () => !SelectString.IsOpen);
                 }
 

@@ -55,11 +55,113 @@ namespace LlamaLibrary.Memory
                 initDone = true;
             }
 
-            var q1 = from t in Assembly.GetExecutingAssembly().GetTypes()
-                     where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
-                     select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public);
+            var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
+                      where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+                      select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
-            var types = typeof(Offsets).GetFields().Concat(q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public)));
+            if (!q1.Contains(typeof(Offsets)))
+            {
+                q1.Add(typeof(Offsets));
+            }
+
+            SetOffsetObjects(q1);
+
+            var vtables = new Dictionary<IntPtr, int>();
+            for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
+            {
+                vtables.Add(AgentModule.AgentVtables[index], index);
+            }
+
+            var q = from t in Assembly.GetExecutingAssembly().GetTypes()
+                    where t.IsClass && t.Namespace == "LlamaLibrary.RemoteAgents"
+                    select t;
+
+            foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
+            {
+                var test = ((IAgent)Activator.CreateInstance(
+                    MyType,
+                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    null,
+                    new object[]
+                    {
+                        IntPtr.Zero
+                    },
+                    null)
+                ).RegisteredVtable;
+
+                if (vtables.ContainsKey(test))
+                {
+                    Log1.Information($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
+                }
+                else
+                {
+                    Log1.Error($"\tFound one {test.ToString("X")} but no agent");
+                }
+            }
+
+            AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
+            ScriptManager.Init(typeof(ScriptConditions.Helpers));
+            initDone = true;
+            if (_debug)
+            {
+                Log1.Information($"\n {Sb}");
+            }
+        }
+
+        public static void RegisterAgent(IAgent iagent)
+        {
+            var vtables = new Dictionary<IntPtr, int>();
+            for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
+            {
+                vtables.Add(AgentModule.AgentVtables[index], index);
+            }
+
+            if (vtables.ContainsKey(iagent.RegisteredVtable))
+            {
+                Log1.Information($"\tTrying to add {iagent.GetType()} {AgentModule.TryAddAgent(vtables[iagent.RegisteredVtable], iagent.GetType())}");
+            }
+            else
+            {
+                Log1.Error($"\tFound one {iagent.RegisteredVtable.ToString("X")} but no agent");
+            }
+        }
+
+        internal static void AddNamespacesToScriptManager(params string[] param)
+        {
+            var field =
+                typeof(ScriptManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+                    .FirstOrDefault(f => f.FieldType == typeof(List<string>));
+
+            if (field == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (!(field.GetValue(null) is List<string> list))
+                {
+                    return;
+                }
+
+                foreach (var ns in param)
+                {
+                    if (!list.Contains(ns))
+                    {
+                        list.Add(ns);
+                        Log1.Information($"Added namespace '{ns}' to ScriptManager");
+                    }
+                }
+            }
+            catch
+            {
+                Log1.Error("Failed to add namespaces to ScriptManager, this can cause issues with some profiles.");
+            }
+        }
+
+        public static void SetOffsetObjects(IEnumerable<Type> q1)
+        {
+            var types = q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public));
 
             using (var pf = new PatternFinder(Core.Memory))
             {
@@ -106,80 +208,6 @@ namespace LlamaLibrary.Memory
                                      }
                                  }
                                 );
-            }
-
-            var vtables = new Dictionary<IntPtr, int>();
-            for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
-            {
-                vtables.Add(AgentModule.AgentVtables[index], index);
-            }
-
-            var q = from t in Assembly.GetExecutingAssembly().GetTypes()
-                    where t.IsClass && t.Namespace == "LlamaLibrary.RemoteAgents"
-                    select t;
-
-            foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
-            {
-                var test = ((IAgent)Activator.CreateInstance(
-                    MyType,
-                    BindingFlags.Instance | BindingFlags.NonPublic,
-                    null,
-                    new object[]
-                    {
-                        IntPtr.Zero
-                    },
-                    null)
-                ).RegisteredVtable;
-
-                if (vtables.ContainsKey(test))
-                {
-                    Log1.Information($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
-                }
-                else
-                {
-                    Log1.Error($"\tFound one {test.ToString("X")} but no agent");
-                }
-            }
-
-            AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
-            ScriptManager.Init(typeof(ScriptConditions.Helpers));
-            initDone = true;
-            if (_debug)
-            {
-                Log1.Information($"\n {Sb}");
-            }
-        }
-
-        internal static void AddNamespacesToScriptManager(params string[] param)
-        {
-            var field =
-                typeof(ScriptManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
-                    .FirstOrDefault(f => f.FieldType == typeof(List<string>));
-
-            if (field == null)
-            {
-                return;
-            }
-
-            try
-            {
-                if (!(field.GetValue(null) is List<string> list))
-                {
-                    return;
-                }
-
-                foreach (var ns in param)
-                {
-                    if (!list.Contains(ns))
-                    {
-                        list.Add(ns);
-                        Log1.Information($"Added namespace '{ns}' to ScriptManager");
-                    }
-                }
-            }
-            catch
-            {
-                Log1.Error("Failed to add namespaces to ScriptManager, this can cause issues with some profiles.");
             }
         }
 

@@ -10,9 +10,12 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
 using ff14bot.Objects;
+using ff14bot.RemoteWindows;
+using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
+using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
 
@@ -273,6 +276,79 @@ namespace LlamaLibrary.Retainers
             }
 
             return RetainerList.Instance.IsOpen;
+        }
+
+        public static async Task<bool> RetainerHandleVentures()
+        {
+            if (!SelectString.IsOpen)
+            {
+                return false;
+            }
+
+            if (SelectString.Lines().Contains(Translator.VentureCompleteText))
+            {
+                //Log.Information("Venture Done");
+                SelectString.ClickLineEquals(Translator.VentureCompleteText);
+
+                await Coroutine.Wait(5000, () => RetainerTaskResult.IsOpen);
+
+                if (!RetainerTaskResult.IsOpen)
+                {
+                    Log.Error("RetainerTaskResult didn't open");
+                    return false;
+                }
+
+                var taskId = AgentRetainerVenture.Instance.RetainerTask;
+
+                var task = ResourceManager.VentureData.Value.FirstOrDefault(i => i.Id == taskId);
+
+                if (task != default(RetainerTaskData))
+                {
+                    Log.Information($"Finished Venture {task.Name}");
+                    Log.Information($"Reassigning Venture {task.Name}");
+                }
+                else
+                {
+                    Log.Information($"Finished Venture");
+                    Log.Information($"Reassigning Venture");
+                }
+
+                RetainerTaskResult.Reassign();
+
+                await Coroutine.Wait(5000, () => RetainerTaskAsk.IsOpen);
+                if (!RetainerTaskAsk.IsOpen)
+                {
+                    Log.Error("RetainerTaskAsk didn't open");
+                    return false;
+                }
+
+                await Coroutine.Wait(2000, RetainerTaskAskExtensions.CanAssign);
+                if (RetainerTaskAskExtensions.CanAssign())
+                {
+                    RetainerTaskAsk.Confirm();
+                }
+                else
+                {
+                    Log.Error($"RetainerTaskAsk Error: {RetainerTaskAskExtensions.GetErrorReason()}");
+                    RetainerTaskAsk.Close();
+                }
+
+                await Coroutine.Wait(1500, () => Talk.DialogOpen || SelectString.IsOpen);
+                await Coroutine.Sleep(200);
+                if (Talk.DialogOpen)
+                {
+                    Talk.Next();
+                }
+
+                await Coroutine.Sleep(200);
+                await Coroutine.Wait(5000, () => SelectString.IsOpen);
+            }
+            else
+            {
+                Log.Information("Venture Not Done");
+            }
+
+            return true;
         }
 
         public static async Task<bool> CloseRetainerList()

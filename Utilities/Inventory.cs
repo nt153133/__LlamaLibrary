@@ -64,7 +64,7 @@ namespace LlamaLibrary.Utilities
         /// Desynths a single bagslot, single item or whole stack. *Should* not result in a desynthesis result window.
         /// </summary>
         /// <param name="bagSlot">The item(s) to desynth.</param>
-        /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task Desynth(BagSlot bagSlot)
         {
             await GeneralFunctions.StopBusy(leaveDuty: false);

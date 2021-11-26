@@ -106,7 +106,7 @@ namespace LlamaLibrary.Utilities
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
                 if (SelectString.IsOpen)
                 {
-                    SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+                    SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
                 }
             }
         }
@@ -217,7 +217,7 @@ namespace LlamaLibrary.Utilities
             foreach (var item in ContentsInfoDetail.Instance.GetCraftingTurninItems().Where(item => !InventoryManager.FilledSlots.Any(i => i.RawItemId == item.Key.Id && !i.HasMateria() && i.Count >= item.Value.Key)))
             {
                 Log.Information($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
-                var order = new LisbethOrder(id, 1, (int) item.Key.Id, item.Value.Key, item.Value.Value);
+                var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, item.Value.Value);
                 outList.Add(order);
 
                 id++;
@@ -232,7 +232,7 @@ namespace LlamaLibrary.Utilities
                     continue; //type = "Fisher";
                 }
 
-                var order = new LisbethOrder(id, 2, (int) item.Key.Id, item.Value.Key, type, true);
+                var order = new LisbethOrder(id, 2, (int)item.Key.Id, item.Value.Key, type, true);
 
                 outList.Add(order);
                 id++;
@@ -281,7 +281,7 @@ namespace LlamaLibrary.Utilities
             foreach (var item in ContentsInfoDetail.Instance.GetCraftingTurninItems())
             {
                 Log.Information($"{item.Key} Qty: {item.Value.Key} Class: {item.Value.Value}");
-                var order = new LisbethOrder(id, 1, (int) item.Key.Id, item.Value.Key, item.Value.Value);
+                var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, item.Value.Value);
                 outList.Add(order);
 
                 id++;
@@ -296,7 +296,7 @@ namespace LlamaLibrary.Utilities
                     type = "Fisher";
                 }
 
-                var order = new LisbethOrder(id, 1, (int) item.Key.Id, item.Value.Key, type);
+                var order = new LisbethOrder(id, 1, (int)item.Key.Id, item.Value.Key, type);
 
                 outList.Add(order);
                 id++;
