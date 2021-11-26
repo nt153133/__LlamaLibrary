@@ -68,7 +68,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int GetSkybuilderScrips()
         {
-            return (int)SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)28063);
+            return (int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.SkybuildersScrips);
         }
 
         public static bool HasMap()

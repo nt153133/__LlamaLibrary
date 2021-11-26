@@ -33,7 +33,7 @@ namespace LlamaLibrary.RemoteWindows
             return Elements[17 + CurrentClassSelected()].TrimmedData;
         }
 
-        public int NumberOfKupoTickets()
+        public int GetKupoVoucherCount()
         {
             if (Translator.Language == Language.Chn)
             {

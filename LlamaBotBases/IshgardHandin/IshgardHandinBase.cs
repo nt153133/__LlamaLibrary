@@ -20,17 +20,20 @@ namespace LlamaBotBases.IshgardHandinBase
 {
     public class IshgardHandinBase : BotBase
     {
-        private static readonly LLogger Log = new LLogger("Ishgard Handin", Colors.Aquamarine);
+        private static readonly string _name = "Ishgard Handin";
+        public override string Name => _name;
 
-        private Composite _root;
-        public override string Name => "Ishgard Handin";
+        private static readonly LLogger Log = new LLogger(_name, Colors.Aquamarine);
+
         public override PulseFlags PulseFlags => PulseFlags.All;
         public override bool IsAutonomous => true;
         public override bool RequiresProfile => false;
-        public static bool DiscardCollectable = true;
+        public override bool WantButton { get; } = false;
+
+        private Composite _root;
         public override Composite Root => _root;
 
-        public override bool WantButton { get; } = false;
+        public static bool DiscardCollectable = true;
 
         private static uint[] items20Old = { 28725, 29792, 28726, 29793, 28727, 29794, 28728, 29795, 28729, 29796, 28730, 29797, 28731, 29798, 28732, 29799 };
         private static uint[] items40Old = { 28733, 29800, 28734, 29801, 28735, 29802, 28736, 29803, 28737, 29804, 28738, 29805, 28739, 29806, 28740, 29807 };
@@ -48,13 +51,9 @@ namespace LlamaBotBases.IshgardHandinBase
         private static uint[] items511 = { 31224, 31225, 31226, 31227, 31228, 31229, 31230, 31231 };
         private static uint[] items513 = { 31953, 31954, 31955, 31956, 31957, 31958, 31959, 31960 };
 
-        private async Task<bool> Run()
+        public IshgardHandinBase()
         {
-            await Handin();
-
-            //await BuyItem(13630);
-            TreeRoot.Stop("Stop Requested");
-            return true;
+            OffsetManager.Init();
         }
 
         public override void Start()
@@ -62,14 +61,17 @@ namespace LlamaBotBases.IshgardHandinBase
             _root = new ActionRunCoroutine(r => Run());
         }
 
+        private async Task<bool> Run()
+        {
+            await Handin();
+
+            TreeRoot.Stop("Stop Requested");
+            return true;
+        }
+
         public override void Stop()
         {
             _root = null;
-        }
-
-        public IshgardHandinBase()
-        {
-            OffsetManager.Init();
         }
 
         public static async Task<bool> Handin()
@@ -94,7 +96,6 @@ namespace LlamaBotBases.IshgardHandinBase
         {
             Navigator.NavigationProvider = new ServiceNavigationProvider();
             Navigator.PlayerMover = new SlideMover();
-            //var IshgardHandin = new LlamaLibrary.Helpers.IshgardHandin();
 
             if (DiscardCollectable)
             {
@@ -2169,26 +2170,6 @@ namespace LlamaBotBases.IshgardHandinBase
             Log.Information($"Done");
 
             //TreeRoot.Stop("Stop Requested");
-            return true;
-        }
-
-        public static async Task<bool> BuyItem(uint ItemId, int SelectStringLine = 0)
-        {
-            Navigator.NavigationProvider = new ServiceNavigationProvider();
-            Navigator.PlayerMover = new SlideMover();
-
-            await IshgardHandin.BuyItem(ItemId, SelectStringLine);
-
-            return true;
-        }
-
-        public static async Task<bool> BuyItem(uint ItemId, int maxCount, int SelectStringLine = 0)
-        {
-            Navigator.NavigationProvider = new ServiceNavigationProvider();
-            Navigator.PlayerMover = new SlideMover();
-
-            await IshgardHandin.BuyItem(ItemId, maxCount, SelectStringLine);
-
             return true;
         }
     }

@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.XmlEngine;
 using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
 using LlamaLibrary.Helpers;
-using LlamaLibrary.Logging;
 using TreeSharp;
 
 namespace LlamaBotBases.OrderbotTags
@@ -54,7 +52,7 @@ namespace LlamaBotBases.OrderbotTags
             Navigator.NavigationProvider = Navigator.NavigationProvider ?? new ServiceNavigationProvider();
             Navigator.PlayerMover = Navigator.PlayerMover ?? new SlideMover();
 
-            await IshgardHandin.BuyItem((uint)itemId, SelectStringLine);
+            await IshgardHandin.BuyScripItem((uint)itemId, SelectStringLine);
 
             _isDone = true;
         }

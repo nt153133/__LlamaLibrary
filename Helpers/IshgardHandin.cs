@@ -5,11 +5,8 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
-using ff14bot.Behavior;
 using ff14bot.Enums;
 using ff14bot.Managers;
-using ff14bot.Navigation;
-using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Logging;
@@ -22,38 +19,57 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new LLogger(typeof(IshgardHandin).Name, Colors.Aquamarine);
 
-        public static uint AetheryteId = 70;
-        public static string EnglishName = "Potkin";
+        private const int FirmamentZoneId = 886;
+        private const float InteractMaxRange = 4f;
+        private const int SkybuildersScripMax = 10_000;  // TODO: Properly support currency maximums/caps
 
-        public static uint FoundationZoneId;
+        /// <summary>
+        /// Gets the Firmament's gathering "Resource Inspector" NPC.
+        /// </summary>
+        private static GameObject GatherInspectNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031693 && i.IsVisible);
 
-        //public uint NpcId = 1031690;
-        public static uint[] ids = { 1031690, 1031677 };
-        public static uint ZoneId;
+        /// <summary>
+        /// Gets the Firmament's crafting "Collectable Appraiser" NPC.
+        /// </summary>
+        private static GameObject CraftInspectNpc => GameObjectManager.GameObjects.FirstOrDefault(i => new uint[] { 1031690, 1031677 }.Contains(i.NpcId) && i.IsVisible);
 
-        private static GameObject Npc => GameObjectManager.GameObjects.FirstOrDefault(i => ids.Contains(i.NpcId) && i.IsVisible);
-        private static GameObject VendorNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031680 && i.IsVisible);
+        /// <summary>
+        /// Gets the Firmament's "Kupo of Fortune" minigame NPC.
+        /// </summary>
+        private static GameObject KupoFortuneNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031692 && i.IsVisible);
 
-        private static GameObject GatherNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031693 && i.IsVisible);
+        /// <summary>
+        /// Gets the Firmament's Skybuilder Scrip + Fête Token vendor NPC.
+        /// </summary>
+        private static GameObject ScripAndFeteVendorNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031680 && i.IsVisible);
 
-        private static GameObject KupoNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031692 && i.IsVisible);
-
-        public static async Task<bool> HandInGatheringItem(int job)
+        /// <summary>
+        /// Travels to the Firmament and converts Skybuilders' gatherables into "Approved" versions for specified gathering job.
+        /// </summary>
+        /// <param name="job">Gathering job to approve gatherables for.</param>
+        /// <param name="stopScripMax">Whether to stop approving at max scrips or allow overcapping.</param>
+        /// <returns><see langword="false"/> if execution should continue from here.</returns>
+        public static async Task<bool> HandInGatheringItem(int job, bool stopScripMax = false)
         {
-            if ((!HWDGathereInspect.Instance.IsOpen && GatherNpc == null) || GatherNpc.Location.Distance(Core.Me.Location) > 5f)
+            Log.Information("Trying to turn in Skybuilders' gatherables.");
+
+            if ((!HWDGathereInspect.Instance.IsOpen && GatherInspectNpc == null) || GatherInspectNpc.Location.Distance(Core.Me.Location) > 5f)
             {
-                await Navigation.GetTo(886, new Vector3(-20.04274f, -16f, 141.3337f));
+                Log.Information("Resource Inspector NPC not nearby.  Moving to correct area first.");
+                await Navigation.GetTo(FirmamentZoneId, new Vector3(-20.04274f, -16f, 141.3337f));
             }
 
-            if (!HWDGathereInspect.Instance.IsOpen && GatherNpc.Location.Distance(Core.Me.Location) > 4f)
+            if (!HWDGathereInspect.Instance.IsOpen && GatherInspectNpc.Location.Distance(Core.Me.Location) > InteractMaxRange)
             {
-                await Navigation.OffMeshMove(GatherNpc.Location);
+                Log.Information("Approaching interaction range of Resource Inspector NPC.");
+                await Navigation.OffMeshMove(GatherInspectNpc.Location);
                 await Coroutine.Sleep(500);
             }
 
             if (!HWDGathereInspect.Instance.IsOpen)
             {
-                GatherNpc.Interact();
+                Log.Information($"Interacting with Resource Inspector NPC: {GatherInspectNpc.Name} ({GatherInspectNpc.NpcId}).");
+                GatherInspectNpc.Interact();
                 await Coroutine.Wait(5000, () => HWDGathereInspect.Instance.IsOpen || Talk.DialogOpen);
                 await Coroutine.Sleep(100);
 
@@ -63,33 +79,53 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Wait(5000, () => !Talk.DialogOpen);
                 }
 
+                Log.Verbose("Talking done.");
+
                 await Coroutine.Wait(5000, () => HWDGathereInspect.Instance.IsOpen);
+                Log.Information("Resource Inspector should be ready.");
             }
 
             if (HWDGathereInspect.Instance.IsOpen)
             {
+                Log.Information("Resource Inspector is ready.");
                 HWDGathereInspect.Instance.ClickClass(job);
                 await Coroutine.Sleep(500);
 
                 if (HWDGathereInspect.Instance.CanAutoSubmit())
                 {
+                    Log.Debug("Auto-submitting Skybuilders' gatherables.");
                     HWDGathereInspect.Instance.ClickAutoSubmit();
+
                     await Coroutine.Wait(6000, () => HWDGathereInspect.Instance.CanRequestInspection());
                     if (HWDGathereInspect.Instance.CanRequestInspection())
                     {
+                        Log.Information($"Inspecting Skybuilders' gatherables for gathering job {job}.");
                         HWDGathereInspect.Instance.ClickRequestInspection();
                         if (ScriptConditions.Helpers.GetSkybuilderScrips() > 9000)
                         {
-                            await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
+                            await Coroutine.Wait(3000, () => SelectYesno.IsOpen);
                         }
                         else
                         {
                             await Coroutine.Sleep(100);
                         }
 
-                        if (SelectYesno.IsOpen)
+                        if (SelectYesno.IsOpen && !stopScripMax)
                         {
+                            Log.Warning($"Have {ScriptConditions.Helpers.GetSkybuilderScrips():N}/{SkybuildersScripMax:N} Skybuilders' Scrips and will overcap, but force-inspecting anyway.");
                             SelectYesno.Yes();
+                        }
+                        else if (SelectYesno.IsOpen && stopScripMax)
+                        {
+                            Log.Warning($"Have {ScriptConditions.Helpers.GetSkybuilderScrips():N}/{SkybuildersScripMax:N} Skybuilders' Scrips and will overcap.  Stopping here.");
+
+                            SelectYesno.No();
+                            await Coroutine.Wait(3000, () => !SelectYesno.IsOpen);
+
+                            HWDGathereInspect.Instance.Close();
+                            await Coroutine.Wait(3000, () => !HWDGathereInspect.Instance.IsOpen);
+
+                            return false;
                         }
                     }
                 }
@@ -98,23 +134,32 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
-        public static async Task<bool> HandInKupoTicket(int slot)
+        /// <summary>
+        /// Travels to the Firmament and plays "Kupo of Fortune" minigame with every available Kupo Voucher.
+        /// </summary>
+        /// <param name="slot">Slot to scratch off of Kupo Voucher.</param>
+        /// <returns><see langword="false"/> if execution should continue from here.</returns>
+        public static async Task<bool> HandInKupoVoucher(int slot)
         {
-            if ((!HWDLottery.Instance.IsOpen && KupoNpc == null) || KupoNpc.Location.Distance(Core.Me.Location) > 5f)
+            Log.Information("Trying to play Kupo of Fortune minigame.");
+
+            if ((!HWDLottery.Instance.IsOpen && KupoFortuneNpc == null) || KupoFortuneNpc.Location.Distance(Core.Me.Location) > InteractMaxRange)
             {
-                await Navigation.GetTo(886, new Vector3(43.59162f, -16f, 170.3864f));
+                Log.Information("Kupo of Fortune NPC not nearby.  Moving to correct area first.");
+                await Navigation.GetTo(FirmamentZoneId, new Vector3(43.59162f, -16f, 170.3864f));
             }
 
-            if (!HWDLottery.Instance.IsOpen && KupoNpc.Location.Distance(Core.Me.Location) > 4f)
+            if (!HWDLottery.Instance.IsOpen && KupoFortuneNpc.Location.Distance(Core.Me.Location) > InteractMaxRange)
             {
-                await Navigation.OffMeshMove(KupoNpc.Location);
+                Log.Information("Approaching interaction range of Kupo of Fortune NPC.");
+                await Navigation.OffMeshMove(KupoFortuneNpc.Location);
                 await Coroutine.Sleep(500);
             }
 
-            if (!HWDLottery.Instance.IsOpen && KupoNpc != null)
+            if (!HWDLottery.Instance.IsOpen && KupoFortuneNpc != null)
             {
-                KupoNpc.Interact();
-                Log.Information("Interact with npc");
+                Log.Information($"Interacting with Kupo of Fortune NPC: {KupoFortuneNpc.Name} ({KupoFortuneNpc.NpcId}).");
+                KupoFortuneNpc.Interact();
                 await Coroutine.Wait(5000, () => HWDLottery.Instance.IsOpen || Talk.DialogOpen);
                 await Coroutine.Sleep(100);
 
@@ -124,72 +169,85 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Wait(5000, () => !Talk.DialogOpen);
                 }
 
-                Log.Information("Talking done");
-                await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
+                Log.Verbose("Talking done.");
 
+                await Coroutine.Wait(3000, () => SelectYesno.IsOpen);
                 if (SelectYesno.IsOpen)
                 {
+                    Log.Verbose("SelectYesNo open; clicking Yes to play.");
                     SelectYesno.Yes();
-                    Log.Information("Select Yes/No open");
+
                     await Coroutine.Wait(5000, () => HWDLottery.Instance.IsOpen);
                     await Coroutine.Sleep(4000);
-                    Log.Information("Ticket Should be loaded");
+                    Log.Information("Kupo of Fortune should be ready.");
                 }
             }
 
             if (HWDLottery.Instance.IsOpen)
             {
-                Log.Information("Clicking");
+                Log.Information("Kupo of Fortune is ready.");
+                Log.Information($"Scratching off slot {slot}.");
                 await HWDLottery.Instance.ClickSpot(slot);
                 await Coroutine.Sleep(700);
-                Log.Information("Closing");
+
+                Log.Verbose("Closing");
                 HWDLottery.Instance.Close();
-                await Coroutine.Wait(2000, () => !HWDLottery.Instance.IsOpen);
+
+                await Coroutine.Wait(3000, () => !HWDLottery.Instance.IsOpen);
                 if (HWDLottery.Instance.IsOpen)
                 {
-                    Log.Information("Closing Again");
+                    Log.Verbose("Closing Again");
                     HWDLottery.Instance.Close();
                 }
 
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen || Talk.DialogOpen);
-                Log.Information($"Select Yes/No {SelectYesno.IsOpen} Talk {Talk.DialogOpen}");
+                Log.Verbose($"Select Yes/No {SelectYesno.IsOpen} Talk {Talk.DialogOpen}");
                 while (Talk.DialogOpen)
                 {
                     Talk.Next();
-                    await Coroutine.Wait(2000, () => !Talk.DialogOpen);
-                    await Coroutine.Wait(2000, () => Talk.DialogOpen || SelectYesno.IsOpen);
+                    await Coroutine.Wait(3000, () => !Talk.DialogOpen);
+                    await Coroutine.Wait(3000, () => Talk.DialogOpen || SelectYesno.IsOpen);
                 }
 
                 await Coroutine.Sleep(500);
-
-                await HandInKupoTicket(slot);
+                await HandInKupoVoucher(slot);
             }
             else
             {
-                Log.Information("Out of Tickets");
+                Log.Information("Out of Kupo Vouchers.");
             }
 
-            Log.Information("Done with Kupo Tickets");
+            Log.Information("Done playing Kupo of Fortune.");
             return false;
         }
 
+        /// <summary>
+        /// Travels to the Firmament and turns in Skybuilders' collectables for specified crafting job.
+        /// </summary>
+        /// <param name="itemId">ItemID of collectable to turn in.</param>
+        /// <param name="index">Zero-based index of row for item in appraisal window, starting from top.</param>
+        /// <param name="job">Crafting job to turn in collectables for.</param>
+        /// <param name="stopScripMax">Whether to stop turn-ins at max scrips or allow overcapping.</param>
+        /// <returns><see langword="false"/> if execution should continue from here.</returns>
         public static async Task<bool> HandInItem(uint itemId, int index, int job, bool stopScripMax = false)
         {
-            if ((!HWDSupply.Instance.IsOpen && Npc == null) || Npc.Location.Distance(Core.Me.Location) > 5f)
+            if ((!HWDSupply.Instance.IsOpen && CraftInspectNpc == null) || CraftInspectNpc.Location.Distance(Core.Me.Location) > 5f)
             {
-                await Navigation.GetTo(886, new Vector3(43.59162f, -16f, 170.3864f));
+                Log.Information("Collectable Appraiser NPC not nearby.  Moving to correct area first.");
+                await Navigation.GetTo(FirmamentZoneId, new Vector3(43.59162f, -16f, 170.3864f));
             }
 
-            if (!HWDSupply.Instance.IsOpen && Npc.Location.Distance(Core.Me.Location) > 4f)
+            if (!HWDSupply.Instance.IsOpen && CraftInspectNpc.Location.Distance(Core.Me.Location) > InteractMaxRange)
             {
-                await Navigation.OffMeshMove(Npc.Location);
+                Log.Information("Approaching interaction range of Collectable Appraiser NPC.");
+                await Navigation.OffMeshMove(CraftInspectNpc.Location);
                 await Coroutine.Sleep(500);
             }
 
             if (!HWDSupply.Instance.IsOpen)
             {
-                //NpcId = GameObjectManager.GameObjects.First(i => i.EnglishName == EnglishName).NpcId;
-                Npc.Interact();
+                Log.Information($"Interacting with Collectable Appraiser NPC: {CraftInspectNpc.Name} ({CraftInspectNpc.NpcId}).");
+                CraftInspectNpc.Interact();
                 await Coroutine.Wait(5000, () => HWDSupply.Instance.IsOpen || Talk.DialogOpen);
                 await Coroutine.Sleep(1000);
 
@@ -199,21 +257,27 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Wait(5000, () => !Talk.DialogOpen);
                 }
 
+                Log.Verbose("Talking done.");
+
                 await Coroutine.Sleep(1000);
+                Log.Information("Collectable Appraiser should be ready.");
             }
 
             if (HWDSupply.Instance.IsOpen)
             {
+                Log.Information("Collectable Appraiser is ready.");
+
                 if (HWDSupply.Instance.ClassSelected != job)
                 {
                     HWDSupply.Instance.ClassSelected = job;
                     await Coroutine.Sleep(1000);
                 }
 
-                //var item = InventoryManager.FilledSlots.FirstOrDefault(i => i.RawItemId == itemId);
+                Log.Information($"Appraising Skybuilders' collectables for crafting job {job}.");
                 var items = InventoryManager.FilledSlots.Where(i => i.RawItemId == itemId);
                 foreach (var item in items)
                 {
+                    Log.Debug($"Appraising collectable: {item.Name} ({item.RawItemId})");
                     HWDSupply.Instance.ClickItem(index);
 
                     await Coroutine.Wait(5000, () => Request.IsOpen);
@@ -223,9 +287,9 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Wait(5000, () => Request.HandOverButtonClickable);
                     Request.HandOver();
 
-                    if (LlamaLibrary.ScriptConditions.Helpers.GetSkybuilderScrips() > 9000)
+                    if (ScriptConditions.Helpers.GetSkybuilderScrips() > 9000)
                     {
-                        await Coroutine.Wait(2000, () => SelectYesno.IsOpen);
+                        await Coroutine.Wait(3000, () => SelectYesno.IsOpen);
                     }
                     else
                     {
@@ -235,11 +299,11 @@ namespace LlamaLibrary.Helpers
 
                     if (Translator.Language != Language.Chn)
                     {
-                        Log.Information($"Kupo Tickets: {HWDSupply.Instance.NumberOfKupoTickets()}");
+                        Log.Information($"Kupo Vouchers: {HWDSupply.Instance.GetKupoVoucherCount()}");
 
-                        if (HWDSupply.Instance.NumberOfKupoTickets() >= 9)
+                        if (HWDSupply.Instance.GetKupoVoucherCount() >= 9)
                         {
-                            Log.Information($"Going to turn in Kupo Tickets: {HWDSupply.Instance.NumberOfKupoTickets()}");
+                            Log.Information($"Going to turn in Kupo Vouchers: {HWDSupply.Instance.GetKupoVoucherCount()}");
                             if (SelectYesno.IsOpen)
                             {
                                 SelectYesno.Yes();
@@ -247,19 +311,20 @@ namespace LlamaLibrary.Helpers
                             }
 
                             HWDSupply.Instance.Close();
-                            await Coroutine.Sleep(2000);
-                            await HandInKupoTicket(1);
+                            await Coroutine.Sleep(3000);
+                            await HandInKupoVoucher(1);
                             break;
                         }
                     }
 
                     if (!SelectYesno.IsOpen)
                     {
-                        continue;
+                        continue;  // No scrip overcap warning prompt yet
                     }
 
                     if (stopScripMax)
                     {
+                        Log.Warning($"Have {ScriptConditions.Helpers.GetSkybuilderScrips():N}/{SkybuildersScripMax:N} Skybuilders' Scrips and will overcap.  Stopping here.");
                         if (SelectYesno.IsOpen)
                         {
                             SelectYesno.No();
@@ -275,15 +340,17 @@ namespace LlamaLibrary.Helpers
                         if (HWDSupply.Instance.IsOpen)
                         {
                             HWDSupply.Instance.Close();
-                            await Coroutine.Wait(2000, () => !HWDSupply.Instance.IsOpen);
+                            await Coroutine.Wait(3000, () => !HWDSupply.Instance.IsOpen);
                         }
                     }
                     else
                     {
+                        Log.Warning($"Have {ScriptConditions.Helpers.GetSkybuilderScrips():N}/{SkybuildersScripMax:N} Skybuilders' Scrips and will overcap, but force-inspecting anyway.");
                         SelectYesno.Yes();
                     }
 
                     await Coroutine.Sleep(1000);
+
                     if (!InventoryManager.FilledSlots.Any(i => i.RawItemId == itemId))
                     {
                         if (Request.IsOpen)
@@ -306,14 +373,16 @@ namespace LlamaLibrary.Helpers
             if (Request.IsOpen)
             {
                 Request.Cancel();
-                await Coroutine.Sleep(2000);
+                await Coroutine.Wait(3000, () => !Request.IsOpen);
+
                 if (HWDSupply.Instance.IsOpen)
                 {
                     HWDSupply.Instance.Close();
-                    await Coroutine.Wait(2000, () => !HWDSupply.Instance.IsOpen);
+                    await Coroutine.Wait(3000, () => !HWDSupply.Instance.IsOpen);
                 }
             }
 
+            // TODO: Is this needed?  We already iterated all bagslots with itemId, so how is anything left?
             if (InventoryManager.FilledSlots.Any(i => i.RawItemId == itemId))
             {
                 await HandInItem(itemId, index, job, stopScripMax);
@@ -322,22 +391,29 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
-        public static async Task<bool> BuyItem(uint itemId, int SelectStringLine = 0)
+        /// <summary>
+        /// Travels to the Firmament and buys the specified item with Skybuilders' Scrips.
+        /// </summary>
+        /// <param name="itemId">ItemID of item to be purchased.</param>
+        /// <param name="maxCount">Max quantity to buy, limited by scrip balance and stack size. -1 buys as much as possible.</param>
+        /// <param name="SelectStringLine">Zero-based index of row for shop category.</param>
+        /// <returns><see langword="false"/> if execution should continue from here.</returns>
+        public static async Task<bool> BuyScripItem(uint itemId, int maxCount = -1, int SelectStringLine = 0)
         {
-            if ((!ShopExchangeCurrency.Open && VendorNpc == null) || VendorNpc.Location.Distance(Core.Me.Location) > 5f)
+            if ((!ShopExchangeCurrency.Open && ScripAndFeteVendorNpc == null) || ScripAndFeteVendorNpc.Location.Distance(Core.Me.Location) > 5f)
             {
-                await Navigation.GetTo(886, new Vector3(36.33978f, -16f, 145.3877f));
+                await Navigation.GetTo(FirmamentZoneId, new Vector3(36.33978f, -16f, 145.3877f));
             }
 
-            if (!ShopExchangeCurrency.Open && VendorNpc.Location.Distance(Core.Me.Location) > 4f)
+            if (!ShopExchangeCurrency.Open && ScripAndFeteVendorNpc.Location.Distance(Core.Me.Location) > InteractMaxRange)
             {
-                await Navigation.OffMeshMove(VendorNpc.Location);
+                await Navigation.OffMeshMove(ScripAndFeteVendorNpc.Location);
                 await Coroutine.Sleep(500);
             }
 
             if (!ShopExchangeCurrency.Open)
             {
-                VendorNpc.Interact();
+                ScripAndFeteVendorNpc.Interact();
                 await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open || Talk.DialogOpen || Conversation.IsOpen);
                 if (Conversation.IsOpen)
                 {
@@ -356,66 +432,11 @@ namespace LlamaLibrary.Helpers
                     return false;
                 }
 
-                var count = CanAffordScrip(specialShopItem.Value);
+                var count = Math.Min(MaxAffordableViaScrips(specialShopItem.Value), maxCount);
 
                 if (count > 0)
                 {
-                    Purchase(itemId, count);
-                }
-
-                await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
-
-                SelectYesno.ClickYes();
-
-                await Coroutine.Sleep(1000);
-
-                ShopExchangeCurrency.Close();
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public static async Task<bool> BuyItem(uint itemId, int maxCount, int SelectStringLine = 0)
-        {
-            if ((!ShopExchangeCurrency.Open && VendorNpc == null) || VendorNpc.Location.Distance(Core.Me.Location) > 5f)
-            {
-                await Navigation.GetTo(886, new Vector3(36.33978f, -16f, 145.3877f));
-            }
-
-            if (!ShopExchangeCurrency.Open && VendorNpc.Location.Distance(Core.Me.Location) > 4f)
-            {
-                await Navigation.OffMeshMove(VendorNpc.Location);
-                await Coroutine.Sleep(500);
-            }
-
-            if (!ShopExchangeCurrency.Open)
-            {
-                VendorNpc.Interact();
-                await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open || Talk.DialogOpen || Conversation.IsOpen);
-                if (Conversation.IsOpen)
-                {
-                    Conversation.SelectLine((uint)SelectStringLine);
-                    await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open);
-                }
-            }
-
-            if (ShopExchangeCurrency.Open)
-            {
-                var items = SpecialShopManager.Items;
-                var specialShopItem = items?.Cast<SpecialShopItem?>().FirstOrDefault(i => i.HasValue && i.Value.ItemIds.Contains(itemId));
-
-                if (!specialShopItem.HasValue)
-                {
-                    return false;
-                }
-
-                var count = Math.Min(CanAffordScrip(specialShopItem.Value), maxCount);
-
-                if (count > 0)
-                {
-                    Purchase(itemId, (uint)count);
+                    ScripPurchase(itemId, (uint)count);
                 }
 
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
@@ -440,7 +461,13 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
-        internal static uint Purchase(uint itemId, uint itemCount)
+        /// <summary>
+        /// Attempts to buy the specified item with Skybuilders' Scrips, up to the requested quantity.
+        /// </summary>
+        /// <param name="itemId">ItemID of item to buy.</param>
+        /// <param name="quantity">Amount to buy. May be reduced by stack size or scrip balance.</param>
+        /// <returns>Quantity actually purchased.</returns>
+        internal static uint ScripPurchase(uint itemId, uint quantity)
         {
             var windowByName = RaptureAtkUnitManager.GetWindowByName("ShopExchangeCurrency");
             if (windowByName == null)
@@ -448,365 +475,45 @@ namespace LlamaLibrary.Helpers
                 return 0u;
             }
 
-            var items = SpecialShopManager.Items;
-
-            var specialShopItem = items?.Cast<SpecialShopItem?>().FirstOrDefault(i => i.HasValue && i.Value.ItemIds.Contains(itemId));
+            var specialShopItem = SpecialShopManager.Items?.Cast<SpecialShopItem?>().FirstOrDefault(i => i.HasValue && i.Value.ItemIds.Contains(itemId));
 
             if (!specialShopItem.HasValue)
             {
                 return 0u;
             }
 
-            if (itemCount > specialShopItem.Value.Item0.StackSize)
-            {
-                itemCount = specialShopItem.Value.Item0.StackSize;
-            }
+            var index = SpecialShopManager.Items.IndexOf(specialShopItem.Value);
 
-            var count = CanAffordScrip(specialShopItem.Value);
+            // Clamp purchaseQuantity to max stack size and most we can afford to buy
+            quantity = Math.Min(quantity, specialShopItem.Value.Item0.StackSize);
+            quantity = Math.Min(quantity, MaxAffordableViaScrips(specialShopItem.Value));
 
-            if (itemCount > count)
-            {
-                itemCount = count;
-            }
-
-            var index = items.IndexOf(specialShopItem.Value);
-            var obj = new ulong[8]
+            var args = new ulong[]
             {
                 3uL,
                 0uL,
                 3uL,
-                0uL,
+                (uint)index,
                 3uL,
+                quantity,
                 0uL,
                 0uL,
-                0uL
             };
-            obj[3] = (uint)index;
-            obj[5] = itemCount;
-            windowByName.SendAction(4, obj);
-            return itemCount;
+            windowByName.SendAction(args.Length / 2, args);
+
+            return quantity;
         }
 
-        private static uint CanAffordScrip(SpecialShopItem item)
+        /// <summary>
+        /// Determines how many of the specified item can be purchased with current Skybuilders' Scrip balance.
+        /// </summary>
+        /// <param name="item">Item to measure against.</param>
+        /// <returns>Quantity able to be purchased.</returns>
+        private static uint MaxAffordableViaScrips(SpecialShopItem item)
         {
-            var scrips = SpecialCurrencyManager.GetCurrencyCount((SpecialCurrency)28063);
-            if (scrips == 0)
-            {
-                return 0u;
-            }
+            var currentScrips = (uint)ScriptConditions.Helpers.GetSkybuilderScrips();
 
-            return scrips / item.CurrencyCosts[0];
-        }
-
-        public static async Task<bool> GetToVendorNpc()
-        {
-            if (WorldManager.ZoneId != ZoneId && WorldManager.ZoneId != 886)
-            {
-                while (Core.Me.IsCasting)
-                {
-                    await Coroutine.Sleep(1000);
-                }
-
-                if (!ConditionParser.HasAetheryte(AetheryteId))
-                {
-                    Log.Error("We can't get to Foundation. You don't have that Aetheryte so do something about it...");
-                    TreeRoot.Stop();
-                    return false;
-                }
-
-                if (!WorldManager.TeleportById(AetheryteId))
-                {
-                    Log.Error($"We can't get to {AetheryteId}. something is very wrong...");
-                    TreeRoot.Stop();
-                    return false;
-                }
-
-                while (Core.Me.IsCasting)
-                {
-                    await Coroutine.Sleep(1000);
-                }
-
-                if (CommonBehaviors.IsLoading)
-                {
-                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
-                }
-
-                await Coroutine.Wait(10000, () => WorldManager.ZoneId == FoundationZoneId);
-                await Coroutine.Sleep(3000);
-
-                await Coroutine.Wait(10000, () => GameObjectManager.GetObjectByNPCId(70) != null);
-                await Coroutine.Sleep(3000);
-
-                var unit = GameObjectManager.GetObjectByNPCId(70);
-
-                if (!unit.IsWithinInteractRange)
-                {
-                    var _target = unit.Location;
-                    Navigator.PlayerMover.MoveTowards(_target);
-                    while (!unit.IsWithinInteractRange)
-                    {
-                        Navigator.PlayerMover.MoveTowards(_target);
-                        await Coroutine.Sleep(100);
-                    }
-
-                    Navigator.PlayerMover.MoveStop();
-                }
-
-                unit.Target();
-                unit.Interact();
-                await Coroutine.Sleep(1000);
-                await Coroutine.Wait(5000, () => SelectString.IsOpen);
-                await Coroutine.Sleep(500);
-                if (SelectString.IsOpen)
-                {
-                    SelectString.ClickSlot(1);
-                }
-
-                await Coroutine.Sleep(5000);
-
-                if (CommonBehaviors.IsLoading)
-                {
-                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
-                }
-
-                await Coroutine.Sleep(3000);
-            }
-
-            if (!(VendorNpc.Location.Distance(Core.Me.Location) > 5f))
-            {
-                return Npc.Location.Distance(Core.Me.Location) <= 5f;
-            }
-
-            var target = new Vector3(10.58188f, -15.96282f, 163.8702f);
-            Navigator.PlayerMover.MoveTowards(target);
-            while (target.Distance2D(Core.Me.Location) >= 4)
-            {
-                Navigator.PlayerMover.MoveTowards(target);
-                await Coroutine.Sleep(100);
-            }
-
-            Navigator.PlayerMover.MoveStop();
-
-            target = VendorNpc.Location;
-            Navigator.PlayerMover.MoveTowards(target);
-            while (target.Distance2D(Core.Me.Location) >= 4)
-            {
-                Navigator.PlayerMover.MoveTowards(target);
-                await Coroutine.Sleep(100);
-            }
-
-            //await CommonTasks.MoveTo(VendorNpc.Location, "Moving To HandinVendor");
-
-            // await CommonTasks.MoveAndStop(
-            //      new MoveToParameters(VendorNpc.Location, "Moving To HandinVendor"), 2f);
-
-            Navigator.PlayerMover.MoveStop();
-
-            return Npc.Location.Distance(Core.Me.Location) <= 5f;
-        }
-
-        public static async Task<bool> GetToNpc()
-        {
-            if (WorldManager.ZoneId != ZoneId && WorldManager.ZoneId != 886)
-            {
-                while (Core.Me.IsCasting)
-                {
-                    await Coroutine.Sleep(1000);
-                }
-
-                if (!ConditionParser.HasAetheryte(AetheryteId))
-                {
-                    //Log.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
-                    //TreeRoot.Stop();
-                    return false;
-                }
-
-                if (!WorldManager.TeleportById(AetheryteId))
-                {
-                    //Log.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
-                    //TreeRoot.Stop();
-                    return false;
-                }
-
-                while (Core.Me.IsCasting)
-                {
-                    await Coroutine.Sleep(1000);
-                }
-
-                if (CommonBehaviors.IsLoading)
-                {
-                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
-                }
-
-                await Coroutine.Wait(10000, () => WorldManager.ZoneId == FoundationZoneId);
-                await Coroutine.Sleep(3000);
-
-                await Coroutine.Wait(10000, () => GameObjectManager.GetObjectByNPCId(70) != null);
-                await Coroutine.Sleep(3000);
-
-                var unit = GameObjectManager.GetObjectByNPCId(70);
-
-                if (!unit.IsWithinInteractRange)
-                {
-                    var _target = unit.Location;
-                    Navigator.PlayerMover.MoveTowards(_target);
-                    while (!unit.IsWithinInteractRange)
-                    {
-                        Navigator.PlayerMover.MoveTowards(_target);
-                        await Coroutine.Sleep(100);
-                    }
-
-                    Navigator.PlayerMover.MoveStop();
-                }
-
-                unit.Target();
-                unit.Interact();
-                await Coroutine.Sleep(1000);
-                await Coroutine.Wait(5000, () => SelectString.IsOpen);
-                await Coroutine.Sleep(500);
-                if (SelectString.IsOpen)
-                {
-                    SelectString.ClickSlot(1);
-                }
-
-                await Coroutine.Sleep(5000);
-
-                if (CommonBehaviors.IsLoading)
-                {
-                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
-                }
-
-                await Coroutine.Sleep(3000);
-            }
-
-            //await CommonTasks.MoveTo(Npc.Location, "Moving To HandinVendor");
-
-            if (Npc.Location.Distance(Core.Me.Location) > 5f)
-            {
-                var _target = new Vector3(10.58188f, -15.96282f, 163.8702f);
-                Navigator.PlayerMover.MoveTowards(_target);
-                while (_target.Distance2D(Core.Me.Location) >= 4)
-                {
-                    Navigator.PlayerMover.MoveTowards(_target);
-                    await Coroutine.Sleep(100);
-                }
-
-                Navigator.PlayerMover.MoveStop();
-
-                _target = Npc.Location;
-                Navigator.PlayerMover.MoveTowards(_target);
-                while (_target.Distance2D(Core.Me.Location) >= 4)
-                {
-                    Navigator.PlayerMover.MoveTowards(_target);
-                    await Coroutine.Sleep(100);
-                }
-
-                Navigator.PlayerMover.MoveStop();
-            }
-
-            return Npc.Location.Distance(Core.Me.Location) <= 5f;
-        }
-
-        public static async Task<bool> GetToGatherNpc()
-        {
-            if (WorldManager.ZoneId != ZoneId && WorldManager.ZoneId != 886)
-            {
-                while (Core.Me.IsCasting)
-                {
-                    await Coroutine.Sleep(1000);
-                }
-
-                if (!ConditionParser.HasAetheryte(AetheryteId))
-                {
-                    //Log.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. You don't have that Aetheryte so do something about it...");
-                    //TreeRoot.Stop();
-                    return false;
-                }
-
-                if (!WorldManager.TeleportById(AetheryteId))
-                {
-                    //Log.Error($"We can't get to {Constants.EntranceZone.CurrentLocaleAethernetName}. something is very wrong...");
-                    //TreeRoot.Stop();
-                    return false;
-                }
-
-                while (Core.Me.IsCasting)
-                {
-                    await Coroutine.Sleep(1000);
-                }
-
-                if (CommonBehaviors.IsLoading)
-                {
-                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
-                }
-
-                await Coroutine.Wait(10000, () => WorldManager.ZoneId == FoundationZoneId);
-                await Coroutine.Sleep(3000);
-
-                await Coroutine.Wait(10000, () => GameObjectManager.GetObjectByNPCId(70) != null);
-                await Coroutine.Sleep(3000);
-
-                var unit = GameObjectManager.GetObjectByNPCId(70);
-
-                if (!unit.IsWithinInteractRange)
-                {
-                    var _target = unit.Location;
-                    Navigator.PlayerMover.MoveTowards(_target);
-                    while (!unit.IsWithinInteractRange)
-                    {
-                        Navigator.PlayerMover.MoveTowards(_target);
-                        await Coroutine.Sleep(100);
-                    }
-
-                    Navigator.PlayerMover.MoveStop();
-                }
-
-                unit.Target();
-                unit.Interact();
-                await Coroutine.Sleep(1000);
-                await Coroutine.Wait(5000, () => SelectString.IsOpen);
-                await Coroutine.Sleep(500);
-                if (SelectString.IsOpen)
-                {
-                    SelectString.ClickSlot(1);
-                }
-
-                await Coroutine.Sleep(5000);
-
-                if (CommonBehaviors.IsLoading)
-                {
-                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
-                }
-
-                await Coroutine.Sleep(3000);
-            }
-
-            //await CommonTasks.MoveTo(Npc.Location, "Moving To HandinVendor");
-
-            if (GatherNpc.Location.Distance(Core.Me.Location) > 5f)
-            {
-                var _target = new Vector3(-21.62485f, -16f, 141.3661f);
-                Navigator.PlayerMover.MoveTowards(_target);
-                while (_target.Distance2D(Core.Me.Location) >= 4)
-                {
-                    Navigator.PlayerMover.MoveTowards(_target);
-                    await Coroutine.Sleep(100);
-                }
-
-                Navigator.PlayerMover.MoveStop();
-
-                _target = GatherNpc.Location;
-                Navigator.PlayerMover.MoveTowards(_target);
-                while (_target.Distance2D(Core.Me.Location) >= 4)
-                {
-                    Navigator.PlayerMover.MoveTowards(_target);
-                    await Coroutine.Sleep(100);
-                }
-
-                Navigator.PlayerMover.MoveStop();
-            }
-
-            return Npc.Location.Distance(Core.Me.Location) <= 5f;
+            return currentScrips / item.CurrencyCosts[0];
         }
     }
 }
