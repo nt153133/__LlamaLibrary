@@ -95,6 +95,7 @@ namespace LlamaBotBases.LlamaUtilities
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;
             itemCb.SelectionChangeCommitted += new System.EventHandler(itemCb_SelectionChangeCommitted);
             pgHunts.SelectedObject = HuntsSettings.Instance;
+            pgRetainers.SelectedObject = RetainerSettings.Instance;
 
             bindingSourceInventory.Clear();
 
@@ -202,6 +203,30 @@ namespace LlamaBotBases.LlamaUtilities
             var task = new BotTask()
             {
                 Type = TaskType.GcTurnin,
+                TaskInfo = ""
+            };
+
+            UtilitiesBase.BotTask = task;
+            StartBotBase();
+        }
+
+        private void btnRetainers_Click(object sender, EventArgs e)
+        {
+            var task = new BotTask()
+            {
+                Type = TaskType.Retainers,
+                TaskInfo = ""
+            };
+
+            UtilitiesBase.BotTask = task;
+            StartBotBase();
+        }
+
+        private void btnFCWorkshop_Click(object sender, EventArgs e)
+        {
+            var task = new BotTask()
+            {
+                Type = TaskType.FCWorkshop,
                 TaskInfo = ""
             };
 

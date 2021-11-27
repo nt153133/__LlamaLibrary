@@ -4,15 +4,14 @@ using System.IO;
 using ff14bot.Helpers;
 using Newtonsoft.Json;
 
-namespace LlamaBotBases.Reduce
+namespace LlamaBotBases.LlamaUtilities.Settings
 {
     public class ReduceSettings : JsonSettings
     {
-        private static string Name => "Reduce";
         private static ReduceSettings _settings;
         private bool _initialized;
         private bool _includeArmory;
-        private bool _includeDe10000;
+        private bool _includeFish;
         private bool _stayRunning;
         private int _AEZone;
         private bool _AEZoneCheck;
@@ -38,10 +37,10 @@ namespace LlamaBotBases.Reduce
         }
 
         [Setting]
-        [Description("Include Armory")]
+        [Description("Include Armory for desynth")]
         [DefaultValue(false)]
         [JsonProperty("IncludeArmory")]
-        [Category("Bags")]
+        [Category("Desynth")]
         public bool IncludeArmory
         {
             get => _includeArmory;
@@ -53,16 +52,16 @@ namespace LlamaBotBases.Reduce
         }
 
         [Setting]
-        [Description("Include low level objects")]
+        [Description("Include ALL fish for desynth")]
         [DefaultValue(false)]
-        [JsonProperty("IncludeDE10000")]
-        [Category("Extra")]
-        public bool IncludeDE10000
+        [JsonProperty("IncludeFish")]
+        [Category("Desynth")]
+        public bool IncludeFish
         {
-            get => _includeDe10000;
+            get => _includeFish;
             set
             {
-                _includeDe10000 = value;
+                _includeFish = value;
                 Save();
             }
         }
@@ -72,6 +71,7 @@ namespace LlamaBotBases.Reduce
         [DefaultValue(false)]
         [JsonProperty("StayRunning")]
         [Category("Extra")]
+        [Browsable(false)]
         public bool StayRunning
         {
             get => _stayRunning;
@@ -86,6 +86,7 @@ namespace LlamaBotBases.Reduce
         [Description("Open Coffers")]
         [DefaultValue(false)]
         [JsonProperty("OpenCoffers")]
+        [Browsable(false)]
         public bool OpenCoffers
         {
             get => _openCoffers;
@@ -101,6 +102,7 @@ namespace LlamaBotBases.Reduce
         [DefaultValue(0)]
         [JsonProperty("AEZone")]
         [Category("AE")]
+        [Browsable(false)]
         public int AEZone
         {
             get => _AEZone;
@@ -116,6 +118,7 @@ namespace LlamaBotBases.Reduce
         [DefaultValue(false)]
         [JsonProperty("AEZoneCheck")]
         [Category("AE")]
+        [Browsable(false)]
         public bool AEZoneCheck
         {
             get => _AEZoneCheck;

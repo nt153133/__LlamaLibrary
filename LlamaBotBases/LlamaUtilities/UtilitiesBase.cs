@@ -11,6 +11,7 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
+using ff14bot.RemoteWindows;
 using LlamaBotBases.LlamaUtilities.Settings;
 using LlamaBotBases.LlamaUtilities.Tasks;
 using LlamaLibrary.Extensions;
@@ -38,6 +39,23 @@ namespace LlamaBotBases.LlamaUtilities
 
         private Composite _root;
         private Utilities settings;
+
+        public static bool IsBusy => DutyManager.InInstance || DutyManager.InQueue || DutyManager.DutyReady || Core.Me.IsCasting || Core.Me.IsMounted || Core.Me.InCombat || Talk.DialogOpen || MovementManager.IsMoving ||
+                                     MovementManager.IsOccupied;
+        private static readonly List<string> DesynthList = new List<string>
+        {
+            "Warg",
+            "Amaurotine",
+            "Lakeland",
+            "Voeburtite",
+            "Fae",
+            "Ravel",
+            "Nabaath",
+            "Anamnesis",
+            "Shadowless",
+            "Heirloom",
+            "Paglth'an"
+        };
 
         public UtilitiesBase()
         {
@@ -192,6 +210,53 @@ namespace LlamaBotBases.LlamaUtilities
             Log.Information($"Item now has {bagSlot.MateriaCount()} materia affixed");
 
             return true;
+        }
+
+        public static async Task<bool> Desynth()
+        {
+            if (IsBusy)
+            {
+                await GeneralFunctions.StopBusy(leaveDuty: false);
+                if (IsBusy)
+                {
+                    Log.Warning("Can't desynth right now, we're busy.");
+                    return false;
+                }
+            }
+
+            var toDesynthList = InventoryManager.GetBagsByInventoryBagId(BagsToCheck())
+                .SelectMany(bag => bag.FilledSlots
+                                .FindAll(bs => bs.IsDesynthesizable && (ShouldDesynth(bs.Item.EnglishName) || ExtraCheck(bs)))).ToList();
+
+            if (!toDesynthList.Any())
+            {
+                Log.Warning("No items to desynth.");
+                return false;
+            }
+
+            Log.Information($"# of slots to Desynth: {toDesynthList.Count()}");
+
+            await Inventory.Desynth(toDesynthList);
+            return true;
+        }
+
+        private static bool ExtraCheck(BagSlot bs)
+        {
+            if (ReduceSettings.Instance.IncludeFish)
+            {
+                return (bs.Item.EquipmentCatagory == ItemUiCategory.Seafood && bs.CanDesynthesize);
+            }
+            return false;
+        }
+        private static bool ShouldDesynth(string name)
+        {
+            return DesynthList.Any(name.Contains);
+        }
+        private static InventoryBagId[] BagsToCheck()
+        {
+            return ReduceSettings.Instance.IncludeArmory ? Inventory.InventoryBagIds.Concat(Inventory.ArmoryBagIds).ToArray() : Inventory.InventoryBagIds;
+
+            //return inventoryBagIds;
         }
 
     }
