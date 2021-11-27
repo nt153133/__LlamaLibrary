@@ -4,7 +4,7 @@ using ff14bot.Enums;
 using ff14bot.Helpers;
 using LlamaLibrary.Enums;
 
-namespace LlamaBotBases.Retainers
+namespace LlamaBotBases.LlamaUtilities.Settings
 {
     public class RetainerSettings : JsonSettings
     {
@@ -112,6 +112,7 @@ namespace LlamaBotBases.Retainers
 
         [Description("Don't try and merge duplicate item stacks between retainers")]
         [DefaultValue(false)] //shift +x
+        [Browsable(false)]
         public bool DontOrganizeRetainers
         {
             get => _merge;

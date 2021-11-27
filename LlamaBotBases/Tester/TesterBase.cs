@@ -16,7 +16,7 @@ using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
-using LlamaBotBases.Retainers;
+using LlamaBotBases.LlamaUtilities.Settings;
 using LlamaLibrary;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;

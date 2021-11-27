@@ -19,6 +19,7 @@ using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
+using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
@@ -63,6 +64,11 @@ namespace LlamaBotBases.OutOnALimb
         public override Composite Root => _root;
 
         public override bool WantButton { get; } = true;
+
+        public OutOnALimbBase()
+        {
+            OffsetManager.Init();
+        }
 
         private async Task<bool> Run()
         {

@@ -52,7 +52,7 @@ namespace LlamaBotBases.OrderbotTags
             Navigator.NavigationProvider = Navigator.NavigationProvider ?? new ServiceNavigationProvider();
             Navigator.PlayerMover = Navigator.PlayerMover ?? new SlideMover();
 
-            await IshgardHandin.BuyScripItem((uint)itemId, SelectStringLine);
+            await LlamaLibrary.Helpers.IshgardHandin.BuyScripItem((uint)itemId, SelectStringLine);
 
             _isDone = true;
         }

@@ -549,5 +549,63 @@ namespace LlamaLibrary.Retainers
 
             return condition();
         }
+
+        public static async Task CheckVentureTask()
+        {
+            var verified = await VerifiedRetainerData();
+            if (!verified)
+            {
+                return;
+            }
+
+            var rets = await GetOrderedRetainerArray(true);
+
+            var now = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+
+            if (rets.Any(i => i.Active && i.VentureTask != 0 && (i.VentureEndTimestamp - now) <= 0 && SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.Venture) > 2))
+            {
+                await GeneralFunctions.StopBusy(dismount: false);
+
+                if (DutyManager.InInstance || CraftingLog.IsOpen || FishingManager.State != FishingState.None || MovementManager.IsOccupied || CraftingManager.IsCrafting)
+                {
+                    Log.Error("Something went wrong: character is busy or in duty");
+                    return;
+                }
+
+                var bell = await GoToSummoningBell();
+
+                if (bell == false)
+                {
+                    Log.Error("No summoning bell near by");
+                    return;
+                }
+
+                await RetainerRoutine.ReadRetainers(RetainerCheckOnlyVenture);
+            }
+            else
+            {
+                Log.Information("No Ventures Complete");
+            }
+        }
+
+        public static async Task<bool> RetainerCheckOnlyVenture(RetainerInfo retainer)
+        {
+            if (retainer.VentureTask != 0)
+            {
+                var now = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                var timeLeft = retainer.VentureEndTimestamp - now;
+
+                if (timeLeft <= 0 && SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.Venture) > 2)
+                {
+                    await RetainerHandleVentures();
+                }
+                else
+                {
+                    Log.Information($"Venture will be done at {RetainerInfo.UnixTimeStampToDateTime(retainer.VentureEndTimestamp)}");
+                }
+            }
+
+            return true;
+        }
     }
 }

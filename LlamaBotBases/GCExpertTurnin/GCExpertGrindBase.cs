@@ -16,6 +16,7 @@ using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
+using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
 using Newtonsoft.Json;
@@ -42,6 +43,11 @@ namespace LlamaBotBases.GCExpertTurnin
         public override bool WantButton => true;
 
         private static readonly LLogger Log = new LLogger(_name, Colors.SeaGreen);
+
+        public GCExpertGrindBase()
+        {
+            OffsetManager.Init();
+        }
 
         public override void OnButtonPress()
         {

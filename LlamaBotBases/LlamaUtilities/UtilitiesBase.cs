@@ -16,6 +16,7 @@ using LlamaBotBases.LlamaUtilities.Tasks;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
+using LlamaLibrary.Memory;
 using LlamaLibrary.Utilities;
 using Newtonsoft.Json;
 using TreeSharp;
@@ -37,6 +38,11 @@ namespace LlamaBotBases.LlamaUtilities
 
         private Composite _root;
         private Utilities settings;
+
+        public UtilitiesBase()
+        {
+            OffsetManager.Init();
+        }
 
         public override void Initialize()
         {
@@ -148,9 +154,21 @@ namespace LlamaBotBases.LlamaUtilities
                 case TaskType.GcTurnin:
                     await GCDailyTurnins.DoGCDailyTurnins();
                     break;
+                case TaskType.Retainers:
+                    await Retainers.RetainerRun();
+                    break;
+                case TaskType.FCWorkshop:
+                    await FCWorkshop.HandInItems();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            if (BotTask.Type == TaskType.Retainers && RetainerSettings.Instance.Loop)
+            {
+                return true;
+            }
+
             BotTask.Type = TaskType.None;
 
             TreeRoot.Stop("Stop Requested");

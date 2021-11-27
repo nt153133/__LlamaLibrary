@@ -12,6 +12,8 @@
         Coffers,
         Housing,
         CustomDeliveries,
-        GcTurnin
+        GcTurnin,
+        Retainers,
+        FCWorkshop
     }
 }

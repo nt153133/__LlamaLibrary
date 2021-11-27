@@ -162,17 +162,6 @@ namespace LlamaLibrary.Retainers
             return retainers;
         }
 
-        public static async Task<RetainerInfo[]> OpenAndCountRetainers()
-        {
-            if (!await HelperFunctions.OpenRetainerList())
-            {
-                return null;
-            }
-
-            var ordered = RetainerList.Instance.OrderedRetainerList.ToArray();
-            return ordered;
-        }
-
         public static async Task CloseRetainers()
         {
             if (RetainerList.Instance.IsOpen)

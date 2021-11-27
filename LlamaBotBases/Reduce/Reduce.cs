@@ -63,7 +63,10 @@ namespace LlamaBotBases.Reduce
             "Fae",
             "Ravel",
             "Nabaath",
-            "Anamnesis"
+            "Anamnesis",
+            "Shadowless",
+            "Heirloom",
+            "Paglth'an"
         };
 
         //private IntPtr offset => offsetInt;

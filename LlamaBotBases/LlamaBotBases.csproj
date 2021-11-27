@@ -98,7 +98,6 @@
     <Compile Include="AutoTrade\AutoTradeSettings.Designer.cs">
       <DependentUpon>AutoTradeSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="FCWorkshop\FCWorkshopBase.cs" />
     <Compile Include="GCExpertTurnin\GCExpertGrindBase.cs" />
     <Compile Include="GCExpertTurnin\GCExpertSettings.cs" />
     <Compile Include="GCExpertTurnin\GCExpertSettingsFrm.cs">
@@ -108,7 +107,10 @@
       <DependentUpon>GCExpertSettingsFrm.cs</DependentUpon>
     </Compile>
     <Compile Include="IshgardHandin\IshgardHandinBase.cs" />
+    <Compile Include="LlamaUtilities\FCWorkshop.cs" />
+    <Compile Include="LlamaUtilities\Retainers.cs" />
     <Compile Include="LlamaUtilities\Settings\HuntsSettings.cs" />
+    <Compile Include="LlamaUtilities\Settings\RetainerSettings.cs" />
     <Compile Include="LlamaUtilities\Tasks\BotTask.cs" />
     <Compile Include="LlamaUtilities\Tasks\TaskType.cs" />
     <Compile Include="LlamaUtilities\Utilities.cs">
@@ -168,16 +170,6 @@
     <Compile Include="Reduce\ReduceSettingsForm.designer.cs">
       <DependentUpon>ReduceSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ResplendentTools\ResplendentTools.cs" />
-    <Compile Include="Retainers\Retainers.cs" />
-    <Compile Include="Retainers\RetainerSettings.cs" />
-    <Compile Include="Retainers\RetainersPull.cs" />
-    <Compile Include="Retainers\RetainersSettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Retainers\RetainersSettingsForm.designer.cs">
-      <DependentUpon>RetainersSettingsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Tester\TesterBase.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -205,9 +197,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reduce\ReduceSettingsForm.resx">
       <DependentUpon>ReduceSettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Retainers\RetainersSettingsForm.resx">
-      <DependentUpon>RetainersSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
