@@ -233,5 +233,17 @@ namespace LlamaBotBases.LlamaUtilities
             UtilitiesBase.BotTask = task;
             StartBotBase();
         }
+
+        private void btnDesynth_Click(object sender, EventArgs e)
+        {
+            var task = new BotTask()
+            {
+                Type = TaskType.Desynth,
+                TaskInfo = ""
+            };
+
+            UtilitiesBase.BotTask = task;
+            StartBotBase();
+        }
     }
 }

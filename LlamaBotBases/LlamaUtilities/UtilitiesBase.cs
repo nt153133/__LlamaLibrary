@@ -127,6 +127,7 @@ namespace LlamaBotBases.LlamaUtilities
                     await Inventory.ReduceAll();
                     break;
                 case TaskType.Desynth:
+                    await Desynth();
                     break;
                 case TaskType.None:
                     break;
