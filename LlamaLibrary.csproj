@@ -71,7 +71,10 @@
     <Compile Include="JsonObjects\MateriaItem.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
+    <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
+    <Compile Include="RemoteWindows\WorldTravelFinderReady.cs" />
+    <Compile Include="RemoteWindows\WorldTravelSelect.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="Retainers\CompleteRetainer.cs" />
     <Compile Include="Retainers\HelperFunctions.cs" />
