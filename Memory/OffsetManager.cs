@@ -11,8 +11,10 @@ Orginal work done by zzi, contibutions by Omninewb, Freiheit, and mastahg
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -39,7 +41,7 @@ namespace LlamaLibrary.Memory
         public static Dictionary<string, string> patterns = new Dictionary<string, string>();
         public static Dictionary<string, string> constants = new Dictionary<string, string>();
 
-        private static readonly bool _debug = true;
+        private static readonly bool _debug = false;
 
         public static LLogger Log1 => Log;
 
@@ -340,6 +342,95 @@ namespace LlamaLibrary.Memory
             }
 
             return result;
+        }
+
+        public static string GetRootNamespace(string nameSpace)
+        {
+            return nameSpace.IndexOf('.') > 0 ? nameSpace.Substring(0, nameSpace.IndexOf('.')) : nameSpace;
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
+        public static string GetCurrentNamespace()
+        {
+            var frame = new StackFrame(1);
+            var method = frame.GetMethod();
+            var type = method.DeclaringType;
+            return GetRootNamespace(type.Namespace);
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
+        public static List<Type> GetOffsetClasses()
+        {
+            var frame = new StackFrame(1);
+            var method = frame.GetMethod();
+            var type = method.DeclaringType;
+
+            var q1 = (from t in method.DeclaringType.Assembly.GetTypes()
+                      where t.Namespace != null && (t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+                      select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+
+            return q1;
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
+        public static void SetOffsetClasses()
+        {
+            var frame = new StackFrame(1);
+            var method = frame.GetMethod();
+            var type = method.DeclaringType;
+
+            var q1 = (from t in method.DeclaringType.Assembly.GetTypes()
+                      where t.Namespace != null && (t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+                      select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+
+            SetOffsetObjects(q1);
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
+        public static void SetOffsetClassesAndAgents()
+        {
+            var frame = new StackFrame(1);
+            var method = frame.GetMethod();
+            var type = method.DeclaringType;
+
+            var q1 = (from t in method.DeclaringType.Assembly.GetTypes()
+                      where t.Namespace != null && (t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+                      select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+
+            SetOffsetObjects(q1);
+
+            var vtables = new Dictionary<IntPtr, int>();
+            for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
+            {
+                vtables.Add(AgentModule.AgentVtables[index], index);
+            }
+
+            var q = from t in method.DeclaringType.Assembly.GetTypes()
+                    where t.IsClass && typeof(IAgent).IsAssignableFrom(t)
+                    select t;
+
+            foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
+            {
+                var test = ((IAgent)Activator.CreateInstance(
+                                                             MyType,
+                                                             BindingFlags.Instance | BindingFlags.NonPublic,
+                                                             null,
+                                                             new object[]
+                                                             {
+                                                                 IntPtr.Zero
+                                                             },
+                                                             null)
+                    ).RegisteredVtable;
+
+                if (vtables.ContainsKey(test))
+                {
+                    Log.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
+                }
+                else
+                {
+                    Log.WriteLog(Colors.BlueViolet, $"\tFound one {test.ToString("X")} but no agent");
+                }
+            }
         }
     }
 }
