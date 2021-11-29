@@ -5,7 +5,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    public partial class AgentRetainerInventory : AgentInterface<AgentRetainerInventory>, IAgent
+    public class AgentRetainerInventory : AgentInterface<AgentRetainerInventory>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
         private static partial class Offsets
