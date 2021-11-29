@@ -4,7 +4,7 @@ using System.Windows.Media;
 namespace LlamaLibrary.Helpers
 {
     [Obsolete("Use LlamaLibrary.Logging.LLogger instead.")]
-    public static class Logger
+    public static class LoggerOld
     {
         [Obsolete("Use LlamaLibrary.Logging.LLogger.WriteLog() instead.")]
         public static void External(string caller, string message, Color color)

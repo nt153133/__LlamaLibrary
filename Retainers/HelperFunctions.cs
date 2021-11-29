@@ -21,7 +21,7 @@ using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.Retainers
 {
-    //TODO This whole shitshow needs to get moved to a Helper class but it is used in a lot of external things including MB so it's going to be messy
+    //TODO This whole shitshow needs to get moved to a Helper class but it is used in a lot of external things so it's going to be messy
     public static class HelperFunctions
     {
         private static readonly LLogger Log = new LLogger("Helpers", Colors.Pink);
