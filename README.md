@@ -20,4 +20,4 @@ Download the zip from [__LlamaLibrary](https://github.com/nt153133/__LlamaLibrar
 Download the zip from [LlamaUtilities](https://github.com/nt153133/LlamaUtilities) and create a folder in **/BotBases** called **LlamaUtilities** and either unzip the contents of the zip into that folder, or check out using a SVN client to that folder.
 
 (Optional) 
-Download the zip from [ExtraBotbases](https://github.com/nt153133/ExtraBotbases) and create a folder in **/BotBases** called **LlamaUtilities** and either unzip the contents of the zip into that folder, or check out using a SVN client to that folder. These are a few extra botbases that most users will not use.
+Download the zip from [ExtraBotbases](https://github.com/nt153133/ExtraBotbases) and create a folder in **/BotBases** called **ExtraBotbases** and either unzip the contents of the zip into that folder, or check out using a SVN client to that folder. These are a few extra botbases that most users will not use.
