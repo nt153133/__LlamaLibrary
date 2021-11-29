@@ -1,3 +1,5 @@
+<a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/soACz8y"><img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px;font-size:28px !important;">Buy me a coffee</span></a>
+
 # __LlamaLibrary
 A robust library of functions for RebornBuddy botbases/plugins for FFXIV
 
