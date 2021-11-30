@@ -221,6 +221,7 @@
     <Compile Include="Utilities\Housing.cs" />
     <Compile Include="Utilities\Hunts.cs" />
     <Compile Include="Utilities\Inventory.cs" />
+    <Compile Include="Utilities\Ishgard.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

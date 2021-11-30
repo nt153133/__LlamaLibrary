@@ -208,22 +208,22 @@ namespace LlamaLibrary.Helpers
 
         public static async Task EquipOptimalGear()
         {
-            await _equipOptimalGear();
+            await _equipOptimalGear?.Invoke();
         }
 
         public static async Task ExtractMateria()
         {
-            await _extractMateria();
+            await _extractMateria?.Invoke();
         }
 
         public static async Task SelfRepair()
         {
-            await _selfRepair();
+            await _selfRepair?.Invoke();
         }
 
         public static async Task SelfRepairWithMenderFallback()
         {
-            await _selfRepairWithMenderFallback();
+            await _selfRepairWithMenderFallback?.Invoke();
         }
     }
 }
