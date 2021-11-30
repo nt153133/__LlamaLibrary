@@ -34,12 +34,14 @@
     <OutputPath>bin\Debug\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GreyMagic, Version=1.0.48.0, Culture=neutral, PublicKeyToken=260525fa2b0e778a, processorArchitecture=AMD64">
-      <HintPath>packages\RebornBuddy.Assemblies.1.0.436\lib\net461\GreyMagic.dll</HintPath>
+    <Reference Include="GreyMagic">
+      <HintPath>..\..\GreyMagic.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="RebornBuddy, Version=1.0.436.0, Culture=neutral, PublicKeyToken=48d7174f8a943034, processorArchitecture=AMD64">
-      <HintPath>packages\RebornBuddy.Assemblies.1.0.436\lib\net461\RebornBuddy.exe</HintPath>
+    <Reference Include="RebornBuddy">
+      <HintPath>..\..\RebornBuddy.exe</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -240,8 +242,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="packages\StyleCop.Analyzers.Unstable.1.2.0.354\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="packages\StyleCop.Analyzers.Unstable.1.2.0.354\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+    <Analyzer Include="..\..\BotBases\LlamaUtilities\packages\StyleCop.Analyzers.Unstable.1.2.0.354\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\..\BotBases\LlamaUtilities\packages\StyleCop.Analyzers.Unstable.1.2.0.354\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
