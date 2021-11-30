@@ -39,7 +39,8 @@ namespace LlamaLibrary.Helpers
             new HuntBoardNpc(2010340, 819, new Vector3(-83.604248f, -0.01532f, -90.745422f), new uint[] { 10, 11, 12, 13 }) //Nuts Board  The Crystarium(The Crystarium) };
         };
 
-        public static readonly int[] ARRHunts = new[] { 0, 1, 2, 3 };
+        public static readonly int[] ARRHunts = new[] { 0 };
+        public static readonly int[] ClanHunts = new[] { 1, 2, 3 };
         public static readonly int[] VerteranClanHunts = new[] { 6, 7, 8 };
         public static readonly int[] NutClanHunts = new[] { 10, 11, 12 };
 
