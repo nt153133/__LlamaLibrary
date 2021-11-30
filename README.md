@@ -15,9 +15,22 @@ For those of you that don't want to use [repoBuddy](https://github.com/Zimgineer
 
 First off, make sure you remove any previous versions of LlamaLibrary you may have in the **/BotBases** folder.
 
-Download the zip from [__LlamaLibrary](https://github.com/nt153133/__LlamaLibrary) and create a folder in **/QuestBehaviors** called **__LlamaLibrary** and either unzip the contents of the zip into that folder, or check out using a SVN client to that folder.
+Download the zip from [__LlamaLibrary](https://github.com/nt153133/__LlamaLibrary) and create a folder in **/QuestBehaviors** called **__LlamaLibrary**(Two underscores) and either unzip the contents of the zip into that folder, or check out using a SVN client to that folder.
 
 Download the zip from [LlamaUtilities](https://github.com/nt153133/LlamaUtilities) and create a folder in **/BotBases** called **LlamaUtilities** and either unzip the contents of the zip into that folder, or check out using a SVN client to that folder.
 
 (Optional) 
 Download the zip from [ExtraBotbases](https://github.com/nt153133/ExtraBotbases) and create a folder in **/BotBases** called **ExtraBotbases** and either unzip the contents of the zip into that folder, or check out using a SVN client to that folder. These are a few extra botbases that most users will not use.
+
+After Install your folder structure should look something like this.
+```
+RebornBuddy
+|── BotBases
+|    └── LlamaUtilities
+|    └── ExtraBotbases*
+└── QuestBehaviors
+     └── __LlamaLibrary
+```
+
+## Contents
+For a discription of what's all included with LlamaLibrary, check out the [wiki](https://github.com/nt153133/__LlamaLibrary/wiki)!
