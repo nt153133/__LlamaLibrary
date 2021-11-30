@@ -1004,5 +1004,107 @@ namespace LlamaLibrary.Helpers
                 }
             }
         }
+
+        public static async Task InteractWithDenys(int selectString)
+        {
+            var npc = GameObjectManager.GetObjectByNPCId(1032900);
+            if (npc == null)
+            {
+                await Navigation.GetTo(418, new Vector3(-160.28f, 17.00897f, -55.8437f));
+                npc = GameObjectManager.GetObjectByNPCId(1032900);
+            }
+
+            if (npc != null && !npc.IsWithinInteractRange)
+            {
+                await Navigation.GetTo(418, new Vector3(-160.28f, 17.00897f, -55.8437f));
+            }
+
+            if (npc != null && npc.IsWithinInteractRange)
+            {
+                npc.Interact();
+                await Coroutine.Wait(10000, () => Conversation.IsOpen);
+                if (Conversation.IsOpen)
+                {
+                    Conversation.SelectLine((uint)selectString);
+                }
+            }
+        }
+
+        public static async Task TurninSkySteelCrafting()
+        {
+            Dictionary<uint, CraftingRelicTurnin> TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
+            {
+                { 31101, new CraftingRelicTurnin(31101, 0, 1, 2000, 30315) },
+                { 31109, new CraftingRelicTurnin(31109, 0, 0, 3000, 30316) },
+                { 31102, new CraftingRelicTurnin(31102, 1, 1, 2000, 30317) },
+                { 31110, new CraftingRelicTurnin(31110, 1, 0, 3000, 30318) },
+                { 31103, new CraftingRelicTurnin(31103, 2, 1, 2000, 30319) },
+                { 31111, new CraftingRelicTurnin(31111, 2, 0, 3000, 30320) },
+                { 31104, new CraftingRelicTurnin(31104, 3, 1, 2000, 30321) },
+                { 31112, new CraftingRelicTurnin(31112, 3, 0, 3000, 30322) },
+                { 31105, new CraftingRelicTurnin(31105, 4, 1, 2000, 30323) },
+                { 31113, new CraftingRelicTurnin(31113, 4, 0, 3000, 30324) },
+                { 31106, new CraftingRelicTurnin(31106, 5, 1, 2000, 30325) },
+                { 31114, new CraftingRelicTurnin(31114, 5, 0, 3000, 30326) },
+                { 31107, new CraftingRelicTurnin(31107, 6, 1, 2000, 30327) },
+                { 31115, new CraftingRelicTurnin(31115, 6, 0, 3000, 30328) },
+                { 31108, new CraftingRelicTurnin(31108, 7, 1, 2000, 30329) },
+                { 31116, new CraftingRelicTurnin(31116, 7, 0, 3000, 30330) }
+            };
+
+            var collectables = InventoryManager.FilledSlots.Where(i => i.IsCollectable).Select(x => x.RawItemId).Distinct();
+            var collectablesAll = InventoryManager.FilledSlots.Where(i => i.IsCollectable);
+
+            if (collectables.Any(i => TurnItemList.Keys.Contains(i)))
+            {
+                Log.Information("Have collectables");
+                foreach (var collectable in collectablesAll)
+                {
+                    if (TurnItemList.Keys.Contains(collectable.RawItemId))
+                    {
+                        var turnin = TurnItemList[collectable.RawItemId];
+                        if (collectable.Collectability < turnin.MinCollectability)
+                        {
+                            Log.Information($"Discarding {collectable.Name} is at {collectable.Collectability} which is under {turnin.MinCollectability}");
+                            collectable.Discard();
+                        }
+                    }
+                }
+
+                collectables = InventoryManager.FilledSlots.Where(i => i.IsCollectable).Select(x => x.RawItemId).Distinct();
+
+                await InteractWithDenys(2);
+                await Coroutine.Wait(10000, () => CollectablesShop.Instance.IsOpen);
+
+                if (CollectablesShop.Instance.IsOpen)
+                {
+                    // Log.Information("Window open");
+                    foreach (var item in collectables)
+                    {
+                        Log.Information($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
+                        var turnin = TurnItemList[item];
+
+                        // Log.Information($"Pressing job {turnin.Job}");
+                        CollectablesShop.Instance.SelectJob(turnin.Job);
+                        await Coroutine.Sleep(500);
+
+                        //  Log.Information($"Pressing position {turnin.Position}");
+                        CollectablesShop.Instance.SelectItem(turnin.Position);
+                        await Coroutine.Sleep(1000);
+                        int i = 0;
+                        while (CollectablesShop.Instance.TurninCount > 0)
+                        {
+                            // Log.Information($"Pressing trade {i}");
+                            i++;
+                            CollectablesShop.Instance.Trade();
+                            await Coroutine.Sleep(100);
+                        }
+                    }
+
+                    CollectablesShop.Instance.Close();
+                    await Coroutine.Wait(10000, () => !CollectablesShop.Instance.IsOpen);
+                }
+            }
+        }
     }
 }

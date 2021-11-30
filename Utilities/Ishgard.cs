@@ -15,9 +15,9 @@ namespace LlamaLibrary.Utilities
     public static class Ishgard
     {
         private static readonly string _name = "Ishgard Handin";
-        private static bool DiscardCollectable = true;
-
         private static readonly LLogger Log = new LLogger(_name, Colors.Aquamarine);
+
+        private static bool DiscardCollectable = true;
         private static uint[] items20Old = { 28725, 29792, 28726, 29793, 28727, 29794, 28728, 29795, 28729, 29796, 28730, 29797, 28731, 29798, 28732, 29799 };
         private static uint[] items40Old = { 28733, 29800, 28734, 29801, 28735, 29802, 28736, 29803, 28737, 29804, 28738, 29805, 28739, 29806, 28740, 29807 };
         private static uint[] items150Old = { 28741, 29808, 28742, 29809, 28743, 29810, 28744, 29811, 28745, 29812, 28746, 29813, 28747, 29814, 28748, 29815 };
