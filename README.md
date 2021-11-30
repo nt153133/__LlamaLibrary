@@ -31,3 +31,6 @@ RebornBuddy
 └── QuestBehaviors
      └── __LlamaLibrary
 ```
+
+## Contents
+For a discription of what's all included with LlamaLibrary, check out the [wiki](https://github.com/nt153133/__LlamaLibrary/wiki)!
