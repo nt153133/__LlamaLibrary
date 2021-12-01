@@ -1106,5 +1106,41 @@ namespace LlamaLibrary.Helpers
                 }
             }
         }
+
+        public static async Task TurninSkySteelGathering()
+        {
+            var GatheringItems = new Dictionary<uint, (uint Reward, uint Cost)>
+            {
+                { 31125, (30331, 10) },
+                { 31130, (30333, 10) },
+                { 31127, (30335, 10) },
+                { 31132, (30337, 10) },
+                { 31129, (30339, 10) },
+                { 31134, (30340, 10) }
+            };
+
+            var turninItems = InventoryManager.FilledSlots.Where(i => i.IsHighQuality && GatheringItems.Keys.Contains(i.RawItemId));
+
+            if (turninItems.Any())
+            {
+                await InteractWithDenys(3);
+                await Coroutine.Wait(10000, () => ShopExchangeItem.Instance.IsOpen);
+                if (ShopExchangeItem.Instance.IsOpen)
+                {
+                    Log.Information($"Window Open");
+                    foreach (var turnin in turninItems)
+                    {
+                        var reward = GatheringItems[turnin.RawItemId].Reward;
+                        var amt = turnin.Count / GatheringItems[turnin.RawItemId].Cost;
+                        Log.Information($"Buying {amt}x{DataManager.GetItem(reward).CurrentLocaleName}");
+                        await ShopExchangeItem.Instance.Purchase(reward, amt);
+                        await Coroutine.Sleep(500);
+                    }
+
+                    ShopExchangeItem.Instance.Close();
+                    await Coroutine.Wait(10000, () => !ShopExchangeItem.Instance.IsOpen);
+                }
+            }
+        }
     }
 }
