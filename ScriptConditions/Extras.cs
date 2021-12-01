@@ -66,12 +66,17 @@ namespace LlamaLibrary.ScriptConditions
             return BeastTribeHelper.DailyQuestAllowance();
         }
 
+        private static bool? isLisbethPresentCache;
+
         public static bool LisbethPresent()
         {
-            var loader = BotManager.Bots
-                .FirstOrDefault(c => c.Name == "Lisbeth");
+            if (isLisbethPresentCache is null)
+            {
+                isLisbethPresentCache = BotManager.Bots
+                    .FirstOrDefault(c => c.Name == "Lisbeth") != null;
+            }
 
-            return loader != null;
+            return isLisbethPresentCache.Value;
         }
 
         public static bool IsTargetableNPC(int npcID)
