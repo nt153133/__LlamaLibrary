@@ -97,7 +97,7 @@ namespace LlamaLibrary.Memory
                 }
                 else
                 {
-                    Log1.Error($"\tFound one {test.ToString("X")} but no agent");
+                    Log1.Error($"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
                 }
             }
 

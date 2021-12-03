@@ -38,7 +38,7 @@ namespace LlamaLibrary.Memory
 
         public static IntPtr SearchResultPtr => AtkStage;
 
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 4C 63 78 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 8B 93 ?? ?? ?? ?? 48 8B C8 Add 3 TraceRelative")]
         public static IntPtr g_InventoryManager;
 
         [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 41 ? 48 8B E9 48 83 C1 ?")]
