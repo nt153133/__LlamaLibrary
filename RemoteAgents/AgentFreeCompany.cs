@@ -20,8 +20,6 @@ namespace LlamaLibrary.RemoteAgents
             internal static IntPtr VTable;
             [Offset("Search 8B 93 ? ? ? ? 39 93 ? ? ? ? Add 2 Read32")]
             internal static int HistoryCount;
-            [Offset("Search 48 8B 05 ? ? ? ? C3 ? ? ? ? ? ? ? ? 48 8B 05 ? ? ? ? C3 ? ? ? ? ? ? ? ? 0F B6 81 ? ? ? ? Add 3 TraceRelative")]
-            internal static IntPtr AtkStage;
             [Offset("Search 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 Read8")]
             internal static int off1;
             [Offset("Search 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 Read8")]
@@ -76,7 +74,7 @@ namespace LlamaLibrary.RemoteAgents
         {
             get
             {
-                var one = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
+                var one = Core.Memory.Read<IntPtr>(Memory.Offsets.AtkStage);
                 var two = Core.Memory.Read<IntPtr>(one + Offsets.off1);
                 var three = Core.Memory.Read<IntPtr>(two + Offsets.off2);
                 var four = Core.Memory.Read<IntPtr>(three + Offsets.off3);

@@ -78,7 +78,7 @@ namespace LlamaLibrary.Extensions
             [Offset("48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 63 F2 48 8B F9")]
             public static IntPtr PlaceAetherWheel;
 
-            [Offset("Search 48 8B 05 ? ? ? ? C3 ? ? ? ? ? ? ? ? 48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? Add 3 TraceRelative")]
+            [Offset("Search 48 8B 05 ? ? ? ? 48 85 C0 74 ? 83 B8 ? ? ? ? ? 75 ? E8 ? ? ? ? Add 3 TraceRelative")]
             public static IntPtr EventHandlerOff;
 
             private static IntPtr _eventHandler = IntPtr.Zero;

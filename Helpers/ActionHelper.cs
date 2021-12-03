@@ -22,7 +22,7 @@ namespace LlamaLibrary.Helpers
 
         internal static class Offsets
         {
-            [Offset("Search 40 53 55 57 41 54 41 57 48 83 EC ? 83 BC 24 ? ? ? ? ?")]
+            [Offset("Search 44 89 44 24 ? 53 55 57 41 54")]
             internal static IntPtr DoAction;
 
             [Offset("Search 48 8D 0D ? ? ? ? 44 8D 42 ? E8 ? ? ? ? 85 C0 Add 3 TraceRelative")]
@@ -30,7 +30,7 @@ namespace LlamaLibrary.Helpers
 
             //41 B8 ? ? ? ? 89 5C 24 ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 75 ?
 
-            [Offset("Search 41 B8 ? ? ? ? 89 5C 24 ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 75 ? Add 2 Read32")]
+            [Offset("Search 41 B8 ? ? ? ? 89 5C 24 ? E8 ? ? ? ? 84 C0 75 ? Add 2 Read32")]
             internal static int DecipherSpell;
         }
 

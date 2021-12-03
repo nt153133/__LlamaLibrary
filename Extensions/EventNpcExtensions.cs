@@ -10,7 +10,7 @@ namespace LlamaLibrary.Extensions
     {
         public static class Offsets
         {
-            [Offset("Search 44 89 BF ?? ?? ?? ?? 83 BF ?? ?? ?? ?? ?? Add 3 Read32")]
+            [Offset("Search 44 89 A7 ? ? ? ? 83 BF ? ? ? ? ? Add 3 Read32")]
             internal static int IconID;
         }
 

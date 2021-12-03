@@ -34,7 +34,9 @@ namespace LlamaLibrary.Memory
         public static IntPtr RepairVTable;
 
         [Offset("Search 48 8B 0D ? ? ? ? 4C 8B C0 33 D2 Add 3 TraceRelative")]
-        public static IntPtr SearchResultPtr;
+        public static IntPtr AtkStage;
+
+        public static IntPtr SearchResultPtr => AtkStage;
 
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 4C 63 78 ? Add 3 TraceRelative")]
         public static IntPtr g_InventoryManager;

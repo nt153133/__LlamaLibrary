@@ -44,7 +44,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public void Refresh()
         {
-            var intptr_0 = Core.Memory.Read<IntPtr>(Memory.Offsets.SearchResultPtr);
+            var intptr_0 = Core.Memory.Read<IntPtr>(Memory.Offsets.AtkStage);
             var intptr_1 = Core.Memory.Read<IntPtr>(intptr_0 + 0x38);
             var intptr_2 = Core.Memory.Read<IntPtr>(intptr_1 + 0x18);
             var intptr_3 = Core.Memory.Read<IntPtr>(intptr_2 + 0x310);
