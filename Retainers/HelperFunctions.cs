@@ -47,7 +47,7 @@ namespace LlamaLibrary.Retainers
             InventoryBagId.Retainer_Page7
         };
 
-        private static readonly List<(uint ZoneId, Vector3 Location)> SummoningBells = new List<(uint, Vector3)>
+        private static readonly List<(uint ZoneId, Vector3 Location)> SummoningBells = new List<(uint ZoneId, Vector3 Location)>
         {
             (129, new Vector3(-223.743042f, 16.006714f, 41.306152f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
             (129, new Vector3(-266.376831f, 16.006714f, 41.275635f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
@@ -188,7 +188,7 @@ namespace LlamaLibrary.Retainers
                 }
             }
 
-            (uint, Vector3) bellLocation;
+            (uint ZoneId, Vector3 Location) bellLocation;
             var tries = 0;
             if (SummoningBells.Any(i => i.Item1 == WorldManager.ZoneId))
             {
@@ -199,16 +199,44 @@ namespace LlamaLibrary.Retainers
             {
                 var foundBell = false;
                 var rand = new Random();
-                do
+                List<uint> zoneList = new List<uint>();
+                List<(uint bellzone, uint truezone)> zoneMap = new List<(uint bellzone, uint truezone)>();
+
+                foreach (var bell in SummoningBells)
+                {
+                    uint zone = bell.ZoneId;
+                    switch (zone)
+                    {
+                        case 131:
+                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 9).ZoneId;
+                            break;
+                        case 133:
+                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 2).ZoneId;
+                            break;
+                        case 419:
+                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 70).ZoneId;
+                            break;
+                    }
+
+                    if (DataManager.AetheryteCache.Values.Any(i => i.ZoneId == zone && i.IsAetheryte))
+                    {
+                        zoneMap.Add((bell.ZoneId, zone));
+                        zoneList.Add(zone);
+                    }
+                }
+
+                var zoneId = FindCheapestZone(zoneList);
+                bellLocation = SummoningBells.First(i => i.ZoneId == zoneMap.First(j=> j.truezone == zoneId).bellzone);
+                /*do
                 {
                     tries++;
                     var index = rand.Next(0, SummoningBells.Count);
                     bellLocation = SummoningBells[index];
-                    var ae = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.ZoneId == bellLocation.Item1 && i.IsAetheryte);
+                    var ae = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.ZoneId == bellLocation.ZoneId && i.IsAetheryte);
 
                     if (ae == default(AetheryteResult))
                     {
-                        switch (bellLocation.Item1)
+                        switch (bellLocation.ZoneId)
                         {
                             case 131:
                                 ae = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 9);
@@ -226,20 +254,20 @@ namespace LlamaLibrary.Retainers
                     {
                         if (ConditionParser.HasAetheryte(ae.Id))
                         {
-                            Log.Information($"{bellLocation.Item1} can get to ConditionParser.HasAetheryte({ae.Id}) = {ConditionParser.HasAetheryte(ae.Id)} {ae.EnglishName}");
+                            Log.Information($"{bellLocation.ZoneId} can get to ConditionParser.HasAetheryte({ae.Id}) = {ConditionParser.HasAetheryte(ae.Id)} {ae.EnglishName}");
                             foundBell = true;
                         }
                     }
                     else
                     {
-                        Log.Warning($"{bellLocation.Item1} can't find AE");
+                        Log.Warning($"{bellLocation.ZoneId} can't find AE");
                     }
                 }
-                while (!foundBell && tries < 5);
+                while (!foundBell && tries < 5)*/;
             }
 
-            Log.Information($"Going to bell {bellLocation.Item1} {bellLocation.Item2}");
-            if (await Navigation.GetTo(bellLocation.Item1, bellLocation.Item2))
+            Log.Information($"Going to bell {bellLocation.ZoneId} {bellLocation.Location}");
+            if (await Navigation.GetTo(bellLocation.ZoneId, bellLocation.Location))
             {
                 var bell = FindSummoningBell();
                 if (bell != null)
@@ -255,6 +283,12 @@ namespace LlamaLibrary.Retainers
             }
 
             return false;
+        }
+
+        public static uint FindCheapestZone(IEnumerable<uint> zones)
+        {
+            return zones.OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j).GilCost)
+                .First();
         }
 
         public static GameObject FindSummoningBell()
