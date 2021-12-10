@@ -230,7 +230,7 @@ namespace LlamaLibrary.Utilities
                     continue; //type = "Fisher";
                 }
 
-                var order = new LisbethOrder(id, 2, (int)item.Key.Id, item.Value.Key, type, true);
+                var order = new LisbethOrder(id, 2, (int)item.Key.Id, item.Value.Key, type, hq: false);
 
                 outList.Add(order);
                 id++;
