@@ -289,7 +289,7 @@ namespace LlamaLibrary.Retainers
         public static uint FindCheapestZone(IEnumerable<uint> zones)
         {
             Log.Information($"Zones: {string.Join(",", zones)}");
-            return zones.Where(j=> WorldManager.AvailableLocations.Any(i => zones.Contains(j) )).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j).GilCost)
+            return zones.Where(j=> WorldManager.AvailableLocations.Any(i => zones.Contains(i.ZoneId) )).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j).GilCost)
                 .First();
         }
 
