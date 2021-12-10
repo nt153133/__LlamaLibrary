@@ -15,7 +15,6 @@ using LlamaLibrary.Enums;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
-using LlamaLibrary.Properties;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
 using Newtonsoft.Json;

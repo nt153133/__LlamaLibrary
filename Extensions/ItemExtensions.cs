@@ -9,5 +9,10 @@ namespace LlamaLibrary.Extensions
         {
             return (MyItemRole)((byte)item.ItemRole);
         }
+
+        public static string LocaleName(this Item item)
+        {
+            return item.IsHighQuality ? $"{item.CurrentLocaleName} (HQ)" : item.CurrentLocaleName;
+        }
     }
 }

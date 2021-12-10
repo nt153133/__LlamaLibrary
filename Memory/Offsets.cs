@@ -9,7 +9,6 @@ Orginal work done by zzi, contibutions by Omninewb, Freiheit, and mastahg
                                                                                  */
 
 using System;
-using ff14bot;
 using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Memory

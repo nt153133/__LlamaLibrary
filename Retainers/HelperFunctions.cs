@@ -47,7 +47,7 @@ namespace LlamaLibrary.Retainers
             InventoryBagId.Retainer_Page7
         };
 
-        private static readonly List<(uint, Vector3)> SummoningBells = new List<(uint, Vector3)>
+        private static readonly List<(uint ZoneId, Vector3 Location)> SummoningBells = new List<(uint, Vector3)>
         {
             (129, new Vector3(-223.743042f, 16.006714f, 41.306152f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
             (129, new Vector3(-266.376831f, 16.006714f, 41.275635f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
@@ -70,7 +70,8 @@ namespace LlamaLibrary.Retainers
             (635, new Vector3(-57.633362f, -0.01532f, 49.30188f)), //Rhalgr's Reach(Gyr Abania)
             (819, new Vector3(-69.840576f, -7.705872f, 123.491211f)), //The Crystarium(The Crystarium)
             (819, new Vector3(-64.255798f, 19.97406f, -144.274109f)), //The Crystarium(The Crystarium)
-            (820, new Vector3(7.186951f, 83.17688f, 31.448853f)) //Eulmore(Eulmore)
+            (820, new Vector3(7.186951f, 83.17688f, 31.448853f)), //Eulmore(Eulmore)
+            (962, new Vector3(41.85025f, 2.453362f, -38.73349f)) //Old Sharlayan
         };
 
         public static readonly uint GilItemId = DataManager.GetItem("Gil").Id; // 1;

@@ -15,6 +15,7 @@ using ff14bot.Objects;
 using ff14bot.Pathing;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Logging;
+using LlamaLibrary.RemoteWindows;
 using TreeSharp;
 using static ff14bot.RemoteWindows.Talk;
 
@@ -25,6 +26,7 @@ namespace LlamaLibrary.Helpers
         private static readonly LLogger Log = new LLogger("NavigationHelper", Colors.MediumPurple);
 
         public static readonly WaitTimer WaitTimer_0 = new WaitTimer(new TimeSpan(0, 0, 0, 15));
+
         internal static async Task<Queue<NavGraph.INode>> GenerateNodes(uint ZoneId, Vector3 xyz)
         {
             return await NavGraph.GetPathAsync(ZoneId, xyz);
@@ -221,10 +223,10 @@ namespace LlamaLibrary.Helpers
             var moving = MoveResult.GeneratingPath;
             var target = new FlyToParameters(fate.Location);
             while ((!(moving == MoveResult.Done ||
-                     moving == MoveResult.ReachedDestination ||
-                     moving == MoveResult.Failed ||
-                     moving == MoveResult.Failure ||
-                     moving == MoveResult.PathGenerationFailed)) && FateManager.ActiveFates.Any(i => i.Id == fate.Id && i.IsValid))
+                      moving == MoveResult.ReachedDestination ||
+                      moving == MoveResult.Failed ||
+                      moving == MoveResult.Failure ||
+                      moving == MoveResult.PathGenerationFailed)) && FateManager.ActiveFates.Any(i => i.Id == fate.Id && i.IsValid))
             {
                 moving = Flightor.MoveTo(target);
 
@@ -255,6 +257,86 @@ namespace LlamaLibrary.Helpers
 
             await Coroutine.Sleep(1000);
             return WorldManager.ZoneId == 138 && (WorldManager.SubZoneId == 461 || WorldManager.SubZoneId == 228);
+        }
+
+        public static async Task<bool> GetToInteractNpc(uint npcId, ushort zoneId, Vector3 location, RemoteWindow window)
+        {
+            if (await GetTo(zoneId, location))
+            {
+                var unit = GameObjectManager.GetObjectByNPCId(npcId);
+
+                if (unit != default(GameObject))
+                {
+                    if (!unit.IsWithinInteractRange)
+                    {
+                        await OffMeshMoveInteract(unit);
+                    }
+
+                    unit.Target();
+                    unit.Interact();
+
+                    await Coroutine.Wait(5000, () => window.IsOpen || DialogOpen);
+
+                    if (DialogOpen)
+                    {
+                        await GeneralFunctions.SmallTalk();
+                    }
+                }
+            }
+
+            return window.IsOpen;
+        }
+
+        public static async Task<bool> GetToInteractNpcSelectString(uint npcId, ushort zoneId, Vector3 location, int selectStringIndex = -1, RemoteWindow nextWindow = null)
+        {
+            if (await GetTo(zoneId, location))
+            {
+                var unit = GameObjectManager.GetObjectByNPCId(npcId);
+
+                if (unit != default(GameObject))
+                {
+                    if (!unit.IsWithinInteractRange)
+                    {
+                        await OffMeshMoveInteract(unit);
+                    }
+
+                    unit.Target();
+                    unit.Interact();
+
+                    await Coroutine.Wait(5000, () => Conversation.IsOpen || DialogOpen);
+
+                    if (DialogOpen)
+                    {
+                        await GeneralFunctions.SmallTalk();
+                        await Coroutine.Wait(5000, () => Conversation.IsOpen);
+                    }
+                }
+            }
+
+            if (selectStringIndex >= 0)
+            {
+                if (Conversation.IsOpen)
+                {
+                    Conversation.SelectLine((uint)selectStringIndex);
+                    await Coroutine.Wait(5000, () => !Conversation.IsOpen || DialogOpen);
+
+                    if (nextWindow != null)
+                    {
+                        await Coroutine.Wait(5000, () => nextWindow.IsOpen || DialogOpen);
+                        if (DialogOpen)
+                        {
+                            await GeneralFunctions.SmallTalk();
+                            await Coroutine.Wait(5000, () => nextWindow.IsOpen);
+                        }
+
+                        return nextWindow.IsOpen;
+                    }
+
+                    return true;
+                }
+            }
+
+            return Conversation.IsOpen;
         }
     }
 }

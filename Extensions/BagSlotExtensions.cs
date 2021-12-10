@@ -7,7 +7,6 @@ using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.JsonObjects;
-using LlamaLibrary.Memory;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteAgents;
 

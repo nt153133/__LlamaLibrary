@@ -6,8 +6,6 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Managers;
-using ff14bot.Navigation;
-using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
