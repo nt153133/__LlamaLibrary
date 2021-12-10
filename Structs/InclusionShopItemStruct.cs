@@ -55,7 +55,7 @@ namespace NavigationTest.InclusionShop
 
         public int NumberOfItems => ItemId2 != 0 ? 2 : 1;
 
-        public (uint Amount, uint Type, CostFlag flag)[] Costs => new (uint Amount, uint Type, CostFlag flag)[]
+        public (uint Amount, uint Type, CostFlag Flag)[] Costs => new (uint Amount, uint Type, CostFlag Flag)[]
             {
                 (Cost1, CostType1, CostFlag1), (Cost2, CostType2, CostFlag2), (Cost3, CostType3, CostFlag3)
             };

@@ -190,10 +190,10 @@ namespace LlamaLibrary.Retainers
 
             (uint ZoneId, Vector3 Location) bellLocation;
             var tries = 0;
-            if (SummoningBells.Any(i => i.Item1 == WorldManager.ZoneId))
+            if (SummoningBells.Any(i => i.ZoneId == WorldManager.ZoneId))
             {
                 Log.Information("Found a bell in our zone");
-                bellLocation = SummoningBells.Where(i => i.Item1 == WorldManager.ZoneId).OrderBy(r => Core.Me.Location.DistanceSqr(r.Item2)).First();
+                bellLocation = SummoningBells.Where(i => i.ZoneId == WorldManager.ZoneId).OrderBy(r => Core.Me.Location.DistanceSqr(r.Location)).First();
             }
             else
             {
