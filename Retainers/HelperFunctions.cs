@@ -71,7 +71,7 @@ namespace LlamaLibrary.Retainers
             (819, new Vector3(-69.840576f, -7.705872f, 123.491211f)), //The Crystarium(The Crystarium)
             (819, new Vector3(-64.255798f, 19.97406f, -144.274109f)), //The Crystarium(The Crystarium)
             (820, new Vector3(7.186951f, 83.17688f, 31.448853f)), //Eulmore(Eulmore)
-            //(962, new Vector3(41.85025f, 2.453362f, -38.73349f)) //Old Sharlayan
+            (962, new Vector3(41.85025f, 2.453362f, -38.73349f)) //Old Sharlayan
         };
 
         public static readonly uint GilItemId = DataManager.GetItem("Gil").Id; // 1;
@@ -289,7 +289,7 @@ namespace LlamaLibrary.Retainers
         public static uint FindCheapestZone(IEnumerable<uint> zones)
         {
             Log.Information($"Zones: {string.Join(",", zones)}");
-            return zones.Where(j=> WorldManager.AvailableLocations.Any(i => zones.Contains(i.ZoneId) )).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j).GilCost)
+            return zones.Where(j=> WorldManager.AvailableLocations.Any(i => i.ZoneId == j )).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j).GilCost)
                 .First();
         }
 
