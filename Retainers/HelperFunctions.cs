@@ -282,11 +282,13 @@ namespace LlamaLibrary.Retainers
                 return bell != null;
             }
 
+
             return false;
         }
 
         public static uint FindCheapestZone(IEnumerable<uint> zones)
         {
+            Log.Information($"Zones: {string.Join(",", zones)}");
             return zones.OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j).GilCost)
                 .First();
         }
