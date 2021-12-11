@@ -8,6 +8,8 @@ namespace LlamaLibrary.Helpers
         public static List<(uint ShopKey, uint NpcId, ushort ZoneId, uint RequiredQuest, Vector3 Location)> ShopNpcs =
             new List<(uint ShopKey, uint NpcId, ushort ZoneId, uint RequiredQuest, Vector3 Location)>()
             {
+
+                /*
                 {
                     (3801090, 1033775, 129, 0, new Vector3(-106.0883f, 18.00033f, -3.859937f))
                 }, //Limsa Lominsa Lower Decks Rowena's Representative
@@ -26,10 +28,11 @@ namespace LlamaLibrary.Helpers
                 {
                     (3801093, 1033780, 819, 0,  new Vector3(-51.89164f, 2.927084f, 30.81861f))
                 }, //The Crystarium Mowen's Merchant
+                */
+
                 { (3801094, 1012301, 478, 67631, new Vector3(-18.68939f, 206.4994f, 49.13945f)) }, //Idyllshire Scrip Exchange
                 {
-                    (3801094, 1019458, 635, 68477, new Vector3(-65.45793f, 0.00999999f, 63.89896f))
-                }, //Rhalgr's Reach Scrip Exchange
+                    (3801094, 1019458, 635, 68477, new Vector3(-65.45793f, 0.00999999f, 63.89896f)) }, //Rhalgr's Reach Scrip Exchange
                 { (3801094, 1013397, 156, 67634, new Vector3(47.89683f, 31.12446f, -735.4198f)) }, //Mor Dhona Scrip Exchange
                 { (3801096, 1027541, 820, 69139, new Vector3(16.07569f, 82.05f, -20.20444f)) }, //Eulmore Scrip Exchange
                 { (3801097, 1037307, 963, 69711, new Vector3(19.91194f, 0.9200001f, -87.02138f)) }, //Radz-at-Han Scrip Exchange
