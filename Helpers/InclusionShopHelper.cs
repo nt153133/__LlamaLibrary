@@ -43,11 +43,11 @@ namespace LlamaLibrary.Helpers
 
             amtToBuy = qty == 0 ? shopItem.CanAffordQty() : Math.Min(qty, shopItem.CanAffordQty());
 
-            /*
+
             Log.Information($"qty: {qty} amtToBuy: {amtToBuy} CanAfford: {shopItem.CanAffordQty()}");
-
-            return 0;*/
-
+            /*
+             return 0;
+ */
             if (amtToBuy == 0)
             {
                 var costs = shopItem.Costs.Select(cost =>
@@ -78,7 +78,7 @@ namespace LlamaLibrary.Helpers
 
             await Coroutine.Wait(10000, () => AgentInclusionShop.Instance.ItemCount >= shopItem.Index);
 
-            LlamaLibrary.RemoteWindows.InclusionShop.Instance.BuyItem(shopItem.Index, qty);
+            LlamaLibrary.RemoteWindows.InclusionShop.Instance.BuyItem(shopItem.Index, amtToBuy);
 
             await Coroutine.Wait(10000, () => ShopExchangeItemDialog.Instance.IsOpen);
 
@@ -117,7 +117,13 @@ namespace LlamaLibrary.Helpers
 
             var npcs = InclusionShopConstants.ShopNpcs.Where(i => shopIds.Contains(i.ShopKey)).Where(i => i.RequiredQuest == 0 || QuestLogManager.IsQuestCompleted(i.RequiredQuest));
 
-            var npcToGoTo = npcs.OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j.ZoneId).GilCost)
+            if (!npcs.Any())
+            {
+                Log.Information($"Found {npcs.Count()} vendors with {DataManager.GetItem(itemId)}");
+                return 0;
+            }
+
+            var npcToGoTo = npcs.Where(j=> WorldManager.AvailableLocations.Any(i => i.ZoneId == j.ZoneId )).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j.ZoneId).GilCost)
                 .First();
 
             if (!InclusionShop.Instance.IsOpen)
