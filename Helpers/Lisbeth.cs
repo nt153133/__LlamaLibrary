@@ -36,6 +36,7 @@ namespace LlamaLibrary.Helpers
         private static Func<uint, uint, Vector3, Task<bool>> _travelTo;
         private static Func<uint, Vector3, Task<bool>> _travelToWithoutSubzone;
         private static Action _openWindow;
+        private static Func<string, Task<string>> _getOrderExpansionAsJson;
 
         static Lisbeth()
         {
@@ -88,6 +89,7 @@ namespace LlamaLibrary.Helpers
                             _travelToWithArea = (Func<string, Vector3, Task<bool>>)Delegate.CreateDelegate(typeof(Func<string, Vector3, Task<bool>>), apiObject, "TravelToWithArea");
                             _travelToWithoutSubzone = (Func<uint, Vector3, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, Vector3, Task<bool>>), apiObject, "TravelToWithoutSubzone");
                             _openWindow = (System.Action)Delegate.CreateDelegate(typeof(System.Action), apiObject, "OpenWindow");
+                            _getOrderExpansionAsJson = (Func<string, Task<string>>)Delegate.CreateDelegate(typeof(Func<string, Task<string>>), apiObject, "GetOrderExpansionAsJson");
                         }
                         catch (Exception e)
                         {
@@ -224,6 +226,11 @@ namespace LlamaLibrary.Helpers
         public static async Task SelfRepairWithMenderFallback()
         {
             await _selfRepairWithMenderFallback?.Invoke();
+        }
+
+        public static async Task<string> GetOrderExpansionAsJson(string orderJson)
+        {
+            return await _getOrderExpansionAsJson(orderJson);
         }
     }
 }
