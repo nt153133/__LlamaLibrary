@@ -41,7 +41,12 @@ namespace LlamaLibrary.Helpers
 
             int amtToBuy;
 
-            amtToBuy = qty == -1 ? shopItem.CanAffordQty() : Math.Min(qty, shopItem.CanAffordQty());
+            amtToBuy = qty == 0 ? shopItem.CanAffordQty() : Math.Min(qty, shopItem.CanAffordQty());
+
+            /*
+            Log.Information($"qty: {qty} amtToBuy: {amtToBuy} CanAfford: {shopItem.CanAffordQty()}");
+
+            return 0;*/
 
             if (amtToBuy == 0)
             {
@@ -115,7 +120,10 @@ namespace LlamaLibrary.Helpers
             var npcToGoTo = npcs.OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j.ZoneId).GilCost)
                 .First();
 
-            await Navigation.GetToInteractNpcSelectString(npcToGoTo.NpcId, npcToGoTo.ZoneId, npcToGoTo.Location, 0, LlamaLibrary.RemoteWindows.InclusionShop.Instance);
+            if (!InclusionShop.Instance.IsOpen)
+            {
+                await Navigation.GetToInteractNpcSelectString(npcToGoTo.NpcId, npcToGoTo.ZoneId, npcToGoTo.Location, 0, LlamaLibrary.RemoteWindows.InclusionShop.Instance);
+            }
 
             return await BuyItem(itemId, qty);
         }
