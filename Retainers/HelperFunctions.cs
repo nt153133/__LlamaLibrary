@@ -97,14 +97,14 @@ namespace LlamaLibrary.Retainers
 
         public static uint NormalRawId(uint trueItemId)
         {
-            if (trueItemId > 500_000U)
-            {
-                return trueItemId - 500_000U;
-            }
-
             if (trueItemId > 1_000_000U)
             {
                 return trueItemId - 1_000_000U;
+            }
+
+            if (trueItemId > 500_000U)
+            {
+                return trueItemId - 500_000U;
             }
 
             return trueItemId;
