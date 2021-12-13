@@ -55,5 +55,29 @@ namespace LlamaLibrary.RemoteWindows
 
             return result;
         }
+
+        public List<(uint ItemId, int Line)> GetItems()
+        {
+            var count = Elements[20].TrimmedData - 1;
+            var currentElements = Elements;
+            var result = new List<(uint ItemId, int Line)>();
+            for (var j = 0; j < count; j++)
+            {
+                if (currentElements[32 + (j * 11)].TrimmedData == Elements[21].TrimmedData)
+                {
+                    continue; //IconID
+                }
+
+                var itemID = currentElements[34 + (j * 11)].TrimmedData;
+                if (itemID == 0 || itemID > 1500000 || itemID < 500000)
+                {
+                    continue;
+                }
+
+                result.Add(((uint)(itemID - 500000), j));
+            }
+
+            return result;
+        }
     }
 }
