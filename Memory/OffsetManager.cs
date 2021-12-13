@@ -55,58 +55,57 @@ namespace LlamaLibrary.Memory
                 }
 
                 initDone = true;
-            }
 
-            var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
-                      where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
-                      select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+                var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
+                          where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+                          select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
-            if (!q1.Contains(typeof(Offsets)))
-            {
-                q1.Add(typeof(Offsets));
-            }
+                if (!q1.Contains(typeof(Offsets)))
+                {
+                    q1.Add(typeof(Offsets));
+                }
 
-            SetOffsetObjects(q1);
+                SetOffsetObjects(q1);
 
-            var vtables = new Dictionary<IntPtr, int>();
-            for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
-            {
-                vtables.Add(AgentModule.AgentVtables[index], index);
-            }
+                var vtables = new Dictionary<IntPtr, int>();
+                for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
+                {
+                    vtables.Add(AgentModule.AgentVtables[index], index);
+                }
 
-            var q = from t in Assembly.GetExecutingAssembly().GetTypes()
-                    where t.IsClass && t.Namespace == "LlamaLibrary.RemoteAgents"
-                    select t;
+                var q = from t in Assembly.GetExecutingAssembly().GetTypes()
+                        where t.IsClass && t.Namespace == "LlamaLibrary.RemoteAgents"
+                        select t;
 
-            foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
-            {
-                var test = ((IAgent)Activator.CreateInstance(
-                    MyType,
-                    BindingFlags.Instance | BindingFlags.NonPublic,
-                    null,
-                    new object[]
+                foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
+                {
+                    var test = ((IAgent)Activator.CreateInstance(MyType,
+                                                                 BindingFlags.Instance | BindingFlags.NonPublic,
+                                                                 null,
+                                                                 new object[]
+                                                                 {
+                                                                     IntPtr.Zero
+                                                                 },
+                                                                 null)
+                        ).RegisteredVtable;
+
+                    if (vtables.ContainsKey(test))
                     {
-                        IntPtr.Zero
-                    },
-                    null)
-                ).RegisteredVtable;
-
-                if (vtables.ContainsKey(test))
-                {
-                    Log1.Information($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
+                        Log1.Information($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
+                    }
+                    else
+                    {
+                        Log1.Error($"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
+                    }
                 }
-                else
-                {
-                    Log1.Error($"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
-                }
-            }
 
-            AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
-            ScriptManager.Init(typeof(ScriptConditions.Helpers));
-            initDone = true;
-            if (_debug)
-            {
-                Log1.Information($"\n {Sb}");
+                AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
+                ScriptManager.Init(typeof(ScriptConditions.Helpers));
+                initDone = true;
+                if (_debug)
+                {
+                    Log1.Information($"\n {Sb}");
+                }
             }
         }
 
