@@ -82,7 +82,10 @@ namespace LlamaLibrary.Utilities
 
             bagSlot.Desynth();
             await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) != 0);
-            await Coroutine.Wait(20000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) == 0);
+            if (Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) != 0)
+            {
+                await Coroutine.Wait(-1, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) == 0);
+            }
 
             Log.Verbose("Done desynth");
         }
