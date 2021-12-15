@@ -22,11 +22,11 @@ namespace LlamaLibrary.RemoteWindows
             },
             {
                 "Integrity",
-                40
+                49
             },
             {
                 "MaxIntegrity",
-                41
+                50
             },
             {
                 "ItemID",
@@ -34,23 +34,23 @@ namespace LlamaLibrary.RemoteWindows
             },
             {
                 "IntuitionRate",
-                37
+                45
             },
             {
                 "Skill1",
-                30
+                38
             },
             {
                 "Skill2Estimate",
-                31
+                39
             },
             {
                 "Skill2Max",
-                32
+                40
             },
             {
                 "Skill3",
-                33
+                41
             }
         };
 
