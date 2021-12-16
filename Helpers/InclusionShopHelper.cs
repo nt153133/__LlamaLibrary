@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot.Managers;
+using ff14bot.RemoteWindows;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
@@ -21,6 +22,8 @@ namespace LlamaLibrary.Helpers
                 Log.Information("InclusionShop window not open");
                 return 0;
             }
+
+            await Coroutine.Sleep(200);
 
             var shopItems = AgentInclusionShop.Instance.ShopItems;
 
@@ -96,15 +99,26 @@ namespace LlamaLibrary.Helpers
 
             await Coroutine.Wait(
                 10000,
-                () => currentAmt != InventoryManager.FilledSlots.Where(i => i.RawItemId == shopItem.ItemId)
-                    .Sum(i => i.Count));
+                () => (currentAmt != InventoryManager.FilledSlots.Where(i => i.RawItemId == shopItem.ItemId)
+                    .Sum(i => i.Count)) || SelectYesno.IsOpen);
+
+            if (SelectYesno.IsOpen)
+            {
+                SelectYesno.Yes();
+                await Coroutine.Wait(2000, () => !SelectYesno.IsOpen);
+                await Coroutine.Wait(
+                                     10000,
+                                     () => currentAmt != InventoryManager.FilledSlots.Where(i => i.RawItemId == shopItem.ItemId)
+                                         .Sum(i => i.Count));
+            }
 
             await Coroutine.Sleep(100);
 
             if (InclusionShop.Instance.IsOpen)
             {
                 InclusionShop.Instance.Close();
-                await Coroutine.Wait(10000, () => !ShopExchangeItemDialog.Instance.IsOpen);
+                await Coroutine.Wait(10000, () => !InclusionShop.Instance.IsOpen);
+                await Coroutine.Sleep(300);
             }
 
             return (int)(InventoryManager.FilledSlots.Where(i => i.RawItemId == shopItem.ItemId).Sum(i => i.Count) -
