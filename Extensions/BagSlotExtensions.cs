@@ -80,6 +80,12 @@ namespace LlamaLibrary.Extensions
             [Offset("Search 48 8B 05 ? ? ? ? 48 85 C0 74 ? 83 B8 ? ? ? ? ? 75 ? E8 ? ? ? ? Add 3 TraceRelative")]
             public static IntPtr EventHandlerOff;
 
+            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 8B E9 41 0F B7 D9 48 8B 0D ? ? ? ? 41 8B F8 0F B7 F2 E8 ? ? ? ? 48 8B C8 48 85 C0 74 ? 80 BC 24 ? ? ? ? ?")]
+            internal static IntPtr MeldItem;
+
+            [Offset("Search 8B 48 ? 40 88 6C 24 ? Add 2 Read8")]
+            internal static int PlayerMeldOffset;
+
             private static IntPtr _eventHandler = IntPtr.Zero;
 
             public static IntPtr EventHandler
@@ -267,20 +273,24 @@ namespace LlamaLibrary.Extensions
             }
         }
 
-        /*
-        [Obsolete]
-        public static void AffixMateria(this BagSlot bagSlot, BagSlot materia)
+        public static void AffixMateria(this BagSlot Equipment, BagSlot Materia, bool BulkMeld)
         {
+            var offset = Core.Memory.Read<int>(Core.Me.Pointer + Offsets.PlayerMeldOffset);
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<uint>(
-                    Offsets.AffixMateriaFunc,
-                    Offsets.ExtractMateriaParam,
-                    bagSlot.Pointer,
-                    materia.Pointer);
+                using (Core.Memory.TemporaryCacheState(false))
+                {
+                    Core.Memory.CallInjected64<IntPtr>(
+                        Offsets.MeldItem,
+                        (int)Equipment.BagId,
+                        (short)Equipment.Slot,
+                        (int)Materia.BagId,
+                        (short)Materia.Slot,
+                        offset,
+                        (byte)(BulkMeld ? 1 : 0));
+                }
             }
         }
-        */
 
         public static void OpenMeldInterface(this BagSlot bagSlot)
         {
