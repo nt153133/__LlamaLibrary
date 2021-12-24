@@ -77,6 +77,12 @@ namespace LlamaLibrary.Helpers
                 Log.Information("Waiting for zone to change.");
                 await Coroutine.Wait(20000, () => WorldManager.ZoneId == house.ZoneId);
 
+                if (WorldManager.ZoneId != house.ZoneId)
+                {
+                    Log.Information("Teleport failed for some reason, trying again.");
+                    await CommonTasks.Teleport(house.AetheryteId);
+                }
+
                 Log.Information("Moving to selected garden plot.");
                 await Navigation.FlightorMove(gardenLoc);
                 await Main(gardenLoc);
