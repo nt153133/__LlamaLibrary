@@ -313,7 +313,6 @@ namespace LlamaLibrary.Helpers
                         if (!await Coroutine.Wait(5000, () => AgentInventoryContext.Instance.CallbackHandlerSet))
                         {
                             Log.Information("Inventory menu failed to appear, aborting current iteration.");
-                            return true;
                         }
                         Log.Information($"Feeding Chocobo : Food Name : {DataManager.GetItem(ChocoboFoodId).CurrentLocaleName}, Food ID : {ChocoboFoodId}");
                         AgentHousingBuddyList.Instance.Feed(ChocoboFoodId);
@@ -352,7 +351,7 @@ namespace LlamaLibrary.Helpers
                 Log.Information("Failed to open menu");
             }
             await Coroutine.Sleep(3000);
-            if (!FetchAfter) return true;
+            if (FetchAfter)
             {
                 foreach (var unit in GameObjectManager.GameObjects.OrderBy(r => r.Distance()))
                     if (unit.EnglishName == "Chocobo Stable")
