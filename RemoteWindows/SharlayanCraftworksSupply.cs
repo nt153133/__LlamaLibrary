@@ -97,6 +97,23 @@ namespace LlamaLibrary.RemoteWindows
 
                 await Coroutine.Sleep(500);
             }
+
+            await Coroutine.Wait(20000, () => JournalResult.IsOpen);
+            if (JournalResult.IsOpen)
+            {
+                JournalAccept.Accept();
+                await Coroutine.Wait(20000, () => !JournalResult.IsOpen);
+
+                await Coroutine.Wait(5000, () => Talk.DialogOpen);
+                if (Talk.DialogOpen)
+                {
+                    while (Talk.DialogOpen)
+                    {
+                        Talk.Next();
+                        await Coroutine.Sleep(1000);
+                    }
+                }
+            }
         }
     }
 }
