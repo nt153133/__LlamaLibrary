@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
+using ff14bot.Behavior;
 using ff14bot.Managers;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
@@ -47,6 +48,12 @@ namespace LlamaLibrary.RemoteWindows
 
         public async Task HandOverItems()
         {
+            if (HelpWindow.Instance.IsOpen)
+            {
+                HelpWindow.Instance.Close();
+                await Coroutine.Wait(5000, () => HelpWindow.Instance.IsOpen);
+            }
+
             var slots = InventoryManager.FilledSlots.Where(i => i.TrueItemId == TurnInItemId).OrderByDescending(i => i.Collectability).Take(6 - Esteem);
 
             foreach (var slot in slots)
@@ -72,26 +79,27 @@ namespace LlamaLibrary.RemoteWindows
 
             await GeneralFunctions.SmallTalk(5000);
 
-            await Coroutine.Wait(5000, () => QuestLogManager.InCutscene);
+            await Coroutine.Wait(10000, () => QuestLogManager.InCutscene);
 
-            while (QuestLogManager.InCutscene || Talk.DialogOpen)
+            while (QuestLogManager.InCutscene)
             {
-                if (QuestLogManager.InCutscene && AgentCutScene.Instance.CanSkip)
+                AgentCutScene.Instance.PromptSkip();
+                if (AgentCutScene.Instance.CanSkip && SelectString.IsOpen)
                 {
-                    AgentCutScene.Instance.PromptSkip();
-                    await Coroutine.Wait(5000, () => SelectString.IsOpen);
-                    if (SelectString.IsOpen)
-                    {
-                        SelectString.ClickSlot(0);
-                    }
+                    SelectString.ClickSlot(0);
                 }
 
-                await GeneralFunctions.SmallTalk(1000);
-
-                await Coroutine.Sleep(500);
+                await Coroutine.Yield();
             }
 
-            await Coroutine.Wait(20000, () => JournalResult.IsOpen);
+            await Coroutine.Wait(20000, () => JournalResult.IsOpen || Talk.DialogOpen);
+
+            if (Talk.DialogOpen)
+            {
+                await GeneralFunctions.SmallTalk(1000);
+                await Coroutine.Wait(20000, () => JournalResult.IsOpen);
+            }
+
             if (JournalResult.IsOpen)
             {
                 JournalAccept.Accept();
