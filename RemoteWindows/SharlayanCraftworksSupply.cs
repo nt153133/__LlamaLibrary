@@ -79,7 +79,7 @@ namespace LlamaLibrary.RemoteWindows
 
             await GeneralFunctions.SmallTalk(5000);
 
-            await Coroutine.Wait(10000, () => QuestLogManager.InCutscene);
+            /*await Coroutine.Wait(10000, () => QuestLogManager.InCutscene);
 
             while (QuestLogManager.InCutscene)
             {
@@ -107,6 +107,7 @@ namespace LlamaLibrary.RemoteWindows
 
                 await GeneralFunctions.SmallTalk(5000);
             }
+            */
         }
     }
 }
