@@ -5,6 +5,7 @@ using Buddy.Coroutines;
 using ff14bot.Managers;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Helpers;
 using LlamaLibrary.RemoteAgents;
 
 namespace LlamaLibrary.RemoteWindows
@@ -69,11 +70,7 @@ namespace LlamaLibrary.RemoteWindows
                 await Coroutine.Wait(5000, () => Talk.DialogOpen);
             }
 
-            while (Talk.DialogOpen)
-            {
-                Talk.Next();
-                await Coroutine.Sleep(1000);
-            }
+            await GeneralFunctions.SmallTalk(5000);
 
             await Coroutine.Wait(5000, () => QuestLogManager.InCutscene);
 
@@ -89,11 +86,7 @@ namespace LlamaLibrary.RemoteWindows
                     }
                 }
 
-                if (Talk.DialogOpen)
-                {
-                    Talk.Next();
-                    await Coroutine.Sleep(200);
-                }
+                await GeneralFunctions.SmallTalk(1000);
 
                 await Coroutine.Sleep(500);
             }
@@ -104,15 +97,7 @@ namespace LlamaLibrary.RemoteWindows
                 JournalAccept.Accept();
                 await Coroutine.Wait(20000, () => !JournalResult.IsOpen);
 
-                await Coroutine.Wait(5000, () => Talk.DialogOpen);
-                if (Talk.DialogOpen)
-                {
-                    while (Talk.DialogOpen)
-                    {
-                        Talk.Next();
-                        await Coroutine.Sleep(1000);
-                    }
-                }
+                await GeneralFunctions.SmallTalk(5000);
             }
         }
     }
