@@ -167,7 +167,7 @@ namespace LlamaLibrary.Retainers
             if (RetainerList.Instance.IsOpen)
             {
                 RetainerList.Instance.Close();
-                await Coroutine.Wait(5000, () => !RetainerList.Instance.IsOpen);
+                await Coroutine.Wait(15000, () => !RetainerList.Instance.IsOpen);
             }
         }
 
@@ -301,12 +301,12 @@ namespace LlamaLibrary.Retainers
 
             RetainerTasks.CloseTasks();
 
-            await Coroutine.Wait(3000, () => DialogOpen || SelectYesno.IsOpen);
+            await Coroutine.Wait(13000, () => DialogOpen || SelectYesno.IsOpen);
 
             if (SelectYesno.IsOpen)
             {
                 SelectYesno.Yes();
-                await Coroutine.Wait(3000, () => DialogOpen || RetainerList.Instance.IsOpen);
+                await Coroutine.Wait(13000, () => DialogOpen || RetainerList.Instance.IsOpen);
             }
 
             while (!RetainerList.Instance.IsOpen)
@@ -317,7 +317,7 @@ namespace LlamaLibrary.Retainers
                     await Coroutine.Sleep(100);
                 }
 
-                await Coroutine.Wait(3000, () => DialogOpen || RetainerList.Instance.IsOpen);
+                await Coroutine.Wait(13000, () => DialogOpen || RetainerList.Instance.IsOpen);
             }
 
             return RetainerList.Instance.IsOpen;

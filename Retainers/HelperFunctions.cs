@@ -157,11 +157,11 @@ namespace LlamaLibrary.Retainers
             }
 
             bell.Interact();
-            await Coroutine.Wait(3000, () => RetainerList.Instance.IsOpen);
+            await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen);
             if (!RetainerList.Instance.IsOpen)
             {
                 bell.Interact();
-                await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen);
+                await Coroutine.Wait(15000, () => RetainerList.Instance.IsOpen);
             }
 
             return RetainerList.Instance.IsOpen;
@@ -393,7 +393,7 @@ namespace LlamaLibrary.Retainers
             if (RetainerList.Instance.IsOpen)
             {
                 RetainerList.Instance.Close();
-                await Coroutine.Wait(5000, () => !RetainerList.Instance.IsOpen);
+                await Coroutine.Wait(15000, () => !RetainerList.Instance.IsOpen);
             }
 
             return !RetainerList.Instance.IsOpen;
