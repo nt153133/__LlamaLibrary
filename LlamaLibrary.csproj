@@ -80,6 +80,7 @@
     <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
+    <Compile Include="RemoteWindows\HelpWindow.cs" />
     <Compile Include="RemoteWindows\InclusionShop.cs" />
     <Compile Include="RemoteWindows\SharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteWindows\ShopExchangeItemDialog.cs" />
