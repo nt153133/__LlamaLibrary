@@ -81,6 +81,11 @@ namespace LlamaLibrary.Helpers
                 return true;
             }
 
+            if (Core.Me.HasTarget && Core.Me.CurrentTargetObjId != Core.Me.ObjectId)
+            {
+                return true;
+            }
+
             return false;
         }
 
@@ -147,7 +152,21 @@ namespace LlamaLibrary.Helpers
                     await SmallTalk();
                 }
 
-                await Coroutine.Sleep(2500);
+                if (Core.Me.HasTarget)
+                {
+                    Log.Information($"Untargeting {Core.Me.CurrentTarget.Name}");
+                    Core.Me.ClearTarget();
+                    await Coroutine.Wait(1500, () => !Core.Me.HasTarget);
+                    if (Core.Me.HasTarget)
+                    {
+                        Log.Warning("Couldn't untarget NPC. Trying to target ourselves...");
+                        Core.Me.Target();
+                        await Coroutine.Wait(1500, () => Core.Me.CurrentTargetObjId == Core.Me.ObjectId);
+                    }
+                }
+
+                await Coroutine.Wait(2500, () => !CheckIfBusy(leaveDuty, stopFishing, dismount));
+                await Coroutine.Sleep(500);
             }
 
             if (CheckIfBusy(leaveDuty, stopFishing, dismount))
