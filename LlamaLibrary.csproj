@@ -77,9 +77,11 @@
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
     <Compile Include="RemoteAgents\AgentInclusionShop.cs" />
+    <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
     <Compile Include="RemoteWindows\InclusionShop.cs" />
+    <Compile Include="RemoteWindows\SharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteWindows\ShopExchangeItemDialog.cs" />
     <Compile Include="RemoteWindows\WorldTravelFinderReady.cs" />
     <Compile Include="RemoteWindows\WorldTravelSelect.cs" />
