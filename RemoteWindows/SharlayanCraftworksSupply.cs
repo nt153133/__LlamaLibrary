@@ -61,7 +61,13 @@ namespace LlamaLibrary.RemoteWindows
 
             Deliver();
 
-            await Coroutine.Wait(5000, () => Talk.DialogOpen);
+            await Coroutine.Wait(5000, () => Talk.DialogOpen || SelectYesno.IsOpen);
+
+            if (SelectYesno.IsOpen)
+            {
+                SelectYesno.Yes();
+                await Coroutine.Wait(5000, () => Talk.DialogOpen);
+            }
 
             while (Talk.DialogOpen)
             {
