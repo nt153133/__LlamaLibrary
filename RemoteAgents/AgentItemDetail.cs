@@ -2,9 +2,8 @@
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
-using LlamaLibrary.RemoteAgents;
 
-namespace NavigationTest
+namespace LlamaLibrary.RemoteAgents
 {
     public class AgentItemDetail : AgentInterface<AgentItemDetail>, IAgent
     {
