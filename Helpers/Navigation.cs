@@ -213,6 +213,44 @@ namespace LlamaLibrary.Helpers
             return moving == MoveResult.ReachedDestination;
         }
 
+        public static async Task<bool> FlightorMove(Vector3 loc, Func<bool> stopCondition)
+        {
+            var moving = MoveResult.GeneratingPath;
+            var target = new FlyToParameters(loc);
+            while (!(moving == MoveResult.Done ||
+                     moving == MoveResult.ReachedDestination ||
+                     moving == MoveResult.Failed ||
+                     moving == MoveResult.Failure ||
+                     moving == MoveResult.PathGenerationFailed || stopCondition()))
+            {
+                moving = Flightor.MoveTo(target);
+
+                await Coroutine.Yield();
+            }
+
+            Navigator.PlayerMover.MoveStop();
+            return moving == MoveResult.ReachedDestination;
+        }
+
+        public static async Task<bool> FlightorMove(Vector3 loc, float distance)
+        {
+            var moving = MoveResult.GeneratingPath;
+            var target = new FlyToParameters(loc);
+            while (!(moving == MoveResult.Done ||
+                     moving == MoveResult.ReachedDestination ||
+                     moving == MoveResult.Failed ||
+                     moving == MoveResult.Failure ||
+                     moving == MoveResult.PathGenerationFailed || Core.Me.Distance(loc) < distance))
+            {
+                moving = Flightor.MoveTo(target);
+
+                await Coroutine.Yield();
+            }
+
+            Navigator.PlayerMover.MoveStop();
+            return moving == MoveResult.ReachedDestination;
+        }
+
         public static async Task<bool> FlightorMove(FateData fate)
         {
             if (fate == null)

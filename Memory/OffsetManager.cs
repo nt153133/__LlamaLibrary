@@ -427,7 +427,7 @@ namespace LlamaLibrary.Memory
                 }
                 else
                 {
-                    Log.WriteLog(Colors.BlueViolet, $"\tFound one {test.ToString("X")} but no agent");
+                    Log.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
                 }
             }
         }

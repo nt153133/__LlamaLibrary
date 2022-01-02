@@ -5,7 +5,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Clio.Utilities;
+using ff14bot;
+using ff14bot.Behavior;
 using ff14bot.Managers;
+using ff14bot.Objects;
+using ff14bot.Pathing;
+using ff14bot.Settings;
 using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers
@@ -37,6 +42,7 @@ namespace LlamaLibrary.Helpers
         private static Func<uint, Vector3, Task<bool>> _travelToWithoutSubzone;
         private static Action _openWindow;
         private static Func<string, Task<string>> _getOrderExpansionAsJson;
+        private static Func<Character, Task> _kill;
 
         static Lisbeth()
         {
@@ -73,7 +79,7 @@ namespace LlamaLibrary.Helpers
                         {
                             _getCurrentAreaName = (Func<string>)Delegate.CreateDelegate(typeof(Func<string>), apiObject, "GetCurrentAreaName");
                             _stopGently = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGently");
-
+                            _kill = (Func<Character, Task>)Delegate.CreateDelegate(typeof(Func<Character, Task>), apiObject, "Kill");
                             //_stopGentlyAndWait = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGentlyAndWait");
                             _addHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddHook");
                             _removeHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveHook");
@@ -108,6 +114,24 @@ namespace LlamaLibrary.Helpers
         }
 
         public static string GetCurrentAreaName => _getCurrentAreaName.Invoke();
+
+        public static async Task Kill(Character mob)
+        {
+            if (Core.Me.Distance(mob) + 1 >= RoutineManager.Current.PullRange)
+            {
+                Log.Information($"Outside of pull range so getting closer");
+                await Navigation.FlightorMove(mob.Location, () => Core.Me.Distance(mob) < (RoutineManager.Current.PullRange / 2));
+                if (Core.Me.IsMounted)
+                {
+                    await CommonTasks.StopAndDismount();
+                }
+            }
+
+            var mount = CharacterSettings.Instance.UseMount;
+            CharacterSettings.Instance.UseMount = false;
+            await _kill(mob);
+            CharacterSettings.Instance.UseMount = mount;
+        }
 
         public static async Task<bool> ExecuteOrders(string json)
         {

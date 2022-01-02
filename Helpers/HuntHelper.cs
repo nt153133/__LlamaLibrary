@@ -141,7 +141,7 @@ namespace LlamaLibrary.Helpers
                 }
 
                 var listStart = orderType.OrderStart - 1;
-                var v8 = Core.Memory.Read<byte>(Offsets.HuntData + j + 0x16);
+                var v8 = Core.Memory.Read<byte>(Offsets.HuntData + j + 0x1A); //0x16
 
                 Log.Information($"{orderType.Item.CurrentLocaleName}");
                 var max = 5;
@@ -222,7 +222,7 @@ namespace LlamaLibrary.Helpers
             }
 
             var listStart = orderType.OrderStart - 1;
-            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x16);
+            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1A);
             if ((listStart + v8 > 620) && !accepted[orderTypeIndex])
             {
                 Log.Verbose($"Have not been picked up {orderTypeIndex} {listStart + v8} {accepted[orderTypeIndex]}");
@@ -289,18 +289,22 @@ namespace LlamaLibrary.Helpers
             }
 
             var listStart = orderType.OrderStart - 1;
-            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x16);
+            //Log.Information($"{(Offsets.HuntData + orderTypeIndex).ToString("X")}");
+            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1A); //0x8
 
             var max = 5;
 
             for (byte i = 0; i < max; i++)
             {
+                //Log.Information($"\ttypeKey: {(uint)listStart + v8} mobindex: ({i})");
                 var hunt = GetMobHuntOrder((uint)listStart + v8, i);
                 var target = GetMobHuntTarget(hunt.MobHuntTarget);
                 if (target.FateRequired)
                 {
                     continue;
                 }
+
+                Log.Information($"\t{target.Name} ({hunt.MobHuntTarget})");
 
                 if (!ResourceManager.DailyHunts.Value.ContainsKey(hunt.MobHuntTarget))
                 {
@@ -311,8 +315,6 @@ namespace LlamaLibrary.Helpers
                 // string fate = target.FateRequired ? string.Format("Fate {0}", target.Fate) : "";
 
                 result.Add(new DailyHuntOrder(hunt, target, orderTypeIndex, i, ResourceManager.DailyHunts.Value[hunt.MobHuntTarget]));
-
-                //Log.Information(string.Format("\t{0} ({1}) {2}", target.Name, hunt.MobHuntTarget, fate));
             }
 
             return result;
