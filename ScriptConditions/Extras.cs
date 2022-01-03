@@ -104,5 +104,10 @@ namespace LlamaLibrary.ScriptConditions
         {
             await SharedFateHelper.CachedRead();
         }
+				
+			  public static int LLItemCollectableCount(int itemID)
+        {
+            return InventoryManager.FilledSlots.Count(i => i.RawItemId == itemID && i.IsCollectable);
+        }
     }
 }
