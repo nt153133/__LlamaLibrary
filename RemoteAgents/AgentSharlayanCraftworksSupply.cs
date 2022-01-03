@@ -33,7 +33,7 @@ namespace LlamaLibrary.RemoteAgents
                 Core.Memory.CallInjected64<uint>(Offsets.HandIn,
                                                  Pointer + Offsets.PointerOffset,
                                                  slot.Slot,
-                                                 (int) slot.BagId);
+                                                 (int)slot.BagId);
             }
         }
     }

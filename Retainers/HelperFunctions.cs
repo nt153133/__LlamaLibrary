@@ -189,7 +189,6 @@ namespace LlamaLibrary.Retainers
             }
 
             (uint ZoneId, Vector3 Location) bellLocation;
-            var tries = 0;
             if (SummoningBells.Any(i => i.ZoneId == WorldManager.ZoneId))
             {
                 Log.Information("Found a bell in our zone");
@@ -197,7 +196,6 @@ namespace LlamaLibrary.Retainers
             }
             else
             {
-                var foundBell = false;
                 var rand = new Random();
                 List<uint> zoneList = new List<uint>();
                 List<(uint bellzone, uint truezone)> zoneMap = new List<(uint bellzone, uint truezone)>();
@@ -226,7 +224,7 @@ namespace LlamaLibrary.Retainers
                 }
 
                 var zoneId = FindCheapestZone(zoneList);
-                bellLocation = SummoningBells.First(i => i.ZoneId == zoneMap.First(j=> j.truezone == zoneId).bellzone);
+                bellLocation = SummoningBells.First(i => i.ZoneId == zoneMap.First(j => j.truezone == zoneId).bellzone);
                 /*do
                 {
                     tries++;
@@ -263,7 +261,8 @@ namespace LlamaLibrary.Retainers
                         Log.Warning($"{bellLocation.ZoneId} can't find AE");
                     }
                 }
-                while (!foundBell && tries < 5)*/;
+                while (!foundBell && tries < 5)*/
+                ;
             }
 
             Log.Information($"Going to bell {bellLocation.ZoneId} {bellLocation.Location}");
@@ -289,7 +288,7 @@ namespace LlamaLibrary.Retainers
         public static uint FindCheapestZone(IEnumerable<uint> zones)
         {
             Log.Information($"Zones: {string.Join(",", zones)}");
-            return zones.Where(j=> WorldManager.AvailableLocations.Any(i => i.ZoneId == j )).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j).GilCost)
+            return zones.Where(j => WorldManager.AvailableLocations.Any(i => i.ZoneId == j)).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j).GilCost)
                 .First();
         }
 

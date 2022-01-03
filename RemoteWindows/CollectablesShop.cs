@@ -61,8 +61,14 @@ namespace LlamaLibrary.RemoteWindows
             var count = Elements[20].TrimmedData - 1;
             var currentElements = Elements;
             var result = new List<(uint ItemId, int Line)>();
+            var index = 0;
             for (var j = 0; j < count; j++)
             {
+                if (currentElements[34 + (j * 11)].Type == 0)
+                {
+                    continue;
+                }
+
                 if (currentElements[32 + (j * 11)].TrimmedData == Elements[21].TrimmedData)
                 {
                     continue; //IconID
@@ -74,7 +80,8 @@ namespace LlamaLibrary.RemoteWindows
                     continue;
                 }
 
-                result.Add(((uint)(itemID - 500000), j));
+                result.Add(((uint)(itemID - 500000), index));
+                index++;
             }
 
             return result;

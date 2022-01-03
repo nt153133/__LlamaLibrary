@@ -137,7 +137,7 @@ namespace LlamaLibrary.Helpers
                 return 0;
             }
 
-            var npcToGoTo = npcs.Where(j=> WorldManager.AvailableLocations.Any(i => i.ZoneId == j.ZoneId )).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j.ZoneId).GilCost)
+            var npcToGoTo = npcs.Where(j => WorldManager.AvailableLocations.Any(i => i.ZoneId == j.ZoneId)).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j.ZoneId).GilCost)
                 .First();
 
             if (!InclusionShop.Instance.IsOpen)
