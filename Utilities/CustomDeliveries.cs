@@ -27,7 +27,7 @@ namespace LlamaLibrary.Utilities
         public static string NameStatic => "Custom Deliveries";
         private static readonly LLogger Log = new LLogger(NameStatic, Colors.Gold);
 
-        public static async Task<bool> RunCustomDeliveries()
+        public static async Task<bool> RunCustomDeliveries(DohClasses dohClass = DohClasses.Carpenter)
         {
             Navigator.PlayerMover = new SlideMover();
             Navigator.NavigationProvider = new ServiceNavigationProvider();
@@ -35,7 +35,7 @@ namespace LlamaLibrary.Utilities
 
             foreach (var npc in DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).OrderByDescending(i => i.Index))
             {
-                await CraftThenHandinNpc(npc);
+                await CraftThenHandinNpc(npc, dohClass);
                 /*if (AgentSatisfactionSupply.Instance.DeliveriesRemaining == 0)
                 {
                     Log.Information("Out of delivery allowances");
@@ -47,7 +47,7 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
-        public static async Task CraftThenHandinNpc(CustomDeliveryNpc deliveryNpc, bool stopAtFiveHearts = true)
+        public static async Task CraftThenHandinNpc(CustomDeliveryNpc deliveryNpc, DohClasses dohClass = DohClasses.Carpenter, bool stopAtFiveHearts = true)
         {
             await AgentSatisfactionSupply.Instance.LoadWindow(deliveryNpc.Index);
             var items = new List<uint>();
@@ -82,7 +82,7 @@ namespace LlamaLibrary.Utilities
             }
             else
             {
-                outList.Add(new LisbethOrder(0, 1, (int)AgentSatisfactionSupply.Instance.DoHItemId, Math.Min(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining), "Carpenter", true));
+                outList.Add(new LisbethOrder(0, 1, (int)AgentSatisfactionSupply.Instance.DoHItemId, Math.Min(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining), dohClass.ToString(), true));
             }
 
             var order = JsonConvert.SerializeObject(outList, Formatting.None).Replace("Hq", "Collectable");
