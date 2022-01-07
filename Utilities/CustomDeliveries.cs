@@ -76,14 +76,14 @@ namespace LlamaLibrary.Utilities
 
             var outList = new List<LisbethOrder>();
 
-            if (deliveryNpc.npcId == 1025878)
-            {
-                outList.Add(new LisbethOrder(0, 1, (int)AgentSatisfactionSupply.Instance.DoLItemId, Math.Min(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining), "Gather", true));
-            }
-            else
-            {
-                outList.Add(new LisbethOrder(0, 1, (int)AgentSatisfactionSupply.Instance.DoHItemId, Math.Min(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining), dohClass.ToString(), true));
-            }
+            // if (deliveryNpc.npcId == 1025878)
+            //  {
+            //      outList.Add(new LisbethOrder(0, 1, (int)AgentSatisfactionSupply.Instance.DoLItemId, Math.Min(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining), "Gather", true));
+            //  }
+            //  else
+            //  {
+            outList.Add(new LisbethOrder(0, 1, (int) AgentSatisfactionSupply.Instance.DoHItemId, Math.Min(3, (int) AgentSatisfactionSupply.Instance.DeliveriesRemaining), dohClass.ToString(), true));
+            //  }
 
             var order = JsonConvert.SerializeObject(outList, Formatting.None).Replace("Hq", "Collectable");
 
@@ -293,7 +293,7 @@ namespace LlamaLibrary.Utilities
             await Coroutine.Wait(1000, () => Conversation.IsOpen);
             if (Conversation.IsOpen)
             {
-                Conversation.SelectLine((uint)(Conversation.GetConversationList.Count - 1));
+                Conversation.SelectLine((uint) (Conversation.GetConversationList.Count - 1));
             }
 
             return true;
