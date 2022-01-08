@@ -20,11 +20,11 @@ namespace LlamaLibrary.Helpers
         public static bool loaded;
         public static bool tempbool;
 
-        public static async Task<bool> CallOrderbot(string profile)
+        public static Task<bool> CallOrderbot(string profile)
         {
             var a = new Thread(() => MyThread(profile));
             a.Start();
-            return true;
+            return Task.FromResult(true);
         }
 
         private static async void MyThread(string profile)

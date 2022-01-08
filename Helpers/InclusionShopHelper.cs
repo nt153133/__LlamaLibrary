@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
+using Clio.Utilities;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Logging;
@@ -37,15 +38,13 @@ namespace LlamaLibrary.Helpers
 
             if (shopItem.Hidden)
             {
-                Log.Information(
-                    $"Item {DataManager.GetItem(shopItem.ItemId).CurrentLocaleName} is in a hidden sub category");
+                Log.Information($"Item {DataManager.GetItem(shopItem.ItemId).CurrentLocaleName} is in a hidden sub category");
                 return 0;
             }
 
             int amtToBuy;
 
             amtToBuy = qty == 0 ? shopItem.CanAffordQty() : Math.Min(qty, shopItem.CanAffordQty());
-
 
             Log.Information($"qty: {qty} amtToBuy: {amtToBuy} CanAfford: {shopItem.CanAffordQty()}");
             /*
@@ -54,7 +53,7 @@ namespace LlamaLibrary.Helpers
             if (amtToBuy == 0)
             {
                 var costs = shopItem.Costs.Select(cost =>
-                    $"{DataManager.GetItem(cost.ItemId).CurrentLocaleName} x {cost.Qty}");
+                                                      $"{DataManager.GetItem(cost.ItemId).CurrentLocaleName} x {cost.Qty}");
                 Log.Information($"You can't afford {string.Join(",", costs)}");
                 return 0;
             }
@@ -97,17 +96,15 @@ namespace LlamaLibrary.Helpers
 
             await Coroutine.Wait(10000, () => !ShopExchangeItemDialog.Instance.IsOpen);
 
-            await Coroutine.Wait(
-                10000,
-                () => (currentAmt != InventoryManager.FilledSlots.Where(i => i.RawItemId == shopItem.ItemId)
-                    .Sum(i => i.Count)) || SelectYesno.IsOpen);
+            await Coroutine.Wait(10000,
+                                 () => (currentAmt != InventoryManager.FilledSlots.Where(i => i.RawItemId == shopItem.ItemId)
+                                     .Sum(i => i.Count)) || SelectYesno.IsOpen);
 
             if (SelectYesno.IsOpen)
             {
                 SelectYesno.Yes();
                 await Coroutine.Wait(2000, () => !SelectYesno.IsOpen);
-                await Coroutine.Wait(
-                                     10000,
+                await Coroutine.Wait(10000,
                                      () => currentAmt != InventoryManager.FilledSlots.Where(i => i.RawItemId == shopItem.ItemId)
                                          .Sum(i => i.Count));
             }
@@ -137,8 +134,21 @@ namespace LlamaLibrary.Helpers
                 return 0;
             }
 
-            var npcToGoTo = npcs.Where(j => WorldManager.AvailableLocations.Any(i => i.ZoneId == j.ZoneId)).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j.ZoneId).GilCost)
-                .First();
+            if (npcs.Any())
+            {
+                Log.Information($"Found {npcs.Count()} vendors with {InclusionShopConstants.ShopNpcs.Count(i => shopIds.Contains(i.ShopKey))}");
+            }
+
+            (uint ShopKey, uint NpcId, ushort ZoneId, uint RequiredQuest, Vector3 Location) npcToGoTo;
+            if (npcs.Any(i => i.ZoneId == WorldManager.ZoneId))
+            {
+                npcToGoTo = npcs.First(i => i.ZoneId == WorldManager.ZoneId);
+            }
+            else
+            {
+                npcToGoTo = npcs.Where(j => WorldManager.AvailableLocations.Any(i => i.ZoneId == j.ZoneId)).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j.ZoneId).GilCost)
+                    .First();
+            }
 
             if (!InclusionShop.Instance.IsOpen)
             {
