@@ -808,14 +808,14 @@ namespace LlamaLibrary.Helpers
             var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
             {
                 // BaseItemID, Tab, Index, Mini Collectability, RewardItemID
-                { 31750, new CraftingRelicTurnin(31750, 0, 0, 2500, 31736) }, //Carpenter Oddly Delicate Pine Lumber --> Oddly Delicate Saw Part
-                { 31751, new CraftingRelicTurnin(31751, 1, 0, 2500, 31737) }, //Blacksmith Oddly Delicate Silver gear --> Oddly Delicate Cross-pein Hammer part
-                { 31752, new CraftingRelicTurnin(31752, 2, 0, 2500, 31738) }, //Armorer Oddly Delicate Wolfram Square --> Oddly Delicate Raising Hammer part
-                { 31753, new CraftingRelicTurnin(31753, 3, 0, 2500, 31739) }, //Goldsmith Oddly Delicate Celestine --> Oddly Delicate Lapidary Hammer Part
-                { 31754, new CraftingRelicTurnin(31754, 4, 0, 2500, 31740) }, //Leatherworker Oddly Delicate Gazelle Leather --> Oddly Delicate Round Knife Part
-                { 31755, new CraftingRelicTurnin(31755, 5, 0, 2500, 31741) }, //Weaver Oddly Delicate Rhea Cloth --> Oddly Delicate Needle Part
-                { 31756, new CraftingRelicTurnin(31756, 6, 0, 2500, 31742) }, //Alchemist Oddly Delicate Holy Water --> Oddly Delicate Alembic Part
-                { 31757, new CraftingRelicTurnin(31757, 7, 0, 2500, 31743) }, //Cooking Oddly Delicate Shark Oil --> Oddly Delicate Frypan Part
+                { 31750, new CraftingRelicTurnin(31750, 0, 0, 470, 31736) }, //Carpenter Oddly Delicate Pine Lumber --> Oddly Delicate Saw Part
+                { 31751, new CraftingRelicTurnin(31751, 1, 0, 470, 31737) }, //Blacksmith Oddly Delicate Silver gear --> Oddly Delicate Cross-pein Hammer part
+                { 31752, new CraftingRelicTurnin(31752, 2, 0, 470, 31738) }, //Armorer Oddly Delicate Wolfram Square --> Oddly Delicate Raising Hammer part
+                { 31753, new CraftingRelicTurnin(31753, 3, 0, 470, 31739) }, //Goldsmith Oddly Delicate Celestine --> Oddly Delicate Lapidary Hammer Part
+                { 31754, new CraftingRelicTurnin(31754, 4, 0, 470, 31740) }, //Leatherworker Oddly Delicate Gazelle Leather --> Oddly Delicate Round Knife Part
+                { 31755, new CraftingRelicTurnin(31755, 5, 0, 470, 31741) }, //Weaver Oddly Delicate Rhea Cloth --> Oddly Delicate Needle Part
+                { 31756, new CraftingRelicTurnin(31756, 6, 0, 470, 31742) }, //Alchemist Oddly Delicate Holy Water --> Oddly Delicate Alembic Part
+                { 31757, new CraftingRelicTurnin(31757, 7, 0, 470, 31743) }, //Cooking Oddly Delicate Shark Oil --> Oddly Delicate Frypan Part
                 { 31768, new CraftingRelicTurnin(31768, 8, 0, 400, 31746) }, //Mining Oddly Delicate Adamantite Ore --> Oddly Delicate Pickaxe Part
                 { 31766, new CraftingRelicTurnin(31766, 9, 0, 400, 31744) }, //Botany Oddly Delicate Feather --> Oddly Delicate Hatchet Part
                 { 31770, new CraftingRelicTurnin(31770, 10, 0, 126, 31748) }, //Fishing Flinstrike --> Oddly Delicate Fishing Rod part
@@ -1053,22 +1053,22 @@ namespace LlamaLibrary.Helpers
         {
             Dictionary<uint, CraftingRelicTurnin> TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
             {
-                { 31101, new CraftingRelicTurnin(31101, 0, 1, 2000, 30315) },
-                { 31109, new CraftingRelicTurnin(31109, 0, 0, 3000, 30316) },
-                { 31102, new CraftingRelicTurnin(31102, 1, 1, 2000, 30317) },
-                { 31110, new CraftingRelicTurnin(31110, 1, 0, 3000, 30318) },
-                { 31103, new CraftingRelicTurnin(31103, 2, 1, 2000, 30319) },
-                { 31111, new CraftingRelicTurnin(31111, 2, 0, 3000, 30320) },
-                { 31104, new CraftingRelicTurnin(31104, 3, 1, 2000, 30321) },
-                { 31112, new CraftingRelicTurnin(31112, 3, 0, 3000, 30322) },
-                { 31105, new CraftingRelicTurnin(31105, 4, 1, 2000, 30323) },
-                { 31113, new CraftingRelicTurnin(31113, 4, 0, 3000, 30324) },
-                { 31106, new CraftingRelicTurnin(31106, 5, 1, 2000, 30325) },
-                { 31114, new CraftingRelicTurnin(31114, 5, 0, 3000, 30326) },
-                { 31107, new CraftingRelicTurnin(31107, 6, 1, 2000, 30327) },
-                { 31115, new CraftingRelicTurnin(31115, 6, 0, 3000, 30328) },
-                { 31108, new CraftingRelicTurnin(31108, 7, 1, 2000, 30329) },
-                { 31116, new CraftingRelicTurnin(31116, 7, 0, 3000, 30330) }
+                { 31101, new CraftingRelicTurnin(31101, 0, 1, 360, 30315) },
+                { 31109, new CraftingRelicTurnin(31109, 0, 0, 400, 30316) },
+                { 31102, new CraftingRelicTurnin(31102, 1, 1, 360, 30317) },
+                { 31110, new CraftingRelicTurnin(31110, 1, 0, 400, 30318) },
+                { 31103, new CraftingRelicTurnin(31103, 2, 1, 360, 30319) },
+                { 31111, new CraftingRelicTurnin(31111, 2, 0, 400, 30320) },
+                { 31104, new CraftingRelicTurnin(31104, 3, 1, 360, 30321) },
+                { 31112, new CraftingRelicTurnin(31112, 3, 0, 400, 30322) },
+                { 31105, new CraftingRelicTurnin(31105, 4, 1, 360, 30323) },
+                { 31113, new CraftingRelicTurnin(31113, 4, 0, 400, 30324) },
+                { 31106, new CraftingRelicTurnin(31106, 5, 1, 360, 30325) },
+                { 31114, new CraftingRelicTurnin(31114, 5, 0, 400, 30326) },
+                { 31107, new CraftingRelicTurnin(31107, 6, 1, 360, 30327) },
+                { 31115, new CraftingRelicTurnin(31115, 6, 0, 400, 30328) },
+                { 31108, new CraftingRelicTurnin(31108, 7, 1, 360, 30329) },
+                { 31116, new CraftingRelicTurnin(31116, 7, 0, 400, 30330) }
             };
 
             var collectables = InventoryManager.FilledSlots.Where(i => i.IsCollectable).Select(x => x.RawItemId).Distinct();
