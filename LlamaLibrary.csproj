@@ -74,6 +74,8 @@
     <Compile Include="Helpers\InventoryHelpers.cs" />
     <Compile Include="Helpers\IshgardHandin.cs" />
     <Compile Include="Helpers\OrderbotHelper.cs" />
+    <Compile Include="ICompiledAsyncBotbase.cs" />
+    <Compile Include="ICompiledBotbase.cs" />
     <Compile Include="JsonObjects\CustomDeliveryNpc.cs" />
     <Compile Include="JsonObjects\MateriaItem.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />

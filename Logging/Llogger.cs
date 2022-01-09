@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Media;
 
 namespace LlamaLibrary.Logging
@@ -84,7 +85,7 @@ namespace LlamaLibrary.Logging
         }
 
         /// <summary>
-        /// Writes a <see cref="LogLevel.Debug"/> message to log.
+        /// Writes a <see cref="System.Diagnostics.Debug"/> message to log.
         /// </summary>
         /// <param name="message">Text to write to log.</param>
         public void Debug(string message)
@@ -117,6 +118,13 @@ namespace LlamaLibrary.Logging
         public void Error(string message)
         {
             WriteFilteredLog(LogLevel.Error, Colors.OrangeRed, message);
+        }
+
+        public void Exception(Exception exception)
+        {
+            var frame = new StackFrame(1);
+            var method = frame.GetMethod();
+            Error($"{method.GetType().Name} {method.Name} \n{exception.ToString()}");
         }
     }
 }
