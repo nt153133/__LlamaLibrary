@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
@@ -1160,6 +1163,27 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Wait(10000, () => !ShopExchangeItem.Instance.IsOpen);
                 }
             }
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
+        public static string SourceFileName()
+        {
+            var frame = new StackFrame(1, true);
+            return frame.GetFileName();
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
+        public static DirectoryInfo SourceDirectory()
+        {
+            var frame = new StackFrame(1, true);
+            var file = frame.GetFileName();
+
+            if (!string.IsNullOrEmpty(file) && File.Exists(file))
+            {
+                return new DirectoryInfo(Path.GetDirectoryName(file));
+            }
+
+            return null;
         }
     }
 }
