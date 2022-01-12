@@ -111,10 +111,10 @@ namespace LlamaLibrary.ScriptConditions
         {
             return InventoryManager.FilledSlots.Count(i => i.RawItemId == itemID && i.IsCollectable);
         }
-				
+
         public static int CurrentGCRank()
         {
             return (int)Core.Me.GCRank();
-        }				
+        }
     }
 }

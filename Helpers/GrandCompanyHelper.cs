@@ -201,41 +201,41 @@ namespace LlamaLibrary.Helpers
                 }
             }
         }
-				
+
         public static async Task GoGCRankUp()
         {
-						var grandCompany = Core.Me.GrandCompany;
-						
-						await GetToGCBase();
-												
+            var grandCompany = Core.Me.GrandCompany;
+
+            await GetToGCBase();
+
             await InteractWithNpc(GCNpc.Personnel_Officer, grandCompany);
             await Buddy.Coroutines.Coroutine.Wait(5000, () => SelectString.IsOpen);
-						
-						Log.Information($"Apply for a promotion to {grandCompany}");
-						
-						if (!SelectString.IsOpen)
-						{
-							await InteractWithNpc(GCNpc.Personnel_Officer, grandCompany);
-							await Coroutine.Wait(5000, () => SelectString.IsOpen);
-						}							
 
-						if (SelectString.IsOpen)
-							{
-								Log.Information($"Clicking 'Apply for a promotion'.");
-								ff14bot.RemoteWindows.SelectString.ClickSlot(1);
-							}
-							
-						await Buddy.Coroutines.Coroutine.Wait(10000, () => Talk.DialogOpen);
-						while (!GrandCompanyRankUp.Instance.IsOpen)
-							{
-								Talk.Next();
-								await Coroutine.Sleep(500);
-							}	
-								
-						GrandCompanyRankUp.Instance.Confirm();
-						
-						await SmallTalk(500);								
-        }	
-				
+            Log.Information($"Apply for a promotion to {grandCompany}");
+
+            if (!SelectString.IsOpen)
+            {
+                await InteractWithNpc(GCNpc.Personnel_Officer, grandCompany);
+                await Coroutine.Wait(5000, () => SelectString.IsOpen);
+            }
+
+            if (SelectString.IsOpen)
+            {
+                Log.Information($"Clicking 'Apply for a promotion'.");
+                ff14bot.RemoteWindows.SelectString.ClickSlot(1);
+            }
+
+            await Buddy.Coroutines.Coroutine.Wait(10000, () => Talk.DialogOpen);
+            while (!GrandCompanyRankUp.Instance.IsOpen)
+            {
+                Talk.Next();
+                await Coroutine.Sleep(500);
+            }
+
+            GrandCompanyRankUp.Instance.Confirm();
+
+            await SmallTalk(500);
+        }
+
     }
 }

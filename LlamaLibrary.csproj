@@ -85,6 +85,7 @@
     <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
+    <Compile Include="RemoteWindows\GrandCompanyRankUp.cs" />
     <Compile Include="RemoteWindows\HelpWindow.cs" />
     <Compile Include="RemoteWindows\InclusionShop.cs" />
     <Compile Include="RemoteWindows\NotificationParty.cs" />
@@ -260,8 +261,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\BotBases\LlamaUtilities\packages\StyleCop.Analyzers.Unstable.1.2.0.354\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\..\BotBases\LlamaUtilities\packages\StyleCop.Analyzers.Unstable.1.2.0.354\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+    <Analyzer Include="packages\StyleCop.Analyzers.Unstable.1.2.0.354\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="packages\StyleCop.Analyzers.Unstable.1.2.0.354\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
