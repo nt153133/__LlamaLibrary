@@ -4,6 +4,8 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Objects;
 using LlamaLibrary.Helpers;
+using ff14bot;
+using LlamaLibrary.Extensions;
 
 namespace LlamaLibrary.ScriptConditions
 {
@@ -109,5 +111,10 @@ namespace LlamaLibrary.ScriptConditions
         {
             return InventoryManager.FilledSlots.Count(i => i.RawItemId == itemID && i.IsCollectable);
         }
+				
+        public static int CurrentGCRank()
+        {
+            return (int)Core.Me.GCRank();
+        }				
     }
 }
