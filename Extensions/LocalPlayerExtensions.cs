@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+
 using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Objects;
+
 using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Extensions
@@ -29,6 +31,19 @@ namespace LlamaLibrary.Extensions
             return Core.Memory.Read<byte>(player.Pointer + Offsets.GatheringStateOffset);
         }*/
 
+        public static uint GCRank(this LocalPlayer player)
+        {
+            var gc = Core.Memory.Read<byte>(Offsets.CurrentGC);
+            if (gc == 0)
+            {
+                return 0;
+            }
+
+            var gcRank = Core.Memory.Read<byte>(Offsets.CurrentGC + gc);
+
+            return gcRank;
+        }
+
         public static uint GCSeals(this LocalPlayer player)
         {
             uint[] sealTypes = { 20, 21, 22 };
@@ -38,19 +53,14 @@ namespace LlamaLibrary.Extensions
 
         public static int MaxGCSeals(this LocalPlayer player)
         {
-            var gc = Core.Memory.Read<byte>(Offsets.CurrentGC);
-            if (gc == 0)
-            {
-                return 0;
-            }
+            var gcRank = player.GCRank();
 
-            var Rank = Core.Memory.Read<byte>(Offsets.CurrentGC + gc);
             IntPtr rankRow;
             lock (Core.Memory.Executor.AssemblyLock)
             {
                 rankRow = Core.Memory.CallInjected64<IntPtr>(
                     Offsets.GCGetMaxSealsByRank,
-                    Rank
+                    gcRank
                 );
             }
 
