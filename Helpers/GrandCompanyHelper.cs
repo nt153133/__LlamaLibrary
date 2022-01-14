@@ -237,5 +237,65 @@ namespace LlamaLibrary.Helpers
             await SmallTalk(500);
         }
 
+        public static async Task GCHandInExpert()
+        {
+            if (!GrandCompanySupplyList.Instance.IsOpen)
+            {
+                await InteractWithNpc(GCNpc.Personnel_Officer);
+                await Coroutine.Wait(5000, () => SelectString.IsOpen);
+                if (!SelectString.IsOpen)
+                {
+                    Log.Error("Window is not open...maybe it didn't get to npc?");
+                }
+
+                SelectString.ClickSlot(0);
+                await Coroutine.Wait(5000, () => GrandCompanySupplyList.Instance.IsOpen);
+                if (!GrandCompanySupplyList.Instance.IsOpen)
+                {
+                    Log.Information("Window is not open...maybe it didn't get to npc?");
+                }
+            }
+
+            if (GrandCompanySupplyList.Instance.IsOpen)
+            {
+                await GrandCompanySupplyList.Instance.SwitchToExpertDelivery();
+                await Coroutine.Sleep(3000);
+
+                var i = 0;
+                var count = GrandCompanySupplyList.Instance.GetNumberOfTurnins();
+
+                if (count > 0)
+                {
+                    for (var index = 0; index < count; index++)
+                    {
+                        //var item = windowItemIds[index];
+                        //Log.Information($"{index}");
+                        GrandCompanySupplyList.Instance.ClickItem(0);
+                        await Coroutine.Wait(1000, () => SelectYesno.IsOpen);
+                        if (SelectYesno.IsOpen)
+                        {
+                            SelectYesno.Yes();
+                        }
+
+                        await Coroutine.Wait(5000, () => GrandCompanySupplyReward.Instance.IsOpen);
+                        GrandCompanySupplyReward.Instance.Confirm();
+                        await Coroutine.Wait(5000, () => GrandCompanySupplyList.Instance.IsOpen);
+                        i += 1;
+                        await Coroutine.Sleep(500);
+                    }
+                }
+
+                if (GrandCompanySupplyList.Instance.IsOpen)
+                {
+                    GrandCompanySupplyList.Instance.Close();
+                    await Coroutine.Wait(5000, () => SelectString.IsOpen);
+                    if (SelectString.IsOpen)
+                    {
+                        SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
+                    }
+                }
+            }
+        }
+
     }
 }
