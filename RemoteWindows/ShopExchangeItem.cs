@@ -32,7 +32,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var specialShopItem = items?.Cast<SpecialShopItem?>().FirstOrDefault(i => i.HasValue && i.Value.ItemIds.Contains(itemId));
 
-            Log.Verbose($"Buying {specialShopItem}");
+            Log.Information($"Buying {specialShopItem}");
             if (!specialShopItem.HasValue)
             {
                 return 0u;
@@ -48,7 +48,7 @@ namespace LlamaLibrary.RemoteWindows
                 return 0;
             }
 
-            Log.Verbose($"Can afford {CanAfford(specialShopItem.Value)}");
+            Log.Information($"Can afford {CanAfford(specialShopItem.Value)}");
             var index = items.IndexOf(specialShopItem.Value);
             var obj = new ulong[8]
             {
@@ -65,7 +65,7 @@ namespace LlamaLibrary.RemoteWindows
             obj[5] = itemCount;
 
             SendAction(4, obj);
-            Log.Verbose($"Sent Action for purchase");
+            Log.Information($"Sent Action for purchase");
 
             await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog") != null);
 
@@ -88,7 +88,11 @@ namespace LlamaLibrary.RemoteWindows
 
                 if (Request.IsOpen)
                 {
-                    Log.Verbose("Purchase request");
+                    Log.Information("Purchase request");
+
+                    await CommonTasks.HandOverRequestedItems(true);
+
+                    /*
                     for (var i = 0; i < 3; i++)
                     {
                         BagSlot item;
@@ -101,7 +105,7 @@ namespace LlamaLibrary.RemoteWindows
                             item = InventoryManager.FilledInventoryAndArmory.FirstOrDefault(j => j.RawItemId == specialShopItem.Value.CurrencyTypes[i] && j.Count >= specialShopItem.Value.CurrencyCosts[i]);
                         }
 
-                        Log.Verbose($"[Purchase] Request item {item}");
+                        Log.Information($"[Purchase] Request item {item}");
                         if (item != null)
                         {
                             item.Handover();
@@ -115,6 +119,8 @@ namespace LlamaLibrary.RemoteWindows
                     }
 
                     await Coroutine.Sleep(1000);
+                    */
+
                 }
                 else
                 {
