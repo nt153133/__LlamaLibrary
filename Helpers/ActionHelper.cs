@@ -41,14 +41,16 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            return Core.Memory.CallInjected64<byte>(Offsets.DoAction, new object[6]
+            return Core.Memory.CallInjected64<byte>(Offsets.DoAction, new object[8]
             {
                 Offsets.ActionManagerParam, //rcx
                 (uint)ff14bot.Enums.ActionType.Spell, //rdx
                 (uint)Offsets.DecipherSpell, //r8
                 (long)Core.Player.ObjectId, //r9
                 (int)slot.Item.Id, //a5 +0x28
-                0 //a6 + 0x30
+                0, //a6 + 0x30
+                0,
+                0
             }) == 1;
         }
 
