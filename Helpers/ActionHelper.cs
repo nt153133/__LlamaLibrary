@@ -23,6 +23,7 @@ namespace LlamaLibrary.Helpers
         internal static class Offsets
         {
             [Offset("Search 44 89 44 24 ? 53 55 57 41 54")]
+            //[Offset("E8 ? ? ? ? 89 9F ? ? ? ? EB ? C7 87 ? ? ? ? ? ? ? ? Add 1 TraceRelative")]
             internal static IntPtr DoAction;
 
             [Offset("Search 48 8D 0D ? ? ? ? 44 8D 42 ? E8 ? ? ? ? 85 C0 Add 3 TraceRelative")]
@@ -41,17 +42,22 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            return Core.Memory.CallInjected64<byte>(Offsets.DoAction, new object[8]
+            Core.Memory.ClearCallCache();
+            var result = Core.Memory.CallInjected64<byte>(Offsets.DoAction, new object[8]
             {
                 Offsets.ActionManagerParam, //rcx
                 (uint)ff14bot.Enums.ActionType.Spell, //rdx
                 (uint)Offsets.DecipherSpell, //r8
                 (long)Core.Player.ObjectId, //r9
-                (int)slot.Item.Id, //a5 +0x28
+                (int)(slot.Slot | ((int)slot.BagId << 16)), //a5 +0x28
                 0, //a6 + 0x30
-                0,
-                0
+                0, //a7
+                0 //a
             }) == 1;
+
+            Core.Memory.ClearCallCache();
+
+            return result;
         }
 
         public static bool HasMap()
