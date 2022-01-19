@@ -256,7 +256,9 @@ namespace LlamaLibrary.Helpers
             { 10117, (2, GCShopCategory.Materials) },
             { 10118, (2, GCShopCategory.Materials) },
             { 10119, (2, GCShopCategory.Materials) },
-            { 9357, (2, GCShopCategory.Materials) }
+            { 9357, (2, GCShopCategory.Materials) },
+            { 36635, (2, GCShopCategory.Materiel) },
+            { 36636, (2, GCShopCategory.Materiel) }
         };
     }
 
