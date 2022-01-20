@@ -225,7 +225,11 @@ namespace LlamaLibrary.Utilities
                 }
                 else if (hunt.MapId >= 399)
                 {
-                    await Lisbeth.TravelToZones(hunt.MapId, hunt.Location);
+                    if (!await Lisbeth.TravelToZones(hunt.MapId, hunt.Location))
+                    {
+                        await Navigation.GetTo(hunt.MapId, hunt.Location);
+                    }
+
                     if (Core.Me.Location.Distance2DSqr(hunt.Location) <= 10f)
                     {
                         while (!hunt.IsFinished)

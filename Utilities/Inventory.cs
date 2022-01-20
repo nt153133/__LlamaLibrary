@@ -161,7 +161,8 @@ namespace LlamaLibrary.Utilities
         public static async Task ExtractFromAllGear()
         {
             await GeneralFunctions.StopBusy(leaveDuty: false);
-            if (IsBusy)
+            if (Core.Me.IsCasting || Core.Me.IsMounted || Core.Me.InCombat || Talk.DialogOpen || MovementManager.IsMoving ||
+                MovementManager.IsOccupied)
             {
                 return;
             }
