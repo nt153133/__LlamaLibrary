@@ -178,7 +178,8 @@ namespace LlamaLibrary.Utilities
                     await Coroutine.Wait(6000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) == 0);
                     await Coroutine.Sleep(100);
 
-                    if (IsBusy)
+                    if (Core.Me.IsCasting || Core.Me.IsMounted || Core.Me.InCombat || Talk.DialogOpen || MovementManager.IsMoving ||
+                        MovementManager.IsOccupied)
                     {
                         return;
                     }
