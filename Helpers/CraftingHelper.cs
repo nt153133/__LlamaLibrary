@@ -19,11 +19,24 @@ namespace LlamaLibrary.Helpers
         {
             [Offset("Search 4C 8D 0D ?? ?? ?? ?? 4D 8B 13 49 8B CB Add 3 TraceRelative")]
             internal static IntPtr DohLastAction;
+
+            [Offset("Search 40 53 48 83 EC ? 8B D9 81 F9 ? ? ? ?")]
+            internal static IntPtr HasCraftedRecipe;
         }
 
         public static CraftingStatus Status => Core.Memory.Read<CraftingStatus>(Offsets.DohLastAction);
 
         public static bool AnimationLocked => CraftingManager.AnimationLocked;
+
+        public static bool HasCraftedRecipe(ushort recipeId)
+        {
+            using (Core.Memory.TemporaryCacheState(false))
+            {
+                return Core.Memory.CallInjected64<bool>(
+                                                        Offsets.HasCraftedRecipe,
+                                                        recipeId);
+            }
+        }
 
         public static bool IsValid(CraftingStatus status)
         {
