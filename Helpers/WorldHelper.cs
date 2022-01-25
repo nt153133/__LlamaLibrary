@@ -43,6 +43,7 @@ namespace LlamaLibrary.Helpers
             { 6, "Chaos" },
             { 7, "Light" },
             { 8, "Crystal" },
+            { 9, "Materia" },
             { 99, "Beta" },
         };
 
@@ -53,6 +54,8 @@ namespace LlamaLibrary.Helpers
         public static readonly Dictionary<ushort, string> WorldNamesDictionary = new Dictionary<ushort, string>
         {
             { 0, "INVALID" },
+            { 21, "Ravana" },
+            { 22, "Bismarck" },
             { 23, "Asura" },
             { 24, "Belias" },
             { 25, "Chaos" },
@@ -116,6 +119,9 @@ namespace LlamaLibrary.Helpers
             { 83, "Louisoix" },
             { 84, "Syldra" },
             { 85, "Spriggan" },
+            { 86, "Sephirot" },
+            { 87, "Sophia" },
+            { 88, "Zurvan" },
             { 90, "Aegis" },
             { 91, "Balmung" },
             { 92, "Durandal" },
