@@ -35,7 +35,7 @@ namespace LlamaLibrary.Helpers
 
             var lastBot = BotManager.Current;
             BotManager.Current.Stop();
-            await TreeRoot.StopGently();
+            //await TreeRoot.StopGently();
 
             await WaitUntil(() => !TreeRoot.IsRunning, timeout: 20000);
 
