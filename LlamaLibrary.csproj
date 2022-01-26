@@ -84,6 +84,7 @@
     <Compile Include="RemoteAgents\AgentItemDetail.cs" />
     <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
+    <Compile Include="RemoteWindows\FreeCompanyChest.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
     <Compile Include="RemoteWindows\GrandCompanyRankUp.cs" />
     <Compile Include="RemoteWindows\HelpWindow.cs" />
