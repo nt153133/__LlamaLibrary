@@ -34,10 +34,18 @@ namespace LlamaLibrary.Helpers
             //var profile = NeoProfileManager.CurrentProfile.Path;
 
             var lastBot = BotManager.Current;
-            BotManager.Current.Stop();
+            Log.Information($"Current Bot: {lastBot.Name} {TreeRoot.IsRunning}");
+            TreeRoot.Stop("Orderbot helper called stop");
+            //BotManager.Current.Stop();
             //await TreeRoot.StopGently();
-
-            await WaitUntil(() => !TreeRoot.IsRunning, timeout: 20000);
+            Thread.Sleep(2000);
+            try
+            {
+                await WaitUntil(() => !TreeRoot.IsRunning, timeout: 20000);
+            }
+            catch
+            {
+            }
 
             if (!TreeRoot.IsRunning)
             {
@@ -49,13 +57,15 @@ namespace LlamaLibrary.Helpers
 
                 //await WaitUntil(() => loaded, timeout: 20000);
                 loaded = false;
+                Log.Information($"Botbase set to orderbot");
                 BotManager.Current.Initialize();
+                Log.Information($"Initialize");
                 NeoProfileManager.Load(profile);
+                Log.Information($"Profile loaded");
                 //NeoProfileManager.UpdateCurrentProfileBehavior();
 
                 //BotManager.Current.Start();
                 TreeRoot.Start();
-
             }
             else
             {
@@ -84,15 +94,22 @@ namespace LlamaLibrary.Helpers
                         BotManager.Current.Start();
                         //NeoProfileManager.Load(profile);
 
-                        TreeRoot.Start();
-                        await WaitUntil(() => tempbool, timeout: 20000);
+                        //TreeRoot.Start();
+                        try
+                        {
+                            await WaitUntil(() => tempbool, timeout: 20000);
+                        }
+                        catch
+                        {
+                        }
+
                         TreeRoot.OnStart -= OnBotStart;
                     }
                     else
                     {
-                        Log.Information($"LastBot Null: Starting Orderbot");
-                        BotManager.SetCurrent(new OrderBot());
-                        BotManager.Current.Start();
+                        //Log.Information($"LastBot Null: Starting Orderbot");
+                        //BotManager.SetCurrent(new OrderBot());
+                        //BotManager.Current.Start();
                     }
                 }
             }
