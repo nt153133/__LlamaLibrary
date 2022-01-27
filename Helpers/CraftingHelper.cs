@@ -55,14 +55,14 @@ namespace LlamaLibrary.Helpers
 
         public static ushort[] CraftedRecipes()
         {
-            var craftedList = GetCraftedRecipeStatusArray().Select((crafted, index) => (crafted, index)).Where(i => i.crafted).Select(i => (ushort)i.index);
+            var craftedList = GetCraftedRecipeStatusArray().Select((crafted, index) => (crafted, index)).Where(i => i.index > 0 && i.crafted).Select(i => (ushort)i.index);
 
             return craftedList.ToArray();
         }
 
         public static ushort[] NotCraftedRecipes()
         {
-            var craftedList = GetCraftedRecipeStatusArray().Select((crafted, index) => (crafted, index)).Where(i => !i.crafted).Select(i => (ushort)i.index);
+            var craftedList = GetCraftedRecipeStatusArray().Select((crafted, index) => (crafted, index)).Where(i => i.index > 0 && !i.crafted).Select(i => (ushort)i.index);
 
             return craftedList.ToArray();
         }
