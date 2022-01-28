@@ -94,7 +94,7 @@ namespace LlamaLibrary.Helpers
                         BotManager.Current.Start();
                         //NeoProfileManager.Load(profile);
 
-                        //TreeRoot.Start();
+                        TreeRoot.Start();
                         try
                         {
                             await WaitUntil(() => tempbool, timeout: 20000);
