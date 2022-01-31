@@ -345,7 +345,14 @@ namespace LlamaLibrary.Helpers
 
                     if (DialogOpen)
                     {
-                        await GeneralFunctions.SmallTalk();
+                        while (Talk.DialogOpen)
+                        {
+                            Talk.Next();
+                            await Coroutine.Wait(100, () => !Talk.DialogOpen);
+                            await Coroutine.Wait(100, () => Talk.DialogOpen);
+                            await Coroutine.Yield();
+                        }
+
                         await Coroutine.Wait(5000, () => Conversation.IsOpen);
                     }
                 }
@@ -363,7 +370,14 @@ namespace LlamaLibrary.Helpers
                         await Coroutine.Wait(5000, () => nextWindow.IsOpen || DialogOpen);
                         if (DialogOpen)
                         {
-                            await GeneralFunctions.SmallTalk();
+                            while (Talk.DialogOpen)
+                            {
+                                Talk.Next();
+                                await Coroutine.Wait(100, () => !Talk.DialogOpen);
+                                await Coroutine.Wait(100, () => Talk.DialogOpen);
+                                await Coroutine.Yield();
+                            }
+
                             await Coroutine.Wait(5000, () => nextWindow.IsOpen);
                         }
 
@@ -375,6 +389,47 @@ namespace LlamaLibrary.Helpers
             }
 
             return Conversation.IsOpen;
+        }
+
+        public static uint GetPrimaryAetheryte(ushort zoneId, Vector3 location)
+        {
+            var aeList = DataManager.AetheryteCache.Values.Where(i => i.ZoneId == zoneId).ToList();
+
+            if (!aeList.Any())
+            {
+                return 0;
+            }
+
+            if (aeList.Any(i => i.IsAetheryte))
+            {
+                return aeList.Where(i => i.IsAetheryte).OrderBy(i => i.Position.Distance2DSqr(location)).First().Id;
+            }
+
+            var group = aeList.First().AethernetGroup;
+
+            var ae = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.IsAetheryte && i.AethernetGroup == group);
+
+            return ae?.Id ?? 0;
+        }
+
+        public static uint GetPrimaryAetheryte(ushort zoneId)
+        {
+            var aeList = DataManager.AetheryteCache.Values.Where(i => i.ZoneId == zoneId).ToList();
+
+            if (!aeList.Any())
+            {
+                return 0;
+            }
+
+            if (aeList.Any(i => i.IsAetheryte))
+            {
+                return aeList.First(i => i.IsAetheryte).Id;
+            }
+
+            var group = aeList.First().AethernetGroup;
+            var ae = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.IsAetheryte && i.AethernetGroup == group);
+
+            return ae?.Id ?? 0;
         }
     }
 }
