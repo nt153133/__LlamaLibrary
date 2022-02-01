@@ -14,6 +14,7 @@ using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.Pathing;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
@@ -297,6 +298,39 @@ namespace LlamaLibrary.Helpers
             return WorldManager.ZoneId == 138 && (WorldManager.SubZoneId == 461 || WorldManager.SubZoneId == 228);
         }
 
+        public static async Task<bool> GetToNpc(Npc npc)
+        {
+            if (npc.CanGetTo)
+            {
+                if (await GetTo(npc.Location.ZoneId, npc.Location.Coordinates))
+                {
+                    var unit = GameObjectManager.GetObjectByNPCId(npc.NpcId);
+
+                    if (unit != default(GameObject))
+                    {
+                        if (!unit.IsWithinInteractRange)
+                        {
+                            await OffMeshMoveInteract(unit);
+                        }
+                    }
+
+                    return unit.IsWithinInteractRange;
+                }
+            }
+
+            return false;
+        }
+
+        public static async Task<bool> GetToInteractNpc(Npc npc, RemoteWindow window)
+        {
+            return await GetToInteractNpc(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, window);
+        }
+
+        public static async Task<bool> GetToInteractNpcSelectString(Npc npc, int option = -1)
+        {
+            return await GetToInteractNpcSelectString(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, option);
+        }
+
         public static async Task<bool> GetToInteractNpc(uint npcId, ushort zoneId, Vector3 location, RemoteWindow window)
         {
             if (await GetTo(zoneId, location))
@@ -317,7 +351,13 @@ namespace LlamaLibrary.Helpers
 
                     if (DialogOpen)
                     {
-                        await GeneralFunctions.SmallTalk();
+                        while (Talk.DialogOpen)
+                        {
+                            Talk.Next();
+                            await Coroutine.Wait(100, () => !Talk.DialogOpen);
+                            await Coroutine.Wait(100, () => Talk.DialogOpen);
+                            await Coroutine.Yield();
+                        }
                     }
                 }
             }

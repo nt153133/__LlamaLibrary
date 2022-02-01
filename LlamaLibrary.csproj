@@ -47,6 +47,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -73,7 +75,11 @@
     <Compile Include="Helpers\InclusionShopHelper.cs" />
     <Compile Include="Helpers\InventoryHelpers.cs" />
     <Compile Include="Helpers\IshgardHandin.cs" />
+    <Compile Include="Helpers\NPC\Location.cs" />
+    <Compile Include="Helpers\NPC\Npc.cs" />
+    <Compile Include="Helpers\NPC\NpcHelper.cs" />
     <Compile Include="Helpers\OrderbotHelper.cs" />
+    <Compile Include="Helpers\UIInputHelper.cs" />
     <Compile Include="ICompiledAsyncBotbase.cs" />
     <Compile Include="ICompiledBotbase.cs" />
     <Compile Include="JsonObjects\CustomDeliveryNpc.cs" />
@@ -84,17 +90,20 @@
     <Compile Include="RemoteAgents\AgentItemDetail.cs" />
     <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
+    <Compile Include="RemoteWindows\CharaMakeDataImport.cs" />
     <Compile Include="RemoteWindows\FreeCompanyChest.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
     <Compile Include="RemoteWindows\GrandCompanyRankUp.cs" />
     <Compile Include="RemoteWindows\HelpWindow.cs" />
     <Compile Include="RemoteWindows\InclusionShop.cs" />
+    <Compile Include="RemoteWindows\InputString.cs" />
     <Compile Include="RemoteWindows\NotificationParty.cs" />
     <Compile Include="RemoteWindows\PartyYesNo.cs" />
     <Compile Include="RemoteWindows\SharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteWindows\ShopExchangeItemDialog.cs" />
     <Compile Include="RemoteWindows\WorldTravelFinderReady.cs" />
     <Compile Include="RemoteWindows\WorldTravelSelect.cs" />
+    <Compile Include="RemoteWindows\_CharaMakeFeature.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="Retainers\CompleteRetainer.cs" />
     <Compile Include="Retainers\HelperFunctions.cs" />
@@ -244,6 +253,7 @@
     <Compile Include="Utilities\Hunts.cs" />
     <Compile Include="Utilities\Inventory.cs" />
     <Compile Include="Utilities\Ishgard.cs" />
+    <Compile Include="Utilities\RetainerHire.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
