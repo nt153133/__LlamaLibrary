@@ -75,7 +75,7 @@ namespace LlamaLibrary.Helpers
             for (int i = 0; i < byteArray.Length; i++)
             {
                 byte b = byteArray[i];
-                for (int j = 0; j < 7; j++)
+                for (int j = 0; j < 8; j++)
                 {
                     isCrafted[(i * 8) + j] = (128 >> j & b) != 0;
                 }
