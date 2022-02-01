@@ -26,7 +26,7 @@ namespace LlamaLibrary.Utilities
 {
     public static class RetainerHire
     {
-        private static readonly LLogger Log = new LLogger("RetainerHire", Colors.MediumSeaGreen, LogLevel.Debug);
+        private static readonly LLogger Log = new LLogger("RetainerHire", Colors.MediumSeaGreen, LogLevel.Information);
 
         private static Queue<string> Names = new Queue<string>();
 
