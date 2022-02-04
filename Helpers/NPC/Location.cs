@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Clio.Utilities;
+using ff14bot.Helpers;
 using ff14bot.Managers;
 
 namespace LlamaLibrary.Helpers.NPC
@@ -36,7 +37,7 @@ namespace LlamaLibrary.Helpers.NPC
 
                 if (ae != default(AetheryteResult))
                 {
-                    aeName = ae.CurrentLocaleAethernetName;
+                    aeName = ae.CurrentLocaleName ?? ae.CurrentLocaleAethernetName;
                 }
 
                 var zoneName = "";

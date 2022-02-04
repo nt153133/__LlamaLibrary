@@ -157,11 +157,36 @@ namespace LlamaLibrary.Retainers
             }
 
             bell.Interact();
-            await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen);
+            await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen || Talk.DialogOpen);
+            if (Talk.DialogOpen)
+            {
+                while (Talk.DialogOpen)
+                {
+                    Talk.Next();
+                    await Coroutine.Wait(500, () => !Talk.DialogOpen);
+                    await Coroutine.Wait(500, () => Talk.DialogOpen);
+                    await Coroutine.Yield();
+                }
+
+                await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen);
+            }
+
             if (!RetainerList.Instance.IsOpen)
             {
                 bell.Interact();
-                await Coroutine.Wait(15000, () => RetainerList.Instance.IsOpen);
+                await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen || Talk.DialogOpen);
+                if (Talk.DialogOpen)
+                {
+                    while (Talk.DialogOpen)
+                    {
+                        Talk.Next();
+                        await Coroutine.Wait(500, () => !Talk.DialogOpen);
+                        await Coroutine.Wait(500, () => Talk.DialogOpen);
+                        await Coroutine.Yield();
+                    }
+
+                    await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen);
+                }
             }
 
             return RetainerList.Instance.IsOpen;
@@ -225,44 +250,6 @@ namespace LlamaLibrary.Retainers
 
                 var zoneId = FindCheapestZone(zoneList);
                 bellLocation = SummoningBells.First(i => i.ZoneId == zoneMap.First(j => j.truezone == zoneId).bellzone);
-                /*do
-                {
-                    tries++;
-                    var index = rand.Next(0, SummoningBells.Count);
-                    bellLocation = SummoningBells[index];
-                    var ae = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.ZoneId == bellLocation.ZoneId && i.IsAetheryte);
-
-                    if (ae == default(AetheryteResult))
-                    {
-                        switch (bellLocation.ZoneId)
-                        {
-                            case 131:
-                                ae = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 9);
-                                break;
-                            case 133:
-                                ae = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 2);
-                                break;
-                            case 419:
-                                ae = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 70);
-                                break;
-                        }
-                    }
-
-                    if (ae != default(AetheryteResult))
-                    {
-                        if (ConditionParser.HasAetheryte(ae.Id))
-                        {
-                            Log.Information($"{bellLocation.ZoneId} can get to ConditionParser.HasAetheryte({ae.Id}) = {ConditionParser.HasAetheryte(ae.Id)} {ae.EnglishName}");
-                            foundBell = true;
-                        }
-                    }
-                    else
-                    {
-                        Log.Warning($"{bellLocation.ZoneId} can't find AE");
-                    }
-                }
-                while (!foundBell && tries < 5)*/
-                ;
             }
 
             Log.Information($"Going to bell {bellLocation.ZoneId} {bellLocation.Location}");
@@ -303,7 +290,19 @@ namespace LlamaLibrary.Retainers
             if (!RetainerList.Instance.IsOpen)
             {
                 await UseSummoningBell();
-                await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen);
+                await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen || Talk.DialogOpen);
+                if (Talk.DialogOpen)
+                {
+                    while (Talk.DialogOpen)
+                    {
+                        Talk.Next();
+                        await Coroutine.Wait(500, () => !Talk.DialogOpen);
+                        await Coroutine.Wait(500, () => Talk.DialogOpen);
+                        await Coroutine.Yield();
+                    }
+
+                    await Coroutine.Wait(5000, () => RetainerList.Instance.IsOpen);
+                }
             }
 
             if (!RetainerList.Instance.IsOpen)

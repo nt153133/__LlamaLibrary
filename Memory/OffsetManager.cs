@@ -9,22 +9,29 @@ Orginal work done by zzi, contibutions by Omninewb, Freiheit, and mastahg
                                                                                  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using Clio.Utilities;
 using ff14bot;
 using ff14bot.Enums;
+using ff14bot.Helpers;
 using ff14bot.Managers;
 using GreyMagic;
+using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteAgents;
+using Newtonsoft.Json;
 
 namespace LlamaLibrary.Memory
 {
@@ -40,12 +47,17 @@ namespace LlamaLibrary.Memory
         public static Dictionary<string, string> patterns = new Dictionary<string, string>();
         public static Dictionary<string, string> constants = new Dictionary<string, string>();
 
+        public static ConcurrentDictionary<string, long> OffsetCache;
+
         private static readonly bool _debug = false;
+
+        private static string offsetFile => Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{ff14bot.Core.CurrentGameVer.ToString()}.json");
 
         public static LLogger Log1 => Log;
 
         public static void Init()
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
             lock (initLock)
             {
                 if (initDone)
@@ -54,6 +66,8 @@ namespace LlamaLibrary.Memory
                 }
 
                 initDone = true;
+                var a = new Thread(() => SetScriptsThread());
+                a.Start();
 
                 var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
                           where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
@@ -62,6 +76,13 @@ namespace LlamaLibrary.Memory
                 if (!q1.Contains(typeof(Offsets)))
                 {
                     q1.Add(typeof(Offsets));
+                }
+
+                OffsetCache = new ConcurrentDictionary<string, long>();
+
+                if (File.Exists(offsetFile))
+                {
+                    OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(offsetFile));
                 }
 
                 SetOffsetObjects(q1);
@@ -73,19 +94,19 @@ namespace LlamaLibrary.Memory
                 }
 
                 var q = from t in Assembly.GetExecutingAssembly().GetTypes()
-                        where t.IsClass && t.Namespace == "LlamaLibrary.RemoteAgents"
+                        where t.Namespace == "LlamaLibrary.RemoteAgents" && t.IsClass
                         select t;
 
                 foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
                 {
-                    var test = ((IAgent)Activator.CreateInstance(MyType,
-                                                                 BindingFlags.Instance | BindingFlags.NonPublic,
-                                                                 null,
-                                                                 new object[]
-                                                                 {
-                                                                     IntPtr.Zero
-                                                                 },
-                                                                 null)
+                    var test = ((IAgent) Activator.CreateInstance(MyType,
+                                                                  BindingFlags.Instance | BindingFlags.NonPublic,
+                                                                  null,
+                                                                  new object[]
+                                                                  {
+                                                                      IntPtr.Zero
+                                                                  },
+                                                                  null)
                         ).RegisteredVtable;
 
                     if (vtables.ContainsKey(test))
@@ -98,14 +119,22 @@ namespace LlamaLibrary.Memory
                     }
                 }
 
-                AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
-                ScriptManager.Init(typeof(ScriptConditions.Helpers));
+                a.Join();
                 initDone = true;
                 if (_debug)
                 {
-                    Log1.Information($"\n {Sb}");
+                    foreach (var pair in OffsetCache)
+                    {
+                        Log.Information($"{pair.Key} - {pair.Value:X}");
+                    }
+                    //Log1.Information($"\n {Sb}");
+
+                    File.WriteAllText(offsetFile, JsonConvert.SerializeObject(OffsetCache));
                 }
             }
+
+            stopwatch.Stop();
+            Log.Information($"Total {stopwatch.ElapsedMilliseconds}ms");
         }
 
         public static void RegisterAgent(IAgent iagent)
@@ -165,7 +194,8 @@ namespace LlamaLibrary.Memory
 
             using (var pf = new PatternFinder(Core.Memory))
             {
-                Parallel.ForEach(types, type =>
+                Parallel.ForEach(types,
+                                 type =>
                                  {
                                      if (type.FieldType.IsClass)
                                      {
@@ -180,7 +210,7 @@ namespace LlamaLibrary.Memory
                                              }
                                              else
                                              {
-                                                 field.SetValue(instance, (int)res);
+                                                 field.SetValue(instance, (int) res);
                                              }
                                          }
 
@@ -206,31 +236,32 @@ namespace LlamaLibrary.Memory
                                              }
                                          }
                                      }
-                                 }
-                                );
+                                 });
             }
         }
 
         private static IntPtr ParseField(FieldInfo field, PatternFinder pf)
         {
-            var offset = (OffsetAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetAttribute))
+            var offset = (OffsetAttribute) Attribute.GetCustomAttributes(field, typeof(OffsetAttribute))
                 .FirstOrDefault();
-            var offsetCN = (OffsetCNAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute))
-                .FirstOrDefault();
-            var valcn = (OffsetValueCN)Attribute.GetCustomAttributes(field, typeof(OffsetValueCN))
-                .FirstOrDefault();
-            var valna = (OffsetValueNA)Attribute.GetCustomAttributes(field, typeof(OffsetValueNA))
+
+            var valna = (OffsetValueNA) Attribute.GetCustomAttributes(field, typeof(OffsetValueNA))
                 .FirstOrDefault();
 
             var result = IntPtr.Zero;
-            var lang = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
-                .First(i => i.FieldType == typeof(Language)).GetValue(null);
+            var name = $"{field.DeclaringType.FullName}.{field.Name}";
+            //var lang = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic).First(i => i.FieldType == typeof(Language)).GetValue(null);
 
-            if (lang == Language.Chn)
+            if (Translator.Language == Language.Chn) //Translator.Language
             {
+                var offsetCN = (OffsetCNAttribute) Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute))
+                    .FirstOrDefault();
+                var valcn = (OffsetValueCN) Attribute.GetCustomAttributes(field, typeof(OffsetValueCN))
+                    .FirstOrDefault();
+
                 if (valcn != null)
                 {
-                    return (IntPtr)valcn.Value;
+                    return (IntPtr) valcn.Value;
                 }
 
                 if (offset == null)
@@ -259,7 +290,7 @@ namespace LlamaLibrary.Memory
             {
                 if (valna != null)
                 {
-                    return (IntPtr)valna.Value;
+                    return (IntPtr) valna.Value;
                 }
 
                 if (offset == null)
@@ -269,7 +300,33 @@ namespace LlamaLibrary.Memory
 
                 try
                 {
-                    result = pf.Find(offset.Pattern);
+                    if (OffsetCache.ContainsKey(name))
+                    {
+                        var offsetVal = OffsetCache[name];
+                        if (field.FieldType != typeof(int))
+                        {
+                            result = Core.Memory.GetAbsolute(new IntPtr(offsetVal));
+                        }
+                        else
+                        {
+                            result = new IntPtr(offsetVal);
+                        }
+                    }
+                    else
+                    {
+                        result = pf.Find(offset.Pattern);
+                        if (result != IntPtr.Zero)
+                        {
+                            if (field.FieldType != typeof(int))
+                            {
+                                OffsetCache.TryAdd($"{field.DeclaringType.FullName}.{field.Name}", Core.Memory.GetRelative(result).ToInt64());
+                            }
+                            else
+                            {
+                                OffsetCache.TryAdd($"{field.DeclaringType.FullName}.{field.Name}", result.ToInt64());
+                            }
+                        }
+                    }
                 }
                 catch (Exception)
                 {
@@ -303,6 +360,7 @@ namespace LlamaLibrary.Memory
 
             if (offset != null)
             {
+                //Sb.AppendLine($"{field.DeclaringType.FullName}.{field.Name}");
                 if (field.DeclaringType != null && field.DeclaringType.IsNested && field.FieldType != typeof(int))
                 {
                     Sb.AppendLine($"{field.DeclaringType.DeclaringType.Name}_{field.Name}, {offset.Pattern} - {offset.PatternCN}");
@@ -315,12 +373,12 @@ namespace LlamaLibrary.Memory
                 }
                 else if (field.FieldType != typeof(int))
                 {
-                    Sb.AppendLine($"{field.Name}, {offset.Pattern} - {offset.PatternCN}");
+                    Sb.AppendLine($"{field.Name}, {offset.Pattern}"); // - {offset.PatternCN}
                     patterns.Add($"{field.Name}", offset.Pattern);
                 }
                 else
                 {
-                    Sb.AppendLine($"{field.Name}, {offset.Pattern} - {offsetCN?.PatternCN}");
+                    Sb.AppendLine($"{field.Name}, {offset.Pattern} "); //- {offsetCN?.PatternCN}
                     constants.Add($"{field.Name}", offset.Pattern);
                 }
             }
@@ -340,6 +398,13 @@ namespace LlamaLibrary.Memory
             }
 
             return result;
+        }
+
+        private static async void SetScriptsThread()
+        {
+            AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
+            ScriptManager.Init(typeof(ScriptConditions.Helpers));
+            Log.Information("ScriptManager Set");
         }
 
         public static string GetRootNamespace(string nameSpace)
@@ -397,6 +462,8 @@ namespace LlamaLibrary.Memory
 
             SetOffsetObjects(q1);
 
+            File.WriteAllText(offsetFile, JsonConvert.SerializeObject(OffsetCache));
+
             var vtables = new Dictionary<IntPtr, int>();
             for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
             {
@@ -409,15 +476,14 @@ namespace LlamaLibrary.Memory
 
             foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
             {
-                var test = ((IAgent)Activator.CreateInstance(
-                                                             MyType,
-                                                             BindingFlags.Instance | BindingFlags.NonPublic,
-                                                             null,
-                                                             new object[]
-                                                             {
-                                                                 IntPtr.Zero
-                                                             },
-                                                             null)
+                var test = ((IAgent) Activator.CreateInstance(MyType,
+                                                              BindingFlags.Instance | BindingFlags.NonPublic,
+                                                              null,
+                                                              new object[]
+                                                              {
+                                                                  IntPtr.Zero
+                                                              },
+                                                              null)
                     ).RegisteredVtable;
 
                 if (vtables.ContainsKey(test))
