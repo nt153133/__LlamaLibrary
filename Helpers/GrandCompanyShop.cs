@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
+using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
@@ -12,6 +13,7 @@ using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
 
@@ -43,11 +45,13 @@ namespace LlamaLibrary.Helpers
 
         public static IntPtr ActiveShopPtr => Core.Memory.Read<IntPtr>(Offsets.GCShopPtr);
 
+        public static IntPtr ListStart => (ActiveShopPtr + Offsets.GCArrayStart);
+
         public static List<GCShopItem> Items => Core.Memory.ReadArray<GCShopItem>(ActiveShopPtr + Offsets.GCArrayStart, Offsets.GCShopCount).Where(i => i.ItemID != 0).ToList();
 
         public static int CanAfford(GCShopItem item)
         {
-            return (int)Math.Floor((double)(Core.Me.GCSeals() / item.Cost));
+            return (int) Math.Floor((double) (Core.Me.GCSeals() / item.Cost));
         }
 
         public static async Task<int> BuyItem(uint ItemId, int qty)
@@ -58,45 +62,129 @@ namespace LlamaLibrary.Helpers
             }
 
             var item = Items.FirstOrDefault(i => i.ItemID == ItemId);
-            Log.Information($"Itemid {item.ItemID}");
-            if (item.ItemID != 0)
+            Log.Information($"Want to buy {DataManager.GetItem(item.ItemID).LocaleName()}");
+            if (item.ItemID == 0)
             {
-                var qtyCanBuy = Math.Min(qty, CanAfford(item));
+                Log.Error($"Can't find item {(ActiveShopPtr + Offsets.GCArrayStart).ToString("X")}");
+                foreach (var item1 in Items)
+                {
+                    Log.Error($"{item1}");
+                }
+
+                return 0;
+            }
+
+            if (item.Cost > Core.Me.GCSeals())
+            {
+                Log.Error($"Don't have enough seals for {item.Item.LocaleName()}");
+                return 0;
+            }
+
+            var oldBagQty = item.InBag;
+            var qtyCanBuy = Math.Min(qty, CanAfford(item));
+            Log.Information($"CanBuy {qtyCanBuy}");
+            AgentGrandCompanyExchange.Instance.BuyItem(item.Index, qtyCanBuy);
+            await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
+            if (SelectYesno.IsOpen)
+            {
+                SelectYesno.Yes();
+                Log.Information($"Clicked Yes");
+                await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
+            }
+
+            await Coroutine.Wait(3000, () => Items.FirstOrDefault(i => i.ItemID == ItemId).InBag != oldBagQty);
+
+            GrandCompanyExchange.Instance.Close();
+            await Coroutine.Wait(5000, () => !GrandCompanyExchange.Instance.IsOpen);
+            Core.Me.ClearTarget();
+            await Coroutine.Sleep(500);
+            return qtyCanBuy;
+        }
+
+        public static async Task<bool> BuyKnownItems(List<(uint ItemId, int qty)> items)
+        {
+            if (!await OpenShop())
+            {
+                return false;
+            }
+
+            foreach (var itemToBuy in items)
+            {
+                if (!KnownItems.TryGetValue(itemToBuy.ItemId, out var itemInfo))
+                {
+                    return false;
+                }
+
+                if (AgentGrandCompanyExchange.Instance.Rank != itemInfo.GCRankGroup)
+                {
+                    Log.Information($"Change GC Rank to {itemInfo.GCRankGroup}");
+                    GrandCompanyExchange.Instance.ChangeRankGroup(itemInfo.GCRankGroup);
+                    await Coroutine.Wait(2000, () => AgentGrandCompanyExchange.Instance.Rank == itemInfo.GCRankGroup);
+                    await Coroutine.Sleep(500);
+                }
+
+                if (AgentGrandCompanyExchange.Instance.Category + 1 != (byte) itemInfo.Category)
+                {
+                    Log.Information($"Change ChangeItemGroup to {itemInfo.Category}");
+                    GrandCompanyExchange.Instance.ChangeItemGroup((int) itemInfo.Category);
+                    await Coroutine.Wait(3000, () => AgentGrandCompanyExchange.Instance.Category + 1 == (byte) itemInfo.Category);
+                    await Coroutine.Sleep(500);
+                }
+
+                var item = Items.FirstOrDefault(i => i.ItemID == itemToBuy.ItemId);
+                Log.Information($"Want to buy {DataManager.GetItem(item.ItemID).LocaleName()}");
+                if (item.ItemID == 0)
+                {
+                    Log.Error($"Can't find item {(ActiveShopPtr + Offsets.GCArrayStart).ToString("X")}");
+                    foreach (var item1 in Items)
+                    {
+                        Log.Error($"{item1}");
+                    }
+
+                    return false;
+                }
+
+                if (item.Cost > Core.Me.GCSeals())
+                {
+                    Log.Error($"Don't have enough seals for {item.Item.LocaleName()}");
+                    continue;
+                }
+
+                var oldBagQty = item.InBag;
+                var qtyCanBuy = Math.Min(itemToBuy.qty, CanAfford(item));
                 Log.Information($"CanBuy {qtyCanBuy}");
-                GrandCompanyExchange.Instance.BuyItemByIndex(item.Index, qtyCanBuy);
+                AgentGrandCompanyExchange.Instance.BuyItem(item.Index, qtyCanBuy);
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                 if (SelectYesno.IsOpen)
                 {
                     SelectYesno.Yes();
                     Log.Information($"Clicked Yes");
+                    await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
                 }
 
-                await Coroutine.Sleep(800);
-                GrandCompanyExchange.Instance.Close();
-                await Coroutine.Wait(5000, () => !GrandCompanyExchange.Instance.IsOpen);
-                Core.Me.ClearTarget();
-                await Coroutine.Sleep(500);
-                return qtyCanBuy;
-            }
-            else
-            {
-                Log.Error($"{(ActiveShopPtr + Offsets.GCArrayStart).ToString("X")}");
-                foreach (var item1 in Items)
-                {
-                    Log.Error($"{item1}");
-                }
+                await Coroutine.Wait(3000, () => Items.FirstOrDefault(i => i.ItemID == itemToBuy.ItemId).InBag != oldBagQty);
             }
 
             GrandCompanyExchange.Instance.Close();
             await Coroutine.Wait(5000, () => !GrandCompanyExchange.Instance.IsOpen);
             Core.Me.ClearTarget();
             await Coroutine.Sleep(500);
-            return 0;
+            return true;
+
+            /*
+            if (KnownItems.TryGetValue(ItemId, out var itemInfo2))
+            {
+                Log.Information($"Found Known item {ItemId}");
+                return await BuyItem(ItemId, qty, itemInfo.Item1, itemInfo.Item2);
+            }
+            */
+
+            return false;
         }
 
         public static async Task<int> BuyKnownItem(uint ItemId, int qty)
         {
-            if (knownItems.TryGetValue(ItemId, out var itemInfo))
+            if (KnownItems.TryGetValue(ItemId, out var itemInfo))
             {
                 Log.Information($"Found Known item {ItemId}");
                 return await BuyItem(ItemId, qty, itemInfo.Item1, itemInfo.Item2);
@@ -105,24 +193,30 @@ namespace LlamaLibrary.Helpers
             return 0;
         }
 
-        public static async Task<int> BuyItem(uint ItemId, int qty, int GCRankGroup, GCShopCategory category)
+        public static async Task<int> BuyItem(uint ItemId, int qty, int GCRankGroup, GCShopCategory Category)
         {
-            if (await OpenShop())
+            if (!await OpenShop())
             {
-                if (GrandCompanyExchange.Instance.GCRankGroup != GCRankGroup)
-                {
-                    Log.Information($"Change GC Rank to {GCRankGroup}");
-                    GrandCompanyExchange.Instance.ChangeRankGroup(GCRankGroup);
-                    await Coroutine.Sleep(500);
-                }
-
-                Log.Information($"Change ChangeItemGroup to {category}");
-                GrandCompanyExchange.Instance.ChangeItemGroup((int)category);
-                await Coroutine.Sleep(5000);
-                return await BuyItem(ItemId, qty);
+                return 0;
             }
 
-            return 0;
+            if (AgentGrandCompanyExchange.Instance.Rank != GCRankGroup)
+            {
+                Log.Information($"Change GC Rank to {GCRankGroup}");
+                GrandCompanyExchange.Instance.ChangeRankGroup(GCRankGroup);
+                await Coroutine.Wait(2000, () => AgentGrandCompanyExchange.Instance.Rank == GCRankGroup);
+                await Coroutine.Sleep(500);
+            }
+
+            if (AgentGrandCompanyExchange.Instance.Category + 1 != (byte) Category)
+            {
+                Log.Information($"Change ChangeItemGroup to {Category}");
+                GrandCompanyExchange.Instance.ChangeItemGroup((int) Category);
+                await Coroutine.Wait(3000, () => AgentGrandCompanyExchange.Instance.Category + 1 == (byte) Category);
+                await Coroutine.Sleep(500);
+            }
+
+            return await BuyItem(ItemId, qty);
         }
 
         public static async Task<bool> OpenShop()
@@ -140,7 +234,7 @@ namespace LlamaLibrary.Helpers
             return GrandCompanyExchange.Instance.IsOpen;
         }
 
-        private static Dictionary<uint, (byte, GCShopCategory)> knownItems = new Dictionary<uint, (byte, GCShopCategory)>()
+        public static readonly Dictionary<uint, (byte GCRankGroup, GCShopCategory Category)> KnownItems = new Dictionary<uint, (byte GCRankGroup, GCShopCategory Category)>()
         {
             { 21072, (0, GCShopCategory.Materiel) },
             { 4564, (0, GCShopCategory.Materiel) },

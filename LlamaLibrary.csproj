@@ -86,6 +86,8 @@
     <Compile Include="JsonObjects\MateriaItem.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
+    <Compile Include="RemoteAgents\AgentGrandCompanyExchange.cs" />
+    <Compile Include="RemoteAgents\AgentGrandCompanySupply.cs" />
     <Compile Include="RemoteAgents\AgentInclusionShop.cs" />
     <Compile Include="RemoteAgents\AgentItemDetail.cs" />
     <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
@@ -115,6 +117,7 @@
     <Compile Include="Structs\BeastTribeStat.cs" />
     <Compile Include="Structs\CycleTime.cs" />
     <Compile Include="Structs\DailyQuestRead.cs" />
+    <Compile Include="Structs\GCSupplyItem.cs" />
     <Compile Include="Structs\InclusionShopItem.cs" />
     <Compile Include="Structs\InclusionShopItemStruct.cs" />
     <Compile Include="Structs\MobHuntOrder.cs" />

@@ -4,6 +4,8 @@
     {
         private const string WindowName = "GrandCompanySupplyReward";
 
+        public int SealReward => Elements[9].TrimmedData;
+
         public GrandCompanySupplyReward() : base(WindowName)
         {
             _name = WindowName;
