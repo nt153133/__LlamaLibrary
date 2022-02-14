@@ -228,7 +228,11 @@ namespace LlamaLibrary.Helpers
 
                 await GrandCompanyHelper.InteractWithNpc(GCNpc.Quartermaster);
 
-                await Coroutine.Wait(5000, () => GrandCompanyExchange.Instance.IsOpen);
+                if (!await Coroutine.Wait(5000, () => GrandCompanyExchange.Instance.IsOpen))
+                {
+                    await GrandCompanyHelper.InteractWithNpc(GCNpc.Quartermaster);
+                    await Coroutine.Wait(5000, () => GrandCompanyExchange.Instance.IsOpen);
+                }
             }
 
             return GrandCompanyExchange.Instance.IsOpen;

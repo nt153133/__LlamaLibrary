@@ -79,6 +79,7 @@
     <Compile Include="Helpers\NPC\Npc.cs" />
     <Compile Include="Helpers\NPC\NpcHelper.cs" />
     <Compile Include="Helpers\OrderbotHelper.cs" />
+    <Compile Include="Helpers\ScreenshotHelper.cs" />
     <Compile Include="Helpers\UIInputHelper.cs" />
     <Compile Include="ICompiledAsyncBotbase.cs" />
     <Compile Include="ICompiledBotbase.cs" />
