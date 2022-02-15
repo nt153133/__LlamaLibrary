@@ -15,23 +15,34 @@ namespace LlamaLibrary.Helpers
         private static readonly string Name = "BeastTribeHelper";
         private static readonly Color LogColor = Colors.Gold;
         private static readonly LLogger Log = new LLogger(Name, LogColor);
+
         private static class Offsets
         {
             [Offset("Search E8 ? ? ? ? BA ? ? ? ? 48 8B C8 48 83 C4 ? E9 ? ? ? ? ? ? ? ? ? ? E9 ? ? ? ? TraceCall")]
             internal static IntPtr GetQuestPointer;
+
             [Offset("Search 48 8D 81 ? ? ? ? 66 0F 1F 44 00 ? 66 39 50 ? 74 ? 41 FF C0 Add 3 Read32")]
             internal static int DailyQuestOffset;
+
             [Offset("Search 41 83 F8 ? 72 ? 32 C0 C3 0F B6 40 ? Add 3 Read8")]
             internal static int DailyQuestCount;
+
             [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? TraceCall")]
             internal static IntPtr GetBeastTribeExd;
+
             [Offset("Search 4C 8D 1D ? ? ? ? 88 44 24 ? Add 3 TraceRelative")]
             internal static IntPtr QuestPointer;
-            [Offset("Search 0F B6 9C C8 ? ? ? ? Add 4 Read32")]
+
+            //[Offset("Search 0F B6 9C C8 ? ? ? ? Add 4 Read32")] 48 81 C1 ? ? ? ? 48 03 C9 0F B6 1C C8
+            [Offset("Search 48 81 C1 ? ? ? ? 48 03 C9 0F B6 1C C8 Add 4 Read32")]
             internal static int BeastTribeStart;
+
+            //[Offset("Search 66 89 BC C8 ? ? ? ? Add 4 Read32")] 66 89 BC C8 ? ? ? ?
             [Offset("Search 66 89 BC C8 ? ? ? ? Add 4 Read32")]
             internal static int BeastTribeRep;
-            [Offset("Search 83 FB ? 73 ? E8 ? ? ? ? 8B CB 48 03 C9 0F B6 9C C8 ? ? ? ? Add 2 Read8")]
+
+            //[Offset("Search 83 FB ? 73 ? E8 ? ? ? ? 8B CB 48 03 C9 0F B6 9C C8 ? ? ? ? Add 2 Read8")]
+            [Offset("Search 83 FB ? 73 ? E8 ? ? ? ? 8B CB 48 81 C1 ? ? ? ? 48 03 C9 0F B6 1C C8 Add 2 Read8")]
             internal static int BeastTribeCount;
         }
 
@@ -93,14 +104,15 @@ namespace LlamaLibrary.Helpers
 
         public static DailyQuestRead[] GetCurrentDailies()
         {
-            Log.Verbose($"{(Offsets.QuestPointer + Offsets.DailyQuestOffset).ToString("X")}");
+            //Log.Verbose($"{(Offsets.QuestPointer + Offsets.DailyQuestOffset).ToString("X")}");
             return Core.Memory.ReadArray<DailyQuestRead>(Offsets.QuestPointer + Offsets.DailyQuestOffset, Offsets.DailyQuestCount);
         }
 
         public static BeastTribeStat[] GetBeastTribes()
         {
-            Log.Verbose($"{(Offsets.QuestPointer + Offsets.BeastTribeStart).ToString("X")} {Offsets.BeastTribeStart}");
-            return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + Offsets.BeastTribeStart, Offsets.BeastTribeCount);
+
+            //Log.Information($"{(Offsets.QuestPointer + 1448).ToString("X")} {Offsets.BeastTribeStart}");//Offsets.BeastTribeStart
+            return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + 2896 , Offsets.BeastTribeCount);
         }
 
         public static int GetBeastTribeRank(int tribe)

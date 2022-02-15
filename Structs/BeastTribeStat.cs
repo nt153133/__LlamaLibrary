@@ -6,7 +6,7 @@ namespace LlamaLibrary.Structs
     public struct BeastTribeStat
     {
         [FieldOffset(0)]
-        public ushort _Rank;
+        public byte _Rank;
 
         [FieldOffset(0x2)]
         public ushort Reputation;
