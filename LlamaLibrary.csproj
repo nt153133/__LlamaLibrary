@@ -80,6 +80,7 @@
     <Compile Include="Helpers\NPC\NpcHelper.cs" />
     <Compile Include="Helpers\OrderbotHelper.cs" />
     <Compile Include="Helpers\ScreenshotHelper.cs" />
+    <Compile Include="Helpers\SquadronStatus.cs" />
     <Compile Include="Helpers\UIInputHelper.cs" />
     <Compile Include="ICompiledAsyncBotbase.cs" />
     <Compile Include="ICompiledBotbase.cs" />
@@ -251,6 +252,7 @@
     <Compile Include="Structs\RequestItem.cs" />
     <Compile Include="Structs\RetainerInfo.cs" />
     <Compile Include="Structs\RowenaItem.cs" />
+    <Compile Include="Structs\SquadronTimerData.cs" />
     <Compile Include="Utilities\CustomDeliveries.cs" />
     <Compile Include="Utilities\GCDailyTurnins.cs" />
     <Compile Include="Utilities\Housing.cs" />

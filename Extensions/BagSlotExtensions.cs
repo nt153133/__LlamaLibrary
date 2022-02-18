@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
+using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Memory.Attributes;
@@ -14,6 +15,12 @@ namespace LlamaLibrary.Extensions
 {
     public static class BagSlotExtensions
     {
+        private static readonly InventoryBagId[] RetainerBagIds =
+        {
+            InventoryBagId.Retainer_Page1, InventoryBagId.Retainer_Page2, InventoryBagId.Retainer_Page3,
+            InventoryBagId.Retainer_Page4, InventoryBagId.Retainer_Page5, InventoryBagId.Retainer_Page6,
+            InventoryBagId.Retainer_Page7
+        };
         public static class Offsets
         {
             [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 56 48 83 EC ? 8B DA 41 0F B7 E8")]
@@ -536,7 +543,18 @@ namespace LlamaLibrary.Extensions
         {
             var curSlotCount = bagSlot.Count;
             bagSlot.RetainerEntrustQuantity(moveCount);
-            return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
+            if (!await BagSlotMoveWait(bagSlot, curSlotCount, waitMs))
+            {
+                if (InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).Any(i => i.FreeSlots > 0))
+                {
+                    bagSlot.Move(InventoryManager.GetBagsByInventoryBagId(RetainerBagIds).First(i => i.FreeSlots >= 1).GetFirstFreeSlot());
+                    return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
+                }
+
+                return false;
+            }
+
+            return true;
         }
 
         public static async Task<bool> TryRetrieveFromRetainer(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
