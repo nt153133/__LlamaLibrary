@@ -33,13 +33,16 @@
         AirshipPart = 28,
         SpecialCurrency = 29,
         FolkloreTome = 30,
-        Favor = 31,
-        SoulCrystal = 32,
-        OrchestrionRoll = 33,
-        AquariumTrimming = 34,
-        Painting = 35,
-        RetainerBoost = 36,
-        SubmersiblePart = 37,
-        EurekaLogogram = 38
+        SoulCrystal = 31,
+        OrchestrionRoll = 32,
+        AquariumTrimming = 33,
+        Painting = 34,
+        RetainerBoost = 35,
+        SubmersiblePart = 36,
+        EurekaLogogram = 37,
+        Mettle = 38,
+        CrystallizedMemory = 39,
+        BozjanCluster = 40,
+        Belts = 44
     }
 }

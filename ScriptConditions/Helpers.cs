@@ -87,6 +87,11 @@ namespace LlamaLibrary.ScriptConditions
             return InventoryManager.EquippedItems.Where(k => k.IsFilled).Sum(i => i.Item.ItemLevel) / InventoryManager.EquippedItems.Count(k => k.IsFilled);
         }
 
+        public static int CurrentItemLevel()
+        {
+            return Core.Memory.Read<ushort>(Offsets.ActorController_iLvl);
+        }
+
         public static int NovusLightLevel()
         {
             return (int)(InventoryManager.EquippedItems.First().SpiritBond * 100);
