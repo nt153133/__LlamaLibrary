@@ -116,5 +116,69 @@ namespace LlamaLibrary.ScriptConditions
         {
             return (int)Core.Me.GCRank();
         }
+				
+				public static bool IsTankClass()
+				{
+						switch (Core.Me.CurrentJob)
+						{
+								case ClassJobType.Marauder:
+								case ClassJobType.Warrior:
+								case ClassJobType.Gladiator:
+								case ClassJobType.Paladin:
+								case ClassJobType.Gunbreaker:
+								case ClassJobType.DarkKnight:
+										return true;
+								default:
+										return false;
+						}
+				}
+				
+				public static bool IsCasterClass()
+				{
+						switch (Core.Me.CurrentJob)
+						{
+								case ClassJobType.Arcanist:
+								case ClassJobType.Summoner:
+								case ClassJobType.Thaumaturge:
+								case ClassJobType.BlackMage:
+								case ClassJobType.RedMage:
+								case ClassJobType.BlueMage:
+										return true;
+								default:
+										return false;
+						}
+				}
+								
+				
+				public static bool IsHealerClass()
+				{
+						switch (Core.Me.CurrentJob)
+						{
+								case ClassJobType.Scholar:
+								case ClassJobType.Conjurer:
+								case ClassJobType.WhiteMage:
+								case ClassJobType.Astrologian:
+								case ClassJobType.Sage:
+										return true;
+								default:
+										return false;
+						}
+				}
+				
+        public static bool IsPhysicalRangedClass()
+        {
+            switch (Core.Me.CurrentJob)
+            {
+                case ClassJobType.Archer:
+                case ClassJobType.Bard:
+                case ClassJobType.Dancer:
+                case ClassJobType.Machinist:
+                    return true;
+                default:
+                    return false;
+            }
+        } 
+								
+        
     }
 }
