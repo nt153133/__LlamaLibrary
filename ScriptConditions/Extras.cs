@@ -39,7 +39,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int SphereCompletion(int itemID)
         {
-            return (int)InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint)itemID).SpiritBond;
+            return (int) InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint) itemID).SpiritBond;
         }
 
         public static int HighestILvl(ClassJobType job)
@@ -50,12 +50,12 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsFateActive(int fateID)
         {
-            return FateManager.ActiveFates.Any(i => i.Id == (uint)fateID);
+            return FateManager.ActiveFates.Any(i => i.Id == (uint) fateID);
         }
 
         public static bool HasLearnedMount(int mountID)
         {
-            return ActionManager.AvailableMounts.Any(i => i.Id == ((uint)mountID));
+            return ActionManager.AvailableMounts.Any(i => i.Id == ((uint) mountID));
         }
 
         public static int BeastTribeRank(int tribeID)
@@ -83,7 +83,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsTargetableNPC(int npcID)
         {
-            return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint)npcID && i.IsVisible && i.IsTargetable);
+            return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint) npcID && i.IsVisible && i.IsTargetable);
         }
 
         public static bool IsDutyEnded()
@@ -93,13 +93,13 @@ namespace LlamaLibrary.ScriptConditions
                 return true;
             }
 
-            var instanceDirector = (ff14bot.Directors.InstanceContentDirector)DirectorManager.ActiveDirector;
+            var instanceDirector = (ff14bot.Directors.InstanceContentDirector) DirectorManager.ActiveDirector;
             return instanceDirector.InstanceEnded;
         }
 
         public static int SharedFateRank(int zoneID)
         {
-            return SharedFateHelper.CachedProgress.FirstOrDefault(i => i.Zone == (uint)zoneID).Rank;
+            return SharedFateHelper.CachedProgress.FirstOrDefault(i => i.Zone == (uint) zoneID).Rank;
         }
 
         public static async Task UpdateSharedFates()
@@ -114,57 +114,58 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int CurrentGCRank()
         {
-            return (int)Core.Me.GCRank();
+            return (int) Core.Me.GCRank();
         }
-				
-				public static bool IsTankClass()
-				{
-						switch (Core.Me.CurrentJob)
-						{
-								case ClassJobType.Marauder:
-								case ClassJobType.Warrior:
-								case ClassJobType.Gladiator:
-								case ClassJobType.Paladin:
-								case ClassJobType.Gunbreaker:
-								case ClassJobType.DarkKnight:
-										return true;
-								default:
-										return false;
-						}
-				}
-				
-				public static bool IsCasterClass()
-				{
-						switch (Core.Me.CurrentJob)
-						{
-								case ClassJobType.Arcanist:
-								case ClassJobType.Summoner:
-								case ClassJobType.Thaumaturge:
-								case ClassJobType.BlackMage:
-								case ClassJobType.RedMage:
-								case ClassJobType.BlueMage:
-										return true;
-								default:
-										return false;
-						}
-				}
-								
-				
-				public static bool IsHealerClass()
-				{
-						switch (Core.Me.CurrentJob)
-						{
-								case ClassJobType.Scholar:
-								case ClassJobType.Conjurer:
-								case ClassJobType.WhiteMage:
-								case ClassJobType.Astrologian:
-								case ClassJobType.Sage:
-										return true;
-								default:
-										return false;
-						}
-				}
-				
+
+        public static bool IsTankClass()
+        {
+            switch (Core.Me.CurrentJob)
+            {
+                case ClassJobType.Marauder:
+                case ClassJobType.Warrior:
+                case ClassJobType.Gladiator:
+                case ClassJobType.Paladin:
+                case ClassJobType.Gunbreaker:
+                case ClassJobType.DarkKnight:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsCasterClass()
+        {
+            switch (Core.Me.CurrentJob)
+            {
+                case ClassJobType.Arcanist:
+                case ClassJobType.Summoner:
+                case ClassJobType.Thaumaturge:
+                case ClassJobType.BlackMage:
+                case ClassJobType.RedMage:
+                case ClassJobType.BlueMage:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsHealerClass()
+        {
+            switch (Core.Me.CurrentJob)
+            {
+                case ClassJobType.Scholar:
+                case ClassJobType.Conjurer:
+                case ClassJobType.WhiteMage:
+                case ClassJobType.Astrologian:
+#if !RB_CN
+                case ClassJobType.Sage:
+#endif
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public static bool IsPhysicalRangedClass()
         {
             switch (Core.Me.CurrentJob)
@@ -177,8 +178,6 @@ namespace LlamaLibrary.ScriptConditions
                 default:
                     return false;
             }
-        } 
-								
-        
+        }
     }
 }
