@@ -65,7 +65,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int DailyQuestAllowance()
         {
-            return BeastTribeHelper.DailyQuestAllowance();
+					return BeastTribeHelper.DailyQuestAllowance();
         }
 
         private static bool? isLisbethPresentCache;
@@ -186,7 +186,9 @@ namespace LlamaLibrary.ScriptConditions
             {
                 case ClassJobType.Lancer:
                 case ClassJobType.Dragoon:
+								#if !RB_CN								
                 case ClassJobType.Reaper:
+								#endif
                     return true;
                 default:
                     return false;
