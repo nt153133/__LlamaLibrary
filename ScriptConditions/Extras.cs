@@ -117,7 +117,7 @@ namespace LlamaLibrary.ScriptConditions
             return (int) Core.Me.GCRank();
         }
 
-        public static bool IsTankClass()
+        public static bool IsFendingClass()
         {
             switch (Core.Me.CurrentJob)
             {
@@ -133,7 +133,7 @@ namespace LlamaLibrary.ScriptConditions
             }
         }
 
-        public static bool IsCasterClass()
+        public static bool IsCastingClass()
         {
             switch (Core.Me.CurrentJob)
             {
@@ -149,7 +149,7 @@ namespace LlamaLibrary.ScriptConditions
             }
         }
 
-        public static bool IsHealerClass()
+        public static bool IsHealingClass()
         {
             switch (Core.Me.CurrentJob)
             {
@@ -166,7 +166,7 @@ namespace LlamaLibrary.ScriptConditions
             }
         }
 
-        public static bool IsPhysicalRangedClass()
+        public static bool IsAimingClass()
         {
             switch (Core.Me.CurrentJob)
             {
@@ -179,5 +179,31 @@ namespace LlamaLibrary.ScriptConditions
                     return false;
             }
         }
+				
+        public static bool IsMaimingClass()
+        {
+            switch (Core.Me.CurrentJob)
+            {
+                case ClassJobType.Lancer:
+                case ClassJobType.Dragoon:
+                case ClassJobType.Reaper:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+				
+        public static bool IsStrikerClass()
+        {
+            switch (Core.Me.CurrentJob)
+            {
+                case ClassJobType.Pugilist:
+                case ClassJobType.Monk:
+                case ClassJobType.Samurai:
+                    return true;
+                default:
+                    return false;
+            }
+        }			
     }
 }
