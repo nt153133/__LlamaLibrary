@@ -195,7 +195,7 @@ namespace LlamaLibrary.ScriptConditions
             }
         }
 				
-        public static bool IsStrikerClass()
+        public static bool IsStrikingClass()
         {
             switch (Core.Me.CurrentJob)
             {
@@ -206,6 +206,18 @@ namespace LlamaLibrary.ScriptConditions
                 default:
                     return false;
             }
-        }			
+        }	
+				
+        public static bool IsScoutingClass()
+        {
+            switch (Core.Me.CurrentJob)
+            {
+                case ClassJobType.Rogue:
+                case ClassJobType.Ninja:
+                    return true;
+                default:
+                    return false;
+            }
+        }				
     }
 }
