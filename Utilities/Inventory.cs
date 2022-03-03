@@ -52,9 +52,12 @@ namespace LlamaLibrary.Utilities
         {
             foreach (var bagslot in InventoryManager.FilledSlots.Where(bagslot => bagslot.Item.ItemAction == 388))
             {
-                Log.Information($"Opening Coffer {bagslot.Name}");
-                bagslot.UseItem();
-                await Coroutine.Sleep(5000);
+                for (int i = 0; i < bagslot.Count; i++)
+                {
+                    Log.Information($"Opening Coffer {bagslot.Name} #{i+1}");
+                    bagslot.UseItem();
+                    await Coroutine.Sleep(5000);
+                }
             }
 
             return true;
