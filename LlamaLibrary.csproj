@@ -21,7 +21,7 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -29,7 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <OutputPath>bin\Debug\</OutputPath>
   </PropertyGroup>
@@ -53,6 +53,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientDataHelpers\AtkArrayDataHolder.cs" />
+    <Compile Include="ClientDataHelpers\UiManagerProxy.cs" />
     <Compile Include="Enums\ClassJobCategory.cs" />
     <Compile Include="Enums\DohJobType.cs" />
     <Compile Include="Enums\GCNpc.cs" />
@@ -86,6 +88,7 @@
     <Compile Include="ICompiledBotbase.cs" />
     <Compile Include="JsonObjects\CustomDeliveryNpc.cs" />
     <Compile Include="JsonObjects\MateriaItem.cs" />
+    <Compile Include="JsonObjects\RetainerSale.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
     <Compile Include="RemoteAgents\AgentGrandCompanyExchange.cs" />
@@ -103,6 +106,7 @@
     <Compile Include="RemoteWindows\InputString.cs" />
     <Compile Include="RemoteWindows\NotificationParty.cs" />
     <Compile Include="RemoteWindows\PartyYesNo.cs" />
+    <Compile Include="RemoteWindows\RetainerHistory.cs" />
     <Compile Include="RemoteWindows\SharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteWindows\ShopExchangeItemDialog.cs" />
     <Compile Include="RemoteWindows\WorldTravelFinderReady.cs" />
