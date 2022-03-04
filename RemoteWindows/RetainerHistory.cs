@@ -132,5 +132,16 @@ public struct HistoryString
     public IntPtr Date;
     public IntPtr Item;
 
-    public int Qty => int.Parse(Core.Memory.ReadStringUTF8(Count));
+    public int Qty
+    {
+        get
+        {
+            if (int.TryParse(Core.Memory.ReadStringUTF8(Count), out var qty))
+            {
+                return qty;
+            }
+
+            return 1;
+        }
+    }
 }
