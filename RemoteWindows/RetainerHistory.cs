@@ -1,16 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Windows.Media;
+using Buddy.Coroutines;
 using ff14bot;
 using LlamaLibrary.ClientDataHelpers;
 using LlamaLibrary.JsonObjects;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.RemoteAgents;
+using LlamaLibrary.Retainers;
 
 namespace LlamaLibrary.RemoteWindows;
 
 public class RetainerHistory : RemoteWindow<RetainerHistory>
 {
     private const string WindowName = "RetainerHistory";
+
+    private static readonly LLogger Log = new LLogger("RetainerHistory", Colors.OrangeRed);
 
     private static class Offsets
     {
@@ -34,6 +43,24 @@ public class RetainerHistory : RemoteWindow<RetainerHistory>
 
         [Offset("Search BF ? ? ? ? 41 BE ? ? ? ? 90 Add 1 Read32")]
         internal static int StringArrayData_Start;
+
+        // GetSubModule
+        [Offset("E8 ? ? ? ? 48 85 C0 74 ? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ? 5B 49 FF 60 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 TraceCall")]
+        internal static IntPtr GetSubModule;
+
+        // vfunc 33 of UIModule
+        [Offset("41 FF 90 ? ? ? ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ? 5B 49 FF 60 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 Read32")]
+        internal static int GetSomethingModuleVtblFunction;
+
+        // Submodule number 9
+        [Offset("BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ? 5B 49 FF 60 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 1 Read8")]
+        internal static int SubModule;
+
+        [Offset("48 8B 8B ? ? ? ? 48 8D 54 24 ? 48 89 4C 24 ? 45 33 C9 48 8B C8 Add 3 Read32")]
+        internal static int RetainerId;
+
+        [Offset("40 53 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 83 B9 ? ? ? ? ?")]
+        internal static IntPtr RequestSales;
     }
 
     public RetainerHistory() : base(WindowName)
@@ -52,17 +79,17 @@ public class RetainerHistory : RemoteWindow<RetainerHistory>
         }
     }
 
-    public int HistoryCount
+    public IntPtr HistoryCountLocation
     {
         get
         {
             var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(Offsets.NumberArrayIndex) + Offsets.NumberArrayData_IntArray);
 
-            var count = Core.Memory.Read<int>(arrayLocation + ((Offsets.NumberArrayData_Count) * 4));
-
-            return count;
+            return arrayLocation + ((Offsets.NumberArrayData_Count) * 4);
         }
     }
+
+    public int HistoryCount => Core.Memory.Read<int>(HistoryCountLocation);
 
     public IntPtr StringArrayStart
     {
@@ -79,6 +106,44 @@ public class RetainerHistory : RemoteWindow<RetainerHistory>
     public HistoryNumber[] HistoryNumbers => Core.Memory.ReadArray<HistoryNumber>(NumberArrayStart, HistoryCount);
 
     public HistoryString[] HistoryStrings => Core.Memory.ReadArray<HistoryString>(StringArrayStart, HistoryCount);
+
+    public IntPtr RaptureStruct
+    {
+        get
+        {
+            var func = Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(UiManagerProxy.UIModule) + Offsets.GetSomethingModuleVtblFunction);
+            var subModule = Core.Memory.CallInjected64<IntPtr>(func, UiManagerProxy.UIModule);
+            var pointer = Core.Memory.CallInjected64<IntPtr>(Offsets.GetSubModule, subModule, Offsets.SubModule);
+            return pointer;
+        }
+    }
+
+    public async Task<Dictionary<ulong, List<RetainerSale>>> AllRetainerSales()
+    {
+        var result = new Dictionary<ulong, List<RetainerSale>>();
+        var fullRets = await HelperFunctions.GetOrderedRetainerArray(true);
+        var rets = fullRets.Where(i => i.Active).Select(i => i.Unique);
+        var raptureStruct = RaptureStruct;
+        var retainerIdLocation = raptureStruct + Offsets.RetainerId;
+
+        foreach (var retainerId in rets)
+        {
+            var name = fullRets.First(i => i.Unique == retainerId).Name;
+            Core.Memory.Write(HistoryCountLocation, 99);
+            Core.Memory.Write(retainerIdLocation, retainerId);
+            Core.Memory.CallInjected64<IntPtr>(Offsets.RequestSales, raptureStruct);
+            if (await Coroutine.Wait(5000, () => Core.Memory.NoCacheRead<int>(HistoryCountLocation) != 99))
+            {
+                result.Add(retainerId, Sales.ToList());
+            }
+            else
+            {
+                Log.Information($"History failed {name}");
+            }
+        }
+
+        return result;
+    }
 
     public List<RetainerSale> Sales
     {
