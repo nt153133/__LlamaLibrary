@@ -257,6 +257,7 @@
     <Compile Include="Structs\RetainerInfo.cs" />
     <Compile Include="Structs\RowenaItem.cs" />
     <Compile Include="Structs\SquadronTimerData.cs" />
+    <Compile Include="TemplateBotBase.cs" />
     <Compile Include="Utilities\CustomDeliveries.cs" />
     <Compile Include="Utilities\GCDailyTurnins.cs" />
     <Compile Include="Utilities\Housing.cs" />
