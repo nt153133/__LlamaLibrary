@@ -218,6 +218,77 @@ namespace LlamaLibrary.ScriptConditions
                 default:
                     return false;
             }
-        }				
+        }
+				
+        public static bool IsSlayingClass()
+        {
+            switch (Core.Me.CurrentJob)
+            {
+                case ClassJobType.Pugilist:
+                case ClassJobType.Monk:						
+                case ClassJobType.Lancer:
+                case ClassJobType.Dragoon:
+								case ClassJobType.Samurai:
+								#if !RB_CN								
+                case ClassJobType.Reaper:
+								#endif
+                    return true;
+                default:
+                    return false;
+            }
+        }
+				
+        public static bool IsDiscipleofWarClass()
+        {
+            switch (Core.Me.CurrentJob)
+            {
+                case ClassJobType.Pugilist:
+                case ClassJobType.Monk:						
+                case ClassJobType.Lancer:
+                case ClassJobType.Dragoon:
+								case ClassJobType.Samurai:
+                case ClassJobType.Rogue:
+                case ClassJobType.Ninja:
+                case ClassJobType.Archer:
+                case ClassJobType.Bard:
+                case ClassJobType.Dancer:
+                case ClassJobType.Machinist:	
+                case ClassJobType.Marauder:
+                case ClassJobType.Warrior:
+                case ClassJobType.Gladiator:
+                case ClassJobType.Paladin:
+                case ClassJobType.Gunbreaker:
+                case ClassJobType.DarkKnight:								
+								#if !RB_CN								
+                case ClassJobType.Reaper:
+								#endif
+                    return true;
+                default:
+                    return false;
+            }
+        }	
+				
+        public static bool IsDiscipleofMagicClass()
+        {
+            switch (Core.Me.CurrentJob)
+            {
+                case ClassJobType.Arcanist:
+                case ClassJobType.Summoner:
+                case ClassJobType.Thaumaturge:
+                case ClassJobType.BlackMage:
+                case ClassJobType.RedMage:
+                case ClassJobType.BlueMage:						
+                case ClassJobType.Scholar:
+                case ClassJobType.Conjurer:
+                case ClassJobType.WhiteMage:
+                case ClassJobType.Astrologian:
+#if !RB_CN
+                case ClassJobType.Sage:
+#endif
+                    return true;
+                default:
+                    return false;
+            }
+        }					
     }
 }
