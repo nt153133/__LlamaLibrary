@@ -9,80 +9,82 @@ using ff14bot.Pathing.Service_Navigation;
 using LlamaLibrary.Logging;
 using TreeSharp;
 
-namespace LlamaLibrary;
-
-public abstract class TemplateBotBase : BotBase
+namespace LlamaLibrary
 {
-    protected abstract string BotBaseName { get; }
 
-    protected virtual Type SettingsForm { get; } = null;
-
-    protected virtual Color LogColor { get; } = Colors.Aqua;
-
-    protected abstract Task<bool> Run();
-
-    private Composite _root;
-
-    // ReSharper disable once MemberCanBePrivate.Global
-    protected LLogger Log;
-
-    private Form _settings;
-
-    protected TemplateBotBase()
+    public abstract class TemplateBotBase : BotBase
     {
-        Log = new LLogger(BotBaseName, LogColor);
-    }
+        protected abstract string BotBaseName { get; }
 
-    public override void Start()
-    {
-        Log.Debug("Start");
-        Navigator.PlayerMover = new SlideMover();
-        Navigator.NavigationProvider = new ServiceNavigationProvider();
-        _root = new ActionRunCoroutine(_ => Run());
-    }
+        protected virtual Type SettingsForm { get; } = null;
 
-    public override void Stop()
-    {
-        Log.Debug("Stop");
-        _root = null;
-        (Navigator.NavigationProvider as IDisposable)?.Dispose();
-        Navigator.NavigationProvider = null;
-    }
+        protected virtual Color LogColor { get; } = Colors.Aqua;
 
-    public override void OnButtonPress()
-    {
-        //Log.Debug("ButtonPress");
-        if (SettingsForm == null)
+        protected abstract Task<bool> Run();
+
+        private Composite _root;
+
+        // ReSharper disable once MemberCanBePrivate.Global
+        protected LLogger Log;
+
+        private Form _settings;
+
+        protected TemplateBotBase()
         {
-            Log.Error("No setting form type was set in the botbase");
-            return;
+            Log = new LLogger(BotBaseName, LogColor);
         }
 
-        if (_settings == null || _settings.IsDisposed)
+        public override void Start()
         {
-            _settings = Activator.CreateInstance(SettingsForm) as Form;
+            Log.Debug("Start");
+            Navigator.PlayerMover = new SlideMover();
+            Navigator.NavigationProvider = new ServiceNavigationProvider();
+            _root = new ActionRunCoroutine(_ => Run());
         }
 
-        try
+        public override void Stop()
         {
-            if (_settings == null)
+            Log.Debug("Stop");
+            _root = null;
+            (Navigator.NavigationProvider as IDisposable)?.Dispose();
+            Navigator.NavigationProvider = null;
+        }
+
+        public override void OnButtonPress()
+        {
+            //Log.Debug("ButtonPress");
+            if (SettingsForm == null)
             {
-                Log.Error($"Could not create settings form object {SettingsForm.Name}");
+                Log.Error("No setting form type was set in the botbase");
                 return;
             }
 
-            _settings.Show();
-            _settings.Activate();
-        }
-        catch (Exception ee)
-        {
-            Log.Error($"Exception: {ee.Message}");
-        }
-    }
+            if (_settings == null || _settings.IsDisposed)
+            {
+                _settings = Activator.CreateInstance(SettingsForm) as Form;
+            }
 
-    public override bool IsAutonomous => true;
-    public override string Name => BotBaseName;
-    public override PulseFlags PulseFlags => PulseFlags.All;
-    public override bool RequiresProfile => false;
-    public override Composite Root => _root;
+            try
+            {
+                if (_settings == null)
+                {
+                    Log.Error($"Could not create settings form object {SettingsForm.Name}");
+                    return;
+                }
+
+                _settings.Show();
+                _settings.Activate();
+            }
+            catch (Exception ee)
+            {
+                Log.Error($"Exception: {ee.Message}");
+            }
+        }
+
+        public override bool IsAutonomous => true;
+        public override string Name => BotBaseName;
+        public override PulseFlags PulseFlags => PulseFlags.All;
+        public override bool RequiresProfile => false;
+        public override Composite Root => _root;
+    }
 }
