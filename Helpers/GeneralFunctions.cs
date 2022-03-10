@@ -918,32 +918,32 @@ namespace LlamaLibrary.Helpers
         {
             var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
             {
-                { 36311, new CraftingRelicTurnin(36311, 0, 2, 6300, 33194) },
-                { 36312, new CraftingRelicTurnin(36312, 1, 2, 6300, 33195) },
-                { 36313, new CraftingRelicTurnin(36313, 2, 2, 6300, 33196) },
-                { 36314, new CraftingRelicTurnin(36314, 3, 2, 6300, 33197) },
-                { 36315, new CraftingRelicTurnin(36315, 4, 2, 6300, 33198) },
-                { 36316, new CraftingRelicTurnin(36316, 5, 2, 6300, 33199) },
-                { 36317, new CraftingRelicTurnin(36317, 6, 2, 6300, 33200) },
-                { 36318, new CraftingRelicTurnin(36318, 7, 2, 6300, 33201) },
+                { 36311, new CraftingRelicTurnin(36311, 0, 2, 1200, 33194) },
+                { 36312, new CraftingRelicTurnin(36312, 1, 2, 1200, 33195) },
+                { 36313, new CraftingRelicTurnin(36313, 2, 2, 1200, 33196) },
+                { 36314, new CraftingRelicTurnin(36314, 3, 2, 1200, 33197) },
+                { 36315, new CraftingRelicTurnin(36315, 4, 2, 1200, 33198) },
+                { 36316, new CraftingRelicTurnin(36316, 5, 2, 1200, 33199) },
+                { 36317, new CraftingRelicTurnin(36317, 6, 2, 1200, 33200) },
+                { 36318, new CraftingRelicTurnin(36318, 7, 2, 1200, 33201) },
 
-                { 36319, new CraftingRelicTurnin(36319, 0, 1, 6500, 33202) },
-                { 36320, new CraftingRelicTurnin(36320, 1, 1, 6500, 33203) },
-                { 36321, new CraftingRelicTurnin(36321, 2, 1, 6500, 33204) },
-                { 36322, new CraftingRelicTurnin(36322, 3, 1, 6500, 33205) },
-                { 36323, new CraftingRelicTurnin(36323, 4, 1, 6500, 33206) },
-                { 36324, new CraftingRelicTurnin(36324, 5, 1, 6500, 33207) },
-                { 36325, new CraftingRelicTurnin(36325, 6, 1, 6500, 33208) },
-                { 36326, new CraftingRelicTurnin(36326, 7, 1, 6500, 33209) },
+                { 36319, new CraftingRelicTurnin(36319, 0, 1, 1230, 33202) },
+                { 36320, new CraftingRelicTurnin(36320, 1, 1, 1230, 33203) },
+                { 36321, new CraftingRelicTurnin(36321, 2, 1, 1230, 33204) },
+                { 36322, new CraftingRelicTurnin(36322, 3, 1, 1230, 33205) },
+                { 36323, new CraftingRelicTurnin(36323, 4, 1, 1230, 33206) },
+                { 36324, new CraftingRelicTurnin(36324, 5, 1, 1230, 33207) },
+                { 36325, new CraftingRelicTurnin(36325, 6, 1, 1230, 33208) },
+                { 36326, new CraftingRelicTurnin(36326, 7, 1, 1230, 33209) },
 
-                { 33178, new CraftingRelicTurnin(33178, 0, 0, 7000, 33210) },
-                { 33179, new CraftingRelicTurnin(33179, 1, 0, 7000, 33211) },
-                { 33180, new CraftingRelicTurnin(33180, 2, 0, 7000, 33212) },
-                { 33181, new CraftingRelicTurnin(33181, 3, 0, 7000, 33213) },
-                { 33182, new CraftingRelicTurnin(33182, 4, 0, 7000, 33214) },
-                { 33183, new CraftingRelicTurnin(33183, 5, 0, 7000, 33215) },
-                { 33184, new CraftingRelicTurnin(33184, 6, 0, 7000, 33216) },
-                { 33185, new CraftingRelicTurnin(33185, 7, 0, 7000, 33217) }
+                { 33178, new CraftingRelicTurnin(33178, 0, 0, 1330, 33210) },
+                { 33179, new CraftingRelicTurnin(33179, 1, 0, 1330, 33211) },
+                { 33180, new CraftingRelicTurnin(33180, 2, 0, 1330, 33212) },
+                { 33181, new CraftingRelicTurnin(33181, 3, 0, 1330, 33213) },
+                { 33182, new CraftingRelicTurnin(33182, 4, 0, 1330, 33214) },
+                { 33183, new CraftingRelicTurnin(33183, 5, 0, 1330, 33215) },
+                { 33184, new CraftingRelicTurnin(33184, 6, 0, 1330, 33216) },
+                { 33185, new CraftingRelicTurnin(33185, 7, 0, 1330, 33217) }
             };
 
             var collectables = InventoryManager.FilledSlots.Where(i => i.IsCollectable).Select(x => x.RawItemId).Distinct();
