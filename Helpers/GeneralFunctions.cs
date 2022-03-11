@@ -936,14 +936,14 @@ namespace LlamaLibrary.Helpers
                 { 36325, new CraftingRelicTurnin(36325, 6, 1, 1230, 33208) },
                 { 36326, new CraftingRelicTurnin(36326, 7, 1, 1230, 33209) },
 
-                { 33178, new CraftingRelicTurnin(33178, 0, 0, 1330, 33210) },
-                { 33179, new CraftingRelicTurnin(33179, 1, 0, 1330, 33211) },
-                { 33180, new CraftingRelicTurnin(33180, 2, 0, 1330, 33212) },
-                { 33181, new CraftingRelicTurnin(33181, 3, 0, 1330, 33213) },
-                { 33182, new CraftingRelicTurnin(33182, 4, 0, 1330, 33214) },
-                { 33183, new CraftingRelicTurnin(33183, 5, 0, 1330, 33215) },
-                { 33184, new CraftingRelicTurnin(33184, 6, 0, 1330, 33216) },
-                { 33185, new CraftingRelicTurnin(33185, 7, 0, 1330, 33217) }
+                { 33178, new CraftingRelicTurnin(36327, 0, 0, 1330, 33210) },
+                { 33179, new CraftingRelicTurnin(36328, 1, 0, 1330, 33211) },
+                { 33180, new CraftingRelicTurnin(36329, 2, 0, 1330, 33212) },
+                { 33181, new CraftingRelicTurnin(36330, 3, 0, 1330, 33213) },
+                { 33182, new CraftingRelicTurnin(36331, 4, 0, 1330, 33214) },
+                { 33183, new CraftingRelicTurnin(36332, 5, 0, 1330, 33215) },
+                { 33184, new CraftingRelicTurnin(36333, 6, 0, 1330, 33216) },
+                { 33185, new CraftingRelicTurnin(36334, 7, 0, 1330, 33217) }
             };
 
             var collectables = InventoryManager.FilledSlots.Where(i => i.IsCollectable).Select(x => x.RawItemId).Distinct();
