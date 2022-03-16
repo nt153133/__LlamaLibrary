@@ -65,7 +65,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int DailyQuestAllowance()
         {
-					return BeastTribeHelper.DailyQuestAllowance();
+            return BeastTribeHelper.DailyQuestAllowance();
         }
 
         private static bool? isLisbethPresentCache;
@@ -157,9 +157,7 @@ namespace LlamaLibrary.ScriptConditions
                 case ClassJobType.Conjurer:
                 case ClassJobType.WhiteMage:
                 case ClassJobType.Astrologian:
-#if !RB_CN
                 case ClassJobType.Sage:
-#endif
                     return true;
                 default:
                     return false;
@@ -179,22 +177,20 @@ namespace LlamaLibrary.ScriptConditions
                     return false;
             }
         }
-				
+
         public static bool IsMaimingClass()
         {
             switch (Core.Me.CurrentJob)
             {
                 case ClassJobType.Lancer:
                 case ClassJobType.Dragoon:
-								#if !RB_CN								
                 case ClassJobType.Reaper:
-								#endif
                     return true;
                 default:
                     return false;
             }
         }
-				
+
         public static bool IsStrikingClass()
         {
             switch (Core.Me.CurrentJob)
@@ -206,8 +202,8 @@ namespace LlamaLibrary.ScriptConditions
                 default:
                     return false;
             }
-        }	
-				
+        }
+
         public static bool IsScoutingClass()
         {
             switch (Core.Me.CurrentJob)
@@ -219,55 +215,51 @@ namespace LlamaLibrary.ScriptConditions
                     return false;
             }
         }
-				
+
         public static bool IsSlayingClass()
         {
             switch (Core.Me.CurrentJob)
             {
                 case ClassJobType.Pugilist:
-                case ClassJobType.Monk:						
+                case ClassJobType.Monk:
                 case ClassJobType.Lancer:
                 case ClassJobType.Dragoon:
-								case ClassJobType.Samurai:
-								#if !RB_CN								
+                case ClassJobType.Samurai:
                 case ClassJobType.Reaper:
-								#endif
                     return true;
                 default:
                     return false;
             }
         }
-				
+
         public static bool IsDiscipleofWarClass()
         {
             switch (Core.Me.CurrentJob)
             {
                 case ClassJobType.Pugilist:
-                case ClassJobType.Monk:						
+                case ClassJobType.Monk:
                 case ClassJobType.Lancer:
                 case ClassJobType.Dragoon:
-								case ClassJobType.Samurai:
+                case ClassJobType.Samurai:
                 case ClassJobType.Rogue:
                 case ClassJobType.Ninja:
                 case ClassJobType.Archer:
                 case ClassJobType.Bard:
                 case ClassJobType.Dancer:
-                case ClassJobType.Machinist:	
+                case ClassJobType.Machinist:
                 case ClassJobType.Marauder:
                 case ClassJobType.Warrior:
                 case ClassJobType.Gladiator:
                 case ClassJobType.Paladin:
                 case ClassJobType.Gunbreaker:
-                case ClassJobType.DarkKnight:								
-								#if !RB_CN								
+                case ClassJobType.DarkKnight:
                 case ClassJobType.Reaper:
-								#endif
                     return true;
                 default:
                     return false;
             }
-        }	
-				
+        }
+
         public static bool IsDiscipleofMagicClass()
         {
             switch (Core.Me.CurrentJob)
@@ -277,18 +269,27 @@ namespace LlamaLibrary.ScriptConditions
                 case ClassJobType.Thaumaturge:
                 case ClassJobType.BlackMage:
                 case ClassJobType.RedMage:
-                case ClassJobType.BlueMage:						
+                case ClassJobType.BlueMage:
                 case ClassJobType.Scholar:
                 case ClassJobType.Conjurer:
                 case ClassJobType.WhiteMage:
                 case ClassJobType.Astrologian:
-#if !RB_CN
                 case ClassJobType.Sage:
-#endif
                     return true;
                 default:
                     return false;
             }
-        }					
+        }
+
+        public static bool IsNearShortcut(int npcID)
+        {
+            var npc = GameObjectManager.GetObjectByNPCId((uint) npcID);
+            if (npc != null)
+            {
+                return npc.Distance2D(Core.Me.Location) <= 10;
+            }
+
+            return false;
+        }
     }
 }
