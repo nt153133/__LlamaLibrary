@@ -37,7 +37,7 @@ namespace LlamaLibrary.Helpers
 
         public static readonly InventoryBagId[] SaddlebagIds =
         {
-            (InventoryBagId)0xFA0, (InventoryBagId)0xFA1//, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005
+            (InventoryBagId) 0xFA0, (InventoryBagId) 0xFA1 //, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005
         };
 
         public static IEnumerable<BagSlot> MainBagsFilledSlots()
@@ -221,7 +221,7 @@ namespace LlamaLibrary.Helpers
                         }
                         else
                         {
-                            SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
+                            SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
                         }
                     }
                 }
@@ -248,7 +248,7 @@ namespace LlamaLibrary.Helpers
                         }
                         else
                         {
-                            SelectIconString.ClickSlot((uint)(SelectIconString.LineCount - 1));
+                            SelectIconString.ClickSlot((uint) (SelectIconString.LineCount - 1));
                         }
                     }
                 }
@@ -672,12 +672,11 @@ namespace LlamaLibrary.Helpers
                     Log.Information($"OPEN: AgentId {AgentId} Offset {repairVendor.ToInt64():X} Func {repairWindow.ToInt64():X}");
                     lock (Core.Memory.Executor.AssemblyLock)
                     {
-                        Core.Memory.CallInjected64<IntPtr>(
-                            repairWindow,
-                            ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
-                            0,
-                            0,
-                            repairVendor);
+                        Core.Memory.CallInjected64<IntPtr>(repairWindow,
+                                                           ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
+                                                           0,
+                                                           0,
+                                                           repairVendor);
                     }
 
                     await Coroutine.Wait(1500, () => Repair.IsOpen);
@@ -1027,6 +1026,67 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        public static async Task OpenChests()
+        {
+            LLogger lLogger = new LLogger("Treasure", Colors.Gold);
+
+            var chests = GetTreasureChests().ToArray();
+
+            for (var index = 0; index < chests.Length; index++)
+            {
+                var chest = chests[index];
+
+                if (!await Navigation.GetTo(WorldManager.ZoneId, chest.Location))
+                {
+                    lLogger.Information("GetTo failed using offmesh");
+                    await Navigation.OffMeshMoveInteract(chest);
+                }
+
+                if (chest.Location.Distance(Core.Me.Location) > 1)
+                {
+                    lLogger.Information("Moving closer");
+                    Navigator.PlayerMover.MoveTowards(chest.Location);
+                    while (chest.Location.Distance(Core.Me.Location) > 1)
+                    {
+                        Navigator.PlayerMover.MoveTowards(chest.Location);
+                        await Coroutine.Sleep(100);
+                    }
+
+                    Navigator.PlayerMover.MoveStop();
+                }
+
+                if (chest.Location.Distance(Core.Me.Location) > 1)
+                {
+                    lLogger.Information("Couldn't get in range - Skipping");
+                    continue;
+                }
+
+                chest.Target();
+                chest.Interact();
+
+                if (!await Coroutine.Wait(3000, () => chest.State != 0))
+                {
+                    lLogger.Information("Interact failed trying again");
+                    chest.Target();
+                    chest.Interact();
+                    await Coroutine.Wait(3000, () => chest.State != 0);
+                }
+
+                lLogger.Information("Chest should be open");
+
+                if (index < chests.Length - 1)
+                {
+                    lLogger.Information("There is multiple chests, sleeping 1s between");
+                    await Coroutine.Sleep(1000);
+                }
+            }
+        }
+
+        public static IEnumerable<Treasure> GetTreasureChests()
+        {
+            return GameObjectManager.GetObjectsOfType<Treasure>().Where(i => i.Location.Distance2D(Core.Me.Location) <= 10 && i.InLineOfSight() && i.State == 0);
+        }
+
         public static async Task InteractWithDenys(int selectString)
         {
             var npc = GameObjectManager.GetObjectByNPCId(1032900);
@@ -1047,7 +1107,7 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Wait(10000, () => Conversation.IsOpen);
                 if (Conversation.IsOpen)
                 {
-                    Conversation.SelectLine((uint)selectString);
+                    Conversation.SelectLine((uint) selectString);
                 }
             }
         }
