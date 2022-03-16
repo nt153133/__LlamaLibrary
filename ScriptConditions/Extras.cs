@@ -286,7 +286,7 @@ namespace LlamaLibrary.ScriptConditions
             var npc = GameObjectManager.GetObjectByNPCId((uint) npcID);
             if (npc != null)
             {
-                return npc.Distance2D(Core.Me.Location) <= 10;
+                return npc.Distance2D(Core.Me.Location) <= 10 && npc.IsTargetable;
             }
 
             return false;
