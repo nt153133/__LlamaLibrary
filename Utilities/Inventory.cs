@@ -59,14 +59,7 @@ namespace LlamaLibrary.Utilities
                     bagslot.UseItem();
                     await Coroutine.Wait(5000, () => Core.Me.IsCasting);
                     await Coroutine.Wait(5000, () => !Core.Me.IsCasting);
-                    if (i < count - 1)
-                    {
-                        await Coroutine.Sleep(2000);
-                    }
-                    else
-                    {
-                        await Coroutine.Sleep(1000);
-                    }
+                    await Coroutine.Sleep(5000);
                 }
             }
 
