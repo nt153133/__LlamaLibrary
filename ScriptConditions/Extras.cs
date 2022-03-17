@@ -291,5 +291,11 @@ namespace LlamaLibrary.ScriptConditions
 
             return false;
         }
+				
+				public static bool IsChineseClient()
+				{
+						return Translator.Language == Language.Chn;
+				}				
+
     }
 }
