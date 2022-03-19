@@ -134,28 +134,28 @@ namespace LlamaLibrary.Utilities
                     await Coroutine.Sleep(3000);
                 }
 
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items430.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 1350))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => items430.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 500))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items481.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 4500))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => items481.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 850))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items511.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 5800))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => items511.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 1100))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items513.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 5800))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => items513.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 1100))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");
