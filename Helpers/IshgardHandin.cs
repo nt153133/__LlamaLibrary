@@ -21,7 +21,7 @@ namespace LlamaLibrary.Helpers
 
         private const int FirmamentZoneId = 886;
         private const float InteractMaxRange = 4f;
-        private const int SkybuildersScripMax = 10_000;  // TODO: Properly support currency maximums/caps
+        private const int SkybuildersScripMax = 10_000; // TODO: Properly support currency maximums/caps
 
         /// <summary>
         /// Gets the Firmament's gathering "Resource Inspector" NPC.
@@ -319,7 +319,7 @@ namespace LlamaLibrary.Helpers
 
                     if (!SelectYesno.IsOpen)
                     {
-                        continue;  // No scrip overcap warning prompt yet
+                        continue; // No scrip overcap warning prompt yet
                     }
 
                     if (stopScripMax)
@@ -342,7 +342,10 @@ namespace LlamaLibrary.Helpers
                             HWDSupply.Instance.Close();
                             await Coroutine.Wait(3000, () => !HWDSupply.Instance.IsOpen);
                         }
+
+                        break;
                     }
+
                     else
                     {
                         Log.Warning($"Have {ScriptConditions.Helpers.GetSkybuilderScrips():N}/{SkybuildersScripMax:N} Skybuilders' Scrips and will overcap, but force-inspecting anyway.");
@@ -417,7 +420,7 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open || Talk.DialogOpen || Conversation.IsOpen);
                 if (Conversation.IsOpen)
                 {
-                    Conversation.SelectLine((uint)SelectStringLine);
+                    Conversation.SelectLine((uint) SelectStringLine);
                     await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open);
                 }
             }
@@ -436,7 +439,7 @@ namespace LlamaLibrary.Helpers
 
                 if (count > 0)
                 {
-                    ScripPurchase(itemId, (uint)count);
+                    ScripPurchase(itemId, (uint) count);
                 }
 
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
@@ -493,7 +496,7 @@ namespace LlamaLibrary.Helpers
                 3uL,
                 0uL,
                 3uL,
-                (uint)index,
+                (uint) index,
                 3uL,
                 quantity,
                 0uL,
@@ -511,7 +514,7 @@ namespace LlamaLibrary.Helpers
         /// <returns>Quantity able to be purchased.</returns>
         private static uint MaxAffordableViaScrips(SpecialShopItem item)
         {
-            var currentScrips = (uint)ScriptConditions.Helpers.GetSkybuilderScrips();
+            var currentScrips = (uint) ScriptConditions.Helpers.GetSkybuilderScrips();
 
             return currentScrips / item.CurrencyCosts[0];
         }
