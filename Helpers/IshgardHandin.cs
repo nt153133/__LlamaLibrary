@@ -343,7 +343,7 @@ namespace LlamaLibrary.Helpers
                             await Coroutine.Wait(3000, () => !HWDSupply.Instance.IsOpen);
                         }
 
-                        break;
+                        return false;
                     }
 
                     else
