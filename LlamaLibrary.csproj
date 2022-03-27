@@ -90,6 +90,7 @@
     <Compile Include="JsonObjects\MateriaItem.cs" />
     <Compile Include="JsonObjects\RetainerSale.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
+    <Compile Include="RemoteAgents\AgentAchievement.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
     <Compile Include="RemoteAgents\AgentGrandCompanyExchange.cs" />
     <Compile Include="RemoteAgents\AgentGrandCompanySupply.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="RemoteAgents\AgentItemDetail.cs" />
     <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
+    <Compile Include="RemoteWindows\Achievement.cs" />
     <Compile Include="RemoteWindows\CharaMakeDataImport.cs" />
     <Compile Include="RemoteWindows\FreeCompanyChest.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />

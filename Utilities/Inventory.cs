@@ -113,7 +113,7 @@ namespace LlamaLibrary.Utilities
                 return false;
             }
 
-            Log.Warning($"# of slots to Desynth: {toDesynthList.Count()}");
+            Log.Warning($"# of slots to Desynth: {toDesynthList.Count}");
             foreach (var bagSlot in toDesynthList)
             {
                 await Desynth(bagSlot);
