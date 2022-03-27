@@ -86,6 +86,11 @@ namespace LlamaLibrary.ScriptConditions
             return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint) npcID && i.IsVisible && i.IsTargetable);
         }
 
+        public static bool AchievementComplete(int achID)
+        {
+            return Achievements.HasAchievement(achID);
+        }
+
         public static bool IsDutyEnded()
         {
             if (DirectorManager.ActiveDirector == null)
@@ -291,11 +296,10 @@ namespace LlamaLibrary.ScriptConditions
 
             return false;
         }
-				
-				public static bool IsChineseClient()
-				{
-						return Translator.Language == Language.Chn;
-				}				
 
+        public static bool IsChineseClient()
+        {
+            return Translator.Language == Language.Chn;
+        }
     }
 }
