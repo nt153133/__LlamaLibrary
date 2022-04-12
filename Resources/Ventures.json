@@ -11618,7 +11618,7 @@
     "Experience": 794800,
     "RequiredItemLevel": 0,
     "RequiredGathering": 1914,
-    "NameRaw": "Phrygian Ore",
+    "NameRaw": "Phrygian Gold Ore",
     "ItemId": 36176
   },
   {
@@ -12021,7 +12021,7 @@
     "Experience": 1083800,
     "RequiredItemLevel": 0,
     "RequiredGathering": 2211,
-    "NameRaw": "AR-Caean Cotton",
+    "NameRaw": "AR-Caean Cotton Boll",
     "ItemId": 36206
   },
   {
@@ -12400,5 +12400,57 @@
     "RequiredGathering": 1732,
     "NameRaw": "Rummy-nosed Tetra",
     "ItemId": 36541
+  },
+  {
+    "Id": 961,
+    "ClassJobCategory": 34,
+    "IsRandom": true,
+    "RetainerLevel": 90,
+    "VentureCost": 2,
+    "MaxTime": 1080,
+    "Experience": 5311200,
+    "RequiredItemLevel": 530,
+    "RequiredGathering": 0,
+    "NameRaw": "Field Exploration XXVIII",
+    "ItemId": 0
+  },
+  {
+    "Id": 962,
+    "ClassJobCategory": 17,
+    "IsRandom": true,
+    "RetainerLevel": 90,
+    "VentureCost": 2,
+    "MaxTime": 1080,
+    "Experience": 5311200,
+    "RequiredItemLevel": 0,
+    "RequiredGathering": 2258,
+    "NameRaw": "Highland Exploration XXVIII",
+    "ItemId": 0
+  },
+  {
+    "Id": 963,
+    "ClassJobCategory": 18,
+    "IsRandom": true,
+    "RetainerLevel": 90,
+    "VentureCost": 2,
+    "MaxTime": 1080,
+    "Experience": 5311200,
+    "RequiredItemLevel": 0,
+    "RequiredGathering": 2258,
+    "NameRaw": "Woodland Exploration XXVIII",
+    "ItemId": 0
+  },
+  {
+    "Id": 964,
+    "ClassJobCategory": 19,
+    "IsRandom": true,
+    "RetainerLevel": 90,
+    "VentureCost": 2,
+    "MaxTime": 1080,
+    "Experience": 5311200,
+    "RequiredItemLevel": 0,
+    "RequiredGathering": 1806,
+    "NameRaw": "Waterside Exploration XXVIII",
+    "ItemId": 0
   }
 ]
