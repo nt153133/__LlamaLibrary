@@ -15,7 +15,8 @@ namespace LlamaLibrary.RemoteAgents
         {
             [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 48 8D 5E ? Add 3 TraceRelative")]
             internal static IntPtr VTable;
-            [Offset("Search 48 8D 8E ? ? ? ? 33 D2 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C6 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? 48 89 5C 24 ? Add 3 Read32")]
+            [Offset("Search 48 8D 8E ? ? ? ? 33 D2 41 B8 ? ? ? ? E8 ? ? ? ? 48 8D 8E ? ? ? ? E8 ? ? ? ? Add 3 Read32")]
+            [OffsetCN("Search 48 8D 8E ? ? ? ? 33 D2 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C6 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? 48 89 5C 24 ? Add 3 Read32")]
             internal static int AgentRetainerOffset;
             [Offset("Search 83 FB ? 72 ? 33 D2 48 8D 4C 24 ? E8 ? ? ? ? 48 8D 15 ? ? ? ? Add 2 Read8")]
             internal static int MaxRetainers;

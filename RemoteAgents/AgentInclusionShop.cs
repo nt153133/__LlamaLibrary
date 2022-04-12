@@ -28,7 +28,8 @@ namespace LlamaLibrary.RemoteAgents
             internal static int SecondPointer;
 
             //0x20
-            [Offset("Search 41 8B 46 ? 48 C1 EE ? Add 3 Read8")]
+            [Offset("41 8B 47 ? 48 C1 EB ? Add 3 Read8")]
+            [OffsetCN("Search 41 8B 46 ? 48 C1 EE ? Add 3 Read8")]
             internal static int ShopKey;
 
             //0x38
@@ -36,7 +37,8 @@ namespace LlamaLibrary.RemoteAgents
             internal static int PointerToStartOfShopThing;
 
             //0x1177
-            [Offset("44 3A B0 ? ? ? ? 0F 82 ? ? ? ? 4C 8B 7C 24 ? Add 3 Read32")]
+            [Offset("40 38 B1 ? ? ? ? 0F 86 ? ? ? ? 66 66 0F 1F 84 00 ? ? ? ? Add 3 Read32")]
+            [OffsetCN("44 3A B0 ? ? ? ? 0F 82 ? ? ? ? 4C 8B 7C 24 ? Add 3 Read32")]
             internal static int NumberOfCategories;
 
             //0x1223
