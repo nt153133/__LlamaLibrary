@@ -37,12 +37,12 @@ namespace LlamaLibrary.RemoteAgents
             internal static int PointerToStartOfShopThing;
 
             //0x1177
-            [Offset("40 38 B1 ? ? ? ? 0F 86 ? ? ? ? 66 66 0F 1F 84 00 ? ? ? ? Add 3 Read32")]
-            [OffsetCN("44 3A B0 ? ? ? ? 0F 82 ? ? ? ? 4C 8B 7C 24 ? Add 3 Read32")]
+            [Offset("44 3A B0 ? ? ? ? 0F 82 ? ? ? ? 4C 8B 7C 24 ? Add 3 Read32")]
             internal static int NumberOfCategories;
 
             //0x1223
-            [Offset("40 38 B1 ? ? ? ? 0F 86 ? ? ? ? 66 0F 1F 44 00 ? Add 3 Read32")]
+            [Offset("40 38 B1 ? ? ? ? 0F 86 ? ? ? ? 66 66 0F 1F 84 00 ? ? ? ? Add 3 Read32")]
+            [OffsetCN("40 38 B1 ? ? ? ? 0F 86 ? ? ? ? 66 0F 1F 44 00 ? Add 3 Read32")]
             internal static int NumberOfSubCategories;
 
             //0x11A9
