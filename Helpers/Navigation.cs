@@ -358,6 +358,7 @@ namespace LlamaLibrary.Helpers
                             await Coroutine.Wait(100, () => Talk.DialogOpen);
                             await Coroutine.Yield();
                         }
+                        await Coroutine.Wait(5000, () => window.IsOpen);
                     }
                 }
             }

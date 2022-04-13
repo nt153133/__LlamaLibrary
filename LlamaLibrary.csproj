@@ -101,6 +101,7 @@
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
     <Compile Include="RemoteWindows\Achievement.cs" />
     <Compile Include="RemoteWindows\CharaMakeDataImport.cs" />
+    <Compile Include="RemoteWindows\ContentsTutorial.cs" />
     <Compile Include="RemoteWindows\DawnStory.cs" />
     <Compile Include="RemoteWindows\FreeCompanyChest.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
