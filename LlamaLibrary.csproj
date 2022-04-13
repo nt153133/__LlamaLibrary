@@ -127,6 +127,7 @@
     <Compile Include="Structs\BeastTribeStat.cs" />
     <Compile Include="Structs\CycleTime.cs" />
     <Compile Include="Structs\DailyQuestRead.cs" />
+    <Compile Include="Structs\DutyInfo.cs" />
     <Compile Include="Structs\GCSupplyItem.cs" />
     <Compile Include="Structs\InclusionShopItem.cs" />
     <Compile Include="Structs\InclusionShopItemStruct.cs" />
