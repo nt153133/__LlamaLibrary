@@ -9,6 +9,7 @@ using ff14bot.Managers;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Logging;
+using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using static LlamaLibrary.Helpers.GeneralFunctions;
 
@@ -18,7 +19,7 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly string Name = "GrandCompanyHelper";
         private static readonly Color LogColor = Colors.LimeGreen;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new LLogger(Name, LogColor, LogLevel.Information);
 
         public static Dictionary<GrandCompany, KeyValuePair<uint, Vector3>> BaseLocations = new Dictionary<GrandCompany, KeyValuePair<uint, Vector3>>
         {
@@ -258,30 +259,61 @@ namespace LlamaLibrary.Helpers
 
             if (GrandCompanySupplyList.Instance.IsOpen)
             {
-                await GrandCompanySupplyList.Instance.SwitchToExpertDelivery();
-                await Coroutine.Sleep(3000);
+                if (AgentGrandCompanySupply.Instance.HandinType != GCSupplyType.Expert)
+                {
+                    Log.Debug("Switching to Expert Delivery");
+                    await GrandCompanySupplyList.Instance.SwitchToExpertDelivery();
+                }
 
-                var i = 0;
-                var count = GrandCompanySupplyList.Instance.GetNumberOfTurnins();
+                //Check Filter
+                if (AgentGrandCompanySupply.Instance.ExpertFilter != GCFilter.HideArmory)
+                {
+                    Log.Debug($"Setting filter to hide armory it's currently {AgentGrandCompanySupply.Instance.ExpertFilter}");
+                    GrandCompanySupplyList.Instance.SetExpertFilter((byte)GCFilter.HideArmory);
+                    await Coroutine.Wait(2000, () => AgentGrandCompanySupply.Instance.ExpertFilter == GCFilter.HideArmory);
+                }
 
+                //Get them items
+                var items = AgentGrandCompanySupply.Instance.ExpertSupplyItems;
+
+                //var i = 0;
+                var count = items.Length;
+                Log.Information($"Item Count {count}");
                 if (count > 0)
                 {
                     for (var index = 0; index < count; index++)
                     {
                         //var item = windowItemIds[index];
                         //Log.Information($"{index}");
+                        var oldCount = AgentGrandCompanySupply.Instance.SupplyItemCount;
+                        Log.Information("Clicking");
                         GrandCompanySupplyList.Instance.ClickItem(0);
-                        await Coroutine.Wait(1000, () => SelectYesno.IsOpen);
-                        if (SelectYesno.IsOpen)
+
+                        if (items[index].IsHQ)
                         {
-                            SelectYesno.Yes();
+                            Log.Debug("Waiting for select yes/no");
+                            if (await Coroutine.Wait(5000, () => SelectYesno.IsOpen))
+                            {
+                                SelectYesno.Yes();
+                            }
                         }
 
-                        await Coroutine.Wait(5000, () => GrandCompanySupplyReward.Instance.IsOpen);
+                        if (!await GrandCompanySupplyReward.Instance.WaitTillWindowOpen(10000))
+                        {
+                            Log.Error("Reward window did not show");
+                            return;
+                        }
+
                         GrandCompanySupplyReward.Instance.Confirm();
-                        await Coroutine.Wait(5000, () => GrandCompanySupplyList.Instance.IsOpen);
-                        i += 1;
-                        await Coroutine.Sleep(500);
+
+                        if (!await GrandCompanySupplyList.Instance.WaitTillWindowOpen(10000))
+                        {
+                            Log.Error("Reward window did not close");
+                            return;
+                        }
+
+                        //i += 1;
+                        await Coroutine.Wait(5000, () => AgentGrandCompanySupply.Instance.SupplyItemCount < oldCount);
                     }
                 }
 
@@ -296,6 +328,5 @@ namespace LlamaLibrary.Helpers
                 }
             }
         }
-
     }
 }
