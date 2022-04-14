@@ -349,13 +349,14 @@ namespace LlamaLibrary.Helpers
 
                     await Coroutine.Wait(5000, () => window.IsOpen || DialogOpen);
 
-                    if (DialogOpen)
+                    await Coroutine.Wait(20000, () => Talk.DialogOpen);
+                    if (Talk.DialogOpen)
                     {
                         while (Talk.DialogOpen)
                         {
                             Talk.Next();
-                            await Coroutine.Wait(100, () => !Talk.DialogOpen);
-                            await Coroutine.Wait(100, () => Talk.DialogOpen);
+                            await Coroutine.Wait(500, () => !Talk.DialogOpen);
+                            await Coroutine.Wait(500, () => Talk.DialogOpen);
                             await Coroutine.Yield();
                         }
                         await Coroutine.Wait(5000, () => window.IsOpen);

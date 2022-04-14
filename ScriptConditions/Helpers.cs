@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Clio.Utilities;
 using ff14bot;
 using ff14bot.Directors;
 using ff14bot.Enums;
@@ -296,6 +297,11 @@ namespace LlamaLibrary.ScriptConditions
             {
                 throw new TimeoutException();
             }
+        }
+
+        public static int DistanceSqrTo(string loc)
+        {
+            return (int)Core.Me.Location.DistanceSqr(new Vector3(loc));
         }
     }
 }
