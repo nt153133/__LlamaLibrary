@@ -33,6 +33,11 @@ namespace LlamaLibrary.Helpers
             return await NavGraph.GetPathAsync(ZoneId, xyz);
         }
 
+        public static async Task<bool> GetTo(Location location)
+        {
+            return await GetTo(location.ZoneId, location.Coordinates);
+        }
+
         public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ)
         {
             /*if (ZoneId == 620)
