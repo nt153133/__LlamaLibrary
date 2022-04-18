@@ -1,5 +1,6 @@
 ﻿using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using Buddy.Coroutines;
 
 namespace LlamaLibrary.Helpers.Ping
 {
@@ -42,7 +43,7 @@ namespace LlamaLibrary.Helpers.Ping
 
             for (int i = 0; i < echoNum; i++)
             {
-                PingReply reply = await pingSender.SendPingAsync(host, timeout);
+                PingReply reply = await Coroutine.ExternalTask(pingSender.SendPingAsync(host, timeout));
                 if (reply.Status == IPStatus.Success)
                 {
                     totalTime += reply.RoundtripTime;
