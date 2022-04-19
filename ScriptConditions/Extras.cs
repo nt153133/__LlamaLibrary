@@ -286,12 +286,12 @@ namespace LlamaLibrary.ScriptConditions
             }
         }
 
-        public static bool IsNearShortcut(int npcID)
+        public static bool IsNearShortcut(int npcID, int distance = 10)
         {
             var npc = GameObjectManager.GetObjectByNPCId((uint) npcID);
             if (npc != null)
             {
-                return npc.Distance2D(Core.Me.Location) <= 10 && npc.IsTargetable;
+                return npc.Distance2D(Core.Me.Location) <= distance && npc.IsTargetable;
             }
 
             return false;
