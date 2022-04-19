@@ -28,6 +28,7 @@ namespace LlamaLibrary.ScriptConditions
         private static readonly uint[] IdList2 = { 29994, 29995, 29996, 29997, 29998, 29999, 30000, 30001, 30002, 30003, 30004, 30005, 30008, 30009, 30006, 30007, 30010, 30011, 30012, 30013, 31578, 31579, 31580, 31581, 31582, 31583, 31584, 31585, 31586, 31587, 31588, 31589, 31590, 31591, 31592, 31593, 31594, 31595, 31596, 31597, 31598, 31599, 31600, 31601, 31602, 31603, 32882, 32883, 32884, 32885, 32886, 32887, 32888, 32889, 32890, 32891, 32892, 32893, 32894, 32895, 32896, 32897, 32898, 32899, 32900, 32901, 32902, 32903, 32904, 32905, 32906, 32907 };
         private static readonly uint[] IdList3 = { 35626, 35627, 35628, 35629, 35630, 35631, 35632, 35633, 35634, 35635, 35636, 35637, 35638, 35639, 35640, 35641, 35642, 35643, 35644, 35645, 35646, 35647, 35648, 35649, 35650, 35651, 35652, 35653, 35654, 35655, 35656, 35657, 35658, 35659, 35660, 35661, 35662, 35663, 35664, 35665 };
 
+        private static bool hasLisbeth = false;
         public static int HasIshgardItem()
         {
             return InventoryManager.FilledSlots.Count(i => IdList.Contains(i.RawItemId) && i.IsCollectable && i.Collectability > 50);
@@ -302,6 +303,17 @@ namespace LlamaLibrary.ScriptConditions
         public static int DistanceSqrTo(string loc)
         {
             return (int)Core.Me.Location.DistanceSqr(new Vector3(loc));
+        }
+
+        public static bool HasLisbeth()
+        {
+            return hasLisbeth;
+        }
+
+        public static async Task<bool> CheckLisbeth()
+        {
+            hasLisbeth = await Lisbeth.HasLisbeth();
+            return hasLisbeth;
         }
     }
 }

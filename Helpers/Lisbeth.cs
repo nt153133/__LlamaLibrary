@@ -113,6 +113,23 @@ namespace LlamaLibrary.Helpers
             Log.Information("Lisbeth found.");
         }
 
+        public static async Task<bool> HasLisbeth()
+        {
+            try
+            {
+                if (BotManager.Bots.FirstOrDefault(c => c.EnglishName == "Lisbeth") == default)
+                {
+                    return false;
+                }
+
+                return await Lisbeth.GetOrderExpansionAsJson("[{\"Group\":1,\"Item\":1,\"Amount\":1,\"Enabled\":true,\"Type\":\"None\"}]") != null;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static string GetCurrentAreaName => _getCurrentAreaName.Invoke();
 
         public static async Task Kill(Character mob)
