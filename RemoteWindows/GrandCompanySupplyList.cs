@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
+using ff14bot.Enums;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteWindows
@@ -12,6 +15,14 @@ namespace LlamaLibrary.RemoteWindows
     public class GrandCompanySupplyList : RemoteWindow<GrandCompanySupplyList>
     {
         private const string WindowName = "GrandCompanySupplyList";
+
+        public static Dictionary<string, int> Properties = new Dictionary<string, int>
+        {
+            { "NumberOfTurnins", 8 },
+            { "ReqElements", 385 },
+            { "HandInElements", 345 },
+            { "TurninIdElements", 425 },
+        };
 
         //E8 ? ? ? ? 49 8D 8F ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 8B F8
         internal static class Offsets
@@ -23,12 +34,23 @@ namespace LlamaLibrary.RemoteWindows
 
         public GrandCompanySupplyList() : base(WindowName)
         {
+            if (Translator.Language == Language.Chn)
+            {
+                Properties = new Dictionary<string, int>
+                {
+                    { "NumberOfTurnins", 7 },
+                    { "ReqElements", 386 },
+                    { "HandInElements", 346 },
+                    { "TurninIdElements", 426 },
+                };
+            }
+
             _name = WindowName;
         }
 
         public int GetNumberOfTurnins()
         {
-            return IsOpen ? Elements[7].TrimmedData : 0;
+            return IsOpen ? Elements[Properties["NumberOfTurnins"]].TrimmedData : 0;
         }
 
         public bool[] GetTurninBools()
@@ -36,8 +58,8 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = Elements;
             var numberTurnins = GetNumberOfTurnins();
 
-            var canHandInElements = new ArraySegment<TwoInt>(currentElements, 346, numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
-            var reqElements = new ArraySegment<TwoInt>(currentElements, 386, numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
+            var canHandInElements = new ArraySegment<TwoInt>(currentElements, Properties["HandInElements"], numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
+            var reqElements = new ArraySegment<TwoInt>(currentElements, Properties["ReqElements"], numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
 
             var turins = new bool[numberTurnins];
 
@@ -54,7 +76,7 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = Elements;
             var numberTurnins = GetNumberOfTurnins();
 
-            var turninIdElements = new ArraySegment<TwoInt>(currentElements, 426, numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
+            var turninIdElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninIdElements"], numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
 
             return turninIdElements;
         }
@@ -64,7 +86,7 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = Elements;
             var numberTurnins = GetNumberOfTurnins();
 
-            var reqElements = new ArraySegment<TwoInt>(currentElements, 386, numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
+            var reqElements = new ArraySegment<TwoInt>(currentElements, Properties["ReqElements"], numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
 
             return reqElements;
         }
