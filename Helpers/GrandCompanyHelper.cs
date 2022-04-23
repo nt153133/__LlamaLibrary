@@ -288,14 +288,14 @@ namespace LlamaLibrary.Helpers
                         var oldCount = AgentGrandCompanySupply.Instance.SupplyItemCount;
                         Log.Information("Clicking");
                         GrandCompanySupplyList.Instance.ClickItem(0);
-
-                        if (items[index].IsHQ)
+                        await Coroutine.Wait(1000, () => SelectYesno.IsOpen);
+                        if (SelectYesno.IsOpen)
                         {
-                            Log.Debug("Waiting for select yes/no");
-                            if (await Coroutine.Wait(5000, () => SelectYesno.IsOpen))
-                            {
+                            //Log.Debug("Waiting for select yes/no");
+                            //if (await Coroutine.Wait(5000, () => SelectYesno.IsOpen))
+                            //{
                                 SelectYesno.Yes();
-                            }
+                            //}
                         }
 
                         if (!await GrandCompanySupplyReward.Instance.WaitTillWindowOpen(10000))
