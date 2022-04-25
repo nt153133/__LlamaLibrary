@@ -57,7 +57,7 @@ namespace LlamaLibrary.Logging
         {
             var logLine = $"[{_name}] {message}";
 
-            ff14bot.Helpers.Logging.Write(color, logLine);
+            ff14bot.Helpers.Logging.Write(ff14bot.Helpers.LogLevel.Quiet, color, logLine); //ff14bot.Helpers.LogLevel.Normal
             Console.WriteLine(logLine);  // Needed to appear in debugger, tests, etc
         }
 

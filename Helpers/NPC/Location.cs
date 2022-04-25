@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Clio.Utilities;
+using ff14bot;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 
@@ -98,6 +99,16 @@ namespace LlamaLibrary.Helpers.NPC
             {
                 return (ZoneId.GetHashCode() * 397) ^ Coordinates.GetHashCode();
             }
+        }
+
+        public override string ToString()
+        {
+            return $"Zone: {ZoneName}({ZoneId}), Coordinates: {Coordinates}";
+        }
+
+        public static Location CurrentLocation()
+        {
+            return new Location(WorldManager.ZoneId, Core.Me.Location);
         }
     }
 }
