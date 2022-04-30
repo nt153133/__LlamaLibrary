@@ -14,6 +14,8 @@ namespace LlamaLibrary.Helpers
 
         public static string VentureCompleteText => addon2385[Language];
 
+        public static string VentureRunningText => Addon2384[Language];
+
         public static string AssignVentureText => addon2386[Language];
 
         public static string AssignVentureInProgressText => addon2387[Language];
@@ -57,6 +59,16 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Voir le rapport de la tâche terminée" },
             { Language.Ger, "Abgeschlossene Unternehmung einsehen" },
             { Language.Chn, "查看雇员探险情况　[结束]" }
+        };
+
+        //Addon # 2384
+        static Dictionary<Language, string> Addon2384 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "View venture report. (Complete on" },
+            { Language.Jap, "リテイナーベンチャーの確認　[～" },
+            { Language.Fre, "Voir la tâche en cours [Fin le" },
+            { Language.Ger, "Laufende Unternehmung einsehen (Abschluss am" },
+            { Language.Chn, "" }
         };
 
         //Addon # 2386

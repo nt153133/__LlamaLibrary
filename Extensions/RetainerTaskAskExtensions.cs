@@ -4,6 +4,8 @@ namespace LlamaLibrary.Extensions
 {
     public static class RetainerTaskAskExtensions
     {
+
+
         public static bool CanAssign()
         {
             var WindowByName = RaptureAtkUnitManager.GetWindowByName("RetainerTaskAsk");
