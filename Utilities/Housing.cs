@@ -57,12 +57,14 @@ namespace LlamaLibrary.Utilities
                 }
             }
 
+            /*
             if (large)
             {
                 var message = string.Join("\n", outputLarge);
                 var title = "Large";
                 MessageBox.Show(message, title);
             }
+            */
 
             if (ConditionParser.HasAetheryte(8))
             {
@@ -83,12 +85,14 @@ namespace LlamaLibrary.Utilities
                 }
             }
 
+            /*
             if (large)
             {
                 var message = string.Join("\n", outputLarge);
                 var title = "Large";
                 MessageBox.Show(message, title);
             }
+            */
 
             if (ConditionParser.HasAetheryte(9))
             {
@@ -109,12 +113,12 @@ namespace LlamaLibrary.Utilities
                 }
             }
 
-            if (large)
+            /*if (large)
             {
                 var message = string.Join("\n", outputLarge);
                 var title = "Large";
                 MessageBox.Show(message, title);
-            }
+            }*/
 
             if (ConditionParser.HasAetheryte(111))
             {
@@ -150,6 +154,7 @@ namespace LlamaLibrary.Utilities
                 }
             }
 
+            /*
             if (medium)
             {
                 var message = string.Join("\n", outputMed);
@@ -162,7 +167,7 @@ namespace LlamaLibrary.Utilities
                 var message = string.Join("\n", outputLarge);
                 var title = "Large";
                 MessageBox.Show(message, title);
-            }
+            }*/
         }
 
         public static async Task<List<string>> GetMistsPlots()
