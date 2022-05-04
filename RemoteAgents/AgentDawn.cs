@@ -12,7 +12,7 @@ namespace LlamaLibrary.RemoteAgents
         {
             [Offset("Search 41 88 46 ? 0F B6 42 ? Add 3 Read8")]
             internal static int DawnTrustId;
-            [Offset("Search 48 8D 05 ? ? ? ? 48 C7 43 ? ? ? ? ? 48 8D 4B ? 48 89 03 66 C7 43 ? ? ? Add 3 TraceRelative")]
+            [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 8D 4B ? Add 3 TraceRelative")]
             internal static IntPtr DawnVtable;
             [Offset("Search 41 88 46 ? E8 ? ? ? ? C6 43 ? ? Add 3 Read8")]
             internal static int DawnIsScenario;
