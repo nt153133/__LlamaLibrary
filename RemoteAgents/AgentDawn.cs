@@ -10,12 +10,12 @@ namespace LlamaLibrary.RemoteAgents
         public IntPtr RegisteredVtable => Offsets.DawnVtable;
         private static class Offsets
         {
-            [Offset("Search 41 88 46 ? 0F B6 42 ? Add 3 Read8")]
+            [Offset("Search 44 0F B6 5B ? 40 84 F6 Add 4 Read8")]
             internal static int DawnTrustId;
             [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 8D 4B ? Add 3 TraceRelative")]
             internal static IntPtr DawnVtable;
-            [Offset("Search 41 88 46 ? E8 ? ? ? ? C6 43 ? ? Add 3 Read8")]
-            internal static int DawnIsScenario;
+            /*[Offset("Search 41 88 46 ? E8 ? ? ? ? C6 43 ? ? Add 3 Read8")]
+            internal static int DawnIsScenario;*/
         }
 
         protected AgentDawn(IntPtr pointer) : base(pointer)
@@ -28,10 +28,11 @@ namespace LlamaLibrary.RemoteAgents
             set => Core.Memory.Write(Pointer + Offsets.DawnTrustId, (byte)value);
         }
 
+        /*
         public bool IsScenario
         {
             get => Core.Memory.Read<byte>(Pointer + Offsets.DawnIsScenario) == 0;
             set => Core.Memory.Write(Pointer + Offsets.DawnIsScenario, value ? (byte)0 : (byte)1);
-        }
+        }*/
     }
 }
