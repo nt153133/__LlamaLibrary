@@ -38,6 +38,16 @@ namespace LlamaLibrary.Helpers
             return await GetTo(location.ZoneId, location.Coordinates);
         }
 
+        public static async Task<bool> GetToWithLisbeth(uint ZoneId, Vector3 XYZ)
+        {
+            if (!await Lisbeth.TravelToZones(ZoneId, XYZ))
+            {
+                return await GetTo(ZoneId, XYZ);
+            }
+
+            return true;
+        }
+
         public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ)
         {
             /*if (ZoneId == 620)
