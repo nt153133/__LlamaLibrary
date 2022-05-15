@@ -22,7 +22,7 @@ namespace LlamaLibrary.Helpers
 
         internal static class Offsets
         {
-            [Offset("Search 44 89 44 24 ? 53 55 57 41 54")]
+            [Offset("Search E8 ? ? ? ? E9 ? ? ? ? 48 8B 4E ? 48 8B 01 FF 90 ? ? ? ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? 8B 93 ? ? ? ? 45 33 D2 Add 1 TraceRelative")]
             [OffsetCN("E8 ? ? ? ? E9 ? ? ? ? 48 8B 4E ? 48 8B 01 FF 90 ? ? ? ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? 8B 93 ? ? ? ? 45 33 D2 Add 1 TraceRelative")]
             internal static IntPtr DoAction;
 
