@@ -35,6 +35,26 @@ namespace LlamaLibrary.Helpers
             internal static int DecipherSpell;
         }
 
+        public static bool UseAction(ff14bot.Enums.ActionType actionType, uint actionID, long targetID = 0xE000_0000, uint a4 = 0, uint a5 = 0, uint a6 = 0, uint a7 = 0)
+        {
+            Core.Memory.ClearCallCache();
+            var result = Core.Memory.CallInjected64<byte>(Offsets.DoAction, new object[8]
+            {
+                Offsets.ActionManagerParam, //rcx
+                (uint)actionType, //rdx
+                (uint)actionID, //r8
+                (long)targetID, //r9
+                a4,
+                a5,
+                a6,
+                a7
+            }) == 1;
+
+            Core.Memory.ClearCallCache();
+
+            return result;
+        }
+
         public static bool DoActionDecipher(BagSlot slot)
         {
             if ((slot.Item.MyItemRole() != MyItemRole.Map) || HasMap())
