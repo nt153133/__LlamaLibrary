@@ -711,8 +711,8 @@ namespace LlamaLibrary.Helpers
 
             var ae = WorldManager.AvailableLocations;
 
-            var privateHouses = ae.Where(x => privateHousing.Contains(x.AetheryteId)).OrderBy(x => x.GilCost);
-            var fcHouses = ae.Where(x => fcHousing.Contains(x.AetheryteId)).OrderBy(x => x.GilCost);
+            var privateHouses = ae.Where(x => privateHousing.Contains(x.AetheryteId)).OrderBy(x => x.SubIndex);
+            var fcHouses = ae.Where(x => fcHousing.Contains(x.AetheryteId)).OrderBy(x => x.SubIndex);
 
             var havePrivateHousing = privateHouses.Any();
             var haveFcHousing = fcHouses.Any();

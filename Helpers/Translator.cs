@@ -26,6 +26,8 @@ namespace LlamaLibrary.Helpers
 
         public static string EntrustRetainer => addon2378[Language];
 
+        public static string SelectWard => Addon6349[Language];
+
         static Translator()
         {
             Language = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
@@ -139,6 +141,16 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Mettre en vente un objet du servant" },
             { Language.Ger, "Gegenstände aus dem Gehilfeninventar verkaufen" },
             { Language.Chn, "" }
+        };
+
+        //Addon # 6349
+        static Dictionary<Language, string> Addon6349 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Go to specified ward. (Review Tabs)" },
+            { Language.Jap, "区を指定して移動（ハウスアピール確認）" },
+            { Language.Fre, "Spécifier le secteur où aller (Voir les attraits)" },
+            { Language.Ger, "Zum angegebenen Bezirk (Zweck der Unterkunft einsehen)" },
+            { Language.Chn, "移动到指定小区" }
         };
     }
 }

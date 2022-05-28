@@ -122,8 +122,16 @@ namespace LlamaLibrary.Utilities
 
             if (ConditionParser.HasAetheryte(111))
             {
-                output.AddRange(await GetShiroganePlots());
+               output.AddRange(await GetShiroganePlots());
             }
+
+
+            if (ConditionParser.IsQuestCompleted(69708))
+            {
+                output.AddRange(await GetEmpyreumPlots());
+            }
+
+
 
             if (!output.Any())
             {
@@ -190,6 +198,38 @@ namespace LlamaLibrary.Utilities
             var list = await HousingWards();
 
             if (ConditionParser.IsQuestCompleted(66750))
+            {
+                await CloseHousingWardsNoLoad();
+            }
+            else
+            {
+                await CloseHousingWards();
+            }
+
+            return list;
+        }
+
+        public static async Task<List<string>> GetEmpyreumPlots()
+        {
+            if (ConditionParser.IsQuestCompleted(69708))
+            {
+                await GetToResidential(70);
+            }
+            else
+            {
+                Log.Error("Need to unlock Empyreum by doing the quest Ascending To Empyreum");
+                return new List<string>();
+            }
+
+            if (!SelectString.IsOpen)
+            {
+                return new List<string>();
+            }
+
+            await OpenHousingWards();
+            var list = await HousingWards();
+
+            if (ConditionParser.IsQuestCompleted(69708))
             {
                 await CloseHousingWardsNoLoad();
             }
@@ -331,13 +371,21 @@ namespace LlamaLibrary.Utilities
                 {
                     target = new Vector3(-89.30112f, 18.80033f, -2.019181f);
                 }
-                else if (WorldManager.RawZoneId == 628)
+                else if (WorldManager.RawZoneId == 628)//kugane
                 {
                     target = new Vector3(48.03579f, 4.549999f, -31.83851f);
                 }
 
                 //await CommonTasks.MoveAndStop(new MoveToParameters(target.FanOutRandom(2f), unit.Name), 2f, true);
-                await Navigation.GetTo(WorldManager.ZoneId, target);
+                if (aetheryteId == 70)
+                {
+                    await Navigation.OffMeshMoveInteract(unit);
+                }
+                else
+                {
+                    await Navigation.GetTo(WorldManager.ZoneId, target);
+                }
+
                 /*                Navigator.PlayerMover.MoveTowards(target);
                                 while (!unit.IsWithinInteractRange)
                                 {

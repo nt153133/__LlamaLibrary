@@ -30,6 +30,7 @@ namespace LlamaLibrary.Helpers
 
         internal static async Task<Queue<NavGraph.INode>> GenerateNodes(uint ZoneId, Vector3 xyz)
         {
+            Log.Information($"Getpath {ZoneId} {xyz}");
             return await NavGraph.GetPathAsync(ZoneId, xyz);
         }
 
