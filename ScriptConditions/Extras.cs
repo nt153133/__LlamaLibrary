@@ -288,7 +288,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsNearShortcut(int npcID)
         {
-            var npc = GameObjectManager.GetObjectByNPCId((uint)npcID);
+            var npc = GameObjectManager.GetObjectByNPCId((uint) npcID);
             if (npc != null)
             {
                 return npc.Distance2D(Core.Me.Location) <= 30 && npc.IsTargetable;
@@ -300,6 +300,11 @@ namespace LlamaLibrary.ScriptConditions
         public static bool IsChineseClient()
         {
             return Translator.Language == Language.Chn;
+        }
+
+        public static bool HasAtLeastOneItem(params int[] list)
+        {
+            return InventoryManager.FilledSlots.Any(i => list.Contains((int) i.RawItemId));
         }
     }
 }
