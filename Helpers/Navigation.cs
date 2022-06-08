@@ -61,6 +61,11 @@ namespace LlamaLibrary.Helpers
                 return await FlightorMove(XYZ);
             }*/
 
+            if ((ZoneId == 534 || ZoneId == 535 || ZoneId == 536) && WorldManager.ZoneId != ZoneId)
+            {
+                await GrandCompanyHelper.GetToGCBarracks();
+            }
+
             if (ZoneId == 401 && WorldManager.ZoneId == ZoneId)
             {
                 return await FlightorMove(XYZ);

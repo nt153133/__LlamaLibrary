@@ -4,8 +4,11 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
+using ff14bot.Behavior;
 using ff14bot.Enums;
 using ff14bot.Managers;
+using ff14bot.Navigation;
+using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Logging;
@@ -96,6 +99,30 @@ namespace LlamaLibrary.Helpers
             var gcBase = BaseLocations[Core.Me.GrandCompany];
             Log.Information($"{Core.Me.GrandCompany} {gcBase.Key} {gcBase.Value}");
             await Navigation.GetTo(gcBase.Key, gcBase.Value);
+        }
+
+        public static async Task GetToGCBarracks()
+        {
+            Navigator.PlayerMover = new SlideMover();
+            Navigator.NavigationProvider = new ServiceNavigationProvider();
+
+            // Not in Barracks
+            Log.Information($"Moving to Barracks");
+            await GrandCompanyHelper.InteractWithNpc(GCNpc.Entrance_to_the_Barracks);
+            await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
+            await Buddy.Coroutines.Coroutine.Sleep(500);
+            if (ff14bot.RemoteWindows.SelectYesno.IsOpen)
+            {
+                Log.Information($"Selecting Yes.");
+                ff14bot.RemoteWindows.SelectYesno.ClickYes();
+            }
+
+            await Coroutine.Wait(5000, () => CommonBehaviors.IsLoading);
+            while (CommonBehaviors.IsLoading)
+            {
+                Log.Information($"Waiting for zoning to finish...");
+                await Coroutine.Wait(-1, () => (!CommonBehaviors.IsLoading));
+            }
         }
 
         public static uint GetNpcByType(GCNpc npc)
