@@ -55,7 +55,7 @@ namespace LlamaLibrary.Utilities
                 var count = bagslot.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    Log.Information($"Opening Coffer {bagslot.Name} #{i+1}");
+                    Log.Information($"Opening Coffer {bagslot.Name} #{i + 1}");
                     bagslot.UseItem();
                     await Coroutine.Wait(5000, () => Core.Me.IsCasting);
                     await Coroutine.Wait(5000, () => !Core.Me.IsCasting);
@@ -64,6 +64,34 @@ namespace LlamaLibrary.Utilities
             }
 
             return true;
+        }
+
+        public static async Task UseUnlockablesAsync()
+        {
+            HashSet<uint> backingActionIds = new HashSet<uint>
+            {
+                853, // Minions
+                25183, // Orchestrion Rolls
+                3357, // Triple Triad Cards
+                2136, // Master Crafting Books
+                4107, // Folklore Gathering Tomes
+            };
+
+            var heldUnlockables = InventoryManager.FilledSlots
+                .Where(bs => bs.CanUse() && bs.Item.BackingAction != null)
+                .Where(bs => backingActionIds.Contains(bs.Item.BackingAction.Id));
+
+            foreach (var unlockable in heldUnlockables)
+            {
+                Log.Information($"Using ({unlockable.RawItemId}) {unlockable.Name}");
+                unlockable.UseItem();
+
+                if (await Coroutine.Wait(5000, () => Core.Me.IsCasting))
+                {
+                    await Coroutine.Wait(5000, () => !Core.Me.IsCasting);
+                    await Coroutine.Sleep(2500);
+                }
+            }
         }
 
         /// <summary>
