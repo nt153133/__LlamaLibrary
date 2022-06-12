@@ -122,6 +122,7 @@
     <Compile Include="RemoteWindows\FateProgress.cs" />
     <Compile Include="RemoteWindows\GrandCompanyRankUp.cs" />
     <Compile Include="RemoteWindows\HelpWindow.cs" />
+    <Compile Include="RemoteWindows\HugeCraftworksSupplyResul.cs" />
     <Compile Include="RemoteWindows\InclusionShop.cs" />
     <Compile Include="RemoteWindows\InputString.cs" />
     <Compile Include="RemoteWindows\NotificationParty.cs" />
