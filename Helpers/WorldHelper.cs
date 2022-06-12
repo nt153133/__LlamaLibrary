@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ff14bot;
+using ff14bot.Enums;
 using ff14bot.Managers;
+using LlamaLibrary.Enums;
 using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Helpers
@@ -24,15 +28,54 @@ namespace LlamaLibrary.Helpers
             internal static int HomeWorld;
         }
 
-        public static byte DataCenterId
+        private static IntPtr DcOffsetLocation;
+
+        static WorldHelper()
+        {
+            var agentPointer = AgentModule.AgentPointers[0];
+            var offset1 = agentPointer + Offsets.Offset1;
+            DcOffsetLocation = offset1 + Offsets.DCOffset;
+        }
+
+        public static readonly Dictionary<WorldDCGroupType, World[]> WorldMap = new Dictionary<WorldDCGroupType, World[]>()
+        {
+            { WorldDCGroupType.Mana, new World[] { World.Asura, World.Belias, World.Pandaemonium, World.Shinryu, World.Anima, World.Hades, World.Ixion, World.Titan, World.Chocobo, World.Mandragora, World.Masamune } },
+            { WorldDCGroupType.Elemental, new World[] { World.Unicorn, World.Carbuncle, World.Kujata, World.Typhon, World.Garuda, World.Ramuh, World.Atomos, World.Tonberry, World.Aegis, World.Gungnir } },
+            { WorldDCGroupType.Gaia, new World[] { World.Yojimbo, World.Zeromus, World.Alexander, World.Fenrir, World.Ultima, World.Valefor, World.Ifrit, World.Bahamut, World.Tiamat, World.Durandal, World.Ridill } },
+            { WorldDCGroupType.Light, new World[] { World.Twintania, World.Lich, World.Zodiark, World.Phoenix, World.Odin, World.Shiva } },
+            { WorldDCGroupType.Crystal, new World[] { World.Brynhildr, World.Mateus, World.Zalera, World.Diabolos, World.Coeurl, World.Malboro, World.Goblin, World.Balmung } },
+            { WorldDCGroupType.Primal, new World[] { World.Famfrit, World.Exodus, World.Lamia, World.Leviathan, World.Ultros, World.Behemoth, World.Excalibur, World.Hyperion } },
+            { WorldDCGroupType.Chaos, new World[] { World.Omega, World.Moogle, World.Cerberus, World.Louisoix, World.Spriggan, World.Ragnarok } },
+            { WorldDCGroupType.Aether, new World[] { World.Jenova, World.Faerie, World.Siren, World.Gilgamesh, World.Midgardsormr, World.Adamantoise, World.Cactuar, World.Sargatanas } },
+            { WorldDCGroupType.Materia, new World[] { World.Ravana, World.Bismarck, World.Sephirot, World.Sophia, World.Zurvan } },
+        };
+
+        public static World[] CurrentWorldList
         {
             get
             {
-                var agentPointer = AgentModule.AgentPointers[0];
-                var offset1 = agentPointer + Offsets.Offset1;
-                return Core.Memory.Read<byte>(offset1 + Offsets.DCOffset);
+                if (!CheckDC(CurrentWorld))
+                {
+                    return Array.Empty<World>();
+                }
+
+                return WorldMap[DataCenter];
             }
         }
+
+        public static byte DataCenterId => Core.Memory.Read<byte>(DcOffsetLocation);
+
+        public static bool CheckDC(World world)
+        {
+            if (Translator.Language == Language.Chn)
+            {
+                return false;
+            }
+
+            return WorldMap.ContainsKey(DataCenter) && WorldMap[DataCenter].Contains(world);
+        }
+
+        public static WorldDCGroupType DataCenter => (WorldDCGroupType)DataCenterId;
 
         public static readonly Dictionary<byte, string> DataCenterNamesDictionary = new Dictionary<byte, string>
         {
@@ -52,6 +95,10 @@ namespace LlamaLibrary.Helpers
         public static ushort CurrentWorldId => Core.Memory.NoCacheRead<ushort>(Core.Me.Pointer + Offsets.CurrentWorld);
 
         public static ushort HomeWorldId => Core.Memory.NoCacheRead<ushort>(Core.Me.Pointer + Offsets.HomeWorld);
+
+        public static World CurrentWorld => (World)CurrentWorldId;
+
+        public static World HomeWorld => (World)HomeWorldId;
 
         public static readonly Dictionary<ushort, string> WorldNamesDictionary = new Dictionary<ushort, string>
         {
@@ -136,8 +183,8 @@ namespace LlamaLibrary.Helpers
             { 99, "Sargatanas" },
         };
 
-        public static string DataCenterName => DataCenterNamesDictionary[DataCenterId];
+        public static string DataCenterName => DataCenter.ToString();
 
-        public static string HomeWorldName => WorldNamesDictionary[HomeWorldId];
+        public static string HomeWorldName => HomeWorld.WorldName();
     }
 }

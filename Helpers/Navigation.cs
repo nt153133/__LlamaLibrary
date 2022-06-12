@@ -39,6 +39,11 @@ namespace LlamaLibrary.Helpers
             return await GetTo(location.ZoneId, location.Coordinates);
         }
 
+        public static async Task<bool> GetToWithLisbeth(uint ZoneId, double x, double y, double z)
+        {
+            return await GetToWithLisbeth(ZoneId, new Vector3((float)x, (float)y, (float)z));
+        }
+
         public static async Task<bool> GetToWithLisbeth(uint ZoneId, Vector3 XYZ)
         {
             if (!await Lisbeth.TravelToZones(ZoneId, XYZ))
@@ -47,6 +52,11 @@ namespace LlamaLibrary.Helpers
             }
 
             return true;
+        }
+
+        public static async Task<bool> GetTo(uint ZoneId, double x, double y, double z)
+        {
+            return await GetTo(ZoneId, new Vector3((float)x, (float)y, (float)z));
         }
 
         public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ)
@@ -297,6 +307,33 @@ namespace LlamaLibrary.Helpers
             return moving == MoveResult.ReachedDestination;
         }
 
+        public static async Task<GameObject> GetToAE(uint id)
+        {
+            var AE = GameObjectManager.GetObjectsOfType<Aetheryte>().FirstOrDefault(i => i.NpcId == id);
+            if (AE == default(Aetheryte))
+            {
+                if (!await CommonTasks.Teleport(id))
+                {
+                    Log.Error($"Couldn't teleport to AE {id}");
+                    return default;
+                }
+
+                await Coroutine.Wait(5000, () => GameObjectManager.GetObjectByNPCId(id) != null);
+
+                await Coroutine.Sleep(200);
+
+                AE = GameObjectManager.GetObjectsOfType<Aetheryte>().FirstOrDefault(i => i.NpcId == id);
+            }
+
+            if (!AE.IsWithinInteractRange)
+            {
+                Log.Information("Using flightor to get closer");
+                await Navigation.FlightorMove(AE.Location, 7);
+            }
+
+            return AE;
+        }
+
         public static async Task<bool> GetToIslesOfUmbra()
         {
             if (WorldManager.ZoneId == 138 && (WorldManager.SubZoneId == 461 || WorldManager.SubZoneId == 228))
@@ -380,6 +417,7 @@ namespace LlamaLibrary.Helpers
                             await Coroutine.Wait(500, () => Talk.DialogOpen);
                             await Coroutine.Yield();
                         }
+
                         await Coroutine.Wait(5000, () => window.IsOpen);
                     }
                 }

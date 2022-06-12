@@ -1,0 +1,29 @@
+﻿namespace LlamaLibrary.JsonObjects.Lisbeth
+{
+    public enum SourceType
+    {
+        None,
+        Purchase,
+        Gather,
+        Grind,
+        Fisher,
+        Carpenter,
+        Blacksmith,
+        Armorer,
+        Goldsmith,
+        Leatherworker,
+        Weaver,
+        Alchemist,
+        Culinarian,
+        Desynthesize,
+        RetainerRefresh,
+        Exchange,
+        Retainer,
+        GatherMasterpiece,
+        CraftMasterpiece,
+        Leve,
+        FishingExpedition,
+        ResourceApproval,
+        Any
+    }
+}

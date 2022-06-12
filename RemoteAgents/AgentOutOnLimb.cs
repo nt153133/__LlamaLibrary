@@ -17,6 +17,8 @@ namespace LlamaLibrary.RemoteAgents
             internal static int IsReady;
             [Offset("Search 41 C6 86 ? ? ? ? ? EB ? 41 C6 86 ? ? ? ? ? Add 3 Read32")]
             internal static int CursorLocked;
+            [Offset("89 9F ? ? ? ? 48 8B 5C 24 ? 89 B7 ? ? ? ? 48 8B 74 24 ? 89 AF ? ? ? ? Add 2 Read32")]
+            internal static int DoubleDownRemaining;
         }
 
         public IntPtr addressLocation = IntPtr.Zero;
@@ -25,6 +27,8 @@ namespace LlamaLibrary.RemoteAgents
         protected AgentOutOnLimb(IntPtr pointer) : base(pointer)
         {
         }
+
+        public int DoubleDownRemaining => Core.Memory.Read<byte>(Pointer + Offsets.DoubleDownRemaining);
 
         public bool CursorLocked
         {

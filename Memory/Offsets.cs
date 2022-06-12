@@ -70,7 +70,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 89 6C 24 ? 57 41 56 41 57 48 83 EC ? 48 8B E9 44 8B FA")]
         public static IntPtr OpenTradeWindow;
 
-        [Offset("Search 44 0F B7 0D ? ? ? ? 48 8D 56 ? Add 4 TraceRelative")]
+        [Offset("Search 44 0F B7 0D ? ? ? ? 48 8D 57 ? Add 4 TraceRelative")]
         [OffsetCN("Search 44 0F B7 0D ? ? ? ? 48 8D 57 ? Add 4 TraceRelative")]
         public static IntPtr ActorController_iLvl;
 

@@ -96,5 +96,19 @@
     "Name": "Charlemend",
     "RequiredQuest": 69615,
     "Index": 7
+  },
+  {
+    "npcId": 1042241,
+    "Zone": 962,
+    "Location": {
+      "X": 222.8579,
+      "Y": 24.94273,
+      "Z": -197.7722,
+      "MagnitudeSqr": 89401.64,
+      "Magnitude": 299.0011
+    },
+    "Name": "Ameliance",
+    "RequiredQuest": 70059,
+    "Index": 8
   }
 ]
