@@ -16,6 +16,7 @@ namespace LlamaLibrary.Helpers.NPC
         public bool IsInCurrentArea => WorldManager.AetheryteIdsForZone(WorldManager.ZoneId).Select(i => i.Item1).Contains(Location.ClosestAetherytePrimaryResult.Id);
         public bool IsInCurrentZone => WorldManager.ZoneId == Location.ZoneId;
         public string Name => NpcHelper.GetNpcName(NpcId);
+        public GameObject GameObject => GameObjectManager.GameObjects.Where(r => r.IsTargetable && r.NpcId == NpcId).OrderBy(r => r.Distance()).FirstOrDefault();
 
         public Npc(uint npcId, Location location)
         {
