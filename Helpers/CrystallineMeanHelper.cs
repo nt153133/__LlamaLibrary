@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
@@ -17,6 +19,7 @@ using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.JsonObjects.Lisbeth;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -83,7 +86,33 @@ namespace LlamaLibrary.Helpers
 
             if (QuestLogManager.InCutscene)
             {
+                if (Talk.DialogOpen)
+                {
+                    Log.Information("Dealing with Talk Cutscene");
+                    while (Talk.DialogOpen)
+                    {
+                        Talk.Next();
+                        await Coroutine.Wait(200, () => !Talk.DialogOpen);
+                        await Coroutine.Wait(500, () => Talk.DialogOpen);
+                        await Coroutine.Sleep(200);
+                        await Coroutine.Yield();
+                    }
+                }
+
                 await SkipCutscene();
+
+                if (Talk.DialogOpen)
+                {
+                    Log.Information("Dealing with Talk Cutscene #2");
+                    while (Talk.DialogOpen)
+                    {
+                        Talk.Next();
+                        await Coroutine.Wait(200, () => !Talk.DialogOpen);
+                        await Coroutine.Wait(500, () => Talk.DialogOpen);
+                        await Coroutine.Sleep(200);
+                        await Coroutine.Yield();
+                    }
+                }
 
                 facetNpc.Interact();
                 await Coroutine.Sleep(1000);
@@ -91,9 +120,14 @@ namespace LlamaLibrary.Helpers
 
             if (Talk.DialogOpen)
             {
+                Log.Information("Dealing with Talk #0");
                 while (Talk.DialogOpen)
                 {
-                    await LlamaLibrary.Helpers.GeneralFunctions.SmallTalk();
+                    Talk.Next();
+                    await Coroutine.Wait(200, () => !Talk.DialogOpen);
+                    await Coroutine.Wait(500, () => Talk.DialogOpen);
+                    await Coroutine.Sleep(200);
+                    await Coroutine.Yield();
                 }
 
                 facetNpc.Interact();
@@ -123,56 +157,54 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
+            if (Talk.DialogOpen)
+            {
+                Log.Information("Dealing with Talk #1");
+                await DealWithTalk();
+            }
+
             if (QuestLogManager.InCutscene)
             {
+                Log.Information("Dealing with Cutscene #1");
                 await SkipCutscene();
             }
 
-            if (Talk.DialogOpen)
+            if (await Buddy.Coroutines.Coroutine.Wait(5000, () => LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen))
             {
-                while (Talk.DialogOpen)
+                if (LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen)
                 {
-                    await LlamaLibrary.Helpers.GeneralFunctions.SmallTalk();
+                    Log.Information("Item Hand over");
+                    await LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.HandOverItems();
                 }
             }
 
-            if (LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen)
-            {
-                await LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.HandOverItems();
-            }
+            Stopwatch timer = Stopwatch.StartNew();
 
-            while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen)
+            while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && timer.ElapsedMilliseconds < 10_000)
             {
                 if (QuestLogManager.InCutscene)
                 {
+                    Log.Information("Skip cutscene window not open");
                     await SkipCutscene();
                 }
 
-                if (Talk.DialogOpen)
-                {
-                    while (Talk.DialogOpen)
-                    {
-                        await LlamaLibrary.Helpers.GeneralFunctions.SmallTalk();
-                    }
-                }
+                await DealWithTalk();
 
                 await Coroutine.Sleep(200);
             }
 
-            await Coroutine.Wait(-1, () => LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen);
+            timer.Stop();
+
+            //await Coroutine.Wait(-1, () => LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen || );
 
             while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && !QuestLogManager.InCutscene)
             {
-                if (Talk.DialogOpen)
-                {
-                    Talk.Next();
-                    await Coroutine.Sleep(200);
-                }
-
-                await Coroutine.Sleep(500);
+                await DealWithTalk();
             }
 
-            if (QuestLogManager.InCutscene)
+            await DealWithTalk();
+
+            if (QuestLogManager.InCutscene || LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen)
             {
                 while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && QuestLogManager.InCutscene)
                 {
@@ -187,52 +219,31 @@ namespace LlamaLibrary.Helpers
                         }
                     }
 
-                    if (Talk.DialogOpen)
-                    {
-                        Talk.Next();
-                        await Coroutine.Sleep(200);
-                    }
+                    await DealWithTalk();
 
                     await Coroutine.Sleep(500);
                 }
 
                 if (LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen)
                 {
+                    Log.Information("Closing result window");
                     LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.Close();
-                    await Coroutine.Sleep(1000);
+                    await Coroutine.Wait(5000, () => !LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && (!QuestLogManager.InCutscene || Talk.DialogOpen));
+                    //await Coroutine.Sleep(1000);
                 }
 
+                Log.Information($"Waiting for talk window {MovementManager.IsOccupied} {Inventory.IsBusy}");
                 await Coroutine.Wait(5000, () => Talk.DialogOpen);
-                while (Talk.DialogOpen)
-                {
-                    Talk.Next();
-                    await Coroutine.Wait(200, () => !Talk.DialogOpen);
-                    await Coroutine.Wait(500, () => Talk.DialogOpen);
-                    await Coroutine.Sleep(200);
-                    await Coroutine.Yield();
-                }
+                await DealWithTalk();
 
-                await Coroutine.Sleep(500);
-                await Coroutine.Wait(5000, () => Talk.DialogOpen);
-                while (Talk.DialogOpen)
-                {
-                    Talk.Next();
-                    await Coroutine.Wait(200, () => !Talk.DialogOpen);
-                    await Coroutine.Wait(500, () => Talk.DialogOpen);
-                    await Coroutine.Sleep(200);
-                    await Coroutine.Yield();
-                }
+                Log.Information($"Waiting for talk window {MovementManager.IsOccupied} {Inventory.IsBusy}");
+                await Coroutine.Wait(5000, () => Talk.DialogOpen || (!Inventory.IsBusy && !MovementManager.IsOccupied));
+                await DealWithTalk();
 
-                await Coroutine.Sleep(500);
-                await Coroutine.Wait(5000, () => Talk.DialogOpen);
-                while (Talk.DialogOpen)
-                {
-                    Talk.Next();
-                    await Coroutine.Wait(200, () => !Talk.DialogOpen);
-                    await Coroutine.Wait(500, () => Talk.DialogOpen);
-                    await Coroutine.Sleep(200);
-                    await Coroutine.Yield();
-                }
+                Log.Information($"Waiting for talk window {MovementManager.IsOccupied} {Inventory.IsBusy}");
+                await Coroutine.Wait(5000, () => Talk.DialogOpen || (!Inventory.IsBusy && !MovementManager.IsOccupied));
+                await DealWithTalk();
+                Log.Information($"Done Waiting for talk window {MovementManager.IsOccupied} {Inventory.IsBusy}");
             }
 
             return true;
@@ -286,15 +297,18 @@ namespace LlamaLibrary.Helpers
                 needHQ = true;
             }
 
-            var order = new LlamaLibrary.Structs.LisbethOrder(1, 1, requestedID, qty - ConditionParser.HqItemCount((uint) requestedID), orderType, needHQ);
+            var order = new LlamaLibrary.Structs.LisbethOrder(1, 1, requestedID, qty - ConditionParser.HqItemCount((uint)requestedID), orderType, needHQ);
             outList.Add(order);
-            Log.Information($"Sending order of {qty - ConditionParser.HqItemCount((uint) requestedID)} x {DataManager.GetItem((uint) requestedID).CurrentLocaleName} to Lisbeth");
+            Log.Information($"Sending order of {qty - ConditionParser.HqItemCount((uint)requestedID)} x {DataManager.GetItem((uint)requestedID).CurrentLocaleName} to Lisbeth");
             return await LlamaLibrary.Helpers.Lisbeth.ExecuteOrders(Newtonsoft.Json.JsonConvert.SerializeObject(outList, Newtonsoft.Json.Formatting.None));
         }
 
         public static async Task<bool> SkipCutscene()
         {
             Log.Information("Dealing with cutscene.");
+
+            await DealWithTalk();
+
             if (QuestLogManager.InCutscene && AgentCutScene.Instance.CanSkip)
             {
                 AgentCutScene.Instance.PromptSkip();
@@ -305,13 +319,22 @@ namespace LlamaLibrary.Helpers
                 }
             }
 
+            return true;
+        }
+
+        public static async Task DealWithTalk()
+        {
             if (Talk.DialogOpen)
             {
-                Talk.Next();
-                await Coroutine.Sleep(200);
+                while (Talk.DialogOpen)
+                {
+                    Talk.Next();
+                    await Coroutine.Wait(200, () => !Talk.DialogOpen);
+                    await Coroutine.Wait(500, () => Talk.DialogOpen);
+                    await Coroutine.Sleep(200);
+                    await Coroutine.Yield();
+                }
             }
-
-            return true;
         }
 
         private static async Task<GameObject> GetToNpc(Npc npc)
