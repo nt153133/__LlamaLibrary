@@ -51,7 +51,7 @@ namespace LlamaLibrary.Helpers.Housing
 
         public HousingFloor HousingFloor => _address == IntPtr.Zero ? HousingFloor.Unknown : Core.Memory.Read<HousingFloor>(_address + 0x9704);
 
-        public bool InHouse => Core.Memory.Read<byte>(_address + 0x96A9) == 0;
+        public bool InHouse => _address != IntPtr.Zero && Core.Memory.Read<byte>(_address + 0x96A9) == 0;
 
         private int roomTemp => (InternalWard & roomMask) >> maskSize;
 
