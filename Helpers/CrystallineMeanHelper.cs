@@ -179,7 +179,7 @@ namespace LlamaLibrary.Helpers
             }
 
             Stopwatch timer = Stopwatch.StartNew();
-
+            Log.Information("Before while #1");
             while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && timer.ElapsedMilliseconds < 10_000)
             {
                 if (QuestLogManager.InCutscene)
@@ -194,14 +194,15 @@ namespace LlamaLibrary.Helpers
             }
 
             timer.Stop();
-
+            Log.Information("Past while #1");
             //await Coroutine.Wait(-1, () => LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen || );
-
-            while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && !QuestLogManager.InCutscene)
+            //timer = Stopwatch.StartNew();
+            while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && !QuestLogManager.InCutscene && timer.ElapsedMilliseconds < 10_000)
             {
                 await DealWithTalk();
+                await Coroutine.Sleep(200);
             }
-
+            Log.Information("Past while #2");
             await DealWithTalk();
 
             if (QuestLogManager.InCutscene || LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen)
@@ -278,8 +279,7 @@ namespace LlamaLibrary.Helpers
             {
                 orderType = $"Gather";
             }
-
-            if (Core.Me.CurrentJob == ClassJobType.Fisher)
+            else if (Core.Me.CurrentJob == ClassJobType.Fisher)
             {
                 orderType = $"Fisher";
             }

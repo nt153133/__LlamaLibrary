@@ -77,6 +77,7 @@
     <Compile Include="Extensions\OtherExtensions.cs" />
     <Compile Include="Extensions\RetainerTaskAskExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Helpers\ChatBroadcaster.cs" />
     <Compile Include="Helpers\CrystallineMeanHelper.cs" />
     <Compile Include="Helpers\CurrencyHelper.cs" />
     <Compile Include="Helpers\Housing\HousingHelper.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="RemoteAgents\AgentGrandCompanySupply.cs" />
     <Compile Include="RemoteAgents\AgentInclusionShop.cs" />
     <Compile Include="RemoteAgents\AgentItemDetail.cs" />
+    <Compile Include="RemoteAgents\AgentLookingForGroup.cs" />
     <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
     <Compile Include="RemoteWindows\Achievement.cs" />
@@ -126,6 +128,9 @@
     <Compile Include="RemoteWindows\HugeCraftworksSupplyResul.cs" />
     <Compile Include="RemoteWindows\InclusionShop.cs" />
     <Compile Include="RemoteWindows\InputString.cs" />
+    <Compile Include="RemoteWindows\LookingForGroup.cs" />
+    <Compile Include="RemoteWindows\LookingForGroupCondition.cs" />
+    <Compile Include="RemoteWindows\LookingForGroupDetail.cs" />
     <Compile Include="RemoteWindows\NotificationParty.cs" />
     <Compile Include="RemoteWindows\PartyYesNo.cs" />
     <Compile Include="RemoteWindows\RetainerHistory.cs" />
@@ -279,6 +284,7 @@
     <Compile Include="Structs\RequestItem.cs" />
     <Compile Include="Structs\RetainerInfo.cs" />
     <Compile Include="Structs\RowenaItem.cs" />
+    <Compile Include="Structs\ShuffleCircularQueue.cs" />
     <Compile Include="Structs\SquadronTimerData.cs" />
     <Compile Include="TemplateBotBase.cs" />
     <Compile Include="Utilities\CustomDeliveries.cs" />

@@ -61,8 +61,29 @@ namespace LlamaLibrary.Helpers.WorldTravel
             AE = await GetAE(travelCity);
             if (AE == default(GameObject))
             {
+                switch (travelCity)
+                {
+                    case TravelCity.Limsa:
+                        await Navigation.GetTo(129, new Vector3(-89.30112f, 18.80033f, -2.019181f));
+                        break;
+                    case TravelCity.Uldah:
+                        await Navigation.GetTo(130, new Vector3(-147.672f, -3.154888f, -167.1899f));
+                        break;
+                    case TravelCity.Gridania:
+                        await Navigation.GetTo(132, new Vector3(31.95396f, 2.200001f, 33.20696f));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(travelCity), travelCity, null);
+                }
+
+                AE = await GetAE(travelCity);
+            }
+
+            if (AE == default(GameObject))
+            {
                 return;
             }
+
 
             if (!AE.IsWithinInteractRange)
             {
@@ -159,7 +180,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
                         if (SelectYesno.IsOpen)
                         {
                             SelectYesno.Yes();
-                            await Coroutine.Wait(10000, () => WorldTravelFinderReady.Instance.IsOpen);
+                            await Coroutine.Wait(1_200_000, () => WorldTravelFinderReady.Instance.IsOpen);
                             if (WorldTravelFinderReady.Instance.IsOpen)
                             {
                                 await Coroutine.Wait(-1, () => !WorldTravelFinderReady.Instance.IsOpen);
