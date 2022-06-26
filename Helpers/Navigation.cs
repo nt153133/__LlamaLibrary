@@ -328,7 +328,7 @@ namespace LlamaLibrary.Helpers
             if (!AE.IsWithinInteractRange)
             {
                 Log.Information("Using flightor to get closer");
-                await Navigation.FlightorMove(AE.Location, 7);
+                await Navigation.FlightorMove(AE.Location, 6);
             }
 
             return AE;

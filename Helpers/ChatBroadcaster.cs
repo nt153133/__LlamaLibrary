@@ -13,7 +13,7 @@ namespace LlamaLibrary.Helpers
 
         public DateTime LastMessage = DateTime.MinValue;
 
-        public static readonly HashSet<MessageType> AcceptedTypes = new HashSet<MessageType> { MessageType.Shout, MessageType.Yell, MessageType.Say, MessageType.FreeCompany, MessageType.Echo };
+        public static readonly HashSet<MessageType> AcceptedTypes = new HashSet<MessageType> { MessageType.Shout, MessageType.Yell, MessageType.Say, MessageType.FreeCompany, MessageType.Echo, MessageType.CustomEmotes, MessageType.StandardEmotes };
 
         public int MinDelayMs { get; }
 
@@ -47,6 +47,12 @@ namespace LlamaLibrary.Helpers
                     break;
                 case MessageType.Echo:
                     ChatManager.SendChat("/echo " + message);
+                    break;
+                case MessageType.CustomEmotes:
+                    ChatManager.SendChat("/em " + message);
+                    break;
+                case MessageType.StandardEmotes:
+                    ChatManager.SendChat("/ " + message);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
