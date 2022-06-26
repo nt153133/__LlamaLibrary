@@ -41,7 +41,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> GetToWithLisbeth(uint ZoneId, double x, double y, double z)
         {
-            return await GetToWithLisbeth(ZoneId, new Vector3((float)x, (float)y, (float)z));
+            return await GetToWithLisbeth(ZoneId, new Vector3((float) x, (float) y, (float) z));
         }
 
         public static async Task<bool> GetToWithLisbeth(uint ZoneId, Vector3 XYZ)
@@ -56,7 +56,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> GetTo(uint ZoneId, double x, double y, double z)
         {
-            return await GetTo(ZoneId, new Vector3((float)x, (float)y, (float)z));
+            return await GetTo(ZoneId, new Vector3((float) x, (float) y, (float) z));
         }
 
         public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ)
@@ -379,6 +379,37 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
+        public static async Task<bool> FlyToNpc(Npc npc)
+        {
+            if (WorldManager.ZoneId != npc.Location.ZoneId)
+            {
+                if (WorldManager.AetheryteIdsForZone(npc.Location.ZoneId).Length >= 1)
+                {
+                    var AE = WorldManager.AetheryteIdsForZone(npc.Location.ZoneId).OrderBy(i => i.Item2.DistanceSqr(npc.Location.Coordinates)).First();
+
+                    Log.Information("Can teleport to AE");
+                    await CommonTasks.Teleport(AE.Item1);
+                }
+            }
+
+            if (await FlightorMove(npc.Location.Coordinates))
+            {
+                var unit = GameObjectManager.GetObjectByNPCId(npc.NpcId);
+
+                if (unit != default(GameObject))
+                {
+                    if (!unit.IsWithinInteractRange)
+                    {
+                        await OffMeshMoveInteract(unit);
+                    }
+                }
+
+                return unit.IsWithinInteractRange;
+            }
+
+            return false;
+        }
+
         public static async Task<bool> GetToInteractNpc(Npc npc, RemoteWindow window)
         {
             return await GetToInteractNpc(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, window);
@@ -463,7 +494,7 @@ namespace LlamaLibrary.Helpers
             {
                 if (Conversation.IsOpen)
                 {
-                    Conversation.SelectLine((uint)selectStringIndex);
+                    Conversation.SelectLine((uint) selectStringIndex);
                     await Coroutine.Wait(5000, () => !Conversation.IsOpen || DialogOpen);
 
                     if (nextWindow != null)
