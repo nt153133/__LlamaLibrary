@@ -1,0 +1,440 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Media;
+using Buddy.Coroutines;
+using Clio.Utilities;
+using ff14bot;
+using ff14bot.Behavior;
+using ff14bot.Enums;
+using ff14bot.Managers;
+using ff14bot.Navigation;
+using ff14bot.NeoProfiles;
+using ff14bot.RemoteAgents;
+using ff14bot.RemoteWindows;
+using LlamaLibrary.Helpers.Housing;
+using LlamaLibrary.Helpers.NPC;
+using LlamaLibrary.Logging;
+using LlamaLibrary.RemoteWindows;
+
+namespace LlamaLibrary.Helpers.HousingTravel.Districts
+{
+    public class ResidentialDistrict<T> : ResidentialDistrict
+        where T : ResidentialDistrict<T>, new()
+    {
+        private static T _instance;
+        public static T Instance => _instance ??= new T();
+
+        protected ResidentialDistrict() : base()
+        {
+        }
+    }
+
+    public abstract class ResidentialDistrict
+    {
+        private static readonly LLogger Log = new LLogger("ResidentialDistrict", Colors.Pink);
+        public virtual string Name { get; } = "";
+        public virtual ushort ZoneId => 0;
+        public virtual uint TownAetheryteId { get; }
+        public virtual int RequiredQuest { get; }
+        public virtual Vector3 TownAetheryteLocation { get; } = Vector3.Zero;
+        public virtual bool OffMesh { get; } = false;
+
+        public virtual List<HousingAetheryte> Aetherytes => new List<HousingAetheryte>();
+
+        public virtual List<Vector3> TransitionStartLocations => new List<Vector3>();
+
+        public virtual List<Npc> TransitionNpcs => new List<Npc>();
+
+        public virtual List<Vector3> TransitionEndLocations => new List<Vector3>();
+        public bool HasAetheryte => ConditionParser.HasAetheryte(TownAetheryteId);
+        public bool QuestComplete => ConditionParser.IsQuestCompleted(RequiredQuest);
+
+        public async Task<bool> OpenWardSelection()
+        {
+            if (WorldManager.ZoneId == ZoneId)
+            {
+                if (!await GetToWardTransition())
+                {
+                    return false;
+                }
+            }
+            else if (QuestComplete)
+            {
+                if (!await GetToResidentialAe())
+                {
+                    Log.Error("Failed GetToResidentialAe");
+                    return false;
+                }
+            }
+            else
+            {
+                if (!await WalkToResidential())
+                {
+                    return false;
+                }
+            }
+
+            if (!SelectString.IsOpen)
+            {
+                return false;
+            }
+
+            return await SelectHousing();
+        }
+
+        public async Task<bool> SelectWard(int ward)
+        {
+            if (ward < 1 || ward > 24)
+            {
+                return false;
+            }
+
+            if (HousingHelper.IsInHousingArea && ZoneId == WorldManager.ZoneId && HousingHelper.HousingPositionInfo.Ward == ward)
+            {
+                return true;
+            }
+
+            if (!HousingSelectBlock.Instance.IsOpen && !await OpenWardSelection())
+            {
+                return false;
+            }
+
+            HousingSelectBlock.Instance.SelectWard(ward - 1);
+
+            await Coroutine.Sleep(500);
+
+            HousingSelectBlock.Instance.WindowByName.SendAction(2, 3, 0, 0, 0x10);
+
+            if (!await Coroutine.Wait(5000, () => SelectYesno.IsOpen))
+            {
+                return false;
+            }
+
+            SelectYesno.Yes();
+
+            if (!await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
+            {
+                return false;
+            }
+
+            return await Coroutine.Wait(new TimeSpan(0, 2, 30), () => !CommonBehaviors.IsLoading);
+        }
+
+        public async Task<bool> CloseWardSelection()
+        {
+            if (QuestComplete)
+            {
+                return await CloseHousingWardsNoLoad();
+            }
+
+            return await CloseHousingWards();
+        }
+
+        public virtual async Task<bool> WalkToResidential()
+        {
+            return false;
+        }
+
+        public virtual async Task<bool> GetToWardTransition()
+        {
+            if (TransitionNpcs.Any())
+            {
+                var npc = NpcHelper.GetClosestNpc(TransitionNpcs);
+
+                if (!await TravelWithinZone(npc.Location.Coordinates))
+                {
+                    Log.Error($"Could not get to transition npc {npc}");
+                    return false;
+                }
+
+                var gameObject = npc.GameObject;
+
+                if (gameObject == default)
+                {
+                    Log.Error($"Could not find transition npc {npc}");
+                    return false;
+                }
+
+                gameObject.Target();
+                gameObject.Interact();
+
+                if (!await Coroutine.Wait(5000, () => Talk.DialogOpen || Conversation.IsOpen))
+                {
+                    Log.Error($"Could not interact with npc {npc}");
+                    return false;
+                }
+
+                await DealWithTalk();
+
+                if (!await Coroutine.Wait(5000, () => Conversation.IsOpen))
+                {
+                    Log.Error($"Could not interact with npc (post talk) {npc}");
+                    return false;
+                }
+            }
+            else
+            {
+                var closestTransistion = TransitionStartLocations.OrderBy(i => i.Distance2DSqr(Core.Me.Location)).First();
+
+                if (!await TravelWithinZone(closestTransistion))
+                {
+                    Log.Error($"Could not get to transition location {closestTransistion}");
+                    return false;
+                }
+
+                while (!Conversation.IsOpen)
+                {
+                    Navigator.PlayerMover.MoveTowards(TransitionEndLocations.OrderBy(i => i.Distance2DSqr(closestTransistion)).First());
+                    await Coroutine.Sleep(50);
+                    //Navigator.PlayerMover.MoveStop();
+                }
+
+                Navigator.PlayerMover.MoveStop();
+                if (!await Coroutine.Wait(5000, () => Conversation.IsOpen))
+                {
+                    Log.Error($"Could not get to select string");
+                    return false;
+                }
+            }
+
+            return await SelectHousing();
+        }
+
+        public async Task<bool> GetToResidentialAe()
+        {
+            if (!HasAetheryte)
+            {
+                return false;
+            }
+
+            var unit = await Navigation.GetToAE(TownAetheryteId);
+
+            if (unit == null || unit == default)
+            {
+                return false;
+            }
+
+            unit.Target();
+            unit.Interact();
+
+            await Coroutine.Wait(5000, () => SelectString.IsOpen);
+            if (SelectString.IsOpen)
+            {
+                if (Translator.Language == Language.Chn)
+                {
+                    SelectString.ClickLineContains("冒险者住宅区传送");
+                }
+                else
+                {
+                    SelectString.ClickLineContains(Translator.ResidentialDistrictAethernet);
+                }
+            }
+
+            return await Coroutine.Wait(2000, () => SelectString.IsOpen && SelectString.Lines().Any(i => i.Contains(Translator.SelectWard)));
+
+            //return await Coroutine.Wait(5000, () => SelectString.IsOpen);
+        }
+
+        private static async Task<bool> SelectHousing()
+        {
+            if (!SelectString.IsOpen)
+            {
+                Log.Error("No Select String open ward");
+                return false;
+            }
+
+            if (!SelectString.ClickLineContains(Translator.SelectWard))
+            {
+                Log.Error($"Could not select line {Translator.SelectWard}");
+                return false;
+            }
+
+            return await Coroutine.Wait(5000, () => HousingSelectBlock.Instance.IsOpen);
+        }
+
+        public static async Task<bool> CloseHousingWards()
+        {
+            if (!HousingSelectBlock.Instance.IsOpen)
+            {
+                return true;
+            }
+
+            HousingSelectBlock.Instance.Close();
+
+            await Coroutine.Wait(5000, () => Conversation.IsOpen);
+
+            if (Conversation.IsOpen)
+            {
+                Conversation.SelectQuit();
+                await Coroutine.Wait(5000, () => !Conversation.IsOpen);
+            }
+
+            await Coroutine.Sleep(500);
+
+            if (CommonBehaviors.IsLoading)
+            {
+                await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+            }
+
+            return !HousingSelectBlock.Instance.IsOpen;
+        }
+
+        private static async Task<bool> CloseHousingWardsNoLoad()
+        {
+            if (!HousingSelectBlock.Instance.IsOpen)
+            {
+                return true;
+            }
+
+            HousingSelectBlock.Instance.Close();
+
+            await Coroutine.Wait(5000, () => SelectString.IsOpen);
+
+            if (Conversation.IsOpen)
+            {
+                Conversation.SelectQuit();
+                await Coroutine.Wait(5000, () => !Conversation.IsOpen);
+            }
+
+            return !HousingSelectBlock.Instance.IsOpen;
+        }
+
+        public HousingAetheryte ClosestHousingAetheryte(Vector3 location)
+        {
+            return Aetherytes.OrderBy(i => i.Location.Distance2DSqr(location)).FirstOrDefault();
+        }
+
+        public bool ShouldUseAethernet(Vector3 location)
+        {
+            if (WorldManager.ZoneId != ZoneId)
+            {
+                return false;
+            }
+
+            if (!HousingHelper.IsInHousingArea || HousingHelper.IsInsideHouse)
+            {
+                return false;
+            }
+
+            return !ClosestHousingAetheryte(location).Equals(ClosestHousingAetheryte(Core.Me.Location));
+        }
+
+        public async Task<bool> TravelWithinZone(Vector3 destination)
+        {
+            if (WorldManager.ZoneId != ZoneId)
+            {
+                return false;
+            }
+
+            if (ShouldUseAethernet(destination))
+            {
+                var closestAe = ClosestHousingAetheryte(Core.Me.Location);
+                //Log.Information($"{closestAe}");
+
+                Log.Information($"Using Aetheryte {closestAe.Name}");
+                await Navigation.FlightorMove(closestAe.Location);
+                var ae = GameObjectManager.GetObjectByNPCId(closestAe.NpcId);
+
+                if (ae == default)
+                {
+                    Log.Error($"Couldn't find ae {closestAe}");
+                    return false;
+                }
+
+                ae.Target();
+                ae.Interact();
+                if (!await Coroutine.Wait(5000, () => TelepotTown.IsOpen))
+                {
+                    Log.Error($"Open ae window {closestAe}");
+                    return false;
+                }
+
+                AgentTelepotTown.Instance.TeleportByAetheryteId(ClosestHousingAetheryte(destination).Key);
+
+                await Coroutine.Wait(-1, () => CommonBehaviors.IsLoading);
+                await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                await Coroutine.Sleep(1000);
+            }
+
+            await Navigation.FlightorMove(destination);
+
+            return Core.Me.Location.Distance(destination) < 5;
+        }
+
+        /*
+        public async Task<List<PlotForSale>> HousingWards(int wardStart = 1, int wardEnd = 24)
+        {
+            var output = new List<PlotForSale>();
+            if (HousingSelectBlock.Instance.IsOpen)
+            {
+                for (var i = wardStart-1; i < wardEnd; i++)
+                {
+                    HousingSelectBlock.Instance.SelectWard(i);
+
+                    await Coroutine.Sleep(500);
+
+                    //Log.Information($"Ward {AgentHousingSelectBlock.Instance.WardNumber + 1}");
+                    var plotStatus = AgentHousingSelectBlock.Instance.ReadPlots(HousingSelectBlock.Instance.NumberOfPlots);
+
+                    for (var j = 0; j < plotStatus.Length; j++)
+                    {
+                        if (plotStatus[j] == 0)
+                        {
+                            var price = int.Parse(GetNumbers(HousingSelectBlock.Instance.PlotPrice(j)));
+                            var size = PlotSize.Small;
+
+                            var bytes = Encoding.ASCII.GetBytes(HousingSelectBlock.Instance.PlotString(j).Split(' ')[1]);
+                            if (bytes.Length > 9)
+                            {
+                                switch (bytes[9])
+                                {
+                                    case 72:
+                                        size = PlotSize.Small;
+                                        break;
+                                    case 1:
+                                        size = PlotSize.Medium;
+                                        break;
+                                    case 2:
+                                        size = PlotSize.Large;
+                                        break;
+                                }
+                            }
+
+                            var plot = new HousingPlot(this.ToHousingDistrict(), i+1, j + 1, size);
+                            output.Add(new PlotForSale(plot, price, false));
+                            //Log.Information($"{HousingSelectBlock.Instance.HousingWard} Plot {j+1} {size} -  {price}");
+                            //output.Add($"{HousingSelectBlock.Instance.HousingWard} Plot {j + 1} {size} -  {price}");
+                        }
+                    }
+
+                    await Coroutine.Sleep(200);
+                }
+            }
+
+            return output;
+        }
+        */
+
+        private static string GetNumbers(string input)
+        {
+            return new string(input.Where(c => char.IsDigit(c)).ToArray());
+        }
+
+        public static async Task DealWithTalk()
+        {
+            if (Talk.DialogOpen)
+            {
+                while (Talk.DialogOpen)
+                {
+                    Talk.Next();
+                    await Coroutine.Wait(200, () => !Talk.DialogOpen);
+                    await Coroutine.Wait(500, () => Talk.DialogOpen);
+                    await Coroutine.Sleep(200);
+                    await Coroutine.Yield();
+                }
+            }
+        }
+    }
+}

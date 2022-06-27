@@ -61,6 +61,7 @@
     <Compile Include="Enums\GCNpc.cs" />
     <Compile Include="Enums\MiniGameResult.cs" />
     <Compile Include="Enums\MyItemRole.cs" />
+    <Compile Include="Enums\PlotSize.cs" />
     <Compile Include="Enums\RetainerCity.cs" />
     <Compile Include="Enums\RetainerRole.cs" />
     <Compile Include="Enums\TravelCity.cs" />
@@ -80,6 +81,14 @@
     <Compile Include="Helpers\ChatBroadcaster.cs" />
     <Compile Include="Helpers\CrystallineMeanHelper.cs" />
     <Compile Include="Helpers\CurrencyHelper.cs" />
+    <Compile Include="Helpers\HousingTravel\Districts\Empyreum.cs" />
+    <Compile Include="Helpers\HousingTravel\Districts\LavenderBeds.cs" />
+    <Compile Include="Helpers\HousingTravel\Districts\Mist.cs" />
+    <Compile Include="Helpers\HousingTravel\Districts\ResidentialDistrict.cs" />
+    <Compile Include="Helpers\HousingTravel\Districts\Shirogan.cs" />
+    <Compile Include="Helpers\HousingTravel\Districts\TheGoblet.cs" />
+    <Compile Include="Helpers\HousingTravel\HousingAetheryte.cs" />
+    <Compile Include="Helpers\HousingTravel\HousingTraveler.cs" />
     <Compile Include="Helpers\Housing\HousingHelper.cs" />
     <Compile Include="Helpers\Housing\HousingPositionInfo.cs" />
     <Compile Include="Helpers\InclusionShopConstants.cs" />

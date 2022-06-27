@@ -246,7 +246,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
             int test = 0;
             foreach (var line in Conversation.GetConversationList)
             {
-                if (line.Contains("Visit Another World Server."))
+                if (line.Contains(Translator.VisitAnotherWorldServer))
                 {
                     break;
                 }

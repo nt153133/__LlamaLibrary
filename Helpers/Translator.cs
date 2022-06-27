@@ -28,6 +28,28 @@ namespace LlamaLibrary.Helpers
 
         public static string SelectWard => Addon6349[Language];
 
+        public static string EnterEmpyreum => Warp131395[Language];
+
+        public static string EnterTheFirmament => Warp131342[Language];
+
+        public static string Aethernet => Aetheryte1[Language];
+
+        public static string ResidentialDistrictAethernet => Aetheryte2[Language];
+
+        public static string VisitAnotherWorldServer => Aetheryte3[Language];
+
+        public static string SetHomePoint => Aetheryte4[Language];
+
+        public static string RegisterFavoredDestination => Aetheryte6[Language];
+
+        public static string RegisterFreeDestination => Aetheryte8[Language];
+
+        public static string TravelToInstancedArea => Aetheryte10[Language];
+
+        public static string TravelToTheFirmament => Aetheryte0[Language];
+
+        public static string Cancel => Aetheryte11[Language];
+
         static Translator()
         {
             Language = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
@@ -151,6 +173,116 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Spécifier le secteur où aller (Voir les attraits)" },
             { Language.Ger, "Zum angegebenen Bezirk (Zweck der Unterkunft einsehen)" },
             { Language.Chn, "移动到指定小区" }
+        };
+
+        //Warp # 131395
+        static Dictionary<Language, string> Warp131395 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Enter Empyreum" },
+            { Language.Jap, "「エンピレアム」へ行く" },
+            { Language.Fre, "Aller à Empyrée" },
+            { Language.Ger, "Zum Empyreum" },
+            { Language.Chn, "" }
+        };
+
+        //Warp # 131342
+        static Dictionary<Language, string> Warp131342 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Enter the Firmament" },
+            { Language.Jap, "「蒼天街」へ行く" },
+            { Language.Fre, "Aller à Azurée" },
+            { Language.Ger, "Nach Himmelsstadt" },
+            { Language.Chn, "" }
+        };
+
+        //Aetheryte # 1
+        static Dictionary<Language, string> Aetheryte1 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Aethernet." },
+            { Language.Jap, "都市転送網" },
+            { Language.Fre, "Réseau de transport urbain éthéré" },
+            { Language.Ger, "Ätheryten<SoftHyphen/" },
+            { Language.Chn, "" }
+        };
+
+        //Aetheryte # 2
+        static Dictionary<Language, string> Aetheryte2 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Residential District Aethernet." },
+            { Language.Jap, "冒険者居住区転送" },
+            { Language.Fre, "Quartier résidentiel" },
+            { Language.Ger, "Wohngebiet" },
+            { Language.Chn, "" }
+        };
+
+        //Aetheryte # 3
+        static Dictionary<Language, string> Aetheryte3 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Visit Another World Server." },
+            { Language.Jap, "他のワールドへ遊びにいく" },
+            { Language.Fre, "Voyager vers un autre Monde" },
+            { Language.Ger, "Weltenreise" },
+            { Language.Chn, "" }
+        };
+
+        //Aetheryte # 4
+        static Dictionary<Language, string> Aetheryte4 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Set Home Point." },
+            { Language.Jap, "ホームポイント登録" },
+            { Language.Fre, "Enregistrer comme point de retour" },
+            { Language.Ger, "Als Heimatpunkt registriert" },
+            { Language.Chn, "" }
+        };
+
+        //Aetheryte # 6
+        static Dictionary<Language, string> Aetheryte6 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Register Favored Destination." },
+            { Language.Jap, "お気に入り登録" },
+            { Language.Fre, "Enregistrer comme endroit favori" },
+            { Language.Ger, "Als Favorit gespeichert" },
+            { Language.Chn, "" }
+        };
+
+        //Aetheryte # 8
+        static Dictionary<Language, string> Aetheryte8 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Register Free Destination." },
+            { Language.Jap, "お気に入り（無料）登録" },
+            { Language.Fre, "Enregistrer comme favori gratuit" },
+            { Language.Ger, "Als kostenloser Favorit gespeichert" },
+            { Language.Chn, "" }
+        };
+
+        //Aetheryte # 10
+        static Dictionary<Language, string> Aetheryte10 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Travel to Instanced Area." },
+            { Language.Jap, "インスタンスエリアへ移動" },
+            { Language.Fre, "Changer d'instance" },
+            { Language.Ger, "In ein instanziiertes Areal wechseln" },
+            { Language.Chn, "" }
+        };
+
+        //Aetheryte # 11
+        static Dictionary<Language, string> Aetheryte11 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Cancel." },
+            { Language.Jap, "キャンセル" },
+            { Language.Fre, "Annuler" },
+            { Language.Ger, "Abbrechen" },
+            { Language.Chn, "" }
+        };
+
+        //Aetheryte # 0
+        static Dictionary<Language, string> Aetheryte0 = new Dictionary<Language, string>
+        {
+            { Language.Eng, "Travel to the Firmament." },
+            { Language.Jap, "蒼天街転送" },
+            { Language.Fre, "Azurée" },
+            { Language.Ger, "Himmelsstadt" },
+            { Language.Chn, "" }
         };
     }
 }
