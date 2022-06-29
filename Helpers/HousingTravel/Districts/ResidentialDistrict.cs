@@ -318,11 +318,13 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 return false;
             }
 
+            /*
             Log.Information($"ClosestHousingAetheryte dist: {ClosestHousingAetheryte(Core.Me.Location).Location.Distance(Core.Me.Location)}");
 
             Log.Information($"location dist: {location.Distance(Core.Me.Location)}");
 
             Log.Information($"ClosestHousingAetheryte Location dist: {ClosestHousingAetheryte(location).Location.Distance(Core.Me.Location)}");
+            */
 
             if (!ClosestHousingAetheryte(location).Equals(ClosestHousingAetheryte(Core.Me.Location)))
             {
