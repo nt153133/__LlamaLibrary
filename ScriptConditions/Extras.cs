@@ -306,5 +306,13 @@ namespace LlamaLibrary.ScriptConditions
         {
             return InventoryManager.FilledSlots.Any(i => list.Contains((int) i.RawItemId));
         }
+
+        public static int CurrentMount()
+        {
+            var patternFinder = new GreyMagic.PatternFinder(Core.Memory);
+            var offset = patternFinder.Find("66 83 B9 ? ? ? ? ? 48 8B DA Add 3 Read32").ToInt32();
+
+            return (int) Core.Memory.Read<uint>(Core.Me.Pointer + offset);
+        }
     }
 }
