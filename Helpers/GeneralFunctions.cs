@@ -45,7 +45,7 @@ namespace LlamaLibrary.Helpers
             return InventoryManager.GetBagsByInventoryBagId(MainBags).SelectMany(x => x.FilledSlots);
         }
 
-        private static bool IsJumping => Core.Memory.NoCacheRead<byte>(Offsets.Conditions + Offsets.JumpingCondition) != 0;
+        public static bool IsJumping => Core.Memory.NoCacheRead<byte>(Offsets.Conditions + Offsets.JumpingCondition) != 0;
 
         private static bool CheckIfBusy(bool leaveDuty, bool stopFishing, bool dismount)
         {

@@ -121,6 +121,7 @@
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
     <Compile Include="RemoteAgents\AgentGrandCompanyExchange.cs" />
     <Compile Include="RemoteAgents\AgentGrandCompanySupply.cs" />
+    <Compile Include="RemoteAgents\AgentHousingSignBoard.cs" />
     <Compile Include="RemoteAgents\AgentInclusionShop.cs" />
     <Compile Include="RemoteAgents\AgentItemDetail.cs" />
     <Compile Include="RemoteAgents\AgentLookingForGroup.cs" />

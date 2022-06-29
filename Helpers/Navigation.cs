@@ -41,7 +41,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> GetToWithLisbeth(uint ZoneId, double x, double y, double z)
         {
-            return await GetToWithLisbeth(ZoneId, new Vector3((float) x, (float) y, (float) z));
+            return await GetToWithLisbeth(ZoneId, new Vector3((float)x, (float)y, (float)z));
         }
 
         public static async Task<bool> GetToWithLisbeth(uint ZoneId, Vector3 XYZ)
@@ -56,7 +56,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> GetTo(uint ZoneId, double x, double y, double z)
         {
-            return await GetTo(ZoneId, new Vector3((float) x, (float) y, (float) z));
+            return await GetTo(ZoneId, new Vector3((float)x, (float)y, (float)z));
         }
 
         public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ)
@@ -242,6 +242,9 @@ namespace LlamaLibrary.Helpers
             }
 
             Navigator.PlayerMover.MoveStop();
+            Navigator.NavigationProvider.ClearStuckInfo();
+            Navigator.Stop();
+            await Coroutine.Wait(5000, () => !GeneralFunctions.IsJumping);
             return moving == MoveResult.ReachedDestination;
         }
 
@@ -261,6 +264,9 @@ namespace LlamaLibrary.Helpers
             }
 
             Navigator.PlayerMover.MoveStop();
+            Navigator.NavigationProvider.ClearStuckInfo();
+            Navigator.Stop();
+            await Coroutine.Wait(5000, () => !GeneralFunctions.IsJumping);
             return moving == MoveResult.ReachedDestination;
         }
 
@@ -280,6 +286,9 @@ namespace LlamaLibrary.Helpers
             }
 
             Navigator.PlayerMover.MoveStop();
+            Navigator.NavigationProvider.ClearStuckInfo();
+            Navigator.Stop();
+            await Coroutine.Wait(5000, () => !GeneralFunctions.IsJumping);
             return moving == MoveResult.ReachedDestination;
         }
 
@@ -304,6 +313,9 @@ namespace LlamaLibrary.Helpers
             }
 
             Navigator.PlayerMover.MoveStop();
+            Navigator.NavigationProvider.ClearStuckInfo();
+            Navigator.Stop();
+            await Coroutine.Wait(5000, () => !GeneralFunctions.IsJumping);
             return moving == MoveResult.ReachedDestination;
         }
 
@@ -422,35 +434,41 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> GetToInteractNpc(uint npcId, ushort zoneId, Vector3 location, RemoteWindow window)
         {
-            if (await GetTo(zoneId, location))
+            var unit = GameObjectManager.GetObjectByNPCId(npcId);
+            if (unit == default || !unit.IsWithinInteractRange)
             {
-                var unit = GameObjectManager.GetObjectByNPCId(npcId);
-
-                if (unit != default(GameObject))
+                if (!await GetTo(zoneId, location))
                 {
-                    if (!unit.IsWithinInteractRange)
+                    return false;
+                }
+            }
+
+            unit = GameObjectManager.GetObjectByNPCId(npcId);
+
+            if (unit != default(GameObject))
+            {
+                if (!unit.IsWithinInteractRange)
+                {
+                    await OffMeshMoveInteract(unit);
+                }
+
+                unit.Target();
+                unit.Interact();
+
+                await Coroutine.Wait(5000, () => window.IsOpen || DialogOpen);
+
+                await Coroutine.Wait(20000, () => Talk.DialogOpen);
+                if (Talk.DialogOpen)
+                {
+                    while (Talk.DialogOpen)
                     {
-                        await OffMeshMoveInteract(unit);
+                        Talk.Next();
+                        await Coroutine.Wait(500, () => !Talk.DialogOpen);
+                        await Coroutine.Wait(500, () => Talk.DialogOpen);
+                        await Coroutine.Yield();
                     }
 
-                    unit.Target();
-                    unit.Interact();
-
-                    await Coroutine.Wait(5000, () => window.IsOpen || DialogOpen);
-
-                    await Coroutine.Wait(20000, () => Talk.DialogOpen);
-                    if (Talk.DialogOpen)
-                    {
-                        while (Talk.DialogOpen)
-                        {
-                            Talk.Next();
-                            await Coroutine.Wait(500, () => !Talk.DialogOpen);
-                            await Coroutine.Wait(500, () => Talk.DialogOpen);
-                            await Coroutine.Yield();
-                        }
-
-                        await Coroutine.Wait(5000, () => window.IsOpen);
-                    }
+                    await Coroutine.Wait(5000, () => window.IsOpen);
                 }
             }
 
@@ -494,7 +512,7 @@ namespace LlamaLibrary.Helpers
             {
                 if (Conversation.IsOpen)
                 {
-                    Conversation.SelectLine((uint) selectStringIndex);
+                    Conversation.SelectLine((uint)selectStringIndex);
                     await Coroutine.Wait(5000, () => !Conversation.IsOpen || DialogOpen);
 
                     if (nextWindow != null)

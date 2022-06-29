@@ -318,10 +318,21 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 return false;
             }
 
-            return !ClosestHousingAetheryte(location).Equals(ClosestHousingAetheryte(Core.Me.Location));
+            Log.Information($"ClosestHousingAetheryte dist: {ClosestHousingAetheryte(Core.Me.Location).Location.Distance(Core.Me.Location)}");
+
+            Log.Information($"location dist: {location.Distance(Core.Me.Location)}");
+
+            Log.Information($"ClosestHousingAetheryte Location dist: {ClosestHousingAetheryte(location).Location.Distance(Core.Me.Location)}");
+
+            if (!ClosestHousingAetheryte(location).Equals(ClosestHousingAetheryte(Core.Me.Location)))
+            {
+                return ClosestHousingAetheryte(Core.Me.Location).Location.Distance(Core.Me.Location) < location.Distance(Core.Me.Location);
+            }
+
+            return false;
         }
 
-        public async Task<bool> TravelWithinZone(Vector3 destination)
+        public async Task<bool> TravelWithinZone(Vector3 destination, float stopDistance = 3)
         {
             if (WorldManager.ZoneId != ZoneId)
             {
@@ -358,7 +369,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 await Coroutine.Sleep(1000);
             }
 
-            await Navigation.FlightorMove(destination);
+            await Navigation.FlightorMove(destination, stopDistance);
 
             return Core.Me.Location.Distance(destination) < 5;
         }
