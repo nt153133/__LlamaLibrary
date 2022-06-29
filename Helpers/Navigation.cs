@@ -422,6 +422,23 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
+        public static async Task<bool> FlyToWithZone(uint ZoneId, Vector3 XYZ)
+        {
+            if (WorldManager.ZoneId != ZoneId)
+            {
+                if (WorldManager.AetheryteIdsForZone(ZoneId).Length >= 1)
+                {
+                    var AE = WorldManager.AetheryteIdsForZone(ZoneId).OrderBy(i => i.Item2.DistanceSqr(XYZ)).First();
+
+                    Log.Information("Can teleport to AE");
+                    await CommonTasks.Teleport(AE.Item1);
+                }
+            }
+            await Navigation.FlightorMove(XYZ);
+
+            return false;
+        }
+
         public static async Task<bool> GetToInteractNpc(Npc npc, RemoteWindow window)
         {
             return await GetToInteractNpc(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, window);
