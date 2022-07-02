@@ -42,6 +42,9 @@ namespace LlamaLibrary.Helpers
                 case MessageType.Shout:
                     ChatManager.SendChat("/shout " + message);
                     break;
+                case MessageType.Party:
+                    ChatManager.SendChat("/p " + message);
+                    break;
                 case MessageType.Yell:
                     ChatManager.SendChat("/yell " + message);
                     break;
