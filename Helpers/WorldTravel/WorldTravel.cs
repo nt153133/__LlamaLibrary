@@ -159,6 +159,11 @@ namespace LlamaLibrary.Helpers.WorldTravel
                 }
             }
 
+            if (travelCity == TravelCity.Cheapest)
+            {
+
+            }
+
             await OpenWorldTravelMenu(travelCity);
 
             if (WorldTravelSelect.Instance.IsOpen)

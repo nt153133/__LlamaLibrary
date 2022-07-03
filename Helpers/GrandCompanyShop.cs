@@ -105,6 +105,7 @@ namespace LlamaLibrary.Helpers
         {
             if (!await OpenShop())
             {
+                Log.Error("Could not open the shop");
                 return false;
             }
 
@@ -112,7 +113,8 @@ namespace LlamaLibrary.Helpers
             {
                 if (!KnownItems.TryGetValue(itemToBuy.ItemId, out var itemInfo))
                 {
-                    return false;
+                    continue;
+                    //return false;
                 }
 
                 if (AgentGrandCompanyExchange.Instance.Rank != itemInfo.GCRankGroup)
@@ -226,6 +228,7 @@ namespace LlamaLibrary.Helpers
                 Navigator.PlayerMover = new SlideMover();
                 Navigator.NavigationProvider = new ServiceNavigationProvider();
 
+                Log.Information("Calling interact with npc");
                 await GrandCompanyHelper.InteractWithNpc(GCNpc.Quartermaster);
 
                 if (!await Coroutine.Wait(5000, () => GrandCompanyExchange.Instance.IsOpen))

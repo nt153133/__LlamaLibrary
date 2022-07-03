@@ -434,6 +434,7 @@ namespace LlamaLibrary.Helpers
                     await CommonTasks.Teleport(AE.Item1);
                 }
             }
+
             await Navigation.FlightorMove(XYZ);
 
             return false;
@@ -452,12 +453,17 @@ namespace LlamaLibrary.Helpers
         public static async Task<bool> GetToInteractNpc(uint npcId, ushort zoneId, Vector3 location, RemoteWindow window)
         {
             var unit = GameObjectManager.GetObjectByNPCId(npcId);
+
             if (unit == default || !unit.IsWithinInteractRange)
             {
                 if (!await GetTo(zoneId, location))
                 {
                     return false;
                 }
+            }
+            else if (window.IsOpen)
+            {
+                return true;
             }
 
             unit = GameObjectManager.GetObjectByNPCId(npcId);
@@ -473,6 +479,11 @@ namespace LlamaLibrary.Helpers
                 unit.Interact();
 
                 await Coroutine.Wait(5000, () => window.IsOpen || DialogOpen);
+
+                if (window.IsOpen && !Talk.DialogOpen)
+                {
+                    return true;
+                }
 
                 await Coroutine.Wait(20000, () => Talk.DialogOpen);
                 if (Talk.DialogOpen)

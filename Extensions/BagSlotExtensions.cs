@@ -82,6 +82,9 @@ namespace LlamaLibrary.Extensions
             [Offset("48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 41 56 48 83 EC ? 45 8B F1")]
             public static IntPtr AddToSaddle;
 
+            [Offset("40 53 56 57 41 56 41 57 48 83 EC ? 45 33 FF")]
+            public static IntPtr FCChestMove;
+
             [Offset("48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 63 F2 48 8B F9")]
             public static IntPtr PlaceAetherWheel;
 
@@ -456,6 +459,24 @@ namespace LlamaLibrary.Extensions
                                                               inventoryContainer);
                 }
             }
+        }
+
+        internal static IntPtr FcChestCall(uint sourceContainer, uint sourceSlot, uint destContainer, uint destSlot)
+        {
+            lock (Core.Memory.Executor.AssemblyLock)
+            {
+                return Core.Memory.CallInjected64<IntPtr>(Offsets.FCChestMove,
+                                                          AgentFreeCompanyChest.Instance.Pointer,
+                                                          sourceContainer,
+                                                          sourceSlot,
+                                                          destContainer,
+                                                          destSlot);
+            }
+        }
+
+        public static void FcChestMove(this BagSlot sourceBagSlot, BagSlot destBagSlot)
+        {
+            FcChestCall((uint)sourceBagSlot.BagId, sourceBagSlot.Slot, (uint)destBagSlot.BagId, destBagSlot.Slot);
         }
 
         public static void RetainerEntrustQuantity(this BagSlot bagSlot, uint amount)

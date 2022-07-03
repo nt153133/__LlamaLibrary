@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
+using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Logging;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
@@ -15,6 +17,8 @@ namespace LlamaLibrary.Helpers
         private static readonly string Name = "InventoryHelpers";
         private static readonly Color LogColor = Colors.White;
         private static readonly LLogger Log = new LLogger(Name, LogColor);
+
+        public static bool IsFCItemBusy => Core.Memory.NoCacheRead<bool>(Offsets.g_InventoryManager + Offsets.InventoryManagerFCTransfering);
         public static async Task LowerQualityAndCombine(int itemId)
         {
             var HQslots = InventoryManager.FilledSlots.Where(slot => slot.RawItemId == itemId && slot.IsHighQuality);

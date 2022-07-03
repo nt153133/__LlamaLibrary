@@ -26,6 +26,9 @@ namespace LlamaLibrary.Helpers
 
             [Offset("Search 0F B7 81 ? ? ? ? 66 89 44 24 ? 48 8D 4C 24 ? Add 3 Read32")]
             internal static int HomeWorld;
+
+            [Offset("E8 ? ? ? ? 48 85 C0 74 ? 0F B7 70 14 EB ? BE ? ? ? ? 0F B7 CD E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 14 EB ? B8 ? ? ? ? 66 3B F0 72 ? 0F B7 0B Add 1 TraceRelative")]
+            internal static IntPtr GetPlaceName;
         }
 
         private static IntPtr DcOffsetLocation;
@@ -35,6 +38,15 @@ namespace LlamaLibrary.Helpers
             var agentPointer = AgentModule.AgentPointers[0];
             var offset1 = agentPointer + Offsets.Offset1;
             DcOffsetLocation = offset1 + Offsets.DCOffset;
+        }
+
+        public static string CurrentPlaceName
+        {
+            get
+            {
+                var ptr = Core.Memory.CallInjected64<IntPtr>(Offsets.GetPlaceName, WorldManager.SubZoneId);
+                return Core.Memory.ReadStringUTF8(ptr + 24);
+            }
         }
 
         public static readonly Dictionary<WorldDCGroupType, World[]> WorldMap = new Dictionary<WorldDCGroupType, World[]>()
@@ -62,6 +74,8 @@ namespace LlamaLibrary.Helpers
                 return WorldMap[DataCenter];
             }
         }
+
+        public static bool IsOnHomeWorld => CurrentWorldId == HomeWorldId;
 
         public static byte DataCenterId => Core.Memory.Read<byte>(DcOffsetLocation);
 

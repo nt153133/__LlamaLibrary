@@ -57,6 +57,7 @@
     <Compile Include="ClientDataHelpers\UiManagerProxy.cs" />
     <Compile Include="Directors\OutOnALimbDirector.cs" />
     <Compile Include="Enums\ClassJobCategory.cs" />
+    <Compile Include="Enums\CompanyChestPermission.cs" />
     <Compile Include="Enums\DohJobType.cs" />
     <Compile Include="Enums\GCNpc.cs" />
     <Compile Include="Enums\MiniGameResult.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="RemoteAgents\AgentAchievement.cs" />
     <Compile Include="RemoteAgents\AgentDawnStory.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
+    <Compile Include="RemoteAgents\AgentFreeCompanyChest.cs" />
     <Compile Include="RemoteAgents\AgentGrandCompanyExchange.cs" />
     <Compile Include="RemoteAgents\AgentGrandCompanySupply.cs" />
     <Compile Include="RemoteAgents\AgentHousingSignBoard.cs" />
@@ -128,6 +130,7 @@
     <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
     <Compile Include="RemoteWindows\Achievement.cs" />
+    <Compile Include="RemoteWindows\Bank.cs" />
     <Compile Include="RemoteWindows\CharaMakeDataImport.cs" />
     <Compile Include="RemoteWindows\ContentsTutorial.cs" />
     <Compile Include="RemoteWindows\DawnStory.cs" />

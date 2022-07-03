@@ -76,6 +76,8 @@ namespace LlamaLibrary.Memory
 
         //  [Offset("Search 66 83 78 ? ? 74 ? 8B 78 ? E8 ? ? ? ? Add 3 Read8")]
         //  public static int VentureTask;
+        [Offset("80 B9 ? ? ? ? ? 0F 94 C0 C3 ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 2 Read32")]
+        public static int InventoryManagerFCTransfering;
     }
 
     public static partial class Offsets
