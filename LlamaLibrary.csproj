@@ -29,7 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <OutputPath>bin\Debug\</OutputPath>
   </PropertyGroup>
@@ -80,6 +80,7 @@
     <Compile Include="Extensions\RetainerTaskAskExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\ChatBroadcaster.cs" />
+    <Compile Include="Helpers\CompanyChestHelper.cs" />
     <Compile Include="Helpers\CrystallineMeanHelper.cs" />
     <Compile Include="Helpers\CurrencyHelper.cs" />
     <Compile Include="Helpers\HousingTravel\Districts\Empyreum.cs" />
