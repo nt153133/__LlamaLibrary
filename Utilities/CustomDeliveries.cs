@@ -12,6 +12,7 @@ using ff14bot.NeoProfiles;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Enums;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
@@ -45,6 +46,24 @@ namespace LlamaLibrary.Utilities
 
             TreeRoot.Stop("Stop Requested");
             return true;
+        }
+
+        public static async Task<(uint ItemId, int DeliveriesReamining)> GetCraftingDeliveryItems(CustomDeliveryNpc deliveryNpc)
+        {
+            await AgentSatisfactionSupply.Instance.LoadWindow(deliveryNpc.Index);
+            var items = new List<uint>();
+            if (deliveryNpc.npcId != AgentSatisfactionSupply.Instance.NpcId)
+            {
+                Log.Information($"Bad Npc ID: {AgentSatisfactionSupply.Instance.NpcId}");
+                return (0, 0);
+            }
+
+            Log.Information($"{deliveryNpc.Name}");
+            Log.Information($"\tDeliveries Remaining:{AgentSatisfactionSupply.Instance.DeliveriesRemaining}");
+            Log.Information($"\tDoH: {DataManager.GetItem(AgentSatisfactionSupply.Instance.DoHItemId)}");
+            items.Add(AgentSatisfactionSupply.Instance.DoHItemId);
+
+            return (AgentSatisfactionSupply.Instance.DoHItemId, AgentSatisfactionSupply.Instance.DeliveriesRemaining);
         }
 
         public static async Task CraftThenHandinNpc(CustomDeliveryNpc deliveryNpc, DohClasses dohClass = DohClasses.Carpenter, bool stopAtFiveHearts = true)
@@ -284,11 +303,15 @@ namespace LlamaLibrary.Utilities
                 while (AgentSatisfactionSupply.Instance.DeliveriesRemaining > 0 && AgentSatisfactionSupply.Instance.HasAnyTurnin);
             }
 
+            await DealWithTalk();
+
             if (SatisfactionSupply.Instance.IsOpen)
             {
                 SatisfactionSupply.Instance.Close();
                 await Coroutine.Wait(10000, () => !SatisfactionSupply.Instance.IsOpen);
             }
+
+            await DealWithTalk();
 
             await Coroutine.Wait(1000, () => Conversation.IsOpen);
             if (Conversation.IsOpen)
@@ -296,7 +319,24 @@ namespace LlamaLibrary.Utilities
                 Conversation.SelectLine((uint)(Conversation.GetConversationList.Count - 1));
             }
 
+            await DealWithTalk();
+
             return true;
+        }
+
+        public static async Task DealWithTalk()
+        {
+            if (Talk.DialogOpen)
+            {
+                while (Talk.DialogOpen)
+                {
+                    Talk.Next();
+                    await Coroutine.Wait(200, () => !Talk.DialogOpen);
+                    await Coroutine.Wait(500, () => Talk.DialogOpen);
+                    await Coroutine.Sleep(200);
+                    await Coroutine.Yield();
+                }
+            }
         }
     }
 }

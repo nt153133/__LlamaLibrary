@@ -149,6 +149,7 @@
     <Compile Include="RemoteWindows\RetainerHistory.cs" />
     <Compile Include="RemoteWindows\SharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteWindows\ShopExchangeItemDialog.cs" />
+    <Compile Include="RemoteWindows\ShopProxy.cs" />
     <Compile Include="RemoteWindows\WorldTravelFinderReady.cs" />
     <Compile Include="RemoteWindows\WorldTravelSelect.cs" />
     <Compile Include="RemoteWindows\_CharaMakeFeature.cs" />
