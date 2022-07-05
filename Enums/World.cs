@@ -78,6 +78,11 @@ namespace LlamaLibrary.Enums
         Ragnarok = 97, //Chaos
         Ridill = 98, //Gaia
         Sargatanas = 99, //Aether
+        Sagittarius = 400, //Chaos
+        Phantom = 401, //Chaos
+        Alpha = 402, //Light
+        Raiden = 403, //Light
+
     }
 
     public static class Extensions

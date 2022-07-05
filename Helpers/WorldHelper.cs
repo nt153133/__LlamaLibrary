@@ -54,10 +54,10 @@ namespace LlamaLibrary.Helpers
             { WorldDCGroupType.Mana, new World[] { World.Asura, World.Belias, World.Pandaemonium, World.Shinryu, World.Anima, World.Hades, World.Ixion, World.Titan, World.Chocobo, World.Mandragora, World.Masamune } },
             { WorldDCGroupType.Elemental, new World[] { World.Unicorn, World.Carbuncle, World.Kujata, World.Typhon, World.Garuda, World.Ramuh, World.Atomos, World.Tonberry, World.Aegis, World.Gungnir } },
             { WorldDCGroupType.Gaia, new World[] { World.Yojimbo, World.Zeromus, World.Alexander, World.Fenrir, World.Ultima, World.Valefor, World.Ifrit, World.Bahamut, World.Tiamat, World.Durandal, World.Ridill } },
-            { WorldDCGroupType.Light, new World[] { World.Twintania, World.Lich, World.Zodiark, World.Phoenix, World.Odin, World.Shiva } },
+            { WorldDCGroupType.Light, new World[] { World.Twintania, World.Lich, World.Zodiark, World.Phoenix, World.Odin, World.Shiva, World.Alpha, World.Raiden } },
             { WorldDCGroupType.Crystal, new World[] { World.Brynhildr, World.Mateus, World.Zalera, World.Diabolos, World.Coeurl, World.Malboro, World.Goblin, World.Balmung } },
             { WorldDCGroupType.Primal, new World[] { World.Famfrit, World.Exodus, World.Lamia, World.Leviathan, World.Ultros, World.Behemoth, World.Excalibur, World.Hyperion } },
-            { WorldDCGroupType.Chaos, new World[] { World.Omega, World.Moogle, World.Cerberus, World.Louisoix, World.Spriggan, World.Ragnarok } },
+            { WorldDCGroupType.Chaos, new World[] { World.Omega, World.Moogle, World.Cerberus, World.Louisoix, World.Spriggan, World.Ragnarok, World.Sagittarius, World.Phantom } },
             { WorldDCGroupType.Aether, new World[] { World.Jenova, World.Faerie, World.Siren, World.Gilgamesh, World.Midgardsormr, World.Adamantoise, World.Cactuar, World.Sargatanas } },
             { WorldDCGroupType.Materia, new World[] { World.Ravana, World.Bismarck, World.Sephirot, World.Sophia, World.Zurvan } },
         };
@@ -195,6 +195,10 @@ namespace LlamaLibrary.Helpers
             { 97, "Ragnarok" },
             { 98, "Ridill" },
             { 99, "Sargatanas" },
+            { 400, "Sagittarius" },
+            { 401, "Phantom" },
+            { 402, "Alpha" },
+            { 403, "Raiden" },
         };
 
         public static string DataCenterName => DataCenter.ToString();
