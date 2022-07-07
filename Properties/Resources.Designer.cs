@@ -104,11 +104,56 @@ namespace LlamaLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {&quot;1&quot;:[{&quot;Key&quot;:5724,&quot;Tier&quot;:0,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;},{&quot;Key&quot;:5725,&quot;Tier&quot;:1,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;},{&quot;Key&quot;:5726,&quot;Tier&quot;:2,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;},{&quot;Key&quot;:5727,&quot;Tier&quot;:3,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;&quot;}],&quot;2&quot;:[{&quot;Key&quot;:5604,&quot;Tier&quot;:0,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5605,&quot;Tier&quot;:1,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5606,&quot;Tier&quot;:2,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5607,&quot;Tier&quot;:3,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:5608,&quot;Tier&quot;:4,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;},{&quot;Key&quot;:18006,&quot;Tier&quot;:5,&quot;Value&quot;:0,&quot;Stat&quot;:&quot;Strength&quot;}],&quot;3&quot;:[{&qu....
+        ///   Looks up a localized string similar to {&quot;1&quot;:{&quot;HousingZone&quot;:979,&quot;Plot&quot;:1,&quot;Size&quot;:0,&quot;PlacardLocation&quot;:{&quot;X&quot;:86.5339355,&quot;Y&quot;:-18.08197,&quot;Z&quot;:159.472046,&quot;MagnitudeSqr&quot;:33246.4141,&quot;Magnitude&quot;:182.336},&quot;EntranceLocation&quot;:{&quot;X&quot;:9.75807,&quot;Y&quot;:-15.2,&quot;Z&quot;:177.855209,&quot;MagnitudeSqr&quot;:31958.7344,&quot;Magnitude&quot;:178.770065},&quot;IsInSubdivision&quot;:false},&quot;2&quot;:{&quot;HousingZone&quot;:979,&quot;Plot&quot;:2,&quot;Size&quot;:1,&quot;PlacardLocation&quot;:{&quot;X&quot;:139.482666,&quot;Y&quot;:-38.1018066,&quot;Z&quot;:149.278931,&quot;MagnitudeSqr&quot;:43191.36,&quot;Magnitude&quot;:207.825317},&quot;EntranceLocation&quot;:{&quot;X&quot;:143.783813,&quot;Y&quot;:-38.4,&quot;Z&quot;:143.765427,&quot;MagnitudeSqr&quot; [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string EmpyreumPlots {
+            get {
+                return ResourceManager.GetString("EmpyreumPlots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;1&quot;:{&quot;HousingZone&quot;:341,&quot;Plot&quot;:1,&quot;Size&quot;:0,&quot;PlacardLocation&quot;:{&quot;X&quot;:-49.2409058,&quot;Y&quot;:-2.3347168,&quot;Z&quot;:-120.164856,&quot;MagnitudeSqr&quot;:16869.71,&quot;Magnitude&quot;:129.883453},&quot;EntranceLocation&quot;:{&quot;X&quot;:-140.05278,&quot;Y&quot;:-3.15488815,&quot;Z&quot;:-168.477234,&quot;MagnitudeSqr&quot;:48009.3125,&quot;Magnitude&quot;:219.110275},&quot;IsInSubdivision&quot;:false},&quot;2&quot;:{&quot;HousingZone&quot;:341,&quot;Plot&quot;:2,&quot;Size&quot;:0,&quot;PlacardLocation&quot;:{&quot;X&quot;:-50.18695,&quot;Y&quot;:5.661072,&quot;Z&quot;:-92.05774,&quot;MagnitudeSqr&quot;:11025.4043,&quot;Magnitude&quot;:105.001923},&quot;EntranceLocation&quot;:{&quot;X&quot;:-54.17587,&quot;Y&quot;:4.000001,&quot;Z&quot;:-91.22425,&quot;M [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string GobletPlots {
+            get {
+                return ResourceManager.GetString("GobletPlots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;1&quot;:{&quot;HousingZone&quot;:340,&quot;Plot&quot;:1,&quot;Size&quot;:1,&quot;PlacardLocation&quot;:{&quot;X&quot;:126.7262,&quot;Y&quot;:47.80652,&quot;Z&quot;:-81.83417,&quot;MagnitudeSqr&quot;:25041.8242,&quot;Magnitude&quot;:158.2461},&quot;EntranceLocation&quot;:{&quot;X&quot;:-791.284058,&quot;Y&quot;:20.1,&quot;Z&quot;:-571.4673,&quot;MagnitudeSqr&quot;:953109.25,&quot;Magnitude&quot;:976.273132},&quot;IsInSubdivision&quot;:false},&quot;2&quot;:{&quot;HousingZone&quot;:340,&quot;Plot&quot;:2,&quot;Size&quot;:0,&quot;PlacardLocation&quot;:{&quot;X&quot;:75.54736,&quot;Y&quot;:52.56726,&quot;Z&quot;:-86.7780762,&quot;MagnitudeSqr&quot;:16001.1553,&quot;Magnitude&quot;:126.495674},&quot;EntranceLocation&quot;:{&quot;X&quot;:78.08634,&quot;Y&quot;:51.1,&quot;Z&quot;:-89.65479,&quot;MagnitudeSqr&quot;:16746.6 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string LavenderBedsPlots {
+            get {
+                return ResourceManager.GetString("LavenderBedsPlots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;1&quot;:[{&quot;Key&quot;:5724,&quot;Stat&quot;:&quot;&quot;,&quot;Tier&quot;:0,&quot;Value&quot;:0},{&quot;Key&quot;:5725,&quot;Stat&quot;:&quot;&quot;,&quot;Tier&quot;:1,&quot;Value&quot;:0},{&quot;Key&quot;:5726,&quot;Stat&quot;:&quot;&quot;,&quot;Tier&quot;:2,&quot;Value&quot;:0},{&quot;Key&quot;:5727,&quot;Stat&quot;:&quot;&quot;,&quot;Tier&quot;:3,&quot;Value&quot;:0}],&quot;2&quot;:[{&quot;Key&quot;:5604,&quot;Stat&quot;:&quot;Strength&quot;,&quot;Tier&quot;:0,&quot;Value&quot;:0},{&quot;Key&quot;:5605,&quot;Stat&quot;:&quot;Strength&quot;,&quot;Tier&quot;:1,&quot;Value&quot;:0},{&quot;Key&quot;:5606,&quot;Stat&quot;:&quot;Strength&quot;,&quot;Tier&quot;:2,&quot;Value&quot;:0},{&quot;Key&quot;:5607,&quot;Stat&quot;:&quot;Strength&quot;,&quot;Tier&quot;:3,&quot;Value&quot;:0},{&quot;Key&quot;:5608,&quot;Stat&quot;:&quot;Strength&quot;,&quot;Tier&quot;:4,&quot;Value&quot;:0},{&quot;Key&quot;:18006,&quot;Stat&quot;:&quot;Strength&quot;,&quot;Tier&quot;:5,&quot;Value&quot;:0}],&quot;3&quot;:[{&qu....
         /// </summary>
         public static string Materia {
             get {
                 return ResourceManager.GetString("Materia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;1&quot;:{&quot;HousingZone&quot;:339,&quot;Plot&quot;:1,&quot;Size&quot;:1,&quot;PlacardLocation&quot;:{&quot;X&quot;:-55.1918945,&quot;Y&quot;:41.5197754,&quot;Z&quot;:-104.753235,&quot;MagnitudeSqr&quot;:15743.2773,&quot;Magnitude&quot;:125.472214},&quot;EntranceLocation&quot;:{&quot;X&quot;:-9.059401,&quot;Y&quot;:50.25964,&quot;Z&quot;:-141.4198,&quot;MagnitudeSqr&quot;:22607.6641,&quot;Magnitude&quot;:150.358459},&quot;IsInSubdivision&quot;:false},&quot;2&quot;:{&quot;HousingZone&quot;:339,&quot;Plot&quot;:2,&quot;Size&quot;:2,&quot;PlacardLocation&quot;:{&quot;X&quot;:-121.599182,&quot;Y&quot;:35.5687256,&quot;Z&quot;:-83.84839,&quot;MagnitudeSqr&quot;:23082.0488,&quot;Magnitude&quot;:151.92778},&quot;EntranceLocation&quot;:{&quot;X&quot;:-130.644669,&quot;Y&quot;:36.056736,&quot;Z&quot;:-86.446685 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string MistPlots {
+            get {
+                return ResourceManager.GetString("MistPlots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;1&quot;:{&quot;HousingZone&quot;:641,&quot;Plot&quot;:1,&quot;Size&quot;:1,&quot;PlacardLocation&quot;:{&quot;X&quot;:-18.0515137,&quot;Y&quot;:1.99890137,&quot;Z&quot;:123.6438,&quot;MagnitudeSqr&quot;:15617.6416,&quot;Magnitude&quot;:124.970566},&quot;EntranceLocation&quot;:{&quot;X&quot;:-116.6029,&quot;Y&quot;:2.02,&quot;Z&quot;:150.8374,&quot;MagnitudeSqr&quot;:36352.24,&quot;Magnitude&quot;:190.662628},&quot;IsInSubdivision&quot;:false},&quot;2&quot;:{&quot;HousingZone&quot;:641,&quot;Plot&quot;:2,&quot;Size&quot;:0,&quot;PlacardLocation&quot;:{&quot;X&quot;:-15.0301514,&quot;Y&quot;:14.5112915,&quot;Z&quot;:81.40686,&quot;MagnitudeSqr&quot;:7063.56,&quot;Magnitude&quot;:84.04499},&quot;EntranceLocation&quot;:{&quot;X&quot;:-16.3205776,&quot;Y&quot;:14.52,&quot;Z&quot;:77.8957443,&quot;MagnitudeSqr&quot;:654 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string ShiroganePlots {
+            get {
+                return ResourceManager.GetString("ShiroganePlots", resourceCulture);
             }
         }
         
@@ -121,7 +166,7 @@ namespace LlamaLibrary.Properties {
         ///    &quot;RetainerLevel&quot;: 1,
         ///    &quot;VentureCost&quot;: 1,
         ///    &quot;MaxTime&quot;: 60,
-        ///    &quot;Experience&quot;: 1300,
+        ///    &quot;Experience&quot;: 500,
         ///    &quot;RequiredItemLevel&quot;: 0,
         ///    &quot;RequiredGathering&quot;: 0,
         ///    &quot;NameRaw&quot;: &quot;Animal Skin&quot;,
@@ -134,10 +179,10 @@ namespace LlamaLibrary.Properties {
         ///    &quot;RetainerLevel&quot;: 2,
         ///    &quot;VentureCost&quot;: 1,
         ///    &quot;MaxTime&quot;: 60,
-        ///    &quot;Experience&quot;: 1900,
+        ///    &quot;Experience&quot;: 800,
         ///    &quot;RequiredItemLevel&quot;: 0,
         ///    &quot;RequiredGathering&quot;: 0,
-        ///    &quot;NameRaw&quot;: &quot;Animal Sinew&quot;, [rest of string was truncated]&quot;;.
+        ///    &quot;Nam [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Ventures {
             get {

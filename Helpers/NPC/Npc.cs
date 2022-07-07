@@ -4,19 +4,24 @@ using Clio.Utilities;
 using ff14bot;
 using ff14bot.Managers;
 using ff14bot.Objects;
+using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers.NPC
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class Npc : IEquatable<Npc>
     {
+        [JsonProperty]
         public uint NpcId { get; set; }
+        [JsonProperty]
         public Location Location { get; set; }
-        public bool CanGetTo => Location.CanTeleportTo;
+        public bool CanGetTo => Location.CanTeleportTo || Location.IsHousingLocation;
         public int TeleportCost => Location.TeleportCost;
         public bool IsInCurrentArea => WorldManager.AetheryteIdsForZone(WorldManager.ZoneId).Select(i => i.Item1).Contains(Location.ClosestAetherytePrimaryResult.Id);
         public bool IsInCurrentZone => WorldManager.ZoneId == Location.ZoneId;
         public string Name => NpcHelper.GetNpcName(NpcId);
         public GameObject GameObject => GameObjectManager.GameObjects.Where(r => r.IsTargetable && r.NpcId == NpcId).OrderBy(r => r.Distance()).FirstOrDefault();
+        public bool IsHousingZoneNpc => Location.IsHousingLocation;
 
         public Npc(uint npcId, Location location)
         {

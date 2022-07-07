@@ -361,6 +361,8 @@ namespace LlamaLibrary.Helpers
             { 36635, (2, GCShopCategory.Materiel) },
             { 36636, (2, GCShopCategory.Materiel) }
         };
+
+        public static bool IsBuyableItem(uint itemId) => KnownItems.ContainsKey(itemId);
     }
 
     public enum GCShopCategory

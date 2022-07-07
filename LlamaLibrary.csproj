@@ -112,10 +112,12 @@
     <Compile Include="ICompiledAsyncBotbase.cs" />
     <Compile Include="ICompiledBotbase.cs" />
     <Compile Include="JsonObjects\CustomDeliveryNpc.cs" />
+    <Compile Include="JsonObjects\HouseLocation.cs" />
     <Compile Include="JsonObjects\Lisbeth\AmountMode.cs" />
     <Compile Include="JsonObjects\Lisbeth\Order.cs" />
     <Compile Include="JsonObjects\Lisbeth\SourceType.cs" />
     <Compile Include="JsonObjects\MateriaItem.cs" />
+    <Compile Include="JsonObjects\RecordedPlot.cs" />
     <Compile Include="JsonObjects\RetainerSale.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="RemoteAgents\AgentAchievement.cs" />
@@ -320,7 +322,12 @@
     <Content Include=".editorconfig" />
     <Content Include="Resources\AllHunts.json" />
     <Content Include="Resources\CustomDeliveryNpcs.json" />
+    <Content Include="Resources\Empyreum.json" />
+    <Content Include="Resources\Goblet.json" />
+    <Content Include="Resources\LavenderBeds.json" />
     <Content Include="Resources\Materia.json" />
+    <Content Include="Resources\Mist.json" />
+    <Content Include="Resources\Shirogane.json" />
     <Content Include="Resources\Ventures.json" />
   </ItemGroup>
   <ItemGroup>

@@ -14,7 +14,11 @@ using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.Pathing;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Enums;
+using LlamaLibrary.Helpers.Housing;
+using LlamaLibrary.Helpers.HousingTravel;
 using LlamaLibrary.Helpers.NPC;
+using LlamaLibrary.Helpers.WorldTravel;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
 using TreeSharp;
@@ -59,6 +63,26 @@ namespace LlamaLibrary.Helpers
             return await GetTo(ZoneId, new Vector3((float)x, (float)y, (float)z));
         }
 
+        public static async Task<bool> GetTo(World world, Location location)
+        {
+            return await GetTo(world, location.ZoneId, location.Coordinates);
+        }
+
+        public static async Task<bool> GetTo(WorldLocation worldLocation)
+        {
+            return await GetTo(worldLocation.World, worldLocation.Location);
+        }
+
+        public static async Task<bool> GetTo(World world, uint ZoneId, Vector3 XYZ)
+        {
+            if (!await WorldTravel.WorldTravel.GoToWorld(world))
+            {
+                return false;
+            }
+
+            return await GetTo(ZoneId, XYZ);
+        }
+
         public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ)
         {
             /*if (ZoneId == 620)
@@ -74,6 +98,18 @@ namespace LlamaLibrary.Helpers
             if ((ZoneId == 534 || ZoneId == 535 || ZoneId == 536) && WorldManager.ZoneId != ZoneId)
             {
                 await GrandCompanyHelper.GetToGCBarracks();
+            }
+
+            if (HousingTraveler.HousingZoneIds.Contains((ushort)ZoneId))
+            {
+                int ward = 1;
+
+                if (HousingHelper.IsInHousingArea && WorldManager.ZoneId == ZoneId)
+                {
+                    ward = HousingHelper.HousingPositionInfo.Ward;
+                }
+
+                return await HousingTraveler.GetToResidential((ushort)ZoneId, XYZ, ward);
             }
 
             if (ZoneId == 401 && WorldManager.ZoneId == ZoneId)
@@ -372,7 +408,24 @@ namespace LlamaLibrary.Helpers
         {
             if (npc.CanGetTo)
             {
-                if (await GetTo(npc.Location.ZoneId, npc.Location.Coordinates))
+                if (npc.IsHousingZoneNpc)
+                {
+                    if (await HousingTraveler.GetToResidential(npc))
+                    {
+                        var unit = npc.GameObject;
+
+                        if (unit != default(GameObject))
+                        {
+                            if (!unit.IsWithinInteractRange)
+                            {
+                                await OffMeshMoveInteract(unit);
+                            }
+                        }
+
+                        return unit.IsWithinInteractRange;
+                    }
+                }
+                else if (await GetTo(npc.Location.ZoneId, npc.Location.Coordinates))
                 {
                     var unit = GameObjectManager.GetObjectByNPCId(npc.NpcId);
 

@@ -4,17 +4,26 @@ using Clio.Utilities;
 using ff14bot;
 using ff14bot.Helpers;
 using ff14bot.Managers;
+using LlamaLibrary.Helpers.HousingTravel;
+using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers.NPC
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class Location : IEquatable<Location>
     {
+        [JsonProperty]
         public ushort ZoneId { get; set; }
+        [JsonProperty]
         public Vector3 Coordinates { get; set; }
+
         public AetheryteResult ClosestAetherytePrimaryResult => DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == Navigation.GetPrimaryAetheryte(ZoneId, Coordinates));
 
         public AetheryteResult ClosestAetheryteResult => DataManager.AetheryteCache.Values.Where(i => i.ZoneId == ZoneId).OrderBy(i => i.Position.Distance2DSqr(Coordinates)).FirstOrDefault();
+
         public bool CanTeleportTo => WorldManager.HasAetheryteId(ClosestAetherytePrimaryResult.Id);
+
+        public bool IsHousingLocation => HousingTraveler.HousingZoneIds.Contains(ZoneId);
 
         public int TeleportCost
         {

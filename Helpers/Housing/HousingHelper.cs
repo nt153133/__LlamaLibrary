@@ -1,6 +1,9 @@
 ﻿using System;
 using ff14bot;
 using ff14bot.Helpers;
+using ff14bot.Managers;
+using LlamaLibrary.Helpers.HousingTravel;
+using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Helpers.Housing
@@ -35,6 +38,20 @@ namespace LlamaLibrary.Helpers.Housing
                 }
 
                 return default;
+            }
+        }
+
+        public static HouseLocation CurrentHouseLocation
+        {
+            get
+            {
+                if (!IsInHousingArea || !IsWithinPlot)
+                {
+                    return null;
+                }
+
+                var info = HousingPositionInfo;
+                return new HouseLocation((HousingZone)WorldManager.ZoneId, info.Ward, info.Plot);
             }
         }
 

@@ -4,6 +4,7 @@ using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Objects;
+using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Extensions
@@ -34,6 +35,7 @@ namespace LlamaLibrary.Extensions
         public static bool IsWalking => Core.Memory.Read<byte>(Offsets.RunWalk) == 1;
 
 
+        public static Location Location(this LocalPlayer play) => new Location(WorldManager.ZoneId, Core.Me.Location);
 
         /*internal static byte GatheringStatus(this LocalPlayer player)
         {

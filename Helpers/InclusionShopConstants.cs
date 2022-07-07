@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Clio.Utilities;
 
 namespace LlamaLibrary.Helpers
@@ -419,5 +420,7 @@ namespace LlamaLibrary.Helpers
                 }
             },
         };
+
+        public static bool IsBuyableItem(uint itemId) => KnownItems.Values.Any(i => i.Contains(itemId));
     }
 }

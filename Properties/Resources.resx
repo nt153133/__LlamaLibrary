@@ -144,4 +144,24 @@
             PublicKeyToken=b77a5c561934e089
         </value>
     </data>
+    <data name="MistPlots" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>..\Resources\Mist.json; System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089 </value>
+    </data>
+    <data name="LavenderBedsPlots" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>..\Resources\LavenderBeds.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089 </value>
+    </data>
+    <data name="GobletPlots" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>..\Resources\Goblet.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089 </value>
+    </data>
+    <data name="ShiroganePlots" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>..\Resources\Shirogane.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089 </value>
+    </data>
+    <data name="EmpyreumPlots" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>..\Resources\Empyreum.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089 </value>
+    </data>
 </root>
