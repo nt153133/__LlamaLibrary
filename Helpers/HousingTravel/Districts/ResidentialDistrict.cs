@@ -219,20 +219,22 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             unit.Target();
             unit.Interact();
 
-            await Coroutine.Wait(5000, () => SelectString.IsOpen);
-            if (SelectString.IsOpen)
+            if (!await Coroutine.Wait(5000, () => SelectString.IsOpen))
             {
-                if (Translator.Language == Language.Chn)
-                {
-                    SelectString.ClickLineContains("冒险者住宅区传送");
-                }
-                else
-                {
-                    SelectString.ClickLineContains(Translator.ResidentialDistrictAethernet);
-                }
+                unit = await Navigation.GetToAE(TownAetheryteId);
+                unit.Target();
+                unit.Interact();
+                await Coroutine.Wait(5000, () => SelectString.IsOpen);
             }
 
-            return await Coroutine.Wait(2000, () => SelectString.IsOpen && SelectString.Lines().Any(i => i.Contains(Translator.SelectWard)));
+            if (!SelectString.IsOpen)
+            {
+                return false;
+            }
+
+            SelectString.ClickLineContains(Translator.Language == Language.Chn ? "冒险者住宅区传送" : Translator.ResidentialDistrictAethernet);
+
+            return await Coroutine.Wait(5000, () => SelectString.IsOpen && SelectString.Lines().Any(i => i.Contains(Translator.SelectWard)));
 
             //return await Coroutine.Wait(5000, () => SelectString.IsOpen);
         }
