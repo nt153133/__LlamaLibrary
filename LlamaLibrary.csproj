@@ -13,6 +13,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -29,7 +30,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
-    <LangVersion>9</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <OutputPath>bin\Debug\</OutputPath>
   </PropertyGroup>
