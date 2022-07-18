@@ -10,7 +10,7 @@
 
         public uint Amount { get; set; }
 
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
 
         public SourceType Type { get; set; }
 

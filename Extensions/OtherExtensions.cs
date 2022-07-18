@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using ff14bot.Enums;
 using ff14bot.Managers;
+using LlamaLibrary.JsonObjects.Lisbeth;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace LlamaLibrary.Extensions
 {
@@ -65,6 +68,17 @@ namespace LlamaLibrary.Extensions
 
                 buffer[j] = buffer[i];
             }
+        }
+
+        public static string GetOrderJson(this IEnumerable<Order> orders)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            };
+            settings.Converters.Add(new StringEnumConverter());
+            return JsonConvert.SerializeObject(orders.OrderBy(i => i.Type), Formatting.Indented, settings);
         }
     }
 }

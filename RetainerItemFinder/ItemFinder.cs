@@ -29,10 +29,12 @@ namespace LlamaLibrary.RetainerItemFinder
 
         private static bool firstTimeSaddleRead = true;
 
+        public static IntPtr Framework;
+
         static ItemFinder()
         {
-            var framework = Core.Memory.Read<IntPtr>(Offsets.GFramework2);
-            var getUiModule = Core.Memory.CallInjected64<IntPtr>(Offsets.GetUiModule, framework);
+            Framework = Core.Memory.Read<IntPtr>(Offsets.GFramework2);
+            var getUiModule = Core.Memory.CallInjected64<IntPtr>(Offsets.GetUiModule, Framework);
             var getRaptureItemFinder = getUiModule + Offsets.RaptureItemFinder;
 
             Pointer = getRaptureItemFinder;
