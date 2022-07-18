@@ -131,6 +131,7 @@ namespace LlamaLibrary.Helpers
                     var AE = WorldManager.AetheryteIdsForZone(ZoneId).OrderBy(i => i.Item2.DistanceSqr(XYZ)).First();
 
                     Log.Verbose("Can teleport to AE");
+                    await Coroutine.Sleep(1000);
                     WorldManager.TeleportById(AE.Item1);
                     await Coroutine.Wait(20000, () => WorldManager.ZoneId == AE.Item1);
                     await Coroutine.Sleep(2000);
