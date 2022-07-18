@@ -37,7 +37,7 @@ namespace LlamaLibrary.Helpers
 
         public static readonly InventoryBagId[] SaddlebagIds =
         {
-            (InventoryBagId) 0xFA0, (InventoryBagId) 0xFA1 //, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005
+            (InventoryBagId)0xFA0, (InventoryBagId)0xFA1 //, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005
         };
 
         public static IEnumerable<BagSlot> MainBagsFilledSlots()
@@ -221,7 +221,7 @@ namespace LlamaLibrary.Helpers
                         }
                         else
                         {
-                            SelectString.ClickSlot((uint) (SelectString.LineCount - 1));
+                            SelectString.ClickSlot((uint)(SelectString.LineCount - 1));
                         }
                     }
                 }
@@ -248,7 +248,7 @@ namespace LlamaLibrary.Helpers
                         }
                         else
                         {
-                            SelectIconString.ClickSlot((uint) (SelectIconString.LineCount - 1));
+                            SelectIconString.ClickSlot((uint)(SelectIconString.LineCount - 1));
                         }
                     }
                 }
@@ -1107,7 +1107,7 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Wait(10000, () => Conversation.IsOpen);
                 if (Conversation.IsOpen)
                 {
-                    Conversation.SelectLine((uint) selectString);
+                    Conversation.SelectLine((uint)selectString);
                 }
             }
         }
@@ -1223,6 +1223,16 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Wait(10000, () => !ShopExchangeItem.Instance.IsOpen);
                 }
             }
+        }
+
+        public static bool IsDutyComplete(uint dutyId)
+        {
+            return DataManager.InstanceContentResults.TryGetValue(dutyId, out var instanceContentResult) && IsInstanceContentCompleted(instanceContentResult.Content);
+        }
+
+        public static bool IsInstanceContentCompleted(uint instantContentId)
+        {
+            return Core.Memory.CallInjected64<bool>(Offsets.IsInstanceContentCompleted, instantContentId);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
