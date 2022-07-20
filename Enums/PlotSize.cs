@@ -1,6 +1,6 @@
 ﻿namespace LlamaLibrary.Enums
 {
-    public enum PlotSize
+    public enum PlotSize : byte
     {
         Small,
         Medium,

@@ -57,6 +57,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             {
                 if (!await GetToWardTransition())
                 {
+                    Log.Error("Failed GetToWardTransition");
                     return false;
                 }
             }
@@ -78,6 +79,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
             if (!SelectString.IsOpen)
             {
+                Log.Error("Select string not open");
                 return false;
             }
 
@@ -86,8 +88,9 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
         public async Task<bool> SelectWard(int ward)
         {
-            if (ward < 1 || ward > 24)
+            if (ward is < 1 or > 24)
             {
+                Log.Error($"Invalid ward {ward}");
                 return false;
             }
 
@@ -96,11 +99,17 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 return true;
             }
 
-            if (!HousingSelectBlock.Instance.IsOpen && !await OpenWardSelection())
+            if (!HousingSelectBlock.Instance.IsOpen)
             {
-                return false;
+                //Log.Information($"Not open");
+                if (!await OpenWardSelection())
+                {
+                    Log.Error($"Can't open ward selection {ward}");
+                    return false;
+                }
             }
 
+            //Log.Information($"Selecting ward {ward}");
             HousingSelectBlock.Instance.SelectWard(ward - 1);
 
             await Coroutine.Sleep(500);
@@ -199,7 +208,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 }
             }
 
-            return await SelectHousing();
+            return Conversation.IsOpen;
         }
 
         public async Task<bool> GetToResidentialAe()
