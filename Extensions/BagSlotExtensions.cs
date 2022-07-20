@@ -7,9 +7,12 @@ using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
+using ff14bot.RemoteWindows;
+using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteAgents;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Extensions
 {
@@ -96,6 +99,9 @@ namespace LlamaLibrary.Extensions
 
             [Offset("Search 8B 48 ? 40 88 6C 24 ? Add 2 Read8")]
             internal static int PlayerMeldOffset;
+
+            [Offset("41 56 41 57 48 81 EC ? ? ? ? 83 B9 ? ? ? ? ? 4C 8B F2")]
+            public static IntPtr StoreroomToInventory;
 
             private static IntPtr _eventHandler = IntPtr.Zero;
 
@@ -479,6 +485,26 @@ namespace LlamaLibrary.Extensions
             FcChestCall((uint)sourceBagSlot.BagId, sourceBagSlot.Slot, (uint)destBagSlot.BagId, destBagSlot.Slot);
         }
 
+        public static bool StoreroomReturnToInventory(this BagSlot bagSlot)
+        {
+            if (!bagSlot.IsFilled || InventoryManager.FreeSlots < 1)
+            {
+                return false;
+            }
+
+            lock (Core.Memory.Executor.AssemblyLock)
+            {
+                using (Core.Memory.TemporaryCacheState(false))
+                {
+                    Core.Memory.CallInjected64<uint>(Offsets.StoreroomToInventory,
+                                                     HousingHelper.PositionPointer,
+                                                     bagSlot.Pointer);
+                }
+            }
+
+            return true;
+        }
+
         public static void RetainerEntrustQuantity(this BagSlot bagSlot, uint amount)
         {
             bagSlot.RetainerEntrustQuantity((int)amount);
@@ -511,6 +537,26 @@ namespace LlamaLibrary.Extensions
             var sw = new Stopwatch();
             sw.Start();
             if (await Coroutine.Wait(waitMs, () => !bagSlot.IsValid || !bagSlot.IsFilled || bagSlot.Count < curSlotCount))
+            {
+                sw.Stop();
+                var remainingMs = waitMs - (int)sw.ElapsedMilliseconds;
+                if (remainingMs > 0)
+                {
+                    await Coroutine.Sleep(remainingMs);
+                }
+
+                return true;
+            }
+
+            sw.Stop();
+            return false;
+        }
+
+        public static async Task<bool> BagSlotNotFilledWait(BagSlot bagSlot, int waitMs = DefaultBagSlotMoveWait)
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+            if (await Coroutine.Wait(waitMs * 2, () => !bagSlot.IsFilled))
             {
                 sw.Stop();
                 var remainingMs = waitMs - (int)sw.ElapsedMilliseconds;
@@ -570,6 +616,25 @@ namespace LlamaLibrary.Extensions
             var curSlotCount = bagSlot.Count;
             bagSlot.RetainerRetrieveQuantity(moveCount);
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
+        }
+
+        public static async Task<bool> TryStoreroomReturnToInventory(this BagSlot bagSlot, int waitMs = DefaultBagSlotMoveWait)
+        {
+            if (bagSlot.StoreroomReturnToInventory())
+            {
+                if (await Coroutine.Wait(5000, () => !bagSlot.IsFilled || SelectYesno.IsOpen))
+                {
+                    if (SelectYesno.IsOpen)
+                    {
+                        SelectYesno.Yes();
+                        return await BagSlotNotFilledWait(bagSlot, 2000);
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

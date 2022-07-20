@@ -64,6 +64,8 @@ namespace LlamaLibrary.Structs
 
         public string DisplayName => Name;
 
+        public ulong ContentId => Unique;
+
         public override string ToString()
         {
             return $"{Name} ({(enabled == 1 ? "enabled" : "disabled")}) - {Job} ({Level}) Gil: {Gil} Selling: {NumberOfMbItems} Venture: {VentureTask} VentureEnd: {UnixTimeStampToDateTime(VentureEndTimestamp)} {Unique}";

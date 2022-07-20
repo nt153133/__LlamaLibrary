@@ -126,6 +126,7 @@
     <Compile Include="RemoteAgents\AgentFreeCompanyChest.cs" />
     <Compile Include="RemoteAgents\AgentGrandCompanyExchange.cs" />
     <Compile Include="RemoteAgents\AgentGrandCompanySupply.cs" />
+    <Compile Include="RemoteAgents\AgentHousing.cs" />
     <Compile Include="RemoteAgents\AgentHousingSignBoard.cs" />
     <Compile Include="RemoteAgents\AgentInclusionShop.cs" />
     <Compile Include="RemoteAgents\AgentItemDetail.cs" />
@@ -141,6 +142,8 @@
     <Compile Include="RemoteWindows\FateProgress.cs" />
     <Compile Include="RemoteWindows\GrandCompanyRankUp.cs" />
     <Compile Include="RemoteWindows\HelpWindow.cs" />
+    <Compile Include="RemoteWindows\HousingGoods.cs" />
+    <Compile Include="RemoteWindows\HousingMenu.cs" />
     <Compile Include="RemoteWindows\HugeCraftworksSupplyResul.cs" />
     <Compile Include="RemoteWindows\InclusionShop.cs" />
     <Compile Include="RemoteWindows\InputString.cs" />
@@ -174,6 +177,7 @@
     <Compile Include="Structs\MobHuntOrder.cs" />
     <Compile Include="Structs\MobHuntOrderType.cs" />
     <Compile Include="Structs\MobHuntTarget.cs" />
+    <Compile Include="Structs\SelectUseTicketInvoker.cs" />
     <Compile Include="Structs\SharedFateProgress.cs" />
     <Compile Include="Helpers\SharedFateHelper.cs" />
     <Compile Include="Helpers\Achievements.cs" />
@@ -303,6 +307,8 @@
     <Compile Include="Structs\RowenaItem.cs" />
     <Compile Include="Structs\ShuffleCircularQueue.cs" />
     <Compile Include="Structs\SquadronTimerData.cs" />
+    <Compile Include="Structs\Telepo.cs" />
+    <Compile Include="Structs\TeleportInfo.cs" />
     <Compile Include="TemplateBotBase.cs" />
     <Compile Include="Utilities\CustomDeliveries.cs" />
     <Compile Include="Utilities\GCDailyTurnins.cs" />
