@@ -60,6 +60,7 @@
     <Compile Include="Enums\CompanyChestPermission.cs" />
     <Compile Include="Enums\DohJobType.cs" />
     <Compile Include="Enums\GCNpc.cs" />
+    <Compile Include="Enums\HouseLocationIndex.cs" />
     <Compile Include="Enums\MiniGameResult.cs" />
     <Compile Include="Enums\MyItemRole.cs" />
     <Compile Include="Enums\PlotSize.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Helpers\Ping\PingChecker.cs" />
     <Compile Include="Helpers\ScreenshotHelper.cs" />
     <Compile Include="Helpers\SquadronStatus.cs" />
+    <Compile Include="Helpers\TeleportHelper.cs" />
     <Compile Include="Helpers\UIInputHelper.cs" />
     <Compile Include="Helpers\WorldTravel\WorldLocation.cs" />
     <Compile Include="Helpers\WorldTravel\WorldTravel.cs" />
@@ -177,6 +179,7 @@
     <Compile Include="Structs\MobHuntOrder.cs" />
     <Compile Include="Structs\MobHuntOrderType.cs" />
     <Compile Include="Structs\MobHuntTarget.cs" />
+    <Compile Include="Structs\ResidenceInfo.cs" />
     <Compile Include="Structs\SelectUseTicketInvoker.cs" />
     <Compile Include="Structs\SharedFateProgress.cs" />
     <Compile Include="Helpers\SharedFateHelper.cs" />

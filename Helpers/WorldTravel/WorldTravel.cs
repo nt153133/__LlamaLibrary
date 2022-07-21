@@ -11,6 +11,7 @@ using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
+using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.Helpers.Ping;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
@@ -212,6 +213,12 @@ namespace LlamaLibrary.Helpers.WorldTravel
                 }
             }
 
+            if (WorldHelper.IsOnHomeWorld)
+            {
+                HousingHelper.UpdateResidenceArray();
+            }
+
+            await Coroutine.Sleep(500);
             return WorldHelper.CurrentWorldId == worldId;
         }
 

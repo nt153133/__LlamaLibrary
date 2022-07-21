@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using ff14bot;
 using ff14bot.Managers;
 using ff14bot.Objects;
 using LlamaLibrary.Enums;
+using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.Helpers.HousingTravel.Districts;
 using LlamaLibrary.Helpers.NPC;
@@ -43,6 +45,71 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
         public static async Task<bool> GetToResidential(HouseLocation location)
         {
+            if (location.World == WorldHelper.HomeWorld)
+            {
+                if (!await WorldTravel.WorldTravel.GoToWorld(location.World))
+                {
+                    return false;
+                }
+
+                if (HousingHelper.AccessibleHouseLocations.Contains(location))
+                {
+                    HouseLocationIndex place = HouseLocationIndex.FreeCompanyRoom;
+                    for (var index = 0; index < HousingHelper.AccessibleHouseLocations.Length; index++)
+                    {
+                        var houseLocation = HousingHelper.AccessibleHouseLocations[index];
+                        if (houseLocation == null)
+                        {
+                            continue;
+                        }
+
+                        if (houseLocation.Equals(location))
+                        {
+                            place = (HouseLocationIndex)index;
+                            break;
+                        }
+                    }
+
+                    Log.Information($"We can use teleport to {place.AddSpacesToEnum()}");
+                    switch (place)
+                    {
+                        case HouseLocationIndex.PrivateEstate:
+                            if (!await TeleportHelper.TeleportToPrivateEstate())
+                            {
+                                return false;
+                            }
+
+                            break;
+                        case HouseLocationIndex.Apartment:
+                            break;
+                        case HouseLocationIndex.FreeCompanyRoom:
+                        case HouseLocationIndex.FreeCompanyEstate:
+                            if (!await TeleportHelper.TeleportToFreeCompanyEstate())
+                            {
+                                return false;
+                            }
+
+                            break;
+                        case HouseLocationIndex.SharedEstate1:
+                            if (!await TeleportHelper.TeleportToSharedEstate(0))
+                            {
+                                return false;
+                            }
+
+                            break;
+                        case HouseLocationIndex.SharedEstate2:
+                            if (!await TeleportHelper.TeleportToSharedEstate(1))
+                            {
+                                return false;
+                            }
+
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
+
             return await GetToResidential(location.World, location.HousingZone, GetRecordedPlot(location.HousingZone, location.Plot)!.EntranceLocation, location.Ward);
         }
 
