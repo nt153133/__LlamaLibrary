@@ -13,6 +13,7 @@ using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Helpers.WorldTravel;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteAgents;
@@ -194,6 +195,11 @@ namespace LlamaLibrary.Retainers
 
         public static async Task<bool> GoToSummoningBell()
         {
+            if (!await WorldTravel.MakeSureHome())
+            {
+                return false;
+            }
+
             var searchBell = FindSummoningBell();
             if (searchBell != null)
             {
@@ -267,7 +273,6 @@ namespace LlamaLibrary.Retainers
 
                 return bell != null;
             }
-
 
             return false;
         }
@@ -516,10 +521,8 @@ namespace LlamaLibrary.Retainers
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                return Core.Memory.CallInjected64<int>(
-                    Offsets.GetNumberOfRetainers,
-                    Offsets.RetainerData
-                );
+                return Core.Memory.CallInjected64<int>(Offsets.GetNumberOfRetainers,
+                                                       Offsets.RetainerData);
             }
         }
 
@@ -538,14 +541,12 @@ namespace LlamaLibrary.Retainers
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<IntPtr>(
-                    Offsets.ExecuteCommand,
-                    (uint)Offsets.RetainerNetworkPacket,
-                    0U,
-                    0U,
-                    0U,
-                    0U
-                );
+                Core.Memory.CallInjected64<IntPtr>(Offsets.ExecuteCommand,
+                                                   (uint)Offsets.RetainerNetworkPacket,
+                                                   0U,
+                                                   0U,
+                                                   0U,
+                                                   0U);
             }
         }
 

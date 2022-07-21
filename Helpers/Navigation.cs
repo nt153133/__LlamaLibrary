@@ -380,6 +380,12 @@ namespace LlamaLibrary.Helpers
                 await Navigation.FlightorMove(AE.Location, 6);
             }
 
+            if (!AE.IsWithinInteractRange)
+            {
+                Log.Information("Using offmesh to get closer");
+                await Navigation.OffMeshMoveInteract(AE);
+            }
+
             return AE;
         }
 

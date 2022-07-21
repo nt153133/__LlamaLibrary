@@ -49,8 +49,12 @@ namespace LlamaLibrary.Helpers.HousingTravel
             {
                 if (!await WorldTravel.WorldTravel.GoToWorld(location.World))
                 {
+                    Log.Information("wtf");
                     return false;
                 }
+
+                HousingHelper.UpdateResidenceArray();
+                TeleportHelper.UpdateTeleportArray();
 
                 if (HousingHelper.AccessibleHouseLocations.Contains(location))
                 {

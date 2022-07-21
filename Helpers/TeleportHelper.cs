@@ -7,6 +7,7 @@ using ff14bot.Behavior;
 using ff14bot.Managers;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Logging;
+using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.Helpers
@@ -15,6 +16,12 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly string Name = "TeleportHelper";
         private static readonly LLogger Log = new LLogger(Name, Colors.MediumTurquoise);
+
+        private static class Offsets
+        {
+            [Offset("48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B E9 33 D2")]
+            internal static IntPtr UpdatePlayerAetheryteList;
+        }
 
         private static DateTime _lastUpdate;
 
@@ -42,9 +49,16 @@ namespace LlamaLibrary.Helpers
 
         public static void UpdateTeleportArray()
         {
+            CallUpdate();
             _lastUpdate = DateTime.Now;
             _lastUpdateWorld = WorldHelper.CurrentWorld;
             _teleportList = Core.Memory.Read<Telepo>(LlamaLibrary.Memory.Offsets.UIStateTelepo).TeleportInfos;
+            Log.Information("Updating teleport");
+        }
+
+        public static void CallUpdate()
+        {
+            Core.Memory.CallInjected64<IntPtr>(Offsets.UpdatePlayerAetheryteList, LlamaLibrary.Memory.Offsets.UIStateTelepo, 0);
         }
 
         public static async Task<bool> TeleportToPrivateEstate()
@@ -62,6 +76,7 @@ namespace LlamaLibrary.Helpers
 
             if (house == -1)
             {
+                Log.Information("Can't find teleport");
                 return false;
             }
 
@@ -83,6 +98,7 @@ namespace LlamaLibrary.Helpers
 
             if (house == -1)
             {
+                Log.Information("Can't find teleport");
                 return false;
             }
 
@@ -109,6 +125,7 @@ namespace LlamaLibrary.Helpers
 
             if (house == -1)
             {
+                Log.Information("Can't find teleport");
                 return false;
             }
 
@@ -125,7 +142,11 @@ namespace LlamaLibrary.Helpers
             Log.Information($"Using teleport index {index}");
             if (WorldManager.CanTeleport() || await Coroutine.Wait(5000, WorldManager.CanTeleport))
             {
-                WorldManager.Teleport(index);
+                if (!WorldManager.Teleport(index))
+                {
+                    Log.Information("WTF can't teleport");
+                }
+
                 if (await Coroutine.Wait(5000, () => Core.Me.IsCasting) && await Coroutine.Wait(10000, () => !Core.Me.IsCasting))
                 {
                     if (await Coroutine.Wait(5000, () => CommonBehaviors.IsLoading) && await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading))
