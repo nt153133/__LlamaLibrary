@@ -132,6 +132,33 @@ namespace LlamaLibrary.Helpers
             return await TeleportByIndex(house);
         }
 
+        public static async Task<bool> TeleportToSharedEstate(ushort zone, int ward, int plot)
+        {
+            int house = -1;
+            int count = 0;
+            for (var index = 0; index < TeleportList.Length; index++)
+            {
+                if (TeleportList[index].IsSharedHouse)
+                {
+                    if (TeleportList[index].TerritoryId == zone && TeleportList[index].Ward == ward && TeleportList[index].Plot == plot)
+                    {
+                        house = index;
+                        break;
+                    }
+
+                    count++;
+                }
+            }
+
+            if (house == -1)
+            {
+                Log.Information("Can't find teleport");
+                return false;
+            }
+
+            return await TeleportByIndex(house);
+        }
+
         private static async Task<bool> TeleportByIndex(int index)
         {
             return await TeleportByIndex((uint)index);

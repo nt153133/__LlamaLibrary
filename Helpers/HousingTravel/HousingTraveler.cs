@@ -53,8 +53,9 @@ namespace LlamaLibrary.Helpers.HousingTravel
                     return false;
                 }
 
-                HousingHelper.UpdateResidenceArray();
                 TeleportHelper.UpdateTeleportArray();
+                HousingHelper.UpdateResidenceArray();
+
 
                 if (HousingHelper.AccessibleHouseLocations.Contains(location))
                 {
@@ -95,14 +96,8 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
                             break;
                         case HouseLocationIndex.SharedEstate1:
-                            if (!await TeleportHelper.TeleportToSharedEstate(0))
-                            {
-                                return false;
-                            }
-
-                            break;
                         case HouseLocationIndex.SharedEstate2:
-                            if (!await TeleportHelper.TeleportToSharedEstate(1))
+                            if (!await TeleportHelper.TeleportToSharedEstate((ushort)location.HousingZone, location.Ward, location.Plot))
                             {
                                 return false;
                             }
