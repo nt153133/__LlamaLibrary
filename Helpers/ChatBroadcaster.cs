@@ -55,7 +55,7 @@ namespace LlamaLibrary.Helpers
                     ChatManager.SendChat("/em " + message);
                     break;
                 case MessageType.StandardEmotes:
-                    ChatManager.SendChat("/ " + message);
+                    ChatManager.SendChat("/" + message);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
