@@ -9,13 +9,13 @@ namespace LlamaLibrary.Helpers
 {
     public class ChatBroadcaster
     {
-        public MessageType MessageType { get; }
+        public MessageType MessageType { get; set; }
 
         public DateTime LastMessage = DateTime.MinValue;
 
         public static readonly HashSet<MessageType> AcceptedTypes = new HashSet<MessageType> { MessageType.Shout, MessageType.Yell, MessageType.Say, MessageType.FreeCompany, MessageType.Echo, MessageType.CustomEmotes, MessageType.StandardEmotes };
 
-        public int MinDelayMs { get; }
+        public int MinDelayMs { get; set; }
 
         public ChatBroadcaster(MessageType messageType = MessageType.Shout, int minDelayMs = 1000)
         {
