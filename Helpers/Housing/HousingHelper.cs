@@ -49,7 +49,7 @@ namespace LlamaLibrary.Helpers.Housing
 
         public static IntPtr PositionPointer => Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
 
-        public static bool IsInHousingArea => HousingPositionInfo.Ward != default;
+        public static bool IsInHousingArea => PositionPointer != IntPtr.Zero && HousingPositionInfo.Ward != default;
 
         public static bool IsInsideHouse => HousingPositionInfo.InHouse;
 

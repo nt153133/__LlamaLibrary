@@ -4,6 +4,7 @@ using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Objects;
+using LlamaLibrary.Enums;
 using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.Memory.Attributes;
 
@@ -30,6 +31,9 @@ namespace LlamaLibrary.Extensions
 
             [Offset("48 8B 8F ? ? ? ? 48 85 C9 74 ? 48 8B 01 FF 90 ? ? ? ? 84 C0 Add 3 Read32")]
             internal static int MinionPtr;
+
+            [Offset("0F B7 86 ? ? ? ? 66 89 85 ? ? ? ? E8 ? ? ? ? 48 8B 85 ? ? ? ? Add 3 Read32")]
+            internal static int HomeWorld;
         }
 
         public static bool IsWalking => Core.Memory.Read<byte>(Offsets.RunWalk) == 1;
@@ -99,6 +103,11 @@ namespace LlamaLibrary.Extensions
         public static ulong PlayerId(this LocalPlayer player)
         {
             return Core.Memory.Read<ulong>(Offsets.PlayerID);
+        }
+
+        public static World HomeWorld(this Character character)
+        {
+            return Core.Memory.Read<World>(character.Pointer + Offsets.HomeWorld);
         }
     }
 }

@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
+using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
+using ff14bot.Objects;
+using LlamaLibrary.Extensions;
 
 namespace LlamaLibrary.Helpers
 {
@@ -62,6 +65,28 @@ namespace LlamaLibrary.Helpers
             }
 
             LastMessage = DateTime.Now;
+        }
+
+        public static async Task<bool> SendTell(Character character, string message)
+        {
+            if (character == null || character.Type != GameObjectType.Pc)
+            {
+                return false;
+            }
+
+            ChatManager.SendChat($"/t {character.Name}@{character.HomeWorld()} {message}");
+
+            return true;
+        }
+
+        public static async Task<bool> SendTellToTarget(string message)
+        {
+            if (!Core.Me.HasTarget || GameObjectManager.Target.Type != GameObjectType.Pc)
+            {
+                return false;
+            }
+
+            return await SendTell(GameObjectManager.GetObjectById<Character>(GameObjectManager.Target.ObjectId, true) as Character, message);
         }
     }
 }
