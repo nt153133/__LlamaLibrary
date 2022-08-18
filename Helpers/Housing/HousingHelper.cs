@@ -80,7 +80,7 @@ namespace LlamaLibrary.Helpers.Housing
                     return new HousingPositionInfo(positionPointer);
                 }
 
-                return default;
+                return new HousingPositionInfo(IntPtr.Zero);
             }
         }
 
@@ -94,7 +94,7 @@ namespace LlamaLibrary.Helpers.Housing
                 }
 
                 var info = HousingPositionInfo;
-                return new HouseLocation((HousingZone)WorldManager.ZoneId, info.Ward, info.Plot);
+                return info ? new HouseLocation((HousingZone)WorldManager.ZoneId, info.Ward, info.Plot) : null;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
@@ -99,6 +100,10 @@ namespace LlamaLibrary.Helpers
             if (house == -1)
             {
                 Log.Information("Can't find teleport");
+                foreach (var teleportInfo in TeleportList.Take(5))
+                {
+                    Log.Information(teleportInfo.ToString());
+                }
                 return false;
             }
 

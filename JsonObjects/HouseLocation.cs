@@ -34,7 +34,33 @@ namespace LlamaLibrary.JsonObjects
 
         public override string ToString()
         {
-            return $"{World} - {HousingZone} - W{Ward} P{Plot}";
+
+
+
+            var zoneName = HousingZone.ToString();
+
+            if (zoneName.Contains("Shirogane"))
+            {
+                zoneName = "Shirogane";
+            }
+            else if (zoneName.Contains("Mist"))
+            {
+                zoneName = "Mist";
+            }
+            else if (zoneName.Contains("Goblet"))
+            {
+                zoneName = "Goblet";
+            }
+            else if (zoneName.Contains("LavenderBeds"))
+            {
+                zoneName = "LavenderBeds";
+            }
+            else if (zoneName.Contains("Empyreum"))
+            {
+                zoneName = "Empyreum";
+            }
+
+            return $"{World} - {zoneName} - W{Ward} P{Plot}";
         }
 
         public bool Equals(HouseLocation other)

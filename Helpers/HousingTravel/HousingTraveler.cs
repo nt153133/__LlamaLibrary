@@ -38,13 +38,106 @@ namespace LlamaLibrary.Helpers.HousingTravel
             HousingZoneIds = HousingZones.Select(i => i.ZoneId).ToList();
         }
 
+        public static HousingZone TranslateZone(HousingZone zone)
+        {
+            switch (zone)
+            {
+                case HousingZone.ChambersMist:
+                    zone = HousingZone.Mist;
+                    break;
+                case HousingZone.ChambersLavenderBeds:
+                    zone = HousingZone.LavenderBeds;
+                    break;
+                case HousingZone.ChambersGoblet:
+                    zone = HousingZone.Goblet;
+                    break;
+                case HousingZone.ChambersShirogane:
+                    zone = HousingZone.Shirogane;
+                    break;
+                case HousingZone.ChambersEmpyreum:
+                    zone = HousingZone.Empyreum;
+                    break;
+                case HousingZone.ApartmentMist:
+                    zone = HousingZone.Mist;
+                    break;
+                case HousingZone.ApartmentLavenderBeds:
+                    zone = HousingZone.LavenderBeds;
+                    break;
+                case HousingZone.ApartmentGoblet:
+                    zone = HousingZone.Goblet;
+                    break;
+                case HousingZone.ApartmentShirogane:
+                    zone = HousingZone.Shirogane;
+                    break;
+                case HousingZone.ApartmentEmpyreum:
+                    zone = HousingZone.Empyreum;
+                    break;
+                case HousingZone.CottageMist:
+                    zone = HousingZone.Mist;
+                    break;
+                case HousingZone.CottageLavenderBeds:
+                    zone = HousingZone.LavenderBeds;
+                    break;
+                case HousingZone.CottageGoblet:
+                    zone = HousingZone.Goblet;
+                    break;
+                case HousingZone.CottageShirogane:
+                    zone = HousingZone.Shirogane;
+                    break;
+                case HousingZone.CottageEmpyreum:
+                    zone = HousingZone.Empyreum;
+                    break;
+                case HousingZone.HouseMist:
+                    zone = HousingZone.Mist;
+                    break;
+                case HousingZone.HouseLavenderBeds:
+                    zone = HousingZone.LavenderBeds;
+                    break;
+                case HousingZone.HouseGoblet:
+                    zone = HousingZone.Goblet;
+                    break;
+                case HousingZone.HouseShirogane:
+                    zone = HousingZone.Shirogane;
+                    break;
+                case HousingZone.HouseEmpyreum:
+                    zone = HousingZone.Empyreum;
+                    break;
+                case HousingZone.MansionMist:
+                    zone = HousingZone.Mist;
+                    break;
+                case HousingZone.MansionLavenderBeds:
+                    zone = HousingZone.LavenderBeds;
+                    break;
+                case HousingZone.MansionGoblet:
+                    zone = HousingZone.Goblet;
+                    break;
+                case HousingZone.MansionShirogane:
+                    zone = HousingZone.Shirogane;
+                    break;
+                case HousingZone.MansionEmpyreum:
+                    zone = HousingZone.Empyreum;
+                    break;
+            }
+
+            return zone;
+        }
+
         public static RecordedPlot? GetRecordedPlot(HousingZone zone, int plot)
         {
-            return !HousingZonesEnums.Contains(zone) ? null : ResourceManager.HousingPlots[zone].Value[plot];
+            return !HousingZonesEnums.Contains(TranslateZone(zone)) ? null : ResourceManager.HousingPlots[TranslateZone(zone)].Value[plot];
         }
 
         public static async Task<bool> GetToResidential(HouseLocation location)
         {
+            location.HousingZone = TranslateZone(location.HousingZone);
+            var recorded = GetRecordedPlot(location.HousingZone, location.Plot);
+
+            if (recorded == null)
+            {
+                Log.Error($"Recorded plot null for {location.HousingZone} {location.Plot}");
+                return false;
+            }
+
             if (location.World == WorldHelper.HomeWorld)
             {
                 if (!await WorldTravel.WorldTravel.GoToWorld(location.World))
@@ -56,8 +149,10 @@ namespace LlamaLibrary.Helpers.HousingTravel
                 TeleportHelper.UpdateTeleportArray();
                 HousingHelper.UpdateResidenceArray();
 
+                var residence = GetResidentialDistrictByZone((ushort)location.HousingZone);
 
-                if (HousingHelper.AccessibleHouseLocations.Contains(location))
+
+                if (HousingHelper.AccessibleHouseLocations.Contains(location) && residence!=null && (residence.ClosestHousingAetheryte(Core.Me.Location).Key != residence.ClosestHousingAetheryte(recorded.PlacardLocation).Key))
                 {
                     HouseLocationIndex place = HouseLocationIndex.FreeCompanyRoom;
                     for (var index = 0; index < HousingHelper.AccessibleHouseLocations.Length; index++)
@@ -109,7 +204,9 @@ namespace LlamaLibrary.Helpers.HousingTravel
                 }
             }
 
-            return await GetToResidential(location.World, location.HousingZone, GetRecordedPlot(location.HousingZone, location.Plot)!.EntranceLocation, location.Ward);
+
+
+            return await GetToResidential(location.World, location.HousingZone, recorded.EntranceLocation, location.Ward);
         }
 
         public static async Task<bool> GetToResidential(Npc npc)

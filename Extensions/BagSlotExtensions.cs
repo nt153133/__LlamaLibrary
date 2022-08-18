@@ -97,6 +97,12 @@ namespace LlamaLibrary.Extensions
             [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 8B E9 41 0F B7 D9 48 8B 0D ? ? ? ? 41 8B F8 0F B7 F2 E8 ? ? ? ? 48 8B C8 48 85 C0 74 ? 80 BC 24 ? ? ? ? ?")]
             internal static IntPtr MeldItem;
 
+            [Offset("48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 56 41 57 48 83 EC ? 45 33 FF 41 8B E9")]
+            internal static IntPtr DyeItem;
+
+            [Offset("0F B6 43 ? 88 47 ? 80 7B ? ? 74 ? 48 8B CB E8 ? ? ? ? 48 85 C0 74 ? 48 8B CB E8 ? ? ? ? 48 8B C8 E8 ? ? ? ? EB ? 8B 43 ? Add 3 Read8")]
+            public static int StainId;
+
             [Offset("Search 8B 48 ? 40 88 6C 24 ? Add 2 Read8")]
             internal static int PlayerMeldOffset;
 
@@ -505,6 +511,27 @@ namespace LlamaLibrary.Extensions
             return true;
         }
 
+        public static byte StainId(this BagSlot bagSlot)
+        {
+            return Core.Memory.Read<byte>(bagSlot.Pointer + Offsets.StainId);
+        }
+
+        public static byte DyeItem(this BagSlot item, BagSlot dye)
+        {
+            lock (Core.Memory.Executor.AssemblyLock)
+            {
+                using (Core.Memory.TemporaryCacheState(false))
+                {
+                    return Core.Memory.CallInjected64<byte>(Offsets.DyeItem,
+                                                            Memory.Offsets.g_InventoryManager,
+                                                            item.BagId,
+                                                            item.Slot,
+                                                            dye.BagId,
+                                                            dye.Slot);
+                }
+            }
+        }
+
         public static void RetainerEntrustQuantity(this BagSlot bagSlot, uint amount)
         {
             bagSlot.RetainerEntrustQuantity((int)amount);
@@ -632,6 +659,22 @@ namespace LlamaLibrary.Extensions
                 }
 
                 return true;
+            }
+
+            return false;
+        }
+
+        public static async Task<bool> TryDyeItem(this BagSlot item, BagSlot dye)
+        {
+            var result = item.DyeItem(dye);
+            if (result != 1)
+            {
+                return false;
+            }
+
+            if (await Coroutine.Wait(10000, () => Core.Memory.Read<uint>(LlamaLibrary.Memory.Offsets.Conditions + LlamaLibrary.Memory.Offsets.DesynthLock) != 0))
+            {
+                return await Coroutine.Wait(10000, () => Core.Memory.Read<uint>(LlamaLibrary.Memory.Offsets.Conditions + LlamaLibrary.Memory.Offsets.DesynthLock) == 0);
             }
 
             return false;

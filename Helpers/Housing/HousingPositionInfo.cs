@@ -5,57 +5,60 @@ namespace LlamaLibrary.Helpers.Housing
 {
     public readonly struct HousingPositionInfo
     {
-        const ushort roomMask = 0b0000_1111_1100_0000;
-        const ushort wardMask = 0b0000_0000_0011_1111;
-        const ushort maskSize = 6;
+        private const ushort RoomMask = 0b0000_1111_1100_0000;
+        private const ushort WardMask = 0b0000_0000_0011_1111;
+        private const ushort MaskSize = 6;
 
         private readonly IntPtr _address;
 
         public HousingPositionInfo(IntPtr ptr)
-            => _address = ptr;
-
-        public static implicit operator bool(HousingPositionInfo ptr)
-            => ptr._address != null;
-
-        public ushort House => (ushort)(_address == IntPtr.Zero || !InHouse ? 0 : Core.Memory.Read<ushort>(_address + 0x96A0) + 1);
-
-        private ushort InternalWard => (ushort)(_address == IntPtr.Zero ? 0 : Core.Memory.Read<ushort>(_address + 0x96A2) + 1);
-
-        public int Ward => (InternalWard < 50) ? InternalWard : wardTemp;
-
-        public int Room => roomTemp;
-
-        public bool Subdivision => _address != IntPtr.Zero && Core.Memory.Read<byte>(_address + 0x96A9) == 2;
-
-        public InternalHousingZone Zone => _address == IntPtr.Zero ? InternalHousingZone.Unknown : Core.Memory.Read<InternalHousingZone>(_address + 0x96A4);
-
-        public ushort Plot
         {
-            get
+            _address = ptr;
+
+            if (ptr == IntPtr.Zero)
             {
-                if (_address == IntPtr.Zero)
-                {
-                    return 0;
-                }
-
-                if (InHouse)
-                {
-                    return House;
-                }
-
-                return InternalPlot;
+                InHouse = false;
+                House = 0;
+                Room = 0;
+                Ward = 0;
+                Subdivision = false;
+                Zone = InternalHousingZone.Unknown;
+                Plot = 0;
+                HousingFloor = HousingFloor.Unknown;
+                return;
             }
+
+            InHouse = Core.Memory.Read<byte>(_address + 0x96A9) == 0;
+            House = (ushort)(!InHouse ? 0 : Core.Memory.Read<ushort>(_address + 0x96A0) + 1);
+            var internalWard = (ushort)(Core.Memory.Read<ushort>(_address + 0x96A2) + 1);
+            var internalPlot = (byte)(InHouse ? 0 : Core.Memory.Read<byte>(_address + 0x96A8) + 1);;
+            Room = (internalWard & RoomMask) >> MaskSize;
+            var wardTemp = ((internalWard & WardMask) >> MaskSize) + 1;
+            Ward = (internalWard < 50) ? internalWard : wardTemp;
+            Subdivision = Core.Memory.Read<byte>(_address + 0x96A9) == 2;
+            Zone = Core.Memory.Read<InternalHousingZone>(_address + 0x96A4);
+            Plot = (ushort)(InHouse ? House : internalPlot);
+            HousingFloor = Core.Memory.Read<HousingFloor>(_address + 0x9704);
         }
 
-        private byte InternalPlot => (byte)(_address == IntPtr.Zero || InHouse ? 0 : Core.Memory.Read<byte>(_address + 0x96A8) + 1);
+        public static implicit operator bool(HousingPositionInfo ptr)
+            => ptr._address != IntPtr.Zero;
 
-        public HousingFloor HousingFloor => _address == IntPtr.Zero ? HousingFloor.Unknown : Core.Memory.Read<HousingFloor>(_address + 0x9704);
+        public ushort House { get; }
 
-        public bool InHouse => _address != IntPtr.Zero && Core.Memory.Read<byte>(_address + 0x96A9) == 0;
+        public int Ward { get; }
 
-        private int roomTemp => (InternalWard & roomMask) >> maskSize;
+        public int Room { get; }
 
-        private int wardTemp => ((InternalWard & wardMask) >> maskSize) + 1;
+        public bool Subdivision { get; }
+
+        public InternalHousingZone Zone { get; }
+
+        public ushort Plot { get; }
+
+        public HousingFloor HousingFloor { get; }
+
+        public bool InHouse { get; }
     }
 
     public enum HousingFloor : byte
