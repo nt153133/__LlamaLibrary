@@ -62,13 +62,35 @@ namespace LlamaLibrary.Helpers
             Core.Memory.CallInjected64<IntPtr>(Offsets.UpdatePlayerAetheryteList, LlamaLibrary.Memory.Offsets.UIStateTelepo, 0);
         }
 
+        public static async Task<bool> TeleportToApartment()
+        {
+            int house = -1;
+
+            for (var index = 0; index < TeleportList.Length; index++)
+            {
+                if (TeleportList[index].IsOwnHouse && _teleportList[index].IsApartment)
+                {
+                    house = index;
+                    break;
+                }
+            }
+
+            if (house == -1)
+            {
+                Log.Information("Can't find teleport");
+                return false;
+            }
+
+            return await TeleportByIndex(house);
+        }
+
         public static async Task<bool> TeleportToPrivateEstate()
         {
             int house = -1;
 
             for (var index = 0; index < TeleportList.Length; index++)
             {
-                if (TeleportList[index].IsOwnHouse)
+                if (TeleportList[index].IsOwnHouse && !_teleportList[index].IsApartment)
                 {
                     house = index;
                     break;
@@ -104,6 +126,7 @@ namespace LlamaLibrary.Helpers
                 {
                     Log.Information(teleportInfo.ToString());
                 }
+
                 return false;
             }
 
