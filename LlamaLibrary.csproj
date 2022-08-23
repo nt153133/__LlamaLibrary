@@ -152,6 +152,7 @@
     <Compile Include="RemoteWindows\LookingForGroup.cs" />
     <Compile Include="RemoteWindows\LookingForGroupCondition.cs" />
     <Compile Include="RemoteWindows\LookingForGroupDetail.cs" />
+    <Compile Include="RemoteWindows\MJIHud.cs" />
     <Compile Include="RemoteWindows\NotificationParty.cs" />
     <Compile Include="RemoteWindows\PartyYesNo.cs" />
     <Compile Include="RemoteWindows\RetainerHistory.cs" />
