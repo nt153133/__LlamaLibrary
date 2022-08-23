@@ -133,8 +133,12 @@
     <Compile Include="RemoteAgents\AgentInclusionShop.cs" />
     <Compile Include="RemoteAgents\AgentItemDetail.cs" />
     <Compile Include="RemoteAgents\AgentLookingForGroup.cs" />
+    <Compile Include="RemoteAgents\AgentMJIGatheringNoteBook.cs" />
+    <Compile Include="RemoteAgents\AgentMJIHud.cs" />
+    <Compile Include="RemoteAgents\AgentMJIPouch.cs" />
     <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
+    <Compile Include="RemoteAgents\AgentMJIRecipeNoteBook.cs" />
     <Compile Include="RemoteWindows\Achievement.cs" />
     <Compile Include="RemoteWindows\Bank.cs" />
     <Compile Include="RemoteWindows\CharaMakeDataImport.cs" />
@@ -152,7 +156,10 @@
     <Compile Include="RemoteWindows\LookingForGroup.cs" />
     <Compile Include="RemoteWindows\LookingForGroupCondition.cs" />
     <Compile Include="RemoteWindows\LookingForGroupDetail.cs" />
+    <Compile Include="RemoteWindows\MJIGatheringNoteBook.cs" />
     <Compile Include="RemoteWindows\MJIHud.cs" />
+    <Compile Include="RemoteWindows\MJIPouch.cs" />
+    <Compile Include="RemoteWindows\MJIRecipeNoteBook.cs" />
     <Compile Include="RemoteWindows\NotificationParty.cs" />
     <Compile Include="RemoteWindows\PartyYesNo.cs" />
     <Compile Include="RemoteWindows\RetainerHistory.cs" />
