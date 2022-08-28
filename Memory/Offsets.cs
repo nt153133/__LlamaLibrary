@@ -84,6 +84,18 @@ namespace LlamaLibrary.Memory
 
         [Offset("48 8D 0D ? ? ? ? E8 ? ? ? ? 48 89 46 ? 4C 8D 45 ? Add 3 TraceRelative")]
         public static IntPtr UIStateTelepo;
+
+        [Offset("44 8B C2 4C 8B C9 41 C1 E8 ? 41 83 F8 ? 72 ? 32 C0 C3 0F B6 CA BA ? ? ? ? 83 E1 ? 41 8B C0 D3 E2")]
+        public static IntPtr IsSecretRecipeBookUnlocked;
+
+        [Offset("40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 75 ?")]
+        public static IntPtr IsFolkloreBookUnlocked;
+
+        [Offset("40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ?")]
+        public static IntPtr IsOrnamentUnlocked;
+
+        [Offset("48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 8B 93 ? ? ? ? Add 3 TraceRelative")]
+        public static IntPtr PlayerState;
     }
 
     public static partial class Offsets

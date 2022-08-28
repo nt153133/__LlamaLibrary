@@ -84,6 +84,36 @@ namespace LlamaLibrary.Helpers
             return isCrafted;
         }
 
+        public static bool IsSecretRecipeBookUnlocked(uint key)
+        {
+            return Core.Memory.CallInjected64<byte>(Memory.Offsets.IsSecretRecipeBookUnlocked, Memory.Offsets.PlayerState, (uint)key) == 1;
+        }
+
+        public static bool IsSecretRecipeBookUnlockedItem(uint key)
+        {
+            if (BookConstants.SecretRecipeBooks.TryGetValue(key, out var book))
+            {
+                return IsSecretRecipeBookUnlocked(book);
+            }
+
+            return false;
+        }
+
+        public static bool IsFolkloreBookUnlocked(uint key)
+        {
+            return Core.Memory.CallInjected64<byte>(Memory.Offsets.IsFolkloreBookUnlocked, Memory.Offsets.PlayerState, (uint)key) == 1;
+        }
+
+        public static bool IsFolkloreBookUnlockedItem(uint key)
+        {
+            if (BookConstants.FolkloreBooks.TryGetValue(key, out var book))
+            {
+                return IsFolkloreBookUnlocked(book);
+            }
+
+            return false;
+        }
+
         public static bool IsValid(CraftingStatus status)
         {
             if (status.Stage == 9 || status.Stage == 10)
@@ -101,7 +131,7 @@ namespace LlamaLibrary.Helpers
                 var status = Status;
                 if (IsValid(status))
                 {
-                    return (int) status.Quality;
+                    return (int)status.Quality;
                 }
                 else
                 {
@@ -117,7 +147,7 @@ namespace LlamaLibrary.Helpers
                 var status = Status;
                 if (IsValid(status))
                 {
-                    return (int) status.Step;
+                    return (int)status.Step;
                 }
                 else
                 {
@@ -133,7 +163,7 @@ namespace LlamaLibrary.Helpers
                 var status = Status;
                 if (IsValid(status))
                 {
-                    return (int) status.HQ;
+                    return (int)status.HQ;
                 }
                 else
                 {
@@ -149,7 +179,7 @@ namespace LlamaLibrary.Helpers
                 var status = Status;
                 if (IsValid(status))
                 {
-                    return (int) status.Durability;
+                    return (int)status.Durability;
                 }
                 else
                 {
@@ -165,7 +195,7 @@ namespace LlamaLibrary.Helpers
                 var status = Status;
                 if (IsValid(status))
                 {
-                    return (int) status.Progress;
+                    return (int)status.Progress;
                 }
                 else
                 {
@@ -191,9 +221,9 @@ namespace LlamaLibrary.Helpers
         }
 
         public static int ProgressRequired => CraftingManager.ProgressRequired;
-        public static int DurabilityCap => (int) Synthesis.GetProperty("DurabilityCap");
-        public static int QualityCap => (int) Synthesis.GetProperty("QualityCap");
-        public static int IconId => (int) Synthesis.GetProperty("IconId");
+        public static int DurabilityCap => (int)Synthesis.GetProperty("DurabilityCap");
+        public static int QualityCap => (int)Synthesis.GetProperty("QualityCap");
+        public static int IconId => (int)Synthesis.GetProperty("IconId");
         public static bool IsCrafting => CraftingManager.IsCrafting;
         public static bool CanCraft => CraftingManager.CanCraft;
         public static RecipeData CurrentRecipe => CraftingManager.CurrentRecipe;

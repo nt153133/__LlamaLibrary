@@ -80,6 +80,7 @@
     <Compile Include="Extensions\OtherExtensions.cs" />
     <Compile Include="Extensions\RetainerTaskAskExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Helpers\BookConstants.cs" />
     <Compile Include="Helpers\ChatBroadcaster.cs" />
     <Compile Include="Helpers\CompanyChestHelper.cs" />
     <Compile Include="Helpers\CrystallineMeanHelper.cs" />
