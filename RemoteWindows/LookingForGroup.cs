@@ -40,7 +40,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public bool DataCenterEnabled => DataCenterButton.IsValid && DataCenterButton.Clickable;
 
-        public RemoteButton RecruitMembersButton => WindowByName.FindButton(45);
+        public RemoteButton RecruitMembersButton => WindowByName.FindButton(46);
 
         public bool RecruitMembersEnabled => RecruitMembersButton.IsValid && RecruitMembersButton.Clickable;
 
