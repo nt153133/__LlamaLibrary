@@ -95,7 +95,7 @@ namespace LlamaLibrary.RemoteWindows
 
         protected ushort ElementCount => WindowByName != null ? Core.Memory.Read<ushort>(WindowByName.Pointer + Offset0) : (ushort)0;
 
-        protected void SendAction(int pairCount, params ulong[] param)
+        public void SendAction(int pairCount, params ulong[] param)
         {
             if (IsOpen)
             {
