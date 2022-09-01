@@ -15,26 +15,35 @@ namespace LlamaLibrary.RemoteWindows
         private const string WindowName = "ContentsInfoDetail";
         private int eleNumCrafting = 56;
         private int eleNumGathering = 57;
-        private int eleCraftingItem = 214;
-        private int eleCraftingJob = 222;
-        private int eleCraftingQty = 230;
-        private int eleGatheringItem = 273;
-        private int eleGatheringJob = 276;
-        private int eleGatheringQty = 279;
+        private int eleCraftingItem = 215;
+        private int eleCraftingJob = 223;
+        private int eleCraftingQty = 231;
+        private int eleGatheringItem = 274;
+        private int eleGatheringJob = 277;
+        private int eleGatheringQty = 280;
 
         public ContentsInfoDetail() : base(WindowName)
         {
             _name = WindowName;
             if (Translator.Language == Language.Chn)
             {
-                eleNumCrafting = 51;
+
+                eleNumCrafting = 56;
+                eleNumGathering = 57;
+                eleCraftingItem = 214;
+                eleCraftingJob = 222;
+                eleCraftingQty = 230;
+                eleGatheringItem = 273;
+                eleGatheringJob = 276;
+                eleGatheringQty = 279;
+                /*eleNumCrafting = 51;
                 eleNumGathering = 52;
                 eleCraftingItem = 205;
                 eleCraftingJob = 213;
                 eleCraftingQty = 221;
                 eleGatheringItem = 264;
                 eleGatheringJob = 267;
-                eleGatheringQty = 270;
+                eleGatheringQty = 270;*/
             }
         }
 
