@@ -109,6 +109,9 @@ namespace LlamaLibrary.Extensions
             [Offset("41 56 41 57 48 81 EC ? ? ? ? 83 B9 ? ? ? ? ? 4C 8B F2")]
             public static IntPtr StoreroomToInventory;
 
+            [Offset("E8 ? ? ? ? 89 83 ? ? ? ? C7 44 24 ? ? ? ? ? TraceCall")]
+            internal static IntPtr GetPostingPriceSlot;
+
             private static IntPtr _eventHandler = IntPtr.Zero;
 
             public static IntPtr EventHandler
@@ -313,6 +316,19 @@ namespace LlamaLibrary.Extensions
                     Core.Memory.CallInjected64<uint>(Offsets.MeldWindowFunc,
                                                      AgentMeld.Instance.Pointer,
                                                      bagSlot.Pointer);
+                }
+            }
+        }
+
+        public static uint PostingPrice(this BagSlot slot)
+        {
+            lock (Core.Memory.Executor.AssemblyLock)
+            {
+                using (Core.Memory.TemporaryCacheState(false))
+                {
+                    return Core.Memory.CallInjected64<uint>(Offsets.GetPostingPriceSlot,
+                                                            Memory.Offsets.g_InventoryManager,
+                                                            slot.Slot);
                 }
             }
         }
@@ -559,7 +575,7 @@ namespace LlamaLibrary.Extensions
 
         public const int DefaultBagSlotMoveWait = 600;
 
-        private static async Task<bool> BagSlotMoveWait(BagSlot bagSlot, uint curSlotCount, int waitMs = DefaultBagSlotMoveWait)
+        public static async Task<bool> BagSlotMoveWait(BagSlot bagSlot, uint curSlotCount, int waitMs = DefaultBagSlotMoveWait)
         {
             var sw = new Stopwatch();
             sw.Start();
