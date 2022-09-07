@@ -25,7 +25,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
         private static readonly LLogger Log = new LLogger(_name, Colors.Chocolate);
         private const TravelCity defaultStart = TravelCity.Limsa;
 
-        private static async Task OpenWorldTravelMenu(TravelCity travelCity = defaultStart)
+        public static async Task OpenWorldTravelMenu(TravelCity travelCity = defaultStart)
         {
             GameObject AE;
 
