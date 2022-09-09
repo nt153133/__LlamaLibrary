@@ -70,6 +70,7 @@
     <Compile Include="Enums\VentureStatus.cs" />
     <Compile Include="Enums\World.cs" />
     <Compile Include="Enums\WorldDCGroupType.cs" />
+    <Compile Include="ExportedAPI.cs" />
     <Compile Include="Extensions\BagExtensions.cs" />
     <Compile Include="Extensions\BagSlotExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Helpers\UIInputHelper.cs" />
     <Compile Include="Helpers\WorldTravel\WorldLocation.cs" />
     <Compile Include="Helpers\WorldTravel\WorldTravel.cs" />
+    <Compile Include="ICompiledAPIBotbase.cs" />
     <Compile Include="ICompiledAsyncBotbase.cs" />
     <Compile Include="ICompiledBotbase.cs" />
     <Compile Include="JsonObjects\CustomDeliveryNpc.cs" />

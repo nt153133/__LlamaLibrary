@@ -144,6 +144,19 @@ namespace LlamaLibrary.Utilities
             Log.Warning($"# of slots to Desynth: {toDesynthList.Count}");
             foreach (var bagSlot in toDesynthList)
             {
+                if (bagSlot.Item.RepairClass == 0)
+                {
+                    Log.Information($"{bagSlot.Name} repair class is 0.");
+                    continue;
+                }
+
+                var job = (ClassJobType)bagSlot.Item.RepairClass;
+                if (Core.Me.Levels[job] < 30)
+                {
+                    Log.Information($"{bagSlot.Name} requires {job} level 30 and we're level {Core.Me.Levels[job]}");
+                    continue;
+                }
+
                 await Desynth(bagSlot);
             }
 
