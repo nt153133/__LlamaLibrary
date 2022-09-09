@@ -3,6 +3,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using ff14bot;
 using ff14bot.AClasses;
@@ -19,9 +21,12 @@ namespace LlamaLibrary.Helpers
         private static readonly LLogger Log = new LLogger("OrderbotHelper", Colors.MediumPurple);
         public static bool loaded;
         public static bool tempbool;
+        public static bool StopBot = false;
+        public static Button RbStartButton => typeof(ff14bot.Forms.ugh.MainWpf).GetField("btnStart", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(ff14bot.Forms.ugh.MainWpf.current) as Button;
 
         public static Task<bool> CallOrderbot(string profile)
         {
+            StopBot = false;
             var a = new Thread(() => MyThread(profile));
             a.Start();
             return Task.FromResult(true);
@@ -31,6 +36,7 @@ namespace LlamaLibrary.Helpers
         {
             Log.Information("Thread Started");
             tempbool = false;
+            RbStartButton.Click += OnClick;
             //var profile = NeoProfileManager.CurrentProfile.Path;
 
             var lastBot = BotManager.Current;
@@ -91,6 +97,13 @@ namespace LlamaLibrary.Helpers
 
                         TreeRoot.OnStart += OnBotStart;
                         BotManager.Current.Initialize();
+
+                        if (StopBot)
+                        {
+                            Log.Information("Since we stopped the bot with the button, we will not restart it");
+                            return;
+                        }
+
                         BotManager.Current.Start();
                         //NeoProfileManager.Load(profile);
 
@@ -126,6 +139,13 @@ namespace LlamaLibrary.Helpers
         private static void OnNewProfileLoaded(BotEvents.NeoProfile.NewProfileLoadedEventArgs args)
         {
             loaded = true;
+        }
+
+        private static void OnClick(object sender, RoutedEventArgs e)
+        {
+            Log.Information($"Someone hit the stop button, catching so we don't restart");
+            StopBot = true;
+            RbStartButton.Click -= OnClick;
         }
 
         private static void OnBotStart(BotBase bot)

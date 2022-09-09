@@ -39,6 +39,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="RebornBuddy">
       <HintPath>..\..\RebornBuddy.exe</HintPath>
       <Private>True</Private>
@@ -323,6 +324,7 @@
     <Compile Include="Structs\SquadronTimerData.cs" />
     <Compile Include="Structs\Telepo.cs" />
     <Compile Include="Structs\TeleportInfo.cs" />
+    <Compile Include="TemplateAsyncBotbase.cs" />
     <Compile Include="TemplateBotBase.cs" />
     <Compile Include="Utilities\CustomDeliveries.cs" />
     <Compile Include="Utilities\GCDailyTurnins.cs" />
