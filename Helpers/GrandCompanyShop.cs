@@ -93,7 +93,7 @@ namespace LlamaLibrary.Helpers
             }
 
             await Coroutine.Wait(3000, () => Items.FirstOrDefault(i => i.ItemID == ItemId).InBag != oldBagQty);
-
+            await Coroutine.Sleep(500);
             GrandCompanyExchange.Instance.Close();
             await Coroutine.Wait(5000, () => !GrandCompanyExchange.Instance.IsOpen);
             Core.Me.ClearTarget();
@@ -166,7 +166,7 @@ namespace LlamaLibrary.Helpers
 
                 await Coroutine.Wait(3000, () => Items.FirstOrDefault(i => i.ItemID == itemToBuy.ItemId).InBag != oldBagQty);
             }
-
+            await Coroutine.Sleep(500);
             GrandCompanyExchange.Instance.Close();
             await Coroutine.Wait(5000, () => !GrandCompanyExchange.Instance.IsOpen);
             Core.Me.ClearTarget();
