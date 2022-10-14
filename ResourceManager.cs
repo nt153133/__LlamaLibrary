@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ff14bot.Enums;
 using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Properties;
@@ -15,6 +16,7 @@ namespace LlamaLibrary
         public static readonly Lazy<List<RetainerTaskData>> VentureData;
         public static readonly Lazy<List<CustomDeliveryNpc>> CustomDeliveryNpcs;
         public static readonly Dictionary<HousingZone, Lazy<Dictionary<int, RecordedPlot>>> HousingPlots;
+        public static readonly Dictionary<GrandCompany, List<GCShopItemStored>> GCShopItems;
 
         static ResourceManager()
         {
@@ -22,6 +24,7 @@ namespace LlamaLibrary
             MateriaList = new Lazy<Dictionary<int, List<MateriaItem>>>(() => LoadResource<Dictionary<int, List<MateriaItem>>>(Resources.Materia));
             DailyHunts = new Lazy<SortedDictionary<int, StoredHuntLocation>>(() => LoadResource<SortedDictionary<int, StoredHuntLocation>>(Resources.AllHunts));
             CustomDeliveryNpcs = new Lazy<List<CustomDeliveryNpc>>(() => LoadResource<List<CustomDeliveryNpc>>(Resources.CustomDeliveryNpcs));
+            GCShopItems = new Lazy<Dictionary<GrandCompany, List<GCShopItemStored>>>(() => LoadResource<Dictionary<GrandCompany, List<GCShopItemStored>>>(Resources.GCShopItems)).Value;
 
             HousingPlots = new Dictionary<HousingZone, Lazy<Dictionary<int, RecordedPlot>>>();
 

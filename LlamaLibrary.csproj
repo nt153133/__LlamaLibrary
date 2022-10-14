@@ -14,6 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>9</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -87,6 +88,7 @@
     <Compile Include="Helpers\CompanyChestHelper.cs" />
     <Compile Include="Helpers\CrystallineMeanHelper.cs" />
     <Compile Include="Helpers\CurrencyHelper.cs" />
+    <Compile Include="Helpers\ExpertDelivery.cs" />
     <Compile Include="Helpers\HousingTravel\Districts\Empyreum.cs" />
     <Compile Include="Helpers\HousingTravel\Districts\LavenderBeds.cs" />
     <Compile Include="Helpers\HousingTravel\Districts\Mist.cs" />
@@ -118,7 +120,9 @@
     <Compile Include="ICompiledAsyncBotbase.cs" />
     <Compile Include="ICompiledBotbase.cs" />
     <Compile Include="JsonObjects\CustomDeliveryNpc.cs" />
+    <Compile Include="JsonObjects\GCShopItemStored.cs" />
     <Compile Include="JsonObjects\HouseLocation.cs" />
+    <Compile Include="JsonObjects\JsonSettings.cs" />
     <Compile Include="JsonObjects\Lisbeth\AmountMode.cs" />
     <Compile Include="JsonObjects\Lisbeth\Order.cs" />
     <Compile Include="JsonObjects\Lisbeth\SourceType.cs" />
@@ -345,6 +349,7 @@
     <Content Include="Resources\AllHunts.json" />
     <Content Include="Resources\CustomDeliveryNpcs.json" />
     <Content Include="Resources\Empyreum.json" />
+    <Content Include="Resources\GCShopItems.json" />
     <Content Include="Resources\Goblet.json" />
     <Content Include="Resources\LavenderBeds.json" />
     <Content Include="Resources\Materia.json" />

@@ -45,13 +45,13 @@ namespace LlamaLibrary.Helpers
 
         public static IntPtr ActiveShopPtr => Core.Memory.Read<IntPtr>(Offsets.GCShopPtr);
 
-        public static IntPtr ListStart => (ActiveShopPtr + Offsets.GCArrayStart);
+        public static IntPtr ListStart => ActiveShopPtr + Offsets.GCArrayStart;
 
         public static List<GCShopItem> Items => Core.Memory.ReadArray<GCShopItem>(ActiveShopPtr + Offsets.GCArrayStart, Offsets.GCShopCount).Where(i => i.ItemID != 0).ToList();
 
         public static int CanAfford(GCShopItem item)
         {
-            return (int) Math.Floor((double) (Core.Me.GCSeals() / item.Cost));
+            return (int)Math.Floor((double)(Core.Me.GCSeals() / item.Cost));
         }
 
         public static async Task<int> BuyItem(uint ItemId, int qty)
@@ -111,10 +111,11 @@ namespace LlamaLibrary.Helpers
 
             foreach (var itemToBuy in items)
             {
-                if (!KnownItems.TryGetValue(itemToBuy.ItemId, out var itemInfo))
+                var itemInfo = ResourceManager.GCShopItems[Core.Me.GrandCompany].FirstOrDefault(i => i.ItemId == itemToBuy.ItemId);
+                if (itemInfo == null)
                 {
+                    Log.Error($"Could not find item {itemToBuy.ItemId} in the GC shop");
                     continue;
-                    //return false;
                 }
 
                 if (AgentGrandCompanyExchange.Instance.Rank != itemInfo.GCRankGroup)
@@ -125,11 +126,11 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Sleep(500);
                 }
 
-                if (AgentGrandCompanyExchange.Instance.Category + 1 != (byte) itemInfo.Category)
+                if (AgentGrandCompanyExchange.Instance.Category + 1 != (byte)itemInfo.Category)
                 {
                     Log.Information($"Change ChangeItemGroup to {itemInfo.Category}");
-                    GrandCompanyExchange.Instance.ChangeItemGroup((int) itemInfo.Category);
-                    await Coroutine.Wait(3000, () => AgentGrandCompanyExchange.Instance.Category + 1 == (byte) itemInfo.Category);
+                    GrandCompanyExchange.Instance.ChangeItemGroup((int)itemInfo.Category);
+                    await Coroutine.Wait(3000, () => AgentGrandCompanyExchange.Instance.Category + 1 == (byte)itemInfo.Category);
                     await Coroutine.Sleep(500);
                 }
 
@@ -186,11 +187,16 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<int> BuyKnownItem(uint ItemId, int qty)
         {
-            if (KnownItems.TryGetValue(ItemId, out var itemInfo))
+            var item = ResourceManager.GCShopItems[Core.Me.GrandCompany].FirstOrDefault(i => i.ItemId == ItemId);
+
+            if (item == null)
             {
-                Log.Information($"Found Known item {ItemId}");
-                return await BuyItem(ItemId, qty, itemInfo.Item1, itemInfo.Item2);
+                Log.Error($"Can't find item {ItemId}");
+                return 0;
             }
+
+            Log.Information($"Found Known item {ItemId}");
+            return await BuyItem(ItemId, qty, item.GCRankGroup, item.Category);
 
             return 0;
         }
@@ -210,11 +216,11 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Sleep(500);
             }
 
-            if (AgentGrandCompanyExchange.Instance.Category + 1 != (byte) Category)
+            if (AgentGrandCompanyExchange.Instance.Category + 1 != (byte)Category)
             {
                 Log.Information($"Change ChangeItemGroup to {Category}");
-                GrandCompanyExchange.Instance.ChangeItemGroup((int) Category);
-                await Coroutine.Wait(3000, () => AgentGrandCompanyExchange.Instance.Category + 1 == (byte) Category);
+                GrandCompanyExchange.Instance.ChangeItemGroup((int)Category);
+                await Coroutine.Wait(3000, () => AgentGrandCompanyExchange.Instance.Category + 1 == (byte)Category);
                 await Coroutine.Sleep(500);
             }
 
@@ -241,128 +247,7 @@ namespace LlamaLibrary.Helpers
             return GrandCompanyExchange.Instance.IsOpen;
         }
 
-        public static readonly Dictionary<uint, (byte GCRankGroup, GCShopCategory Category)> KnownItems = new Dictionary<uint, (byte GCRankGroup, GCShopCategory Category)>()
-        {
-            { 21072, (0, GCShopCategory.Materiel) },
-            { 4564, (0, GCShopCategory.Materiel) },
-            { 4566, (0, GCShopCategory.Materiel) },
-            { 5594, (0, GCShopCategory.Materiel) },
-            { 5595, (0, GCShopCategory.Materiel) },
-            { 5596, (0, GCShopCategory.Materiel) },
-            { 6017, (0, GCShopCategory.Materiel) },
-            { 6018, (0, GCShopCategory.Materiel) },
-            { 6019, (0, GCShopCategory.Materiel) },
-            { 15855, (0, GCShopCategory.Materiel) },
-            { 15856, (0, GCShopCategory.Materiel) },
-            { 4567, (0, GCShopCategory.Materiel) },
-            { 4568, (0, GCShopCategory.Materiel) },
-            { 4632, (0, GCShopCategory.Materiel) },
-            { 4633, (0, GCShopCategory.Materiel) },
-            { 5597, (0, GCShopCategory.Materiel) },
-            { 5598, (0, GCShopCategory.Materiel) },
-            { 5357, (0, GCShopCategory.Materials) },
-            { 5358, (0, GCShopCategory.Materials) },
-            { 4563, (1, GCShopCategory.Materiel) },
-            { 6026, (1, GCShopCategory.Materiel) },
-            { 6027, (1, GCShopCategory.Materiel) },
-            { 4634, (1, GCShopCategory.Materiel) },
-            { 4635, (1, GCShopCategory.Materiel) },
-            { 6141, (1, GCShopCategory.Materiel) },
-            { 7059, (1, GCShopCategory.Materiel) },
-            { 7060, (1, GCShopCategory.Materiel) },
-            { 7621, (1, GCShopCategory.Materiel) },
-            { 21800, (1, GCShopCategory.Materiel) },
-            { 4636, (1, GCShopCategory.Materiel) },
-            { 6028, (1, GCShopCategory.Materiel) },
-            { 6471, (1, GCShopCategory.Materiel) },
-            { 6555, (1, GCShopCategory.Materiel) },
-            { 6527, (1, GCShopCategory.Materiel) },
-            { 6547, (1, GCShopCategory.Materiel) },
-            { 6540, (1, GCShopCategory.Materiel) },
-            { 6558, (1, GCShopCategory.Materiel) },
-            { 6658, (1, GCShopCategory.Materiel) },
-            { 6662, (1, GCShopCategory.Materiel) },
-            { 10386, (2, GCShopCategory.Materiel) },
-            { 17837, (2, GCShopCategory.Materiel) },
-            { 12858, (2, GCShopCategory.Materiel) },
-            { 12854, (2, GCShopCategory.Materiel) },
-            { 12849, (2, GCShopCategory.Materiel) },
-            { 13743, (2, GCShopCategory.Materiel) },
-            { 4715, (2, GCShopCategory.Materiel) },
-            { 4720, (2, GCShopCategory.Materiel) },
-            { 12847, (2, GCShopCategory.Materiel) },
-            { 12844, (2, GCShopCategory.Materiel) },
-            { 13595, (2, GCShopCategory.Materiel) },
-            { 13591, (2, GCShopCategory.Materiel) },
-            { 13589, (2, GCShopCategory.Materiel) },
-            { 13593, (2, GCShopCategory.Materiel) },
-            { 9539, (2, GCShopCategory.Materiel) },
-            { 10124, (2, GCShopCategory.Materiel) },
-            { 10121, (2, GCShopCategory.Materiel) },
-            { 10120, (2, GCShopCategory.Materiel) },
-            { 10122, (2, GCShopCategory.Materiel) },
-            { 7799, (2, GCShopCategory.Materiel) },
-            { 6172, (2, GCShopCategory.Materiel) },
-            { 7135, (2, GCShopCategory.Materiel) },
-            { 7145, (2, GCShopCategory.Materiel) },
-            { 6600, (2, GCShopCategory.Materiel) },
-            { 7096, (2, GCShopCategory.Materiel) },
-            { 7152, (2, GCShopCategory.Materiel) },
-            { 21319, (2, GCShopCategory.Materiel) },
-            { 21320, (2, GCShopCategory.Materiel) },
-            { 22498, (2, GCShopCategory.Materiel) },
-            { 21071, (2, GCShopCategory.Materiel) },
-            { 20790, (2, GCShopCategory.Materiel) },
-            { 15772, (2, GCShopCategory.Materiel) },
-            { 15773, (2, GCShopCategory.Materiel) },
-            { 15774, (2, GCShopCategory.Materiel) },
-            { 14945, (2, GCShopCategory.Materiel) },
-            { 16933, (2, GCShopCategory.Materials) },
-            { 15649, (2, GCShopCategory.Materials) },
-            { 9356, (2, GCShopCategory.Materials) },
-            { 9371, (2, GCShopCategory.Materials) },
-            { 9372, (2, GCShopCategory.Materials) },
-            { 9368, (2, GCShopCategory.Materials) },
-            { 9367, (2, GCShopCategory.Materials) },
-            { 9369, (2, GCShopCategory.Materials) },
-            { 9370, (2, GCShopCategory.Materials) },
-            { 9366, (2, GCShopCategory.Materials) },
-            { 7605, (2, GCShopCategory.Materials) },
-            { 7603, (2, GCShopCategory.Materials) },
-            { 7604, (2, GCShopCategory.Materials) },
-            { 7602, (2, GCShopCategory.Materials) },
-            { 7597, (2, GCShopCategory.Materials) },
-            { 7601, (2, GCShopCategory.Materials) },
-            { 7596, (2, GCShopCategory.Materials) },
-            { 7600, (2, GCShopCategory.Materials) },
-            { 7599, (2, GCShopCategory.Materials) },
-            { 7806, (2, GCShopCategory.Materials) },
-            { 7598, (2, GCShopCategory.Materials) },
-            { 6151, (2, GCShopCategory.Materials) },
-            { 5119, (2, GCShopCategory.Materials) },
-            { 5261, (2, GCShopCategory.Materials) },
-            { 5274, (2, GCShopCategory.Materials) },
-            { 6153, (2, GCShopCategory.Materials) },
-            { 5501, (2, GCShopCategory.Materials) },
-            { 5502, (2, GCShopCategory.Materials) },
-            { 6154, (2, GCShopCategory.Materials) },
-            { 5531, (2, GCShopCategory.Materials) },
-            { 5532, (2, GCShopCategory.Materials) },
-            { 5530, (2, GCShopCategory.Materials) },
-            { 10112, (2, GCShopCategory.Materials) },
-            { 10113, (2, GCShopCategory.Materials) },
-            { 10114, (2, GCShopCategory.Materials) },
-            { 10115, (2, GCShopCategory.Materials) },
-            { 10116, (2, GCShopCategory.Materials) },
-            { 10117, (2, GCShopCategory.Materials) },
-            { 10118, (2, GCShopCategory.Materials) },
-            { 10119, (2, GCShopCategory.Materials) },
-            { 9357, (2, GCShopCategory.Materials) },
-            { 36635, (2, GCShopCategory.Materiel) },
-            { 36636, (2, GCShopCategory.Materiel) }
-        };
-
-        public static bool IsBuyableItem(uint itemId) => KnownItems.ContainsKey(itemId);
+        public static bool IsBuyableItem(uint itemId) => ResourceManager.GCShopItems.SelectMany(i=> i.Value.Select(j=> j.ItemId)).Contains(itemId);
     }
 
     public enum GCShopCategory
