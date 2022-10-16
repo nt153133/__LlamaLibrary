@@ -2,11 +2,8 @@
 {
     public class MateriaAttach : RemoteWindow<MateriaAttach>
     {
-        private const string WindowName = "MateriaAttach";
-
-        public MateriaAttach() : base(WindowName)
+        public MateriaAttach() : base("MateriaAttach")
         {
-            _name = WindowName;
         }
 
         public void ClickItem(int index)

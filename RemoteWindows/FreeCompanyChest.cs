@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ff14bot;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Memory.Attributes;
@@ -8,8 +7,6 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class FreeCompanyChest : RemoteWindow<FreeCompanyChest>
     {
-        private const string WindowName = "FreeCompanyChest";
-
         private static class Offsets
         {
             [Offset("8B 9E ? ? ? ? 8B CF D3 EB Add 2 Read32")]
@@ -26,9 +23,9 @@ namespace LlamaLibrary.RemoteWindows
         {
             get
             {
-                Dictionary<int, CompanyChestPermission> permissions = new Dictionary<int, CompanyChestPermission>();
+                var permissions = new Dictionary<int, CompanyChestPermission>();
                 var value = Core.Memory.Read<uint>(WindowByName.Pointer + Offsets.ItemPermissions);
-                for (int i = 0; i < ItemTabCount; i++)
+                for (var i = 0; i < ItemTabCount; i++)
                 {
                     permissions.Add(i, (CompanyChestPermission)((value >> (2 * i)) & 3));
                 }
@@ -43,9 +40,8 @@ namespace LlamaLibrary.RemoteWindows
 
         public int ItemTabCount => Elements[4].TrimmedData;
 
-        public FreeCompanyChest() : base(WindowName)
+        public FreeCompanyChest() : base("FreeCompanyChest")
         {
-            _name = WindowName;
         }
 
         public void SelectItemTab(int tabIndex)

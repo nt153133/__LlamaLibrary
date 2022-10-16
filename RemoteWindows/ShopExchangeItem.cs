@@ -12,13 +12,10 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class ShopExchangeItem : RemoteWindow<ShopExchangeItem>
     {
-        private static readonly LLogger Log = new LLogger(WindowName, Colors.Fuchsia);
+        private static readonly LLogger Log = new(nameof(ShopExchangeItem), Colors.Fuchsia);
 
-        private const string WindowName = "ShopExchangeItem";
-
-        public ShopExchangeItem() : base(WindowName)
+        public ShopExchangeItem() : base("ShopExchangeItem")
         {
-            _name = WindowName;
         }
 
         public async Task<uint> Purchase(uint itemId, uint itemCount = 1)
@@ -120,7 +117,6 @@ namespace LlamaLibrary.RemoteWindows
 
                     await Coroutine.Sleep(1000);
                     */
-
                 }
                 else
                 {

@@ -2,11 +2,8 @@
 {
     public class NotificationParty : RemoteWindow<NotificationParty>
     {
-        private const string WindowName = "_NotificationParty";
-
-        public NotificationParty() : base(WindowName)
+        public NotificationParty() : base("_NotificationParty")
         {
-            _name = WindowName;
         }
     }
 }

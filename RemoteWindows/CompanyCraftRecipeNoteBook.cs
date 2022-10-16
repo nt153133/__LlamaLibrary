@@ -5,11 +5,8 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class CompanyCraftRecipeNoteBook : RemoteWindow<CompanyCraftRecipeNoteBook>
     {
-        private const string WindowName = "CompanyCraftRecipeNoteBoo";
-
-        public CompanyCraftRecipeNoteBook() : base(WindowName)
+        public CompanyCraftRecipeNoteBook() : base("CompanyCraftRecipeNoteBoo")
         {
-            _name = WindowName;
         }
 
         public void SelectWheelsCategory()
@@ -25,7 +22,7 @@ namespace LlamaLibrary.RemoteWindows
             }
         }
 
-        public static Dictionary<ulong, uint> WheelIndexes = new Dictionary<ulong, uint>
+        public static Dictionary<ulong, uint> WheelIndexes = new()
         {
             { 6, 9653 }, //Grade 2 Wheel of Confrontation
             { 7, 9654 }, //Grade 2 Wheel of Productivity

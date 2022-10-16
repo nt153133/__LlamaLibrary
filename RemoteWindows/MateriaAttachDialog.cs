@@ -2,11 +2,8 @@
 {
     public class MateriaAttachDialog : RemoteWindow<MateriaAttachDialog>
     {
-        private const string WindowName = "MateriaAttachDialog";
-
-        public MateriaAttachDialog() : base(WindowName)
+        public MateriaAttachDialog() : base("MateriaAttachDialog")
         {
-            _name = WindowName;
         }
 
         public void ClickAttach()

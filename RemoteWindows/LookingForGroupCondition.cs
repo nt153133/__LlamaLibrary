@@ -8,8 +8,6 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class LookingForGroupCondition : RemoteWindow<LookingForGroupCondition>
     {
-        private const string WindowName = "LookingForGroupCondition";
-
         private static class Offsets
         {
             [Offset("48 8B 8B ? ? ? ? E8 ? ? ? ? 49 8D 8E ? ? ? ? 8B 01 24 ? Add 3 Read32")]
@@ -19,7 +17,7 @@ namespace LlamaLibrary.RemoteWindows
             internal static int TextFieldPtr;
         }
 
-        private static readonly Dictionary<string, int> Properties = new Dictionary<string, int>
+        private static readonly Dictionary<string, int> Properties = new()
         {
             {
                 "Comment",
@@ -27,7 +25,7 @@ namespace LlamaLibrary.RemoteWindows
             }
         };
 
-        public LookingForGroupCondition() : base(WindowName)
+        public LookingForGroupCondition() : base("LookingForGroupCondition")
         {
         }
 

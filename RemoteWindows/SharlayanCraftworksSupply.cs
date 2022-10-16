@@ -2,9 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
-using ff14bot.Behavior;
 using ff14bot.Managers;
-using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.RemoteAgents;
@@ -13,13 +11,11 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class SharlayanCraftworksSupply : RemoteWindow<SharlayanCraftworksSupply>
     {
-        private const string WindowName = "SharlayanCraftworksSupply";
-
-        public SharlayanCraftworksSupply() : base(WindowName)
+        public SharlayanCraftworksSupply() : base("SharlayanCraftworksSupply")
         {
         }
 
-        public static readonly Dictionary<string, int> Properties = new Dictionary<string, int>
+        public static readonly Dictionary<string, int> Properties = new()
         {
             {
                 "TurnInItemId",

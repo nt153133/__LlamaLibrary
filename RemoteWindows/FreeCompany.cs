@@ -2,11 +2,8 @@
 {
     public class FreeCompany : RemoteWindow<FreeCompany>
     {
-        private const string WindowName = "FreeCompany";
-
-        public FreeCompany() : base(WindowName)
+        public FreeCompany() : base("FreeCompany")
         {
-            _name = WindowName;
         }
 
         public void SelectActions()

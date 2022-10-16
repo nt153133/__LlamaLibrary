@@ -2,11 +2,8 @@
 {
     public class MJIRecipeNoteBook : RemoteWindow<MJIRecipeNoteBook>
     {
-        private const string WindowName = "MJIRecipeNoteBook";
-
-        public MJIRecipeNoteBook() : base(WindowName)
+        public MJIRecipeNoteBook() : base("MJIRecipeNoteBook")
         {
-            _name = WindowName;
         }
 
         public override void Close()

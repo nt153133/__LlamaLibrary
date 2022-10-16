@@ -3,11 +3,8 @@
     //TODO Move element numbers to dictionary
     public class NeedGreed : RemoteWindow<NeedGreed>
     {
-        private const string WindowName = "NeedGreed";
-
-        public NeedGreed() : base(WindowName)
+        public NeedGreed() : base("NeedGreed")
         {
-            _name = WindowName;
         }
 
         public int NumberOfItems => Elements[3].TrimmedData;

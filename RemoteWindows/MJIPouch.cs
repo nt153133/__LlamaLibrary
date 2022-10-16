@@ -2,11 +2,8 @@
 {
     public class MJIPouch : RemoteWindow<MJIPouch>
     {
-        private const string WindowName = "MJIPouch";
-
-        public MJIPouch() : base(WindowName)
+        public MJIPouch() : base("MJIPouch")
         {
-            _name = WindowName;
         }
 
         public override void Close()

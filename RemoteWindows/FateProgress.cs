@@ -2,11 +2,8 @@
 {
     public class FateProgress : RemoteWindow<FateProgress>
     {
-        private const string WindowName = "FateProgress";
-
-        public FateProgress() : base(WindowName)
+        public FateProgress() : base("FateProgress")
         {
-            _name = WindowName;
         }
     }
 }

@@ -2,11 +2,8 @@
 {
     public class ContentsTutorial : RemoteWindow<ContentsTutorial>
     {
-        private const string WindowName = "ContentsTutorial";
-
-        public ContentsTutorial() : base(WindowName)
+        public ContentsTutorial() : base("ContentsTutorial")
         {
-            _name = WindowName;
         }
 
         public override void Close()

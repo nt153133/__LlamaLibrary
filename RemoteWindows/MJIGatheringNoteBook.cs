@@ -2,11 +2,8 @@
 {
     public class MJIGatheringNoteBook : RemoteWindow<MJIGatheringNoteBook>
     {
-        private const string WindowName = "MJIGatheringNoteBook";
-
-        public MJIGatheringNoteBook() : base(WindowName)
+        public MJIGatheringNoteBook() : base("MJIGatheringNoteBook")
         {
-            _name = WindowName;
         }
 
         public override void Close()

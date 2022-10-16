@@ -7,8 +7,6 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class InputString : RemoteWindow<InputString>
     {
-        private const string WindowName = "InputString";
-
         private static class Offsets
         {
             [Offset("Search 48 8B 81 ? ? ? ? 48 85 C0 75 ? 48 8B 81 ? ? ? ? 48 85 C0 74 ? 48 8B 80 ? ? ? ? Add 3 Read32")]
@@ -29,7 +27,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public IntPtr GetStaticPtr => Offsets.UnkStatic;
 
-        public InputString() : base(WindowName)
+        public InputString() : base("InputString")
         {
         }
 
@@ -49,7 +47,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public void Confirm()
         {
-            SendAction(3, 3, 0, 6, (ulong) GetStringPtr.ToInt64(), 6, (ulong) GetStaticPtr.ToInt64());
+            SendAction(3, 3, 0, 6, (ulong)GetStringPtr.ToInt64(), 6, (ulong)GetStaticPtr.ToInt64());
         }
     }
 }

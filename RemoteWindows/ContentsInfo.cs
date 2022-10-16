@@ -9,11 +9,8 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class ContentsInfo : RemoteWindow<ContentsInfo>
     {
-        private const string WindowName = "ContentsInfo";
-
-        public ContentsInfo() : base(WindowName)
+        public ContentsInfo() : base("ContentsInfo")
         {
-            _name = WindowName;
         }
 
         public override async Task<bool> Open()

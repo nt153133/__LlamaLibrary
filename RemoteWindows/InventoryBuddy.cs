@@ -4,13 +4,8 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class InventoryBuddy : RemoteWindow<InventoryBuddy>
     {
-        private const string WindowName = "InventoryBuddy";
-
-        public InventoryBuddy() : base(WindowName, AgentInventoryBuddy.Instance)
+        public InventoryBuddy() : base("InventoryBuddy", AgentInventoryBuddy.Instance)
         {
-            _name = WindowName;
-
-            //_agent = AgentInventoryBuddy.Instance;
         }
     }
 }

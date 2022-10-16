@@ -2,11 +2,8 @@
 {
     public class HWDGathereInspect : RemoteWindow<HWDGathereInspect>
     {
-        private const string WindowName = "HWDGathereInspect";
-
-        public HWDGathereInspect() : base(WindowName)
+        public HWDGathereInspect() : base("HWDGathereInspect")
         {
-            _name = WindowName;
         }
 
         public void ClickAutoSubmit()

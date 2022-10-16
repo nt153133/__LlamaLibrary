@@ -2,11 +2,8 @@
 {
     public class Bank : RemoteWindow<Bank>
     {
-        private const string WindowName = "Bank";
-
-        public Bank() : base(WindowName)
+        public Bank() : base("Bank")
         {
-            _name = WindowName;
         }
 
         public void ClickWithdrawalDeposit()

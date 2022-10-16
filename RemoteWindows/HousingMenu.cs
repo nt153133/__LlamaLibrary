@@ -2,11 +2,8 @@
 {
     public class HousingMenu : RemoteWindow<HousingMenu>
     {
-        private const string WindowName = "HousingMenu";
-
-        public HousingMenu() : base(WindowName)
+        public HousingMenu() : base("HousingMenu")
         {
-            _name = WindowName;
         }
 
         public void SelectHousingGoods()

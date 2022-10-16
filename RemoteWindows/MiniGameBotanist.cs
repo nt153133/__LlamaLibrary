@@ -8,13 +8,10 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class MiniGameBotanist : RemoteWindow<MiniGameBotanist>
     {
-        private const string WindowName = "MiniGameBotanist";
+        private readonly Regex _timeRegex = new(@"(\d):(\d+).*", RegexOptions.Compiled);
 
-        private readonly Regex _timeRegex = new Regex(@"(\d):(\d+).*", RegexOptions.Compiled);
-
-        public MiniGameBotanist() : base(WindowName)
+        public MiniGameBotanist() : base("MiniGameBotanist")
         {
-            _name = WindowName;
         }
 
         public void PressButton()

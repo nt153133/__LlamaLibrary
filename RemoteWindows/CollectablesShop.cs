@@ -6,13 +6,10 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class CollectablesShop : RemoteWindow<CollectablesShop>
     {
-        private const string WindowName = "CollectablesShop";
-
         public int RowCount => Elements[20].TrimmedData - 1;
         public int TurninCount => Elements[4843].TrimmedData;
-        public CollectablesShop() : base(WindowName)
+        public CollectablesShop() : base("CollectablesShop")
         {
-            _name = WindowName;
         }
 
         public void SelectJob(int job)
@@ -43,7 +40,7 @@ namespace LlamaLibrary.RemoteWindows
                 }
 
                 var itemID = currentElements[34 + (j * 11)].TrimmedData;
-                if (itemID == 0 || itemID > 1500000 || itemID < 500000)
+                if (itemID is 0 or > 1500000 or < 500000)
                 {
                     continue;
                 }
@@ -75,7 +72,7 @@ namespace LlamaLibrary.RemoteWindows
                 }
 
                 var itemID = currentElements[34 + (j * 11)].TrimmedData;
-                if (itemID == 0 || itemID > 1500000 || itemID < 500000)
+                if (itemID is 0 or > 1500000 or < 500000)
                 {
                     continue;
                 }

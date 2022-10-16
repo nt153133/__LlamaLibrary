@@ -2,11 +2,8 @@
 {
     public class Character : RemoteWindow<Character>
     {
-        private const string WindowName = "Character";
-
-        public Character() : base(WindowName)
+        public Character() : base("Character")
         {
-            _name = WindowName;
         }
 
         public void UpdateGearSet()

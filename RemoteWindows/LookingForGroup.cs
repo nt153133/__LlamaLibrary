@@ -8,8 +8,6 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class LookingForGroup : RemoteWindow<LookingForGroup>
     {
-        private const string WindowName = "LookingForGroup";
-
         //BA ? ? ? ? 48 8B CF E8 ? ? ? ? 41 83 C8 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 41 83 C8 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 41 83 C8 ?
 
         private static class Offsets
@@ -30,7 +28,7 @@ namespace LlamaLibrary.RemoteWindows
             {
                 var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(Offsets.NumberArrayIndex) + Offsets.NumberArrayData_IntArray);
 
-                return arrayLocation + (Offsets.ResultCountIndex);
+                return arrayLocation + Offsets.ResultCountIndex;
             }
         }
 
@@ -44,7 +42,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public bool RecruitMembersEnabled => RecruitMembersButton.IsValid && RecruitMembersButton.Clickable;
 
-        public LookingForGroup() : base(WindowName)
+        public LookingForGroup() : base("LookingForGroup")
         {
         }
 

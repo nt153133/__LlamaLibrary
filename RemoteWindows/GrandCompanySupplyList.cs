@@ -14,9 +14,7 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class GrandCompanySupplyList : RemoteWindow<GrandCompanySupplyList>
     {
-        private const string WindowName = "GrandCompanySupplyList";
-
-        public static Dictionary<string, int> Properties = new Dictionary<string, int>
+        public static Dictionary<string, int> Properties = new()
         {
             { "NumberOfTurnins", 8 },
             { "ReqElements", 385 },
@@ -32,7 +30,7 @@ namespace LlamaLibrary.RemoteWindows
             internal static IntPtr SetFilter;
         }
 
-        public GrandCompanySupplyList() : base(WindowName)
+        public GrandCompanySupplyList() : base("GrandCompanySupplyList")
         {
             if (Translator.Language == Language.Chn)
             {
@@ -44,8 +42,6 @@ namespace LlamaLibrary.RemoteWindows
                     { "TurninIdElements", 426 },
                 };
             }
-
-            _name = WindowName;
         }
 
         public int GetNumberOfTurnins()
@@ -58,8 +54,8 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = Elements;
             var numberTurnins = GetNumberOfTurnins();
 
-            var canHandInElements = new ArraySegment<TwoInt>(currentElements, Properties["HandInElements"], numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
-            var reqElements = new ArraySegment<TwoInt>(currentElements, Properties["ReqElements"], numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
+            var canHandInElements = new ArraySegment<TwoInt>(currentElements, Properties["HandInElements"], numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
+            var reqElements = new ArraySegment<TwoInt>(currentElements, Properties["ReqElements"], numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
 
             var turins = new bool[numberTurnins];
 
@@ -76,7 +72,7 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = Elements;
             var numberTurnins = GetNumberOfTurnins();
 
-            var turninIdElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninIdElements"], numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
+            var turninIdElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninIdElements"], numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
 
             return turninIdElements;
         }
@@ -86,14 +82,14 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = Elements;
             var numberTurnins = GetNumberOfTurnins();
 
-            var reqElements = new ArraySegment<TwoInt>(currentElements, Properties["ReqElements"], numberTurnins).Select(i => (uint) i.TrimmedData).ToArray();
+            var reqElements = new ArraySegment<TwoInt>(currentElements, Properties["ReqElements"], numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
 
             return reqElements;
         }
 
         public void ClickItem(int index)
         {
-            SendAction(2, 3, 1, 3, (ulong) index);
+            SendAction(2, 3, 1, 3, (ulong)index);
         }
 
         public async Task SwitchToExpertDelivery()
@@ -107,7 +103,7 @@ namespace LlamaLibrary.RemoteWindows
         public void SetExpertFilter(byte filter)
         {
             SendAction(2, 3, 5, 3, filter);
-            Core.Memory.CallInjected64<IntPtr>(Offsets.SetFilter, WindowByName.Pointer, (int) filter);
+            Core.Memory.CallInjected64<IntPtr>(Offsets.SetFilter, WindowByName.Pointer, (int)filter);
         }
 
         public async Task SwitchToProvisioning()

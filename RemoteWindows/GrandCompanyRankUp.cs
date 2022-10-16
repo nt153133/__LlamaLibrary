@@ -2,11 +2,8 @@
 {
     public class GrandCompanyRankUp : RemoteWindow<GrandCompanyRankUp>
     {
-        private const string WindowName = "GrandCompanyRankUp";
-
-        public GrandCompanyRankUp() : base(WindowName)
+        public GrandCompanyRankUp() : base("GrandCompanyRankUp")
         {
-            _name = WindowName;
         }
 
         public void Confirm()

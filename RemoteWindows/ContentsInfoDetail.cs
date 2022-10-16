@@ -12,7 +12,6 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary...Also wtf is this mess
     public class ContentsInfoDetail : RemoteWindow<ContentsInfoDetail>
     {
-        private const string WindowName = "ContentsInfoDetail";
         private int eleNumCrafting = 56;
         private int eleNumGathering = 57;
         private int eleCraftingItem = 215;
@@ -22,12 +21,10 @@ namespace LlamaLibrary.RemoteWindows
         private int eleGatheringJob = 277;
         private int eleGatheringQty = 280;
 
-        public ContentsInfoDetail() : base(WindowName)
+        public ContentsInfoDetail() : base("ContentsInfoDetail")
         {
-            _name = WindowName;
             if (Translator.Language == Language.Chn)
             {
-
                 eleNumCrafting = 56;
                 eleNumGathering = 57;
                 eleCraftingItem = 214;

@@ -2,11 +2,8 @@
 {
     public class MJIHud : RemoteWindow<MJIHud>
     {
-        private const string WindowName = "MJIHud";
-
-        public MJIHud() : base(WindowName)
+        public MJIHud() : base("MJIHud")
         {
-            _name = WindowName;
         }
 
         public override void Close()

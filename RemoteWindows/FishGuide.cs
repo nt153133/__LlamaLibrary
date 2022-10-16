@@ -1,15 +1,9 @@
-﻿using ff14bot.Managers;
-
-namespace LlamaLibrary.RemoteWindows
+﻿namespace LlamaLibrary.RemoteWindows
 {
     public class FishGuide : RemoteWindow<FishGuide>
     {
-        private AtkAddonControl _windowByName;
-        private const string WindowName = "FishGuide";
-
-        public FishGuide() : base(WindowName)
+        public FishGuide() : base("FishGuide")
         {
-            _name = WindowName;
         }
 
         public void ClickTab(int index)

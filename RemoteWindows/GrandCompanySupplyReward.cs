@@ -2,13 +2,10 @@
 {
     public class GrandCompanySupplyReward : RemoteWindow<GrandCompanySupplyReward>
     {
-        private const string WindowName = "GrandCompanySupplyReward";
-
         public int SealReward => Elements[9].TrimmedData;
 
-        public GrandCompanySupplyReward() : base(WindowName)
+        public GrandCompanySupplyReward() : base("GrandCompanySupplyReward")
         {
-            _name = WindowName;
         }
 
         public void Confirm()

@@ -11,10 +11,9 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class FreeCompanyExchange : RemoteWindow<FreeCompanyExchange>
     {
-        private const string WindowName = "FreeCompanyExchange";
-        private static readonly LLogger Log = new LLogger(WindowName, Colors.Aquamarine);
+        private static readonly LLogger Log = new(nameof(FreeCompanyExchange), Colors.Aquamarine);
 
-        public static List<FcActionShopItem> FcShopActions = new List<FcActionShopItem>()
+        public static List<FcActionShopItem> FcShopActions = new()
         {
             new FcActionShopItem(1, 5, 3010, 0, "The Heat of Battle"),
             new FcActionShopItem(2, 5, 3010, 1, "Earth and Water"),
@@ -52,9 +51,8 @@ namespace LlamaLibrary.RemoteWindows
             new FcActionShopItem(46, 8, 6020, 33, "Reduced Rates II")
         };
 
-        public FreeCompanyExchange() : base(WindowName)
+        public FreeCompanyExchange() : base("FreeCompanyExchange")
         {
-            _name = WindowName;
         }
 
         public async Task<bool> BuyAction(int actionId)

@@ -5,12 +5,10 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class PartyYesNo : RemoteWindow<PartyYesNo>
     {
-        private const string WindowName = "SelectYesno";
-
         public string NameLine => Core.Memory.ReadStringA((IntPtr)Elements[0].Data);
-        public PartyYesNo() : base(WindowName)
+
+        public PartyYesNo() : base("SelectYesno")
         {
-            _name = WindowName;
         }
     }
 }

@@ -9,11 +9,8 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class HWDSupply : RemoteWindow<HWDSupply>
     {
-        private const string WindowName = "HWDSupply";
-
-        public HWDSupply() : base(WindowName)
+        public HWDSupply() : base("HWDSupply")
         {
-            _name = WindowName;
         }
 
         public int CurrentClassSelected()

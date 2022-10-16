@@ -2,11 +2,8 @@
 {
     public class HousingGoods : RemoteWindow<HousingGoods>
     {
-        private const string WindowName = "HousingGoods";
-
-        public HousingGoods() : base(WindowName)
+        public HousingGoods() : base("HousingGoods")
         {
-            _name = WindowName;
         }
     }
 }

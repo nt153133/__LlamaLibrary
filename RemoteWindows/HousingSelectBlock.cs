@@ -7,11 +7,8 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class HousingSelectBlock : RemoteWindow<HousingSelectBlock>
     {
-        private const string WindowName = "HousingSelectBlock";
-
-        public HousingSelectBlock() : base(WindowName)
+        public HousingSelectBlock() : base("HousingSelectBlock")
         {
-            _name = WindowName;
         }
 
         public int NumberOfWards => Elements[4].TrimmedData;

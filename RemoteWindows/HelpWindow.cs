@@ -2,11 +2,8 @@
 {
     public class HelpWindow : RemoteWindow<HelpWindow>
     {
-        private const string WindowName = "HelpWindow";
-
-        public HelpWindow() : base(WindowName)
+        public HelpWindow() : base("HelpWindow")
         {
-            _name = WindowName;
         }
     }
 }

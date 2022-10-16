@@ -2,11 +2,8 @@
 {
     public class CharaMakeDataImport : RemoteWindow<CharaMakeDataImport>
     {
-        private const string WindowName = "CharaMakeDataImport";
-
-        public CharaMakeDataImport() : base(WindowName)
+        public CharaMakeDataImport() : base("CharaMakeDataImport")
         {
-            _name = WindowName;
         }
 
         public void SelectAppearanceSave(int index)

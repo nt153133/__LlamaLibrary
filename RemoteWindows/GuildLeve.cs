@@ -7,11 +7,8 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class GuildLeve : RemoteWindow<GuildLeve>
     {
-        private const string WindowName = "GuildLeve";
-
-        public GuildLeve() : base(WindowName)
+        public GuildLeve() : base("GuildLeve")
         {
-            _name = WindowName;
         }
 
         public LeveWindow Window => (LeveWindow)Elements[6].TrimmedData;

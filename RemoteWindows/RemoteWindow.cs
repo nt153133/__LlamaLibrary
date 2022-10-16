@@ -11,45 +11,41 @@ namespace LlamaLibrary.RemoteWindows
         where T : RemoteWindow<T>, new()
     {
         private static T _instance;
-        public static T Instance => _instance ?? (_instance = new T());
+        public static T Instance => _instance ??= new T();
 
-        protected RemoteWindow(string name) : base(name)
+        protected RemoteWindow(string windowName) : base(windowName)
         {
-            // _instance = new T();
         }
 
-        protected RemoteWindow(string name, AgentInterface agent) : base(name, agent)
+        protected RemoteWindow(string windowName, AgentInterface agent) : base(windowName, agent)
         {
-            // _instance = new T();
         }
     }
 
     public abstract class RemoteWindow
     {
-        internal string _name;
-        internal AgentInterface _agent;
         private const int Offset0 = 0x1CA;
         private const int Offset2 = 0x160;
 
         public virtual bool IsOpen => WindowByName != null;
 
-        public virtual string Name => _name;
+        public virtual string WindowName { get; private set; }
 
-        public virtual AgentInterface Agent => _agent;
+        public virtual AgentInterface Agent { get; private set; }
 
-        public virtual AtkAddonControl WindowByName => RaptureAtkUnitManager.GetWindowByName(Name);
+        public virtual AtkAddonControl WindowByName => RaptureAtkUnitManager.GetWindowByName(WindowName);
 
         protected bool HasAgentInterfaceId => GetAgentInterfaceId() != 0;
 
-        protected RemoteWindow(string name)
+        protected RemoteWindow(string windowName)
         {
-            _name = name;
+            WindowName = windowName;
         }
 
-        protected RemoteWindow(string name, AgentInterface agent)
+        protected RemoteWindow(string windowName, AgentInterface agent)
         {
-            _agent = agent;
-            _name = name;
+            Agent = agent;
+            WindowName = windowName;
         }
 
         public virtual void Close()

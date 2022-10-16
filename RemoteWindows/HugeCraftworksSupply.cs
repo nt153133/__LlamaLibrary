@@ -10,11 +10,8 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class HugeCraftworksSupply : RemoteWindow<HugeCraftworksSupply>
     {
-        private const string WindowName = "HugeCraftworksSupply";
-
-        public HugeCraftworksSupply() : base(WindowName)
+        public HugeCraftworksSupply() : base("HugeCraftworksSupply")
         {
-            _name = WindowName;
         }
 
         public int TurnInItemId => Elements[9].TrimmedData;

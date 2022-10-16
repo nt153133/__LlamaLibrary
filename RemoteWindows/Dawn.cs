@@ -9,10 +9,9 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class Dawn : RemoteWindow<Dawn>
     {
-        private static readonly string WindowName = "Dawn";
         private readonly List<TrustNPC> npcList;
 
-        public Dawn() : base(WindowName)
+        public Dawn() : base("Dawn")
         {
             npcList = new List<TrustNPC>
             {
@@ -28,8 +27,6 @@ namespace LlamaLibrary.RemoteWindows
                 new TrustNPC("Crystal Exarch", 82069, 82089, 9),
                 new TrustNPC("Crystal Exarch", 82069, 82089, 9)
             };
-
-            _name = WindowName;
         }
 
         public int NumberOfTrustsAvailable => Elements[73].TrimmedData;

@@ -5,11 +5,8 @@
     /// </summary>
     public class GcArmyCapture : RemoteWindow<GcArmyCapture>
     {
-        private const string WindowName = "GcArmyCapture";
-
-        public GcArmyCapture() : base(WindowName)
+        public GcArmyCapture() : base("GcArmyCapture")
         {
-            _name = WindowName;
         }
 
         public void Commence()

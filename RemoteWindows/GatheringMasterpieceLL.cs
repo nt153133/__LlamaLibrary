@@ -4,13 +4,11 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class GatheringMasterpieceLL : RemoteWindow<GatheringMasterpieceLL>
     {
-        private const string WindowName = "GatheringMasterpiece";
-        public GatheringMasterpieceLL() : base(WindowName)
+        public GatheringMasterpieceLL() : base("GatheringMasterpiece")
         {
-            _name = WindowName;
         }
 
-        public static readonly Dictionary<string, int> Properties = new Dictionary<string, int>
+        public static readonly Dictionary<string, int> Properties = new()
         {
             {
                 "Collectability",

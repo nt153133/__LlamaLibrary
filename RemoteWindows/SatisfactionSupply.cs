@@ -2,11 +2,8 @@
 {
     public class SatisfactionSupply : RemoteWindow<SatisfactionSupply>
     {
-        private const string WindowName = "SatisfactionSupply";
-
-        public SatisfactionSupply() : base(WindowName)
+        public SatisfactionSupply() : base("SatisfactionSupply")
         {
-            _name = WindowName;
         }
 
         public void ClickItem(int index)

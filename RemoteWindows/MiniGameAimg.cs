@@ -2,11 +2,8 @@
 {
     public class MiniGameAimg : RemoteWindow<MiniGameAimg>
     {
-        private const string WindowName = "MiniGameAimg";
-
-        public MiniGameAimg() : base(WindowName)
+        public MiniGameAimg() : base("MiniGameAimg")
         {
-            _name = WindowName;
         }
 
         public void PressButton()

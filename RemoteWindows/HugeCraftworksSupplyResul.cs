@@ -3,11 +3,8 @@
     //TODO Move element numbers to dictionary
     public class HugeCraftworksSupplyResul : RemoteWindow<HugeCraftworksSupplyResul>
     {
-        private const string WindowName = "HugeCraftworksSupplyResul";
-
-        public HugeCraftworksSupplyResul() : base(WindowName)
+        public HugeCraftworksSupplyResul() : base("HugeCraftworksSupplyResul")
         {
-            _name = WindowName;
         }
 
         public void Accept()

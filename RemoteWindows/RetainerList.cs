@@ -15,12 +15,10 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class RetainerList : RemoteWindow<RetainerList>
     {
-        private const string WindowName = "RetainerList";
-        private static readonly LLogger Log = new LLogger(WindowName, Colors.White);
+        private static readonly LLogger Log = new(nameof(RetainerList), Colors.White);
 
-        public RetainerList() : base(WindowName)
+        public RetainerList() : base("RetainerList")
         {
-            _name = WindowName;
         }
 
         public RetainerInfo[] OrderedRetainerList => HelperFunctions.GetOrderedRetainerArray(HelperFunctions.ReadRetainerArray());

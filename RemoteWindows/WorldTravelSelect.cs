@@ -2,9 +2,7 @@
 {
     public class WorldTravelSelect : RemoteWindow<WorldTravelSelect>
     {
-        private const string WindowName = "WorldTravelSelect";
-
-        public WorldTravelSelect() : base(WindowName)
+        public WorldTravelSelect() : base("WorldTravelSelect")
         {
         }
 

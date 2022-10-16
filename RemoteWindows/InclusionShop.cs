@@ -2,9 +2,7 @@
 {
     public class InclusionShop : RemoteWindow<InclusionShop>
     {
-        private const string WindowName = "InclusionShop";
-
-        public InclusionShop() : base(WindowName)
+        public InclusionShop() : base("InclusionShop")
         {
         }
 

@@ -1,15 +1,12 @@
 ﻿namespace LlamaLibrary.RemoteWindows
 {
     /// <summary>
-    ///     Class for using the Hall of Noivce Window
+    /// Class for using the Hall of Novice Window.
     /// </summary>
     public class BeginnersMansionProblem : RemoteWindow<BeginnersMansionProblem>
     {
-        private const string WindowName = "BeginnersMansionProblem";
-
-        public BeginnersMansionProblem() : base(WindowName)
+        public BeginnersMansionProblem() : base("BeginnersMansionProblem")
         {
-            _name = WindowName;
         }
 
         public void Begin()
@@ -17,7 +14,7 @@
             SendAction(1, 3, 0);
         }
 
-        public void Close()
+        public override void Close()
         {
             SendAction(1, 3, 1);
         }

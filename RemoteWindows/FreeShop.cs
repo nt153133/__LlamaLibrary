@@ -11,11 +11,8 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class FreeShop : RemoteWindow<FreeShop>
     {
-        private const string WindowName = "FreeShop";
-
-        public FreeShop() : base(WindowName)
+        public FreeShop() : base("FreeShop")
         {
-            _name = WindowName;
         }
 
         public int NumberOfItems => Elements[3].TrimmedData;

@@ -2,11 +2,8 @@
 {
     public class Achievement : RemoteWindow<Achievement>
     {
-        private const string WindowName = "Achievement";
-
-        public Achievement() : base(WindowName)
+        public Achievement() : base("Achievement")
         {
-            _name = WindowName;
         }
     }
 }

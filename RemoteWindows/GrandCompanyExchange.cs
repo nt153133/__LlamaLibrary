@@ -7,11 +7,8 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class GrandCompanyExchange : RemoteWindow<GrandCompanyExchange>
     {
-        private const string WindowName = "GrandCompanyExchange";
-
-        public GrandCompanyExchange() : base(WindowName)
+        public GrandCompanyExchange() : base("GrandCompanyExchange")
         {
-            _name = WindowName;
         }
 
         public int GetNumberOfItems => IsOpen ? Elements[1].TrimmedData : 0;

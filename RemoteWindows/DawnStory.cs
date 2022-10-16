@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Buddy.Coroutines;
 using LlamaLibrary.RemoteAgents;
 
@@ -7,11 +6,8 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class DawnStory : RemoteWindow<DawnStory>
     {
-        private const string WindowName = "DawnStory";
-
-        public DawnStory() : base(WindowName)
+        public DawnStory() : base("DawnStory")
         {
-            _name = WindowName;
         }
 
         public async Task<bool> SelectDuty(int dutyId)
@@ -22,8 +18,8 @@ namespace LlamaLibrary.RemoteWindows
             }
 
             var duties = AgentDawnStory.Instance.Duties;
-            int index = -1;
-            for (int i = 0; i < duties.Length; i++)
+            var index = -1;
+            for (var i = 0; i < duties.Length; i++)
             {
                 if (duties[i].DutyId == dutyId)
                 {

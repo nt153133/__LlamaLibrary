@@ -10,11 +10,8 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary, though this one will be rough with the element offsets for the arrays
     public class SubmarinePartsMenu : RemoteWindow<SubmarinePartsMenu>
     {
-        private const string WindowName = "SubmarinePartsMenu";
-
-        public SubmarinePartsMenu() : base(WindowName)
+        public SubmarinePartsMenu() : base("SubmarinePartsMenu")
         {
-            _name = WindowName;
         }
 
         public void ClickItem(int index)

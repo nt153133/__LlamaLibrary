@@ -9,11 +9,8 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class MasterPieceSupply : RemoteWindow<MasterPieceSupply>
     {
-        private const string WindowName = "MasterPieceSupply";
-
-        public MasterPieceSupply() : base(WindowName)
+        public MasterPieceSupply() : base("MasterPieceSupply")
         {
-            _name = WindowName;
         }
 
         public int ClassSelected

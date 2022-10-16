@@ -2,11 +2,8 @@
 {
     public class GcArmyExpeditionResult : RemoteWindow<GcArmyExpeditionResult>
     {
-        private const string WindowName = "GcArmyExpeditionResult";
-
-        public GcArmyExpeditionResult() : base(WindowName)
+        public GcArmyExpeditionResult() : base("GcArmyExpeditionResult")
         {
-            _name = WindowName;
         }
 
         public override void Close()

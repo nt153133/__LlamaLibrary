@@ -7,11 +7,8 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class FreeCompanyAction : RemoteWindow<FreeCompanyAction>
     {
-        private const string WindowName = "FreeCompanyAction";
-
-        public FreeCompanyAction() : base(WindowName)
+        public FreeCompanyAction() : base("FreeCompanyAction")
         {
-            _name = WindowName;
         }
 
         public void SelectAction(int index)

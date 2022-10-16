@@ -2,9 +2,7 @@
 {
     public class ShopExchangeItemDialog : RemoteWindow<ShopExchangeItemDialog>
     {
-        private const string WindowName = "ShopExchangeItemDialog";
-
-        public ShopExchangeItemDialog() : base(WindowName)
+        public ShopExchangeItemDialog() : base("ShopExchangeItemDialog")
         {
         }
 

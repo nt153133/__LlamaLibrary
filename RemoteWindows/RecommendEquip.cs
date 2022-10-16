@@ -2,11 +2,8 @@
 {
     public class RecommendEquip : RemoteWindow<RecommendEquip>
     {
-        private const string WindowName = "RecommendEquip";
-
-        public RecommendEquip() : base(WindowName)
+        public RecommendEquip() : base("RecommendEquip")
         {
-            _name = WindowName;
         }
 
         public void Confirm()

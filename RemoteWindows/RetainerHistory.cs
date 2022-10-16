@@ -10,7 +10,6 @@ using LlamaLibrary.ClientDataHelpers;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
-using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.Retainers;
 
 namespace LlamaLibrary.RemoteWindows
@@ -18,9 +17,7 @@ namespace LlamaLibrary.RemoteWindows
 
     public class RetainerHistory : RemoteWindow<RetainerHistory>
     {
-        private const string WindowName = "RetainerHistory";
-
-        private static readonly LLogger Log = new LLogger("RetainerHistory", Colors.OrangeRed);
+        private static readonly LLogger Log = new(nameof(RetainerHistory), Colors.OrangeRed);
 
         private static class Offsets
         {
@@ -64,7 +61,7 @@ namespace LlamaLibrary.RemoteWindows
             internal static IntPtr RequestSales;
         }
 
-        public RetainerHistory() : base(WindowName)
+        public RetainerHistory() : base("RetainerHistory")
         {
         }
 
@@ -86,7 +83,7 @@ namespace LlamaLibrary.RemoteWindows
             {
                 var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(Offsets.NumberArrayIndex) + Offsets.NumberArrayData_IntArray);
 
-                return arrayLocation + ((Offsets.NumberArrayData_Count) * 4);
+                return arrayLocation + (Offsets.NumberArrayData_Count * 4);
             }
         }
 

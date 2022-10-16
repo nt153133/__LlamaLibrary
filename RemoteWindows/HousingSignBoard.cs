@@ -7,11 +7,8 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class HousingSignBoard : RemoteWindow<HousingSignBoard>
     {
-        private const string WindowName = "HousingSignBoard";
-
-        public HousingSignBoard() : base(WindowName)
+        public HousingSignBoard() : base("HousingSignBoard")
         {
-            _name = WindowName;
         }
 
         public bool IsForSale => Core.Memory.ReadString((IntPtr)Elements[1].Data, Encoding.UTF8).Contains("Sale");

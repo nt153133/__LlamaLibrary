@@ -2,11 +2,8 @@
 {
     public class RetainerTaskList : RemoteWindow<RetainerTaskList>
     {
-        private const string WindowName = "RetainerTaskList";
-
-        public RetainerTaskList() : base(WindowName)
+        public RetainerTaskList() : base("RetainerTaskList")
         {
-            _name = WindowName;
         }
 
         public void SelectVenture(int taskId)
