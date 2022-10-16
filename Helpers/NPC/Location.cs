@@ -2,7 +2,6 @@
 using System.Linq;
 using Clio.Utilities;
 using ff14bot;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers.HousingTravel;
 using Newtonsoft.Json;
@@ -34,7 +33,7 @@ namespace LlamaLibrary.Helpers.NPC
                     return -1;
                 }
 
-                return (int) WorldManager.AvailableLocations.First(i => i.AetheryteId == ClosestAetherytePrimaryResult.Id).GilCost;
+                return (int)WorldManager.AvailableLocations.First(i => i.AetheryteId == ClosestAetherytePrimaryResult.Id).GilCost;
             }
         }
 
@@ -84,7 +83,7 @@ namespace LlamaLibrary.Helpers.NPC
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }
@@ -94,12 +93,12 @@ namespace LlamaLibrary.Helpers.NPC
                 return true;
             }
 
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
 
-            return Equals((Location) obj);
+            return Equals((Location)obj);
         }
 
         public override int GetHashCode()

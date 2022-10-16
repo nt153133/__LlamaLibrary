@@ -34,9 +34,6 @@ namespace LlamaLibrary.JsonObjects
 
         public override string ToString()
         {
-
-
-
             var zoneName = HousingZone.ToString();
 
             if (zoneName.Contains("Shirogane"))
@@ -65,7 +62,7 @@ namespace LlamaLibrary.JsonObjects
 
         public bool Equals(HouseLocation other)
         {
-            if (ReferenceEquals(null, other))
+            if (other is null)
             {
                 return false;
             }
@@ -80,7 +77,7 @@ namespace LlamaLibrary.JsonObjects
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }
@@ -90,7 +87,7 @@ namespace LlamaLibrary.JsonObjects
                 return true;
             }
 
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }

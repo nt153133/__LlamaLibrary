@@ -31,7 +31,7 @@ namespace LlamaLibrary.Structs
 
         public bool InArmory => BagId == 3500 || (BagId - 3200) <= 9 || BagId == 3300 || BagId == 3400;
 
-        public BagSlot BagSlot => InventoryManager.GetBagByInventoryBagId((InventoryBagId) BagId)[BagSlotId];
+        public BagSlot BagSlot => InventoryManager.GetBagByInventoryBagId((InventoryBagId)BagId)[BagSlotId];
 
         public bool IsHQ => BagSlot.IsHighQuality;
 

@@ -33,7 +33,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
     public abstract class ResidentialDistrict
     {
-        private static readonly LLogger Log = new LLogger("ResidentialDistrict", Colors.Pink);
+        private static readonly LLogger Log = new(nameof(ResidentialDistrict), Colors.Pink);
         public virtual string Name { get; } = "";
         public virtual ushort ZoneId => 0;
         public virtual uint TownAetheryteId { get; }
@@ -41,13 +41,13 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public virtual Vector3 TownAetheryteLocation { get; } = Vector3.Zero;
         public virtual bool OffMesh { get; } = false;
 
-        public virtual List<HousingAetheryte> Aetherytes => new List<HousingAetheryte>();
+        public virtual List<HousingAetheryte> Aetherytes => new();
 
-        public virtual List<Vector3> TransitionStartLocations => new List<Vector3>();
+        public virtual List<Vector3> TransitionStartLocations => new();
 
-        public virtual List<Npc> TransitionNpcs => new List<Npc>();
+        public virtual List<Npc> TransitionNpcs => new();
 
-        public virtual List<Vector3> TransitionEndLocations => new List<Vector3>();
+        public virtual List<Vector3> TransitionEndLocations => new();
         public bool HasAetheryte => ConditionParser.HasAetheryte(TownAetheryteId);
         public bool QuestComplete => ConditionParser.IsQuestCompleted(RequiredQuest);
 
@@ -141,9 +141,9 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             return await CloseHousingWards();
         }
 
-        public virtual async Task<bool> WalkToResidential()
+        public virtual Task<bool> WalkToResidential()
         {
-            return false;
+            return Task.FromResult(false);
         }
 
         public virtual async Task<bool> GetToWardTransition()
@@ -197,6 +197,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 {
                     Navigator.PlayerMover.MoveTowards(TransitionEndLocations.OrderBy(i => i.Distance2DSqr(closestTransistion)).First());
                     await Coroutine.Sleep(50);
+
                     //Navigator.PlayerMover.MoveStop();
                 }
 
@@ -220,7 +221,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
             var unit = await Navigation.GetToAE(TownAetheryteId);
 
-            if (unit == null || unit == default)
+            if (unit is null or default(ff14bot.Objects.GameObject))
             {
                 return false;
             }
@@ -355,6 +356,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             if (ShouldUseAethernet(destination))
             {
                 var closestAe = ClosestHousingAetheryte(Core.Me.Location);
+
                 //Log.Information($"{closestAe}");
 
                 Log.Information($"Using Aetheryte {closestAe.Name}");

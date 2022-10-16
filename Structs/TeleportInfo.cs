@@ -8,8 +8,8 @@ namespace LlamaLibrary.Structs
     [StructLayout(LayoutKind.Explicit, Size = 0x20)]
     public struct TeleportInfo
     {
-        private static readonly uint[] privateHousing = new uint[] { 59, 60, 61, 97, 165 };
-        private static readonly uint[] fcHousing = new uint[] { 56, 57, 58, 96, 164 };
+        private static readonly uint[] PrivateHousing = new uint[] { 59, 60, 61, 97, 165 };
+        private static readonly uint[] FcHousing = new uint[] { 56, 57, 58, 96, 164 };
 
         [FieldOffset(0x00)]
         public uint AetheryteId;
@@ -37,9 +37,9 @@ namespace LlamaLibrary.Structs
         public string ZoneName => DataManager.ZoneNameResults[TerritoryId].CurrentLocaleName;
         public bool IsResidential => HousingTraveler.HousingZoneIds.Contains(TerritoryId);
 
-        public bool IsPrivateHouse => privateHousing.Contains(AetheryteId);
+        public bool IsPrivateHouse => PrivateHousing.Contains(AetheryteId);
 
-        public bool IsFCHouse => fcHousing.Contains(AetheryteId);
+        public bool IsFCHouse => FcHousing.Contains(AetheryteId);
 
         public bool IsOwnHouse => IsPrivateHouse && !IsSharedHouse;
 

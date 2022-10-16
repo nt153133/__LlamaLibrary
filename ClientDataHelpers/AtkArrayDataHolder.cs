@@ -13,12 +13,11 @@ namespace LlamaLibrary.ClientDataHelpers
 
             [Offset("Search 41 FF 50 ? 48 8B E8 4D 85 E4 Add 3 Read8")]
             internal static int AtkModule_vfStringArray;
-
         }
 
-        private static IntPtr RaptureAtkModule;
-        private static IntPtr GetNumArrayFunction;
-        private static IntPtr GetStringArrayFunction;
+        private static readonly IntPtr RaptureAtkModule;
+        private static readonly IntPtr GetNumArrayFunction;
+        private static readonly IntPtr GetStringArrayFunction;
 
         static AtkArrayDataHolder()
         {
@@ -28,8 +27,14 @@ namespace LlamaLibrary.ClientDataHelpers
             GetStringArrayFunction = Core.Memory.Read<IntPtr>(vtable + Offsets.AtkModule_vfStringArray);
         }
 
-        public static IntPtr GetNumberArray(int index) => Core.Memory.CallInjected64<IntPtr>(GetNumArrayFunction, RaptureAtkModule, index);
+        public static IntPtr GetNumberArray(int index)
+        {
+            return Core.Memory.CallInjected64<IntPtr>(GetNumArrayFunction, RaptureAtkModule, index);
+        }
 
-        public static IntPtr GetStringArray(int index) => Core.Memory.CallInjected64<IntPtr>(GetStringArrayFunction, RaptureAtkModule, index);
+        public static IntPtr GetStringArray(int index)
+        {
+            return Core.Memory.CallInjected64<IntPtr>(GetStringArrayFunction, RaptureAtkModule, index);
+        }
     }
 }

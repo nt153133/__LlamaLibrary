@@ -8,7 +8,7 @@ namespace LlamaLibrary.Retainers
     //TODO this is a sad copy of a window since it's only a select string window. I think i have better code for it somewhere.
     public class RetainerTasks
     {
-        private static readonly LLogger Log = new LLogger(typeof(RetainerRoutine).Name, Colors.White);
+        private static readonly LLogger Log = new(nameof(RetainerRoutine), Colors.White);
 
         public static bool IsOpen => SelectString.IsOpen;
 

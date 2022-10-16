@@ -11,7 +11,6 @@ using TreeSharp;
 
 namespace LlamaLibrary
 {
-
     public abstract class TemplateBotBase : BotBase
     {
         protected abstract string BotBaseName { get; }

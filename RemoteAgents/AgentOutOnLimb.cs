@@ -24,7 +24,7 @@ namespace LlamaLibrary.RemoteAgents
         }
 
         public IntPtr addressLocation = IntPtr.Zero;
-        private Random rnd = new Random();
+        private readonly Random rnd = new();
 
         protected AgentOutOnLimb(IntPtr pointer) : base(pointer)
         {
@@ -53,7 +53,7 @@ namespace LlamaLibrary.RemoteAgents
             var intptr_0 = Core.Memory.Read<IntPtr>(Memory.Offsets.AtkStage);
             var intptr_1 = Core.Memory.Read<IntPtr>(intptr_0 + 0x38);
             var intptr_2 = Core.Memory.Read<IntPtr>(intptr_1 + 0x18);
-            var intptr_3 = Core.Memory.Read<IntPtr>(intptr_2 + Offsets.LastOffset);//0x310
+            var intptr_3 = Core.Memory.Read<IntPtr>(intptr_2 + Offsets.LastOffset); //0x310
             addressLocation = Core.Memory.Read<IntPtr>(intptr_3 + 0x20);
         }
 

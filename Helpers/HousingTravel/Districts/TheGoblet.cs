@@ -14,7 +14,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public override uint TownAetheryteId => 9;
         public override ushort ZoneId => (ushort)HousingZone.Goblet;
 
-        private readonly List<HousingAetheryte> aetherytes = new List<HousingAetheryte>()
+        private readonly List<HousingAetheryte> aetherytes = new()
         {
             new HousingAetheryte(33, 2003405, "Goblet Exchange", new Vector3(-5.641616f, -8f, -128.4054f), false),
             new HousingAetheryte(34, 2003406, "Goblet Northeast", new Vector3(121.2923f, -32f, -76.59491f), false),
@@ -38,8 +38,8 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
         public override int RequiredQuest => 66749;
 
-        private readonly List<Vector3> _transitionStartLocations = new List<Vector3>() { new Vector3(-6.57211f, -11.07666f, -194.3436f), new Vector3(-509.0797f, -11.07666f, -710.3031f) };
-        private readonly List<Vector3> _transitionEndLocations = new List<Vector3>() { new Vector3(-11.01813f, -11.07666f, -197.8161f), new Vector3(-505.6317f, -11.07666f, -715.1525f) };
+        private readonly List<Vector3> _transitionStartLocations = new() { new Vector3(-6.57211f, -11.07666f, -194.3436f), new Vector3(-509.0797f, -11.07666f, -710.3031f) };
+        private readonly List<Vector3> _transitionEndLocations = new() { new Vector3(-11.01813f, -11.07666f, -197.8161f), new Vector3(-505.6317f, -11.07666f, -715.1525f) };
 
         public override List<Vector3> TransitionStartLocations => _transitionStartLocations;
         public override List<Vector3> TransitionEndLocations => _transitionEndLocations;

@@ -10,7 +10,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class ItemWeight
     {
-        private static readonly LLogger Log = new LLogger(typeof(ItemWeight).Name, Colors.Aquamarine);
+        private static readonly LLogger Log = new(nameof(ItemWeight), Colors.Aquamarine);
 
         public static float GetItemWeight(Item item, ClassJobType job = ClassJobType.Adventurer)
         {
@@ -81,14 +81,14 @@ namespace LlamaLibrary.Helpers
             return weight;
         }
 
-        private static readonly Dictionary<ItemAttribute, float> DoHWeights = new Dictionary<ItemAttribute, float>
+        private static readonly Dictionary<ItemAttribute, float> DoHWeights = new()
         {
             { ItemAttribute.Craftsmanship, 1 },
             { ItemAttribute.Control, 1 },
             { ItemAttribute.CP, 1 }
         };
 
-        private static readonly Dictionary<ItemAttribute, float> DoLWeights = new Dictionary<ItemAttribute, float>
+        private static readonly Dictionary<ItemAttribute, float> DoLWeights = new()
         {
             { ItemAttribute.Gathering, 1 },
             { ItemAttribute.Perception, 1 },
@@ -146,7 +146,7 @@ namespace LlamaLibrary.Helpers
                                                         .ToList();
         */
 
-        public static readonly List<ItemUiCategory> MainHandsAndOffHands = new List<ItemUiCategory>
+        public static readonly List<ItemUiCategory> MainHandsAndOffHands = new()
         {
             ItemUiCategory.Pugilists_Arm,
             ItemUiCategory.Gladiators_Arm,
@@ -193,7 +193,7 @@ namespace LlamaLibrary.Helpers
             ItemUiCategory.Dancers_Arm
         };
 
-        public static readonly List<ItemUiCategory> MainHands = new List<ItemUiCategory>
+        public static readonly List<ItemUiCategory> MainHands = new()
         {
             ItemUiCategory.Pugilists_Arm,
             ItemUiCategory.Gladiators_Arm,
@@ -228,7 +228,7 @@ namespace LlamaLibrary.Helpers
             ItemUiCategory.Dancers_Arm
         };
 
-        public static readonly List<ItemUiCategory> OffHands = new List<ItemUiCategory>
+        public static readonly List<ItemUiCategory> OffHands = new()
         {
             ItemUiCategory.Shield,
             ItemUiCategory.Carpenters_Secondary_Tool,

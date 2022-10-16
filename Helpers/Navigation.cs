@@ -28,9 +28,9 @@ namespace LlamaLibrary.Helpers
 {
     public static class Navigation
     {
-        private static readonly LLogger Log = new LLogger("NavigationHelper", Colors.MediumPurple);
+        private static readonly LLogger Log = new("NavigationHelper", Colors.MediumPurple);
 
-        public static readonly WaitTimer WaitTimer_0 = new WaitTimer(new TimeSpan(0, 0, 0, 15));
+        public static readonly WaitTimer WaitTimer_0 = new(new TimeSpan(0, 0, 0, 15));
 
         internal static async Task<Queue<NavGraph.INode>> GenerateNodes(uint ZoneId, Vector3 xyz)
         {
@@ -102,7 +102,7 @@ namespace LlamaLibrary.Helpers
 
             if (HousingTraveler.HousingZoneIds.Contains((ushort)ZoneId))
             {
-                int ward = 1;
+                var ward = 1;
 
                 if (HousingHelper.IsInHousingArea && WorldManager.ZoneId == ZoneId)
                 {
@@ -267,11 +267,11 @@ namespace LlamaLibrary.Helpers
         {
             var moving = MoveResult.GeneratingPath;
             var target = new FlyToParameters(loc);
-            while (!(moving == MoveResult.Done ||
-                     moving == MoveResult.ReachedDestination ||
-                     moving == MoveResult.Failed ||
-                     moving == MoveResult.Failure ||
-                     moving == MoveResult.PathGenerationFailed))
+            while (moving is not (MoveResult.Done or
+                     MoveResult.ReachedDestination or
+                     MoveResult.Failed or
+                     MoveResult.Failure or
+                     MoveResult.PathGenerationFailed))
             {
                 moving = Flightor.MoveTo(target);
 
@@ -421,7 +421,7 @@ namespace LlamaLibrary.Helpers
                     {
                         var unit = npc.GameObject;
 
-                        if (unit != default(GameObject))
+                        if (unit != default)
                         {
                             if (!unit.IsWithinInteractRange)
                             {
@@ -436,7 +436,7 @@ namespace LlamaLibrary.Helpers
                 {
                     var unit = GameObjectManager.GetObjectByNPCId(npc.NpcId);
 
-                    if (unit != default(GameObject))
+                    if (unit != default)
                     {
                         if (!unit.IsWithinInteractRange)
                         {
@@ -468,7 +468,7 @@ namespace LlamaLibrary.Helpers
             {
                 var unit = GameObjectManager.GetObjectByNPCId(npc.NpcId);
 
-                if (unit != default(GameObject))
+                if (unit != default)
                 {
                     if (!unit.IsWithinInteractRange)
                     {
@@ -528,7 +528,7 @@ namespace LlamaLibrary.Helpers
 
             unit = GameObjectManager.GetObjectByNPCId(npcId);
 
-            if (unit != default(GameObject))
+            if (unit != default)
             {
                 if (!unit.IsWithinInteractRange)
                 {
@@ -569,7 +569,7 @@ namespace LlamaLibrary.Helpers
             {
                 var unit = GameObjectManager.GetObjectByNPCId(npcId);
 
-                if (unit != default(GameObject))
+                if (unit != default)
                 {
                     if (!unit.IsWithinInteractRange)
                     {

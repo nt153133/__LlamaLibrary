@@ -9,7 +9,6 @@ using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Managers;
 using ff14bot.Objects;
-using ff14bot.Pathing;
 using ff14bot.Settings;
 using LlamaLibrary.Logging;
 
@@ -17,15 +16,13 @@ namespace LlamaLibrary.Helpers
 {
     public static class Lisbeth
     {
-        private static readonly string Name = "LisbethHelper";
-        private static readonly Color LogColor = Colors.MediumPurple;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new("LisbethHelper", Colors.MediumPurple);
 
         private static object _lisbeth;
         private static MethodInfo _orderMethod;
-        private static MethodInfo _travelMethod;
+        private static readonly MethodInfo _travelMethod;
         public static Func<string> _getCurrentAreaName;
-        private static Func<Task> _stopGentlyAndWait;
+        private static readonly Func<Task> _stopGentlyAndWait;
         private static Func<Task> _equipOptimalGear;
         private static Func<Task> _extractMateria;
         private static Func<Task> _selfRepair;
@@ -80,6 +77,7 @@ namespace LlamaLibrary.Helpers
                             _getCurrentAreaName = (Func<string>)Delegate.CreateDelegate(typeof(Func<string>), apiObject, "GetCurrentAreaName");
                             _stopGently = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGently");
                             _kill = (Func<Character, Task>)Delegate.CreateDelegate(typeof(Func<Character, Task>), apiObject, "Kill");
+
                             //_stopGentlyAndWait = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGentlyAndWait");
                             _addHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddHook");
                             _removeHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveHook");

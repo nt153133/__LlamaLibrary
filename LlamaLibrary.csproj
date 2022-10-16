@@ -147,6 +147,8 @@
     <Compile Include="RemoteAgents\AgentMJIRecipeNoteBook.cs" />
     <Compile Include="RemoteWindows\Achievement.cs" />
     <Compile Include="RemoteWindows\Bank.cs" />
+    <Compile Include="RemoteWindows\BeginnersMansionProblem.cs" />
+    <Compile Include="RemoteWindows\BeginnersMansionProblemCo.cs" />
     <Compile Include="RemoteWindows\CharaMakeDataImport.cs" />
     <Compile Include="RemoteWindows\ContentsTutorial.cs" />
     <Compile Include="RemoteWindows\DawnStory.cs" />

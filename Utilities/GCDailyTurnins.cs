@@ -21,7 +21,7 @@ namespace LlamaLibrary.Utilities
     public static class GCDailyTurnins
     {
         public static string NameStatic => "GCDailyTurnins";
-        private static readonly LLogger Log = new LLogger(NameStatic, Colors.Gold);
+        private static readonly LLogger Log = new(NameStatic, Colors.Gold);
 
         public static async Task DoGCDailyTurnins()
         {
@@ -52,10 +52,8 @@ namespace LlamaLibrary.Utilities
                 if (!await Lisbeth.ExecuteOrders(lisbethOrder))
                 {
                     Log.Error("Lisbeth order failed, Dumping order to GCSupply.json");
-                    using (var outputFile = new StreamWriter("GCSupply.json", false))
-                    {
-                        await outputFile.WriteAsync(lisbethOrder);
-                    }
+                    using var outputFile = new StreamWriter("GCSupply.json", false);
+                    await outputFile.WriteAsync(lisbethOrder);
                 }
                 else
                 {

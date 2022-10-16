@@ -53,12 +53,12 @@ namespace LlamaLibrary.RemoteAgents
             {
                 var sort = SortArray.Skip(11);
                 var itemArray = SupplyItems;
-                List<GCSupplyItem> resultItems = new List<GCSupplyItem>();
+                var resultItems = new List<GCSupplyItem>();
                 foreach (var index in sort)
                 {
                     var item = itemArray[index];
 
-                    if (HandinType != (GCSupplyType) item.HandInType)
+                    if (HandinType != (GCSupplyType)item.HandInType)
                     {
                         continue;
                     }
@@ -93,14 +93,14 @@ namespace LlamaLibrary.RemoteAgents
 
         public GCSupplyType HandinType
         {
-            get => (GCSupplyType) Core.Memory.Read<byte>(Pointer + Offsets.HandinType);
-            set => Core.Memory.Write(Pointer + Offsets.HandinType, (byte) value);
+            get => (GCSupplyType)Core.Memory.Read<byte>(Pointer + Offsets.HandinType);
+            set => Core.Memory.Write(Pointer + Offsets.HandinType, (byte)value);
         }
 
         public GCFilter ExpertFilter
         {
-            get => (GCFilter) Core.Memory.Read<byte>(Pointer + Offsets.ExpertFilter);
-            set => Core.Memory.Write(Pointer + Offsets.ExpertFilter, (byte) value);
+            get => (GCFilter)Core.Memory.Read<byte>(Pointer + Offsets.ExpertFilter);
+            set => Core.Memory.Write(Pointer + Offsets.ExpertFilter, (byte)value);
         }
 
         protected AgentGrandCompanySupply(IntPtr pointer) : base(pointer)

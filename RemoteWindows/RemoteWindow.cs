@@ -85,6 +85,7 @@ namespace LlamaLibrary.RemoteWindows
 
                 var elementCount = ElementCount;
                 var addr = Core.Memory.Read<IntPtr>(WindowByName.Pointer + Offset2);
+
                 return Core.Memory.ReadArray<TwoInt>(addr, elementCount);
             }
         }

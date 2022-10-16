@@ -14,7 +14,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public override uint TownAetheryteId => 8;
         public override ushort ZoneId => (ushort)HousingZone.Mist;
 
-        private readonly List<HousingAetheryte> aetherytes = new List<HousingAetheryte>()
+        private readonly List<HousingAetheryte> aetherytes = new()
         {
             new HousingAetheryte(4, 2003398, "Seagaze Markets", new Vector3(11.41876f, 6.002154f, 13.62034f), false),
             new HousingAetheryte(1, 2003395, "Mistgate Square", new Vector3(-6.041023f, 48.99702f, -113.7678f), false),
@@ -36,10 +36,10 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
         public override List<HousingAetheryte> Aetherytes => aetherytes;
         public override int RequiredQuest => 66750;
-        public override Vector3 TownAetheryteLocation => new Vector3(-89.30112f, 18.80033f, -2.019181f);
+        public override Vector3 TownAetheryteLocation => new(-89.30112f, 18.80033f, -2.019181f);
 
-        private readonly List<Vector3> _transitionStartLocations = new List<Vector3>() { new Vector3(-539.8311f, 48.57784f, -714.2647f), new Vector3(-10.03277f, 48.73076f, -162.865f) };
-        private readonly List<Vector3> _transitionEndLocations = new List<Vector3>() { new Vector3(-534.1337f, 48.32912f, -714.3889f), new Vector3(-9.982697f, 48.34089f, -169.6015f) };
+        private readonly List<Vector3> _transitionStartLocations = new() { new Vector3(-539.8311f, 48.57784f, -714.2647f), new Vector3(-10.03277f, 48.73076f, -162.865f) };
+        private readonly List<Vector3> _transitionEndLocations = new() { new Vector3(-534.1337f, 48.32912f, -714.3889f), new Vector3(-9.982697f, 48.34089f, -169.6015f) };
 
         public override List<Vector3> TransitionStartLocations => _transitionStartLocations;
         public override List<Vector3> TransitionEndLocations => _transitionEndLocations;
@@ -58,7 +58,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             }
 
             Navigator.PlayerMover.MoveStop();
-            return (await Coroutine.Wait(5000, () => SelectString.IsOpen));
+            return await Coroutine.Wait(5000, () => SelectString.IsOpen);
         }
     }
 }

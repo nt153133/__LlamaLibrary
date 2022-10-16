@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+
 //Info for this struct pulled from https://github.com/Ottermandias/Accountant
 namespace LlamaLibrary.Structs
 {

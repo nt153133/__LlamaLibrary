@@ -88,9 +88,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public IntPtr RegisteredVtable => Offsets.Vtable;
 
-        public uint ShopKey => Core.Memory.Read<uint>(
-            Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(Pointer + Offsets.FirstPointer)
-                                     + Offsets.SecondPointer) + Offsets.ShopKey);
+        public uint ShopKey => Core.Memory.Read<uint>(Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(Pointer + Offsets.FirstPointer) + Offsets.SecondPointer) + Offsets.ShopKey);
 
         public IntPtr StartOfShopThing => Core.Memory.Read<IntPtr>(Pointer + Offsets.PointerToStartOfShopThing);
 
@@ -107,21 +105,26 @@ namespace LlamaLibrary.RemoteAgents
 
         public int TrueCategory => Core.Memory.Read<byte>(StartOfShopThing + Offsets.CategoryArray + SelectedCategory);
 
-        public IntPtr CategoryPtr => Core.Memory.Read<IntPtr>(StartOfShopThing +
-                                                              (TrueCategory * Offsets.StructSizeCategory) +
-                                                              Offsets.SubCategoryArrayStart);
+        public IntPtr CategoryPtr => Core.Memory.Read<IntPtr>(StartOfShopThing + (TrueCategory * Offsets.StructSizeCategory) + Offsets.SubCategoryArrayStart);
 
         public IntPtr CategoryPtrPtr => StartOfShopThing + (TrueCategory * Offsets.StructSizeCategory);
 
-        public IntPtr CategoryPtrPtrByIndex(int index) => StartOfShopThing +
-                                                           (index * Offsets.StructSizeCategory);
+        public IntPtr CategoryPtrPtrByIndex(int index)
+        {
+            return StartOfShopThing + (index * Offsets.StructSizeCategory);
+        }
 
-        public IntPtr CategoryPtrByIndex(int index) => Core.Memory.Read<IntPtr>(StartOfShopThing +
-                                                                              (index * Offsets.StructSizeCategory) +
-                                                                              Offsets.SubCategoryArrayStart);
+        public IntPtr CategoryPtrByIndex(int index)
+        {
+            return Core.Memory.Read<IntPtr>(StartOfShopThing + (index * Offsets.StructSizeCategory) + Offsets.SubCategoryArrayStart);
+        }
+
         public IntPtr SubCategoryPtr => CategoryPtr + (Offsets.StructSizeSubCategory * SelectedSubCategory) + Offsets.StructSizeCategory;
 
-        public IntPtr SubCategoryPtrByIndex(IntPtr categoryPtr, int sub) => categoryPtr + (Offsets.StructSizeSubCategory * sub);
+        public IntPtr SubCategoryPtrByIndex(IntPtr categoryPtr, int sub)
+        {
+            return categoryPtr + (Offsets.StructSizeSubCategory * sub);
+        }
 
         public uint SubCategoryCost => Core.Memory.Read<uint>(CategoryPtr + (Offsets.StructSizeSubCategory * SelectedSubCategory) + Offsets.StructSizeItem);
 
@@ -142,7 +145,7 @@ namespace LlamaLibrary.RemoteAgents
                         var enabledByte =
                             Core.Memory.Read<byte>(subCategory + Offsets.SubCategoryEnabled);
 
-                        int itemNum = 0;
+                        var itemNum = 0;
                         InclusionShopItemStruct shopItemStruct;
                         do
                         {

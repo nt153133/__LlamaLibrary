@@ -19,7 +19,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using Clio.Utilities;
 using ff14bot;
@@ -37,28 +36,26 @@ namespace LlamaLibrary.Memory
 {
     public static class OffsetManager
     {
-        private static readonly StringBuilder Sb = new StringBuilder();
-        private static readonly string Name = "LLOffsetManager";
-        private static readonly Color LogColor = Colors.RosyBrown;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly StringBuilder Sb = new();
 
+        private static readonly object InitLock = new();
         private static bool initDone;
-        private static object initLock = new object();
-        public static Dictionary<string, string> patterns = new Dictionary<string, string>();
-        public static Dictionary<string, string> constants = new Dictionary<string, string>();
+
+        public static Dictionary<string, string> patterns = new();
+        public static Dictionary<string, string> constants = new();
 
         public static ConcurrentDictionary<string, long> OffsetCache;
 
         private static readonly bool _debug = false;
 
-        private static string offsetFile => Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{ff14bot.Core.CurrentGameVer.ToString()}.json");
+        private static string OffsetFile => Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{Core.CurrentGameVer}.json");
 
-        public static LLogger Log1 => Log;
+        public static LLogger Logger { get; } = new LLogger("LLOffsetManager", Colors.RosyBrown);
 
         public static void Init()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            lock (initLock)
+            var stopwatch = Stopwatch.StartNew();
+            lock (InitLock)
             {
                 if (initDone)
                 {
@@ -80,9 +77,9 @@ namespace LlamaLibrary.Memory
 
                 OffsetCache = new ConcurrentDictionary<string, long>();
 
-                if (File.Exists(offsetFile))
+                if (File.Exists(OffsetFile))
                 {
-                    OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(offsetFile));
+                    OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(OffsetFile));
                 }
 
                 SetOffsetObjects(q1);
@@ -99,23 +96,24 @@ namespace LlamaLibrary.Memory
 
                 foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
                 {
-                    var test = ((IAgent) Activator.CreateInstance(MyType,
-                                                                  BindingFlags.Instance | BindingFlags.NonPublic,
-                                                                  null,
-                                                                  new object[]
-                                                                  {
-                                                                      IntPtr.Zero
-                                                                  },
-                                                                  null)
-                        ).RegisteredVtable;
+                    var test = ((IAgent)Activator.CreateInstance(
+                        MyType,
+                        BindingFlags.Instance | BindingFlags.NonPublic,
+                        null,
+                        new object[]
+                        {
+                            IntPtr.Zero
+                        },
+                        null)
+                    ).RegisteredVtable;
 
                     if (vtables.ContainsKey(test))
                     {
-                        Log1.Information($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
+                        Logger.Information($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
                     }
                     else
                     {
-                        Log1.Error($"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
+                        Logger.Error($"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
                     }
                 }
 
@@ -125,16 +123,17 @@ namespace LlamaLibrary.Memory
                 {
                     foreach (var pair in OffsetCache)
                     {
-                        Log.Information($"{pair.Key} - {pair.Value:X}");
+                        Logger.Information($"{pair.Key} - {pair.Value:X}");
                     }
+
                     //Log1.Information($"\n {Sb}");
 
-                    File.WriteAllText(offsetFile, JsonConvert.SerializeObject(OffsetCache));
+                    File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
                 }
             }
 
             stopwatch.Stop();
-            Log.Information($"Total {stopwatch.ElapsedMilliseconds}ms");
+            Logger.Information($"Total {stopwatch.ElapsedMilliseconds}ms");
         }
 
         public static void RegisterAgent(IAgent iagent)
@@ -147,11 +146,11 @@ namespace LlamaLibrary.Memory
 
             if (vtables.ContainsKey(iagent.RegisteredVtable))
             {
-                Log1.Information($"\tTrying to add {iagent.GetType()} {AgentModule.TryAddAgent(vtables[iagent.RegisteredVtable], iagent.GetType())}");
+                Logger.Information($"\tTrying to add {iagent.GetType()} {AgentModule.TryAddAgent(vtables[iagent.RegisteredVtable], iagent.GetType())}");
             }
             else
             {
-                Log1.Error($"\tFound one {iagent.RegisteredVtable.ToString("X")} but no agent");
+                Logger.Error($"\tFound one {iagent.RegisteredVtable.ToString("X")} but no agent");
             }
         }
 
@@ -168,7 +167,7 @@ namespace LlamaLibrary.Memory
 
             try
             {
-                if (!(field.GetValue(null) is List<string> list))
+                if (field.GetValue(null) is not List<string> list)
                 {
                     return;
                 }
@@ -178,13 +177,13 @@ namespace LlamaLibrary.Memory
                     if (!list.Contains(ns))
                     {
                         list.Add(ns);
-                        Log1.Information($"Added namespace '{ns}' to ScriptManager");
+                        Logger.Information($"Added namespace '{ns}' to ScriptManager");
                     }
                 }
             }
             catch
             {
-                Log1.Error("Failed to add namespaces to ScriptManager, this can cause issues with some profiles.");
+                Logger.Error("Failed to add namespaces to ScriptManager, this can cause issues with some profiles.");
             }
         }
 
@@ -192,76 +191,76 @@ namespace LlamaLibrary.Memory
         {
             var types = q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public));
 
-            using (var pf = new PatternFinder(Core.Memory))
-            {
-                Parallel.ForEach(types,
-                                 type =>
-                                 {
-                                     if (type.FieldType.IsClass)
-                                     {
-                                         var instance = Activator.CreateInstance(type.FieldType);
+            using var pf = new PatternFinder(Core.Memory);
+            Parallel.ForEach(
+                types,
+                type =>
+                {
+                    if (type.FieldType.IsClass)
+                    {
+                        var instance = Activator.CreateInstance(type.FieldType);
 
-                                         foreach (var field in type.FieldType.GetFields(BindingFlags.Instance))
-                                         {
-                                             var res = ParseField(field, pf);
-                                             if (field.FieldType == typeof(IntPtr))
-                                             {
-                                                 field.SetValue(instance, res);
-                                             }
-                                             else
-                                             {
-                                                 field.SetValue(instance, (int) res);
-                                             }
-                                         }
+                        foreach (var field in type.FieldType.GetFields(BindingFlags.Instance))
+                        {
+                            var res = ParseField(field, pf);
+                            if (field.FieldType == typeof(IntPtr))
+                            {
+                                field.SetValue(instance, res);
+                            }
+                            else
+                            {
+                                field.SetValue(instance, (int)res);
+                            }
+                        }
 
-                                         //set the value
-                                         type.SetValue(null, instance);
-                                     }
-                                     else
-                                     {
-                                         var res = ParseField(type, pf);
-                                         if (type.FieldType == typeof(IntPtr))
-                                         {
-                                             type.SetValue(null, res);
-                                         }
-                                         else
-                                         {
-                                             try
-                                             {
-                                                 type.SetValue(null, res.ToInt32());
-                                             }
-                                             catch (Exception)
-                                             {
-                                                 Log1.Error($"Error on {type.Name}");
-                                             }
-                                         }
-                                     }
-                                 });
-            }
+                        //set the value
+                        type.SetValue(null, instance);
+                    }
+                    else
+                    {
+                        var res = ParseField(type, pf);
+                        if (type.FieldType == typeof(IntPtr))
+                        {
+                            type.SetValue(null, res);
+                        }
+                        else
+                        {
+                            try
+                            {
+                                type.SetValue(null, res.ToInt32());
+                            }
+                            catch (Exception)
+                            {
+                                Logger.Error($"Error on {type.Name}");
+                            }
+                        }
+                    }
+                });
         }
 
         private static IntPtr ParseField(FieldInfo field, PatternFinder pf)
         {
-            var offset = (OffsetAttribute) Attribute.GetCustomAttributes(field, typeof(OffsetAttribute))
+            var offset = (OffsetAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetAttribute))
                 .FirstOrDefault();
 
-            var valna = (OffsetValueNA) Attribute.GetCustomAttributes(field, typeof(OffsetValueNA))
+            var valna = (OffsetValueNA)Attribute.GetCustomAttributes(field, typeof(OffsetValueNA))
                 .FirstOrDefault();
 
             var result = IntPtr.Zero;
             var name = $"{field.DeclaringType.FullName}.{field.Name}";
+
             //var lang = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic).First(i => i.FieldType == typeof(Language)).GetValue(null);
 
             if (Translator.Language == Language.Chn) //Translator.Language
             {
-                var offsetCN = (OffsetCNAttribute) Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute))
+                var offsetCN = (OffsetCNAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute))
                     .FirstOrDefault();
-                var valcn = (OffsetValueCN) Attribute.GetCustomAttributes(field, typeof(OffsetValueCN))
+                var valcn = (OffsetValueCN)Attribute.GetCustomAttributes(field, typeof(OffsetValueCN))
                     .FirstOrDefault();
 
                 if (valcn != null)
                 {
-                    return (IntPtr) valcn.Value;
+                    return (IntPtr)valcn.Value;
                 }
 
                 if (offset == null)
@@ -278,11 +277,11 @@ namespace LlamaLibrary.Memory
                 {
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
-                        Log1.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                     else
                     {
-                        Log1.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                 }
             }
@@ -290,7 +289,7 @@ namespace LlamaLibrary.Memory
             {
                 if (valna != null)
                 {
-                    return (IntPtr) valna.Value;
+                    return (IntPtr)valna.Value;
                 }
 
                 if (offset == null)
@@ -332,11 +331,11 @@ namespace LlamaLibrary.Memory
                 {
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
-                        Log1.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                     else
                     {
-                        Log1.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
                     }
                 }
             }
@@ -390,21 +389,21 @@ namespace LlamaLibrary.Memory
 
             if (field.DeclaringType != null && field.DeclaringType.IsNested)
             {
-                Log1.Information($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
+                Logger.Information($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
             }
             else
             {
-                Log1.Information($"[{field.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
+                Logger.Information($"[{field.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
             }
 
             return result;
         }
 
-        private static async void SetScriptsThread()
+        private static void SetScriptsThread()
         {
             AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
             ScriptManager.Init(typeof(ScriptConditions.Helpers));
-            Log.Information("ScriptManager Set");
+            Logger.Information("ScriptManager Set");
         }
 
         public static string GetRootNamespace(string nameSpace)
@@ -462,7 +461,7 @@ namespace LlamaLibrary.Memory
 
             SetOffsetObjects(q1);
 
-            File.WriteAllText(offsetFile, JsonConvert.SerializeObject(OffsetCache));
+            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
 
             var vtables = new Dictionary<IntPtr, int>();
             for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
@@ -476,23 +475,24 @@ namespace LlamaLibrary.Memory
 
             foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
             {
-                var test = ((IAgent) Activator.CreateInstance(MyType,
-                                                              BindingFlags.Instance | BindingFlags.NonPublic,
-                                                              null,
-                                                              new object[]
-                                                              {
-                                                                  IntPtr.Zero
-                                                              },
-                                                              null)
-                    ).RegisteredVtable;
+                var test = ((IAgent)Activator.CreateInstance(
+                    MyType,
+                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    null,
+                    new object[]
+                    {
+                        IntPtr.Zero
+                    },
+                    null)
+                ).RegisteredVtable;
 
                 if (vtables.ContainsKey(test))
                 {
-                    Log.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
+                    Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
                 }
                 else
                 {
-                    Log.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
+                    Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
                 }
             }
         }

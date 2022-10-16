@@ -12,14 +12,14 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary...Also wtf is this mess
     public class ContentsInfoDetail : RemoteWindow<ContentsInfoDetail>
     {
-        private int eleNumCrafting = 56;
-        private int eleNumGathering = 57;
-        private int eleCraftingItem = 215;
-        private int eleCraftingJob = 223;
-        private int eleCraftingQty = 231;
-        private int eleGatheringItem = 274;
-        private int eleGatheringJob = 277;
-        private int eleGatheringQty = 280;
+        private readonly int eleNumCrafting = 56;
+        private readonly int eleNumGathering = 57;
+        private readonly int eleCraftingItem = 215;
+        private readonly int eleCraftingJob = 223;
+        private readonly int eleCraftingQty = 231;
+        private readonly int eleGatheringItem = 274;
+        private readonly int eleGatheringJob = 277;
+        private readonly int eleGatheringQty = 280;
 
         public ContentsInfoDetail() : base("ContentsInfoDetail")
         {

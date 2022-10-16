@@ -21,9 +21,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class GrandCompanyShop
     {
-        private static readonly string Name = "GrandCompanyShop";
-        private static readonly Color LogColor = Colors.SeaGreen;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new(nameof(GrandCompanyShop), Colors.SeaGreen);
 
         internal static class Offsets
         {
@@ -109,12 +107,12 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            foreach (var itemToBuy in items)
+            foreach (var (ItemId, qty) in items)
             {
-                var itemInfo = ResourceManager.GCShopItems[Core.Me.GrandCompany].FirstOrDefault(i => i.ItemId == itemToBuy.ItemId);
+                var itemInfo = ResourceManager.GCShopItems[Core.Me.GrandCompany].FirstOrDefault(i => i.ItemId == ItemId);
                 if (itemInfo == null)
                 {
-                    Log.Error($"Could not find item {itemToBuy.ItemId} in the GC shop");
+                    Log.Error($"Could not find item {ItemId} in the GC shop");
                     continue;
                 }
 
@@ -134,7 +132,7 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Sleep(500);
                 }
 
-                var item = Items.FirstOrDefault(i => i.ItemID == itemToBuy.ItemId);
+                var item = Items.FirstOrDefault(i => i.ItemID == ItemId);
                 Log.Information($"Want to buy {DataManager.GetItem(item.ItemID).LocaleName()}");
                 if (item.ItemID == 0)
                 {
@@ -154,7 +152,7 @@ namespace LlamaLibrary.Helpers
                 }
 
                 var oldBagQty = item.InBag;
-                var qtyCanBuy = Math.Min(itemToBuy.qty, CanAfford(item));
+                var qtyCanBuy = Math.Min(qty, CanAfford(item));
                 Log.Information($"CanBuy {qtyCanBuy}");
                 AgentGrandCompanyExchange.Instance.BuyItem(item.Index, qtyCanBuy);
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
@@ -165,13 +163,15 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
                 }
 
-                await Coroutine.Wait(3000, () => Items.FirstOrDefault(i => i.ItemID == itemToBuy.ItemId).InBag != oldBagQty);
+                await Coroutine.Wait(3000, () => Items.FirstOrDefault(i => i.ItemID == ItemId).InBag != oldBagQty);
             }
 
             GrandCompanyExchange.Instance.Close();
             await Coroutine.Wait(5000, () => !GrandCompanyExchange.Instance.IsOpen);
+
             Core.Me.ClearTarget();
             await Coroutine.Sleep(500);
+
             return true;
 
             /*
@@ -180,9 +180,9 @@ namespace LlamaLibrary.Helpers
                 Log.Information($"Found Known item {ItemId}");
                 return await BuyItem(ItemId, qty, itemInfo.Item1, itemInfo.Item2);
             }
-            */
 
             return false;
+            */
         }
 
         public static async Task<int> BuyKnownItem(uint ItemId, int qty)
@@ -197,8 +197,6 @@ namespace LlamaLibrary.Helpers
 
             Log.Information($"Found Known item {ItemId}");
             return await BuyItem(ItemId, qty, item.GCRankGroup, item.Category);
-
-            return 0;
         }
 
         public static async Task<int> BuyItem(uint ItemId, int qty, int GCRankGroup, GCShopCategory Category)
@@ -247,7 +245,10 @@ namespace LlamaLibrary.Helpers
             return GrandCompanyExchange.Instance.IsOpen;
         }
 
-        public static bool IsBuyableItem(uint itemId) => ResourceManager.GCShopItems.SelectMany(i=> i.Value.Select(j=> j.ItemId)).Contains(itemId);
+        public static bool IsBuyableItem(uint itemId)
+        {
+            return ResourceManager.GCShopItems.SelectMany(i => i.Value.Select(j => j.ItemId)).Contains(itemId);
+        }
     }
 
     public enum GCShopCategory

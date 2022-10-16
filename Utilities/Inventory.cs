@@ -17,9 +17,7 @@ namespace LlamaLibrary.Utilities
 {
     public static class Inventory
     {
-        private static readonly string BotName = "InventoryUtilities";
-
-        private static readonly LLogger Log = new LLogger(BotName, Colors.Green);
+        private static readonly LLogger Log = new("InventoryUtilities", Colors.Green);
 
         public static bool IsBusy => DutyManager.InInstance || DutyManager.InQueue || DutyManager.DutyReady || Core.Me.IsCasting || Core.Me.IsMounted || Core.Me.InCombat || Talk.DialogOpen || MovementManager.IsMoving ||
                                      MovementManager.IsOccupied;
@@ -53,7 +51,7 @@ namespace LlamaLibrary.Utilities
             foreach (var bagslot in InventoryManager.FilledSlots.Where(bagslot => bagslot.Item.ItemAction == 388))
             {
                 var count = bagslot.Count;
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
                     Log.Information($"Opening Coffer {bagslot.Name} #{i + 1}");
                     bagslot.UseItem();
@@ -68,7 +66,7 @@ namespace LlamaLibrary.Utilities
 
         public static async Task UseUnlockablesAsync()
         {
-            HashSet<uint> backingActionIds = new HashSet<uint>
+            var backingActionIds = new HashSet<uint>
             {
                 853, // Minions
                 25183, // Orchestrion Rolls

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -23,11 +22,11 @@ namespace LlamaLibrary.Helpers
 {
     public class HuntHelper
     {
-        private static readonly LLogger Log = new LLogger(typeof(HuntHelper).Name, Colors.Gold);
+        private static readonly LLogger Log = new(nameof(HuntHelper), Colors.Gold);
 
         private const int MaxOrderTypes = 0xE;
 
-        public static readonly List<HuntBoardNpc> HuntBoards = new List<HuntBoardNpc>()
+        public static readonly List<HuntBoardNpc> HuntBoards = new()
         {
             new HuntBoardNpc(2004438, 128, new Vector3(94.346436f, 40.238037f, 60.471436f), new uint[] { 0, 4 }), //Hunt Board  Limsa Lominsa Upper Decks(Limsa Lominsa)
             new HuntBoardNpc(2004440, 130, new Vector3(-152.361328f, 4.226685f, -92.362915f), new uint[] { 0, 4 }), //Hunt Board  Ul'dah - Steps of Nald(Ul'dah)
@@ -43,7 +42,6 @@ namespace LlamaLibrary.Helpers
         public static readonly int[] VerteranClanHunts = new[] { 6, 7, 8 };
         public static readonly int[] NutClanHunts = new[] { 10, 11, 12 };
 
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private static class Offsets
         {
             [Offset("Search 89 84 2A ?? ?? ?? ?? 41 0F B6 D6 Add 3 Read32")]
@@ -289,6 +287,7 @@ namespace LlamaLibrary.Helpers
             }
 
             var listStart = orderType.OrderStart - 1;
+
             //Log.Information($"{(Offsets.HuntData + orderTypeIndex).ToString("X")}");
             var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1A); //0x8
 
@@ -490,7 +489,7 @@ namespace LlamaLibrary.Helpers
         {
             var board = HuntBoards.FirstOrDefault(i => i.OrderTypes.Contains(orderType));
 
-            if (orderType == 0 || orderType == 4)
+            if (orderType is 0 or 4)
             {
                 board = HuntBoards.FirstOrDefault(i => i.NpcId == GrandCompanyHelper.GetNpcByType(GCNpc.Hunt_Board));
             }
@@ -514,7 +513,7 @@ namespace LlamaLibrary.Helpers
         public readonly byte MobIndex;
         public readonly uint NpcID;
         public readonly int OrderTypeIndex;
-        private short fate;
+        private readonly short fate;
         public Vector3 Location;
         public uint MapId;
         public MobHuntType Type;
@@ -607,7 +606,7 @@ namespace LlamaLibrary.Helpers
 
     public class HuntBoardNpc
     {
-        private static readonly LLogger Log = new LLogger(typeof(HuntBoardNpc).Name, Colors.Gold);
+        private static readonly LLogger Log = new(nameof(HuntBoardNpc), Colors.Gold);
 
         public uint NpcId;
         public uint ZoneId;

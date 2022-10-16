@@ -16,7 +16,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public override uint TownAetheryteId => 111;
         public override ushort ZoneId => (ushort)HousingZone.Shirogane;
 
-        private readonly List<HousingAetheryte> _aetherytes = new List<HousingAetheryte>()
+        private readonly List<HousingAetheryte> _aetherytes = new()
         {
             new HousingAetheryte(49, 2007855, "Akanegumo Bridge", new Vector3(-95.99971f, 2.02f, 125.951f), false),
             new HousingAetheryte(50, 2007856, "Northwestern Shirogane", new Vector3(-105.4554f, 29.99999f, -117.8433f), false),
@@ -40,9 +40,9 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
         public override int RequiredQuest => 68167;
 
-        public override Vector3 TownAetheryteLocation => new Vector3(48.03579f, 4.549999f, -31.83851f);
+        public override Vector3 TownAetheryteLocation => new(48.03579f, 4.549999f, -31.83851f);
 
-        private readonly List<Npc> _transitionNpcIds = new List<Npc>() { new Npc(1019108, 641, new Vector3(-121.172f, 2.029419f, 154.8943f)), new Npc(1019108, 641, new Vector3(-858.9456f, 2.029419f, -825.1926f)) };
+        private readonly List<Npc> _transitionNpcIds = new() { new Npc(1019108, 641, new Vector3(-121.172f, 2.029419f, 154.8943f)), new Npc(1019108, 641, new Vector3(-858.9456f, 2.029419f, -825.1926f)) };
 
         public override List<Npc> TransitionNpcs => _transitionNpcIds;
 

@@ -6,10 +6,10 @@ namespace LlamaLibrary.Helpers.Ping
 {
     public static class PingChecker
     {
-        private static AddressGetter _addressGetter = new AddressGetter();
+        private static readonly AddressGetter _addressGetter = new();
         private static ushort lastWorld;
 
-        public static int CurrentPing => _currentPing;
+        public static int CurrentPing { get; private set; }
 
         public static async Task<int> GetCurrentPing()
         {
@@ -18,10 +18,8 @@ namespace LlamaLibrary.Helpers.Ping
                 await UpdatePing();
             }
 
-            return _currentPing;
+            return CurrentPing;
         }
-
-        private static int _currentPing;
 
         static PingChecker()
         {
@@ -31,19 +29,19 @@ namespace LlamaLibrary.Helpers.Ping
         public static async Task UpdatePing()
         {
             var ip = _addressGetter.GetAddress();
-            _currentPing = (int)await PingTimeAverage(ip.ToString(), 3);
+            CurrentPing = (int)await PingTimeAverage(ip.ToString(), 3);
             lastWorld = WorldHelper.CurrentWorldId;
         }
 
         public static async Task<double> PingTimeAverage(string host, int echoNum)
         {
             long totalTime = 0;
-            int timeout = 1000;
-            System.Net.NetworkInformation.Ping pingSender = new System.Net.NetworkInformation.Ping();
+            var timeout = 1000;
+            var pingSender = new System.Net.NetworkInformation.Ping();
 
-            for (int i = 0; i < echoNum; i++)
+            for (var i = 0; i < echoNum; i++)
             {
-                PingReply reply = await Coroutine.ExternalTask(pingSender.SendPingAsync(host, timeout));
+                var reply = await Coroutine.ExternalTask(pingSender.SendPingAsync(host, timeout));
                 if (reply.Status == IPStatus.Success)
                 {
                     totalTime += reply.RoundtripTime;

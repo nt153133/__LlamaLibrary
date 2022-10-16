@@ -7,7 +7,7 @@ namespace LlamaLibrary.Helpers
     public static class InclusionShopConstants
     {
         public static List<(uint ShopKey, uint NpcId, ushort ZoneId, uint RequiredQuest, Vector3 Location)> ShopNpcs =
-            new List<(uint ShopKey, uint NpcId, ushort ZoneId, uint RequiredQuest, Vector3 Location)>()
+            new()
             {
                 /*
                 {
@@ -37,7 +37,7 @@ namespace LlamaLibrary.Helpers
                 { (3801097, 1037307, 963, 69711, new Vector3(19.91194f, 0.9200001f, -87.02138f)) }, //Radz-at-Han Scrip Exchange
             };
 
-        public static Dictionary<uint, uint[]> KnownItems = new Dictionary<uint, uint[]>()
+        public static Dictionary<uint, uint[]> KnownItems = new()
         {
             {
                 3801090,
@@ -421,6 +421,9 @@ namespace LlamaLibrary.Helpers
             },
         };
 
-        public static bool IsBuyableItem(uint itemId) => KnownItems.Values.Any(i => i.Contains(itemId));
+        public static bool IsBuyableItem(uint itemId)
+        {
+            return KnownItems.Values.Any(i => i.Contains(itemId));
+        }
     }
 }

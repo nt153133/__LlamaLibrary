@@ -12,9 +12,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class BeastTribeHelper
     {
-        private static readonly string Name = "BeastTribeHelper";
-        private static readonly Color LogColor = Colors.Gold;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new(nameof(BeastTribeHelper), Colors.Gold);
 
         private static class Offsets
         {
@@ -45,7 +43,7 @@ namespace LlamaLibrary.Helpers
             internal static int BeastTribeCount;
         }
 
-        private static BeastTribeExd[] _beastTribes;
+        private static readonly BeastTribeExd[] _beastTribes;
 
         static BeastTribeHelper()
         {
@@ -109,9 +107,8 @@ namespace LlamaLibrary.Helpers
 
         public static BeastTribeStat[] GetBeastTribes()
         {
-
             //Log.Information($"{(Offsets.QuestPointer + 1448).ToString("X")} {Offsets.BeastTribeStart}");//Offsets.BeastTribeStart
-            return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + 2896 , Offsets.BeastTribeCount);
+            return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + 2896, Offsets.BeastTribeCount);
         }
 
         public static int GetBeastTribeRank(int tribe)

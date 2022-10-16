@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using ff14bot;
 using ff14bot.AClasses;
-using ff14bot.BotBases;
 using ff14bot.Managers;
 using ff14bot.NeoProfile;
 using ff14bot.NeoProfiles;
@@ -18,7 +16,8 @@ namespace LlamaLibrary.Helpers
 {
     public class OrderbotHelper
     {
-        private static readonly LLogger Log = new LLogger("OrderbotHelper", Colors.MediumPurple);
+        private static readonly LLogger Log = new(nameof(OrderbotHelper), Colors.MediumPurple);
+
         public static bool loaded;
         public static bool tempbool;
         public static bool StopBot = false;
@@ -37,11 +36,13 @@ namespace LlamaLibrary.Helpers
             Log.Information("Thread Started");
             tempbool = false;
             RbStartButton.Click += OnClick;
+
             //var profile = NeoProfileManager.CurrentProfile.Path;
 
             var lastBot = BotManager.Current;
             Log.Information($"Current Bot: {lastBot.Name} {TreeRoot.IsRunning}");
             TreeRoot.Stop("Orderbot helper called stop");
+
             //BotManager.Current.Stop();
             //await TreeRoot.StopGently();
             Thread.Sleep(2000);
@@ -58,6 +59,7 @@ namespace LlamaLibrary.Helpers
                 Log.Information($"Bot Stopped: {lastBot.Name}");
                 BotEvents.NeoProfile.OnNewProfileLoaded += OnNewProfileLoaded;
                 BotManager.SetCurrent(BotManager.Bots.First(i => i.EnglishName.Contains("Order Bot")));
+
                 //NeoProfileManager.Load(profile);
                 //NeoProfileManager.UpdateCurrentProfileBehavior();
 
@@ -68,6 +70,7 @@ namespace LlamaLibrary.Helpers
                 Log.Information($"Initialize");
                 NeoProfileManager.Load(profile);
                 Log.Information($"Profile loaded");
+
                 //NeoProfileManager.UpdateCurrentProfileBehavior();
 
                 //BotManager.Current.Start();
@@ -105,6 +108,7 @@ namespace LlamaLibrary.Helpers
                         }
 
                         BotManager.Current.Start();
+
                         //NeoProfileManager.Load(profile);
 
                         TreeRoot.Start();

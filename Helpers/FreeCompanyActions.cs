@@ -11,9 +11,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class FreeCompanyActions
     {
-        private static readonly string Name = "FreeCompanyActions";
-        private static readonly Color LogColor = Colors.DarkTurquoise;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new(nameof(FreeCompanyActions), Colors.DarkTurquoise);
 
         public static async Task ActivateBuffs(int buff1, int buff2, GrandCompany grandCompany)
         {

@@ -30,10 +30,11 @@ namespace LlamaLibrary.RemoteAgents
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<uint>(Offsets.HandIn,
-                                                 Pointer + Offsets.PointerOffset,
-                                                 slot.Slot,
-                                                 (int)slot.BagId);
+                Core.Memory.CallInjected64<uint>(
+                    Offsets.HandIn,
+                    Pointer + Offsets.PointerOffset,
+                    slot.Slot,
+                    (int)slot.BagId);
             }
         }
     }

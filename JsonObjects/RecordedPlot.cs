@@ -20,7 +20,7 @@ namespace LlamaLibrary.JsonObjects
         public bool IsInSubdivision { get; set; }
 
         [JsonIgnore]
-        public Npc Npc => new Npc(2002736, (ushort)HousingZone, PlacardLocation);
+        public Npc Npc => new(2002736, (ushort)HousingZone, PlacardLocation);
 
         public RecordedPlot(HousingZone housingZone, int plot, bool isInSubdivision)
         {
@@ -42,16 +42,36 @@ namespace LlamaLibrary.JsonObjects
 
         public bool Equals(RecordedPlot other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return HousingZone == other.HousingZone && Plot == other.Plot && PlacardLocation.Equals(other.PlacardLocation) && IsInSubdivision == other.IsInSubdivision;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((RecordedPlot)obj);
         }
 

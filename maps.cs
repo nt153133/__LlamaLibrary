@@ -23,7 +23,7 @@ namespace LlamaLibrary
         /// <summary>
         ///     Provides a KeyItem => TreasureHuntRank lookup because the client does the same thing.
         /// </summary>
-        public static readonly Dictionary<uint, short> MapPrimary = new Dictionary<uint, short>
+        public static readonly Dictionary<uint, short> MapPrimary = new()
         {
             //KeyEventItemName
             { 2001087, 1 },

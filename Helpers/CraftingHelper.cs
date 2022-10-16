@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using ff14bot;
@@ -13,9 +12,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class CraftingHelper
     {
-        private static readonly string Name = "CraftingHelper";
-        private static readonly Color LogColor = Colors.Bisque;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new(nameof(CraftingHelper), Colors.Bisque);
 
         private static class Offsets
         {
@@ -48,8 +45,9 @@ namespace LlamaLibrary.Helpers
         {
             using (Core.Memory.TemporaryCacheState(false))
             {
-                return Core.Memory.CallInjected64<bool>(Offsets.HasCraftedRecipe,
-                                                        recipeId);
+                return Core.Memory.CallInjected64<bool>(
+                    Offsets.HasCraftedRecipe,
+                    recipeId);
             }
         }
 
@@ -70,12 +68,12 @@ namespace LlamaLibrary.Helpers
         public static bool[] GetCraftedRecipeStatusArray()
         {
             var byteArray = CraftedRecipeByteArray;
-            bool[] isCrafted = new bool[byteArray.Length * 8];
+            var isCrafted = new bool[byteArray.Length * 8];
 
-            for (int i = 0; i < byteArray.Length; i++)
+            for (var i = 0; i < byteArray.Length; i++)
             {
-                byte b = byteArray[i];
-                for (int j = 0; j < 8; j++)
+                var b = byteArray[i];
+                for (var j = 0; j < 8; j++)
                 {
                     isCrafted[(i * 8) + j] = (128 >> j & b) != 0;
                 }
@@ -86,7 +84,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool IsSecretRecipeBookUnlocked(uint key)
         {
-            return Core.Memory.CallInjected64<byte>(Memory.Offsets.IsSecretRecipeBookUnlocked, Memory.Offsets.PlayerState, (uint)key) == 1;
+            return Core.Memory.CallInjected64<byte>(Memory.Offsets.IsSecretRecipeBookUnlocked, Memory.Offsets.PlayerState, key) == 1;
         }
 
         public static bool IsSecretRecipeBookUnlockedItem(uint key)
@@ -101,7 +99,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool IsFolkloreBookUnlocked(uint key)
         {
-            return Core.Memory.CallInjected64<byte>(Memory.Offsets.IsFolkloreBookUnlocked, Memory.Offsets.PlayerState, (uint)key) == 1;
+            return Core.Memory.CallInjected64<byte>(Memory.Offsets.IsFolkloreBookUnlocked, Memory.Offsets.PlayerState, key) == 1;
         }
 
         public static bool IsFolkloreBookUnlockedItem(uint key)
@@ -116,7 +114,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool IsValid(CraftingStatus status)
         {
-            if (status.Stage == 9 || status.Stage == 10)
+            if (status.Stage is 9 or 10)
             {
                 return true;
             }

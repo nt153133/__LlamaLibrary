@@ -12,7 +12,6 @@ using ff14bot.NeoProfiles;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
-using LlamaLibrary.Enums;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
@@ -26,7 +25,7 @@ namespace LlamaLibrary.Utilities
     public static class CustomDeliveries
     {
         public static string NameStatic => "Custom Deliveries";
-        private static readonly LLogger Log = new LLogger(NameStatic, Colors.Gold);
+        private static readonly LLogger Log = new(NameStatic, Colors.Gold);
 
         public static async Task<bool> RunCustomDeliveries(DohClasses dohClass = DohClasses.Carpenter)
         {
@@ -93,15 +92,17 @@ namespace LlamaLibrary.Utilities
                 return;
             }
 
-            var outList = new List<LisbethOrder>();
+            var outList = new List<LisbethOrder>
+            {
+                // if (deliveryNpc.npcId == 1025878)
+                //  {
+                //      outList.Add(new LisbethOrder(0, 1, (int)AgentSatisfactionSupply.Instance.DoLItemId, Math.Min(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining), "Gather", true));
+                //  }
+                //  else
+                //  {
+                new LisbethOrder(0, 1, (int)AgentSatisfactionSupply.Instance.DoHItemId, Math.Min(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining), dohClass.ToString(), true)
+            };
 
-            // if (deliveryNpc.npcId == 1025878)
-            //  {
-            //      outList.Add(new LisbethOrder(0, 1, (int)AgentSatisfactionSupply.Instance.DoLItemId, Math.Min(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining), "Gather", true));
-            //  }
-            //  else
-            //  {
-            outList.Add(new LisbethOrder(0, 1, (int)AgentSatisfactionSupply.Instance.DoHItemId, Math.Min(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining), dohClass.ToString(), true));
             //  }
 
             var order = JsonConvert.SerializeObject(outList, Formatting.None).Replace("Hq", "Collectable");

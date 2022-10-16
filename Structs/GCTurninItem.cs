@@ -24,7 +24,7 @@ namespace LlamaLibrary.Structs
         public byte JobClass;
 
         [FieldOffset(0x18)]
-        private byte starred;
+        private readonly byte starred;
 
         public bool Starred => starred == 1;
 

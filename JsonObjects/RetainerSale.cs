@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 
 namespace LlamaLibrary.JsonObjects
 {
-
     public class RetainerSale
     {
         public uint ItemId { get; set; }

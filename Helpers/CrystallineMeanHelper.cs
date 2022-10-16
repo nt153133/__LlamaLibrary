@@ -1,55 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
-using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers.NPC;
-using LlamaLibrary.JsonObjects.Lisbeth;
 using LlamaLibrary.Logging;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
     public static class CrystallineMeanHelper
     {
-        private static readonly string Name = "CrystallineMeanHelper";
-        private static readonly Color LogColor = Colors.Gold;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new(nameof(CrystallineMeanHelper), Colors.Gold);
 
         //Iola
         //Blacksmith, Armorer, Goldsmith
-        private static readonly Npc Iola = new Npc(1027233, 819, new Vector3(7.44313f, 20.186f, -125.8074f));
+        private static readonly Npc Iola = new(1027233, 819, new Vector3(7.44313f, 20.186f, -125.8074f));
 
         //Thiuna
         //Carpenter, Leatherworker, Weaver
-        private static readonly Npc Thiuna = new Npc(1027234, 819, new Vector3(8.28885f, 20.186f, -137.4566f));
+        private static readonly Npc Thiuna = new(1027234, 819, new Vector3(8.28885f, 20.186f, -137.4566f));
 
         //Bethric
         //Alchemist, Culinarian
-        private static readonly Npc Bethric = new Npc(1027235, 819, new Vector3(-19.51636f, 20.186f, -130.1748f));
+        private static readonly Npc Bethric = new(1027235, 819, new Vector3(-19.51636f, 20.186f, -130.1748f));
 
         //Qeshi-Rae
         //Miner, Botanist
-        private static readonly Npc QeshiRae = new Npc(1027236, 819, new Vector3(-3.158691f, 20.186f, -148.9128f));
+        private static readonly Npc QeshiRae = new(1027236, 819, new Vector3(-3.158691f, 20.186f, -148.9128f));
 
         //Frithrik
         //Fisher
-        private static readonly Npc Frithrik = new Npc(1027237, 819, new Vector3(-8.957031f, 20.186f, -119.1882f));
+        private static readonly Npc Frithrik = new(1027237, 819, new Vector3(-8.957031f, 20.186f, -119.1882f));
 
-        public static readonly Dictionary<ClassJobType, Npc> facetNPCs = facetNPCs = new Dictionary<ClassJobType, Npc>()
+        public static readonly Dictionary<ClassJobType, Npc> FacetNPCs = FacetNPCs = new Dictionary<ClassJobType, Npc>()
         {
             { ClassJobType.Blacksmith, Iola },
             { ClassJobType.Armorer, Iola },
@@ -64,7 +56,7 @@ namespace LlamaLibrary.Helpers
             { ClassJobType.Fisher, Frithrik },
         };
 
-        private static Npc ClassNpc => facetNPCs.ContainsKey(Core.Me.CurrentJob) ? facetNPCs[Core.Me.CurrentJob] : default;
+        private static Npc ClassNpc => FacetNPCs.ContainsKey(Core.Me.CurrentJob) ? FacetNPCs[Core.Me.CurrentJob] : default;
 
         public static async Task<bool> CraftItems()
         {
@@ -72,7 +64,7 @@ namespace LlamaLibrary.Helpers
 
             if (npc == default)
             {
-                Log.Error($"Must be one of these classes {string.Join(",", facetNPCs.Keys)}");
+                Log.Error($"Must be one of these classes {string.Join(",", FacetNPCs.Keys)}");
                 return false;
             }
 
@@ -178,7 +170,7 @@ namespace LlamaLibrary.Helpers
                 }
             }
 
-            Stopwatch timer = Stopwatch.StartNew();
+            var timer = Stopwatch.StartNew();
             Log.Information("Before while #1");
             while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && timer.ElapsedMilliseconds < 10_000)
             {
@@ -195,6 +187,7 @@ namespace LlamaLibrary.Helpers
 
             timer.Stop();
             Log.Information("Past while #1");
+
             //await Coroutine.Wait(-1, () => LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen || );
             //timer = Stopwatch.StartNew();
             while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && !QuestLogManager.InCutscene && timer.ElapsedMilliseconds < 10_000)
@@ -202,6 +195,7 @@ namespace LlamaLibrary.Helpers
                 await DealWithTalk();
                 await Coroutine.Sleep(200);
             }
+
             Log.Information("Past while #2");
             await DealWithTalk();
 
@@ -230,6 +224,7 @@ namespace LlamaLibrary.Helpers
                     Log.Information("Closing result window");
                     LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.Close();
                     await Coroutine.Wait(5000, () => !LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && (!QuestLogManager.InCutscene || Talk.DialogOpen));
+
                     //await Coroutine.Sleep(1000);
                 }
 
@@ -259,14 +254,14 @@ namespace LlamaLibrary.Helpers
 
             var outList = new List<LlamaLibrary.Structs.LisbethOrder>();
             var requestedID = LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.TurnInItemId;
-            int qty = 0;
-            string orderType = "Class";
-            bool needHQ = true;
+            var qty = 0;
+            var orderType = "Class";
+            var needHQ = true;
 
             LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.Close();
 
-            if (Core.Me.CurrentJob == ClassJobType.Alchemist || Core.Me.CurrentJob == ClassJobType.Culinarian ||
-                Core.Me.CurrentJob == ClassJobType.Miner || Core.Me.CurrentJob == ClassJobType.Botanist)
+            if (Core.Me.CurrentJob is ClassJobType.Alchemist or ClassJobType.Culinarian or
+                ClassJobType.Miner or ClassJobType.Botanist)
             {
                 qty = 18;
             }
@@ -275,7 +270,7 @@ namespace LlamaLibrary.Helpers
                 qty = 6;
             }
 
-            if (Core.Me.CurrentJob == ClassJobType.Miner || Core.Me.CurrentJob == ClassJobType.Botanist)
+            if (Core.Me.CurrentJob is ClassJobType.Miner or ClassJobType.Botanist)
             {
                 orderType = $"Gather";
             }
@@ -285,10 +280,10 @@ namespace LlamaLibrary.Helpers
             }
             else
             {
-                orderType = $"{Core.Me.CurrentJob.ToString()}";
+                orderType = $"{Core.Me.CurrentJob}";
             }
 
-            if (Core.Me.CurrentJob == ClassJobType.Miner || Core.Me.CurrentJob == ClassJobType.Botanist || Core.Me.CurrentJob == ClassJobType.Fisher)
+            if (Core.Me.CurrentJob is ClassJobType.Miner or ClassJobType.Botanist or ClassJobType.Fisher)
             {
                 needHQ = false;
             }

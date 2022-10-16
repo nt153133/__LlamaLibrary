@@ -23,14 +23,14 @@ namespace LlamaLibrary.Extensions
         /// <returns><see langword="true"/> if class is a Disciple of the Hand.</returns>
         public static bool IsDoh(this ClassJobType type)
         {
-            return type == ClassJobType.Carpenter ||
-                   type == ClassJobType.Blacksmith ||
-                   type == ClassJobType.Armorer ||
-                   type == ClassJobType.Goldsmith ||
-                   type == ClassJobType.Leatherworker ||
-                   type == ClassJobType.Weaver ||
-                   type == ClassJobType.Alchemist ||
-                   type == ClassJobType.Culinarian;
+            return type is ClassJobType.Carpenter or
+                   ClassJobType.Blacksmith or
+                   ClassJobType.Armorer or
+                   ClassJobType.Goldsmith or
+                   ClassJobType.Leatherworker or
+                   ClassJobType.Weaver or
+                   ClassJobType.Alchemist or
+                   ClassJobType.Culinarian;
         }
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace LlamaLibrary.Extensions
         /// <returns><see langword="true"/> if class is a Disciple of the Land.</returns>
         public static bool IsDol(this ClassJobType type)
         {
-            return type == ClassJobType.Miner ||
-                   type == ClassJobType.Botanist ||
-                   type == ClassJobType.Fisher;
+            return type is ClassJobType.Miner or
+                   ClassJobType.Botanist or
+                   ClassJobType.Fisher;
         }
 
         public static ClassJobType ClassJob(this RetainerRole type)
@@ -57,17 +57,13 @@ namespace LlamaLibrary.Extensions
                 return Enums.ClassJobCategory.DOW;
             }
 
-            switch (type.ClassJob())
+            return type.ClassJob() switch
             {
-                case ClassJobType.Miner:
-                    return Enums.ClassJobCategory.MIN;
-                case ClassJobType.Fisher:
-                    return Enums.ClassJobCategory.FSH;
-                case ClassJobType.Botanist:
-                    return Enums.ClassJobCategory.BOT;
-                default:
-                    return Enums.ClassJobCategory.ANY;
-            }
+                ClassJobType.Miner => Enums.ClassJobCategory.MIN,
+                ClassJobType.Fisher => Enums.ClassJobCategory.FSH,
+                ClassJobType.Botanist => Enums.ClassJobCategory.BOT,
+                _ => Enums.ClassJobCategory.ANY,
+            };
         }
     }
 }

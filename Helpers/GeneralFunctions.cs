@@ -29,9 +29,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class GeneralFunctions
     {
-        private static readonly string Name = "GeneralFunctions";
-        private static readonly Color LogColor = Colors.Aquamarine;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new(nameof(GeneralFunctions), Colors.Aquamarine);
 
         public static readonly InventoryBagId[] MainBags = { InventoryBagId.Bag1, InventoryBagId.Bag2, InventoryBagId.Bag3, InventoryBagId.Bag4 };
 
@@ -486,38 +484,23 @@ namespace LlamaLibrary.Helpers
 
         private static List<ItemUiCategory> GetEquipUiCategory(ushort slotId)
         {
-            switch (slotId)
+            return slotId switch
             {
-                case 0:
-                    return ItemWeight.MainHands;
-                case 1:
-                    return ItemWeight.OffHands;
-                case 2:
-                    return new List<ItemUiCategory> { ItemUiCategory.Head };
-                case 3:
-                    return new List<ItemUiCategory> { ItemUiCategory.Body };
-                case 4:
-                    return new List<ItemUiCategory> { ItemUiCategory.Hands };
-                case 5:
-                    return new List<ItemUiCategory> { ItemUiCategory.Waist };
-                case 6:
-                    return new List<ItemUiCategory> { ItemUiCategory.Legs };
-                case 7:
-                    return new List<ItemUiCategory> { ItemUiCategory.Feet };
-                case 8:
-                    return new List<ItemUiCategory> { ItemUiCategory.Earrings };
-                case 9:
-                    return new List<ItemUiCategory> { ItemUiCategory.Necklace };
-                case 10:
-                    return new List<ItemUiCategory> { ItemUiCategory.Bracelets };
-                case 11:
-                case 12:
-                    return new List<ItemUiCategory> { ItemUiCategory.Ring };
-                case 13:
-                    return new List<ItemUiCategory> { ItemUiCategory.Soul_Crystal };
-                default:
-                    return null;
-            }
+                0 => ItemWeight.MainHands,
+                1 => ItemWeight.OffHands,
+                2 => new List<ItemUiCategory> { ItemUiCategory.Head },
+                3 => new List<ItemUiCategory> { ItemUiCategory.Body },
+                4 => new List<ItemUiCategory> { ItemUiCategory.Hands },
+                5 => new List<ItemUiCategory> { ItemUiCategory.Waist },
+                6 => new List<ItemUiCategory> { ItemUiCategory.Legs },
+                7 => new List<ItemUiCategory> { ItemUiCategory.Feet },
+                8 => new List<ItemUiCategory> { ItemUiCategory.Earrings },
+                9 => new List<ItemUiCategory> { ItemUiCategory.Necklace },
+                10 => new List<ItemUiCategory> { ItemUiCategory.Bracelets },
+                11 or 12 => new List<ItemUiCategory> { ItemUiCategory.Ring },
+                13 => new List<ItemUiCategory> { ItemUiCategory.Soul_Crystal },
+                _ => null,
+            };
         }
 
         public static IEnumerable<BagSlot> NonGearSetItems()
@@ -672,11 +655,12 @@ namespace LlamaLibrary.Helpers
                     Log.Information($"OPEN: AgentId {AgentId} Offset {repairVendor.ToInt64():X} Func {repairWindow.ToInt64():X}");
                     lock (Core.Memory.Executor.AssemblyLock)
                     {
-                        Core.Memory.CallInjected64<IntPtr>(repairWindow,
-                                                           ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
-                                                           0,
-                                                           0,
-                                                           repairVendor);
+                        Core.Memory.CallInjected64<IntPtr>(
+                            repairWindow,
+                            ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
+                            0,
+                            0,
+                            repairVendor);
                     }
 
                     await Coroutine.Wait(1500, () => Repair.IsOpen);
@@ -1028,7 +1012,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task OpenChests()
         {
-            LLogger lLogger = new LLogger("Treasure", Colors.Gold);
+            LLogger lLogger = new("Treasure", Colors.Gold);
 
             var chests = GetTreasureChests().ToArray();
 
@@ -1114,7 +1098,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task TurninSkySteelCrafting()
         {
-            Dictionary<uint, CraftingRelicTurnin> TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
+            var TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
             {
                 { 31101, new CraftingRelicTurnin(31101, 0, 1, 360, 30315) },
                 { 31109, new CraftingRelicTurnin(31109, 0, 0, 400, 30316) },
@@ -1173,7 +1157,7 @@ namespace LlamaLibrary.Helpers
                         //  Log.Information($"Pressing position {turnin.Position}");
                         CollectablesShop.Instance.SelectItem(turnin.Position);
                         await Coroutine.Sleep(1000);
-                        int i = 0;
+                        var i = 0;
                         while (CollectablesShop.Instance.TurninCount > 0)
                         {
                             // Log.Information($"Pressing trade {i}");

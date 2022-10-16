@@ -7,7 +7,7 @@ namespace LlamaLibrary.Extensions
     {
         public static MyItemRole MyItemRole(this Item item)
         {
-            return (MyItemRole)((byte)item.ItemRole);
+            return (MyItemRole)(byte)item.ItemRole;
         }
 
         public static string LocaleName(this Item item)

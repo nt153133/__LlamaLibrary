@@ -17,7 +17,7 @@ namespace LlamaLibrary.Helpers
     //TODO So many hardcoded values...
     public static class IshgardHandin
     {
-        private static readonly LLogger Log = new LLogger(typeof(IshgardHandin).Name, Colors.Aquamarine);
+        private static readonly LLogger Log = new(nameof(IshgardHandin), Colors.Aquamarine);
 
         private const int FirmamentZoneId = 886;
         private const float InteractMaxRange = 4f;
@@ -345,7 +345,6 @@ namespace LlamaLibrary.Helpers
 
                         return false;
                     }
-
                     else
                     {
                         Log.Warning($"Have {ScriptConditions.Helpers.GetSkybuilderScrips():N}/{SkybuildersScripMax:N} Skybuilders' Scrips and will overcap, but force-inspecting anyway.");
@@ -420,7 +419,7 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open || Talk.DialogOpen || Conversation.IsOpen);
                 if (Conversation.IsOpen)
                 {
-                    Conversation.SelectLine((uint) SelectStringLine);
+                    Conversation.SelectLine((uint)SelectStringLine);
                     await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open);
                 }
             }
@@ -439,7 +438,7 @@ namespace LlamaLibrary.Helpers
 
                 if (count > 0)
                 {
-                    ScripPurchase(itemId, (uint) count);
+                    ScripPurchase(itemId, (uint)count);
                 }
 
                 await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
@@ -496,7 +495,7 @@ namespace LlamaLibrary.Helpers
                 3uL,
                 0uL,
                 3uL,
-                (uint) index,
+                (uint)index,
                 3uL,
                 quantity,
                 0uL,
@@ -514,7 +513,7 @@ namespace LlamaLibrary.Helpers
         /// <returns>Quantity able to be purchased.</returns>
         private static uint MaxAffordableViaScrips(SpecialShopItem item)
         {
-            var currentScrips = (uint) ScriptConditions.Helpers.GetSkybuilderScrips();
+            var currentScrips = (uint)ScriptConditions.Helpers.GetSkybuilderScrips();
 
             return currentScrips / item.CurrencyCosts[0];
         }

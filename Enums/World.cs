@@ -1,6 +1,4 @@
-﻿using LlamaLibrary.Helpers;
-
-namespace LlamaLibrary.Enums
+﻿namespace LlamaLibrary.Enums
 {
     public enum World : ushort
     {
@@ -82,7 +80,6 @@ namespace LlamaLibrary.Enums
         Phantom = 401, //Chaos
         Alpha = 402, //Light
         Raiden = 403, //Light
-
     }
 
     public static class Extensions

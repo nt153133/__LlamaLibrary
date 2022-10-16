@@ -33,23 +33,21 @@ namespace LlamaLibrary.Directors
             internal static IntPtr IsActiveByte;
         }
 
-        private static IntPtr cachedPointer;
-
         public static bool SetPointer()
         {
             if (!IsActive)
             {
-                cachedPointer = IntPtr.Zero;
+                Pointer = IntPtr.Zero;
                 return false;
             }
 
-            cachedPointer = DirectorPointer;
-            return cachedPointer != IntPtr.Zero;
+            Pointer = DirectorPointer;
+            return Pointer != IntPtr.Zero;
         }
 
         public static IntPtr DirectorPointer => Core.Memory.Read<IntPtr>(Offsets.ActiveDirectorPtr);
 
-        public static IntPtr Pointer => cachedPointer;
+        public static IntPtr Pointer { get; private set; }
 
         public static int CurrentPayout => Core.Memory.NoCacheRead<int>(Pointer + Offsets.CurrentPayout);
 
@@ -86,7 +84,7 @@ namespace LlamaLibrary.Directors
             }
         }
 
-        public static string ToString()
+        public new static string ToString()
         {
             return $"CurrentPayout: {CurrentPayout}, DoubleDownPayout: {DoubleDownPayout}, SwingResult: {SwingResult}, CurrentProgress: {CurrentProgress}/{MaxProgress}, SwingsTaken: {SwingsTaken}/{MaxNumberOfSwings}, IsActive: {IsActive}, SecondsRemaining: {SecondsRemaining} ProgressOff: {Offsets.ProgressNeeded}";
         }

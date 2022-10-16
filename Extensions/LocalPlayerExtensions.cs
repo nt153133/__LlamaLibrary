@@ -38,8 +38,10 @@ namespace LlamaLibrary.Extensions
 
         public static bool IsWalking => Core.Memory.Read<byte>(Offsets.RunWalk) == 1;
 
-
-        public static Location Location(this LocalPlayer play) => new Location(WorldManager.ZoneId, Core.Me.Location);
+        public static Location Location(this LocalPlayer play)
+        {
+            return new Location(WorldManager.ZoneId, Core.Me.Location);
+        }
 
         /*internal static byte GatheringStatus(this LocalPlayer player)
         {
@@ -93,8 +95,9 @@ namespace LlamaLibrary.Extensions
             IntPtr rankRow;
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                rankRow = Core.Memory.CallInjected64<IntPtr>(Offsets.GCGetMaxSealsByRank,
-                                                             gcRank);
+                rankRow = Core.Memory.CallInjected64<IntPtr>(
+                    Offsets.GCGetMaxSealsByRank,
+                    gcRank);
             }
 
             return Core.Memory.Read<int>(rankRow);

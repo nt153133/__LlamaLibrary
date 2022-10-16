@@ -14,7 +14,7 @@ namespace LlamaLibrary.Helpers
 
         public static SharedFateProgress[] CachedProgress;
 
-        private static readonly TimeSpan CachePeriod = new TimeSpan(0, 1, 0);
+        private static readonly TimeSpan CachePeriod = new(0, 1, 0);
 
         static SharedFateHelper()
         {

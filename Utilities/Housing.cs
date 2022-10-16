@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
@@ -25,7 +24,7 @@ namespace LlamaLibrary.Utilities
     public class Housing
     {
         public static string NameStatic = "Housing Utility";
-        private static readonly LLogger Log = new LLogger(NameStatic, Colors.Pink);
+        private static readonly LLogger Log = new(NameStatic, Colors.Pink);
 
         public static async Task CheckHousing()
         {
@@ -122,16 +121,13 @@ namespace LlamaLibrary.Utilities
 
             if (ConditionParser.HasAetheryte(111))
             {
-               output.AddRange(await GetShiroganePlots());
+                output.AddRange(await GetShiroganePlots());
             }
-
 
             if (ConditionParser.IsQuestCompleted(69708))
             {
                 output.AddRange(await GetEmpyreumPlots());
             }
-
-
 
             if (!output.Any())
             {
@@ -176,6 +172,10 @@ namespace LlamaLibrary.Utilities
                 var title = "Large";
                 MessageBox.Show(message, title);
             }*/
+
+            if (medium || large)
+            {
+            }
         }
 
         public static async Task<List<string>> GetMistsPlots()
@@ -371,8 +371,9 @@ namespace LlamaLibrary.Utilities
                 {
                     target = new Vector3(-89.30112f, 18.80033f, -2.019181f);
                 }
-                else if (WorldManager.RawZoneId == 628)//kugane
+                else if (WorldManager.RawZoneId == 628)
                 {
+                    // Kugane
                     target = new Vector3(48.03579f, 4.549999f, -31.83851f);
                 }
 

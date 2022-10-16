@@ -17,10 +17,7 @@ namespace LlamaLibrary.JsonObjects
         {
         }
 
-        public static T Instance
-        {
-            get { return _instance ??= new T(); }
-        }
+        public static T Instance => _instance ??= new T();
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

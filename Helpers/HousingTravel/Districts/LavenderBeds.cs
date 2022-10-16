@@ -17,7 +17,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public override uint TownAetheryteId => 2;
         public override ushort ZoneId => (ushort)HousingZone.LavenderBeds;
 
-        private readonly List<HousingAetheryte> aetherytes = new List<HousingAetheryte>()
+        private readonly List<HousingAetheryte> aetherytes = new()
         {
             new HousingAetheryte(17, 2003400, "Dappled Stalls", new Vector3(38.91589f, 65.89468f, -113.3012f), false),
             new HousingAetheryte(18, 2003401, "Lavender Northwest", new Vector3(-87.2435f, 31.29388f, -54.32058f), false),
@@ -40,7 +40,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public override List<HousingAetheryte> Aetherytes => aetherytes;
         public override int RequiredQuest => 66748;
 
-        private readonly List<Npc> _transitionNpcIds = new List<Npc>() { new Npc(1005655, 340, new Vector3(10.72699f, 2.610901f, 208.0873f)), new Npc(1005655, 340, new Vector3(-912.108f, 2.607928f, -693.2632f)) };
+        private readonly List<Npc> _transitionNpcIds = new() { new Npc(1005655, 340, new Vector3(10.72699f, 2.610901f, 208.0873f)), new Npc(1005655, 340, new Vector3(-912.108f, 2.607928f, -693.2632f)) };
         public override List<Npc> TransitionNpcs => _transitionNpcIds;
 
         public override async Task<bool> WalkToResidential()

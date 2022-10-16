@@ -8,7 +8,6 @@ using Clio.Utilities;
 using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
-using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Extensions;
@@ -25,7 +24,7 @@ namespace LlamaLibrary.Retainers
     //TODO This whole shitshow needs to get moved to a Helper class but it is used in a lot of external things so it's going to be messy
     public static class HelperFunctions
     {
-        private static readonly LLogger Log = new LLogger("Helpers", Colors.Pink);
+        private static readonly LLogger Log = new("Helpers", Colors.Pink);
 
         public const InventoryBagId RetainerGilId = InventoryBagId.Retainer_Gil;
 
@@ -48,7 +47,7 @@ namespace LlamaLibrary.Retainers
             InventoryBagId.Retainer_Page7
         };
 
-        private static readonly List<(uint ZoneId, Vector3 Location)> SummoningBells = new List<(uint ZoneId, Vector3 Location)>
+        private static readonly List<(uint ZoneId, Vector3 Location)> SummoningBells = new()
         {
             (129, new Vector3(-223.743042f, 16.006714f, 41.306152f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
             (129, new Vector3(-266.376831f, 16.006714f, 41.275635f)), //Limsa Lominsa Lower Decks(Limsa Lominsa)
@@ -228,12 +227,12 @@ namespace LlamaLibrary.Retainers
             else
             {
                 var rand = new Random();
-                List<uint> zoneList = new List<uint>();
-                List<(uint bellzone, uint truezone)> zoneMap = new List<(uint bellzone, uint truezone)>();
+                var zoneList = new List<uint>();
+                var zoneMap = new List<(uint bellzone, uint truezone)>();
 
-                foreach (var bell in SummoningBells)
+                foreach (var (ZoneId, Location) in SummoningBells)
                 {
-                    uint zone = bell.ZoneId;
+                    var zone = ZoneId;
                     switch (zone)
                     {
                         case 131:
@@ -249,7 +248,7 @@ namespace LlamaLibrary.Retainers
 
                     if (DataManager.AetheryteCache.Values.Any(i => i.ZoneId == zone && i.IsAetheryte))
                     {
-                        zoneMap.Add((bell.ZoneId, zone));
+                        zoneMap.Add((ZoneId, zone));
                         zoneList.Add(zone);
                     }
                 }
@@ -268,7 +267,7 @@ namespace LlamaLibrary.Retainers
                 }
                 else
                 {
-                    Log.Warning($"Couldn't find bell at {bellLocation.Item2} {bellLocation.Item1}");
+                    Log.Warning($"Couldn't find bell at {bellLocation.Location} {bellLocation.ZoneId}");
                 }
 
                 return bell != null;
@@ -521,8 +520,9 @@ namespace LlamaLibrary.Retainers
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                return Core.Memory.CallInjected64<int>(Offsets.GetNumberOfRetainers,
-                                                       Offsets.RetainerData);
+                return Core.Memory.CallInjected64<int>(
+                    Offsets.GetNumberOfRetainers,
+                    Offsets.RetainerData);
             }
         }
 
@@ -541,12 +541,13 @@ namespace LlamaLibrary.Retainers
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<IntPtr>(Offsets.ExecuteCommand,
-                                                   (uint)Offsets.RetainerNetworkPacket,
-                                                   0U,
-                                                   0U,
-                                                   0U,
-                                                   0U);
+                Core.Memory.CallInjected64<IntPtr>(
+                    Offsets.ExecuteCommand,
+                    (uint)Offsets.RetainerNetworkPacket,
+                    0U,
+                    0U,
+                    0U,
+                    0U);
             }
         }
 

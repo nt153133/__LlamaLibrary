@@ -70,7 +70,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public async Task LoadBag(InventoryBagId bagId)
         {
-            bool result = LoadBagCall(bagId) == 1;
+            var result = LoadBagCall(bagId) == 1;
 
             if (result)
             {

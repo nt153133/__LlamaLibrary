@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ff14bot.Enums;
-using ff14bot.Managers;
 using LlamaLibrary.JsonObjects.Lisbeth;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -12,7 +10,7 @@ namespace LlamaLibrary.Extensions
 {
     public static class OtherExtensions
     {
-        private static readonly Random rng = new Random();
+        private static readonly Random Rng = new();
 
         public static string AddSpacesToEnum(this Enum toText)
         {
@@ -22,9 +20,9 @@ namespace LlamaLibrary.Extensions
                 return "";
             }
 
-            StringBuilder newText = new StringBuilder(text.Length * 2);
+            var newText = new StringBuilder(text.Length * 2);
             newText.Append(text[0]);
-            for (int i = 1; i < text.Length; i++)
+            for (var i = 1; i < text.Length; i++)
             {
                 if (char.IsUpper(text[i]) && text[i - 1] != ' ')
                 {
@@ -39,7 +37,7 @@ namespace LlamaLibrary.Extensions
 
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
         {
-            return source.Shuffle(rng);
+            return source.Shuffle(Rng);
         }
 
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random rng)

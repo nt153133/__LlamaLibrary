@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
-using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Managers;
 using ff14bot.Navigation;
@@ -21,11 +19,11 @@ namespace LlamaLibrary.Helpers.WorldTravel
 {
     public static class WorldTravel
     {
-        private const string _name = "WorldTravel";
-        private static readonly LLogger Log = new LLogger(_name, Colors.Chocolate);
-        private const TravelCity defaultStart = TravelCity.Limsa;
+        private static readonly LLogger Log = new(nameof(WorldTravel), Colors.Chocolate);
 
-        public static async Task OpenWorldTravelMenu(TravelCity travelCity = defaultStart)
+        private const TravelCity DefaultStart = TravelCity.Limsa;
+
+        public static async Task OpenWorldTravelMenu(TravelCity travelCity = DefaultStart)
         {
             GameObject AE;
 
@@ -60,7 +58,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
             */
 
             AE = await GetAE(travelCity);
-            if (AE == default(GameObject))
+            if (AE == default)
             {
                 switch (travelCity)
                 {
@@ -80,11 +78,10 @@ namespace LlamaLibrary.Helpers.WorldTravel
                 AE = await GetAE(travelCity);
             }
 
-            if (AE == default(GameObject))
+            if (AE == default)
             {
                 return;
             }
-
 
             if (!AE.IsWithinInteractRange)
             {
@@ -124,12 +121,12 @@ namespace LlamaLibrary.Helpers.WorldTravel
             return await Navigation.GetTo(worldLocation.Location);
         }
 
-        public static async Task<bool> GoToWorld(World world, TravelCity travelCity = defaultStart)
+        public static async Task<bool> GoToWorld(World world, TravelCity travelCity = DefaultStart)
         {
             return await GoToWorld((ushort)world, travelCity);
         }
 
-        public static async Task<bool> GoToWorld(ushort worldId, TravelCity travelCity = defaultStart)
+        public static async Task<bool> GoToWorld(ushort worldId, TravelCity travelCity = DefaultStart)
         {
             if (!WorldHelper.CheckDC((World)worldId))
             {
@@ -162,7 +159,6 @@ namespace LlamaLibrary.Helpers.WorldTravel
 
             if (travelCity == TravelCity.Cheapest)
             {
-
             }
 
             await OpenWorldTravelMenu(travelCity);
@@ -222,7 +218,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
             return WorldHelper.CurrentWorldId == worldId;
         }
 
-        public static async Task<bool> MakeSureHome(TravelCity travelCity = defaultStart)
+        public static async Task<bool> MakeSureHome(TravelCity travelCity = DefaultStart)
         {
             if (WorldHelper.CurrentWorldId == WorldHelper.HomeWorldId)
             {
@@ -232,30 +228,22 @@ namespace LlamaLibrary.Helpers.WorldTravel
             return await GoToWorld(WorldHelper.HomeWorldId, travelCity);
         }
 
-        public static async Task<GameObject> GetAE(TravelCity travelCity = defaultStart)
+        public static async Task<GameObject> GetAE(TravelCity travelCity = DefaultStart)
         {
             uint id = 0;
-            switch (travelCity)
+            id = travelCity switch
             {
-                case TravelCity.Limsa:
-                    id = 8;
-                    break;
-                case TravelCity.Uldah:
-                    id = 9;
-                    break;
-                case TravelCity.Gridania:
-                    id = 2;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(travelCity), travelCity, null);
-            }
-
+                TravelCity.Limsa => 8,
+                TravelCity.Uldah => 9,
+                TravelCity.Gridania => 2,
+                _ => throw new ArgumentOutOfRangeException(nameof(travelCity), travelCity, null),
+            };
             return await Navigation.GetToAE(id);
         }
 
         public static bool SelectWorldVisit()
         {
-            int test = 0;
+            var test = 0;
             foreach (var line in Conversation.GetConversationList)
             {
                 if (line.Contains(Translator.VisitAnotherWorldServer))

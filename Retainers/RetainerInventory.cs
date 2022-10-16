@@ -8,9 +8,9 @@ namespace LlamaLibrary.Retainers
     //TODO Chopping block, Tuck's botbase handles retainer inventories now
     public class RetainerInventory
     {
-        private static readonly LLogger Log = new LLogger(typeof(RetainerInventory).Name, Colors.White);
+        private static readonly LLogger Log = new(nameof(RetainerInventory), Colors.White);
 
-        private IDictionary<uint, BagSlot> dict = new Dictionary<uint, BagSlot>();
+        private readonly IDictionary<uint, BagSlot> dict = new Dictionary<uint, BagSlot>();
 
         public void AddItem(BagSlot slot)
         {

@@ -26,7 +26,7 @@ namespace LlamaLibrary.Helpers
     {
         public const uint HousingCompanyChest = 196627;
 
-        private static readonly LLogger Log = new LLogger("CompanyChestHelper", Colors.BurlyWood);
+        private static readonly LLogger Log = new(nameof(CompanyChestHelper), Colors.BurlyWood);
 
         public static readonly uint[] CrystalIds = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
 
@@ -92,24 +92,15 @@ namespace LlamaLibrary.Helpers
         public static bool CanDepositCrystals => FreeCompanyChest.Instance.CrystalsPermission is CompanyChestPermission.DepositOnly or CompanyChestPermission.FullAccess;
         public static bool CanWithdrawCrystals => FreeCompanyChest.Instance.CrystalsPermission is CompanyChestPermission.FullAccess;
 
-        public static IEnumerable<int> DepositBagIndexes
-        {
-            get { return FreeCompanyChest.Instance.ItemTabPermissions.Where(i => i.Value is CompanyChestPermission.DepositOnly or CompanyChestPermission.FullAccess).Select(i => i.Key); }
-        }
+        public static IEnumerable<int> DepositBagIndexes => FreeCompanyChest.Instance.ItemTabPermissions.Where(i => i.Value is CompanyChestPermission.DepositOnly or CompanyChestPermission.FullAccess).Select(i => i.Key);
 
         public static IEnumerable<InventoryBagId> DepositBagIds => DepositBagIndexes.Select(i => ChestTabBags[i]);
 
-        public static IEnumerable<int> WithdrawBagIndexes
-        {
-            get { return FreeCompanyChest.Instance.ItemTabPermissions.Where(i => i.Value is CompanyChestPermission.FullAccess).Select(i => i.Key); }
-        }
+        public static IEnumerable<int> WithdrawBagIndexes => FreeCompanyChest.Instance.ItemTabPermissions.Where(i => i.Value is CompanyChestPermission.FullAccess).Select(i => i.Key);
 
         public static IEnumerable<InventoryBagId> WithdrawBagIds => WithdrawBagIndexes.Select(i => ChestTabBags[i]);
 
-        public static IEnumerable<int> AllBagIndexes
-        {
-            get { return FreeCompanyChest.Instance.ItemTabPermissions.Where(i => i.Value is not CompanyChestPermission.NoAccess).Select(i => i.Key); }
-        }
+        public static IEnumerable<int> AllBagIndexes => FreeCompanyChest.Instance.ItemTabPermissions.Where(i => i.Value is not CompanyChestPermission.NoAccess).Select(i => i.Key);
 
         public static IEnumerable<InventoryBagId> AllBagIds => AllBagIndexes.Select(i => ChestTabBags[i]);
 
@@ -379,7 +370,7 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            uint currentGil = AgentFreeCompanyChest.Instance.GilBalance;
+            var currentGil = AgentFreeCompanyChest.Instance.GilBalance;
 
             FreeCompanyChest.Instance.SelectGilTab();
 
@@ -428,7 +419,7 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            uint currentGil = AgentFreeCompanyChest.Instance.GilBalance;
+            var currentGil = AgentFreeCompanyChest.Instance.GilBalance;
 
             FreeCompanyChest.Instance.SelectGilTab();
 
@@ -467,20 +458,12 @@ namespace LlamaLibrary.Helpers
 
         public static BagSlot GetNextOrStackSlot(BagSlot bagSlot, TransactionType transactionType)
         {
-            IEnumerable<InventoryBagId> bagList;
-
-            switch (transactionType)
+            var bagList = transactionType switch
             {
-                case TransactionType.Deposit:
-                    bagList = DepositBagIds;
-                    break;
-                case TransactionType.Withdrawal:
-                    bagList = Inventory.InventoryBagIds;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(transactionType), transactionType, null);
-            }
-
+                TransactionType.Deposit => DepositBagIds,
+                TransactionType.Withdrawal => Inventory.InventoryBagIds,
+                _ => throw new ArgumentOutOfRangeException(nameof(transactionType), transactionType, null),
+            };
             var bags = InventoryManager.GetBagsByInventoryBagId(bagList.ToArray()).SelectMany(x => x.FilledSlots);
             var eqx = new BagSlotComparer();
             var match = bags.Where(i => eqx.Equals(i, bagSlot));
@@ -498,7 +481,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> BagSlotMoveChest(BagSlot source, BagSlot dest, uint count = 1)
         {
-            Item itemToMove = source.Item;
+            var itemToMove = source.Item;
             var stack = source.Count > 1;
 
             if (stack && count == 1)

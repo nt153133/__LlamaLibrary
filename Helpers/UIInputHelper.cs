@@ -9,7 +9,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class UIInputHelper
     {
-        private static readonly LLogger Log = new LLogger("UIInputHelper", Colors.Pink);
+        private static readonly LLogger Log = new(nameof(UIInputHelper), Colors.Pink);
 
         private static class Offsets
         {
@@ -77,50 +77,42 @@ namespace LlamaLibrary.Helpers
 
         public static void StringCtorFromSequence(IntPtr ptr, string input, uint length)
         {
-            byte[] array = Encoding.Convert(Encoding.Unicode, Encoding.UTF8, Encoding.Unicode.GetBytes(input));
+            var array = Encoding.Convert(Encoding.Unicode, Encoding.UTF8, Encoding.Unicode.GetBytes(input));
 
-            using (GreyMagic.AllocatedMemory allocatedMemory =
-                   Core.Memory.CreateAllocatedMemory(array.Length + 30))
-            {
-                allocatedMemory.AllocateOfChunk("start", array.Length);
-                allocatedMemory.WriteBytes("start", array);
-                Core.Memory.CallInjected64<int>(Offsets.Utf8StringFromSequenceCtor, ptr, allocatedMemory.Address, length);
-            }
+            using var allocatedMemory =
+                   Core.Memory.CreateAllocatedMemory(array.Length + 30);
+            allocatedMemory.AllocateOfChunk("start", array.Length);
+            allocatedMemory.WriteBytes("start", array);
+            Core.Memory.CallInjected64<int>(Offsets.Utf8StringFromSequenceCtor, ptr, allocatedMemory.Address, length);
         }
 
         public static void SetString(IntPtr ptr, string input)
         {
-            byte[] array = Encoding.Convert(Encoding.Unicode, Encoding.UTF8, Encoding.Unicode.GetBytes(input));
+            var array = Encoding.Convert(Encoding.Unicode, Encoding.UTF8, Encoding.Unicode.GetBytes(input));
 
-            using (GreyMagic.AllocatedMemory allocatedMemory =
-                   Core.Memory.CreateAllocatedMemory(array.Length + 30))
-            {
-                allocatedMemory.AllocateOfChunk("start", array.Length);
-                allocatedMemory.WriteBytes("start", array);
+            using var allocatedMemory =
+                   Core.Memory.CreateAllocatedMemory(array.Length + 30);
+            allocatedMemory.AllocateOfChunk("start", array.Length);
+            allocatedMemory.WriteBytes("start", array);
 
-                Core.Memory.CallInjected64<int>(Offsets.Utf8SetString, ptr, allocatedMemory.Address);
-            }
+            Core.Memory.CallInjected64<int>(Offsets.Utf8SetString, ptr, allocatedMemory.Address);
         }
 
         public static void SendInput(string input)
         {
-            using (GreyMagic.AllocatedMemory seStringAlloc = Core.Memory.CreateAllocatedMemory(0x68))
-            {
-                StringCtor(seStringAlloc.Address);
+            using var seStringAlloc = Core.Memory.CreateAllocatedMemory(0x68);
+            StringCtor(seStringAlloc.Address);
 
-                SetString(seStringAlloc.Address, input);
+            SetString(seStringAlloc.Address, input);
 
-                Core.Memory.CallInjected64<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 0);
-            }
+            Core.Memory.CallInjected64<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 0);
         }
 
         public static void ClearInput()
         {
-            using (GreyMagic.AllocatedMemory seStringAlloc = Core.Memory.CreateAllocatedMemory(0x68))
-            {
-                StringCtorFromSequence(seStringAlloc.Address, "\r", 0xFFFFFFFF);
-                Core.Memory.CallInjected64<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 1);
-            }
+            using var seStringAlloc = Core.Memory.CreateAllocatedMemory(0x68);
+            StringCtorFromSequence(seStringAlloc.Address, "\r", 0xFFFFFFFF);
+            Core.Memory.CallInjected64<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 1);
         }
     }
 }

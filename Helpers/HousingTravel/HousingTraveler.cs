@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
 using ff14bot.Managers;
-using ff14bot.Objects;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers.Housing;
@@ -23,8 +21,7 @@ namespace LlamaLibrary.Helpers.HousingTravel
     {
         public static readonly ResidentialDistrict[] HousingZones;
 
-        private static readonly string Name = "HousingTraveler";
-        private static readonly LLogger Log = new LLogger(Name, Colors.Gold);
+        private static readonly LLogger Log = new(nameof(HousingTraveler), Colors.Gold);
 
         public static readonly IReadOnlyList<ushort> HousingZoneIds;
 
@@ -151,10 +148,9 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
                 var residence = GetResidentialDistrictByZone((ushort)location.HousingZone);
 
-
-                if (HousingHelper.AccessibleHouseLocations.Contains(location) && residence!=null && (residence.ClosestHousingAetheryte(Core.Me.Location).Key != residence.ClosestHousingAetheryte(recorded.PlacardLocation).Key))
+                if (HousingHelper.AccessibleHouseLocations.Contains(location) && residence != null && (residence.ClosestHousingAetheryte(Core.Me.Location).Key != residence.ClosestHousingAetheryte(recorded.PlacardLocation).Key))
                 {
-                    HouseLocationIndex place = HouseLocationIndex.FreeCompanyRoom;
+                    var place = HouseLocationIndex.FreeCompanyRoom;
                     for (var index = 0; index < HousingHelper.AccessibleHouseLocations.Length; index++)
                     {
                         var houseLocation = HousingHelper.AccessibleHouseLocations[index];
@@ -204,8 +200,6 @@ namespace LlamaLibrary.Helpers.HousingTravel
                 }
             }
 
-
-
             return await GetToResidential(location.World, location.HousingZone, recorded.EntranceLocation, location.Ward);
         }
 
@@ -216,7 +210,7 @@ namespace LlamaLibrary.Helpers.HousingTravel
                 return false;
             }
 
-            int ward = 1;
+            var ward = 1;
             if (HousingHelper.IsInHousingArea && WorldManager.ZoneId == npc.Location.ZoneId)
             {
                 ward = HousingHelper.HousingPositionInfo.Ward;
@@ -315,21 +309,15 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
         public static ResidentialDistrict? GetResidentialDistrictByZone(ushort zoneId)
         {
-            switch ((HousingZone)zoneId)
+            return (HousingZone)zoneId switch
             {
-                case HousingZone.Mist:
-                    return Mist.Instance;
-                case HousingZone.LavenderBeds:
-                    return LavenderBeds.Instance;
-                case HousingZone.Goblet:
-                    return TheGoblet.Instance;
-                case HousingZone.Shirogane:
-                    return Shirogan.Instance;
-                case HousingZone.Empyreum:
-                    return Empyreum.Instance;
-                default:
-                    return null;
-            }
+                HousingZone.Mist => Mist.Instance,
+                HousingZone.LavenderBeds => LavenderBeds.Instance,
+                HousingZone.Goblet => TheGoblet.Instance,
+                HousingZone.Shirogane => Shirogan.Instance,
+                HousingZone.Empyreum => Empyreum.Instance,
+                _ => null,
+            };
         }
 
         public static async Task<bool> GetToResidential(World world, HousingZone zone, Vector3 entranceLocation, int ward)

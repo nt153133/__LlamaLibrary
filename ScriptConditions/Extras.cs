@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Objects;
-using LlamaLibrary.Helpers;
-using ff14bot;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Helpers;
 
 namespace LlamaLibrary.ScriptConditions
 {
@@ -39,7 +39,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int SphereCompletion(int itemID)
         {
-            return (int) InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint) itemID).SpiritBond;
+            return (int)InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint)itemID).SpiritBond;
         }
 
         public static int HighestILvl(ClassJobType job)
@@ -50,12 +50,12 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsFateActive(int fateID)
         {
-            return FateManager.ActiveFates.Any(i => i.Id == (uint) fateID);
+            return FateManager.ActiveFates.Any(i => i.Id == (uint)fateID);
         }
 
         public static bool HasLearnedMount(int mountID)
         {
-            return ActionManager.AvailableMounts.Any(i => i.Id == ((uint) mountID));
+            return ActionManager.AvailableMounts.Any(i => i.Id == ((uint)mountID));
         }
 
         public static int BeastTribeRank(int tribeID)
@@ -72,18 +72,15 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool LisbethPresent()
         {
-            if (isLisbethPresentCache is null)
-            {
-                isLisbethPresentCache = BotManager.Bots
+            isLisbethPresentCache ??= BotManager.Bots
                     .FirstOrDefault(c => c.Name == "Lisbeth") != null;
-            }
 
             return isLisbethPresentCache.Value;
         }
 
         public static bool IsTargetableNPC(int npcID)
         {
-            return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint) npcID && i.IsVisible && i.IsTargetable);
+            return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint)npcID && i.IsVisible && i.IsTargetable);
         }
 
         public static bool AchievementComplete(int achID)
@@ -98,13 +95,13 @@ namespace LlamaLibrary.ScriptConditions
                 return true;
             }
 
-            var instanceDirector = (ff14bot.Directors.InstanceContentDirector) DirectorManager.ActiveDirector;
+            var instanceDirector = (ff14bot.Directors.InstanceContentDirector)DirectorManager.ActiveDirector;
             return instanceDirector.InstanceEnded;
         }
 
         public static int SharedFateRank(int zoneID)
         {
-            return SharedFateHelper.CachedProgress.FirstOrDefault(i => i.Zone == (uint) zoneID).Rank;
+            return SharedFateHelper.CachedProgress.FirstOrDefault(i => i.Zone == (uint)zoneID).Rank;
         }
 
         public static async Task UpdateSharedFates()
@@ -119,176 +116,102 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int CurrentGCRank()
         {
-            return (int) Core.Me.GCRank();
+            return (int)Core.Me.GCRank();
         }
 
         public static bool IsFendingClass()
         {
-            switch (Core.Me.CurrentJob)
+            return Core.Me.CurrentJob switch
             {
-                case ClassJobType.Marauder:
-                case ClassJobType.Warrior:
-                case ClassJobType.Gladiator:
-                case ClassJobType.Paladin:
-                case ClassJobType.Gunbreaker:
-                case ClassJobType.DarkKnight:
-                    return true;
-                default:
-                    return false;
-            }
+                ClassJobType.Marauder or ClassJobType.Warrior or ClassJobType.Gladiator or ClassJobType.Paladin or ClassJobType.Gunbreaker or ClassJobType.DarkKnight => true,
+                _ => false,
+            };
         }
 
         public static bool IsCastingClass()
         {
-            switch (Core.Me.CurrentJob)
+            return Core.Me.CurrentJob switch
             {
-                case ClassJobType.Arcanist:
-                case ClassJobType.Summoner:
-                case ClassJobType.Thaumaturge:
-                case ClassJobType.BlackMage:
-                case ClassJobType.RedMage:
-                case ClassJobType.BlueMage:
-                    return true;
-                default:
-                    return false;
-            }
+                ClassJobType.Arcanist or ClassJobType.Summoner or ClassJobType.Thaumaturge or ClassJobType.BlackMage or ClassJobType.RedMage or ClassJobType.BlueMage => true,
+                _ => false,
+            };
         }
 
         public static bool IsHealingClass()
         {
-            switch (Core.Me.CurrentJob)
+            return Core.Me.CurrentJob switch
             {
-                case ClassJobType.Scholar:
-                case ClassJobType.Conjurer:
-                case ClassJobType.WhiteMage:
-                case ClassJobType.Astrologian:
-                case ClassJobType.Sage:
-                    return true;
-                default:
-                    return false;
-            }
+                ClassJobType.Scholar or ClassJobType.Conjurer or ClassJobType.WhiteMage or ClassJobType.Astrologian or ClassJobType.Sage => true,
+                _ => false,
+            };
         }
 
         public static bool IsAimingClass()
         {
-            switch (Core.Me.CurrentJob)
+            return Core.Me.CurrentJob switch
             {
-                case ClassJobType.Archer:
-                case ClassJobType.Bard:
-                case ClassJobType.Dancer:
-                case ClassJobType.Machinist:
-                    return true;
-                default:
-                    return false;
-            }
+                ClassJobType.Archer or ClassJobType.Bard or ClassJobType.Dancer or ClassJobType.Machinist => true,
+                _ => false,
+            };
         }
 
         public static bool IsMaimingClass()
         {
-            switch (Core.Me.CurrentJob)
+            return Core.Me.CurrentJob switch
             {
-                case ClassJobType.Lancer:
-                case ClassJobType.Dragoon:
-                case ClassJobType.Reaper:
-                    return true;
-                default:
-                    return false;
-            }
+                ClassJobType.Lancer or ClassJobType.Dragoon or ClassJobType.Reaper => true,
+                _ => false,
+            };
         }
 
         public static bool IsStrikingClass()
         {
-            switch (Core.Me.CurrentJob)
+            return Core.Me.CurrentJob switch
             {
-                case ClassJobType.Pugilist:
-                case ClassJobType.Monk:
-                case ClassJobType.Samurai:
-                    return true;
-                default:
-                    return false;
-            }
+                ClassJobType.Pugilist or ClassJobType.Monk or ClassJobType.Samurai => true,
+                _ => false,
+            };
         }
 
         public static bool IsScoutingClass()
         {
-            switch (Core.Me.CurrentJob)
+            return Core.Me.CurrentJob switch
             {
-                case ClassJobType.Rogue:
-                case ClassJobType.Ninja:
-                    return true;
-                default:
-                    return false;
-            }
+                ClassJobType.Rogue or ClassJobType.Ninja => true,
+                _ => false,
+            };
         }
 
         public static bool IsSlayingClass()
         {
-            switch (Core.Me.CurrentJob)
+            return Core.Me.CurrentJob switch
             {
-                case ClassJobType.Pugilist:
-                case ClassJobType.Monk:
-                case ClassJobType.Lancer:
-                case ClassJobType.Dragoon:
-                case ClassJobType.Samurai:
-                case ClassJobType.Reaper:
-                    return true;
-                default:
-                    return false;
-            }
+                ClassJobType.Pugilist or ClassJobType.Monk or ClassJobType.Lancer or ClassJobType.Dragoon or ClassJobType.Samurai or ClassJobType.Reaper => true,
+                _ => false,
+            };
         }
 
         public static bool IsDiscipleofWarClass()
         {
-            switch (Core.Me.CurrentJob)
+            return Core.Me.CurrentJob switch
             {
-                case ClassJobType.Pugilist:
-                case ClassJobType.Monk:
-                case ClassJobType.Lancer:
-                case ClassJobType.Dragoon:
-                case ClassJobType.Samurai:
-                case ClassJobType.Rogue:
-                case ClassJobType.Ninja:
-                case ClassJobType.Archer:
-                case ClassJobType.Bard:
-                case ClassJobType.Dancer:
-                case ClassJobType.Machinist:
-                case ClassJobType.Marauder:
-                case ClassJobType.Warrior:
-                case ClassJobType.Gladiator:
-                case ClassJobType.Paladin:
-                case ClassJobType.Gunbreaker:
-                case ClassJobType.DarkKnight:
-                case ClassJobType.Reaper:
-                    return true;
-                default:
-                    return false;
-            }
+                ClassJobType.Pugilist or ClassJobType.Monk or ClassJobType.Lancer or ClassJobType.Dragoon or ClassJobType.Samurai or ClassJobType.Rogue or ClassJobType.Ninja or ClassJobType.Archer or ClassJobType.Bard or ClassJobType.Dancer or ClassJobType.Machinist or ClassJobType.Marauder or ClassJobType.Warrior or ClassJobType.Gladiator or ClassJobType.Paladin or ClassJobType.Gunbreaker or ClassJobType.DarkKnight or ClassJobType.Reaper => true,
+                _ => false,
+            };
         }
 
         public static bool IsDiscipleofMagicClass()
         {
-            switch (Core.Me.CurrentJob)
+            return Core.Me.CurrentJob switch
             {
-                case ClassJobType.Arcanist:
-                case ClassJobType.Summoner:
-                case ClassJobType.Thaumaturge:
-                case ClassJobType.BlackMage:
-                case ClassJobType.RedMage:
-                case ClassJobType.BlueMage:
-                case ClassJobType.Scholar:
-                case ClassJobType.Conjurer:
-                case ClassJobType.WhiteMage:
-                case ClassJobType.Astrologian:
-                case ClassJobType.Sage:
-                    return true;
-                default:
-                    return false;
-            }
+                ClassJobType.Arcanist or ClassJobType.Summoner or ClassJobType.Thaumaturge or ClassJobType.BlackMage or ClassJobType.RedMage or ClassJobType.BlueMage or ClassJobType.Scholar or ClassJobType.Conjurer or ClassJobType.WhiteMage or ClassJobType.Astrologian or ClassJobType.Sage => true,
+                _ => false,
+            };
         }
 
         public static bool IsNearShortcut(int npcID)
         {
-            var npc = GameObjectManager.GetObjectByNPCId((uint) npcID);
+            var npc = GameObjectManager.GetObjectByNPCId((uint)npcID);
             if (npc != null)
             {
                 return npc.Distance2D(Core.Me.Location) <= 30 && npc.IsTargetable;
@@ -304,7 +227,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool HasAtLeastOneItem(params int[] list)
         {
-            return InventoryManager.FilledSlots.Any(i => list.Contains((int) i.RawItemId));
+            return InventoryManager.FilledSlots.Any(i => list.Contains((int)i.RawItemId));
         }
 
         public static int CurrentMount()
@@ -312,7 +235,7 @@ namespace LlamaLibrary.ScriptConditions
             var patternFinder = new GreyMagic.PatternFinder(Core.Memory);
             var offset = patternFinder.Find("66 83 B9 ? ? ? ? ? 48 8B DA Add 3 Read32").ToInt32();
 
-            return (int) Core.Memory.Read<uint>(Core.Me.Pointer + offset);
+            return (int)Core.Memory.Read<uint>(Core.Me.Pointer + offset);
         }
     }
 }

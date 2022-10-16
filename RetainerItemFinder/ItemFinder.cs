@@ -15,7 +15,7 @@ namespace LlamaLibrary.RetainerItemFinder
 {
     public static class ItemFinder
     {
-        private static readonly LLogger Log = new LLogger(typeof(ItemFinder).Name, Colors.Pink);
+        private static readonly LLogger Log = new(nameof(ItemFinder), Colors.Pink);
 
         internal static IntPtr Pointer;
 
@@ -23,9 +23,9 @@ namespace LlamaLibrary.RetainerItemFinder
 
         internal static IntPtr ParentStart => Core.Memory.Read<IntPtr>(Pointer + Offsets.TreeStartOff);
 
-        private static readonly List<IntPtr> VisitedNodes = new List<IntPtr>();
+        private static readonly List<IntPtr> VisitedNodes = new();
 
-        private static readonly Dictionary<ulong, StoredRetainerInventory> RetainerInventoryPointers = new Dictionary<ulong, StoredRetainerInventory>();
+        private static readonly Dictionary<ulong, StoredRetainerInventory> RetainerInventoryPointers = new();
 
         private static bool firstTimeSaddleRead = true;
 

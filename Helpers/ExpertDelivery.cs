@@ -17,7 +17,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class ExpertDelivery
     {
-        private static readonly LLogger Log = new LLogger("ExpertDelivery", Colors.DarkKhaki);
+        private static readonly LLogger Log = new(nameof(ExpertDelivery), Colors.DarkKhaki);
 
         public static async Task<DeliveryStatus> DeliverItems(uint itemId)
         {
@@ -93,7 +93,7 @@ namespace LlamaLibrary.Helpers
             }
 
             GCSupplyItem supplyItem = default;
-            int itemIndex = -1;
+            var itemIndex = -1;
 
             //Search for item in the list
             for (var index = 0; index < items.Length; index++)

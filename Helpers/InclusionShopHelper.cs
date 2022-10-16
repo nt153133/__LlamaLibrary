@@ -14,7 +14,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class InclusionShopHelper
     {
-        private static readonly LLogger Log = new LLogger("InclusionShopHelper", Colors.Moccasin);
+        private static readonly LLogger Log = new(nameof(InclusionShopHelper), Colors.Moccasin);
 
         public static async Task<int> BuyItem(uint itemId, int qty)
         {
@@ -96,16 +96,18 @@ namespace LlamaLibrary.Helpers
 
             await Coroutine.Wait(10000, () => !ShopExchangeItemDialog.Instance.IsOpen);
 
-            await Coroutine.Wait(10000,
-                                 () => (currentAmt != InventoryManager.FilledSlots.Where(i => i.RawItemId == shopItem.ItemId)
+            await Coroutine.Wait(
+                10000,
+                () => (currentAmt != InventoryManager.FilledSlots.Where(i => i.RawItemId == shopItem.ItemId)
                                      .Sum(i => i.Count)) || SelectYesno.IsOpen);
 
             if (SelectYesno.IsOpen)
             {
                 SelectYesno.Yes();
                 await Coroutine.Wait(2000, () => !SelectYesno.IsOpen);
-                await Coroutine.Wait(10000,
-                                     () => currentAmt != InventoryManager.FilledSlots.Where(i => i.RawItemId == shopItem.ItemId)
+                await Coroutine.Wait(
+                    10000,
+                    () => currentAmt != InventoryManager.FilledSlots.Where(i => i.RawItemId == shopItem.ItemId)
                                          .Sum(i => i.Count));
             }
 

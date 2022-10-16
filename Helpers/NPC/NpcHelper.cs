@@ -57,20 +57,18 @@ namespace LlamaLibrary.Helpers.NPC
         {
             if (EventObjectNames == null)
             {
-                using (var Database = new Database("db.s3db"))
+                using var Database = new Database("db.s3db");
+                var results = Database.AllAsDictionary<EventObjectResult>();
+                EventObjectNames = new Dictionary<uint, string>(results.Count);
+                foreach (var objectResult in results)
                 {
-                    var results = Database.AllAsDictionary<EventObjectResult>();
-                    EventObjectNames = new Dictionary<uint, string>(results.Count);
-                    foreach (var objectResult in results)
+                    if (objectResult.Value.CurrentLocaleName != "")
                     {
-                        if (objectResult.Value.CurrentLocaleName != "")
-                        {
-                            EventObjectNames.Add(objectResult.Key, objectResult.Value.CurrentLocaleName);
-                        }
+                        EventObjectNames.Add(objectResult.Key, objectResult.Value.CurrentLocaleName);
                     }
-
-                    results.Clear();
                 }
+
+                results.Clear();
             }
 
             if (npcId > 2_000_000)

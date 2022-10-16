@@ -14,9 +14,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class InventoryHelpers
     {
-        private static readonly string Name = "InventoryHelpers";
-        private static readonly Color LogColor = Colors.White;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new(nameof(InventoryHelpers), Colors.White);
 
         public static bool IsFCItemBusy => Core.Memory.NoCacheRead<bool>(Offsets.g_InventoryManager + Offsets.InventoryManagerFCTransfering);
         public static async Task LowerQualityAndCombine(int itemId)
@@ -58,14 +56,14 @@ namespace LlamaLibrary.Helpers
             foreach (var slotGrouping in groupedSlots)
             {
                 // Skip if item is a collectable.
-                if (slotGrouping.Key > 500_000 && slotGrouping.Key < 1_000_000)
+                if (slotGrouping.Key is > 500_000 and < 1_000_000)
                 {
                     continue;
                 }
 
-                bool isHq = slotGrouping.Key > 1_000_000;
-                uint itemId = isHq ? slotGrouping.Key - 1_000_000 : slotGrouping.Key;
-                string itemName = DataManager.GetItem(itemId)?.CurrentLocaleName ?? $"UNKNOWN(ID: {itemId})";
+                var isHq = slotGrouping.Key > 1_000_000;
+                var itemId = isHq ? slotGrouping.Key - 1_000_000 : slotGrouping.Key;
+                var itemName = DataManager.GetItem(itemId)?.CurrentLocaleName ?? $"UNKNOWN(ID: {itemId})";
                 Log.Information($"Combining stacks of {itemName}{(isHq ? " (HQ)" : string.Empty)}");
 
                 var bagSlotArray = slotGrouping.OrderByDescending(x => x.Count).ToArray();

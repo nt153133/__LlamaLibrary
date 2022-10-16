@@ -14,7 +14,6 @@ using LlamaLibrary.Retainers;
 
 namespace LlamaLibrary.RemoteWindows
 {
-
     public class RetainerHistory : RemoteWindow<RetainerHistory>
     {
         private static readonly LLogger Log = new(nameof(RetainerHistory), Colors.OrangeRed);
@@ -147,12 +146,12 @@ namespace LlamaLibrary.RemoteWindows
         {
             get
             {
-                int count = HistoryCount;
+                var count = HistoryCount;
                 var result = new List<RetainerSale>(count);
                 var numbers = HistoryNumbers;
                 var strings = HistoryStrings;
 
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
                     result.Add(new RetainerSale(numbers[i], strings[i]));
                 }

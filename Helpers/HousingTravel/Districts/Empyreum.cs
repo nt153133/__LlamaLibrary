@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot.Behavior;
-using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.Helpers.NPC;
@@ -17,7 +16,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public override uint TownAetheryteId => 70;
         public override ushort ZoneId => (ushort)HousingZone.Empyreum;
 
-        private readonly List<HousingAetheryte> aetherytes = new List<HousingAetheryte>()
+        private readonly List<HousingAetheryte> aetherytes = new()
         {
             new HousingAetheryte(65, 2011677, "Highmorn's Horizon", new Vector3(49.22337f, -16f, 173.9398f), false),
             new HousingAetheryte(66, 2011678, "Empyreum Southeast", new Vector3(149.2002f, -50f, 94.79701f), false),
@@ -44,10 +43,10 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
         public override bool OffMesh => true;
 
-        private readonly List<Npc> _transitionNpcIds = new List<Npc>() { new Npc(1035622, 979, new Vector3(13.71777f, -15.2f, 182.9403f)), new Npc(1035622, 979, new Vector3(-887.1443f, -15.2f, -690.3029f)) };
+        private readonly List<Npc> _transitionNpcIds = new() { new Npc(1035622, 979, new Vector3(13.71777f, -15.2f, 182.9403f)), new Npc(1035622, 979, new Vector3(-887.1443f, -15.2f, -690.3029f)) };
         public override List<Npc> TransitionNpcs => _transitionNpcIds;
 
-        private readonly Npc _gateKeeperNpc = new Npc(1031682, 418, new Vector3(152.9716f, -20f, 63.76746f)); //Thomelin (Gatekeep)
+        private readonly Npc _gateKeeperNpc = new(1031682, 418, new Vector3(152.9716f, -20f, 63.76746f)); //Thomelin (Gatekeep)
 
         public override async Task<bool> WalkToResidential()
         {
@@ -58,7 +57,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
             var unit = _gateKeeperNpc.GameObject;
 
-            if (unit == default(GameObject))
+            if (unit == default)
             {
                 return false;
             }
@@ -86,7 +85,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 await Coroutine.Wait(5000, () => Conversation.IsOpen);
             }
 
-            int test = 0;
+            var test = 0;
             foreach (var line in Conversation.GetConversationList)
             {
                 if (line.Contains(Translator.EnterEmpyreum))
@@ -109,7 +108,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 return false;
             }
 
-            await Coroutine.Wait(-1, () => (!CommonBehaviors.IsLoading));
+            await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
 
             return true;
         }

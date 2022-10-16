@@ -20,7 +20,7 @@ namespace LlamaLibrary.Retainers
 {
     public static class RetainerRoutine
     {
-        private static readonly LLogger Log = new LLogger(typeof(RetainerRoutine).Name, Colors.DodgerBlue);
+        private static readonly LLogger Log = new(nameof(RetainerRoutine), Colors.DodgerBlue);
 
         private static readonly InventoryBagId[] SaddlebagIds =
         {

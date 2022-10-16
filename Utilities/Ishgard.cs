@@ -14,46 +14,45 @@ namespace LlamaLibrary.Utilities
 {
     public static class Ishgard
     {
-        private static readonly string _name = "Ishgard Handin";
-        private static readonly LLogger Log = new LLogger(_name, Colors.Aquamarine);
+        private static readonly LLogger Log = new("Ishgard Handin", Colors.Aquamarine);
 
-        private static bool DiscardCollectable = true;
-        private static uint[] items20Old = { 28725, 29792, 28726, 29793, 28727, 29794, 28728, 29795, 28729, 29796, 28730, 29797, 28731, 29798, 28732, 29799 };
-        private static uint[] items40Old = { 28733, 29800, 28734, 29801, 28735, 29802, 28736, 29803, 28737, 29804, 28738, 29805, 28739, 29806, 28740, 29807 };
-        private static uint[] items150Old = { 28741, 29808, 28742, 29809, 28743, 29810, 28744, 29811, 28745, 29812, 28746, 29813, 28747, 29814, 28748, 29815 };
-        private static uint[] items290Old = { 28749, 29816, 28750, 29817, 28751, 29818, 28752, 29819, 28753, 29820, 28754, 29821, 28755, 29822, 28756, 29823 };
-        private static uint[] items430Old = { 28757, 29824, 28758, 29825, 28759, 29826, 28760, 29827, 28761, 29828, 28762, 29829, 28763, 29830, 28764, 29831 };
-        private static uint[] items481Old = { 29832, 29833, 29834, 29835, 29836, 29837, 29838, 29839 };
-        private static uint[] items511Old = { 31224, 31225, 31226, 31227, 31228, 31229, 31230, 31231 };
+        private static readonly bool DiscardCollectable = true;
+        private static readonly uint[] Items20Old = { 28725, 29792, 28726, 29793, 28727, 29794, 28728, 29795, 28729, 29796, 28730, 29797, 28731, 29798, 28732, 29799 };
+        private static readonly uint[] Items40Old = { 28733, 29800, 28734, 29801, 28735, 29802, 28736, 29803, 28737, 29804, 28738, 29805, 28739, 29806, 28740, 29807 };
+        private static readonly uint[] Items150Old = { 28741, 29808, 28742, 29809, 28743, 29810, 28744, 29811, 28745, 29812, 28746, 29813, 28747, 29814, 28748, 29815 };
+        private static readonly uint[] Items290Old = { 28749, 29816, 28750, 29817, 28751, 29818, 28752, 29819, 28753, 29820, 28754, 29821, 28755, 29822, 28756, 29823 };
+        private static readonly uint[] Items430Old = { 28757, 29824, 28758, 29825, 28759, 29826, 28760, 29827, 28761, 29828, 28762, 29829, 28763, 29830, 28764, 29831 };
+        private static readonly uint[] Items481Old = { 29832, 29833, 29834, 29835, 29836, 29837, 29838, 29839 };
+        private static readonly uint[] Items511Old = { 31224, 31225, 31226, 31227, 31228, 31229, 31230, 31231 };
 
-        private static uint[] items20 =
+        private static readonly uint[] Items20 =
             {
                 28725, 29792, 31184, 31913, 28726, 29793, 31185, 31914, 28727, 29794, 31186, 31915, 28728, 29795, 31187, 31916, 28729, 29796, 31188, 31917, 28730, 29797, 31189, 31918, 28731, 29798, 31190, 31919, 28732, 29799, 31191, 31920
             };
 
-        private static uint[] items40 =
+        private static readonly uint[] Items40 =
             {
                 28733, 29800, 31192, 31921, 28734, 29801, 31193, 31922, 28735, 29802, 31194, 31923, 28736, 29803, 31195, 31924, 28737, 29804, 31196, 31925, 28738, 29805, 31197, 31926, 28739, 29806, 31198, 31927, 28740, 29807, 31199, 31928
             };
 
-        private static uint[] items150 =
+        private static readonly uint[] Items150 =
             {
                 28741, 29808, 31200, 31929, 28742, 29809, 31201, 31930, 28743, 29810, 31202, 31931, 28744, 29811, 31203, 31932, 28745, 29812, 31204, 31933, 28746, 29813, 31205, 31934, 28747, 29814, 31206, 31935, 28748, 29815, 31207, 31936
             };
 
-        private static uint[] items290 =
+        private static readonly uint[] Items290 =
             {
                 28749, 29816, 31208, 31937, 28750, 29817, 31209, 31938, 28751, 29818, 31210, 31939, 28752, 29819, 31211, 31940, 28753, 29820, 31212, 31941, 28754, 29821, 31213, 31942, 28755, 29822, 31214, 31943, 28756, 29823, 31215, 31944
             };
 
-        private static uint[] items430 =
+        private static readonly uint[] Items430 =
             {
                 28757, 29824, 31216, 31945, 28758, 29825, 31217, 31946, 28759, 29826, 31218, 31947, 28760, 29827, 31219, 31948, 28761, 29828, 31220, 31949, 28762, 29829, 31221, 31950, 28763, 29830, 31222, 31951, 28764, 29831, 31223, 31952
             };
 
-        private static uint[] items481 = { 29832, 29833, 29834, 29835, 29836, 29837, 29838, 29839 };
-        private static uint[] items511 = { 31224, 31225, 31226, 31227, 31228, 31229, 31230, 31231 };
-        private static uint[] items513 = { 31953, 31954, 31955, 31956, 31957, 31958, 31959, 31960 };
+        private static readonly uint[] Items481 = { 29832, 29833, 29834, 29835, 29836, 29837, 29838, 29839 };
+        private static readonly uint[] Items511 = { 31224, 31225, 31226, 31227, 31228, 31229, 31230, 31231 };
+        private static readonly uint[] Items513 = { 31953, 31954, 31955, 31956, 31957, 31958, 31959, 31960 };
 
         public static async Task<bool> Handin()
         {
@@ -106,56 +105,56 @@ namespace LlamaLibrary.Utilities
 
             if (DiscardCollectable)
             {
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items20.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 50))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => Items20.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 50))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items40.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 90))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => Items40.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 90))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items150.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 300))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => Items150.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 300))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items290.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 480))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => Items290.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 480))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items430.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 500))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => Items430.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 500))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items481.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 850))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => Items481.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 850))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items511.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 1100))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => Items511.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 1100))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");
                     await Coroutine.Sleep(3000);
                 }
 
-                foreach (var item in InventoryManager.FilledSlots.Where(i => items513.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 1100))
+                foreach (var item in InventoryManager.FilledSlots.Where(i => Items513.Contains(i.RawItemId) && i.IsCollectable && i.Collectability < 1100))
                 {
                     item.Discard();
                     Log.Information($"Discarding {item.Name}");

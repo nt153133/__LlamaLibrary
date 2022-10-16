@@ -12,13 +12,10 @@ namespace LlamaLibrary.Helpers
 {
     public static class RequestHelper
     {
-        private static readonly string Name = "RequestHelper";
-        private static readonly Color LogColor = Colors.MediumPurple;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new(nameof(RequestHelper), Colors.MediumPurple);
 
         internal static class Offsets
         {
-
             [Offset("48 8D 0D ? ? ? ? E8 ? ? ? ? 0F B6 F0 EB ? 44 0F BF CE Add 3 TraceRelative")]
             [OffsetCN("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 0F B6 D8 EB ? Add 3 TraceRelative")]//changes in 6.2
             internal static IntPtr RequestInfo;
@@ -33,7 +30,7 @@ namespace LlamaLibrary.Helpers
         public static ushort ItemCount => Core.Memory.Read<ushort>(Offsets.RequestInfo + Offsets.ItemCount);
         public static ushort ItemCount2 => Core.Memory.Read<ushort>(Offsets.RequestInfo + Offsets.ItemCount2);
 
-        public static IntPtr ItemListStart => new IntPtr((long)(Offsets.RequestInfo + Offsets.ItemListStart));
+        public static IntPtr ItemListStart => new((long)(Offsets.RequestInfo + Offsets.ItemListStart));
 
         public static RequestItem[] GetItems()
         {

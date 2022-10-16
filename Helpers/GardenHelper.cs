@@ -23,9 +23,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class GardenHelper
     {
-        private static readonly string Name = "TheGardener";
-        private static readonly Color LogColor = Colors.LawnGreen;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new("TheGardener", Colors.LawnGreen);
 
         private static class Offsets
         {

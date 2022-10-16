@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Clio.Utilities;
-using ff14bot;
 using ff14bot.Managers;
 using ff14bot.Objects;
 using Newtonsoft.Json;
@@ -53,7 +52,7 @@ namespace LlamaLibrary.Helpers.NPC
 
         public bool Equals(Npc other)
         {
-            if (ReferenceEquals(null, other))
+            if (other is null)
             {
                 return false;
             }
@@ -68,7 +67,7 @@ namespace LlamaLibrary.Helpers.NPC
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }
@@ -78,19 +77,19 @@ namespace LlamaLibrary.Helpers.NPC
                 return true;
             }
 
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
 
-            return Equals((Npc) obj);
+            return Equals((Npc)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((int) NpcId * 397) ^ (Location != null ? Location.GetHashCode() : 0);
+                return ((int)NpcId * 397) ^ (Location != null ? Location.GetHashCode() : 0);
             }
         }
     }

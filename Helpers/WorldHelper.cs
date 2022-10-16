@@ -31,7 +31,7 @@ namespace LlamaLibrary.Helpers
             internal static IntPtr GetPlaceName;
         }
 
-        private static IntPtr DcOffsetLocation;
+        private static readonly IntPtr DcOffsetLocation;
 
         static WorldHelper()
         {
@@ -49,7 +49,7 @@ namespace LlamaLibrary.Helpers
             }
         }
 
-        public static readonly Dictionary<WorldDCGroupType, World[]> WorldMap = new Dictionary<WorldDCGroupType, World[]>()
+        public static readonly Dictionary<WorldDCGroupType, World[]> WorldMap = new()
         {
             { WorldDCGroupType.Mana, new World[] { World.Asura, World.Belias, World.Pandaemonium, World.Shinryu, World.Anima, World.Hades, World.Ixion, World.Titan, World.Chocobo, World.Mandragora, World.Masamune } },
             { WorldDCGroupType.Elemental, new World[] { World.Unicorn, World.Carbuncle, World.Kujata, World.Typhon, World.Garuda, World.Ramuh, World.Atomos, World.Tonberry, World.Aegis, World.Gungnir } },
@@ -91,7 +91,7 @@ namespace LlamaLibrary.Helpers
 
         public static WorldDCGroupType DataCenter => (WorldDCGroupType)DataCenterId;
 
-        public static readonly Dictionary<byte, string> DataCenterNamesDictionary = new Dictionary<byte, string>
+        public static readonly Dictionary<byte, string> DataCenterNamesDictionary = new()
         {
             { 0, "INVALID" },
             { 1, "Elemental" },
@@ -114,7 +114,7 @@ namespace LlamaLibrary.Helpers
 
         public static World HomeWorld => (World)HomeWorldId;
 
-        public static readonly Dictionary<ushort, string> WorldNamesDictionary = new Dictionary<ushort, string>
+        public static readonly Dictionary<ushort, string> WorldNamesDictionary = new()
         {
             { 0, "INVALID" },
             { 21, "Ravana" },

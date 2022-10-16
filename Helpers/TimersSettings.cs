@@ -10,24 +10,25 @@ namespace LlamaLibrary.Helpers
 {
     public class TimersSettings : JsonSettings
     {
-        private static readonly LLogger Log = new LLogger(typeof(TimersSettings).Name, Colors.Tomato);
+        private static readonly LLogger Log = new(nameof(TimersSettings), Colors.Tomato);
 
         private static TimersSettings _settings;
 
-        private Dictionary<int, SavedTimer> _savedTimers = new Dictionary<int, SavedTimer>();
+        private readonly bool _debug;
 
-        private bool _debug;
+        private readonly bool _gil;
 
-        private bool _gil;
+        private readonly bool _merge;
+        private readonly bool _role;
 
-        private bool _merge;
-        private bool _role;
+        private readonly bool _category;
 
-        private bool _category;
+        private readonly int _numOfRetainers;
 
-        private int _numOfRetainers;
+        private Dictionary<int, SavedTimer> _savedTimers = new();
 
-        public static TimersSettings Instance => _settings ?? (_settings = new TimersSettings());
+        public static TimersSettings Instance => _settings ??= new TimersSettings();
+
         public TimersSettings() : base(Path.Combine(CharacterSettingsDirectory, "TimersSettings.json"))
         {
         }

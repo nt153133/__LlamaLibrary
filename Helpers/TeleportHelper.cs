@@ -15,8 +15,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class TeleportHelper
     {
-        private static readonly string Name = "TeleportHelper";
-        private static readonly LLogger Log = new LLogger(Name, Colors.MediumTurquoise);
+        private static readonly LLogger Log = new(nameof(TeleportHelper), Colors.MediumTurquoise);
 
         private static class Offsets
         {
@@ -64,7 +63,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> TeleportToApartment()
         {
-            int house = -1;
+            var house = -1;
 
             for (var index = 0; index < TeleportList.Length; index++)
             {
@@ -86,7 +85,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> TeleportToPrivateEstate()
         {
-            int house = -1;
+            var house = -1;
 
             for (var index = 0; index < TeleportList.Length; index++)
             {
@@ -108,7 +107,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> TeleportToFreeCompanyEstate()
         {
-            int house = -1;
+            var house = -1;
 
             for (var index = 0; index < TeleportList.Length; index++)
             {
@@ -135,8 +134,8 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> TeleportToSharedEstate(int estateIndex)
         {
-            int house = -1;
-            int count = 0;
+            var house = -1;
+            var count = 0;
             for (var index = 0; index < TeleportList.Length; index++)
             {
                 if (TeleportList[index].IsSharedHouse)
@@ -162,8 +161,8 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> TeleportToSharedEstate(ushort zone, int ward, int plot)
         {
-            int house = -1;
-            int count = 0;
+            var house = -1;
+            var count = 0;
             for (var index = 0; index < TeleportList.Length; index++)
             {
                 if (TeleportList[index].IsSharedHouse)

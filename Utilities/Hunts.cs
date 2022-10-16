@@ -6,13 +6,11 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
-using ff14bot.AClasses;
 using ff14bot.Behavior;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Objects;
-using ff14bot.Pathing;
 using ff14bot.Pathing.Service_Navigation;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
@@ -23,10 +21,10 @@ namespace LlamaLibrary.Utilities
 {
     public class Hunts
     {
-        private static readonly LLogger Log = new LLogger("Hunts Utility", Colors.Pink);
+        private static readonly LLogger Log = new("Hunts Utility", Colors.Pink);
 
-        private static readonly List<uint> Blacklist = new List<uint>();
-        private static List<BagSlot> _playerItems;
+        private static readonly List<uint> Blacklist = new();
+        private static readonly List<BagSlot> _playerItems;
         public static float PostCombatDelay = 0f;
 
         internal static bool Bool0;
@@ -34,7 +32,7 @@ namespace LlamaLibrary.Utilities
         internal static bool InFight => GameObjectManager.Attackers.Any();
         internal static BattleCharacter FirstAttacker => GameObjectManager.Attackers.FirstOrDefault();
 
-        private static int[] dailyOrderTypes = { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
+        private static readonly int[] DailyOrderTypes = { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
 
         public static async Task DoHunts(int[] huntTypes)
         {
@@ -112,7 +110,7 @@ namespace LlamaLibrary.Utilities
 
         public static async Task CompleteHunts()
         {
-            await CompleteHunts(dailyOrderTypes);
+            await CompleteHunts(DailyOrderTypes);
         }
 
         public static async Task CompleteHunts(int[] orderTypes)
@@ -134,6 +132,7 @@ namespace LlamaLibrary.Utilities
                     if (target != default(BattleCharacter) && target.IsValid && target.IsAlive)
                     {
                         await Lisbeth.Kill(target);
+
                         //await Navigation.GetTo(WorldManager.ZoneId, target.Location);
                         //await KillMob(target);
                     }
@@ -364,6 +363,7 @@ namespace LlamaLibrary.Utilities
                 {
                     //await Navigation.GetTo(WorldManager.ZoneId, target.Location);
                     Bool0 = false;
+
                     //await KillMob(target);
                     await Lisbeth.Kill(target);
                 }
@@ -386,6 +386,7 @@ namespace LlamaLibrary.Utilities
                     Blacklist.Add(mob.ObjectId);
                     return false;
                 }
+
                 //await KillMob(mob);
                 await Lisbeth.Kill(mob);
                 Log.Debug($"Did we kill it? {!(mob.IsValid && mob.IsAlive)}");
@@ -432,49 +433,76 @@ namespace LlamaLibrary.Utilities
 
         private static Composite CombatCoroutine()
         {
-            return new PrioritySelector(new Decorator(object0 => !InFight && !Core.Me.IsDead, new PrioritySelector(new HookExecutor("Rest", "", new ActionAlwaysFail()), new HookExecutor("PreCombatBuff", "", new ActionAlwaysFail()))),
-                                        new Decorator(object0 => Core.Me.IsDead || Poi.Current == null || Poi.Current.BattleCharacter == null, new Action(context => { Poi.Clear("Invalid Combat Poi"); })),
-                                        new Decorator(object0 => !Poi.Current.Unit.IsValid || Poi.Current.BattleCharacter.IsDead || Poi.Current.Unit.IsFateGone,
-                                                      new Action(context =>
-                                                      {
-                                                          Poi.Clear("Targeted unit is dead, clearing Poi and carrying on!");
-                                                          return RunStatus.Failure;
-                                                      })),
-                                        new Decorator(object0 => Poi.Current != null && Poi.Current.Unit != null && Poi.Current.Unit.IsValid && Poi.Current.Unit.Pointer != Core.Me.PrimaryTargetPtr && Poi.Current.Unit.Distance() < 30f,
-                                                      new Action(context => { Poi.Current.Unit.Target(); })),
-                                        new Decorator(object0 => Core.Me.PrimaryTargetPtr == IntPtr.Zero,
-                                                      new Action(context =>
-                                                      {
-                                                          Poi.Clear("Targeted unit is zero, clearing Poi and carrying on!");
-                                                          return RunStatus.Failure;
-                                                      })),
-                                        new HookExecutor("PreCombatLogic"),
-                                        new Decorator(object0 => Core.Me.PrimaryTargetPtr != IntPtr.Zero,
-                                                      new PrioritySelector(new Decorator(object0 => Core.Player.IsMounted && Core.Target.Location.Distance2D(Core.Player.Location) < Core.Me.CombatReach + RoutineManager.Current.PullRange,
-                                                                                         new Action(context =>
-                                                                                         {
-                                                                                             ActionManager.Dismount();
-                                                                                             Navigator.Stop();
-                                                                                         })),
-                                                                           new Decorator(object0 => !Core.Me.InCombat || (!Core.Me.InCombat && !Poi.Current.BattleCharacter.InCombat),
-                                                                                         new HookExecutor("Pull", "Run when pulling a mob to kill.", RoutineManager.Current.PullBehavior)),
-                                                                           new Decorator(object0 => Core.Me.InCombat,
-                                                                                         new PrioritySelector(new Decorator(object0 => PostCombatDelay > 0f && !Bool0,
-                                                                                                                            new Action(context =>
-                                                                                                                            {
-                                                                                                                                Bool0 = true;
-                                                                                                                                return RunStatus.Failure;
-                                                                                                                            })),
-                                                                                                              new Decorator(object0 => !Poi.Current.BattleCharacter.InCombat && Poi.Current.TimeSet + TimeSpan.FromSeconds(10.0) < DateTime.Now,
-                                                                                                                            new Action(context =>
-                                                                                                                            {
-                                                                                                                                Poi
-                                                                                                                                    .Clear("I'm in combat, but POI isn't and it has been atleast 10 seconds. Clearing POI and picking up a new target.");
-                                                                                                                            })),
-                                                                                                              new Decorator(object0 => Poi.Current.BattleCharacter.IsDead,
-                                                                                                                            new Action(context => { Poi.Clear("I'm in combat, but POI is dead. Clearing POI and picking up a new target."); })),
-                                                                                                              new HookExecutor("RoutineCombat", "Executes the current routine's Combat behavior", BrainBehavior.CombatLogic))))),
-                                        new Action(object0 => RunStatus.Success));
+            return new PrioritySelector(
+                new Decorator(
+                    object0 => !InFight && !Core.Me.IsDead,
+                    new PrioritySelector(
+                        new HookExecutor("Rest", "", new ActionAlwaysFail()),
+                        new HookExecutor("PreCombatBuff", "", new ActionAlwaysFail()))),
+                new Decorator(
+                    object0 => Core.Me.IsDead || Poi.Current == null || Poi.Current.BattleCharacter == null,
+                    new Action(context =>
+                    {
+                        Poi.Clear("Invalid Combat Poi");
+                    })),
+                new Decorator(
+                    object0 => !Poi.Current.Unit.IsValid || Poi.Current.BattleCharacter.IsDead || Poi.Current.Unit.IsFateGone,
+                    new Action(context =>
+                    {
+                        Poi.Clear("Targeted unit is dead, clearing Poi and carrying on!");
+                        return RunStatus.Failure;
+                    })),
+                new Decorator(
+                    object0 => Poi.Current != null && Poi.Current.Unit != null && Poi.Current.Unit.IsValid && Poi.Current.Unit.Pointer != Core.Me.PrimaryTargetPtr && Poi.Current.Unit.Distance() < 30f,
+                    new Action(context =>
+                    {
+                        Poi.Current.Unit.Target();
+                    })),
+                new Decorator(
+                    object0 => Core.Me.PrimaryTargetPtr == IntPtr.Zero,
+                    new Action(context =>
+                    {
+                        Poi.Clear("Targeted unit is zero, clearing Poi and carrying on!");
+                        return RunStatus.Failure;
+                    })),
+                new HookExecutor("PreCombatLogic"),
+                new Decorator(
+                    object0 => Core.Me.PrimaryTargetPtr != IntPtr.Zero,
+                    new PrioritySelector(
+                        new Decorator(
+                            object0 => Core.Player.IsMounted && Core.Target.Location.Distance2D(Core.Player.Location) < Core.Me.CombatReach + RoutineManager.Current.PullRange,
+                            new Action(context =>
+                            {
+                                ActionManager.Dismount();
+                                Navigator.Stop();
+                            })),
+                        new Decorator(
+                            object0 => !Core.Me.InCombat || (!Core.Me.InCombat && !Poi.Current.BattleCharacter.InCombat),
+                            new HookExecutor("Pull", "Run when pulling a mob to kill.", RoutineManager.Current.PullBehavior)),
+                        new Decorator(
+                            object0 => Core.Me.InCombat,
+                            new PrioritySelector(
+                                new Decorator(
+                                    object0 => PostCombatDelay > 0f && !Bool0,
+                                    new Action(context =>
+                                    {
+                                        Bool0 = true;
+                                        return RunStatus.Failure;
+                                    })),
+                                new Decorator(
+                                    object0 => !Poi.Current.BattleCharacter.InCombat && Poi.Current.TimeSet + TimeSpan.FromSeconds(10.0) < DateTime.Now,
+                                    new Action(context =>
+                                    {
+                                        Poi.Clear("I'm in combat, but POI isn't and it has been at least 10 seconds. Clearing POI and picking up a new target.");
+                                    })),
+                                new Decorator(
+                                    object0 => Poi.Current.BattleCharacter.IsDead,
+                                    new Action(context =>
+                                    {
+                                        Poi.Clear("I'm in combat, but POI is dead. Clearing POI and picking up a new target.");
+                                    })),
+                                new HookExecutor("RoutineCombat", "Executes the current routine's Combat behavior", BrainBehavior.CombatLogic))))),
+                new Action(object0 => RunStatus.Success));
         }
     }
 }

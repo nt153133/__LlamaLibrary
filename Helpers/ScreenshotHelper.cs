@@ -43,10 +43,11 @@ namespace LlamaLibrary.Helpers
 
         public static bool CallScreenshotRaw()
         {
-            return Core.Memory.CallInjected64<bool>(Offsets.ScreenshotFunc,
-                                                    ScreenshotStruct,
-                                                    Offsets.CallbackFunction,
-                                                    0);
+            return Core.Memory.CallInjected64<bool>(
+                Offsets.ScreenshotFunc,
+                ScreenshotStruct,
+                Offsets.CallbackFunction,
+                0);
         }
 
         public static async Task<string> TakeScreenshot()

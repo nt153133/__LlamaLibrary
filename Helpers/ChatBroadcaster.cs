@@ -17,7 +17,7 @@ namespace LlamaLibrary.Helpers
 
         public DateTime LastMessage = DateTime.MinValue;
 
-        public static readonly HashSet<MessageType> AcceptedTypes = new HashSet<MessageType> { MessageType.Shout, MessageType.Yell, MessageType.Say, MessageType.FreeCompany, MessageType.Echo, MessageType.CustomEmotes, MessageType.StandardEmotes };
+        public static readonly HashSet<MessageType> AcceptedTypes = new() { MessageType.Shout, MessageType.Yell, MessageType.Say, MessageType.FreeCompany, MessageType.Echo, MessageType.CustomEmotes, MessageType.StandardEmotes };
 
         public int MinDelayMs { get; set; }
 

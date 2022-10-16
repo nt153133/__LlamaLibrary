@@ -27,7 +27,7 @@ namespace LlamaLibrary.Structs
         ///
         /// <para>
         /// Contains apartment room # for an apartment building.
-        /// Contains room number # FC rooms
+        /// Contains room number # FC rooms.
         /// </para>
         /// </summary>
         private readonly ushort InternalWard;

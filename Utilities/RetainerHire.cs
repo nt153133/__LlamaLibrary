@@ -19,16 +19,15 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Retainers;
-using NavigationTest;
 using Newtonsoft.Json;
 
 namespace LlamaLibrary.Utilities
 {
     public static class RetainerHire
     {
-        private static readonly LLogger Log = new LLogger("RetainerHire", Colors.MediumSeaGreen, LogLevel.Information);
+        private static readonly LLogger Log = new(nameof(RetainerHire), Colors.MediumSeaGreen);
 
-        private static Queue<string> Names = new Queue<string>();
+        private static readonly Queue<string> Names = new();
 
         private static class Offsets
         {
@@ -36,7 +35,7 @@ namespace LlamaLibrary.Utilities
             internal static IntPtr MaxRetainers;
         }
 
-        public static List<Npc> Vocates = new List<Npc>()
+        public static List<Npc> Vocates = new()
         {
             //Frydwyb (Retainer Vocate)
             //Limsa Lominsa Lower Decks (Limsa Lominsa Aetheryte Plaza)
@@ -89,13 +88,13 @@ namespace LlamaLibrary.Utilities
                 Log.Debug(npc.ToString());
             }
 
-            Dictionary<Npc, int> counts = new Dictionary<Npc, int>();
+            var counts = new Dictionary<Npc, int>();
 
             int maxHires = await GetMaxNumRetainerHires();
-            int currentHires = await GetNumRetainerHires();
-            int numberOfRetainersToHire = maxHires - currentHires;
+            var currentHires = await GetNumRetainerHires();
+            var numberOfRetainersToHire = maxHires - currentHires;
 
-            for (int i = 0; i < numberOfRetainersToHire; i++)
+            for (var i = 0; i < numberOfRetainersToHire; i++)
             {
                 var npc = vocates[i % vocates.Length];
                 if (!counts.ContainsKey(npc))
@@ -112,7 +111,7 @@ namespace LlamaLibrary.Utilities
             {
                 Log.Information($"Going to hire {pair.Value} retainers from {pair.Key.Location.ClosestAetherytePrimaryResult.CurrentLocaleAethernetName}");
 
-                for (int i = 0; i < pair.Value; i++)
+                for (var i = 0; i < pair.Value; i++)
                 {
                     if (!await HireRetainer(pair.Key))
                     {
@@ -127,7 +126,7 @@ namespace LlamaLibrary.Utilities
 
         public static async Task<byte> GetMaxNumRetainerHires()
         {
-            Core.Memory.Write(Offsets.MaxRetainers, (byte) 0);
+            Core.Memory.Write(Offsets.MaxRetainers, (byte)0);
             await HelperFunctions.ForceGetRetainerData();
             await Coroutine.Wait(5000, () => Core.Memory.Read<byte>(Offsets.MaxRetainers) > 0);
             return Core.Memory.Read<byte>(Offsets.MaxRetainers);
@@ -280,7 +279,7 @@ namespace LlamaLibrary.Utilities
 
             if (InputString.Instance.IsOpen)
             {
-                string name = await GetName(); //ApiName(4, 12);
+                var name = await GetName(); //ApiName(4, 12);
                 bool result;
                 do
                 {
@@ -377,7 +376,7 @@ namespace LlamaLibrary.Utilities
         public static async Task RefillNames()
         {
             var newNames = await GetNamesFromApi();
-            foreach (var name in newNames.Where(i => i.Length > 3 && i.Length < 15))
+            foreach (var name in newNames.Where(i => i.Length is > 3 and < 15))
             {
                 Names.Enqueue(name);
             }
@@ -395,13 +394,13 @@ namespace LlamaLibrary.Utilities
 
             client.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
-            var response =
-                client.UploadValues("https://uzby.com/api.php",
-                                    new NameValueCollection
-                                    {
-                                        { "min", $"{min}" },
-                                        { "max", $"{max}" },
-                                    });
+            var response = client.UploadValues(
+                "https://uzby.com/api.php",
+                new NameValueCollection
+                {
+                    { "min", $"{min}" },
+                    { "max", $"{max}" },
+                });
 
             var name = Encoding.UTF8.GetString(response);
             return name.Substring(0, Math.Min(name.Length, max));
@@ -422,18 +421,18 @@ namespace LlamaLibrary.Utilities
         public static async Task<T> SendRequest<T>(string url)
         {
             var cancellationToken = new CancellationTokenSource();
-            using (var httpClient = new HttpClient())
-            {
-                var request = await Coroutine.ExternalTask(httpClient.GetAsync(url, cancellationToken.Token));
-                //var request = await httpClient.GetAsync(url, cancellationToken.Token);
-                cancellationToken.Token.ThrowIfCancellationRequested();
+            using var httpClient = new HttpClient();
+            var request = await Coroutine.ExternalTask(httpClient.GetAsync(url, cancellationToken.Token));
 
-                var response = await Coroutine.ExternalTask(request.Content.ReadAsStringAsync());
-                //var response = await request.Content.ReadAsStringAsync();
-                cancellationToken.Token.ThrowIfCancellationRequested();
+            //var request = await httpClient.GetAsync(url, cancellationToken.Token);
+            cancellationToken.Token.ThrowIfCancellationRequested();
 
-                return JsonConvert.DeserializeObject<T>(response);
-            }
+            var response = await Coroutine.ExternalTask(request.Content.ReadAsStringAsync());
+
+            //var response = await request.Content.ReadAsStringAsync();
+            cancellationToken.Token.ThrowIfCancellationRequested();
+
+            return JsonConvert.DeserializeObject<T>(response);
         }
     }
 }

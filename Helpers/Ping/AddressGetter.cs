@@ -16,7 +16,8 @@ namespace LlamaLibrary.Helpers.Ping
      */
     public class AddressGetter
     {
-        private static readonly LLogger Log = new LLogger("AddressGetter", Colors.Chocolate);
+        private static readonly LLogger Log = new(nameof(AddressGetter), Colors.Chocolate);
+
         private const int AF_INET = 2;
         private const int TCP_TABLE_OWNER_PID_CONNECTIONS = 4;
         private const int MIB_TCP_STATE_LISTEN = 2;
@@ -52,9 +53,9 @@ namespace LlamaLibrary.Helpers.Ping
                 var rowSize = Marshal.SizeOf<TcpRow>();
                 var dwNumEntries = Marshal.ReadInt32(pTcpTable);
                 var pRows = pTcpTable + 4;
-                for (var i = 0; i < dwNumEntries && bufferLength - (4 + i * rowSize) >= rowSize; i++)
+                for (var i = 0; i < dwNumEntries && bufferLength - (4 + (i * rowSize)) >= rowSize; i++)
                 {
-                    var nextRow = Marshal.PtrToStructure<TcpRow>(pRows + i * rowSize);
+                    var nextRow = Marshal.PtrToStructure<TcpRow>(pRows + (i * rowSize));
                     table.Add(nextRow);
                 }
 
@@ -68,7 +69,10 @@ namespace LlamaLibrary.Helpers.Ping
                     var trpBytes = BitConverter.GetBytes(tcpRemotePort).Reverse().ToArray();
                     tcpRemotePort = BitConverter.ToUInt16(trpBytes, 0);
 
-                    if (state == MIB_TCP_STATE_LISTEN || Equals(tcpRemoteAddr, IPAddress.Loopback)) continue;
+                    if (state == MIB_TCP_STATE_LISTEN || Equals(tcpRemoteAddr, IPAddress.Loopback))
+                    {
+                        continue;
+                    }
 
                     // ReSharper disable once InvertIf
                     if ((int)tcpPid == pid && InXIVPortRange(tcpRemotePort))
@@ -95,22 +99,22 @@ namespace LlamaLibrary.Helpers.Ping
 
         private static bool InXIVPortRange1(ushort port)
         {
-            return port >= XIV_MIN_PORT_1 && port <= XIV_MAX_PORT_1;
+            return port is >= XIV_MIN_PORT_1 and <= XIV_MAX_PORT_1;
         }
 
         private static bool InXIVPortRange2(ushort port)
         {
-            return port >= XIV_MIN_PORT_2 && port <= XIV_MAX_PORT_2;
+            return port is >= XIV_MIN_PORT_2 and <= XIV_MAX_PORT_2;
         }
 
         private static bool InXIVPortRange3(ushort port)
         {
-            return port >= XIV_MIN_PORT_3 && port <= XIV_MAX_PORT_3;
+            return port is >= XIV_MIN_PORT_3 and <= XIV_MAX_PORT_3;
         }
 
         private static bool InXIVPortRange4(ushort port)
         {
-            return port >= XIV_MIN_PORT_4 && port <= XIV_MAX_PORT_4;
+            return port is >= XIV_MIN_PORT_4 and <= XIV_MAX_PORT_4;
         }
 
         private static bool InXIVPortRange(ushort port)

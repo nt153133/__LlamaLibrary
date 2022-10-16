@@ -20,18 +20,16 @@ namespace LlamaLibrary.Helpers
 {
     public static class GrandCompanyHelper
     {
-        private static readonly string Name = "GrandCompanyHelper";
-        private static readonly Color LogColor = Colors.LimeGreen;
-        private static readonly LLogger Log = new LLogger(Name, LogColor, LogLevel.Information);
+        private static readonly LLogger Log = new(nameof(GrandCompanyHelper), Colors.LimeGreen);
 
-        public static Dictionary<GrandCompany, KeyValuePair<uint, Vector3>> BaseLocations = new Dictionary<GrandCompany, KeyValuePair<uint, Vector3>>
+        public static Dictionary<GrandCompany, KeyValuePair<uint, Vector3>> BaseLocations = new()
         {
             { GrandCompany.Immortal_Flames, new KeyValuePair<uint, Vector3>(130, new Vector3(-139.3435f, 4.1f, -100.8658f)) },
             { GrandCompany.Order_Of_The_Twin_Adder, new KeyValuePair<uint, Vector3>(132, new Vector3(-67.49361f, -0.5035391f, -2.149932f)) },
             { GrandCompany.Maelstrom, new KeyValuePair<uint, Vector3>(128, new Vector3(88.8576f, 40.24876f, 71.6758f)) }
         };
 
-        public static Dictionary<GCNpc, uint> MaelstromNPCs = new Dictionary<GCNpc, uint>
+        public static Dictionary<GCNpc, uint> MaelstromNPCs = new()
         {
             { GCNpc.Flyer, 1011820 },
             { GCNpc.Mage, 1003248 },
@@ -48,7 +46,7 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Hunt_Billmaster, 1009552 }
         };
 
-        public static Dictionary<GCNpc, uint> FlameNPCs = new Dictionary<GCNpc, uint>
+        public static Dictionary<GCNpc, uint> FlameNPCs = new()
         {
             { GCNpc.Flyer, 1011818 },
             { GCNpc.Mage, 1004380 },
@@ -65,7 +63,7 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Hunt_Billmaster, 1001379 }
         };
 
-        public static Dictionary<GCNpc, uint> TwinAdderNPCs = new Dictionary<GCNpc, uint>
+        public static Dictionary<GCNpc, uint> TwinAdderNPCs = new()
         {
             { GCNpc.Flyer, 1011819 },
             { GCNpc.Mage, 1004381 },
@@ -82,7 +80,7 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Entrance_to_the_Barracks, 2006962 }
         };
 
-        public static Dictionary<GrandCompany, Dictionary<GCNpc, uint>> NpcList = new Dictionary<GrandCompany, Dictionary<GCNpc, uint>>
+        public static Dictionary<GrandCompany, Dictionary<GCNpc, uint>> NpcList = new()
         {
             { GrandCompany.Immortal_Flames, FlameNPCs },
             { GrandCompany.Order_Of_The_Twin_Adder, TwinAdderNPCs },
@@ -121,7 +119,7 @@ namespace LlamaLibrary.Helpers
             while (CommonBehaviors.IsLoading)
             {
                 Log.Information($"Waiting for zoning to finish...");
-                await Coroutine.Wait(-1, () => (!CommonBehaviors.IsLoading));
+                await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
             }
         }
 
@@ -321,7 +319,8 @@ namespace LlamaLibrary.Helpers
                             //Log.Debug("Waiting for select yes/no");
                             //if (await Coroutine.Wait(5000, () => SelectYesno.IsOpen))
                             //{
-                                SelectYesno.Yes();
+                            SelectYesno.Yes();
+
                             //}
                         }
 

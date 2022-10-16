@@ -12,13 +12,11 @@ using LlamaLibrary.Memory.Attributes;
 namespace LlamaLibrary.Helpers
 {
     /// <summary>
-    /// RB's ActionManager won't do the map decipher action on an item so this reimplements DoAction just for that reason.
+    /// RB's ActionManager won't do the map decipher action on an item so this re-implements DoAction just for that reason.
     /// </summary>
     public static class ActionHelper
     {
-        private static readonly string Name = "ActionHelper";
-        private static readonly Color LogColor = Colors.Gold;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new(nameof(ActionHelper), Colors.Gold);
 
         internal static class Offsets
         {
@@ -42,8 +40,8 @@ namespace LlamaLibrary.Helpers
             {
                 Offsets.ActionManagerParam, //rcx
                 (uint)actionType, //rdx
-                (uint)actionID, //r8
-                (long)targetID, //r9
+                actionID, //r8
+                targetID, //r9
                 a4,
                 a5,
                 a6,
@@ -69,7 +67,7 @@ namespace LlamaLibrary.Helpers
                 (uint)ff14bot.Enums.ActionType.Spell, //rdx
                 (uint)Offsets.DecipherSpell, //r8
                 (long)Core.Player.ObjectId, //r9
-                (int)(slot.Slot | ((int)slot.BagId << 16)), //a5 +0x28
+                slot.Slot | ((int)slot.BagId << 16), //a5 +0x28
                 0, //a6 + 0x30
                 0, //a7
                 0 //a

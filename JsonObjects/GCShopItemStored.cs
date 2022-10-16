@@ -11,14 +11,13 @@ namespace LlamaLibrary.JsonObjects
         public byte GCRankGroup { get; set; }
         public GCShopCategory Category { get; set; }
 
-
         public GCShopItemStored()
         {
         }
 
         public bool Equals(GCShopItemStored other)
         {
-            if (ReferenceEquals(null, other))
+            if (other is null)
             {
                 return false;
             }
@@ -33,7 +32,7 @@ namespace LlamaLibrary.JsonObjects
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }
@@ -43,7 +42,7 @@ namespace LlamaLibrary.JsonObjects
                 return true;
             }
 
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }

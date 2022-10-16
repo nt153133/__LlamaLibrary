@@ -15,7 +15,7 @@ namespace LlamaLibrary.Helpers
 
         public static SquadronTimerData RawStruct => Core.Memory.Read<SquadronTimerData>(Offsets.SquadronStatus);
 
-        private static readonly TimeSpan CachePeriod = new TimeSpan(0, 1, 0);
+        private static readonly TimeSpan CachePeriod = new(0, 1, 0);
 
         private static DateTime lastCheck;
 

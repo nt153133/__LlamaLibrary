@@ -9,9 +9,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class Timers
     {
-        private static readonly string Name = "TimersHelper";
-        private static readonly Color LogColor = Colors.Peru;
-        private static readonly LLogger Log = new LLogger(Name, LogColor);
+        private static readonly LLogger Log = new("TimersHelper", Colors.Peru);
 
         internal static class Offsets
         {
@@ -25,7 +23,7 @@ namespace LlamaLibrary.Helpers
         private const int MaxRows = 6;
         private static readonly string[] Description = { "", "Duty/Beast Tribe Dailies", "Weekly Reset", "Unknown", "GC/Rowena", "Unknown" };
 
-        private static CycleTime[] _cycles = new CycleTime[MaxRows];
+        private static readonly CycleTime[] _cycles = new CycleTime[MaxRows];
 
         public static DateTimeOffset CurrentTime => DateTimeOffset.FromUnixTimeSeconds((long)CurrentTimeStamp).LocalDateTime;
 

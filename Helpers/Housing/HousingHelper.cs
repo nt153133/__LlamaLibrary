@@ -4,7 +4,6 @@ using ff14bot;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 using LlamaLibrary.Enums;
-using LlamaLibrary.Helpers.HousingTravel;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
@@ -98,7 +97,7 @@ namespace LlamaLibrary.Helpers.Housing
             }
         }
 
-        public static string ToString()
+        public new static string ToString()
         {
             return $"IsInHousingArea: {IsInHousingArea}, IsInsideHouse: {IsInsideHouse}, IsInsideRoom: {IsInsideRoom}, IsWithinPlot: {IsWithinPlot}, HousingPositionInfo: {HousingPositionInfo.DynamicString()}";
         }

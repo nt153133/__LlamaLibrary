@@ -23,9 +23,9 @@ namespace LlamaLibrary.Helpers
             internal static IntPtr GetTomeItemId;
         }
 
-        private static Dictionary<uint, uint> CurrencyCache = new Dictionary<uint, uint>();
+        private static readonly Dictionary<uint, uint> CurrencyCache = new();
 
-        private static Dictionary<uint, uint> TomeCache = new Dictionary<uint, uint>();
+        private static readonly Dictionary<uint, uint> TomeCache = new();
 
         internal static InventoryBagId[] CurrencyBags = new InventoryBagId[5]
         {
