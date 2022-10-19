@@ -22,13 +22,13 @@ namespace LlamaLibrary.Helpers
             [Offset("Search 48 8B 48 ? 48 8B 01 FF 50 ? 48 8D 8D ? ? ? ? Add 3 Read8")]
             internal static int off3; //0x8
 
-            [Offset("Search 48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F8 48 8B DA 4C 8B 05 ? ? ? ?")]
+            [Offset("Search 48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F8")]
             internal static IntPtr SendStringToFocus;
 
             [Offset("Search E8 ? ? ? ? 44 2B F7 TraceCall")]
             internal static IntPtr Utf8StringCtor;
 
-            [Offset("Search E8 ? ? ? ? 89 6F 68 TraceCall")]
+            [Offset("Search E8 ? ? ? ? B0 ? 66 89 9F ? ? ? ? TraceCall")]
             internal static IntPtr Utf8SetString;
 
             [Offset("E8 ? ? ? ? 48 8B 43 ? 48 8D 54 24 ? 41 B0 ? 48 8B 48 ? 48 8B 01 FF 50 ? 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? 48 33 CC E8 ? ? ? ? 48 8B 9C 24 ? ? ? ? TraceCall")]
@@ -48,6 +48,7 @@ namespace LlamaLibrary.Helpers
                 var three = Core.Memory.Read<IntPtr>(twoHalf + Offsets.off2);
                 var four = Core.Memory.Read<IntPtr>(three + Offsets.off3);
                 return four;
+
             }
         }
 
@@ -101,11 +102,13 @@ namespace LlamaLibrary.Helpers
         public static void SendInput(string input)
         {
             using var seStringAlloc = Core.Memory.CreateAllocatedMemory(0x68);
+            Log.Verbose($"Allocated memory at {seStringAlloc.Address}");
             StringCtor(seStringAlloc.Address);
-
+            Log.Verbose($"Constructed string at {seStringAlloc.Address}");
             SetString(seStringAlloc.Address, input);
-
+            Log.Verbose($"Set string at {seStringAlloc.Address}");
             Core.Memory.CallInjected64<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 0);
+            Log.Verbose($"Sent string to focus at {GetInputTextPtr}");
         }
 
         public static void ClearInput()
