@@ -13,13 +13,13 @@ namespace LlamaLibrary.Helpers
         private static class Offsets
         {
             [Offset(
-                "48 8B 1D ? ? ? ? 48 85 DB 74 ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? 48 8B CB E8 ? ? ? ? 33 D2 Add 3 TraceRelative")]
+                "Search 48 8B 1D ? ? ? ? 48 85 DB 74 ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? 48 8B CB E8 ? ? ? ? 33 D2 Add 3 TraceRelative")]
             internal static IntPtr SpecialCurrencyStorage;
 
-            [Offset("44 0F B6 C2 84 D2 74 ? 48 8B 09")]
+            [Offset("Search 44 0F B6 C2 84 D2 74 ? 48 8B 09")]
             internal static IntPtr GetSpecialCurrencyItemId;
 
-            [Offset("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 8B F1 E8 ? ? ? ? 33 DB 8B F8 85 C0 74 ? 66 90 8B CB E8 ? ? ? ? 39 70 ? 74 ? FF C3 3B DF 72 ? 33 C0 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 8B 00")]
+            [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 8B F1 E8 ? ? ? ? 33 DB 8B F8 85 C0 74 ? 66 90 8B CB E8 ? ? ? ? 39 70 ? 74 ? FF C3 3B DF 72 ? 33 C0 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 8B 00")]
             internal static IntPtr GetTomeItemId;
         }
 

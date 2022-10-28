@@ -31,10 +31,10 @@ namespace LlamaLibrary.Helpers
             [Offset("Search E8 ? ? ? ? B0 ? 66 89 9F ? ? ? ? TraceCall")]
             internal static IntPtr Utf8SetString;
 
-            [Offset("E8 ? ? ? ? 48 8B 43 ? 48 8D 54 24 ? 41 B0 ? 48 8B 48 ? 48 8B 01 FF 50 ? 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? 48 33 CC E8 ? ? ? ? 48 8B 9C 24 ? ? ? ? TraceCall")]
+            [Offset("Search E8 ? ? ? ? 48 8B 43 ? 48 8D 54 24 ? 41 B0 ? 48 8B 48 ? 48 8B 01 FF 50 ? 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? 48 33 CC E8 ? ? ? ? 48 8B 9C 24 ? ? ? ? TraceCall")]
             internal static IntPtr Utf8StringFromSequenceCtor;
 
-            [Offset("48 8B 4B ? 48 8D 55 ? 66 89 75 ? 66 44 89 75 ? 4C 89 65 ? Add 3 Read8")]
+            [Offset("Search 48 8B 4B ? 48 8D 55 ? 66 89 75 ? 66 44 89 75 ? 4C 89 65 ? Add 3 Read8")]
             internal static int CurrentTextControl; //0x8
         }
 

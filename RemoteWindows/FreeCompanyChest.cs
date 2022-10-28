@@ -9,13 +9,13 @@ namespace LlamaLibrary.RemoteWindows
     {
         private static class Offsets
         {
-            [Offset("8B 9E ? ? ? ? 8B CF D3 EB Add 2 Read32")]
+            [Offset("Search 8B 9E ? ? ? ? 8B CF D3 EB Add 2 Read32")]
             internal static int ItemPermissions;
 
-            [Offset("44 89 81 ? ? ? ? 4C 8D B1 ? ? ? ? Add 3 Read32")]
+            [Offset("Search 44 89 81 ? ? ? ? 4C 8D B1 ? ? ? ? Add 3 Read32")]
             internal static int CrystalsPermission;
 
-            [Offset("44 89 89 ? ? ? ? 33 FF Add 3 Read32")]
+            [Offset("Search 44 89 89 ? ? ? ? 33 FF Add 3 Read32")]
             internal static int GilPermission;
         }
 

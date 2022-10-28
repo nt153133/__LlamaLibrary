@@ -8,28 +8,28 @@ namespace LlamaLibrary.Directors
     {
         internal static class Offsets
         {
-            [Offset("48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B D0 48 8D 0D ? ? ? ? B8 ? ? ? ? Add 3 TraceRelative")]
+            [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B D0 48 8D 0D ? ? ? ? B8 ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr ActiveDirectorPtr;
 
-            [Offset("48 89 5C 24 ? 57 48 83 EC ? 48 8B 01 48 8B F9 48 8B 18 E8 ? ? ? ?")]
+            [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? 48 8B 01 48 8B F9 48 8B 18 E8 ? ? ? ?")]
             internal static IntPtr RemainingTimeFunction;
 
-            [Offset("89 87 ? ? ? ? 0F B6 46 ? 88 87 ? ? ? ? 8B 46 ? Add 2 Read32")]
+            [Offset("Search 89 87 ? ? ? ? 0F B6 46 ? 88 87 ? ? ? ? 8B 46 ? Add 2 Read32")]
             internal static int SwingResult;
 
-            [Offset("89 87 ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 0F B6 87 ? ? ? ? Add 2 Read32")]
+            [Offset("Search 89 87 ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 0F B6 87 ? ? ? ? Add 2 Read32")]
             internal static int CurrentPayout;
 
-            [Offset("89 87 ? ? ? ? 0F B6 87 ? ? ? ? 48 6B D0 ? Add 2 Read32")]
+            [Offset("Search 89 87 ? ? ? ? 0F B6 87 ? ? ? ? 48 6B D0 ? Add 2 Read32")]
             internal static int DoubleDownPayout;
 
-            [Offset("66 89 87 ? ? ? ? 8B 97 ? ? ? ? Add 3 Read32")]
+            [Offset("Search 66 89 87 ? ? ? ? 8B 97 ? ? ? ? Add 3 Read32")]
             internal static int ProgressNeeded;
 
-            [Offset("C6 87 ? ? ? ? ? 8B 46 ? Add 2 Read32")]
+            [Offset("Search C6 87 ? ? ? ? ? 8B 46 ? Add 2 Read32")]
             internal static int SwingsTaken;
 
-            [Offset("80 3D ? ? ? ? ? 0F 84 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? Add 2 TraceRelative")]
+            [Offset("Search 80 3D ? ? ? ? ? 0F 84 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? Add 2 TraceRelative")]
             internal static IntPtr IsActiveByte;
         }
 

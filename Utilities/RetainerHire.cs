@@ -31,7 +31,7 @@ namespace LlamaLibrary.Utilities
 
         private static class Offsets
         {
-            [Offset("0F B6 15 ? ? ? ? EB ? Add 3 TraceRelative")]
+            [Offset("Search 0F B6 15 ? ? ? ? EB ? Add 3 TraceRelative")]
             internal static IntPtr MaxRetainers;
         }
 

@@ -13,11 +13,11 @@ namespace LlamaLibrary.Helpers
     {
         private static class Offsets
         {
-            [Offset("48 8D 4B ? 4C 8B 47 ? E8 ? ? ? ? Add 3 Read8")]
+            [Offset("Search 48 8D 4B ? 4C 8B 47 ? E8 ? ? ? ? Add 3 Read8")]
             [OffsetCN("Search 48 8D 4B ? E8 ? ? ? ? 84 C0 74 ? 48 8B 74 24 ? Add 3 Read8")]
             internal static int Offset1;
 
-            [Offset("41 89 9E ? ? ? ? 48 83 7E ? ? Add 3 Read32")]
+            [Offset("Search 41 89 9E ? ? ? ? 48 83 7E ? ? Add 3 Read32")]
             [OffsetCN("Search 41 89 8F ? ? ? ? 49 39 6E ? Add 3 Read32")]
             internal static int DCOffset;
 
@@ -27,7 +27,7 @@ namespace LlamaLibrary.Helpers
             [Offset("Search 0F B7 81 ? ? ? ? 66 89 44 24 ? 48 8D 4C 24 ? Add 3 Read32")]
             internal static int HomeWorld;
 
-            [Offset("E8 ? ? ? ? 48 85 C0 74 ? 0F B7 70 14 EB ? BE ? ? ? ? 0F B7 CD E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 14 EB ? B8 ? ? ? ? 66 3B F0 72 ? 0F B7 0B Add 1 TraceRelative")]
+            [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B7 70 14 EB ? BE ? ? ? ? 0F B7 CD E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 14 EB ? B8 ? ? ? ? 66 3B F0 72 ? 0F B7 0B Add 1 TraceRelative")]
             internal static IntPtr GetPlaceName;
         }
 
