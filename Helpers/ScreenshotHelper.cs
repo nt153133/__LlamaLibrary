@@ -10,7 +10,7 @@ namespace LlamaLibrary.Helpers
     {
         private static class Offsets
         {
-            [Offset("40 53 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 79 ? ?")]
+            [Offset("Search 40 53 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 79 ? ?")]
             [OffsetCN("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 79 ? ? 49 8B D8")]
             internal static IntPtr ScreenshotFunc;
 

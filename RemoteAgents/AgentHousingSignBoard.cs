@@ -18,25 +18,25 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 40 88 7B ? 44 88 63 ? Add 3 Read8")]
             internal static int Ward;
 
-            [Offset("44 88 63 ? 66 44 89 43 ? Add 3 Read8")]
+            [Offset("Search 44 88 63 ? 66 44 89 43 ? Add 3 Read8")]
             internal static int Plot;
 
-            [Offset("66 44 89 73 ? 40 88 7B ? Add 4 Read8")]
+            [Offset("Search 66 44 89 73 ? 40 88 7B ? Add 4 Read8")]
             internal static int Zone;
 
-            [Offset("40 88 7B ? 88 43 ? Add 3 Read8")]
+            [Offset("Search 40 88 7B ? 88 43 ? Add 3 Read8")]
             internal static int ForSale;
 
-            [Offset("88 43 ? E8 ? ? ? ? 48 8B 4B ? Add 2 Read8")]
+            [Offset("Search 88 43 ? E8 ? ? ? ? 48 8B 4B ? Add 2 Read8")]
             internal static int Size;
 
-            [Offset("0F 11 4B ? 41 80 7D ? ? Add 3 Read8")]
+            [Offset("Search 0F 11 4B ? 41 80 7D ? ? Add 3 Read8")]
             internal static int WinningLotteryNumber;
 
-            [Offset("0F 11 43 ? 41 0F 10 4D ? Add 3 Read8")]
+            [Offset("Search 0F 11 43 ? 41 0F 10 4D ? Add 3 Read8")]
             internal static int LotteryEntryCount;
 
-            [Offset("49 89 87 ? ? ? ? 48 8B 01 Add 3 Read32")]
+            [Offset("Search 49 89 87 ? ? ? ? 48 8B 01 Add 3 Read32")]
             internal static int FcOwned;
         }
 

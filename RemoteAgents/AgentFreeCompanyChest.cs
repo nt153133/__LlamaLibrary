@@ -14,28 +14,28 @@ namespace LlamaLibrary.RemoteAgents
 
         private static class Offsets
         {
-            [Offset("48 8D 05 ? ? ? ? 48 89 69 ? 89 69 ? 48 8D 59 ? 66 89 69 ? 4C 8D 35 ? ? ? ? Add 3 TraceRelative")]
+            [Offset("Search 48 8D 05 ? ? ? ? 48 89 69 ? 89 69 ? 48 8D 59 ? 66 89 69 ? 4C 8D 35 ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr VTable;
 
-            [Offset("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 8B F2 48 8B D9 33 D2 0F B7 FA")]
+            [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 8B F2 48 8B D9 33 D2 0F B7 FA")]
             internal static IntPtr BagRequestCall;
 
-            [Offset("0F B6 7B ? BA ? ? ? ? E8 ? ? ? ? BA ? ? ? ? 89 7C 24 ? Add 3 Read8")]
+            [Offset("Search 0F B6 7B ? BA ? ? ? ? E8 ? ? ? ? BA ? ? ? ? 89 7C 24 ? Add 3 Read8")]
             internal static int SelectedTabIndex;
 
-            [Offset("0F B6 7B ? 48 8D 4C 24 ? BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? 89 7C 24 ? 48 8D 4C 24 ? 0F B6 7B ? Add 3 Read8")]
+            [Offset("Search 0F B6 7B ? 48 8D 4C 24 ? BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? 89 7C 24 ? 48 8D 4C 24 ? 0F B6 7B ? Add 3 Read8")]
             internal static int CrystalsTabSelected;
 
-            [Offset("89 83 ? ? ? ? EB ? 48 8B 4B ? 48 8B 01 FF 50 ? 8B 93 ? ? ? ? Add 2 Read32")]
+            [Offset("Search 89 83 ? ? ? ? EB ? 48 8B 4B ? 48 8B 01 FF 50 ? 8B 93 ? ? ? ? Add 2 Read32")]
             internal static int GilTabSelected;
 
-            [Offset("88 83 ? ? ? ? EB ? 48 8D 4E ? Add 2 Read32")]
+            [Offset("Search 88 83 ? ? ? ? EB ? 48 8D 4E ? Add 2 Read32")]
             internal static int GilWithdrawDeposit;
 
-            [Offset("89 83 ? ? ? ? 48 8B CB E8 ? ? ? ? 48 8B 5C 24 ? 40 0F B6 C7 Add 3 Read32")]
+            [Offset("Search 89 83 ? ? ? ? 48 8B CB E8 ? ? ? ? 48 8B 5C 24 ? 40 0F B6 C7 Add 3 Read32")]
             internal static int GilAmountTransfer;
 
-            [Offset("89 BB ? ? ? ? 74 ? 48 8B CB E8 ? ? ? ? 48 8B 5C 24 ? Add 2 Read32")]
+            [Offset("Search 89 BB ? ? ? ? 74 ? 48 8B CB E8 ? ? ? ? 48 8B 5C 24 ? Add 2 Read32")]
             internal static int GilCount;
 
             [Offset("Search 88 83 ? ? ? ? E8 ? ? ? ? E9 ? ? ? ? 48 8B 4B ? Add 2 Read32")]

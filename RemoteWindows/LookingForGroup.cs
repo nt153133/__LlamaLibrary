@@ -12,10 +12,10 @@ namespace LlamaLibrary.RemoteWindows
 
         private static class Offsets
         {
-            [Offset("83 B8 ? ? ? ? ? 7D ? 48 8D 9E ? ? ? ? Add 2 Read32")]
+            [Offset("Search 83 B8 ? ? ? ? ? 7D ? 48 8D 9E ? ? ? ? Add 2 Read32")]
             internal static int ResultCountIndex;
 
-            [Offset("BA ? ? ? ? 48 8B C8 4C 8B 00 41 FF 50 ? 48 8B F8 48 85 C0 0F 84 ? ? ? ? 45 33 C0 Add 1 Read8")]
+            [Offset("Search BA ? ? ? ? 48 8B C8 4C 8B 00 41 FF 50 ? 48 8B F8 48 85 C0 0F 84 ? ? ? ? 45 33 C0 Add 1 Read8")]
             internal static int NumberArrayIndex;
 
             [Offset("Search 48 8B 41 ? 48 63 D2 44 39 04 90 Add 3 Read8")]

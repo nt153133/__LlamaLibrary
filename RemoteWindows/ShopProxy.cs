@@ -8,7 +8,7 @@ namespace LlamaLibrary.RemoteWindows
     {
         private static class Offsets
         {
-            [Offset("41 8B 5E ? FF 50 ? F6 05 ? ? ? ? ? Add 3 Read8")]
+            [Offset("Search 41 8B 5E ? FF 50 ? F6 05 ? ? ? ? ? Add 3 Read8")]
             internal static int ShopIdPointer;
         }
 
