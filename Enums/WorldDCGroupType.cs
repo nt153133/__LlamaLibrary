@@ -12,5 +12,7 @@
         Light = 7,
         Crystal = 8,
         Materia = 9,
+        Meteor = 10,
+        Dynamis = 11,
     }
 }

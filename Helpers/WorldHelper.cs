@@ -51,15 +51,17 @@ namespace LlamaLibrary.Helpers
 
         public static readonly Dictionary<WorldDCGroupType, World[]> WorldMap = new()
         {
-            { WorldDCGroupType.Mana, new World[] { World.Asura, World.Belias, World.Pandaemonium, World.Shinryu, World.Anima, World.Hades, World.Ixion, World.Titan, World.Chocobo, World.Mandragora, World.Masamune } },
-            { WorldDCGroupType.Elemental, new World[] { World.Unicorn, World.Carbuncle, World.Kujata, World.Typhon, World.Garuda, World.Ramuh, World.Atomos, World.Tonberry, World.Aegis, World.Gungnir } },
-            { WorldDCGroupType.Gaia, new World[] { World.Yojimbo, World.Zeromus, World.Alexander, World.Fenrir, World.Ultima, World.Valefor, World.Ifrit, World.Bahamut, World.Tiamat, World.Durandal, World.Ridill } },
+            { WorldDCGroupType.Materia, new World[] { World.Ravana, World.Bismarck, World.Sephirot, World.Sophia, World.Zurvan } },
+            { WorldDCGroupType.Mana, new World[] { World.Asura, World.Pandaemonium, World.Anima, World.Hades, World.Ixion, World.Titan, World.Chocobo, World.Masamune } },
+            { WorldDCGroupType.Meteor, new World[] { World.Belias, World.Shinryu, World.Unicorn, World.Yojimbo, World.Zeromus, World.Valefor, World.Ramuh, World.Mandragora } },
             { WorldDCGroupType.Light, new World[] { World.Twintania, World.Lich, World.Zodiark, World.Phoenix, World.Odin, World.Shiva, World.Alpha, World.Raiden } },
             { WorldDCGroupType.Crystal, new World[] { World.Brynhildr, World.Mateus, World.Zalera, World.Diabolos, World.Coeurl, World.Malboro, World.Goblin, World.Balmung } },
             { WorldDCGroupType.Primal, new World[] { World.Famfrit, World.Exodus, World.Lamia, World.Leviathan, World.Ultros, World.Behemoth, World.Excalibur, World.Hyperion } },
             { WorldDCGroupType.Chaos, new World[] { World.Omega, World.Moogle, World.Cerberus, World.Louisoix, World.Spriggan, World.Ragnarok, World.Sagittarius, World.Phantom } },
             { WorldDCGroupType.Aether, new World[] { World.Jenova, World.Faerie, World.Siren, World.Gilgamesh, World.Midgardsormr, World.Adamantoise, World.Cactuar, World.Sargatanas } },
-            { WorldDCGroupType.Materia, new World[] { World.Ravana, World.Bismarck, World.Sephirot, World.Sophia, World.Zurvan } },
+            { WorldDCGroupType.Gaia, new World[] { World.Alexander, World.Fenrir, World.Ultima, World.Ifrit, World.Bahamut, World.Tiamat, World.Durandal, World.Ridill } },
+            { WorldDCGroupType.Elemental, new World[] { World.Carbuncle, World.Kujata, World.Typhon, World.Garuda, World.Atomos, World.Tonberry, World.Aegis, World.Gungnir } },
+            { WorldDCGroupType.Dynamis, new World[] { World.Marilith, World.Seraph, World.Halicarnassus, World.Maduin } },
         };
 
         public static World[] CurrentWorldList
@@ -103,6 +105,8 @@ namespace LlamaLibrary.Helpers
             { 7, "Light" },
             { 8, "Crystal" },
             { 9, "Materia" },
+            { 10, "Meteor" },
+            { 11, "Dynamis" },
             { 99, "Beta" },
         };
 
@@ -199,6 +203,10 @@ namespace LlamaLibrary.Helpers
             { 401, "Phantom" },
             { 402, "Alpha" },
             { 403, "Raiden" },
+            { 404, "Marilith" },
+            { 405, "Seraph" },
+            { 406, "Halicarnassus" },
+            { 407, "Maduin" },
         };
 
         public static string DataCenterName => DataCenter.ToString();

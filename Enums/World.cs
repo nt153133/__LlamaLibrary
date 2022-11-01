@@ -6,17 +6,18 @@
         Ravana = 21, //Materia
         Bismarck = 22, //Materia
         Asura = 23, //Mana
-        Belias = 24, //Mana
+        Belias = 24, //Meteor
         Pandaemonium = 28, //Mana
-        Shinryu = 29, //Mana
-        Unicorn = 30, //Elemental
-        Yojimbo = 31, //Gaia
-        Zeromus = 32, //Gaia
+        Shinryu = 29, //Meteor
+        Unicorn = 30, //Meteor
+        Yojimbo = 31, //Meteor
+        Zeromus = 32, //Meteor
         Twintania = 33, //Light
         Brynhildr = 34, //Crystal
         Famfrit = 35, //Primal
         Lich = 36, //Light
         Mateus = 37, //Crystal
+        Shemhazai = 38, //INVALID
         Omega = 39, //Chaos
         Jenova = 40, //Aether
         Zalera = 41, //Crystal
@@ -30,7 +31,7 @@
         Kujata = 49, //Elemental
         Typhon = 50, //Elemental
         Ultima = 51, //Gaia
-        Valefor = 52, //Gaia
+        Valefor = 52, //Meteor
         Exodus = 53, //Primal
         Faerie = 54, //Aether
         Lamia = 55, //Primal
@@ -38,7 +39,7 @@
         Siren = 57, //Aether
         Garuda = 58, //Elemental
         Ifrit = 59, //Gaia
-        Ramuh = 60, //Elemental
+        Ramuh = 60, //Meteor
         Titan = 61, //Mana
         Diabolos = 62, //Crystal
         Gilgamesh = 63, //Aether
@@ -60,7 +61,7 @@
         Cactuar = 79, //Aether
         Cerberus = 80, //Chaos
         Goblin = 81, //Crystal
-        Mandragora = 82, //Mana
+        Mandragora = 82, //Meteor
         Louisoix = 83, //Chaos
         Spriggan = 85, //Chaos
         Sephirot = 86, //Materia
@@ -80,6 +81,10 @@
         Phantom = 401, //Chaos
         Alpha = 402, //Light
         Raiden = 403, //Light
+        Marilith = 404, //Dynamis
+        Seraph = 405, //Dynamis
+        Halicarnassus = 406, //Dynamis
+        Maduin = 407, //Dynamis
     }
 
     public static class Extensions
