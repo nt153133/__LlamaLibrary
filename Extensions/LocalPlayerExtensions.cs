@@ -34,6 +34,9 @@ namespace LlamaLibrary.Extensions
 
             [Offset("Search 0F B7 86 ? ? ? ? 66 89 85 ? ? ? ? E8 ? ? ? ? 48 8B 85 ? ? ? ? Add 3 Read32")]
             internal static int HomeWorld;
+
+            [Offset("Search 66 83 B9 ? ? ? ? ? 48 8B DA Add 3 Read32")]
+            internal static int CurrentMount;
         }
 
         public static bool IsWalking => Core.Memory.Read<byte>(Offsets.RunWalk) == 1;
@@ -95,9 +98,8 @@ namespace LlamaLibrary.Extensions
             IntPtr rankRow;
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                rankRow = Core.Memory.CallInjected64<IntPtr>(
-                    Offsets.GCGetMaxSealsByRank,
-                    gcRank);
+                rankRow = Core.Memory.CallInjected64<IntPtr>(Offsets.GCGetMaxSealsByRank,
+                                                             gcRank);
             }
 
             return Core.Memory.Read<int>(rankRow);
@@ -111,6 +113,11 @@ namespace LlamaLibrary.Extensions
         public static World HomeWorld(this Character character)
         {
             return Core.Memory.Read<World>(character.Pointer + Offsets.HomeWorld);
+        }
+
+        public static int CurrentMount(this LocalPlayer player)
+        {
+            return Core.Memory.Read<int>(player.Pointer + Offsets.CurrentMount);
         }
     }
 }
