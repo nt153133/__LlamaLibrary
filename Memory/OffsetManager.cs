@@ -240,11 +240,9 @@ namespace LlamaLibrary.Memory
 
         private static IntPtr ParseField(FieldInfo field, PatternFinder pf)
         {
-            var offset = (OffsetAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetAttribute))
-                .FirstOrDefault();
+            var offset = (OffsetAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetAttribute)).FirstOrDefault();
 
-            var valna = (OffsetValueNA)Attribute.GetCustomAttributes(field, typeof(OffsetValueNA))
-                .FirstOrDefault();
+            var valna = (OffsetValueNA)Attribute.GetCustomAttributes(field, typeof(OffsetValueNA)).FirstOrDefault();
 
             var result = IntPtr.Zero;
             var name = $"{field.DeclaringType.FullName}.{field.Name}";
@@ -253,10 +251,8 @@ namespace LlamaLibrary.Memory
 
             if (Translator.Language == Language.Chn) //Translator.Language
             {
-                var offsetCN = (OffsetCNAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute))
-                    .FirstOrDefault();
-                var valcn = (OffsetValueCN)Attribute.GetCustomAttributes(field, typeof(OffsetValueCN))
-                    .FirstOrDefault();
+                var offsetCN = (OffsetCNAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute)).FirstOrDefault();
+                var valcn = (OffsetValueCN)Attribute.GetCustomAttributes(field, typeof(OffsetValueCN)).FirstOrDefault();
 
                 if (valcn != null)
                 {
@@ -271,7 +267,8 @@ namespace LlamaLibrary.Memory
                 //var b1 = true;
                 try
                 {
-                    result = pf.Find(offsetCN != null ? offsetCN.PatternCN : offset.Pattern);
+                    result = pf.FindSingle(offsetCN != null ? offsetCN.PatternCN : offset.Pattern, true);
+                    //result = pf.Find(offsetCN != null ? offsetCN.PatternCN : offset.Pattern);
                 }
                 catch (Exception)
                 {
@@ -313,7 +310,8 @@ namespace LlamaLibrary.Memory
                     }
                     else
                     {
-                        result = pf.Find(offset.Pattern);
+                        result = pf.FindSingle(offset.Pattern, true);
+                        //result = pf.Find(offset.Pattern);
                         if (result != IntPtr.Zero)
                         {
                             if (field.FieldType != typeof(int))

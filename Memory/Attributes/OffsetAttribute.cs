@@ -22,6 +22,11 @@ namespace LlamaLibrary.Memory.Attributes
         public OffsetAttribute(string pattern, bool numeric = false, int expectedValue = 0)
         {
             Pattern = pattern;
+            if (!Pattern.StartsWith("Search "))
+            {
+                Pattern = "Search " + Pattern;
+            }
+
             if (PatternCN == "")
             {
                 PatternCN = pattern;
@@ -35,6 +40,11 @@ namespace LlamaLibrary.Memory.Attributes
             /*if (pattern != "")
                 Pattern = pattern;*/
             PatternCN = cnpattern;
+            if (!PatternCN.StartsWith("Search "))
+            {
+                PatternCN = "Search " + PatternCN;
+            }
+
             Numeric = numeric;
         }
     }

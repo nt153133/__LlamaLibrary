@@ -85,6 +85,8 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\BookConstants.cs" />
     <Compile Include="Helpers\ChatBroadcaster.cs" />
+    <Compile Include="Helpers\Classes\PulseTimer.cs" />
+    <Compile Include="Helpers\Classes\RandomMinutePulseTimer.cs" />
     <Compile Include="Helpers\CompanyChestHelper.cs" />
     <Compile Include="Helpers\CrystallineMeanHelper.cs" />
     <Compile Include="Helpers\CurrencyHelper.cs" />
