@@ -9,6 +9,7 @@ Orginal work done by zzi, contibutions by Omninewb, Freiheit, and mastahg
                                                                                  */
 
 using System;
+using System.CodeDom;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,6 +32,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteAgents;
 using Newtonsoft.Json;
+using LogLevel = LlamaLibrary.Logging.LogLevel;
 
 namespace LlamaLibrary.Memory
 {
@@ -39,98 +41,175 @@ namespace LlamaLibrary.Memory
         private static readonly StringBuilder Sb = new();
 
         private static readonly object InitLock = new();
+        private static readonly object InitLock1 = new();
+        private static bool initStarted;
         private static bool initDone;
 
         public static Dictionary<string, string> patterns = new();
         public static Dictionary<string, string> constants = new();
 
-        public static ConcurrentDictionary<string, long> OffsetCache;
+        public static ConcurrentDictionary<string, long> OffsetCache = new ConcurrentDictionary<string, long>();
 
         private static readonly bool _debug = false;
 
         private static string OffsetFile => Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{Core.CurrentGameVer}.json");
 
-        public static LLogger Logger { get; } = new LLogger("LLOffsetManager", Colors.RosyBrown);
+        public static LLogger Logger { get; } = new LLogger("LLOffsetManager", Colors.RosyBrown, LogLevel.Information);
 
         public static void Init()
         {
             var stopwatch = Stopwatch.StartNew();
-            lock (InitLock)
+            Thread scriptThread = null;
+            try
             {
-                if (initDone)
+                lock (InitLock)
                 {
-                    return;
-                }
+                    stopwatch.Restart();
+                    if (initDone)
+                    {
+                        Logger.Debug($"OffsetManager done {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+                        return;
+                    }
 
-                initDone = true;
-                var a = new Thread(() => SetScriptsThread());
-                a.Start();
-
-                var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
-                          where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
-                          select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
-
-                if (!q1.Contains(typeof(Offsets)))
-                {
-                    q1.Add(typeof(Offsets));
-                }
-
-                OffsetCache = new ConcurrentDictionary<string, long>();
-
-                if (File.Exists(OffsetFile))
-                {
-                    OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(OffsetFile));
-                }
-
-                SetOffsetObjects(q1);
-
-                var vtables = new Dictionary<IntPtr, int>();
-                for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
-                {
-                    vtables.Add(AgentModule.AgentVtables[index], index);
-                }
-
-                var q = from t in Assembly.GetExecutingAssembly().GetTypes()
-                        where t.Namespace == "LlamaLibrary.RemoteAgents" && t.IsClass
-                        select t;
-
-                foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
-                {
-                    var test = ((IAgent)Activator.CreateInstance(
-                        MyType,
-                        BindingFlags.Instance | BindingFlags.NonPublic,
-                        null,
-                        new object[]
+                    if (initStarted)
+                    {
+                        Logger.Information($"OffsetManager Init started but waiting {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+                        while (!initDone)
                         {
-                            IntPtr.Zero
-                        },
-                        null)
-                    ).RegisteredVtable;
+                            Thread.Sleep(100);
+                        }
 
-                    if (vtables.ContainsKey(test))
-                    {
-                        Logger.Information($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
-                    }
-                    else
-                    {
-                        Logger.Error($"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
-                    }
-                }
-
-                a.Join();
-                initDone = true;
-                if (_debug)
-                {
-                    foreach (var pair in OffsetCache)
-                    {
-                        Logger.Information($"{pair.Key} - {pair.Value:X}");
+                        return;
                     }
 
-                    //Log1.Information($"\n {Sb}");
+                    initStarted = true;
+                    lock (InitLock1)
+                    {
+                        stopwatch = Stopwatch.StartNew();
+                        if (initDone)
+                        {
+                            Logger.Information($"OffsetManager Init started but done now {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+                            return;
+                        }
 
-                    File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+                        Logger.Information($"OffsetManager Init started {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+
+                        scriptThread = new Thread(() => SetScriptsThread());
+                        scriptThread.Start();
+
+                        var newStopwatch = Stopwatch.StartNew();
+                        var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
+                                  where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+                                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+
+                        newStopwatch.Stop();
+                        Logger.Debug($"OffsetManager Init GetTypes took {newStopwatch.ElapsedMilliseconds}ms");
+
+                        newStopwatch.Restart();
+                        if (!q1.Contains(typeof(Offsets)))
+                        {
+                            q1.Add(typeof(Offsets));
+                        }
+
+                        newStopwatch.Stop();
+                        Logger.Debug($"OffsetManager Init Add took {newStopwatch.ElapsedMilliseconds}ms");
+
+                        newStopwatch.Restart();
+                        if (File.Exists(OffsetFile))
+                        {
+                            OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(OffsetFile));
+                            if (OffsetCache == null)
+                            {
+                                OffsetCache = new ConcurrentDictionary<string, long>();
+                            }
+                        }
+
+                        newStopwatch.Stop();
+                        Logger.Debug($"OffsetManager Init Deserialize took {newStopwatch.ElapsedMilliseconds}ms");
+
+                        newStopwatch.Restart();
+                        SetOffsetObjects(q1);
+                        newStopwatch.Stop();
+                        Logger.Debug($"OffsetManager SetOffsetObjects took {newStopwatch.ElapsedMilliseconds}ms");
+
+                        newStopwatch.Restart();
+                        var vtables = new Dictionary<IntPtr, int>();
+                        var pointers = AgentModule.AgentVtables;
+                        for (var index = 0; index < pointers.Count; index++)
+                        {
+                            vtables.Add(pointers[index], index);
+                        }
+
+                        Logger.Debug($"OffsetManager AgentModule.AgentVtables took {newStopwatch.ElapsedMilliseconds}ms");
+                        var q = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Namespace != null && t.IsClass && t.Namespace == "LlamaLibrary.RemoteAgents" && typeof(IAgent).IsAssignableFrom(t)).ToList();
+                        newStopwatch.Stop();
+                        Logger.Debug($"OffsetManager GetTypesAgents took {newStopwatch.ElapsedMilliseconds}ms");
+
+                        newStopwatch.Restart();
+                        var names = new List<string>();
+                        foreach (var MyType in q)
+                        {
+                            var test = ((IAgent)Activator.CreateInstance(MyType,
+                                                                         BindingFlags.Instance | BindingFlags.NonPublic,
+                                                                         null,
+                                                                         new object[]
+                                                                         {
+                                                                             IntPtr.Zero
+                                                                         },
+                                                                         null)
+                                ).RegisteredVtable;
+
+                            if (vtables.ContainsKey(test))
+                            {
+                                names.Add(MyType.Name);
+                                Logger.Debug($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
+                            }
+                            else
+                            {
+                                Logger.Error($"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
+                            }
+                        }
+
+                        Logger.Information("Added agents: " + string.Join(", ", names));
+                        newStopwatch.Stop();
+                        Logger.Debug($"OffsetManager AgentModule.TryAddAgent took {newStopwatch.ElapsedMilliseconds}ms");
+
+                        newStopwatch.Restart();
+                        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+                        newStopwatch.Stop();
+                        Logger.Debug($"OffsetManager File.WriteAllText took {newStopwatch.ElapsedMilliseconds}ms");
+                        Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+                        //initStarted = true;
+                        if (_debug)
+                        {
+                            foreach (var pair in OffsetCache)
+                            {
+                                Logger.Information($"{pair.Key} - {pair.Value:X}");
+                            }
+                        }
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                Logger.Error(e.ToString());
+            }
+            finally
+            {
+                initDone = true;
+                Logger.Debug($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+            }
+
+            /*
+            if (scriptThread != null)
+            {
+                var newStopwatch1 = Stopwatch.StartNew();
+                Logger.Information("Waiting on thread");
+                scriptThread.Join();
+                newStopwatch1.Stop();
+                Logger.Information($"OffsetManager scriptThread.Join took {newStopwatch1.ElapsedMilliseconds}ms");
+            }
+            */
 
             stopwatch.Stop();
             Logger.Information($"Total {stopwatch.ElapsedMilliseconds}ms");
@@ -192,50 +271,51 @@ namespace LlamaLibrary.Memory
             var types = q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public));
 
             using var pf = new PatternFinder(Core.Memory);
-            Parallel.ForEach(
-                types,
-                type =>
-                {
-                    if (type.FieldType.IsClass)
-                    {
-                        var instance = Activator.CreateInstance(type.FieldType);
+            Parallel.ForEach(types,
+                             type =>
+                             {
+                                 if (type.FieldType.IsClass)
+                                 {
+                                     var instance = Activator.CreateInstance(type.FieldType);
 
-                        foreach (var field in type.FieldType.GetFields(BindingFlags.Instance))
-                        {
-                            var res = ParseField(field, pf);
-                            if (field.FieldType == typeof(IntPtr))
-                            {
-                                field.SetValue(instance, res);
-                            }
-                            else
-                            {
-                                field.SetValue(instance, (int)res);
-                            }
-                        }
+                                     foreach (var field in type.FieldType.GetFields(BindingFlags.Instance))
+                                     {
+                                         //Logger.Information("Trying to set " + field.Name);
+                                         var res = ParseField(field, pf);
+                                         if (field.FieldType == typeof(IntPtr))
+                                         {
+                                             field.SetValue(instance, res);
+                                         }
+                                         else
+                                         {
+                                             field.SetValue(instance, (int)res);
+                                         }
+                                     }
 
-                        //set the value
-                        type.SetValue(null, instance);
-                    }
-                    else
-                    {
-                        var res = ParseField(type, pf);
-                        if (type.FieldType == typeof(IntPtr))
-                        {
-                            type.SetValue(null, res);
-                        }
-                        else
-                        {
-                            try
-                            {
-                                type.SetValue(null, res.ToInt32());
-                            }
-                            catch (Exception)
-                            {
-                                Logger.Error($"Error on {type.Name}");
-                            }
-                        }
-                    }
-                });
+                                     //set the value
+                                     type.SetValue(null, instance);
+                                 }
+                                 else
+                                 {
+                                     //Logger.Information("Trying to set " + type.Name);
+                                     var res = ParseField(type, pf);
+                                     if (type.FieldType == typeof(IntPtr))
+                                     {
+                                         type.SetValue(null, res);
+                                     }
+                                     else
+                                     {
+                                         try
+                                         {
+                                             type.SetValue(null, res.ToInt32());
+                                         }
+                                         catch (Exception)
+                                         {
+                                             Logger.Error($"Error on {type.Name}");
+                                         }
+                                     }
+                                 }
+                             });
         }
 
         private static IntPtr ParseField(FieldInfo field, PatternFinder pf)
@@ -246,7 +326,6 @@ namespace LlamaLibrary.Memory
 
             var result = IntPtr.Zero;
             var name = $"{field.DeclaringType.FullName}.{field.Name}";
-
             //var lang = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic).First(i => i.FieldType == typeof(Language)).GetValue(null);
 
             if (Translator.Language == Language.Chn) //Translator.Language
@@ -270,15 +349,17 @@ namespace LlamaLibrary.Memory
                     result = pf.FindSingle(offsetCN != null ? offsetCN.PatternCN : offset.Pattern, true);
                     //result = pf.Find(offsetCN != null ? offsetCN.PatternCN : offset.Pattern);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
                         Logger.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Exception(e);
                     }
                     else
                     {
                         Logger.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Exception(e);
                     }
                 }
             }
@@ -296,8 +377,10 @@ namespace LlamaLibrary.Memory
 
                 try
                 {
+                    //Logger.Information("Offsetcache Count: " + OffsetCache.Count);
                     if (OffsetCache.ContainsKey(name))
                     {
+                        //Logger.Information("Found in cache");
                         var offsetVal = OffsetCache[name];
                         if (field.FieldType != typeof(int))
                         {
@@ -310,6 +393,7 @@ namespace LlamaLibrary.Memory
                     }
                     else
                     {
+                        //Logger.Information($"Not found in cache : {field.DeclaringType.FullName}.{field.Name}");
                         result = pf.FindSingle(offset.Pattern, true);
                         //result = pf.Find(offset.Pattern);
                         if (result != IntPtr.Zero)
@@ -325,15 +409,17 @@ namespace LlamaLibrary.Memory
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
                         Logger.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Exception(e);
                     }
                     else
                     {
                         Logger.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Exception(e);
                     }
                 }
             }
@@ -444,6 +530,11 @@ namespace LlamaLibrary.Memory
                       select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
             SetOffsetObjects(q1);
+
+            while (!initDone)
+            {
+                Thread.Sleep(100);
+            }
         }
 
         [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
@@ -473,16 +564,15 @@ namespace LlamaLibrary.Memory
 
             foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
             {
-                var test = ((IAgent)Activator.CreateInstance(
-                    MyType,
-                    BindingFlags.Instance | BindingFlags.NonPublic,
-                    null,
-                    new object[]
-                    {
-                        IntPtr.Zero
-                    },
-                    null)
-                ).RegisteredVtable;
+                var test = ((IAgent)Activator.CreateInstance(MyType,
+                                                             BindingFlags.Instance | BindingFlags.NonPublic,
+                                                             null,
+                                                             new object[]
+                                                             {
+                                                                 IntPtr.Zero
+                                                             },
+                                                             null)
+                    ).RegisteredVtable;
 
                 if (vtables.ContainsKey(test))
                 {
@@ -492,6 +582,11 @@ namespace LlamaLibrary.Memory
                 {
                     Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
                 }
+            }
+
+            while (!initDone)
+            {
+                Thread.Sleep(100);
             }
         }
     }
