@@ -45,7 +45,8 @@ namespace LlamaLibrary.Helpers
 
             //BotManager.Current.Stop();
             //await TreeRoot.StopGently();
-            Thread.Sleep(2000);
+            await Task.Delay(2000);
+            //Thread.Sleep(2000);
             try
             {
                 await WaitUntil(() => !TreeRoot.IsRunning, timeout: 20000);
@@ -94,7 +95,8 @@ namespace LlamaLibrary.Helpers
                     {
                         Log.Information($"Restarting {lastBot.Name}");
                         BotManager.SetCurrent(lastBot);
-                        Thread.Sleep(1000);
+                        await Task.Delay(2000);
+                        //Thread.Sleep(1000);
 
                         tempbool = false;
 
