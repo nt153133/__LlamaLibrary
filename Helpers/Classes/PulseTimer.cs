@@ -5,6 +5,8 @@ namespace LlamaLibrary.Helpers.Classes
 {
     public class PulseTimer
     {
+        private DateTime _startTime;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PulseTimer"/> class.
         ///     Creates a Pulse Timer.
@@ -103,6 +105,7 @@ namespace LlamaLibrary.Helpers.Classes
         public void Start()
         {
             Timer.Start();
+            _startTime = DateTime.Now;
         }
 
         /// <summary>
@@ -112,6 +115,10 @@ namespace LlamaLibrary.Helpers.Classes
         {
             Timer.Stop();
         }
+
+        public DateTime EndTime => _startTime.AddMilliseconds(Interval);
+
+        public TimeSpan RemainingTime => EndTime - DateTime.Now;
 
         /// <summary>
         ///     Sets the timer interval.
