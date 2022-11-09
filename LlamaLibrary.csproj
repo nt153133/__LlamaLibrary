@@ -105,6 +105,9 @@
     <Compile Include="Helpers\InclusionShopHelper.cs" />
     <Compile Include="Helpers\InventoryHelpers.cs" />
     <Compile Include="Helpers\IshgardHandin.cs" />
+    <Compile Include="Helpers\ItemLinking.cs" />
+    <Compile Include="Helpers\MessageHandling\ChatHandler.cs" />
+    <Compile Include="Helpers\MessageHandling\ChatReceiver.cs" />
     <Compile Include="Helpers\MinionHelper.cs" />
     <Compile Include="Helpers\NPC\Location.cs" />
     <Compile Include="Helpers\NPC\Npc.cs" />
@@ -113,6 +116,7 @@
     <Compile Include="Helpers\Ping\AddressGetter.cs" />
     <Compile Include="Helpers\Ping\PingChecker.cs" />
     <Compile Include="Helpers\ScreenshotHelper.cs" />
+    <Compile Include="Helpers\SpecialCharacters.cs" />
     <Compile Include="Helpers\SquadronStatus.cs" />
     <Compile Include="Helpers\TeleportHelper.cs" />
     <Compile Include="Helpers\UIInputHelper.cs" />

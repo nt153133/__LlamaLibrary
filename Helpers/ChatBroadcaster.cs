@@ -1,29 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Objects;
+using GreyMagic;
+using LlamaLibrary.ClientDataHelpers;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
     public class ChatBroadcaster
     {
-        public MessageType MessageType { get; set; }
-
-        public DateTime LastMessage = DateTime.MinValue;
-
         public static readonly HashSet<MessageType> AcceptedTypes = new() { MessageType.Shout, MessageType.Yell, MessageType.Say, MessageType.FreeCompany, MessageType.Echo, MessageType.CustomEmotes, MessageType.StandardEmotes };
-
-        public int MinDelayMs { get; set; }
 
         public static DateTime LastPerson = DateTime.MinValue;
 
-        public static int MinDelayTellMs { get; set; } = 2000;
+        public DateTime LastMessage = DateTime.MinValue;
 
         public ChatBroadcaster(MessageType messageType = MessageType.Shout, int minDelayMs = 1000)
         {
@@ -31,6 +29,12 @@ namespace LlamaLibrary.Helpers
 
             MinDelayMs = minDelayMs;
         }
+
+        public MessageType MessageType { get; set; }
+
+        public int MinDelayMs { get; set; }
+
+        public static int MinDelayTellMs { get; set; } = 2000;
 
         public async Task Send(string message)
         {
@@ -65,9 +69,59 @@ namespace LlamaLibrary.Helpers
                 case MessageType.StandardEmotes:
                     ChatManager.SendChat("/" + message);
                     break;
+                case MessageType.CWLS:
+                    ChatManager.SendChat("/cwlinkshell1 " + message);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            LastMessage = DateTime.Now;
+        }
+
+        public async Task Send(byte[] message)
+        {
+            if ((DateTime.Now - LastMessage).TotalMilliseconds < MinDelayMs)
+            {
+                await Coroutine.Sleep((int)(MinDelayMs - (DateTime.Now - LastMessage).TotalMilliseconds));
+            }
+
+            var messageByte = new List<byte>();
+            switch (MessageType)
+            {
+                case MessageType.FreeCompany:
+                    messageByte.AddRange(Encoding.UTF8.GetBytes("/fc "));
+                    break;
+                case MessageType.Say:
+                    messageByte.AddRange(Encoding.UTF8.GetBytes("/say "));
+                    break;
+                case MessageType.Shout:
+                    messageByte.AddRange(Encoding.UTF8.GetBytes("/shout "));
+                    break;
+                case MessageType.Party:
+                    messageByte.AddRange(Encoding.UTF8.GetBytes("/p "));
+                    break;
+                case MessageType.Yell:
+                    messageByte.AddRange(Encoding.UTF8.GetBytes("/yell "));
+                    break;
+                case MessageType.Echo:
+                    messageByte.AddRange(Encoding.UTF8.GetBytes("/echo "));
+                    break;
+                case MessageType.CustomEmotes:
+                    messageByte.AddRange(Encoding.UTF8.GetBytes("/em "));
+                    break;
+                case MessageType.StandardEmotes:
+                    messageByte.AddRange(Encoding.UTF8.GetBytes("/"));
+                    break;
+                case MessageType.CWLS:
+                    messageByte.AddRange(Encoding.UTF8.GetBytes("/cwlinkshell1 "));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            messageByte.AddRange(message);
+            SendChat(messageByte.ToArray());
 
             LastMessage = DateTime.Now;
         }
@@ -115,6 +169,55 @@ namespace LlamaLibrary.Helpers
             }
 
             return await SendTell(GameObjectManager.GetObjectById<Character>(GameObjectManager.Target.ObjectId, true) as Character, message);
+        }
+
+        public async Task SendMessage(string line, MessageType messageType)
+        {
+            var oldType = MessageType;
+            SetType(messageType);
+            await Send(line);
+            SetType(oldType);
+        }
+
+        public void SetDelay(int ms)
+        {
+            MinDelayMs = ms;
+        }
+
+        public async Task SendMessage(string line)
+        {
+            await Send(line);
+        }
+
+        public void SetType(MessageType messageType)
+        {
+            MessageType = messageType;
+        }
+
+        public static void SendChat(byte[] array)
+        {
+            lock (Core.Memory.Executor.AssemblyLock)
+            {
+                using AllocatedMemory allocatedMemory2 = Core.Memory.CreateAllocatedMemory(400);
+                using AllocatedMemory allocatedMemory = Core.Memory.CreateAllocatedMemory(array.Length + 30);
+                allocatedMemory.AllocateOfChunk("start", array.Length);
+                allocatedMemory.WriteBytes("start", array);
+                allocatedMemory2.AllocateOfChunk<IntPtr>("dword0");
+                allocatedMemory2.AllocateOfChunk<long>("dword4");
+                allocatedMemory2.AllocateOfChunk<long>("dword8");
+                allocatedMemory2.AllocateOfChunk<long>("dwordC");
+                allocatedMemory2.Write("dword0", allocatedMemory.Address);
+                allocatedMemory2.Write("dword4", 64);
+                allocatedMemory2.Write("dword8", array.Length + 1);
+                allocatedMemory2.Write("dwordC", 0);
+                Core.Memory.CallInjected64<int>(Offsets.ExecuteCommandInner,
+                                                new object[3]
+                                                {
+                                                    UiManagerProxy.RaptureShellModule,
+                                                    allocatedMemory2.Address,
+                                                    UiManagerProxy.UIModule
+                                                });
+            }
         }
     }
 }

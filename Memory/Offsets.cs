@@ -96,6 +96,9 @@ namespace LlamaLibrary.Memory
 
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 8B 93 ? ? ? ? Add 3 TraceRelative")]
         public static IntPtr PlayerState;
+
+        [Offset("Search E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? E9 ? ? ? ? 48 8D 8F ? ? ? ? TraceCall")]
+        public static IntPtr ExecuteCommandInner;
     }
 
     public static partial class Offsets
