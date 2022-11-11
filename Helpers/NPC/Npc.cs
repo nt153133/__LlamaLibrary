@@ -2,6 +2,7 @@
 using System.Linq;
 using Clio.Utilities;
 using ff14bot.Managers;
+using ff14bot.NeoProfiles;
 using ff14bot.Objects;
 using Newtonsoft.Json;
 
@@ -12,8 +13,16 @@ namespace LlamaLibrary.Helpers.NPC
     {
         [JsonProperty]
         public uint NpcId { get; set; }
+
         [JsonProperty]
         public Location Location { get; set; }
+
+        [JsonProperty]
+        public int QuestRequiredId { get; set; } = 0;
+
+        public bool IsQuestRequired => QuestRequiredId != 0;
+
+        public bool IsQuestCompleted => !IsQuestRequired || ConditionParser.IsQuestCompleted(QuestRequiredId);
         public bool CanGetTo => Location.CanTeleportTo || Location.IsHousingLocation;
         public int TeleportCost => Location.TeleportCost;
         public bool IsInCurrentArea => WorldManager.AetheryteIdsForZone(WorldManager.ZoneId).Select(i => i.Item1).Contains(Location.ClosestAetherytePrimaryResult.Id);
@@ -34,6 +43,13 @@ namespace LlamaLibrary.Helpers.NPC
             Location = new Location(zoneId, location);
         }
 
+        public Npc(uint npcId, ushort zoneId, Vector3 location, int questRequiredId)
+        {
+            NpcId = npcId;
+            Location = new Location(zoneId, location);
+            QuestRequiredId = questRequiredId;
+        }
+
         public Npc(GameObject gameObject)
         {
             NpcId = gameObject.NpcId;
@@ -42,7 +58,7 @@ namespace LlamaLibrary.Helpers.NPC
 
         public string ObjectCreationString()
         {
-            return $"new Npc({NpcId}, {Location.ZoneId}, new Vector3({Location.Coordinates.X}f, {Location.Coordinates.Y}f, {Location.Coordinates.Z}f)),";
+            return $"new Npc({NpcId}, {Location.ZoneId}, new Vector3({Location.Coordinates.X}f, {Location.Coordinates.Y}f, {Location.Coordinates.Z}f),0),";
         }
 
         public override string ToString()
