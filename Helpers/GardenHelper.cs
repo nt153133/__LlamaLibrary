@@ -64,8 +64,12 @@ namespace LlamaLibrary.Helpers
         {
             if (gardenLoc != default)
             {
-                Navigator.PlayerMover = new SlideMover();
-                Navigator.NavigationProvider = new ServiceNavigationProvider();
+                if (Navigator.NavigationProvider == null)
+                {
+                    Navigator.PlayerMover = new SlideMover();
+                    Navigator.NavigationProvider = new ServiceNavigationProvider();
+                }
+
                 var house = WorldManager.AvailableLocations.FirstOrDefault(i => i.AetheryteId == AE);
 
                 Log.Information($"Teleporting to housing: {house.Name} (Zone: {DataManager.ZoneNameResults[house.ZoneId]}, Aetheryte: {house.AetheryteId})");

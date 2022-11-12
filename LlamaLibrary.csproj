@@ -109,6 +109,7 @@
     <Compile Include="Helpers\MessageHandling\ChatHandler.cs" />
     <Compile Include="Helpers\MessageHandling\ChatReceiver.cs" />
     <Compile Include="Helpers\MinionHelper.cs" />
+    <Compile Include="Helpers\NavigationHelper.cs" />
     <Compile Include="Helpers\NPC\Location.cs" />
     <Compile Include="Helpers\NPC\Npc.cs" />
     <Compile Include="Helpers\NPC\NpcHelper.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -13,6 +14,7 @@ using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.Pathing;
+using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Helpers.Housing;
@@ -85,6 +87,11 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ)
         {
+            if (Navigator.NavigationProvider == null)
+            {
+                Navigator.PlayerMover = new SlideMover();
+                Navigator.NavigationProvider = new ServiceNavigationProvider();
+            }
             /*if (ZoneId == 620)
             {
                 var AE = WorldManager.AetheryteIdsForZone(ZoneId).OrderBy(i => i.Item2.DistanceSqr(XYZ)).First();
@@ -97,7 +104,10 @@ namespace LlamaLibrary.Helpers
 
             if ((ZoneId == 534 || ZoneId == 535 || ZoneId == 536) && WorldManager.ZoneId != ZoneId)
             {
-                await GrandCompanyHelper.GetToGCBarracks();
+                if (!await GrandCompanyHelper.GetToGCBarracks())
+                {
+                    return false;
+                }
             }
 
             if (HousingTraveler.HousingZoneIds.Contains((ushort)ZoneId))
@@ -268,10 +278,10 @@ namespace LlamaLibrary.Helpers
             var moving = MoveResult.GeneratingPath;
             var target = new FlyToParameters(loc);
             while (moving is not (MoveResult.Done or
-                     MoveResult.ReachedDestination or
-                     MoveResult.Failed or
-                     MoveResult.Failure or
-                     MoveResult.PathGenerationFailed))
+                   MoveResult.ReachedDestination or
+                   MoveResult.Failed or
+                   MoveResult.Failure or
+                   MoveResult.PathGenerationFailed))
             {
                 moving = Flightor.MoveTo(target);
 
@@ -354,6 +364,54 @@ namespace LlamaLibrary.Helpers
             Navigator.Stop();
             await Coroutine.Wait(5000, () => !GeneralFunctions.IsJumping);
             return moving == MoveResult.ReachedDestination;
+        }
+
+        public static async Task<bool> GroundMove(Vector3 loc, float distance)
+        {
+            Log.Information("Using Ground Move");
+            if (Navigator.NavigationProvider == null)
+            {
+                Navigator.PlayerMover = new SlideMover();
+                Navigator.NavigationProvider = new ServiceNavigationProvider();
+            }
+
+            var moving = MoveResult.GeneratingPath;
+            var target = new MoveToParameters(loc);
+
+            var lastLoc = Core.Me.Location;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            while (!(moving == MoveResult.Done ||
+                     moving == MoveResult.ReachedDestination ||
+                     moving == MoveResult.Failed ||
+                     moving == MoveResult.Failure ||
+                     moving == MoveResult.PathGenerationFailed || Core.Me.Distance(loc) < distance))
+            {
+                moving = Navigator.MoveTo(target);
+
+                if (moving == MoveResult.Moved && sw.ElapsedMilliseconds > 5000)
+                {
+                    sw.Restart();
+                    if (Core.Me.Location.Distance(lastLoc) < 1 || Core.Me.Location.Distance(loc) < distance)
+                    {
+                        Log.Error($"Seems like we're stuck, trying to move to {loc}");
+                        moving = Core.Me.Location.Distance(loc) <= distance ? MoveResult.ReachedDestination : MoveResult.Failed;
+                        break;
+                    }
+
+                    lastLoc = Core.Me.Location;
+                    //return false;
+                }
+
+                await Coroutine.Yield();
+            }
+
+            Navigator.PlayerMover.MoveStop();
+            Navigator.NavigationProvider.ClearStuckInfo();
+            Navigator.Stop();
+            await Coroutine.Wait(5000, () => !GeneralFunctions.IsJumping);
+            return Core.Me.Location.Distance(loc) <= distance;
         }
 
         public static async Task<GameObject> GetToAE(uint id)
@@ -563,7 +621,7 @@ namespace LlamaLibrary.Helpers
             return window.IsOpen;
         }
 
-        public static async Task<bool> GetToInteractNpcSelectString(uint npcId, ushort zoneId, Vector3 location, int selectStringIndex = -1, RemoteWindow nextWindow = null)
+        public static async Task<bool> GetToInteractNpcSelectString(uint npcId, ushort zoneId, Vector3 location, int selectStringIndex = -1, RemoteWindow? nextWindow = null)
         {
             if (await GetTo(zoneId, location))
             {

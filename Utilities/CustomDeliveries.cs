@@ -29,8 +29,12 @@ namespace LlamaLibrary.Utilities
 
         public static async Task<bool> RunCustomDeliveries(DohClasses dohClass = DohClasses.Carpenter)
         {
-            Navigator.PlayerMover = new SlideMover();
-            Navigator.NavigationProvider = new ServiceNavigationProvider();
+            if (Navigator.NavigationProvider == null)
+            {
+                Navigator.PlayerMover = new SlideMover();
+                Navigator.NavigationProvider = new ServiceNavigationProvider();
+            }
+
             var DeliveryNpcs = ResourceManager.CustomDeliveryNpcs.Value;
 
             foreach (var npc in DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).OrderByDescending(i => i.Index))

@@ -17,14 +17,14 @@ namespace LlamaLibrary.Helpers.NPC
             internal static IntPtr GetENpcResident;
         }
 
-        public static Npc GetClosestNpc(IEnumerable<Npc> npcs)
+        public static Npc? GetClosestNpc(IEnumerable<Npc> npcs)
         {
             if (npcs.Any(i => i.IsInCurrentZone))
             {
-                return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(Core.Me.Location)).First();
+                return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(Core.Me.Location)).FirstOrDefault();
             }
 
-            return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(i.Location.ClosestAetheryteResult.Position)).First();
+            return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(i.Location.ClosestAetheryteResult.Position)).FirstOrDefault();
         }
 
         public static List<Npc> OrderByDistance(IEnumerable<Npc> npcs)

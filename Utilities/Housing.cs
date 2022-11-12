@@ -28,8 +28,11 @@ namespace LlamaLibrary.Utilities
 
         public static async Task CheckHousing()
         {
-            Navigator.PlayerMover = new SlideMover();
-            Navigator.NavigationProvider = new ServiceNavigationProvider();
+            if (Navigator.NavigationProvider == null)
+            {
+                Navigator.PlayerMover = new SlideMover();
+                Navigator.NavigationProvider = new ServiceNavigationProvider();
+            }
 
             var output = new List<string>();
             var medium = false;

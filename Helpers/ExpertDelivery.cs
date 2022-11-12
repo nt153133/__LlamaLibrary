@@ -3,11 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
+using Clio.Utilities;
 using ff14bot;
+using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
@@ -18,6 +21,13 @@ namespace LlamaLibrary.Helpers
     public static class ExpertDelivery
     {
         private static readonly LLogger Log = new(nameof(ExpertDelivery), Colors.DarkKhaki);
+
+        public static Dictionary<GrandCompany, Npc> PersonnelOfficers = new()
+        {
+            { GrandCompany.Order_Of_The_Twin_Adder, new Npc(1002394, 132, new Vector3(-68.34107f, -0.5017813f, -7.787445f)) }, //serpent personnel officer New Gridania - Adders' Nest
+            { GrandCompany.Maelstrom, new Npc(1002388, 128, new Vector3(93.70313f, 40.27537f, 74.40751f)) }, //storm personnel officer Limsa Lominsa Upper Decks - Maelstrom Command
+            { GrandCompany.Immortal_Flames, new Npc(1002391, 130, new Vector3(-142.8766f, 4.099999f, -106.1056f)) }, //flame personnel officer Ul'dah - Steps of Nald - Hall of Flames
+        };
 
         public static async Task<DeliveryStatus> DeliverItems(uint itemId)
         {
@@ -172,22 +182,26 @@ namespace LlamaLibrary.Helpers
                 return true;
             }
 
-            await GrandCompanyHelper.InteractWithNpc(GCNpc.Personnel_Officer);
-            await Coroutine.Wait(5000, () => SelectString.IsOpen);
-            if (!SelectString.IsOpen)
+            //await GrandCompanyHelper.InteractWithNpc(GCNpc.Personnel_Officer);
+            if (!await Navigation.GetToInteractNpcSelectString(PersonnelOfficers[Core.Me.GrandCompany], 0))
             {
-                Log.Information("Window did not open trying again");
-                await GrandCompanyHelper.InteractWithNpc(GCNpc.Personnel_Officer);
-                await Coroutine.Wait(5000, () => SelectString.IsOpen);
-
                 if (!SelectString.IsOpen)
                 {
-                    Log.Error("Window is not open...maybe it didn't get to npc?");
-                    return false;
+                    Log.Information("Window did not open trying again");
+                    await GrandCompanyHelper.InteractWithNpc(GCNpc.Personnel_Officer);
+                    await Coroutine.Wait(10000, () => SelectString.IsOpen);
+
+                    if (!SelectString.IsOpen)
+                    {
+                        Log.Error("Window is not open...maybe it didn't get to npc?");
+                        return false;
+                    }
                 }
+
+                SelectString.ClickSlot(0);
+                await Coroutine.Wait(10000, () => !SelectString.IsOpen);
             }
 
-            SelectString.ClickSlot(0);
             if (!await GrandCompanySupplyList.Instance.WaitTillWindowOpen())
             {
                 Log.Information("Window is not open...maybe it didn't get to npc?");

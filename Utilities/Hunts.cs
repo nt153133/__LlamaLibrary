@@ -36,8 +36,12 @@ namespace LlamaLibrary.Utilities
 
         public static async Task DoHunts(int[] huntTypes)
         {
-            Navigator.PlayerMover = new SlideMover();
-            Navigator.NavigationProvider = new ServiceNavigationProvider();
+            if (Navigator.NavigationProvider == null)
+            {
+                Navigator.PlayerMover = new SlideMover();
+                Navigator.NavigationProvider = new ServiceNavigationProvider();
+            }
+
             ff14bot.Settings.CharacterSettings.Instance.UseMount = true;
 
             var hadOld = await GetHuntBills(huntTypes);

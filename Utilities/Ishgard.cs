@@ -67,8 +67,12 @@ namespace LlamaLibrary.Utilities
         public static async Task<bool> GatheringHandin()
         {
             Log.Information($"Gathering Started");
-            Navigator.NavigationProvider = new ServiceNavigationProvider();
-            Navigator.PlayerMover = new SlideMover();
+            if (Navigator.NavigationProvider == null)
+            {
+                Navigator.PlayerMover = new SlideMover();
+                Navigator.NavigationProvider = new ServiceNavigationProvider();
+            }
+
             while (ScriptConditions.Helpers.HasIshgardGatheringBotanist())
             {
                 await LlamaLibrary.Helpers.IshgardHandin.HandInGatheringItem(1);
@@ -98,8 +102,11 @@ namespace LlamaLibrary.Utilities
 
         public static async Task<bool> HandinNew()
         {
-            Navigator.NavigationProvider = new ServiceNavigationProvider();
-            Navigator.PlayerMover = new SlideMover();
+            if (Navigator.NavigationProvider == null)
+            {
+                Navigator.PlayerMover = new SlideMover();
+                Navigator.NavigationProvider = new ServiceNavigationProvider();
+            }
 
             Log.Information("Started");
 

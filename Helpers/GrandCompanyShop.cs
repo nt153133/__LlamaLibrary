@@ -229,8 +229,11 @@ namespace LlamaLibrary.Helpers
         {
             if (!GrandCompanyExchange.Instance.IsOpen)
             {
-                Navigator.PlayerMover = new SlideMover();
-                Navigator.NavigationProvider = new ServiceNavigationProvider();
+                if (Navigator.NavigationProvider == null)
+                {
+                    Navigator.PlayerMover = new SlideMover();
+                    Navigator.NavigationProvider = new ServiceNavigationProvider();
+                }
 
                 Log.Information("Calling interact with npc");
                 await GrandCompanyHelper.InteractWithNpc(GCNpc.Quartermaster);
