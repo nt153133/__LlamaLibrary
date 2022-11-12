@@ -72,18 +72,26 @@ namespace LlamaLibrary.Helpers.Housing
         {
             get
             {
-                var positionPointer = PositionPointer;
-
-                if (positionPointer != IntPtr.Zero)
+                try
                 {
-                    return new HousingPositionInfo(positionPointer);
+                    var positionPointer = PositionPointer;
+
+                    if (positionPointer != IntPtr.Zero)
+                    {
+                        return new HousingPositionInfo(positionPointer);
+                    }
+                }
+                catch (Exception e)
+                {
+                    ff14bot.Helpers.Logging.WriteException(e);
+                    return new HousingPositionInfo(IntPtr.Zero);
                 }
 
                 return new HousingPositionInfo(IntPtr.Zero);
             }
         }
 
-        public static HouseLocation CurrentHouseLocation
+        public static HouseLocation? CurrentHouseLocation
         {
             get
             {
@@ -93,7 +101,7 @@ namespace LlamaLibrary.Helpers.Housing
                 }
 
                 var info = HousingPositionInfo;
-                return info ? new HouseLocation((HousingZone)WorldManager.ZoneId, info.Ward, info.Plot) : null;
+                return info.InHouse ? new HouseLocation((HousingZone)WorldManager.ZoneId, info.Ward, info.Plot) : null;
             }
         }
 

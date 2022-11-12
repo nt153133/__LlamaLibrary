@@ -28,17 +28,33 @@ namespace LlamaLibrary.Helpers.Housing
                 return;
             }
 
-            InHouse = Core.Memory.Read<byte>(_address + 0x96A9) == 0;
-            House = (ushort)(!InHouse ? 0 : Core.Memory.Read<ushort>(_address + 0x96A0) + 1);
-            var internalWard = (ushort)(Core.Memory.Read<ushort>(_address + 0x96A2) + 1);
-            var internalPlot = (byte)(InHouse ? 0 : Core.Memory.Read<byte>(_address + 0x96A8) + 1);
-            Room = (internalWard & RoomMask) >> MaskSize;
-            var wardTemp = ((internalWard & WardMask) >> MaskSize) + 1;
-            Ward = (internalWard < 50) ? internalWard : wardTemp;
-            Subdivision = Core.Memory.Read<byte>(_address + 0x96A9) == 2;
-            Zone = Core.Memory.Read<InternalHousingZone>(_address + 0x96A4);
-            Plot = InHouse ? House : internalPlot;
-            HousingFloor = Core.Memory.Read<HousingFloor>(_address + 0x9704);
+            try
+            {
+                InHouse = Core.Memory.Read<byte>(_address + 0x96A9) == 0;
+                House = (ushort)(!InHouse ? 0 : Core.Memory.Read<ushort>(_address + 0x96A0) + 1);
+                var internalWard = (ushort)(Core.Memory.Read<ushort>(_address + 0x96A2) + 1);
+                var internalPlot = (byte)(InHouse ? 0 : Core.Memory.Read<byte>(_address + 0x96A8) + 1);
+                Room = (internalWard & RoomMask) >> MaskSize;
+                var wardTemp = ((internalWard & WardMask) >> MaskSize) + 1;
+                Ward = (internalWard < 50) ? internalWard : wardTemp;
+                Subdivision = Core.Memory.Read<byte>(_address + 0x96A9) == 2;
+                Zone = Core.Memory.Read<InternalHousingZone>(_address + 0x96A4);
+                Plot = InHouse ? House : internalPlot;
+                HousingFloor = Core.Memory.Read<HousingFloor>(_address + 0x9704);
+            }
+            catch (Exception e)
+            {
+                ff14bot.Helpers.Logging.WriteException(e);
+                InHouse = false;
+                House = 0;
+                Room = 0;
+                Ward = 0;
+                Subdivision = false;
+                Zone = InternalHousingZone.Unknown;
+                Plot = 0;
+                HousingFloor = HousingFloor.Unknown;
+                return;
+            }
         }
 
         public static implicit operator bool(HousingPositionInfo ptr)
