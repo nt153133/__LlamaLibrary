@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using ff14bot;
 using ff14bot.Helpers;
 using ff14bot.Managers;
@@ -46,15 +47,100 @@ namespace LlamaLibrary.Helpers.Housing
         public static HouseLocation FreeCompanyEstate => AccessibleHouseLocations[(int)HouseLocationIndex.FreeCompanyEstate];
         public static HouseLocation[] SharedEstates => new[] { AccessibleHouseLocations[(int)HouseLocationIndex.SharedEstate1], AccessibleHouseLocations[(int)HouseLocationIndex.SharedEstate2] };
 
-        public static IntPtr PositionPointer => Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
+        public static IntPtr PositionPointer
+        {
+            get
+            {
+                var housingManager = HousingManager;
+                if (!housingManager.HasValue)
+                {
+                    return IntPtr.Zero;
+                }
 
-        public static bool IsInHousingArea => PositionPointer != IntPtr.Zero && HousingPositionInfo.Ward != default;
+                if (housingManager.Value.CurrentTerritory == IntPtr.Zero)
+                {
+                    return IntPtr.Zero;
+                }
 
-        public static bool IsInsideHouse => HousingPositionInfo.InHouse;
+                return housingManager.Value.CurrentTerritory;
+            }
+        }
+
+        public static bool IsInHousingArea
+        {
+            get
+            {
+                var housingManager = HousingManager;
+                if (!housingManager.HasValue)
+                {
+                    return false;
+                }
+
+                if (housingManager.Value.CurrentTerritory == IntPtr.Zero)
+                {
+                    return false;
+                }
+
+                return housingManager.Value.CurrentTerritory != IntPtr.Zero;
+            }
+        }
+
+        public static bool IsInsideHouse
+        {
+            get
+            {
+                var housingManager = HousingManager;
+                if (!housingManager.HasValue)
+                {
+                    return false;
+                }
+
+                if (housingManager.Value.CurrentTerritory == IntPtr.Zero)
+                {
+                    return false;
+                }
+
+                return housingManager.Value.CurrentTerritory != IntPtr.Zero && housingManager.Value.CurrentTerritory == housingManager.Value.IndoorTerritory;
+            }
+        }
 
         public static bool IsInsideRoom => HousingPositionInfo.Room != default;
 
-        public static bool IsWithinPlot => HousingPositionInfo.Plot != default;
+        public static bool IsWithinPlot
+        {
+            get
+            {
+                var housingManager = HousingManager;
+                if (!housingManager.HasValue)
+                {
+                    return false;
+                }
+
+                if (housingManager.Value.CurrentTerritory == IntPtr.Zero)
+                {
+                    return false;
+                }
+
+                return housingManager.Value.CurrentTerritory != IntPtr.Zero && (housingManager.Value.CurrentTerritory == housingManager.Value.OutdoorTerritory || housingManager.Value.CurrentTerritory == housingManager.Value.IndoorTerritory);
+            }
+        }
+
+        public static HousingManagerStruct? HousingManager
+        {
+            get
+            {
+                try
+                {
+                    var pointer = Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress);
+                    return pointer == IntPtr.Zero ? null : Core.Memory.Read<HousingManagerStruct>(pointer);
+                }
+                catch (Exception e)
+                {
+                    ff14bot.Helpers.Logging.WriteException(e);
+                    return null;
+                }
+            }
+        }
 
         static HousingHelper()
         {
@@ -109,5 +195,21 @@ namespace LlamaLibrary.Helpers.Housing
         {
             return $"IsInHousingArea: {IsInHousingArea}, IsInsideHouse: {IsInsideHouse}, IsInsideRoom: {IsInsideRoom}, IsWithinPlot: {IsWithinPlot}, HousingPositionInfo: {HousingPositionInfo.DynamicString()}";
         }
+    }
+
+    [StructLayout(LayoutKind.Explicit, Size = 0xE0)]
+    public struct HousingManagerStruct
+    {
+        [FieldOffset(0x00)]
+        public IntPtr CurrentTerritory;
+
+        [FieldOffset(0x08)]
+        public IntPtr OutdoorTerritory;
+
+        [FieldOffset(0x10)]
+        public IntPtr IndoorTerritory;
+
+        [FieldOffset(0x18)]
+        public IntPtr WorkshopTerritory;
     }
 }
