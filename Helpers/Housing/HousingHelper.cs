@@ -187,6 +187,11 @@ namespace LlamaLibrary.Helpers.Housing
                 }
 
                 var info = HousingPositionInfo;
+                if (!info)
+                {
+                    return null;
+                }
+
                 return info.InHouse ? new HouseLocation((HousingZone)WorldManager.ZoneId, info.Ward, info.Plot) : null;
             }
         }
