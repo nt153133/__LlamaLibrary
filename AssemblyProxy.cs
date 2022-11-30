@@ -1,4 +1,5 @@
-﻿using System;
+﻿//!CompilerOption:AddRef:Clio.Localization.dll
+using System;
 using System.Reflection;
 using ff14bot;
 using LlamaLibrary.Memory;
