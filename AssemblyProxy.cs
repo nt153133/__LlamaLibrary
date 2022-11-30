@@ -14,7 +14,6 @@ namespace LlamaLibrary
             switch (assemblyName.Name)
             {
                 case "Newtonsoft":
-                case "Newtonsoft.Json":
                     return typeof(JsonContract).Assembly;
                 case "GreyMagic":
                     return Core.Memory.GetType().Assembly;
