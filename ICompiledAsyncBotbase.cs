@@ -16,5 +16,6 @@ namespace LlamaLibrary
         void Stop();
         void OnButtonPress();
         void SetParameters(string param);
+        void Initialize();
     }
 }
