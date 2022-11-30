@@ -35,6 +35,9 @@
     <OutputPath>bin\Debug\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Clio.Localization">
+      <HintPath>..\..\Clio.Localization.dll</HintPath>
+    </Reference>
     <Reference Include="GreyMagic">
       <HintPath>..\..\GreyMagic.dll</HintPath>
       <Private>true</Private>
@@ -55,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyProxy.cs" />
     <Compile Include="ClientDataHelpers\AtkArrayDataHolder.cs" />
     <Compile Include="ClientDataHelpers\UiManagerProxy.cs" />
     <Compile Include="Directors\OutOnALimbDirector.cs" />
