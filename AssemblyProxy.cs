@@ -22,8 +22,8 @@ namespace LlamaLibrary
                     return Core.Me.GetType().Assembly;
                 case "LlamaLibrary":
                     return typeof(OffsetManager).Assembly;
-                case "Clio.Localization":
-                    return typeof(Infralution.Localization.Wpf.CultureManager).Assembly;
+                /*case "Clio.Localization":
+                    return typeof(Infralution.Localization.Wpf.CultureManager).Assembly;*/
                 default:
                     return null!;
             }
