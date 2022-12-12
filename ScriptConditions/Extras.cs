@@ -73,7 +73,7 @@ namespace LlamaLibrary.ScriptConditions
         public static bool LisbethPresent()
         {
             isLisbethPresentCache ??= BotManager.Bots
-                    .FirstOrDefault(c => c.Name == "Lisbeth") != null;
+                .FirstOrDefault(c => c.Name == "Lisbeth") != null;
 
             return isLisbethPresentCache.Value;
         }
@@ -124,7 +124,7 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentJob switch
             {
                 ClassJobType.Marauder or ClassJobType.Warrior or ClassJobType.Gladiator or ClassJobType.Paladin or ClassJobType.Gunbreaker or ClassJobType.DarkKnight => true,
-                _ => false,
+                _                                                                                                                                                     => false,
             };
         }
 
@@ -133,7 +133,7 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentJob switch
             {
                 ClassJobType.Arcanist or ClassJobType.Summoner or ClassJobType.Thaumaturge or ClassJobType.BlackMage or ClassJobType.RedMage or ClassJobType.BlueMage => true,
-                _ => false,
+                _                                                                                                                                                     => false,
             };
         }
 
@@ -142,7 +142,7 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentJob switch
             {
                 ClassJobType.Scholar or ClassJobType.Conjurer or ClassJobType.WhiteMage or ClassJobType.Astrologian or ClassJobType.Sage => true,
-                _ => false,
+                _                                                                                                                        => false,
             };
         }
 
@@ -151,7 +151,7 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentJob switch
             {
                 ClassJobType.Archer or ClassJobType.Bard or ClassJobType.Dancer or ClassJobType.Machinist => true,
-                _ => false,
+                _                                                                                         => false,
             };
         }
 
@@ -160,7 +160,7 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentJob switch
             {
                 ClassJobType.Lancer or ClassJobType.Dragoon or ClassJobType.Reaper => true,
-                _ => false,
+                _                                                                  => false,
             };
         }
 
@@ -169,7 +169,7 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentJob switch
             {
                 ClassJobType.Pugilist or ClassJobType.Monk or ClassJobType.Samurai => true,
-                _ => false,
+                _                                                                  => false,
             };
         }
 
@@ -178,7 +178,7 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentJob switch
             {
                 ClassJobType.Rogue or ClassJobType.Ninja => true,
-                _ => false,
+                _                                        => false,
             };
         }
 
@@ -187,7 +187,7 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentJob switch
             {
                 ClassJobType.Pugilist or ClassJobType.Monk or ClassJobType.Lancer or ClassJobType.Dragoon or ClassJobType.Samurai or ClassJobType.Reaper => true,
-                _ => false,
+                _                                                                                                                                        => false,
             };
         }
 
@@ -196,7 +196,7 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentJob switch
             {
                 ClassJobType.Pugilist or ClassJobType.Monk or ClassJobType.Lancer or ClassJobType.Dragoon or ClassJobType.Samurai or ClassJobType.Rogue or ClassJobType.Ninja or ClassJobType.Archer or ClassJobType.Bard or ClassJobType.Dancer or ClassJobType.Machinist or ClassJobType.Marauder or ClassJobType.Warrior or ClassJobType.Gladiator or ClassJobType.Paladin or ClassJobType.Gunbreaker or ClassJobType.DarkKnight or ClassJobType.Reaper => true,
-                _ => false,
+                _                                                                                                                                                                                                                                                                                                                                                                                                                                          => false,
             };
         }
 
@@ -205,7 +205,7 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentJob switch
             {
                 ClassJobType.Arcanist or ClassJobType.Summoner or ClassJobType.Thaumaturge or ClassJobType.BlackMage or ClassJobType.RedMage or ClassJobType.BlueMage or ClassJobType.Scholar or ClassJobType.Conjurer or ClassJobType.WhiteMage or ClassJobType.Astrologian or ClassJobType.Sage => true,
-                _ => false,
+                _                                                                                                                                                                                                                                                                                 => false,
             };
         }
 
@@ -233,6 +233,12 @@ namespace LlamaLibrary.ScriptConditions
         public static int CurrentMount()
         {
             return Core.Me.CurrentMount();
+        }
+
+        public static bool BossHasAura(int npcId, int auraId)
+        {
+            var npc = GameObjectManager.GetObjectByNPCId<BattleCharacter>((uint)npcId);
+            return npc != null && npc.HasAura((uint)auraId);
         }
     }
 }
