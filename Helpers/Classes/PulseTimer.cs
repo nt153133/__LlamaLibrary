@@ -90,7 +90,7 @@ namespace LlamaLibrary.Helpers.Classes
         public virtual void Restart()
         {
             Reset();
-            Timer.Start();
+            Start();
         }
 
         protected void _timer_Elapsed(object sender, ElapsedEventArgs e)
