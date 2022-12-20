@@ -19,7 +19,6 @@ namespace LlamaLibrary.RemoteAgents
             internal static IntPtr DutyListPtr;
 
             [Offset("Search 48 8D 99 ? ? ? ? 48 8D 4C 24 ? Add 3 Read32")]
-            [OffsetCN("48 8D 93 ? ? ? ? E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? Add 3 Read32")]//changes in 6.2
             internal static int DutyListStart;
 
             [Offset("Search BF ? ? ? ? 48 8B D3 48 8B CE Add 1 Read32")]

@@ -15,7 +15,7 @@ namespace LlamaLibrary.RemoteAgents
 
             //0x5
             [Offset("Search 8B 93 ? ? ? ? E8 ? ? ? ? 4C 63 F0 Add 2 Read32")]
-            [OffsetCN("Search 8B 93 ? ? ? ? 48 8B CB E8 ? ? ? ? 4C 63 F0 Add 2 Read32")]
+            //[OffsetCN("Search 8B 93 ? ? ? ? 48 8B CB E8 ? ? ? ? 4C 63 F0 Add 2 Read32")]
             internal static int ItemID;
         }
 
