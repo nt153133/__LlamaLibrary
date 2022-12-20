@@ -49,7 +49,7 @@ namespace LlamaLibrary.Memory.Attributes
         }
     }
 
-    internal class OffsetCNAttribute : OffsetAttribute
+    public class OffsetCNAttribute : OffsetAttribute
     {
         public OffsetCNAttribute(string pattern, bool numeric = false, int expectedValue = 0) : base("", pattern, numeric, expectedValue)
         {
