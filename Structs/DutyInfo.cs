@@ -3,11 +3,9 @@ using ff14bot.Managers;
 
 namespace LlamaLibrary.Structs
 {
-#if RB_CN
-    [StructLayout(LayoutKind.Explicit, Size = 0x4C)]
-#else
+
     [StructLayout(LayoutKind.Explicit, Size = 0x60)]
-#endif
+
     public struct DutyInfo
     {
         [FieldOffset(0x0)]
