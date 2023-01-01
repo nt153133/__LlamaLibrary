@@ -12,6 +12,7 @@ using ff14bot.Managers;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.Extensions;
 
 namespace LlamaLibrary.RemoteAgents
 {
@@ -116,7 +117,7 @@ namespace LlamaLibrary.RemoteAgents
                 {
                     var option = options[index];
                     //Log.Information(option.ToString());
-                    if (possibleNames.Any(i => option.Name.Contains(i)))
+                    if (possibleNames.Any(i => option.Name.Contains(i, StringComparison.InvariantCultureIgnoreCase)))
                     {
                         Log.Information($"Voting for {option.Name} {index}");
                         if (await Instance.OpenAndVote(index))

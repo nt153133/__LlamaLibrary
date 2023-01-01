@@ -78,5 +78,10 @@ namespace LlamaLibrary.Extensions
             settings.Converters.Add(new StringEnumConverter());
             return JsonConvert.SerializeObject(orders.OrderBy(i => i.Type), Formatting.Indented, settings);
         }
+
+        public static bool Contains(this string source, string toCheck, StringComparison comp)
+        {
+            return source?.IndexOf(toCheck, comp) >= 0;
+        }
     }
 }
