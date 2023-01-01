@@ -156,6 +156,7 @@
     <Compile Include="RemoteAgents\AgentMJIHud.cs" />
     <Compile Include="RemoteAgents\AgentMJIPouch.cs" />
     <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
+    <Compile Include="RemoteAgents\AgentVoteMVP.cs" />
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
     <Compile Include="RemoteAgents\AgentMJIRecipeNoteBook.cs" />
     <Compile Include="RemoteWindows\Achievement.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="RemoteWindows\SharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteWindows\ShopExchangeItemDialog.cs" />
     <Compile Include="RemoteWindows\ShopProxy.cs" />
+    <Compile Include="RemoteWindows\VoteMvp.cs" />
     <Compile Include="RemoteWindows\WorldTravelFinderReady.cs" />
     <Compile Include="RemoteWindows\WorldTravelSelect.cs" />
     <Compile Include="RemoteWindows\_CharaMakeFeature.cs" />
