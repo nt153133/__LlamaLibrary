@@ -6,6 +6,8 @@ using ff14bot.Managers;
 using ff14bot.Objects;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.RemoteAgents;
+using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.ScriptConditions
 {
@@ -239,6 +241,11 @@ namespace LlamaLibrary.ScriptConditions
         {
             var npc = GameObjectManager.GetObjectByNPCId<BattleCharacter>((uint)npcId);
             return npc != null && npc.HasAura((uint)auraId);
+        }
+
+        public static bool IsMVPVoteReady()
+        {
+            return DutyManager.InInstance && (AgentVoteMVP.Instance.CanToggle || VoteMvp.Instance.IsOpen);
         }
     }
 }

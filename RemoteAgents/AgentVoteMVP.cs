@@ -21,7 +21,7 @@ namespace LlamaLibrary.RemoteAgents
         private static readonly LLogger Log = new(nameof(AgentVoteMVP), Colors.Gold);
         public IntPtr RegisteredVtable => Offsets.VTable;
 
-        private static AtkAddonControl? NotificationWindow => RaptureAtkUnitManager.GetWindowByName("_NotificationIcMvp", true);
+        public static AtkAddonControl? NotificationWindow => RaptureAtkUnitManager.GetWindowByName("_NotificationIcMvp", true);
 
         private static class Offsets
         {
@@ -44,7 +44,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public VoteOption[] VoteOptions => Core.Memory.ReadArray<VoteOption>(ArrayStart, PlayerCount);
 
-        public bool CanToggle => NotificationWindow != null && NotificationWindow.IsVisible;
+        public bool CanToggle => NotificationWindow is { IsVisible: true };
 
         public void OpenVoteWindow()
         {
@@ -119,17 +119,33 @@ namespace LlamaLibrary.RemoteAgents
                     //Log.Information(option.ToString());
                     if (possibleNames.Any(i => option.Name.Contains(i, StringComparison.InvariantCultureIgnoreCase)))
                     {
-                        Log.Information($"Voting for {option.Name} {index}");
+#if RB_CN
+Log.Information($"点赞开始 {option.Name} ({index})");
+
+#else
+                        Log.Information($"Voting for {option.Name} ({index})");
+#endif
+
                         if (await Instance.OpenAndVote(index))
                         {
-                            Log.Information("Voted");
+#if RB_CN
+Log.Information($"点赞结束");
+
+#else
+                            Log.Information($"Voted");
+#endif
                             return option.Name;
                         }
                     }
                 }
             }
 
+#if RB_CN
+ Log.Error($@"点赞异常");
+
+#else
             Log.Error("Could not open vote window");
+#endif
             return string.Empty;
         }
     }
