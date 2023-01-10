@@ -35,7 +35,9 @@ namespace LlamaLibrary.Extensions
             [Offset("Search 40 55 53 56 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 8D 82 ? ? ? ?")]
             public static IntPtr ItemSplitFunc;
 
-            [Offset("Search 48 89 91 ? ? ? ? 33 D2 C7 81 ? ? ? ? ? ? ? ?")]
+            //6.3
+            [Offset("Search 48 89 5C 24 ? 56 48 83 EC ? 80 3D ? ? ? ? ? 48 8B F2")]
+            [OffsetCN("Search 48 89 91 ? ? ? ? 33 D2 C7 81 ? ? ? ? ? ? ? ?")]
             public static IntPtr MeldWindowFunc;
 
             [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F B7 F8 8B DA")]
@@ -48,7 +50,9 @@ namespace LlamaLibrary.Extensions
             [Offset("Search 40 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F B7 F1")]
             public static IntPtr RemoveMateriaFunc;
 
-            [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 8B CE E8 ? ? ? ? 89 AE ? ? ? ? Add 1 Read32")]
+            //6.3
+            [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 8B CD E8 ? ? ? ? 48 8B 7C 24 ? Add 1 Read32")]
+            [OffsetCN("Search BA ? ? ? ? E8 ? ? ? ? 48 8B CE E8 ? ? ? ? 89 AE ? ? ? ? Add 1 Read32")]
             public static int DesynthId;
 
             [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 48 8B 4E ? 48 8B 01 Add 1 Read32")]
@@ -96,7 +100,8 @@ namespace LlamaLibrary.Extensions
             [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 8B E9 41 0F B7 D9 48 8B 0D ? ? ? ? 41 8B F8 0F B7 F2 E8 ? ? ? ? 48 8B C8 48 85 C0 74 ? 80 BC 24 ? ? ? ? ?")]
             internal static IntPtr MeldItem;
 
-            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 56 41 57 48 83 EC ? 45 33 FF 41 8B E9")]
+            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 45 33 F6 41 8B F1")]
+            [OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 56 41 57 48 83 EC ? 45 33 FF 41 8B E9")]
             internal static IntPtr DyeItem;
 
             [Offset("Search 0F B6 43 ? 88 47 ? 80 7B ? ? 74 ? 48 8B CB E8 ? ? ? ? 48 85 C0 74 ? 48 8B CB E8 ? ? ? ? 48 8B C8 E8 ? ? ? ? EB ? 8B 43 ? Add 3 Read8")]

@@ -137,7 +137,14 @@ namespace LlamaLibrary.Memory
                         var pointers = AgentModule.AgentVtables;
                         for (var index = 0; index < pointers.Count; index++)
                         {
-                            vtables.Add(pointers[index], index);
+                            try
+                            {
+                                vtables.Add(pointers[index], index);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Error($"Dupe vtable {pointers[index].ToString("X")} {index}");
+                            }
                         }
 
                         Logger.Debug($"OffsetManager AgentModule.AgentVtables took {newStopwatch.ElapsedMilliseconds}ms");
@@ -218,9 +225,17 @@ namespace LlamaLibrary.Memory
         public static void RegisterAgent(IAgent iagent)
         {
             var vtables = new Dictionary<IntPtr, int>();
-            for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
+            var pointers = AgentModule.AgentVtables;
+            for (var index = 0; index < pointers.Count; index++)
             {
-                vtables.Add(AgentModule.AgentVtables[index], index);
+                try
+                {
+                    vtables.Add(pointers[index], index);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"Dupe vtable {pointers[index].ToString("X")} {index} {iagent.GetType().Name}");
+                }
             }
 
             if (vtables.ContainsKey(iagent.RegisteredVtable))
@@ -553,9 +568,18 @@ namespace LlamaLibrary.Memory
             File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
 
             var vtables = new Dictionary<IntPtr, int>();
-            for (var index = 0; index < AgentModule.AgentVtables.Count; index++)
+            var pointers = AgentModule.AgentVtables;
+
+            for (var index = 0; index < pointers.Count; index++)
             {
-                vtables.Add(AgentModule.AgentVtables[index], index);
+                try
+                {
+                    vtables.Add(pointers[index], index);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"Dupe vtable {pointers[index].ToString("X")} {index}");
+                }
             }
 
             var q = from t in method.DeclaringType.Assembly.GetTypes()
