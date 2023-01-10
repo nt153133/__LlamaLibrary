@@ -11,13 +11,25 @@ namespace LlamaLibrary.RemoteAgents
         public IntPtr RegisteredVtable => Offsets.Vtable;
 
         public const int TabCount = 37;
+
         private static class Offsets
         {
+            //TODO: Find the correct TabSlotCount
+            //6.3
             [Offset("Search 8D 4A ? 66 89 93 ? ? ? ? 48 89 93 ? ? ? ? Add 2 Read8")]
+            [OffsetCN("Search 8D 4A ? 66 89 93 ? ? ? ? 48 89 93 ? ? ? ? Add 2 Read8")]
             internal static int TabSlotCount;
+
+            //TODO: Find the correct vtable
+            //6.3
             [Offset("Search 48 8D 05 ? ? ? ? BA ? ? ? ? 48 89 03 48 8D 05 ? ? ? ? Add 3 TraceRelative")]
+            [OffsetCN("Search 48 8D 05 ? ? ? ? BA ? ? ? ? 48 89 03 48 8D 05 ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr Vtable;
+
+            //TODO: Find the correct TabStart
+            //6.3
             [Offset("Search 48 8D 43 ? 88 93 ? ? ? ? Add 3 Read8")]
+            [OffsetCN("Search 48 8D 43 ? 88 93 ? ? ? ? Add 3 Read8")]
             internal static int TabStart;
         }
 
