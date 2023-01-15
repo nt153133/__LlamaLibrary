@@ -144,6 +144,7 @@
     <Compile Include="RemoteAgents\AgentAchievement.cs" />
     <Compile Include="RemoteAgents\AgentDawnStory.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
+    <Compile Include="RemoteAgents\AgentFishGuide2.cs" />
     <Compile Include="RemoteAgents\AgentFreeCompanyChest.cs" />
     <Compile Include="RemoteAgents\AgentGrandCompanyExchange.cs" />
     <Compile Include="RemoteAgents\AgentGrandCompanySupply.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="RemoteWindows\CharaMakeDataImport.cs" />
     <Compile Include="RemoteWindows\ContentsTutorial.cs" />
     <Compile Include="RemoteWindows\DawnStory.cs" />
+    <Compile Include="RemoteWindows\FishGuide2.cs" />
     <Compile Include="RemoteWindows\FreeCompanyChest.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
     <Compile Include="RemoteWindows\GrandCompanyRankUp.cs" />
