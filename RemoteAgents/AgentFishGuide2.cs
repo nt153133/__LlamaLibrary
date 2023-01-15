@@ -54,11 +54,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public FishGuide2Item[] GetFishListRaw()
         {
-            using (Core.Memory.TemporaryCacheState(enabledTemporarily: false))
-            {
-                //Log.Information($"{Pointer + Offsets.TabStart - 0x6} {Offsets.TabSlotCount}");
-                return Core.Memory.ReadArray<FishGuide2Item>(Core.Memory.Read<IntPtr>(StartingPointer), SlotCount); //.Select(x => x.FishItem) as List<uint>;
-            }
+            return Core.Memory.ReadArray<FishGuide2Item>(Core.Memory.Read<IntPtr>(StartingPointer), SlotCount); //.Select(x => x.FishItem) as List<uint>;
         }
 
         public async Task<FishGuide2Item[]> GetFishList()
