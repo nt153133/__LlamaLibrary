@@ -51,8 +51,18 @@ namespace LlamaLibrary.RemoteAgents
             return Core.Memory.ReadArray<FishGuide2Item>(Core.Memory.Read<IntPtr>(StartingPointer), SlotCount); //.Select(x => x.FishItem) as List<uint>;
         }
 
-        public async Task<FishGuide2Item[]> GetFishList()
+        public FishGuide2Item[] GetFishListRaw(int start, int count)
         {
+            return Core.Memory.ReadArray<FishGuide2Item>(Core.Memory.Read<IntPtr>(StartingPointer + (8 * start)), count); //.Select(x => x.FishItem) as List<uint>;
+        }
+
+        public async Task<FishGuide2Item[]> GetFishList(int start = 0, int count = 0)
+        {
+            if (count == 0)
+            {
+                count = SlotCount;
+            }
+
             if (!FishGuide2.Instance.IsOpen)
             {
                 this.Toggle();
@@ -66,7 +76,7 @@ namespace LlamaLibrary.RemoteAgents
 
             await Coroutine.Sleep(2000);
 
-            var results = GetFishListRaw();
+            var results = GetFishListRaw(start, count);
 
             FishGuide2.Instance.Close();
             await Coroutine.Wait(10000, () => !FishGuide2.Instance.IsOpen);
@@ -87,8 +97,8 @@ namespace LlamaLibrary.RemoteAgents
         public ushort Unknown4;
         public ushort Unknown5;
 
-
         public bool HasCaught => bHasCaught == 1;
+
         public override string ToString()
         {
             return $"{DataManager.GetItem(FishItem)} : {HasCaught}";
