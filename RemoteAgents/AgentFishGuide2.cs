@@ -17,12 +17,6 @@ namespace LlamaLibrary.RemoteAgents
 
         private static class Offsets
         {
-            //TODO: Find the correct TabSlotCount
-            //6.3
-            [Offset("Search BA ? ? ? ? 48 8D 43 ? 89 4B ? Add 1 Read8")]
-            [OffsetCN("Search 8D 4A ? 66 89 93 ? ? ? ? 48 89 93 ? ? ? ? Add 2 Read8")]
-            internal static int TabSlotCount;
-
             //6.3
             [Offset("Search 48 8D 05 ? ? ? ? 33 C9 48 89 03 BA ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr Vtable;
