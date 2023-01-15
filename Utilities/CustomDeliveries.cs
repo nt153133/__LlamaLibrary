@@ -55,11 +55,14 @@ namespace LlamaLibrary.Utilities
         {
             await AgentSatisfactionSupply.Instance.LoadWindow(deliveryNpc.Index);
             var items = new List<uint>();
+
+            /*
             if (deliveryNpc.npcId != AgentSatisfactionSupply.Instance.NpcId)
             {
                 Log.Information($"Bad Npc ID: {AgentSatisfactionSupply.Instance.NpcId}");
                 return (0, 0);
             }
+            */
 
             Log.Information($"{deliveryNpc.Name}");
             Log.Information($"\tDeliveries Remaining:{AgentSatisfactionSupply.Instance.DeliveriesRemaining}");
@@ -73,11 +76,13 @@ namespace LlamaLibrary.Utilities
         {
             await AgentSatisfactionSupply.Instance.LoadWindow(deliveryNpc.Index);
             var items = new List<uint>();
+            /*
             if (deliveryNpc.npcId != AgentSatisfactionSupply.Instance.NpcId)
             {
                 Log.Information($"Bad Npc ID: {AgentSatisfactionSupply.Instance.NpcId}");
                 return;
             }
+            */
 
             Log.Information($"{deliveryNpc.Name}");
             Log.Information($"\tHeartLevel:{AgentSatisfactionSupply.Instance.HeartLevel}");

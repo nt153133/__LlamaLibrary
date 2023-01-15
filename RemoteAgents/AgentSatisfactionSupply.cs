@@ -58,7 +58,7 @@ namespace LlamaLibrary.RemoteAgents
             internal static IntPtr OpenWindow;
 
             //6.3 changes to no offset
-            [Offset("Search 4C 8D 43 ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? Add 3 Read8")]
+            //[Offset("Search 4C 8D 43 ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? Add 3 Read8")]
             [OffsetCN("Search 4C 8D 43 ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? Add 3 Read8")]
             internal static int NpcId;
         }
