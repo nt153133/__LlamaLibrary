@@ -57,10 +57,12 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 01 41 0F B6 E9 41 8B F8")]
             internal static IntPtr OpenWindow;
 
+#if RB_CN
             //6.3 changes to no offset
-            //[Offset("Search 4C 8D 43 ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? Add 3 Read8")]
+            [Offset("Search 4C 8D 43 ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? Add 3 Read8")]
             [OffsetCN("Search 4C 8D 43 ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? Add 3 Read8")]
             internal static int NpcId;
+#endif
         }
 
         protected AgentSatisfactionSupply(IntPtr pointer) : base(pointer)

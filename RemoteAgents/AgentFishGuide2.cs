@@ -82,11 +82,13 @@ namespace LlamaLibrary.RemoteAgents
         public ushort Index;
         public ushort Unknown;
         public ushort Unknown2;
-        public bool HasCaught;
+        public byte bHasCaught;
         public byte Unknown3;
         public ushort Unknown4;
         public ushort Unknown5;
 
+
+        public bool HasCaught => bHasCaught == 1;
         public override string ToString()
         {
             return $"{DataManager.GetItem(FishItem)} : {HasCaught}";
