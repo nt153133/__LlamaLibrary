@@ -348,6 +348,7 @@
     <Compile Include="Structs\TeleportInfo.cs" />
     <Compile Include="TemplateAsyncBotbase.cs" />
     <Compile Include="TemplateBotBase.cs" />
+    <Compile Include="TemplatePlugin.cs" />
     <Compile Include="Utilities\CustomDeliveries.cs" />
     <Compile Include="Utilities\GCDailyTurnins.cs" />
     <Compile Include="Utilities\Housing.cs" />
