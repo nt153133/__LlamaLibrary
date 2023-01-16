@@ -36,10 +36,14 @@ namespace LlamaLibrary.RemoteWindows
             {
                 Properties = new Dictionary<string, int>
                 {
-                    { "NumberOfTurnins", 7 },
+                    /*{ "NumberOfTurnins", 7 },
                     { "ReqElements", 386 },
                     { "HandInElements", 346 },
-                    { "TurninIdElements", 426 },
+                    { "TurninIdElements", 426 },*/
+                    { "NumberOfTurnins", 8 },
+                    { "ReqElements", 385 },
+                    { "HandInElements", 345 },
+                    { "TurninIdElements", 425 },
                 };
             }
         }

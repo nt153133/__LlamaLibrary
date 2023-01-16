@@ -14,17 +14,27 @@ namespace LlamaLibrary.RemoteWindows
     {
         private readonly int eleNumCrafting = 56;
         private readonly int eleNumGathering = 57;
-        private readonly int eleCraftingItem = 215;
-        private readonly int eleCraftingJob = 223;
-        private readonly int eleCraftingQty = 231;
-        private readonly int eleGatheringItem = 274;
-        private readonly int eleGatheringJob = 277;
-        private readonly int eleGatheringQty = 280;
+        private readonly int eleCraftingItem = 233;
+        private readonly int eleCraftingJob = 241;
+        private readonly int eleCraftingQty = 249;
+        private readonly int eleGatheringItem = 292;
+        private readonly int eleGatheringJob = 295;
+        private readonly int eleGatheringQty = 298;
 
         public ContentsInfoDetail() : base("ContentsInfoDetail")
         {
             if (Translator.Language == Language.Chn)
             {
+                eleNumCrafting = 56;
+                eleNumGathering = 57;
+                eleCraftingItem = 215;
+                eleCraftingJob = 223;
+                eleCraftingQty = 231;
+                eleGatheringItem = 274;
+                eleGatheringJob = 277;
+                eleGatheringQty = 280;
+                //6.3
+                /*
                 eleNumCrafting = 56;
                 eleNumGathering = 57;
                 eleCraftingItem = 214;
@@ -33,6 +43,8 @@ namespace LlamaLibrary.RemoteWindows
                 eleGatheringItem = 273;
                 eleGatheringJob = 276;
                 eleGatheringQty = 279;
+                */
+
                 /*eleNumCrafting = 51;
                 eleNumGathering = 52;
                 eleCraftingItem = 205;
