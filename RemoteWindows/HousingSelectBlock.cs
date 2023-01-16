@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Text;
 using ff14bot;
+using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.RemoteWindows
 {
     //TODO Move element numbers to dictionary
     public class HousingSelectBlock : RemoteWindow<HousingSelectBlock>
     {
+        private static class Offsets
+        {
+            [Offset("Search 89 86 ? ? ? ? 8B D0 Add 2 Read32")]
+            internal static int EligibilityArray;
+        }
+
         public HousingSelectBlock() : base("HousingSelectBlock")
         {
         }
@@ -16,6 +23,8 @@ namespace LlamaLibrary.RemoteWindows
         public int NumberOfPlots => Elements[35].TrimmedData;
 
         public string HousingWard => Core.Memory.ReadString((IntPtr)Elements[2].Data, Encoding.UTF8);
+
+        public byte[] EligibilityArray => Core.Memory.ReadBytes(WindowByName.Pointer + Offsets.EligibilityArray, 4);
 
         public string PlotPrice(int plot)
         {

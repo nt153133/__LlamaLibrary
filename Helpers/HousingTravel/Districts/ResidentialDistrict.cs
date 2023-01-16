@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
@@ -34,10 +35,18 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
     public abstract class ResidentialDistrict
     {
         private static readonly LLogger Log = new(nameof(ResidentialDistrict), Colors.Pink);
+        private Npc? _aetheryteNpc = null;
         public virtual string Name { get; } = "";
         public virtual ushort ZoneId => 0;
         public virtual uint TownAetheryteId { get; }
         public virtual int RequiredQuest { get; }
+
+        public NPC.Npc AetheryteNpc
+        {
+            get => _aetheryteNpc ?? new Npc(TownAetheryteId, ZoneId, TownAetheryteLocation, RequiredQuest);
+            set => _aetheryteNpc = value;
+        }
+
         public virtual Vector3 TownAetheryteLocation { get; } = Vector3.Zero;
         public virtual bool OffMesh { get; } = false;
 
@@ -88,7 +97,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
         public async Task<bool> SelectWard(int ward)
         {
-            if (ward is < 1 or > 24)
+            if (ward is < 1 or > 30)
             {
                 Log.Error($"Invalid ward {ward}");
                 return false;

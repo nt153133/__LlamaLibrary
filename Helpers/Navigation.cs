@@ -414,11 +414,18 @@ namespace LlamaLibrary.Helpers
             return Core.Me.Location.Distance(loc) <= distance;
         }
 
-        public static async Task<GameObject> GetToAE(uint id)
+        public static async Task<GameObject?> GetToAE(uint id)
         {
             var AE = GameObjectManager.GetObjectsOfType<Aetheryte>().FirstOrDefault(i => i.NpcId == id);
+
             if (AE == default(Aetheryte))
             {
+                if (!await Coroutine.Wait(5000, WorldManager.CanTeleport))
+                {
+                    Log.Information("After 5 seconds CanTeleport is still false");
+                    return null;
+                }
+
                 if (!await CommonTasks.Teleport(id))
                 {
                     Log.Error($"Couldn't teleport to AE {id}");
