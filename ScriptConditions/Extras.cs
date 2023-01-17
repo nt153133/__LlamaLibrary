@@ -41,7 +41,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int SphereCompletion(int itemID)
         {
-            return (int)InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint)itemID).SpiritBond;
+            return (int) InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint) itemID).SpiritBond;
         }
 
         public static int HighestILvl(ClassJobType job)
@@ -52,12 +52,12 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsFateActive(int fateID)
         {
-            return FateManager.ActiveFates.Any(i => i.Id == (uint)fateID);
+            return FateManager.ActiveFates.Any(i => i.Id == (uint) fateID);
         }
 
         public static bool HasLearnedMount(int mountID)
         {
-            return ActionManager.AvailableMounts.Any(i => i.Id == ((uint)mountID));
+            return ActionManager.AvailableMounts.Any(i => i.Id == ((uint) mountID));
         }
 
         public static int BeastTribeRank(int tribeID)
@@ -82,7 +82,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsTargetableNPC(int npcID)
         {
-            return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint)npcID && i.IsVisible && i.IsTargetable);
+            return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint) npcID && i.IsVisible && i.IsTargetable);
         }
 
         public static bool AchievementComplete(int achID)
@@ -97,13 +97,13 @@ namespace LlamaLibrary.ScriptConditions
                 return true;
             }
 
-            var instanceDirector = (ff14bot.Directors.InstanceContentDirector)DirectorManager.ActiveDirector;
+            var instanceDirector = (ff14bot.Directors.InstanceContentDirector) DirectorManager.ActiveDirector;
             return instanceDirector.InstanceEnded;
         }
 
         public static int SharedFateRank(int zoneID)
         {
-            return SharedFateHelper.CachedProgress.FirstOrDefault(i => i.Zone == (uint)zoneID).Rank;
+            return SharedFateHelper.CachedProgress.FirstOrDefault(i => i.Zone == (uint) zoneID).Rank;
         }
 
         public static async Task UpdateSharedFates()
@@ -118,7 +118,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int CurrentGCRank()
         {
-            return (int)Core.Me.GCRank();
+            return (int) Core.Me.GCRank();
         }
 
         public static bool IsFendingClass()
@@ -213,7 +213,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsNearShortcut(int npcID)
         {
-            var npc = GameObjectManager.GetObjectByNPCId((uint)npcID);
+            var npc = GameObjectManager.GetObjectByNPCId((uint) npcID);
             if (npc != null)
             {
                 return npc.Distance2D(Core.Me.Location) <= 30 && npc.IsTargetable;
@@ -229,7 +229,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool HasAtLeastOneItem(params int[] list)
         {
-            return InventoryManager.FilledSlots.Any(i => list.Contains((int)i.RawItemId));
+            return InventoryManager.FilledSlots.Any(i => list.Contains((int) i.RawItemId));
         }
 
         public static int CurrentMount()
@@ -237,10 +237,15 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentMount();
         }
 
+        public static bool AnyChestsToOpen()
+        {
+            return GameObjectManager.GetObjectsOfType<Treasure>().Where(i => i.State == 0).Any();
+        }
+
         public static bool BossHasAura(int npcId, int auraId)
         {
-            var npc = GameObjectManager.GetObjectByNPCId<BattleCharacter>((uint)npcId);
-            return npc != null && npc.HasAura((uint)auraId);
+            var npc = GameObjectManager.GetObjectByNPCId<BattleCharacter>((uint) npcId);
+            return npc != null && npc.HasAura((uint) auraId);
         }
 
         public static bool IsMVPVoteReady()
