@@ -54,9 +54,9 @@ namespace LlamaLibrary.RemoteAgents
 
         public PlotSize Size => (PlotSize)Core.Memory.Read<byte>(Pointer + Offsets.Size);
 
-        public ushort LotteryEntryCount => Core.Memory.Read<ushort>(Pointer + Offsets.LotteryEntryCount + 0xC);
+        public ushort WinningLotteryNumber => Core.Memory.Read<ushort>(Pointer + Offsets.LotteryEntryCount + 0xC);
 
-        public ushort WinningLotteryNumber => Core.Memory.Read<ushort>(Pointer + Offsets.WinningLotteryNumber);
+        public ushort LotteryEntryCount => Core.Memory.Read<ushort>(Pointer + Offsets.WinningLotteryNumber);
 
         public bool FcOwned => Core.Memory.Read<int>(Pointer + Offsets.FcOwned) != 0;
 
