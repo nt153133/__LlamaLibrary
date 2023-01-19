@@ -58,11 +58,6 @@ namespace LlamaLibrary.RemoteAgents
 
         public async Task<FishGuide2Item[]> GetFishList(int start = 0, int count = 0)
         {
-            if (count == 0)
-            {
-                count = SlotCount;
-            }
-
             if (!FishGuide2.Instance.IsOpen)
             {
                 this.Toggle();
@@ -70,6 +65,11 @@ namespace LlamaLibrary.RemoteAgents
                 {
                     return Array.Empty<FishGuide2Item>();
                 }
+            }
+
+            if (count == 0)
+            {
+                count = SlotCount;
             }
 
             FishGuide2.Instance.SelectFishing();
