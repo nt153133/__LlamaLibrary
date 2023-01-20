@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
 using ff14bot.Behavior;
@@ -277,7 +278,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> IsProductKeyValid()
         {
-            return await _isProductKeyValid();
+            return await Coroutine.ExternalTask(_isProductKeyValid());
         }
     }
 }
