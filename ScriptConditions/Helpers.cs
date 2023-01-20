@@ -46,6 +46,7 @@ namespace LlamaLibrary.ScriptConditions
         private static readonly uint[] IdList3 = { 35626, 35627, 35628, 35629, 35630, 35631, 35632, 35633, 35634, 35635, 35636, 35637, 35638, 35639, 35640, 35641, 35642, 35643, 35644, 35645, 35646, 35647, 35648, 35649, 35650, 35651, 35652, 35653, 35654, 35655, 35656, 35657, 35658, 35659, 35660, 35661, 35662, 35663, 35664, 35665 };
 
         private static bool hasLisbeth = false;
+        private static bool checkedLisbeth = false;
 
         public static int HasIshgardItem()
         {
@@ -345,7 +346,13 @@ namespace LlamaLibrary.ScriptConditions
 
         public static async Task<bool> CheckLisbeth()
         {
+            if (checkedLisbeth)
+            {
+                return hasLisbeth;
+            }
+
             hasLisbeth = await Lisbeth.HasLisbeth();
+            checkedLisbeth = true;
             return hasLisbeth;
         }
     }

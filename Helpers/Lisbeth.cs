@@ -34,6 +34,7 @@ namespace LlamaLibrary.Helpers
         private static Action<string> _removeCraftCycleHook;
         private static Func<List<string>> _getHookList;
         private static Func<Task<bool>> _exitCrafting;
+        private static Func<Task<bool>> _isProductKeyValid;
         private static Func<string, Vector3, Task<bool>> _travelToWithArea;
         private static Func<uint, uint, Vector3, Task<bool>> _travelTo;
         private static Func<uint, Vector3, Task<bool>> _travelToWithoutSubzone;
@@ -94,6 +95,7 @@ namespace LlamaLibrary.Helpers
                             _travelToWithoutSubzone = (Func<uint, Vector3, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, Vector3, Task<bool>>), apiObject, "TravelToWithoutSubzone");
                             _openWindow = (System.Action)Delegate.CreateDelegate(typeof(System.Action), apiObject, "OpenWindow");
                             _getOrderExpansionAsJson = (Func<string, Task<string>>)Delegate.CreateDelegate(typeof(Func<string, Task<string>>), apiObject, "GetOrderExpansionAsJson");
+                            _isProductKeyValid = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), apiObject, "IsProductKeyValid");
                         }
                         catch (Exception e)
                         {
@@ -120,7 +122,8 @@ namespace LlamaLibrary.Helpers
                     return false;
                 }
 
-                return await Lisbeth.GetOrderExpansionAsJson("[{\"Group\":1,\"Item\":1,\"Amount\":1,\"Enabled\":true,\"Type\":\"None\"}]") != null;
+                //return await Lisbeth.GetOrderExpansionAsJson("[{\"Group\":1,\"Item\":1,\"Amount\":1,\"Enabled\":true,\"Type\":\"None\"}]") != null;
+                return await Lisbeth.IsProductKeyValid();
             }
             catch
             {
@@ -270,6 +273,11 @@ namespace LlamaLibrary.Helpers
         public static async Task<string> GetOrderExpansionAsJson(string orderJson)
         {
             return await _getOrderExpansionAsJson(orderJson);
+        }
+
+        public static async Task<bool> IsProductKeyValid()
+        {
+            return await _isProductKeyValid();
         }
     }
 }
