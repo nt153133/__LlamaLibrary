@@ -211,6 +211,24 @@ namespace LlamaLibrary.ScriptConditions
             };
         }
 
+        public static bool IsCraftingClass()
+        {
+            return Core.Me.CurrentJob switch
+            {
+                ClassJobType.Carpenter or ClassJobType.Blacksmith or ClassJobType.Armorer or ClassJobType.Goldsmith or ClassJobType.Leatherworker or ClassJobType.Weaver or ClassJobType.Alchemist or ClassJobType.Culinarian => true,
+                _                                                                                                                                                                                                             => false,
+            };
+        }
+
+        public static bool IsGatheringClass()
+        {
+            return Core.Me.CurrentJob switch
+            {
+                ClassJobType.Miner or ClassJobType.Botanist or ClassJobType.Fisher => true,
+                _                                                                  => false,
+            };
+        }
+
         public static bool IsNearShortcut(int npcID)
         {
             var npc = GameObjectManager.GetObjectByNPCId((uint) npcID);
