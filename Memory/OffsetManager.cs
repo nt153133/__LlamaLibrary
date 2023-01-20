@@ -93,14 +93,14 @@ namespace LlamaLibrary.Memory
                         }
 
                         Logger.Information($"OffsetManager Init started {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
-                        var newStopwatch = Stopwatch.StartNew();
-                        //scriptThread = new Thread(() => SetScriptsThread());
-                        //scriptThread.Start();
-                        SetScriptsThread();
-                        newStopwatch.Stop();
-                        Logger.Information($"OffsetManager SetScriptsManager took{newStopwatch.ElapsedMilliseconds}ms");
 
-                        newStopwatch.Restart();
+                        scriptThread = new Thread(() => SetScriptsThread());
+                        scriptThread.Start();
+                        //SetScriptsThread();
+                        //newStopwatch.Stop();
+                        //Logger.Information($"OffsetManager SetScriptsManager took{newStopwatch.ElapsedMilliseconds}ms");
+
+                        var newStopwatch = Stopwatch.StartNew();
 
                         var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
                                   where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
