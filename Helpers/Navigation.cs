@@ -575,6 +575,11 @@ namespace LlamaLibrary.Helpers
             return await GetToInteractNpcSelectString(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, option);
         }
 
+        public static async Task<bool> GetToInteractNpcSelectString(Npc npc, int option, RemoteWindow window)
+        {
+            return await GetToInteractNpcSelectString(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, option, window);
+        }
+
         public static async Task<bool> GetToInteractNpc(uint npcId, ushort zoneId, Vector3 location, RemoteWindow window)
         {
             var unit = GameObjectManager.GetObjectByNPCId(npcId);

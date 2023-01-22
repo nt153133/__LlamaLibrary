@@ -142,6 +142,7 @@
     <Compile Include="JsonObjects\RetainerSale.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="RemoteAgents\AgentAchievement.cs" />
+    <Compile Include="RemoteAgents\AgentAWGrowthFragTrade.cs" />
     <Compile Include="RemoteAgents\AgentDawnStory.cs" />
     <Compile Include="RemoteAgents\AgentFateProgress.cs" />
     <Compile Include="RemoteAgents\AgentFishGuide2.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="RemoteAgents\AgentMJIRecipeNoteBook.cs" />
     <Compile Include="RemoteWindows\Achievement.cs" />
     <Compile Include="RemoteWindows\AkatsukiNote.cs" />
+    <Compile Include="RemoteWindows\AWGrowthFragTrade.cs" />
     <Compile Include="RemoteWindows\Bank.cs" />
     <Compile Include="RemoteWindows\BeginnersMansionProblem.cs" />
     <Compile Include="RemoteWindows\BeginnersMansionProblemCo.cs" />
@@ -202,6 +204,7 @@
     <Compile Include="Retainers\RetainerInventoryItem.cs" />
     <Compile Include="Retainers\RetainerTaskData.cs" />
     <Compile Include="Retainers\RetainerTasks.cs" />
+    <Compile Include="Structs\AnimaExchangeItemInfo.cs" />
     <Compile Include="Structs\BeastTribeExd.cs" />
     <Compile Include="Structs\BeastTribeStat.cs" />
     <Compile Include="Structs\CycleTime.cs" />
