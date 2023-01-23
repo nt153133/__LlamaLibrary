@@ -72,7 +72,7 @@ namespace LlamaLibrary.RemoteAgents
 
             var exchange = category.First();
 
-            var maxAfford = exchange.RequiredItems.Min(i => i.CanAffordAmount);
+            var maxAfford = exchange.RequiredItems.Min(i => i.CanAffordAmount) * exchange.ResultingItemQuantity;
 
             if ((maxAfford < qty) && !buyAnyAmount)
             {
@@ -86,7 +86,7 @@ namespace LlamaLibrary.RemoteAgents
 
             var startingAmount = ConditionParser.ItemCount(exchange.ResultingItemId);
 
-            Instance.Buy(exchange.Index, amountToBuy);
+            Instance.Buy(exchange.Index, (int)amountToBuy);
 
             await Coroutine.Wait(10000, () => ConditionParser.ItemCount(exchange.ResultingItemId) > startingAmount);
 
