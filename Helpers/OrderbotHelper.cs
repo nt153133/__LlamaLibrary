@@ -21,7 +21,7 @@ namespace LlamaLibrary.Helpers
         public static bool loaded;
         public static bool tempbool;
         public static bool StopBot = false;
-        public static Button RbStartButton => typeof(ff14bot.Forms.ugh.MainWpf).GetField("btnStart", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(ff14bot.Forms.ugh.MainWpf.current) as Button;
+        public static Button? RbStartButton => typeof(ff14bot.Forms.ugh.MainWpf).GetField("btnStart", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(ff14bot.Forms.ugh.MainWpf.current) as Button;
 
         public static Task<bool> CallOrderbot(string profile)
         {
@@ -35,6 +35,12 @@ namespace LlamaLibrary.Helpers
         {
             Log.Information("Thread Started");
             tempbool = false;
+            if (RbStartButton == null)
+            {
+                Log.Error("RbStartButton is null");
+                return;
+            }
+
             RbStartButton.Click += OnClick;
 
             //var profile = NeoProfileManager.CurrentProfile.Path;
@@ -151,7 +157,10 @@ namespace LlamaLibrary.Helpers
         {
             Log.Information($"Someone hit the stop button, catching so we don't restart");
             StopBot = true;
-            RbStartButton.Click -= OnClick;
+            if (RbStartButton != null)
+            {
+                RbStartButton.Click -= OnClick;
+            }
         }
 
         private static void OnBotStart(BotBase bot)

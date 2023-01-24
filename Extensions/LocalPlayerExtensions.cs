@@ -110,9 +110,9 @@ namespace LlamaLibrary.Extensions
             return Core.Memory.Read<ulong>(Offsets.PlayerID);
         }
 
-        public static World HomeWorld(this Character character)
+        public static World HomeWorld(this Character? character)
         {
-            return Core.Memory.Read<World>(character.Pointer + Offsets.HomeWorld);
+            return character == null ? World.SetMe : Core.Memory.Read<World>(character.Pointer + Offsets.HomeWorld);
         }
 
         public static int CurrentMount(this LocalPlayer player)

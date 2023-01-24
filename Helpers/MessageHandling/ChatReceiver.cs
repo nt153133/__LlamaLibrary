@@ -7,6 +7,7 @@ namespace LlamaLibrary.Helpers.MessageHandling
     public abstract class ChatReceiver<T> : IChatReceiver
     {
         public virtual IEnumerable<MessageType> TypesToReceive { get; } = new List<MessageType>();
+
         public virtual T ParseMessage(string message, DateTime timeStamp)
         {
             throw new System.NotImplementedException();
@@ -16,7 +17,7 @@ namespace LlamaLibrary.Helpers.MessageHandling
         {
             throw new System.NotImplementedException();
         }
-        
+
         public void ProcessMessage(string message, DateTime timeStamp)
         {
             ProcessMessage(ParseMessage(message, timeStamp));

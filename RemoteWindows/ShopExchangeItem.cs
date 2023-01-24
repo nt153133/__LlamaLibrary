@@ -46,7 +46,13 @@ namespace LlamaLibrary.RemoteWindows
             }
 
             Log.Information($"Can afford {CanAfford(specialShopItem.Value)}");
-            var index = items.IndexOf(specialShopItem.Value);
+            var index = items?.IndexOf(specialShopItem.Value);
+
+            if (index == null)
+            {
+                return 0;
+            }
+
             var obj = new ulong[8]
             {
                 3uL,

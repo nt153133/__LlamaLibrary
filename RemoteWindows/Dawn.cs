@@ -33,16 +33,16 @@ namespace LlamaLibrary.RemoteWindows
         public int SelectedTrustId => Elements[74].TrimmedData;
         public string SelectedTrustName => Core.Memory.ReadString((IntPtr)Elements[75].Data, Encoding.UTF8);
 
-        public TrustNPC SelectedNpc1 => GetTrustNpc(Elements[34].TrimmedData);
-        public TrustNPC SelectedNpc2 => GetTrustNpc(Elements[35].TrimmedData);
-        public TrustNPC SelectedNpc3 => GetTrustNpc(Elements[36].TrimmedData);
+        public TrustNPC? SelectedNpc1 => GetTrustNpc(Elements[34].TrimmedData);
+        public TrustNPC? SelectedNpc2 => GetTrustNpc(Elements[35].TrimmedData);
+        public TrustNPC? SelectedNpc3 => GetTrustNpc(Elements[36].TrimmedData);
 
-        public TrustNPC Npc1 => GetTrustNpc(Elements[10].TrimmedData);
-        public TrustNPC Npc2 => GetTrustNpc(Elements[11].TrimmedData);
-        public TrustNPC Npc3 => GetTrustNpc(Elements[12].TrimmedData);
-        public TrustNPC Npc4 => GetTrustNpc(Elements[13].TrimmedData);
-        public TrustNPC Npc5 => GetTrustNpc(Elements[14].TrimmedData);
-        public TrustNPC Npc6 => GetTrustNpc(Elements[15].TrimmedData);
+        public TrustNPC? Npc1 => GetTrustNpc(Elements[10].TrimmedData);
+        public TrustNPC? Npc2 => GetTrustNpc(Elements[11].TrimmedData);
+        public TrustNPC? Npc3 => GetTrustNpc(Elements[12].TrimmedData);
+        public TrustNPC? Npc4 => GetTrustNpc(Elements[13].TrimmedData);
+        public TrustNPC? Npc5 => GetTrustNpc(Elements[14].TrimmedData);
+        public TrustNPC? Npc6 => GetTrustNpc(Elements[15].TrimmedData);
 
         public int Npc1Level => Elements[43].TrimmedData;
         public int Npc1Leve2 => Elements[44].TrimmedData;
@@ -99,7 +99,7 @@ namespace LlamaLibrary.RemoteWindows
             }
         }
 
-        private TrustNPC GetTrustNpc(int id)
+        private TrustNPC? GetTrustNpc(int id)
         {
             return npcList.Any(i => i.Id1 == id || i.Id2 == id) ? npcList.FirstOrDefault(i => i.Id1 == id || i.Id2 == id) : null;
         }

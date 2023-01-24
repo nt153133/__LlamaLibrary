@@ -24,7 +24,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public string HousingWard => Core.Memory.ReadString((IntPtr)Elements[2].Data, Encoding.UTF8);
 
-        public byte[] EligibilityArray => Core.Memory.ReadBytes(WindowByName.Pointer + Offsets.EligibilityArray, 4);
+        public byte[]? EligibilityArray => WindowByName != null ? Core.Memory.ReadBytes(WindowByName.Pointer + Offsets.EligibilityArray, 4) : null;
 
         public string PlotPrice(int plot)
         {

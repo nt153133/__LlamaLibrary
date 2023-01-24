@@ -92,6 +92,7 @@ namespace LlamaLibrary.Helpers
                 Navigator.PlayerMover = new SlideMover();
                 Navigator.NavigationProvider = new ServiceNavigationProvider();
             }
+
             /*if (ZoneId == 620)
             {
                 var AE = WorldManager.AetheryteIdsForZone(ZoneId).OrderBy(i => i.Item2.DistanceSqr(XYZ)).First();
@@ -102,12 +103,9 @@ namespace LlamaLibrary.Helpers
                 return await FlightorMove(XYZ);
             }*/
 
-            if ((ZoneId == 534 || ZoneId == 535 || ZoneId == 536) && WorldManager.ZoneId != ZoneId)
+            if (ZoneId is 534 or 535 or 536 && WorldManager.ZoneId != ZoneId && !await GrandCompanyHelper.GetToGCBarracks())
             {
-                if (!await GrandCompanyHelper.GetToGCBarracks())
-                {
-                    return false;
-                }
+                return false;
             }
 
             if (HousingTraveler.HousingZoneIds.Contains((ushort)ZoneId))
@@ -486,30 +484,24 @@ namespace LlamaLibrary.Helpers
                     {
                         var unit = npc.GameObject;
 
-                        if (unit != default)
+                        if (unit != default && !unit.IsWithinInteractRange)
                         {
-                            if (!unit.IsWithinInteractRange)
-                            {
-                                await OffMeshMoveInteract(unit);
-                            }
+                            await OffMeshMoveInteract(unit);
                         }
 
-                        return unit.IsWithinInteractRange;
+                        return unit != null && unit.IsWithinInteractRange;
                     }
                 }
                 else if (await GetTo(npc.Location.ZoneId, npc.Location.Coordinates))
                 {
                     var unit = GameObjectManager.GetObjectByNPCId(npc.NpcId);
 
-                    if (unit != default)
+                    if (unit != default && !unit.IsWithinInteractRange)
                     {
-                        if (!unit.IsWithinInteractRange)
-                        {
-                            await OffMeshMoveInteract(unit);
-                        }
+                        await OffMeshMoveInteract(unit);
                     }
 
-                    return unit.IsWithinInteractRange;
+                    return unit != null && unit.IsWithinInteractRange;
                 }
             }
 
@@ -533,15 +525,12 @@ namespace LlamaLibrary.Helpers
             {
                 var unit = GameObjectManager.GetObjectByNPCId(npc.NpcId);
 
-                if (unit != default)
+                if (unit != default && !unit.IsWithinInteractRange)
                 {
-                    if (!unit.IsWithinInteractRange)
-                    {
-                        await OffMeshMoveInteract(unit);
-                    }
+                    await OffMeshMoveInteract(unit);
                 }
 
-                return unit.IsWithinInteractRange;
+                return unit != null && unit.IsWithinInteractRange;
             }
 
             return false;
@@ -568,16 +557,6 @@ namespace LlamaLibrary.Helpers
         public static async Task<bool> GetToInteractNpc(Npc npc, RemoteWindow window)
         {
             return await GetToInteractNpc(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, window);
-        }
-
-        public static async Task<bool> GetToInteractNpcSelectString(Npc npc, int option = -1)
-        {
-            return await GetToInteractNpcSelectString(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, option);
-        }
-
-        public static async Task<bool> GetToInteractNpcSelectString(Npc npc, int option, RemoteWindow window)
-        {
-            return await GetToInteractNpcSelectString(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, option, window);
         }
 
         public static async Task<bool> GetToInteractNpc(uint npcId, ushort zoneId, Vector3 location, RemoteWindow window)
@@ -631,6 +610,16 @@ namespace LlamaLibrary.Helpers
             }
 
             return window.IsOpen;
+        }
+
+        public static async Task<bool> GetToInteractNpcSelectString(Npc npc, int option = -1)
+        {
+            return await GetToInteractNpcSelectString(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, option);
+        }
+
+        public static async Task<bool> GetToInteractNpcSelectString(Npc npc, int option, RemoteWindow window)
+        {
+            return await GetToInteractNpcSelectString(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, option, window);
         }
 
         public static async Task<bool> GetToInteractNpcSelectString(uint npcId, ushort zoneId, Vector3 location, int selectStringIndex = -1, RemoteWindow? nextWindow = null)

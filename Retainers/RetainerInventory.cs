@@ -23,7 +23,7 @@ namespace LlamaLibrary.Retainers
             dict.Add(slot.TrueItemId, slot);
         }
 
-        public BagSlot GetItem(uint trueItemId)
+        public BagSlot? GetItem(uint trueItemId)
         {
             return dict.TryGetValue(trueItemId, out var returnBagSlot) ? returnBagSlot : null;
         }

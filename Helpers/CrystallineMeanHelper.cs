@@ -56,7 +56,7 @@ namespace LlamaLibrary.Helpers
             { ClassJobType.Fisher, Frithrik },
         };
 
-        private static Npc ClassNpc => FacetNPCs.ContainsKey(Core.Me.CurrentJob) ? FacetNPCs[Core.Me.CurrentJob] : default;
+        private static Npc? ClassNpc => FacetNPCs.ContainsKey(Core.Me.CurrentJob) ? FacetNPCs[Core.Me.CurrentJob] : default;
 
         public static async Task<bool> CraftItems()
         {
@@ -70,6 +70,12 @@ namespace LlamaLibrary.Helpers
 
             // Need to travel to NPC based on Current class
             var facetNpc = await GetToNpc(npc);
+
+            if (facetNpc == default)
+            {
+                Log.Error($"Failed to get to {npc.Name}");
+                return false;
+            }
 
             // Interact with NPCID based on the class from the above chart
             facetNpc.Target();
@@ -140,6 +146,12 @@ namespace LlamaLibrary.Helpers
 
             facetNpc = await GetToNpc(npc);
 
+            if (facetNpc == default)
+            {
+                Log.Error("Failed to get to NPC");
+                return false;
+            }
+
             // Interact with NPCID based on the class from the above chart
             facetNpc.Interact();
 
@@ -161,13 +173,10 @@ namespace LlamaLibrary.Helpers
                 await SkipCutscene();
             }
 
-            if (await Buddy.Coroutines.Coroutine.Wait(5000, () => LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen))
+            if (await Buddy.Coroutines.Coroutine.Wait(5000, () => LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen) && LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen)
             {
-                if (LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen)
-                {
-                    Log.Information("Item Hand over");
-                    await LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.HandOverItems();
-                }
+                Log.Information("Item Hand over");
+                await LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.HandOverItems();
             }
 
             var timer = Stopwatch.StartNew();
@@ -332,7 +341,7 @@ namespace LlamaLibrary.Helpers
             }
         }
 
-        private static async Task<GameObject> GetToNpc(Npc npc)
+        private static async Task<GameObject?> GetToNpc(Npc npc)
         {
             var facetNpc = npc.GameObject;
 
@@ -342,7 +351,7 @@ namespace LlamaLibrary.Helpers
                 facetNpc = npc.GameObject;
             }
 
-            if (!facetNpc.IsWithinInteractRange)
+            if (facetNpc != null && !facetNpc.IsWithinInteractRange)
             {
                 await Navigation.FlightorMove(facetNpc.Location, 4);
             }

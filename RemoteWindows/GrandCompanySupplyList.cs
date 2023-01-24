@@ -107,7 +107,10 @@ namespace LlamaLibrary.RemoteWindows
         public void SetExpertFilter(byte filter)
         {
             SendAction(2, 3, 5, 3, filter);
-            Core.Memory.CallInjected64<IntPtr>(Offsets.SetFilter, WindowByName.Pointer, (int)filter);
+            if (WindowByName != null)
+            {
+                Core.Memory.CallInjected64<IntPtr>(Offsets.SetFilter, WindowByName.Pointer, (int)filter);
+            }
         }
 
         public async Task SwitchToProvisioning()

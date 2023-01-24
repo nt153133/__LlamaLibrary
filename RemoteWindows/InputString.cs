@@ -19,11 +19,16 @@ namespace LlamaLibrary.RemoteWindows
             internal static IntPtr UnkStatic;
         }
 
-        public IntPtr GetStringPtr =>
-            Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(WindowByName.Pointer + Offsets.AtkComponentTextInput) +
-                                     Offsets.StringPtr);
+        public IntPtr GetStringPtr => WindowByName == null ? IntPtr.Zero : Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(WindowByName.Pointer + Offsets.AtkComponentTextInput) + Offsets.StringPtr);
 
-        public string GetString => Core.Memory.ReadStringUTF8(GetStringPtr);
+        public string GetString
+        {
+            get
+            {
+                var ptr = GetStringPtr;
+                return ptr == IntPtr.Zero ? string.Empty : Core.Memory.ReadStringUTF8(GetStringPtr);
+            }
+        }
 
         public IntPtr GetStaticPtr => Offsets.UnkStatic;
 

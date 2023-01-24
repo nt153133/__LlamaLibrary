@@ -41,11 +41,11 @@ namespace LlamaLibrary.Helpers.Housing
             }
         }
 
-        public static HouseLocation[] AccessibleHouseLocations => Residences.Select(i => (HouseLocation)i).ToArray();
+        public static HouseLocation?[] AccessibleHouseLocations => Residences.Select(i => (HouseLocation?)i).ToArray();
 
-        public static HouseLocation PersonalEstate => AccessibleHouseLocations[(int)HouseLocationIndex.PrivateEstate];
-        public static HouseLocation FreeCompanyEstate => AccessibleHouseLocations[(int)HouseLocationIndex.FreeCompanyEstate];
-        public static HouseLocation[] SharedEstates => new[] { AccessibleHouseLocations[(int)HouseLocationIndex.SharedEstate1], AccessibleHouseLocations[(int)HouseLocationIndex.SharedEstate2] };
+        public static HouseLocation? PersonalEstate => AccessibleHouseLocations[(int)HouseLocationIndex.PrivateEstate];
+        public static HouseLocation? FreeCompanyEstate => AccessibleHouseLocations[(int)HouseLocationIndex.FreeCompanyEstate];
+        public static HouseLocation?[] SharedEstates => new[] { AccessibleHouseLocations[(int)HouseLocationIndex.SharedEstate1], AccessibleHouseLocations[(int)HouseLocationIndex.SharedEstate2] };
 
         public static IntPtr PositionPointer
         {
@@ -144,14 +144,25 @@ namespace LlamaLibrary.Helpers.Housing
 
         static HousingHelper()
         {
-            UpdateResidenceArray();
+            if (WorldHelper.IsOnHomeWorld)
+            {
+                UpdateResidenceArray();
+            }
         }
 
         public static void UpdateResidenceArray()
         {
             _lastHousingUpdate = DateTime.Now;
             _lastUpdateWorld = WorldHelper.CurrentWorld;
-            _residences = Core.Memory.ReadArray<ResidenceInfo>(Offsets.HouseLocationArray, 6);
+            try
+            {
+                _residences = Core.Memory.ReadArray<ResidenceInfo>(Offsets.HouseLocationArray, 6);
+            }
+            catch (Exception e)
+            {
+                ff14bot.Helpers.Logging.WriteException(e);
+                _residences = new ResidenceInfo[6];
+            }
         }
 
         public static HousingPositionInfo HousingPositionInfo

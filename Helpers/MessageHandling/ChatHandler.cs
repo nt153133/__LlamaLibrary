@@ -4,7 +4,6 @@ using ff14bot.Managers;
 
 namespace LlamaLibrary.Helpers.MessageHandling
 {
-
     public static class ChatHandler
     {
         private static readonly List<IChatReceiver> Receivers = new List<IChatReceiver>();

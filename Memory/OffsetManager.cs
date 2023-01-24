@@ -13,6 +13,7 @@ using System.CodeDom;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -33,6 +34,7 @@ using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteAgents;
 using Newtonsoft.Json;
 using LogLevel = LlamaLibrary.Logging.LogLevel;
+// ReSharper disable InterpolatedStringExpressionIsNotIFormattable
 
 namespace LlamaLibrary.Memory
 {
@@ -59,7 +61,6 @@ namespace LlamaLibrary.Memory
         public static void Init()
         {
             var stopwatch = Stopwatch.StartNew();
-            Thread scriptThread = null;
             try
             {
                 lock (InitLock)
@@ -67,13 +68,13 @@ namespace LlamaLibrary.Memory
                     stopwatch.Restart();
                     if (initDone)
                     {
-                        Logger.Debug($"OffsetManager done {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+                        Logger.Debug($"OffsetManager done {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
                         return;
                     }
 
                     if (initStarted)
                     {
-                        Logger.Information($"OffsetManager Init started but waiting {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+                        Logger.Information($"OffsetManager Init started but waiting {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
                         while (!initDone)
                         {
                             Thread.Sleep(100);
@@ -88,13 +89,13 @@ namespace LlamaLibrary.Memory
                         stopwatch = Stopwatch.StartNew();
                         if (initDone)
                         {
-                            Logger.Information($"OffsetManager Init started but done now {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+                            Logger.Information($"OffsetManager Init started but done now {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
                             return;
                         }
 
-                        Logger.Information($"OffsetManager Init started {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+                        Logger.Information($"OffsetManager Init started {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
 
-                        scriptThread = new Thread(() => SetScriptsThread());
+                        var scriptThread = new Thread(SetScriptsThread);
                         scriptThread.Start();
                         //SetScriptsThread();
                         //newStopwatch.Stop();
@@ -103,7 +104,7 @@ namespace LlamaLibrary.Memory
                         var newStopwatch = Stopwatch.StartNew();
 
                         var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
-                                  where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+                                  where t.Namespace != null && t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
                                   select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
                         newStopwatch.Stop();
@@ -187,7 +188,7 @@ namespace LlamaLibrary.Memory
                         File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
                         newStopwatch.Stop();
                         Logger.Debug($"OffsetManager File.WriteAllText took {newStopwatch.ElapsedMilliseconds}ms");
-                        Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+                        Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
                         //initStarted = true;
                         if (_debug)
                         {
@@ -206,7 +207,7 @@ namespace LlamaLibrary.Memory
             finally
             {
                 initDone = true;
-                Logger.Debug($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {(new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.Name}");
+                Logger.Debug($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
             }
 
             /*
@@ -281,6 +282,7 @@ namespace LlamaLibrary.Memory
             }
         }
 
+        [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
         public static void SetOffsetObjects(IEnumerable<Type> q1)
         {
             var types = q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public));
@@ -335,18 +337,18 @@ namespace LlamaLibrary.Memory
 
         private static IntPtr ParseField(FieldInfo field, PatternFinder pf)
         {
-            var offset = (OffsetAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetAttribute)).FirstOrDefault();
+            var offset = (OffsetAttribute?)Attribute.GetCustomAttributes(field, typeof(OffsetAttribute)).FirstOrDefault();
 
-            var valna = (OffsetValueNA)Attribute.GetCustomAttributes(field, typeof(OffsetValueNA)).FirstOrDefault();
+            var valna = (OffsetValueNA?)Attribute.GetCustomAttributes(field, typeof(OffsetValueNA)).FirstOrDefault();
 
             var result = IntPtr.Zero;
-            var name = $"{field.DeclaringType.FullName}.{field.Name}";
+            var name = $"{field.DeclaringType?.FullName}.{field.Name}";
             //var lang = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic).First(i => i.FieldType == typeof(Language)).GetValue(null);
 
             if (Translator.Language == Language.Chn) //Translator.Language
             {
-                var offsetCN = (OffsetCNAttribute)Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute)).FirstOrDefault();
-                var valcn = (OffsetValueCN)Attribute.GetCustomAttributes(field, typeof(OffsetValueCN)).FirstOrDefault();
+                var offsetCN = (OffsetCNAttribute?)Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute)).FirstOrDefault();
+                var valcn = (OffsetValueCN?)Attribute.GetCustomAttributes(field, typeof(OffsetValueCN)).FirstOrDefault();
 
                 if (valcn != null)
                 {
@@ -368,12 +370,12 @@ namespace LlamaLibrary.Memory
                 {
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
-                        Logger.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Error($"[{field.DeclaringType?.DeclaringType?.Name}:{field.Name:,27}] Not Found");
                         Logger.Exception(e);
                     }
                     else
                     {
-                        Logger.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Error($"[{field.DeclaringType?.Name}:{field.Name:,27}] Not Found");
                         Logger.Exception(e);
                     }
                 }
@@ -415,11 +417,11 @@ namespace LlamaLibrary.Memory
                         {
                             if (field.FieldType != typeof(int))
                             {
-                                OffsetCache.TryAdd($"{field.DeclaringType.FullName}.{field.Name}", Core.Memory.GetRelative(result).ToInt64());
+                                OffsetCache.TryAdd($"{field.DeclaringType?.FullName}.{field.Name}", Core.Memory.GetRelative(result).ToInt64());
                             }
                             else
                             {
-                                OffsetCache.TryAdd($"{field.DeclaringType.FullName}.{field.Name}", result.ToInt64());
+                                OffsetCache.TryAdd($"{field.DeclaringType?.FullName}.{field.Name}", result.ToInt64());
                             }
                         }
                     }
@@ -428,12 +430,12 @@ namespace LlamaLibrary.Memory
                 {
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
-                        Logger.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Error($"[{field.DeclaringType.DeclaringType?.Name}:{field.Name:,27}] Not Found");
                         Logger.Exception(e);
                     }
                     else
                     {
-                        Logger.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
+                        Logger.Error($"[{field.DeclaringType?.Name}:{field.Name:,27}] Not Found");
                         Logger.Exception(e);
                     }
                 }
@@ -456,43 +458,46 @@ namespace LlamaLibrary.Memory
                 return result;
             }
 
-            if (offset != null)
+            switch (field.DeclaringType)
             {
                 //Sb.AppendLine($"{field.DeclaringType.FullName}.{field.Name}");
-                if (field.DeclaringType != null && field.DeclaringType.IsNested && field.FieldType != typeof(int))
-                {
-                    Sb.AppendLine($"{field.DeclaringType.DeclaringType.Name}_{field.Name}, {offset.Pattern} - {offset.PatternCN}");
-                    patterns.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", offset.Pattern);
-                }
-                else if (field.DeclaringType != null && field.DeclaringType.IsNested && field.FieldType == typeof(int))
-                {
+                case { IsNested: true } when field.FieldType != typeof(int):
+                    Sb.AppendLine($"{field.DeclaringType?.DeclaringType?.Name}_{field.Name}, {offset.Pattern} - {offset.PatternCN}");
+                    patterns.Add($"{field.DeclaringType?.DeclaringType?.Name}_{field.Name}", offset.Pattern);
+                    break;
+                case { IsNested: true } when field.FieldType == typeof(int):
                     //sb.AppendLine($"{field.DeclaringType.DeclaringType.Name}_{field.Name}, {offset.Pattern} - {offset.PatternCN}");
-                    constants.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", offset.Pattern);
-                }
-                else if (field.FieldType != typeof(int))
+                    constants.Add($"{field.DeclaringType?.DeclaringType?.Name}_{field.Name}", offset.Pattern);
+                    break;
+                default:
                 {
-                    Sb.AppendLine($"{field.Name}, {offset.Pattern}"); // - {offset.PatternCN}
-                    patterns.Add($"{field.Name}", offset.Pattern);
-                }
-                else
-                {
-                    Sb.AppendLine($"{field.Name}, {offset.Pattern} "); //- {offsetCN?.PatternCN}
-                    constants.Add($"{field.Name}", offset.Pattern);
+                    if (field.FieldType != typeof(int))
+                    {
+                        Sb.AppendLine($"{field.Name}, {offset.Pattern}"); // - {offset.PatternCN}
+                        patterns.Add($"{field.Name}", offset.Pattern);
+                    }
+                    else
+                    {
+                        Sb.AppendLine($"{field.Name}, {offset.Pattern} "); //- {offsetCN?.PatternCN}
+                        constants.Add($"{field.Name}", offset.Pattern);
+                    }
+
+                    break;
                 }
             }
 
             if (valna != null)
             {
-                Sb.AppendLine($"{field.DeclaringType.Name},{field.Name},{valna}");
+                Sb.AppendLine($"{field.DeclaringType?.Name},{field.Name},{valna}");
             }
 
-            if (field.DeclaringType != null && field.DeclaringType.IsNested)
+            if (field.DeclaringType is { IsNested: true })
             {
-                Logger.Information($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
+                Logger.Information($"[{field.DeclaringType?.DeclaringType?.Name}:{field.Name:,27}] {result.ToInt64():X}");
             }
             else
             {
-                Logger.Information($"[{field.DeclaringType.Name}:{field.Name:,27}] {result.ToInt64():X}");
+                Logger.Information($"[{field.DeclaringType?.Name}:{field.Name:,27}] {result.ToInt64():X}");
             }
 
             return result;
@@ -506,18 +511,18 @@ namespace LlamaLibrary.Memory
             Logger.Information("ScriptManager Set");
         }
 
-        public static string GetRootNamespace(string nameSpace)
+        public static string? GetRootNamespace(string? nameSpace)
         {
-            return nameSpace.IndexOf('.') > 0 ? nameSpace.Substring(0, nameSpace.IndexOf('.')) : nameSpace;
+            return nameSpace != null && nameSpace.IndexOf('.') > 0 ? nameSpace.Substring(0, nameSpace.IndexOf('.')) : nameSpace;
         }
 
         [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
-        public static string GetCurrentNamespace()
+        public static string? GetCurrentNamespace()
         {
             var frame = new StackFrame(1);
             var method = frame.GetMethod();
             var type = method.DeclaringType;
-            return GetRootNamespace(type.Namespace);
+            return GetRootNamespace(type?.Namespace);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
@@ -527,8 +532,8 @@ namespace LlamaLibrary.Memory
             var method = frame.GetMethod();
             var type = method.DeclaringType;
 
-            var q1 = (from t in method.DeclaringType.Assembly.GetTypes()
-                      where t.Namespace != null && (t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+            var q1 = (from t in method.DeclaringType?.Assembly.GetTypes()
+                      where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
                       select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
             return q1;
@@ -541,8 +546,8 @@ namespace LlamaLibrary.Memory
             var method = frame.GetMethod();
             var type = method.DeclaringType;
 
-            var q1 = (from t in method.DeclaringType.Assembly.GetTypes()
-                      where t.Namespace != null && (t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+            var q1 = (from t in method.DeclaringType?.Assembly.GetTypes()
+                      where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
                       select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
             SetOffsetObjects(q1);
@@ -560,8 +565,8 @@ namespace LlamaLibrary.Memory
             var method = frame.GetMethod();
             var type = method.DeclaringType;
 
-            var q1 = (from t in method.DeclaringType.Assembly.GetTypes()
-                      where t.Namespace != null && (t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+            var q1 = (from t in method.DeclaringType?.Assembly.GetTypes()
+                      where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
                       select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
             SetOffsetObjects(q1);
@@ -581,7 +586,7 @@ namespace LlamaLibrary.Memory
                 vtables.Add(pointers[index], index);
             }
 
-            var q = from t in method.DeclaringType.Assembly.GetTypes()
+            var q = from t in method.DeclaringType?.Assembly.GetTypes()
                     where t.IsClass && typeof(IAgent).IsAssignableFrom(t)
                     select t;
 

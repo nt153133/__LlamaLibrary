@@ -13,14 +13,9 @@
 
         public bool CanUpdateGearSet()
         {
-            var button = WindowByName.FindButton(18);
+            var button = WindowByName?.FindButton(18);
 
-            if (button == null)
-            {
-                return false;
-            }
-
-            return button.Clickable;
+            return button is { Clickable: true };
         }
     }
 }

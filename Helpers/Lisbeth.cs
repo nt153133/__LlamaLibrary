@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -12,15 +13,18 @@ using ff14bot.Managers;
 using ff14bot.Objects;
 using ff14bot.Settings;
 using LlamaLibrary.Logging;
+#pragma warning disable CS8603
+#pragma warning disable CS8602
 
 namespace LlamaLibrary.Helpers
 {
+    [SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1214:Readonly fields should appear before non-readonly fields")]
     public static class Lisbeth
     {
         private static readonly LLogger Log = new("LisbethHelper", Colors.MediumPurple);
 
-        private static object _lisbeth;
-        private static MethodInfo _orderMethod;
+        private static object? _lisbeth;
+        private static MethodInfo? _orderMethod;
         private static readonly MethodInfo _travelMethod;
         public static Func<string> _getCurrentAreaName;
         private static readonly Func<Task> _stopGentlyAndWait;
@@ -243,7 +247,7 @@ namespace LlamaLibrary.Helpers
 
         public static List<string> GetHookList()
         {
-            return _getHookList?.Invoke();
+            return _getHookList?.Invoke() ?? new List<string>();
         }
 
         public static Task<bool> ExitCrafting()

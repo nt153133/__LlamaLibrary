@@ -23,6 +23,11 @@ namespace LlamaLibrary.RemoteWindows
         {
             get
             {
+                if (WindowByName == null)
+                {
+                    return new Dictionary<int, CompanyChestPermission>();
+                }
+
                 var permissions = new Dictionary<int, CompanyChestPermission>();
                 var value = Core.Memory.Read<uint>(WindowByName.Pointer + Offsets.ItemPermissions);
                 for (var i = 0; i < ItemTabCount; i++)
@@ -34,9 +39,9 @@ namespace LlamaLibrary.RemoteWindows
             }
         }
 
-        public CompanyChestPermission CrystalsPermission => Core.Memory.Read<CompanyChestPermission>(WindowByName.Pointer + Offsets.CrystalsPermission);
+        public CompanyChestPermission CrystalsPermission => WindowByName != null ? Core.Memory.Read<CompanyChestPermission>(WindowByName.Pointer + Offsets.CrystalsPermission) : CompanyChestPermission.NoAccess;
 
-        public CompanyChestPermission GilPermission => Core.Memory.Read<CompanyChestPermission>(WindowByName.Pointer + Offsets.GilPermission);
+        public CompanyChestPermission GilPermission => WindowByName != null ? Core.Memory.Read<CompanyChestPermission>(WindowByName.Pointer + Offsets.GilPermission) : CompanyChestPermission.NoAccess;
 
         public int ItemTabCount => Elements[4].TrimmedData;
 

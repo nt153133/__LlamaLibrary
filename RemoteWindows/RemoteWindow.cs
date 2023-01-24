@@ -33,7 +33,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public virtual AgentInterface Agent { get; private set; }
 
-        public virtual AtkAddonControl WindowByName => RaptureAtkUnitManager.GetWindowByName(WindowName);
+        public virtual AtkAddonControl? WindowByName => RaptureAtkUnitManager.GetWindowByName(WindowName);
 
         protected bool HasAgentInterfaceId => GetAgentInterfaceId() != 0;
 
@@ -80,7 +80,7 @@ namespace LlamaLibrary.RemoteWindows
             {
                 if (WindowByName == null)
                 {
-                    return null;
+                    return Array.Empty<TwoInt>();
                 }
 
                 var elementCount = ElementCount;
@@ -94,6 +94,11 @@ namespace LlamaLibrary.RemoteWindows
 
         public void SendAction(int pairCount, params ulong[] param)
         {
+            if (WindowByName == null)
+            {
+                return;
+            }
+
             if (IsOpen)
             {
                 WindowByName.SendAction(pairCount, param);

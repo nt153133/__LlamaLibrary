@@ -16,10 +16,15 @@ csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_style_unused_value_assignment_preference = false
 csharp_style_unused_value_expression_statement_preference = false
 
+dotnet_diagnostic.SA1210.severity = None
 dotnet_diagnostic.SA1300.severity = None
-
+dotnet_diagnostic.SA1515.severity = None
+dotnet_diagnostic.SA1108.severity = None
+dotnet_diagnostic.SA1025.severity = None
+dotnet_diagnostic.SA1127.severity = None
+dotnet_diagnostic.SA1116.severity = None
+dotnet_diagnostic.CS8618.severity = none
 dotnet_diagnostic.SA1306.severity = None
-
 dotnet_diagnostic.CS0169.severity = None
 
 # Using directive should appear within a namespace declaration

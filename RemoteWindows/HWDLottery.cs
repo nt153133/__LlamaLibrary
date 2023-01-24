@@ -30,7 +30,7 @@ namespace LlamaLibrary.RemoteWindows
 
             if (IsOpen)
             {
-                var agent = WindowByName.TryFindAgentInterface();
+                var agent = WindowByName?.TryFindAgentInterface();
 
                 if (agent != null)
                 {

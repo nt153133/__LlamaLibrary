@@ -48,7 +48,6 @@ namespace LlamaLibrary.Helpers
                 var three = Core.Memory.Read<IntPtr>(twoHalf + Offsets.off2);
                 var four = Core.Memory.Read<IntPtr>(three + Offsets.off3);
                 return four;
-
             }
         }
 
@@ -81,7 +80,7 @@ namespace LlamaLibrary.Helpers
             var array = Encoding.Convert(Encoding.Unicode, Encoding.UTF8, Encoding.Unicode.GetBytes(input));
 
             using var allocatedMemory =
-                   Core.Memory.CreateAllocatedMemory(array.Length + 30);
+                Core.Memory.CreateAllocatedMemory(array.Length + 30);
             allocatedMemory.AllocateOfChunk("start", array.Length);
             allocatedMemory.WriteBytes("start", array);
             Core.Memory.CallInjected64<int>(Offsets.Utf8StringFromSequenceCtor, ptr, allocatedMemory.Address, length);
@@ -92,7 +91,7 @@ namespace LlamaLibrary.Helpers
             var array = Encoding.Convert(Encoding.Unicode, Encoding.UTF8, Encoding.Unicode.GetBytes(input));
 
             using var allocatedMemory =
-                   Core.Memory.CreateAllocatedMemory(array.Length + 30);
+                Core.Memory.CreateAllocatedMemory(array.Length + 30);
             allocatedMemory.AllocateOfChunk("start", array.Length);
             allocatedMemory.WriteBytes("start", array);
 

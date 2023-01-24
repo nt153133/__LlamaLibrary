@@ -73,7 +73,7 @@ namespace LlamaLibrary.Helpers
             new Npc(2000470, 628, new Vector3(54.67297f, 5.203247f, 55.28345f)), //Company Chest Kugane - Kogane Dori
         };
 
-        public static Npc ClosestCompanyChest
+        public static Npc? ClosestCompanyChest
         {
             get
             {
@@ -456,13 +456,13 @@ namespace LlamaLibrary.Helpers
             return await CloseChest();
         }
 
-        public static BagSlot GetNextOrStackSlot(BagSlot bagSlot, TransactionType transactionType)
+        public static BagSlot? GetNextOrStackSlot(BagSlot bagSlot, TransactionType transactionType)
         {
             var bagList = transactionType switch
             {
-                TransactionType.Deposit => DepositBagIds,
+                TransactionType.Deposit    => DepositBagIds,
                 TransactionType.Withdrawal => Inventory.InventoryBagIds,
-                _ => throw new ArgumentOutOfRangeException(nameof(transactionType), transactionType, null),
+                _                          => throw new ArgumentOutOfRangeException(nameof(transactionType), transactionType, null),
             };
             var bags = InventoryManager.GetBagsByInventoryBagId(bagList.ToArray()).SelectMany(x => x.FilledSlots);
             var eqx = new BagSlotComparer();
@@ -533,6 +533,12 @@ namespace LlamaLibrary.Helpers
 
             if (!WorldHelper.IsOnHomeWorld && !await WorldTravel.WorldTravel.MakeSureHome())
             {
+                return false;
+            }
+
+            if (ClosestCompanyChest == null)
+            {
+                Log.Error("No company chest found");
                 return false;
             }
 

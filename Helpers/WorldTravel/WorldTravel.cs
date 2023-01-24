@@ -25,20 +25,15 @@ namespace LlamaLibrary.Helpers.WorldTravel
 
         public static async Task OpenWorldTravelMenu(TravelCity travelCity = DefaultStart)
         {
-            GameObject AE;
+            GameObject? AE;
 
-            switch ((TravelCity)WorldManager.ZoneId)
+            travelCity = (TravelCity)WorldManager.ZoneId switch
             {
-                case TravelCity.Limsa:
-                    travelCity = TravelCity.Limsa;
-                    break;
-                case TravelCity.Uldah:
-                    travelCity = TravelCity.Uldah;
-                    break;
-                case TravelCity.Gridania:
-                    travelCity = TravelCity.Gridania;
-                    break;
-            }
+                TravelCity.Limsa    => TravelCity.Limsa,
+                TravelCity.Uldah    => TravelCity.Uldah,
+                TravelCity.Gridania => TravelCity.Gridania,
+                _                   => travelCity
+            };
 
             /*
             switch (travelCity)
@@ -70,6 +65,8 @@ namespace LlamaLibrary.Helpers.WorldTravel
                         break;
                     case TravelCity.Gridania:
                         await Navigation.GetTo(132, new Vector3(31.95396f, 2.200001f, 33.20696f));
+                        break;
+                    case TravelCity.Cheapest:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(travelCity), travelCity, null);
@@ -228,15 +225,15 @@ namespace LlamaLibrary.Helpers.WorldTravel
             return await GoToWorld(WorldHelper.HomeWorldId, travelCity);
         }
 
-        public static async Task<GameObject> GetAE(TravelCity travelCity = DefaultStart)
+        public static async Task<GameObject?> GetAE(TravelCity travelCity = DefaultStart)
         {
             uint id = 0;
             id = travelCity switch
             {
-                TravelCity.Limsa => 8,
-                TravelCity.Uldah => 9,
+                TravelCity.Limsa    => 8,
+                TravelCity.Uldah    => 9,
                 TravelCity.Gridania => 2,
-                _ => throw new ArgumentOutOfRangeException(nameof(travelCity), travelCity, null),
+                _                   => throw new ArgumentOutOfRangeException(nameof(travelCity), travelCity, null),
             };
             return await Navigation.GetToAE(id);
         }

@@ -26,22 +26,22 @@ namespace LlamaLibrary.Helpers
         /// <summary>
         /// Gets the Firmament's gathering "Resource Inspector" NPC.
         /// </summary>
-        private static GameObject GatherInspectNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031693 && i.IsVisible);
+        private static GameObject? GatherInspectNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031693 && i.IsVisible);
 
         /// <summary>
         /// Gets the Firmament's crafting "Collectable Appraiser" NPC.
         /// </summary>
-        private static GameObject CraftInspectNpc => GameObjectManager.GameObjects.FirstOrDefault(i => new uint[] { 1031690, 1031677 }.Contains(i.NpcId) && i.IsVisible);
+        private static GameObject? CraftInspectNpc => GameObjectManager.GameObjects.FirstOrDefault(i => new uint[] { 1031690, 1031677 }.Contains(i.NpcId) && i.IsVisible);
 
         /// <summary>
         /// Gets the Firmament's "Kupo of Fortune" minigame NPC.
         /// </summary>
-        private static GameObject KupoFortuneNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031692 && i.IsVisible);
+        private static GameObject? KupoFortuneNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031692 && i.IsVisible);
 
         /// <summary>
         /// Gets the Firmament's Skybuilder Scrip + Fête Token vendor NPC.
         /// </summary>
-        private static GameObject ScripAndFeteVendorNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031680 && i.IsVisible);
+        private static GameObject? ScripAndFeteVendorNpc => GameObjectManager.GameObjects.FirstOrDefault(i => i.NpcId == 1031680 && i.IsVisible);
 
         /// <summary>
         /// Travels to the Firmament and converts Skybuilders' gatherables into "Approved" versions for specified gathering job.
@@ -53,17 +53,23 @@ namespace LlamaLibrary.Helpers
         {
             Log.Information("Trying to turn in Skybuilders' gatherables.");
 
-            if ((!HWDGathereInspect.Instance.IsOpen && GatherInspectNpc == null) || GatherInspectNpc.Location.Distance(Core.Me.Location) > 5f)
+            if ((!HWDGathereInspect.Instance.IsOpen && GatherInspectNpc == null) || GatherInspectNpc?.Location.Distance(Core.Me.Location) > 5f)
             {
                 Log.Information("Resource Inspector NPC not nearby.  Moving to correct area first.");
                 await Navigation.GetTo(FirmamentZoneId, new Vector3(-20.04274f, -16f, 141.3337f));
             }
 
-            if (!HWDGathereInspect.Instance.IsOpen && GatherInspectNpc.Location.Distance(Core.Me.Location) > InteractMaxRange)
+            if (!HWDGathereInspect.Instance.IsOpen && GatherInspectNpc?.Location.Distance(Core.Me.Location) > InteractMaxRange)
             {
                 Log.Information("Approaching interaction range of Resource Inspector NPC.");
                 await Navigation.OffMeshMove(GatherInspectNpc.Location);
                 await Coroutine.Sleep(500);
+            }
+
+            if (GatherInspectNpc == null)
+            {
+                Log.Error("Resource Inspector NPC not found.");
+                return false;
             }
 
             if (!HWDGathereInspect.Instance.IsOpen)
@@ -143,13 +149,13 @@ namespace LlamaLibrary.Helpers
         {
             Log.Information("Trying to play Kupo of Fortune minigame.");
 
-            if ((!HWDLottery.Instance.IsOpen && KupoFortuneNpc == null) || KupoFortuneNpc.Location.Distance(Core.Me.Location) > InteractMaxRange)
+            if ((!HWDLottery.Instance.IsOpen && KupoFortuneNpc == null) || KupoFortuneNpc?.Location.Distance(Core.Me.Location) > InteractMaxRange)
             {
                 Log.Information("Kupo of Fortune NPC not nearby.  Moving to correct area first.");
                 await Navigation.GetTo(FirmamentZoneId, new Vector3(43.59162f, -16f, 170.3864f));
             }
 
-            if (!HWDLottery.Instance.IsOpen && KupoFortuneNpc.Location.Distance(Core.Me.Location) > InteractMaxRange)
+            if (!HWDLottery.Instance.IsOpen && KupoFortuneNpc?.Location.Distance(Core.Me.Location) > InteractMaxRange)
             {
                 Log.Information("Approaching interaction range of Kupo of Fortune NPC.");
                 await Navigation.OffMeshMove(KupoFortuneNpc.Location);
@@ -231,20 +237,20 @@ namespace LlamaLibrary.Helpers
         /// <returns><see langword="false"/> if execution should continue from here.</returns>
         public static async Task<bool> HandInItem(uint itemId, int index, int job, bool stopScripMax = false)
         {
-            if ((!HWDSupply.Instance.IsOpen && CraftInspectNpc == null) || CraftInspectNpc.Location.Distance(Core.Me.Location) > 5f)
+            if ((!HWDSupply.Instance.IsOpen && CraftInspectNpc == null) || CraftInspectNpc?.Location.Distance(Core.Me.Location) > 5f)
             {
                 Log.Information("Collectable Appraiser NPC not nearby.  Moving to correct area first.");
                 await Navigation.GetTo(FirmamentZoneId, new Vector3(43.59162f, -16f, 170.3864f));
             }
 
-            if (!HWDSupply.Instance.IsOpen && CraftInspectNpc.Location.Distance(Core.Me.Location) > InteractMaxRange)
+            if (!HWDSupply.Instance.IsOpen && CraftInspectNpc?.Location.Distance(Core.Me.Location) > InteractMaxRange)
             {
                 Log.Information("Approaching interaction range of Collectable Appraiser NPC.");
                 await Navigation.OffMeshMove(CraftInspectNpc.Location);
                 await Coroutine.Sleep(500);
             }
 
-            if (!HWDSupply.Instance.IsOpen)
+            if (!HWDSupply.Instance.IsOpen && CraftInspectNpc != null)
             {
                 Log.Information($"Interacting with Collectable Appraiser NPC: {CraftInspectNpc.Name} ({CraftInspectNpc.NpcId}).");
                 CraftInspectNpc.Interact();
@@ -402,18 +408,18 @@ namespace LlamaLibrary.Helpers
         /// <returns><see langword="false"/> if execution should continue from here.</returns>
         public static async Task<bool> BuyScripItem(uint itemId, int maxCount = -1, int SelectStringLine = 0)
         {
-            if ((!ShopExchangeCurrency.Open && ScripAndFeteVendorNpc == null) || ScripAndFeteVendorNpc.Location.Distance(Core.Me.Location) > 5f)
+            if ((!ShopExchangeCurrency.Open && ScripAndFeteVendorNpc == null) || ScripAndFeteVendorNpc?.Location.Distance(Core.Me.Location) > 5f)
             {
                 await Navigation.GetTo(FirmamentZoneId, new Vector3(36.33978f, -16f, 145.3877f));
             }
 
-            if (!ShopExchangeCurrency.Open && ScripAndFeteVendorNpc.Location.Distance(Core.Me.Location) > InteractMaxRange)
+            if (!ShopExchangeCurrency.Open && ScripAndFeteVendorNpc?.Location.Distance(Core.Me.Location) > InteractMaxRange)
             {
                 await Navigation.OffMeshMove(ScripAndFeteVendorNpc.Location);
                 await Coroutine.Sleep(500);
             }
 
-            if (!ShopExchangeCurrency.Open)
+            if (!ShopExchangeCurrency.Open && ScripAndFeteVendorNpc != null)
             {
                 ScripAndFeteVendorNpc.Interact();
                 await Coroutine.Wait(5000, () => ShopExchangeCurrency.Open || Talk.DialogOpen || Conversation.IsOpen);
@@ -484,7 +490,13 @@ namespace LlamaLibrary.Helpers
                 return 0u;
             }
 
-            var index = SpecialShopManager.Items.IndexOf(specialShopItem.Value);
+            var index = SpecialShopManager.Items?.IndexOf(specialShopItem.Value);
+
+            if (!index.HasValue)
+            {
+                Log.Error("Could not find index of SpecialShopItem.");
+                return 0u;
+            }
 
             // Clamp purchaseQuantity to max stack size and most we can afford to buy
             quantity = Math.Min(quantity, specialShopItem.Value.Item0.StackSize);

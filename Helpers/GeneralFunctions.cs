@@ -485,22 +485,22 @@ namespace LlamaLibrary.Helpers
         private static List<ItemUiCategory> GetEquipUiCategory(ushort slotId)
         {
             return slotId switch
-            {
-                0 => ItemWeight.MainHands,
-                1 => ItemWeight.OffHands,
-                2 => new List<ItemUiCategory> { ItemUiCategory.Head },
-                3 => new List<ItemUiCategory> { ItemUiCategory.Body },
-                4 => new List<ItemUiCategory> { ItemUiCategory.Hands },
-                5 => new List<ItemUiCategory> { ItemUiCategory.Waist },
-                6 => new List<ItemUiCategory> { ItemUiCategory.Legs },
-                7 => new List<ItemUiCategory> { ItemUiCategory.Feet },
-                8 => new List<ItemUiCategory> { ItemUiCategory.Earrings },
-                9 => new List<ItemUiCategory> { ItemUiCategory.Necklace },
-                10 => new List<ItemUiCategory> { ItemUiCategory.Bracelets },
-                11 or 12 => new List<ItemUiCategory> { ItemUiCategory.Ring },
-                13 => new List<ItemUiCategory> { ItemUiCategory.Soul_Crystal },
-                _ => null,
-            };
+                   {
+                       0        => ItemWeight.MainHands,
+                       1        => ItemWeight.OffHands,
+                       2        => new List<ItemUiCategory> { ItemUiCategory.Head },
+                       3        => new List<ItemUiCategory> { ItemUiCategory.Body },
+                       4        => new List<ItemUiCategory> { ItemUiCategory.Hands },
+                       5        => new List<ItemUiCategory> { ItemUiCategory.Waist },
+                       6        => new List<ItemUiCategory> { ItemUiCategory.Legs },
+                       7        => new List<ItemUiCategory> { ItemUiCategory.Feet },
+                       8        => new List<ItemUiCategory> { ItemUiCategory.Earrings },
+                       9        => new List<ItemUiCategory> { ItemUiCategory.Necklace },
+                       10       => new List<ItemUiCategory> { ItemUiCategory.Bracelets },
+                       11 or 12 => new List<ItemUiCategory> { ItemUiCategory.Ring },
+                       13       => new List<ItemUiCategory> { ItemUiCategory.Soul_Crystal },
+                       _        => new List<ItemUiCategory>(),
+                   };
         }
 
         public static IEnumerable<BagSlot> NonGearSetItems()
@@ -655,12 +655,11 @@ namespace LlamaLibrary.Helpers
                     Log.Information($"OPEN: AgentId {AgentId} Offset {repairVendor.ToInt64():X} Func {repairWindow.ToInt64():X}");
                     lock (Core.Memory.Executor.AssemblyLock)
                     {
-                        Core.Memory.CallInjected64<IntPtr>(
-                            repairWindow,
-                            ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
-                            0,
-                            0,
-                            repairVendor);
+                        Core.Memory.CallInjected64<IntPtr>(repairWindow,
+                                                           ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
+                                                           0,
+                                                           0,
+                                                           repairVendor);
                     }
 
                     await Coroutine.Wait(1500, () => Repair.IsOpen);
@@ -1227,14 +1226,14 @@ namespace LlamaLibrary.Helpers
         }
 
         [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
-        public static DirectoryInfo SourceDirectory()
+        public static DirectoryInfo? SourceDirectory()
         {
             var frame = new StackFrame(1, true);
             var file = frame.GetFileName();
 
             if (!string.IsNullOrEmpty(file) && File.Exists(file))
             {
-                return new DirectoryInfo(Path.GetDirectoryName(file));
+                return new DirectoryInfo(Path.GetDirectoryName(file) ?? throw new InvalidOperationException());
             }
 
             return null;

@@ -94,7 +94,7 @@ namespace LlamaLibrary.Helpers
             }
         }
 
-        public static BagSlot CurrentMap()
+        public static BagSlot? CurrentMap()
         {
             var questMaps = new uint[] { 2001351, 2001705, 2001772, 200974 };
             var map = InventoryManager.GetBagByInventoryBagId(InventoryBagId.KeyItems).FilledSlots.Where(i => i.EnglishName.EndsWith("map", StringComparison.InvariantCultureIgnoreCase) && !questMaps.Contains(i.RawItemId)).ToList();

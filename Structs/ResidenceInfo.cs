@@ -92,7 +92,7 @@ namespace LlamaLibrary.Structs
         public bool IsFcRoom => InternalWard > 30 && !IsApartment;
         private int WardTemp => (ushort)((InternalWard & 0x3F) + 1); //((InternalWard & wardMask) >> maskSize) + 1;
 
-        public static implicit operator HouseLocation(ResidenceInfo info)
+        public static implicit operator HouseLocation?(ResidenceInfo info)
         {
             if (info.Zone == (InternalHousingZone)255 || info.IsApartment || info.IsFcRoom)
             {

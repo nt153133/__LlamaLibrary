@@ -148,7 +148,16 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
                 var residence = GetResidentialDistrictByZone((ushort)location.HousingZone);
 
-                if (HousingHelper.AccessibleHouseLocations.Contains(location) && residence != null && (residence.ClosestHousingAetheryte(Core.Me.Location).Key != residence.ClosestHousingAetheryte(recorded.PlacardLocation).Key))
+                if (residence == null)
+                {
+                    Log.Error($"Residential district null for {location.HousingZone}");
+                    return false;
+                }
+
+                var closestAetherytePlacard = residence.ClosestHousingAetheryte(recorded.PlacardLocation);
+                var closestAetheryteMe = residence.ClosestHousingAetheryte(Core.Me.Location);
+
+                if (HousingHelper.AccessibleHouseLocations.Contains(location) && (closestAetheryteMe?.Key != closestAetherytePlacard?.Key))
                 {
                     var place = HouseLocationIndex.FreeCompanyRoom;
                     for (var index = 0; index < HousingHelper.AccessibleHouseLocations.Length; index++)
@@ -307,19 +316,6 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await GetToResidential(HousingZones.First(i => i.ZoneId == zone), location, ward);
         }
 
-        public static ResidentialDistrict? GetResidentialDistrictByZone(ushort zoneId)
-        {
-            return (HousingZone)zoneId switch
-            {
-                HousingZone.Mist => Mist.Instance,
-                HousingZone.LavenderBeds => LavenderBeds.Instance,
-                HousingZone.Goblet => TheGoblet.Instance,
-                HousingZone.Shirogane => Shirogan.Instance,
-                HousingZone.Empyreum => Empyreum.Instance,
-                _ => null,
-            };
-        }
-
         public static async Task<bool> GetToResidential(World world, HousingZone zone, Vector3 entranceLocation, int ward)
         {
             if (!await WorldTravel.WorldTravel.GoToWorld(world))
@@ -328,6 +324,19 @@ namespace LlamaLibrary.Helpers.HousingTravel
             }
 
             return await GetToResidential(zone, entranceLocation, ward);
+        }
+
+        public static ResidentialDistrict? GetResidentialDistrictByZone(ushort zoneId)
+        {
+            return (HousingZone)zoneId switch
+            {
+                HousingZone.Mist         => Mist.Instance,
+                HousingZone.LavenderBeds => LavenderBeds.Instance,
+                HousingZone.Goblet       => TheGoblet.Instance,
+                HousingZone.Shirogane    => Shirogan.Instance,
+                HousingZone.Empyreum     => Empyreum.Instance,
+                _                        => null,
+            };
         }
     }
 }

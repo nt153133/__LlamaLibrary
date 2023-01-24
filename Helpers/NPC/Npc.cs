@@ -28,7 +28,7 @@ namespace LlamaLibrary.Helpers.NPC
         public bool IsInCurrentArea => WorldManager.AetheryteIdsForZone(WorldManager.ZoneId).Select(i => i.Item1).Contains(Location.ClosestAetherytePrimaryResult.Id);
         public bool IsInCurrentZone => WorldManager.ZoneId == Location.ZoneId;
         public string Name => NpcHelper.GetNpcName(NpcId);
-        public GameObject GameObject => GameObjectManager.GameObjects.Where(r => r.IsTargetable && r.NpcId == NpcId).OrderBy(r => r.Distance()).FirstOrDefault();
+        public GameObject? GameObject => GameObjectManager.GameObjects.Where(r => r.IsTargetable && r.NpcId == NpcId).OrderBy(r => r.Distance()).FirstOrDefault();
         public bool IsHousingZoneNpc => Location.IsHousingLocation;
 
         public Npc(uint npcId, Location location)
@@ -66,7 +66,7 @@ namespace LlamaLibrary.Helpers.NPC
             return $"{Name} - {Location.ZoneName}";
         }
 
-        public bool Equals(Npc other)
+        public bool Equals(Npc? other)
         {
             if (other is null)
             {
@@ -81,7 +81,7 @@ namespace LlamaLibrary.Helpers.NPC
             return NpcId == other.NpcId && Equals(Location, other.Location);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {

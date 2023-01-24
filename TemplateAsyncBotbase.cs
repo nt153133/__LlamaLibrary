@@ -15,18 +15,18 @@ namespace LlamaLibrary
     {
         protected abstract string BotBaseName { get; }
 
-        protected virtual Type SettingsForm { get; } = null;
+        protected virtual Type? SettingsForm { get; } = null;
 
         protected virtual Color LogColor { get; } = Colors.Aqua;
 
         protected abstract Task<bool> Run();
 
-        private Composite _root;
+        private Composite? _root;
 
         // ReSharper disable once MemberCanBePrivate.Global
         protected LLogger Log;
 
-        private Form _settings;
+        private Form? _settings;
 
         protected TemplateAsyncBotbase()
         {
@@ -89,6 +89,6 @@ namespace LlamaLibrary
         public override string Name => BotBaseName;
         public override PulseFlags PulseFlags => PulseFlags.All;
         public override bool RequiresProfile => false;
-        public override Composite Root => _root;
+        public override Composite Root => _root!;
     }
 }

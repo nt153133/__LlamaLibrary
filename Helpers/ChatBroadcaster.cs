@@ -8,7 +8,6 @@ using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Objects;
-using GreyMagic;
 using LlamaLibrary.ClientDataHelpers;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Memory;
@@ -137,7 +136,7 @@ namespace LlamaLibrary.Helpers
             }
         }
 
-        public async Task<bool> SendTell(Character character, string message)
+        public async Task<bool> SendTell(Character? character, string message)
         {
             if (character == null || character.Type != GameObjectType.Pc)
             {
@@ -171,14 +170,6 @@ namespace LlamaLibrary.Helpers
             return await SendTell(GameObjectManager.GetObjectById<Character>(GameObjectManager.Target.ObjectId, true) as Character, message);
         }
 
-        public async Task SendMessage(string line, MessageType messageType)
-        {
-            var oldType = MessageType;
-            SetType(messageType);
-            await Send(line);
-            SetType(oldType);
-        }
-
         public void SetDelay(int ms)
         {
             MinDelayMs = ms;
@@ -187,6 +178,14 @@ namespace LlamaLibrary.Helpers
         public async Task SendMessage(string line)
         {
             await Send(line);
+        }
+
+        public async Task SendMessage(string line, MessageType messageType)
+        {
+            var oldType = MessageType;
+            SetType(messageType);
+            await Send(line);
+            SetType(oldType);
         }
 
         public void SetType(MessageType messageType)
@@ -198,8 +197,8 @@ namespace LlamaLibrary.Helpers
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                using AllocatedMemory allocatedMemory2 = Core.Memory.CreateAllocatedMemory(400);
-                using AllocatedMemory allocatedMemory = Core.Memory.CreateAllocatedMemory(array.Length + 30);
+                using var allocatedMemory2 = Core.Memory.CreateAllocatedMemory(400);
+                using var allocatedMemory = Core.Memory.CreateAllocatedMemory(array.Length + 30);
                 allocatedMemory.AllocateOfChunk("start", array.Length);
                 allocatedMemory.WriteBytes("start", array);
                 allocatedMemory2.AllocateOfChunk<IntPtr>("dword0");
@@ -211,12 +210,9 @@ namespace LlamaLibrary.Helpers
                 allocatedMemory2.Write("dword8", array.Length + 1);
                 allocatedMemory2.Write("dwordC", 0);
                 Core.Memory.CallInjected64<int>(Offsets.ExecuteCommandInner,
-                                                new object[3]
-                                                {
-                                                    UiManagerProxy.RaptureShellModule,
-                                                    allocatedMemory2.Address,
-                                                    UiManagerProxy.UIModule
-                                                });
+                                                UiManagerProxy.RaptureShellModule,
+                                                allocatedMemory2.Address,
+                                                UiManagerProxy.UIModule);
             }
         }
     }

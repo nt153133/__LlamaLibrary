@@ -34,13 +34,13 @@ namespace LlamaLibrary.RemoteWindows
 
         public int ResultCount => Core.Memory.Read<int>(ResultCountLocation);
 
-        public RemoteButton DataCenterButton => WindowByName.FindButton(3);
+        public RemoteButton? DataCenterButton => WindowByName?.FindButton(3);
 
-        public bool DataCenterEnabled => DataCenterButton.IsValid && DataCenterButton.Clickable;
+        public bool DataCenterEnabled => DataCenterButton is { IsValid: true, Clickable: true };
 
-        public RemoteButton RecruitMembersButton => WindowByName.FindButton(46);
+        public RemoteButton? RecruitMembersButton => WindowByName?.FindButton(46);
 
-        public bool RecruitMembersEnabled => RecruitMembersButton.IsValid && RecruitMembersButton.Clickable;
+        public bool RecruitMembersEnabled => RecruitMembersButton is { IsValid: true, Clickable: true };
 
         public LookingForGroup() : base("LookingForGroup")
         {

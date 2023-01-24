@@ -29,7 +29,7 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public IntPtr AtkComponentTextInputNode => Core.Memory.Read<IntPtr>(WindowByName.Pointer + Offsets.AtkComponentTextInputNodePtr);
+        public IntPtr AtkComponentTextInputNode => WindowByName == null ? IntPtr.Zero : Core.Memory.Read<IntPtr>(WindowByName.Pointer + Offsets.AtkComponentTextInputNodePtr);
 
         public IntPtr TextField => AtkComponentTextInputNode + Offsets.TextFieldPtr;
 

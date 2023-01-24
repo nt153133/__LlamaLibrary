@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -99,6 +100,7 @@ namespace LlamaLibrary.Helpers
             return qtyCanBuy;
         }
 
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing")]
         public static async Task<bool> BuyKnownItems(List<(uint ItemId, int qty)> items)
         {
             if (!await OpenShop())

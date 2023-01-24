@@ -29,26 +29,16 @@
 
         public bool CanAutoSubmit()
         {
-            var button = WindowByName.FindButton(8);
+            var button = WindowByName?.FindButton(8);
 
-            if (button != null)
-            {
-                return button.Clickable;
-            }
-
-            return false;
+            return button is { Clickable: true };
         }
 
         public bool CanRequestInspection()
         {
-            var button = WindowByName.FindButton(10);
+            var button = WindowByName?.FindButton(10);
 
-            if (button != null)
-            {
-                return button.Clickable;
-            }
-
-            return false;
+            return button is { Clickable: true };
         }
 
         public override void Close()

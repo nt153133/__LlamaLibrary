@@ -123,6 +123,11 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
             await Coroutine.Sleep(500);
 
+            if (HousingSelectBlock.Instance.WindowByName == null)
+            {
+                return false;
+            }
+
             HousingSelectBlock.Instance.WindowByName.SendAction(2, 3, 0, 0, 0x10);
 
             if (!await Coroutine.Wait(5000, () => SelectYesno.IsOpen))
@@ -160,6 +165,12 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             if (TransitionNpcs.Any())
             {
                 var npc = NpcHelper.GetClosestNpc(TransitionNpcs);
+
+                if (npc == null)
+                {
+                    Log.Error("Failed to find npc");
+                    return false;
+                }
 
                 if (!await TravelWithinZone(npc.Location.Coordinates))
                 {
@@ -241,6 +252,11 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             if (!await Coroutine.Wait(5000, () => SelectString.IsOpen))
             {
                 unit = await Navigation.GetToAE(TownAetheryteId);
+                if (unit is null or default(ff14bot.Objects.GameObject))
+                {
+                    return false;
+                }
+
                 unit.Target();
                 unit.Interact();
                 await Coroutine.Wait(5000, () => SelectString.IsOpen);
@@ -322,7 +338,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             return !HousingSelectBlock.Instance.IsOpen;
         }
 
-        public HousingAetheryte ClosestHousingAetheryte(Vector3 location)
+        public HousingAetheryte? ClosestHousingAetheryte(Vector3 location)
         {
             return Aetherytes.OrderBy(i => i.Location.Distance2DSqr(location)).FirstOrDefault();
         }
@@ -346,10 +362,17 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
             Log.Information($"ClosestHousingAetheryte Location dist: {ClosestHousingAetheryte(location).Location.Distance(Core.Me.Location)}");
             */
+            var closestAetheryte = ClosestHousingAetheryte(location);
+            var closestAetheryteMe = ClosestHousingAetheryte(Core.Me.Location);
 
-            if (!ClosestHousingAetheryte(location).Equals(ClosestHousingAetheryte(Core.Me.Location)))
+            if (closestAetheryte is null || closestAetheryteMe is null)
             {
-                return ClosestHousingAetheryte(Core.Me.Location).Location.Distance(Core.Me.Location) < location.Distance(Core.Me.Location);
+                return false;
+            }
+
+            if (!closestAetheryte.Equals(closestAetheryteMe))
+            {
+                return closestAetheryteMe.Location.Distance(Core.Me.Location) < location.Distance(Core.Me.Location);
             }
 
             return false;
@@ -365,6 +388,11 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             if (ShouldUseAethernet(destination))
             {
                 var closestAe = ClosestHousingAetheryte(Core.Me.Location);
+
+                if (closestAe is null)
+                {
+                    return false;
+                }
 
                 //Log.Information($"{closestAe}");
 
@@ -386,7 +414,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                     return false;
                 }
 
-                AgentTelepotTown.Instance.TeleportByAetheryteId(ClosestHousingAetheryte(destination).Key);
+                AgentTelepotTown.Instance.TeleportByAetheryteId(ClosestHousingAetheryte(destination)!.Key);
 
                 await Coroutine.Wait(-1, () => CommonBehaviors.IsLoading);
                 await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);

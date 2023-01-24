@@ -16,7 +16,7 @@ namespace LlamaLibrary.Structs
         public uint ExdKey;
         public uint ResultingItemQuantity;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = (3 * 8))]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3 * 8)]
         public uint[] ItemInfo;
 
         public (uint ItemId, int QtyRequired, int QtyHave)[] Items

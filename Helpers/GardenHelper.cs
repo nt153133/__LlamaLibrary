@@ -232,22 +232,22 @@ namespace LlamaLibrary.Helpers
         public static async Task Plant(int GardenIndex, int PlantIndex, BagSlot seeds, BagSlot soil)
         {
             var plants = GardenManager.Plants.Where(i => i.Distance(Core.Me.Location) < 10);
-            EventObject plant = null;
+            EventObject? plant = null;
             foreach (var tmpPlant in plants)
             {
-                var _GardenIndex = Lua.GetReturnVal<int>($"return _G['{plant.LuaString}']:GetHousingGardeningIndex();");
+                var _GardenIndex = Lua.GetReturnVal<int>($"return _G['{tmpPlant.LuaString}']:GetHousingGardeningIndex();");
                 if (_GardenIndex != GardenIndex)
                 {
                     continue;
                 }
 
-                var _PlantIndex = Lua.GetReturnVal<int>($"return _G['{plant.LuaString}']:GetHousingGardeningPlantIndex();");
+                var _PlantIndex = Lua.GetReturnVal<int>($"return _G['{tmpPlant.LuaString}']:GetHousingGardeningPlantIndex();");
                 if (_PlantIndex != PlantIndex)
                 {
                     continue;
                 }
 
-                var _Plant = DataManager.GetItem(Lua.GetReturnVal<uint>($"return _G['{plant.LuaString}']:GetHousingGardeningPlantCrop();"));
+                var _Plant = DataManager.GetItem(Lua.GetReturnVal<uint>($"return _G['{tmpPlant.LuaString}']:GetHousingGardeningPlantCrop();"));
                 if (_Plant != null)
                 {
                     plant = tmpPlant;

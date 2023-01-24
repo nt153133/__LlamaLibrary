@@ -15,7 +15,6 @@ namespace LlamaLibrary.RemoteWindows
 
         public static Npc Ulan = new Npc(1017108, 478, new Vector3(16.1935f, 213f, -70.60201f));
 
-
         public AWGrowthFragTrade() : base("AWGrowthFragTrade")
         {
         }

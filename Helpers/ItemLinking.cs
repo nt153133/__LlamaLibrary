@@ -11,8 +11,8 @@ namespace LlamaLibrary.Helpers
         public static byte[] ChatLink(this Item item)
         {
             var result = new List<byte>();
-            result.AddRange(UIForegroundPayload((ushort)(0x223 + item.Rarity * 2)));
-            result.AddRange(UIGlowPayload((ushort)(0x224 + item.Rarity * 2)));
+            result.AddRange(UIForegroundPayload((ushort)(0x223 + (item.Rarity * 2))));
+            result.AddRange(UIGlowPayload((ushort)(0x224 + (item.Rarity * 2))));
             result.AddRange(ItemPayload(item));
             result.AddRange(UIForegroundPayload(500));
             result.AddRange(UIGlowPayload(501));

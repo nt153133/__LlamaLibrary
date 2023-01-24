@@ -110,7 +110,7 @@ namespace LlamaLibrary.Retainers
             return trueItemId;
         }
 
-        public static GameObject NearestSummoningBell()
+        public static GameObject? NearestSummoningBell()
         {
             var list = GameObjectManager.GameObjects
                 .Where(r => r.Name == Translator.SummoningBell)
@@ -226,9 +226,8 @@ namespace LlamaLibrary.Retainers
             }
             else
             {
-                var rand = new Random();
                 var zoneList = new List<uint>();
-                var zoneMap = new List<(uint bellzone, uint truezone)>();
+                var zoneMap = new List<(uint Bellzone, uint Truezone)>();
 
                 foreach (var (ZoneId, Location) in SummoningBells)
                 {
@@ -236,13 +235,13 @@ namespace LlamaLibrary.Retainers
                     switch (zone)
                     {
                         case 131:
-                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 9).ZoneId;
+                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 9)!.ZoneId;
                             break;
                         case 133:
-                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 2).ZoneId;
+                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 2)!.ZoneId;
                             break;
                         case 419:
-                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 70).ZoneId;
+                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 70)!.ZoneId;
                             break;
                     }
 
@@ -254,26 +253,26 @@ namespace LlamaLibrary.Retainers
                 }
 
                 var zoneId = FindCheapestZone(zoneList);
-                bellLocation = SummoningBells.First(i => i.ZoneId == zoneMap.First(j => j.truezone == zoneId).bellzone);
+                bellLocation = SummoningBells.First(i => i.ZoneId == zoneMap.First(j => j.Truezone == zoneId).Bellzone);
             }
 
             Log.Information($"Going to bell {bellLocation.ZoneId} {bellLocation.Location}");
-            if (await Navigation.GetTo(bellLocation.ZoneId, bellLocation.Location))
+            if (!await Navigation.GetTo(bellLocation.ZoneId, bellLocation.Location))
             {
-                var bell = FindSummoningBell();
-                if (bell != null)
-                {
-                    Log.Information($"{bell.Name} {bell.Location} {WorldManager.CurrentZoneName} {bell.IsWithinInteractRange}");
-                }
-                else
-                {
-                    Log.Warning($"Couldn't find bell at {bellLocation.Location} {bellLocation.ZoneId}");
-                }
-
-                return bell != null;
+                return false;
             }
 
-            return false;
+            var bell = FindSummoningBell();
+            if (bell != null)
+            {
+                Log.Information($"{bell.Name} {bell.Location} {WorldManager.CurrentZoneName} {bell.IsWithinInteractRange}");
+            }
+            else
+            {
+                Log.Warning($"Couldn't find bell at {bellLocation.Location} {bellLocation.ZoneId}");
+            }
+
+            return bell != null;
         }
 
         public static uint FindCheapestZone(IEnumerable<uint> zones)
@@ -283,7 +282,7 @@ namespace LlamaLibrary.Retainers
                 .First();
         }
 
-        public static GameObject FindSummoningBell()
+        public static GameObject? FindSummoningBell()
         {
             uint[] bellIds = { 2000072, 2000401, 2000403, 2000439, 2000441, 2000661, 2001271, 2001358, 2006565, 2010284, 196630 };
             return GameObjectManager.GameObjects.Where(i => i.IsVisible && bellIds.Contains(i.NpcId)).OrderBy(r => r.DistanceSqr()).FirstOrDefault();
@@ -520,9 +519,8 @@ namespace LlamaLibrary.Retainers
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                return Core.Memory.CallInjected64<int>(
-                    Offsets.GetNumberOfRetainers,
-                    Offsets.RetainerData);
+                return Core.Memory.CallInjected64<int>(Offsets.GetNumberOfRetainers,
+                                                       Offsets.RetainerData);
             }
         }
 
@@ -541,13 +539,12 @@ namespace LlamaLibrary.Retainers
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<IntPtr>(
-                    Offsets.ExecuteCommand,
-                    (uint)Offsets.RetainerNetworkPacket,
-                    0U,
-                    0U,
-                    0U,
-                    0U);
+                Core.Memory.CallInjected64<IntPtr>(Offsets.ExecuteCommand,
+                                                   (uint)Offsets.RetainerNetworkPacket,
+                                                   0U,
+                                                   0U,
+                                                   0U,
+                                                   0U);
             }
         }
 
