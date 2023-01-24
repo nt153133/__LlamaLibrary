@@ -133,6 +133,11 @@ namespace LlamaLibrary.ScriptConditions
             return (ZodiacLightLevel() % 500) == 80;
         }
 
+        public static int AethericDensity()
+        {
+            return Core.Memory.Read<int>(Offsets.AnimaLightThing + Offsets.AnimaLight);
+        }
+
         public static int GetInstanceTodo(int objective)
         {
             if (DirectorManager.ActiveDirector is InstanceContentDirector activeAsInstance)

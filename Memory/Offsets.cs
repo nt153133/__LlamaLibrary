@@ -107,6 +107,12 @@ namespace LlamaLibrary.Memory
 
         [Offset("Search F3 0F 11 8B ? ? ? ? F3 0F 11 0D ? ? ? ? Add 4 Read32")]
         public static int Framerate;
+
+        [Offset("Search 0F B7 41 ? C3 ? ? ? ? ? ? ? ? ? ? ? 0F B7 C2 41 B8 ? ? ? ? Add 3 Read8")]
+        public static int AnimaLight;
+
+        [Offset("Search 48 8D 0D ? ? ? ? 44 88 74 24 ? E8 ? ? ? ? 8B F8 Add 3 TraceRelative")]
+        public static IntPtr AnimaLightThing;
     }
 
     public static partial class Offsets
