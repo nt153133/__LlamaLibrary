@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>9</LangVersion>
+    <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -89,6 +89,11 @@
     <Compile Include="Extensions\RetainerTaskAskExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\BookConstants.cs" />
+    <Compile Include="Helpers\Cache\BaseClasses\FileCache.cs" />
+    <Compile Include="Helpers\Cache\BaseClasses\ICacheable.cs" />
+    <Compile Include="Helpers\Cache\BaseClasses\IFileStorable.cs" />
+    <Compile Include="Helpers\Cache\Caches.cs" />
+    <Compile Include="Helpers\Cache\FileIconCaches.cs" />
     <Compile Include="Helpers\ChatBroadcaster.cs" />
     <Compile Include="Helpers\Classes\PulseTimer.cs" />
     <Compile Include="Helpers\Classes\RandomMinutePulseTimer.cs" />
@@ -386,6 +391,9 @@
   <ItemGroup>
     <Analyzer Include="packages\StyleCop.Analyzers.Unstable.1.2.0.354\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="packages\StyleCop.Analyzers.Unstable.1.2.0.354\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DataStorage" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
