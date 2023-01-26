@@ -28,7 +28,7 @@ public class ItemIconStore : IFileStorable<Image>
 
     public virtual Image? Load(string name)
     {
-        return Exists(name) ? Image.FromFile(Path.Combine(BasePath, name + FileExtension)) : null;
+        return Exists(name) ? Image.FromFile(GetPath(name)) : null;
     }
 
     public bool Exists(string name)
