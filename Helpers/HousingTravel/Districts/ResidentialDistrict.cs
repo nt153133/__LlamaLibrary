@@ -267,7 +267,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 return false;
             }
 
-            SelectString.ClickLineContains(Translator.Language == Language.Chn ? "冒险者住宅区传送" : Translator.ResidentialDistrictAethernet);
+            SelectString.ClickLineContains(Translator.ResidentialDistrictAethernet);
 
             return await Coroutine.Wait(5000, () => SelectString.IsOpen && SelectString.Lines().Any(i => i.Contains(Translator.SelectWard)));
 

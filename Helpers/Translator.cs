@@ -50,6 +50,10 @@ namespace LlamaLibrary.Helpers
 
         public static string Cancel => Aetheryte11[Language];
 
+        public static string ZodiacWeaponRecreation => CustomTalk721117[Language];
+
+        public static string AnimaWeaponRecreation => CustomTalk721230[Language];
+
         static Translator()
         {
             Language = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
@@ -63,7 +67,7 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "アイテムの受け渡し" },
             { Language.Fre, "Échanger des objets" },
             { Language.Ger, "Gegenstände geben oder nehmen" },
-            { Language.Chn, "" }
+            { Language.Chn, "道具管理" }
         };
 
         private static readonly Dictionary<Language, string> Summoning_Bell = new()
@@ -92,7 +96,7 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "リテイナーベンチャーの確認　[～" },
             { Language.Fre, "Voir la tâche en cours [Fin le" },
             { Language.Ger, "Laufende Unternehmung einsehen (Abschluss am" },
-            { Language.Chn, "" }
+            { Language.Chn, "查看雇员探险情况" }
         };
 
         //Addon # 2386
@@ -152,7 +156,7 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "マーケット出品（プレイヤー所持品から）" },
             { Language.Fre, "Mettre en vente un objet de votre inventaire" },
             { Language.Ger, "Gegenstände aus dem eigenen Inventar verkaufen" },
-            { Language.Chn, "" }
+            { Language.Chn, "出售（玩家所持物品）" }
         };
 
         //Addon # 2381
@@ -162,7 +166,7 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "マーケット出品（リテイナー所持品から）" },
             { Language.Fre, "Mettre en vente un objet du servant" },
             { Language.Ger, "Gegenstände aus dem Gehilfeninventar verkaufen" },
-            { Language.Chn, "" }
+            { Language.Chn, "出售（雇员所持物品）" }
         };
 
         //Addon # 6349
@@ -172,7 +176,7 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "区を指定して移動（ハウスアピール確認）" },
             { Language.Fre, "Spécifier le secteur où aller (Voir les attraits)" },
             { Language.Ger, "Zum angegebenen Bezirk (Zweck der Unterkunft einsehen)" },
-            { Language.Chn, "移动到指定小区" }
+            { Language.Chn, "移动到指定小区（查看房屋宣传标签）" }
         };
 
         //Warp # 131395
@@ -195,84 +199,84 @@ namespace LlamaLibrary.Helpers
             { Language.Chn, "" }
         };
 
-        //Aetheryte # 1
+        //Aetheryte1
         private static readonly Dictionary<Language, string> Aetheryte1 = new()
         {
             { Language.Eng, "Aethernet." },
             { Language.Jap, "都市転送網" },
             { Language.Fre, "Réseau de transport urbain éthéré" },
             { Language.Ger, "Ätheryten<SoftHyphen/" },
-            { Language.Chn, "" }
+            { Language.Chn, "都市传送网" }
         };
 
-        //Aetheryte # 2
+        //Aetheryte2
         private static readonly Dictionary<Language, string> Aetheryte2 = new()
         {
             { Language.Eng, "Residential District Aethernet." },
             { Language.Jap, "冒険者居住区転送" },
             { Language.Fre, "Quartier résidentiel" },
             { Language.Ger, "Wohngebiet" },
-            { Language.Chn, "" }
+            { Language.Chn, "冒险者住宅区传送" }
         };
 
-        //Aetheryte # 3
+        //Aetheryte3
         private static readonly Dictionary<Language, string> Aetheryte3 = new()
         {
             { Language.Eng, "Visit Another World Server." },
             { Language.Jap, "他のワールドへ遊びにいく" },
             { Language.Fre, "Voyager vers un autre Monde" },
             { Language.Ger, "Weltenreise" },
-            { Language.Chn, "" }
+            { Language.Chn, "跨界传送" }
         };
 
-        //Aetheryte # 4
+        //Aetheryte4
         private static readonly Dictionary<Language, string> Aetheryte4 = new()
         {
             { Language.Eng, "Set Home Point." },
             { Language.Jap, "ホームポイント登録" },
             { Language.Fre, "Enregistrer comme point de retour" },
             { Language.Ger, "Als Heimatpunkt registriert" },
-            { Language.Chn, "" }
+            { Language.Chn, "设置返回点" }
         };
 
-        //Aetheryte # 6
+        //Aetheryte6
         private static readonly Dictionary<Language, string> Aetheryte6 = new()
         {
             { Language.Eng, "Register Favored Destination." },
             { Language.Jap, "お気に入り登録" },
             { Language.Fre, "Enregistrer comme endroit favori" },
             { Language.Ger, "Als Favorit gespeichert" },
-            { Language.Chn, "" }
+            { Language.Chn, "添加到收藏夹" }
         };
 
-        //Aetheryte # 8
+        //Aetheryte8
         private static readonly Dictionary<Language, string> Aetheryte8 = new()
         {
             { Language.Eng, "Register Free Destination." },
             { Language.Jap, "お気に入り（無料）登録" },
             { Language.Fre, "Enregistrer comme favori gratuit" },
             { Language.Ger, "Als kostenloser Favorit gespeichert" },
-            { Language.Chn, "" }
+            { Language.Chn, "添加到免费点" }
         };
 
-        //Aetheryte # 10
+        //Aetheryte10
         private static readonly Dictionary<Language, string> Aetheryte10 = new()
         {
             { Language.Eng, "Travel to Instanced Area." },
             { Language.Jap, "インスタンスエリアへ移動" },
             { Language.Fre, "Changer d'instance" },
             { Language.Ger, "In ein instanziiertes Areal wechseln" },
-            { Language.Chn, "" }
+            { Language.Chn, "切换副本区" }
         };
 
-        //Aetheryte # 11
+        //Aetheryte11
         private static readonly Dictionary<Language, string> Aetheryte11 = new()
         {
             { Language.Eng, "Cancel." },
             { Language.Jap, "キャンセル" },
             { Language.Fre, "Annuler" },
             { Language.Ger, "Abbrechen" },
-            { Language.Chn, "" }
+            { Language.Chn, "取消" }
         };
 
         //Aetheryte # 0
@@ -283,6 +287,26 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Azurée" },
             { Language.Ger, "Himmelsstadt" },
             { Language.Chn, "" }
+        };
+
+        //CustomTalk721117
+        private static readonly Dictionary<Language, string> CustomTalk721117 = new()
+        {
+            { Language.Eng, "Zodiac Weapon Recreation" },
+            { Language.Jap, "「ゾディアックウェポン」の再創造" },
+            { Language.Fre, "Forger une arme du zodiaque" },
+            { Language.Ger, "Zodiak-Waffe rekonstruieren" },
+            { Language.Chn, "再铸“黄道武器”" }
+        };
+
+        //CustomTalk721230
+        private static readonly Dictionary<Language, string> CustomTalk721230 = new()
+        {
+            { Language.Eng, "Anima Weapon Recreation" },
+            { Language.Jap, "「アニマウェポン」を再創造する" },
+            { Language.Fre, "Recréer une arme anima" },
+            { Language.Ger, "Anima-Waffe rekonstruieren" },
+            { Language.Chn, "再铸元灵武器" }
         };
     }
 }

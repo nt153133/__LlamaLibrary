@@ -173,7 +173,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
                             continue;
                         }
 
-                        Log.Information($"Going to: {WorldHelper.WorldNamesDictionary[Choices[i].WorldID]}");
+                        Log.Information($"Going to: {((World)Choices[i].WorldID).WorldName()}");
                         WorldTravelSelect.Instance.SelectWorld(i);
                         await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
                         if (SelectYesno.IsOpen)
@@ -191,7 +191,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
 
                                 await Coroutine.Sleep(1000);
                                 await PingChecker.UpdatePing();
-                                Log.Information($"CurrentWorld: {WorldHelper.WorldNamesDictionary[WorldHelper.CurrentWorldId]}");
+                                Log.Information($"CurrentWorld: {WorldHelper.CurrentWorld.WorldName()}");
                             }
                         }
 

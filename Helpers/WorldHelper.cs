@@ -85,7 +85,7 @@ namespace LlamaLibrary.Helpers
         {
             if (Translator.Language == Language.Chn)
             {
-                return false;
+                return true;
             }
 
             return WorldMap.ContainsKey(DataCenter) && WorldMap[DataCenter].Contains(world);
@@ -118,6 +118,7 @@ namespace LlamaLibrary.Helpers
 
         public static World HomeWorld => (World)HomeWorldId;
 
+        [Obsolete("Use Enum instead")]
         public static readonly Dictionary<ushort, string> WorldNamesDictionary = new()
         {
             { 0, "INVALID" },
