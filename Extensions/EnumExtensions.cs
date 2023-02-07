@@ -1,6 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Linq;
 using ff14bot.Enums;
 using LlamaLibrary.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace LlamaLibrary.Extensions
 {
@@ -24,13 +28,13 @@ namespace LlamaLibrary.Extensions
         public static bool IsDoh(this ClassJobType type)
         {
             return type is ClassJobType.Carpenter or
-                   ClassJobType.Blacksmith or
-                   ClassJobType.Armorer or
-                   ClassJobType.Goldsmith or
-                   ClassJobType.Leatherworker or
-                   ClassJobType.Weaver or
-                   ClassJobType.Alchemist or
-                   ClassJobType.Culinarian;
+                ClassJobType.Blacksmith or
+                ClassJobType.Armorer or
+                ClassJobType.Goldsmith or
+                ClassJobType.Leatherworker or
+                ClassJobType.Weaver or
+                ClassJobType.Alchemist or
+                ClassJobType.Culinarian;
         }
 
         /// <summary>
@@ -41,8 +45,8 @@ namespace LlamaLibrary.Extensions
         public static bool IsDol(this ClassJobType type)
         {
             return type is ClassJobType.Miner or
-                   ClassJobType.Botanist or
-                   ClassJobType.Fisher;
+                ClassJobType.Botanist or
+                ClassJobType.Fisher;
         }
 
         public static ClassJobType ClassJob(this RetainerRole type)
@@ -59,11 +63,24 @@ namespace LlamaLibrary.Extensions
 
             return type.ClassJob() switch
             {
-                ClassJobType.Miner => Enums.ClassJobCategory.MIN,
-                ClassJobType.Fisher => Enums.ClassJobCategory.FSH,
+                ClassJobType.Miner    => Enums.ClassJobCategory.MIN,
+                ClassJobType.Fisher   => Enums.ClassJobCategory.FSH,
                 ClassJobType.Botanist => Enums.ClassJobCategory.BOT,
-                _ => Enums.ClassJobCategory.ANY,
+                _                     => Enums.ClassJobCategory.ANY,
             };
+        }
+
+        /// <summary>
+        ///     A generic extension method that aids in reflecting
+        ///     and retrieving any attribute that is applied to an `Enum`.
+        /// </summary>
+        public static TAttribute? GetAttribute<TAttribute>(this Enum enumValue)
+            where TAttribute : Attribute
+        {
+            return enumValue.GetType()
+                .GetMember(enumValue.ToString())
+                .FirstOrDefault()?
+                .GetCustomAttribute<TAttribute>();
         }
     }
 }

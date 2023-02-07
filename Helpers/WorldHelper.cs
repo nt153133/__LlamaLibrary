@@ -62,6 +62,12 @@ namespace LlamaLibrary.Helpers
             { WorldDCGroupType.Gaia, new World[] { World.Alexander, World.Fenrir, World.Ultima, World.Ifrit, World.Bahamut, World.Tiamat, World.Durandal, World.Ridill } },
             { WorldDCGroupType.Elemental, new World[] { World.Carbuncle, World.Kujata, World.Typhon, World.Garuda, World.Atomos, World.Tonberry, World.Aegis, World.Gungnir } },
             { WorldDCGroupType.Dynamis, new World[] { World.Marilith, World.Seraph, World.Halicarnassus, World.Maduin } },
+
+            //Chinese
+            { WorldDCGroupType.Chocobo, new World[] { World.LaNuoXiYa, World.HuanYingQunDao, World.MengYaChi, World.ShenYiZhiDi, World.HongYuHai, World.YuZhouHeYin, World.WoXianXiRan, World.ChenXiWangZuo } },
+            { WorldDCGroupType.FatCat, new World[] { World.ZiShuiZhanQiao, World.MoDuNa, World.JingYuZhuangYuan, World.YanXia, World.HaiMaoChaWu, World.RouFengHaiWan, World.HuPoYuan } },
+            { WorldDCGroupType.Mameshiba, new World[] { World.TaiyangHaiAn, World.YinLeiHu, World.HongChaChuan, World.YiXiuJiaDe, World.ShuiJingTa, World.TaiYangHaiAn2, World.YinLeiHu2, World.YiXiuJiaDe2, World.ShuiJingTa2, World.HongChaChuan2 } },
+            { WorldDCGroupType.Moogle, new World[] { World.BaiJinHuanXiang, World.LvRenZhanQiao, World.FuXiaoZhiJian, World.Longchaoshendian, World.ChaoFengTing, World.ShenQuanHen, World.BaiYinXiang, World.MengYuBaoJing } },
         };
 
         public static World[] CurrentWorldList

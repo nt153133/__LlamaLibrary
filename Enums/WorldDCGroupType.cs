@@ -14,5 +14,10 @@
         Materia = 9,
         Meteor = 10,
         Dynamis = 11,
+        //Values are filler for now
+        Chocobo = 101,
+        FatCat = 102,
+        Mameshiba = 103,
+        Moogle = 104,
     }
 }
