@@ -12,7 +12,7 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class ShopExchangeItem : RemoteWindow<ShopExchangeItem>
     {
-        private static readonly LLogger Log = new(nameof(ShopExchangeItem), Colors.Fuchsia);
+        private static readonly LLogger Log = new(nameof(ShopExchangeItem), Colors.Fuchsia, LogLevel.Information);
 
         public ShopExchangeItem() : base("ShopExchangeItem")
         {
@@ -29,11 +29,12 @@ namespace LlamaLibrary.RemoteWindows
 
             var specialShopItem = items?.Cast<SpecialShopItem?>().FirstOrDefault(i => i.HasValue && i.Value.ItemIds.Contains(itemId));
 
-            Log.Information($"Buying {specialShopItem}");
             if (!specialShopItem.HasValue)
             {
                 return 0u;
             }
+
+            Log.Information($"Buying {specialShopItem.Value.Item0.CurrentLocaleName}");
 
             if (itemCount > specialShopItem.Value.Item0.StackSize)
             {
@@ -68,7 +69,7 @@ namespace LlamaLibrary.RemoteWindows
             obj[5] = itemCount;
 
             SendAction(4, obj);
-            Log.Information($"Sent Action for purchase");
+            Log.Verbose($"Sent Action for purchase");
 
             await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog") != null);
 
@@ -91,7 +92,7 @@ namespace LlamaLibrary.RemoteWindows
 
                 if (Request.IsOpen)
                 {
-                    Log.Information("Purchase request");
+                    Log.Verbose("Purchase request");
 
                     await CommonTasks.HandOverRequestedItems(true);
 

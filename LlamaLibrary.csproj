@@ -131,6 +131,7 @@
     <Compile Include="Helpers\SquadronStatus.cs" />
     <Compile Include="Helpers\TeleportHelper.cs" />
     <Compile Include="Helpers\UIInputHelper.cs" />
+    <Compile Include="Helpers\UIState.cs" />
     <Compile Include="Helpers\WorldTravel\WorldLocation.cs" />
     <Compile Include="Helpers\WorldTravel\WorldTravel.cs" />
     <Compile Include="ICompiledAPIBotbase.cs" />
