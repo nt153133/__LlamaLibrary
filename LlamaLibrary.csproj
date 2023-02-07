@@ -62,6 +62,7 @@
     <Compile Include="AssemblyProxy.cs" />
     <Compile Include="ClientDataHelpers\AtkArrayDataHolder.cs" />
     <Compile Include="ClientDataHelpers\UiManagerProxy.cs" />
+    <Compile Include="Data\TripleTriadCards.cs" />
     <Compile Include="Directors\OutOnALimbDirector.cs" />
     <Compile Include="Enums\ClassJobCategory.cs" />
     <Compile Include="Enums\CompanyChestPermission.cs" />
