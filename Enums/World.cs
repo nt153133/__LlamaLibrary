@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using LlamaLibrary.Extensions;
+
 // ReSharper disable IdentifierTypo
 
 namespace LlamaLibrary.Enums
@@ -200,6 +201,7 @@ namespace LlamaLibrary.Enums
     public static class Extensions
     {
         private static readonly Dictionary<World, string> NameCache = new Dictionary<World, string>();
+        private static readonly Dictionary<WorldDCGroupType, string> DCNameCache = new Dictionary<WorldDCGroupType, string>();
 
         public static string WorldName(this World world)
         {
@@ -209,6 +211,16 @@ namespace LlamaLibrary.Enums
             }
 
             return NameCache[world];
+        }
+
+        public static string DCName(this WorldDCGroupType dcGroup)
+        {
+            if (!DCNameCache.ContainsKey(dcGroup))
+            {
+                DCNameCache.Add(dcGroup, dcGroup.GetAttribute<DescriptionAttribute>()?.Description ?? dcGroup.ToString());
+            }
+
+            return DCNameCache[dcGroup];
         }
     }
 }

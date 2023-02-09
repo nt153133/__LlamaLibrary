@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ff14bot.RemoteWindows;
 
 namespace LlamaLibrary.RemoteWindows
@@ -39,6 +40,18 @@ namespace LlamaLibrary.RemoteWindows
             {
                 CutSceneSelectString.ClickSlot(line);
             }
+        }
+
+        public static bool SelectLineContains(string line)
+        {
+            var index = GetConversationList.FindIndex(x => x.Contains(line));
+            if (index == -1)
+            {
+                return false;
+            }
+
+            SelectLine((uint)index);
+            return true;
         }
 
         public static void SelectQuit()

@@ -1,4 +1,6 @@
-﻿namespace LlamaLibrary.Enums
+﻿using System.ComponentModel;
+
+namespace LlamaLibrary.Enums
 {
     public enum WorldDCGroupType : byte
     {
@@ -14,10 +16,19 @@
         Materia = 9,
         Meteor = 10,
         Dynamis = 11,
+
         //Values are filler for now
-        Chocobo = 101,
-        FatCat = 102,
+        [Description("陆行鸟")]
+        Chocobo = 108,
+
+        [Description("猫小胖")]
+        FatCat = 101,
+
+        [Description("豆豆柴")]
         Mameshiba = 103,
+
+        [Description("莫古力")]
         Moogle = 104,
     }
+
 }
