@@ -54,9 +54,35 @@ namespace LlamaLibrary.Helpers
 
         public static string AnimaWeaponRecreation => CustomTalk721230[Language];
 
+        public static string BattlecraftLeves => GuildLeveText1[Language];
+
+        public static string FieldcraftLeves => GuildLeveText2[Language];
+
+        public static string TradecraftLeves => GuildLeveText3[Language];
+
+        public static string FactionLeves => GuildLeveText4[Language];
+
+        public static string TutorialLeves => GuildLeveText5[Language];
+
+        public static string LeveHistoryEvaluation => GuildLeveText6[Language];
+
+        public static string Informationonleves => GuildLeveText7[Language];
+
+        public static string Nothing => GuildLeveText8[Language];
+
+        public static string MaelstromLeves => GuildLeveText9[Language];
+
+        public static string OrderoftheTwinAdderLeves => GuildLeveText10[Language];
+
+        public static string ImmortalFlamesLeves => GuildLeveText11[Language];
+
+        public static string SupplyProvisioningMissions => GuildLeveText12[Language];
+
+        public static string CollectReward => GuildLeveText13[Language];
+
         static Translator()
         {
-            Language = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+            Language = (Language) typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
                 .First(i => i.FieldType == typeof(Language)).GetValue(null);
         }
 
@@ -307,6 +333,136 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Recréer une arme anima" },
             { Language.Ger, "Anima-Waffe rekonstruieren" },
             { Language.Chn, "再铸元灵武器" }
+        };
+
+        //GuildLeveText1
+        private static readonly Dictionary<Language, string> GuildLeveText1 = new()
+        {
+            { Language.Eng, "Battlecraft Leves." },
+            { Language.Jap, "傭兵稼業" },
+            { Language.Fre, "Les mandats de mercenariat" },
+            { Language.Ger, "Gefechtserlasse" },
+            { Language.Chn, "佣兵任务" }
+        };
+
+        //GuildLeveText2
+        private static readonly Dictionary<Language, string> GuildLeveText2 = new()
+        {
+            { Language.Eng, "Fieldcraft Leves." },
+            { Language.Jap, "採集稼業" },
+            { Language.Fre, "Les mandats de récolte" },
+            { Language.Ger, "Sammelerlasse" },
+            { Language.Chn, "采集任务" }
+        };
+
+        //GuildLeveText3
+        private static readonly Dictionary<Language, string> GuildLeveText3 = new()
+        {
+            { Language.Eng, "Tradecraft Leves." },
+            { Language.Jap, "製作稼業" },
+            { Language.Fre, "Les mandats d'artisanat" },
+            { Language.Ger, "Fertigungserlasse" },
+            { Language.Chn, "制作任务" }
+        };
+
+        //GuildLeveText4
+        private static readonly Dictionary<Language, string> GuildLeveText4 = new()
+        {
+            { Language.Eng, "Faction Leves." },
+            { Language.Jap, "ファクションリーヴ" },
+            { Language.Fre, "Les mandats de faction" },
+            { Language.Ger, "Fraktionserlasse" },
+            { Language.Chn, "特殊部队理符" }
+        };
+
+        //GuildLeveText5
+        private static readonly Dictionary<Language, string> GuildLeveText5 = new()
+        {
+            { Language.Eng, "Tutorial Leves." },
+            { Language.Jap, "チュートリアル" },
+            { Language.Fre, "Les mandats pour débutants" },
+            { Language.Ger, "Ein Tutorial" },
+            { Language.Chn, "新手教程" }
+        };
+
+        //GuildLeveText6
+        private static readonly Dictionary<Language, string> GuildLeveText6 = new()
+        {
+            { Language.Eng, "Leve History Evaluation." },
+            { Language.Jap, "履歴評価を受ける" },
+            { Language.Fre, "Une évaluation" },
+            { Language.Ger, "Evaluierung bisheriger Freibriefe" },
+            { Language.Chn, "接受履历评价" }
+        };
+
+        //GuildLeveText7
+        private static readonly Dictionary<Language, string> GuildLeveText7 = new()
+        {
+            { Language.Eng, "Information on leves." },
+            { Language.Jap, "説明を聞く" },
+            { Language.Fre, "Des explications sur les mandats" },
+            { Language.Ger, "Genauere Erklärungen" },
+            { Language.Chn, "听取说明" }
+        };
+
+        //GuildLeveText8
+        private static readonly Dictionary<Language, string> GuildLeveText8 = new()
+        {
+            { Language.Eng, "Nothing." },
+            { Language.Jap, "キャンセル" },
+            { Language.Fre, "Annuler" },
+            { Language.Ger, "Abbrechen" },
+            { Language.Chn, "取消" }
+        };
+
+        //GuildLeveText9
+        private static readonly Dictionary<Language, string> GuildLeveText9 = new()
+        {
+            { Language.Eng, "Maelstrom Leves." },
+            { Language.Jap, "黒渦団任務" },
+            { Language.Fre, "Mandats du Maelstrom" },
+            { Language.Ger, "Aufträge des Mahlstroms" },
+            { Language.Chn, "黑涡团任务" }
+        };
+
+        //GuildLeveText10
+        private static readonly Dictionary<Language, string> GuildLeveText10 = new()
+        {
+            { Language.Eng, "Order of the Twin Adder Leves." },
+            { Language.Jap, "双蛇党任務" },
+            { Language.Fre, "Mandats des Deux Vipères" },
+            { Language.Ger, "Aufträge der Bruderschaft der Morgenviper" },
+            { Language.Chn, "双蛇党任务" }
+        };
+
+        //GuildLeveText11
+        private static readonly Dictionary<Language, string> GuildLeveText11 = new()
+        {
+            { Language.Eng, "Immortal Flames Leves." },
+            { Language.Jap, "不滅隊任務" },
+            { Language.Fre, "Mandats des Immortels" },
+            { Language.Ger, "Aufträge der Legion der Unsterblichen" },
+            { Language.Chn, "恒辉队任务" }
+        };
+
+        //GuildLeveText12
+        private static readonly Dictionary<Language, string> GuildLeveText12 = new()
+        {
+            { Language.Eng, "Supply & Provisioning Missions." },
+            { Language.Jap, "調達任務" },
+            { Language.Fre, "Missions de ravitaillement" },
+            { Language.Ger, "Liefereinsätze" },
+            { Language.Chn, "筹备任务" }
+        };
+
+        //GuildLeveText13
+        private static readonly Dictionary<Language, string> GuildLeveText13 = new()
+        {
+            { Language.Eng, "Collect Reward." },
+            { Language.Jap, "報酬を受け取る" },
+            { Language.Fre, "Retirer une récompense" },
+            { Language.Ger, "Meine Belohnung" },
+            { Language.Chn, "领取报酬" }
         };
     }
 }
