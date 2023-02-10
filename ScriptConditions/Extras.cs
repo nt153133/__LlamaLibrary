@@ -267,14 +267,14 @@ namespace LlamaLibrary.ScriptConditions
             return LlamaLibrary.Helpers.UIState.EmoteUnlocked(Id);
         }
 
-        public static bool CardUnlocked(int Id)
-        {
-            return LlamaLibrary.Helpers.UIState.CardUnlocked(Id);
-        }
-
-        public static bool CardUnlockedByName(string name)
+        public static bool IsCardUnlocked(string name)
         {
             return TripleTriadCards.GetCardByName(name).IsUnlocked;
+        }
+
+        public static bool HasItemThatUnlocksCard(string name)
+        {
+            return TripleTriadCards.GetCardByName(name).HaveItem;
         }
 
         public static bool MinionUnlocked(int Id)
