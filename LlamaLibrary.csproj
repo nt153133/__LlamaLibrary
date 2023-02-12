@@ -163,6 +163,7 @@
     <Compile Include="RemoteAgents\AgentHousingSignBoard.cs" />
     <Compile Include="RemoteAgents\AgentInclusionShop.cs" />
     <Compile Include="RemoteAgents\AgentItemDetail.cs" />
+    <Compile Include="RemoteAgents\AgentJournalDetail.cs" />
     <Compile Include="RemoteAgents\AgentLookingForGroup.cs" />
     <Compile Include="RemoteAgents\AgentMJIGatheringNoteBook.cs" />
     <Compile Include="RemoteAgents\AgentMJIHud.cs" />
@@ -184,12 +185,14 @@
     <Compile Include="RemoteWindows\FreeCompanyChest.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
     <Compile Include="RemoteWindows\GrandCompanyRankUp.cs" />
+    <Compile Include="RemoteWindows\GuildLeveDifficulty.cs" />
     <Compile Include="RemoteWindows\HelpWindow.cs" />
     <Compile Include="RemoteWindows\HousingGoods.cs" />
     <Compile Include="RemoteWindows\HousingMenu.cs" />
     <Compile Include="RemoteWindows\HugeCraftworksSupplyResul.cs" />
     <Compile Include="RemoteWindows\InclusionShop.cs" />
     <Compile Include="RemoteWindows\InputString.cs" />
+    <Compile Include="RemoteWindows\JournalDetail.cs" />
     <Compile Include="RemoteWindows\LookingForGroup.cs" />
     <Compile Include="RemoteWindows\LookingForGroupCondition.cs" />
     <Compile Include="RemoteWindows\LookingForGroupDetail.cs" />

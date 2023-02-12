@@ -98,7 +98,7 @@ namespace LlamaLibrary
             {
                 foreach (var orderBotHook in _orderBotHooksCoroutines)
                 {
-                    Log.Information($"Adding Orderbot {orderBotHook.Runner.Method.Name} Hook");
+                    //Log.Information($"Adding Orderbot {orderBotHook.Runner.Method.Name} Hook");
 
                     TreeHooks.Instance.AddHook("TreeStart", orderBotHook);
                 }
@@ -139,7 +139,7 @@ namespace LlamaLibrary
             {
                 foreach (var orderBotHook in _orderBotHooksCoroutines)
                 {
-                    Log.Information($"Removing Orderbot {orderBotHook.Runner.Method.Name} Hook");
+                    //Log.Information($"Removing Orderbot {orderBotHook.Runner.Method.Name} Hook");
 
                     TreeHooks.Instance.RemoveHook("TreeStart", orderBotHook);
                 }
