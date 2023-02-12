@@ -7,6 +7,7 @@ using System.Windows.Media;
 using ff14bot;
 using ff14bot.AClasses;
 using ff14bot.Behavior;
+using ff14bot.Interfaces;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
@@ -14,7 +15,7 @@ using TreeSharp;
 
 namespace LlamaLibrary
 {
-    public abstract class TemplatePlugin : BotPlugin
+    public abstract class TemplatePlugin : BotPlugin, IBotPlugin
     {
         public abstract string PluginName { get; }
 

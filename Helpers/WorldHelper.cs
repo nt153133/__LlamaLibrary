@@ -85,7 +85,22 @@ namespace LlamaLibrary.Helpers
 
         public static bool IsOnHomeWorld => CurrentWorldId == HomeWorldId;
 
-        public static byte DataCenterId => Core.Memory.Read<byte>(DcOffsetLocation);
+        public static byte DataCenterId
+        {
+            get
+            {
+                #if RB_CN
+                var dc = WorldMap.Where(x => x.Value.Any(y => y == CurrentWorld));
+                if (!dc.Any())
+                {
+                    return 0;
+                }
+
+                return (byte)dc.First().Key;
+                #endif
+                return Core.Memory.Read<byte>(DcOffsetLocation);
+            }
+        }
 
         public static bool CheckDC(World world)
         {
@@ -99,6 +114,7 @@ namespace LlamaLibrary.Helpers
 
         public static WorldDCGroupType DataCenter => (WorldDCGroupType)DataCenterId;
 
+        [Obsolete("Use Enum instead")]
         public static readonly Dictionary<byte, string> DataCenterNamesDictionary = new()
         {
             { 0, "INVALID" },
@@ -216,7 +232,7 @@ namespace LlamaLibrary.Helpers
             { 407, "Maduin" },
         };
 
-        public static string DataCenterName => DataCenter.ToString();
+        public static string DataCenterName => DataCenter.DCName();
 
         public static string HomeWorldName => HomeWorld.WorldName();
     }
