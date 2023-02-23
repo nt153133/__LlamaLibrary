@@ -157,11 +157,6 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int CurrentGCSeals()
         {
-            if (CommonBehaviors.IsLoading)
-            {
-                Coroutine.Wait(10000, () => !CommonBehaviors.IsLoading);
-            }
-
             uint[] sealTypes = { 20, 21, 22 };
             var bagslot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.Currency).FirstOrDefault(i => i.RawItemId == sealTypes[(int) Core.Me.GrandCompany - 1]);
             return (int) (bagslot?.Count ?? 0U);
