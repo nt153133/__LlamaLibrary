@@ -241,6 +241,21 @@ namespace LlamaLibrary.ScriptConditions
             return Translator.Language == Language.Chn;
         }
 
+        public static bool IsJapaneseClient()
+        {
+            return Translator.Language == Language.Jap;
+        }
+
+        public static bool IsFrenchClient()
+        {
+            return Translator.Language == Language.Fre;
+        }
+
+        public static bool IsGermanClient()
+        {
+            return Translator.Language == Language.Ger;
+        }
+
         public static bool HasAtLeastOneItem(params int[] list)
         {
             return InventoryManager.FilledSlots.Any(i => list.Contains((int) i.RawItemId));
