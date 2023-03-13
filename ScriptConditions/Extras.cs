@@ -236,6 +236,11 @@ namespace LlamaLibrary.ScriptConditions
             return false;
         }
 
+        public static bool IsEnglishClient()
+        {
+            return Translator.Language == Language.Eng;
+        }
+
         public static bool IsChineseClient()
         {
             return Translator.Language == Language.Chn;
