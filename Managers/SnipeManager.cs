@@ -19,42 +19,42 @@ public class SnipeManager
 
     internal static class Offsets
     {
-        [Offset("48 8D 0D ? ? ? ? 32 DB E8 ? ? ? ? 84 C0 0F B6 CB BA ? ? ? ? 0F 45 CA 45 32 FF Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? 32 DB E8 ? ? ? ? 84 C0 0F B6 CB BA ? ? ? ? 0F 45 CA 45 32 FF Add 3 TraceRelative")]
         internal static IntPtr Instance;
 
-        [Offset("8B 83 ? ? ? ? 48 8B 54 24 ? 48 89 4D ? Add 2 Read32")]
+        [Offset("Search 8B 83 ? ? ? ? 48 8B 54 24 ? 48 89 4D ? Add 2 Read32")]
         internal static int Id;
 
         //0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ?
-        [Offset("0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ? Add 2 Read32")]
+        [Offset("Search 0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ? Add 2 Read32")]
         internal static int Active;
         
         //48 2B 8B ? ? ? ? 49 8B C7 48 F7 E9 44 8B C7 Add 3 Read32
-        [Offset("48 2B 8B ? ? ? ? 49 8B C7 48 F7 E9 44 8B C7 Add 3 Read32")]
+        [Offset("Search 48 2B 8B ? ? ? ? 49 8B C7 48 F7 E9 44 8B C7 Add 3 Read32")]
         internal static int Params;
 
         //66 C7 83 ? ? ? ? ? ? E9 ? ? ? ? 48 63 83 ? ? ? ? Add 3 Read32
-        [Offset("66 C7 83 ? ? ? ? ? ? E9 ? ? ? ? 48 63 83 ? ? ? ? Add 3 Read32")]
+        [Offset("Search 66 C7 83 ? ? ? ? ? ? E9 ? ? ? ? 48 63 83 ? ? ? ? Add 3 Read32")]
         internal static int State;
 
         //48 8B 8B ? ? ? ? 48 8B 0C D1 Add 3 Read32
-        [Offset("48 8B 8B ? ? ? ? 48 8B 0C D1 Add 3 Read32")]
+        [Offset("Search 48 8B 8B ? ? ? ? 48 8B 0C D1 Add 3 Read32")]
         internal static int SnipeObjects;
 
         //0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ? Add 3 Read32
-        [Offset("0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ? Add 3 Read32")]
+        [Offset("Search 0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ? Add 3 Read32")]
         internal static int Shoot;
 
         //0F B6 47 ? 88 83 ? ? ? ? 0F B6 47 ? 88 83 ? ? ? ? 44 88 B3 ? ? ? ? Add 3 Read8
-        [Offset("0F B6 47 ? 88 83 ? ? ? ? 0F B6 47 ? 88 83 ? ? ? ? 44 88 B3 ? ? ? ? Add 3 Read8")]
+        [Offset("Search 0F B6 47 ? 88 83 ? ? ? ? 0F B6 47 ? 88 83 ? ? ? ? 44 88 B3 ? ? ? ? Add 3 Read8")]
         internal static int ShootParam;
 
         // 44 89 A3 ? ? ? ? 66 C7 83 ? ? ? ? ? ? EB ? Add 3 Read32
-        [Offset("44 89 A3 ? ? ? ? 66 C7 83 ? ? ? ? ? ? EB ? Add 3 Read32")]
+        [Offset("Search 44 89 A3 ? ? ? ? 66 C7 83 ? ? ? ? ? ? EB ? Add 3 Read32")]
         internal static int ShootData;
         
         //0F B6 47 ? 88 83 ? ? ? ? 44 88 B3 ? ? ? ?
-        [Offset("0F B6 47 ? 88 83 ? ? ? ? 44 88 B3 ? ? ? ? Add 3 Read8")]
+        [Offset("Search 0F B6 47 ? 88 83 ? ? ? ? 44 88 B3 ? ? ? ? Add 3 Read8")]
         internal static int ShootParam2;
     }
 
@@ -86,6 +86,9 @@ public class SnipeManager
     {
         get
         {
+            if(addr == IntPtr.Zero)
+                return new SnipeObject[0];
+
             var first = Core.Memory.Read<IntPtr>(addr + Offsets.SnipeObjects);
             var end = Core.Memory.Read<IntPtr>(addr + Offsets.SnipeObjects + 8);
 
@@ -108,7 +111,7 @@ public class SnipeManager
         Core.Memory.Write<byte>(addr + Offsets.ShootData + 4, 1); //0x5000
         State = (byte)(State + 1);
 
-        await Coroutine.Sleep(3000);
+        await Coroutine.Sleep(500);
     }
 }
 
@@ -117,11 +120,11 @@ public struct SnipeObject
 {
     [FieldOffset(0)] private IntPtr objPtr;
     [FieldOffset(0x22)] internal byte x22;
-    [FieldOffset(0x44)] public byte UnkByte;
+    [FieldOffset(0x44)] public byte Hit;
 
     public override string ToString()
     {
-        return $"{GameObject?.Name ?? "Null Object"} - byte:{UnkByte:X}";
+        return $"{GameObject?.Name ?? "Null Object"} - byte:{Hit:X}";
     }
 
     public GameObject? GameObject
