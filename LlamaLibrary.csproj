@@ -206,6 +206,7 @@
     <Compile Include="RemoteWindows\SharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteWindows\ShopExchangeItemDialog.cs" />
     <Compile Include="RemoteWindows\ShopProxy.cs" />
+    <Compile Include="RemoteWindows\SpearFishing.cs" />
     <Compile Include="RemoteWindows\VoteMvp.cs" />
     <Compile Include="RemoteWindows\WorldTravelFinderReady.cs" />
     <Compile Include="RemoteWindows\WorldTravelSelect.cs" />
