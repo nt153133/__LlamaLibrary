@@ -1184,7 +1184,7 @@ namespace LlamaLibrary.Helpers
                 { 31134, (30340, 10) }
             };
 
-            var turninItems = InventoryManager.FilledSlots.Where(i => i.IsHighQuality && GatheringItems.Keys.Contains(i.RawItemId));
+            var turninItems = InventoryManager.FilledSlots.Where(i => GatheringItems.Keys.Contains(i.RawItemId));
 
             if (turninItems.Any())
             {
