@@ -1056,13 +1056,13 @@ namespace LlamaLibrary.Helpers
                 var npc = GameObjectManager.GetObjectByNPCId(1045069);
                 if (npc == null)
                 {
-                    await Navigation.GetTo(820, new Vector3(-40.60431f, 20.04979f, -173.6935f));
+                    await Navigation.GetTo(819, new Vector3(-40.60431f, 20.04979f, -173.6935f));
                     npc = GameObjectManager.GetObjectByNPCId(1045069);
                 }
 
                 if (npc != null && !npc.IsWithinInteractRange)
                 {
-                    await Navigation.GetTo(820, new Vector3(-40.60431f, 20.04979f, -173.6935f));
+                    await Navigation.GetTo(819, new Vector3(-40.60431f, 20.04979f, -173.6935f));
                 }
 
                 if (npc != null && npc.IsWithinInteractRange)
