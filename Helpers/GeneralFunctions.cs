@@ -485,22 +485,22 @@ namespace LlamaLibrary.Helpers
         private static List<ItemUiCategory> GetEquipUiCategory(ushort slotId)
         {
             return slotId switch
-                   {
-                       0        => ItemWeight.MainHands,
-                       1        => ItemWeight.OffHands,
-                       2        => new List<ItemUiCategory> { ItemUiCategory.Head },
-                       3        => new List<ItemUiCategory> { ItemUiCategory.Body },
-                       4        => new List<ItemUiCategory> { ItemUiCategory.Hands },
-                       5        => new List<ItemUiCategory> { ItemUiCategory.Waist },
-                       6        => new List<ItemUiCategory> { ItemUiCategory.Legs },
-                       7        => new List<ItemUiCategory> { ItemUiCategory.Feet },
-                       8        => new List<ItemUiCategory> { ItemUiCategory.Earrings },
-                       9        => new List<ItemUiCategory> { ItemUiCategory.Necklace },
-                       10       => new List<ItemUiCategory> { ItemUiCategory.Bracelets },
-                       11 or 12 => new List<ItemUiCategory> { ItemUiCategory.Ring },
-                       13       => new List<ItemUiCategory> { ItemUiCategory.Soul_Crystal },
-                       _        => new List<ItemUiCategory>(),
-                   };
+            {
+                0        => ItemWeight.MainHands,
+                1        => ItemWeight.OffHands,
+                2        => new List<ItemUiCategory> { ItemUiCategory.Head },
+                3        => new List<ItemUiCategory> { ItemUiCategory.Body },
+                4        => new List<ItemUiCategory> { ItemUiCategory.Hands },
+                5        => new List<ItemUiCategory> { ItemUiCategory.Waist },
+                6        => new List<ItemUiCategory> { ItemUiCategory.Legs },
+                7        => new List<ItemUiCategory> { ItemUiCategory.Feet },
+                8        => new List<ItemUiCategory> { ItemUiCategory.Earrings },
+                9        => new List<ItemUiCategory> { ItemUiCategory.Necklace },
+                10       => new List<ItemUiCategory> { ItemUiCategory.Bracelets },
+                11 or 12 => new List<ItemUiCategory> { ItemUiCategory.Ring },
+                13       => new List<ItemUiCategory> { ItemUiCategory.Soul_Crystal },
+                _        => new List<ItemUiCategory>(),
+            };
         }
 
         public static IEnumerable<BagSlot> NonGearSetItems()
@@ -959,6 +959,110 @@ namespace LlamaLibrary.Helpers
                 if (npc != null && !npc.IsWithinInteractRange)
                 {
                     await Navigation.GetTo(820, new Vector3(21.06303f, 82.05f, -14.24131f));
+                }
+
+                if (npc != null && npc.IsWithinInteractRange)
+                {
+                    npc.Interact();
+                    await Coroutine.Wait(10000, () => Conversation.IsOpen);
+                    if (Conversation.IsOpen)
+                    {
+                        Conversation.SelectLine(0U);
+                    }
+                }
+
+                await Coroutine.Wait(10000, () => CollectablesShop.Instance.IsOpen);
+
+                if (CollectablesShop.Instance.IsOpen)
+                {
+                    Log.Verbose("CollectableShop window open");
+                    foreach (var item in collectables)
+                    {
+                        if (!turnItemList.Keys.Contains(item))
+                        {
+                            continue;
+                        }
+
+                        Log.Information($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
+                        var turnin = turnItemList[item];
+
+                        Log.Verbose($"Pressing job {turnin.Job}");
+                        CollectablesShop.Instance.SelectJob(turnin.Job);
+                        await Coroutine.Sleep(500);
+
+                        Log.Verbose($"Pressing position {turnin.Position}");
+                        CollectablesShop.Instance.SelectItem(turnin.Position);
+                        await Coroutine.Sleep(1000);
+                        var i = 0;
+                        while (CollectablesShop.Instance.TurninCount > 0)
+                        {
+                            Log.Verbose($"Pressing trade {i}");
+                            i++;
+                            CollectablesShop.Instance.Trade();
+                            await Coroutine.Sleep(100);
+                        }
+                    }
+
+                    CollectablesShop.Instance.Close();
+                    await Coroutine.Wait(10000, () => !CollectablesShop.Instance.IsOpen);
+                }
+            }
+        }
+
+        public static async Task TurninSplendorousCrafting()
+        {
+            var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
+            {
+                { 38756, new CraftingRelicTurnin(38756, 0, 1, 540, 38772) },
+                { 38757, new CraftingRelicTurnin(38757, 1, 1, 540, 38773) },
+                { 38758, new CraftingRelicTurnin(38758, 2, 1, 540, 38774) },
+                { 38759, new CraftingRelicTurnin(38759, 3, 1, 540, 38775) },
+                { 38760, new CraftingRelicTurnin(38760, 4, 1, 540, 38776) },
+                { 38761, new CraftingRelicTurnin(38761, 5, 1, 540, 38777) },
+                { 38762, new CraftingRelicTurnin(38762, 6, 1, 540, 38778) },
+                { 38763, new CraftingRelicTurnin(38763, 7, 1, 540, 38779) },
+
+                { 38764, new CraftingRelicTurnin(38764, 0, 0, 660, 38780) },
+                { 38765, new CraftingRelicTurnin(38765, 1, 0, 660, 38781) },
+                { 38766, new CraftingRelicTurnin(38766, 2, 0, 660, 38782) },
+                { 38767, new CraftingRelicTurnin(38767, 3, 0, 660, 38783) },
+                { 38768, new CraftingRelicTurnin(38768, 4, 0, 660, 38784) },
+                { 38769, new CraftingRelicTurnin(38769, 5, 0, 660, 38785) },
+                { 38770, new CraftingRelicTurnin(38770, 6, 0, 660, 38786) },
+                { 38771, new CraftingRelicTurnin(38771, 7, 0, 660, 38787) }
+            };
+
+            var collectables = InventoryManager.FilledSlots.Where(i => i.IsCollectable).Select(x => x.RawItemId).Distinct();
+            var collectablesAll = InventoryManager.FilledSlots.Where(i => i.IsCollectable);
+
+            if (collectables.Any(i => turnItemList.Keys.Contains(i)))
+            {
+                Log.Information("Have collectables");
+                foreach (var collectable in collectablesAll)
+                {
+                    if (turnItemList.Keys.Contains(collectable.RawItemId))
+                    {
+                        var turnin = turnItemList[collectable.RawItemId];
+                        if (collectable.Collectability < turnin.MinCollectability)
+                        {
+                            Log.Information($"Discarding {collectable.Name} is at {collectable.Collectability} which is under {turnin.MinCollectability}");
+                            collectable.Discard();
+                        }
+                    }
+                }
+
+                collectables = InventoryManager.FilledSlots.Where(i => i.IsCollectable).Select(x => x.RawItemId).Distinct();
+
+                var npc = GameObjectManager.GetObjectByNPCId(1045069);
+                if (npc == null)
+                {
+                    await Navigation.GetTo(820, new Vector3(-40.60431f, 20.04979f, -173.6935f));
+                    npc = GameObjectManager.GetObjectByNPCId(1045069);
+                }
+
+                if (npc != null && !npc.IsWithinInteractRange)
+                {
+                    await Navigation.GetTo(820, new Vector3(-40.60431f, 20.04979f, -173.6935f));
                 }
 
                 if (npc != null && npc.IsWithinInteractRange)
