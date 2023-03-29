@@ -1013,6 +1013,19 @@ namespace LlamaLibrary.Helpers
         {
             var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
             {
+                // Connoisseur's Item, job index, position on list, collectability, reward item
+                { 38764, new CraftingRelicTurnin(38764, 0, 0, 660, 38780) },
+                { 38765, new CraftingRelicTurnin(38765, 1, 0, 660, 38781) },
+                { 38766, new CraftingRelicTurnin(38766, 2, 0, 660, 38782) },
+                { 38767, new CraftingRelicTurnin(38767, 3, 0, 660, 38783) },
+                { 38768, new CraftingRelicTurnin(38768, 4, 0, 660, 38784) },
+                { 38769, new CraftingRelicTurnin(38769, 5, 0, 660, 38785) },
+                { 38770, new CraftingRelicTurnin(38770, 6, 0, 660, 38786) },
+                { 38771, new CraftingRelicTurnin(38771, 7, 0, 660, 38787) },
+                { 38796, new CraftingRelicTurnin(38790, 8, 0, 570, 38805) },
+                { 38794, new CraftingRelicTurnin(38794, 9, 0, 570, 38800) },
+                { 38798, new CraftingRelicTurnin(38798, 10, 0, 9, 38806) },
+
                 { 38756, new CraftingRelicTurnin(38756, 0, 1, 540, 38772) },
                 { 38757, new CraftingRelicTurnin(38757, 1, 1, 540, 38773) },
                 { 38758, new CraftingRelicTurnin(38758, 2, 1, 540, 38774) },
@@ -1021,15 +1034,12 @@ namespace LlamaLibrary.Helpers
                 { 38761, new CraftingRelicTurnin(38761, 5, 1, 540, 38777) },
                 { 38762, new CraftingRelicTurnin(38762, 6, 1, 540, 38778) },
                 { 38763, new CraftingRelicTurnin(38763, 7, 1, 540, 38779) },
+                { 38790, new CraftingRelicTurnin(38790, 8, 1, 570, 38801) },
+                { 38788, new CraftingRelicTurnin(38788, 9, 1, 570, 38804) },
+                { 38799, new CraftingRelicTurnin(38799, 10, 1, 425, 38807) },
 
-                { 38764, new CraftingRelicTurnin(38764, 0, 0, 660, 38780) },
-                { 38765, new CraftingRelicTurnin(38765, 1, 0, 660, 38781) },
-                { 38766, new CraftingRelicTurnin(38766, 2, 0, 660, 38782) },
-                { 38767, new CraftingRelicTurnin(38767, 3, 0, 660, 38783) },
-                { 38768, new CraftingRelicTurnin(38768, 4, 0, 660, 38784) },
-                { 38769, new CraftingRelicTurnin(38769, 5, 0, 660, 38785) },
-                { 38770, new CraftingRelicTurnin(38770, 6, 0, 660, 38786) },
-                { 38771, new CraftingRelicTurnin(38771, 7, 0, 660, 38787) }
+                { 38792, new CraftingRelicTurnin(38792, 10, 2, 47, 38802) },
+                { 38793, new CraftingRelicTurnin(38793, 10, 3, 283, 38803) },
             };
 
             var collectables = InventoryManager.FilledSlots.Where(i => i.IsCollectable).Select(x => x.RawItemId).Distinct();
