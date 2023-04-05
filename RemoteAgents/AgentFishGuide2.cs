@@ -9,6 +9,7 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.RemoteAgents
 {
+
     public class AgentFishGuide2 : AgentInterface<AgentFishGuide2>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.Vtable;

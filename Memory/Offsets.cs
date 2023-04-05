@@ -26,10 +26,12 @@ namespace LlamaLibrary.Memory
         [OffsetCN("Search 4C 8D 0D ? ? ? ? 45 33 C0 33 D2 48 8B C8 E8 ? ? ? ? Add 3 TraceRelative")]
         public static IntPtr RepairVendor;
 
+        /*
         //6.3
         [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 80 3D ? ? ? ? ? 49 8B F9")]
         [OffsetCN("Search 48 89 5C 24 ? 57 48 83 EC ? 88 51 ? 49 8B F9")]
         public static IntPtr RepairWindowOpen;
+        */
 
         [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 B9 ? ? ? ? 4C 89 43 ? Add 3 TraceRelative")]
         public static IntPtr RepairVTable;

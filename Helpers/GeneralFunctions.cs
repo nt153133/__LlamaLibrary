@@ -639,6 +639,7 @@ namespace LlamaLibrary.Helpers
             return !RetainerList.Instance.IsOpen;
         }
 
+        /*
         public static async Task RepairAll()
         {
             if (InventoryManager.EquippedItems.Any(item => item.Item != null && item.Item.RepairItemId != 0 && item.Condition < 50))
@@ -675,6 +676,7 @@ namespace LlamaLibrary.Helpers
                 Log.Information("No items to repair.");
             }
         }
+        */
 
         public static int GetGearSetiLvl(GearSet gs)
         {
