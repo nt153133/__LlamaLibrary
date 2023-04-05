@@ -41,7 +41,7 @@ namespace LlamaLibrary.Helpers
             }
         }
 
-        private static bool IsFoodItem(this BagSlot slot) => slot.Item.EquipmentCatagory == ItemUiCategory.Meal || slot.Item.EquipmentCatagory == ItemUiCategory.Ingredient;
+        private static bool IsFoodItem(this BagSlot slot) => slot.Item.EquipmentCatagory == ItemUiCategory.Meal;
 
         private static bool IsMedicineItem(this BagSlot slot) => slot.Item.EquipmentCatagory == ItemUiCategory.Medicine;
 
