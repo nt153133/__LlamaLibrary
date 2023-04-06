@@ -13,6 +13,7 @@ using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
@@ -45,6 +46,68 @@ namespace LlamaLibrary.Utilities
                     Log.Information("Out of delivery allowances");
                     break;
                 }*/
+            }
+
+            TreeRoot.Stop("Stop Requested");
+            return true;
+        }
+
+        public static async Task<bool> RunCustomDeliveriesBySelection(bool doZhloe, bool doMnaago, bool doKurenai, bool doAdkiragh, bool doKaishirr, bool doEhlltou, bool doCharlemend, bool doAmeliance, DohClasses dohClass = DohClasses.Carpenter)
+        {
+            if (Navigator.NavigationProvider == null)
+            {
+                Navigator.PlayerMover = new SlideMover();
+                Navigator.NavigationProvider = new ServiceNavigationProvider();
+            }
+
+            var DeliveryNpcs = ResourceManager.CustomDeliveryNpcs.Value;
+
+            if (doZhloe)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Zhloe Aliapoh");
+                await CraftThenHandinNpc(npc, dohClass, false);
+            }
+
+            if (doMnaago)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "M'naago");
+                await CraftThenHandinNpc(npc, dohClass, false);
+            }
+
+            if (doKurenai)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Kurenai");
+                await CraftThenHandinNpc(npc, dohClass, false);
+            }
+
+            if (doAdkiragh)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Adkiragh");
+                await CraftThenHandinNpc(npc, dohClass, false);
+            }
+
+            if (doKaishirr)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Kai-Shirr");
+                await CraftThenHandinNpc(npc, dohClass, false);
+            }
+
+            if (doEhlltou)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Ehll Tou");
+                await CraftThenHandinNpc(npc, dohClass, false);
+            }
+
+            if (doCharlemend)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Charlemend");
+                await CraftThenHandinNpc(npc, dohClass, false);
+            }
+
+            if (doAmeliance)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Ameliance");
+                await CraftThenHandinNpc(npc, dohClass, false);
             }
 
             TreeRoot.Stop("Stop Requested");
