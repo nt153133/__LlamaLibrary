@@ -41,7 +41,7 @@ namespace LlamaLibrary.Helpers
             }
         }
 
-        private static bool IsFoodItem(this BagSlot slot) => slot.Item.EquipmentCatagory == ItemUiCategory.Meal;
+        private static bool IsFoodItem(this BagSlot slot) => slot.Item.EquipmentCatagory == ItemUiCategory.Meal || slot.Item.EquipmentCatagory == ItemUiCategory.Ingredient;
 
         private static bool IsMedicineItem(this BagSlot slot) => slot.Item.EquipmentCatagory == ItemUiCategory.Medicine;
 
@@ -49,19 +49,19 @@ namespace LlamaLibrary.Helpers
             bags.Where(s => s.IsFoodItem());
 
         public static bool ContainsFooditem(this IEnumerable<BagSlot> bags, uint id) =>
-            bags.Select(s => s.TrueItemId).Contains(id);
+            bags.Select(s => s.RawItemId).Contains(id);
 
         public static BagSlot GetFoodItem(this IEnumerable<BagSlot> bags, uint id) =>
-            bags.First(s => s.TrueItemId == id);
+            bags.First(s => s.RawItemId == id);
 
         public static IEnumerable<BagSlot> GetMedicineItems(this IEnumerable<BagSlot> bags) =>
             bags.Where(s => s.IsMedicineItem());
 
         public static bool ContainsMedicineitem(this IEnumerable<BagSlot> bags, uint id) =>
-            bags.Select(s => s.TrueItemId).Contains(id);
+            bags.Select(s => s.RawItemId).Contains(id);
 
         public static BagSlot GetMedicineItem(this IEnumerable<BagSlot> bags, uint id) =>
-            bags.First(s => s.TrueItemId == id);
+            bags.First(s => s.RawItemId == id);
 
         public static async Task CombineStacks(IEnumerable<BagSlot> bagSlotsEnumerable)
         {
