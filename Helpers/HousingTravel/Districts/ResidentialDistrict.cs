@@ -397,7 +397,20 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 //Log.Information($"{closestAe}");
 
                 Log.Information($"Using Aetheryte {closestAe.Name}");
-                await Navigation.FlightorMove(closestAe.Location);
+                try
+                {
+                    if (!await Navigation.GroundMove(closestAe.Location, 1f))
+                    {
+                        Log.Error("Couldn't get to ae");
+                        return false;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e.ToString());
+                    return false;
+                }
+
                 var ae = GameObjectManager.GetObjectByNPCId(closestAe.NpcId);
 
                 if (ae == default)
@@ -421,7 +434,8 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 await Coroutine.Sleep(1000);
             }
 
-            await Navigation.FlightorMove(destination, stopDistance);
+            Log.Information($"Moving to destination within distance {stopDistance}");
+            await Navigation.GroundMove(destination, stopDistance);
 
             return Core.Me.Location.Distance(destination) < 5;
         }

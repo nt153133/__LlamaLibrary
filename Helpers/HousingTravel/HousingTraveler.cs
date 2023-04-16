@@ -303,7 +303,7 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
             //in zone
 
-            return await district.TravelWithinZone(location, 0.5f);
+            return await district.TravelWithinZone(location, 2.5f);
         }
 
         public static async Task<bool> GetToResidential(ushort zone, Vector3 location, int ward)
