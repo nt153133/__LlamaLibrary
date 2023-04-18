@@ -189,9 +189,10 @@ namespace LlamaLibrary.Helpers.WorldTravel
                                     await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
                                 }
 
-                                await Coroutine.Sleep(1000);
+                                await Coroutine.Sleep(2000);
+                                Log.Information("Waiting for ping to update");
                                 await PingChecker.UpdatePing();
-                                Log.Information($"CurrentWorld: {WorldHelper.CurrentWorld.WorldName()}");
+                                Log.Information($"CurrentWorld: {WorldHelper.CurrentWorld.WorldName()} Ping: {PingChecker.CurrentPing}");
                             }
                         }
 

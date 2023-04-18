@@ -152,6 +152,11 @@ namespace LlamaLibrary.Helpers.Housing
 
         public static void UpdateResidenceArray()
         {
+            if (_lastUpdateWorld == WorldHelper.CurrentWorld && DateTime.Now.Subtract(_lastHousingUpdate).TotalMinutes < 5)
+            {
+                return;
+            }
+
             _lastHousingUpdate = DateTime.Now;
             _lastUpdateWorld = WorldHelper.CurrentWorld;
             try
@@ -163,7 +168,7 @@ namespace LlamaLibrary.Helpers.Housing
                 var baseAddress = Offsets.HouseLocationArray;
                 for (var i = 0; i < 6; i++)
                 {
-                    ff14bot.Helpers.Logging.WriteDiagnostic("Updating Residence " + i + "");
+                    //ff14bot.Helpers.Logging.WriteDiagnostic("Updating Residence " + i + "");
                     var address = baseAddress + (i * 0x19);
                     var residence = Core.Memory.Read<ResidenceInfo>(address);
                     _residences[i] = residence;

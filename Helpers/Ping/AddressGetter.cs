@@ -36,13 +36,15 @@ namespace LlamaLibrary.Helpers.Ping
 
         public IPAddress GetAddress(bool verbose = false)
         {
-            var bufferLength = 0;
-            _ = GetExtendedTcpTable(IntPtr.Zero, ref bufferLength, false, AF_INET, TCP_TABLE_OWNER_PID_CONNECTIONS);
-            var pTcpTable = Marshal.AllocHGlobal(bufferLength);
-
+            IntPtr pTcpTable = IntPtr.Zero;
             var address = IPAddress.Loopback;
             try
             {
+                var bufferLength = 0;
+                _ = GetExtendedTcpTable(IntPtr.Zero, ref bufferLength, false, AF_INET, TCP_TABLE_OWNER_PID_CONNECTIONS);
+
+                pTcpTable = Marshal.AllocHGlobal(bufferLength);
+
                 var error = GetExtendedTcpTable(pTcpTable, ref bufferLength, false, AF_INET, TCP_TABLE_OWNER_PID_CONNECTIONS);
                 if (error != (uint)WinError.NO_ERROR)
                 {
@@ -83,9 +85,14 @@ namespace LlamaLibrary.Helpers.Ping
                     }
                 }
             }
+            catch (Exception e)
+            {
+                Log.Error(e.ToString());
+            }
             finally
             {
-                Marshal.FreeHGlobal(pTcpTable);
+                if (pTcpTable != IntPtr.Zero)
+                    Marshal.FreeHGlobal(pTcpTable);
             }
 
             if (verbose && !Equals(address, IPAddress.Loopback) && !Equals(address, Address))
