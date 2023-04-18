@@ -156,7 +156,20 @@ namespace LlamaLibrary.Helpers.Housing
             _lastUpdateWorld = WorldHelper.CurrentWorld;
             try
             {
-                _residences = Core.Memory.ReadArray<ResidenceInfo>(Offsets.HouseLocationArray, 6);
+                ff14bot.Helpers.Logging.WriteDiagnostic("Updating Residence Array");
+                //_residences = Core.Memory.ReadArray<ResidenceInfo>(Offsets.HouseLocationArray, 6);
+                _residences = new ResidenceInfo[6];
+
+                var baseAddress = Offsets.HouseLocationArray;
+                for (var i = 0; i < 6; i++)
+                {
+                    ff14bot.Helpers.Logging.WriteDiagnostic("Updating Residence " + i + "");
+                    var address = baseAddress + (i * 0x19);
+                    var residence = Core.Memory.Read<ResidenceInfo>(address);
+                    _residences[i] = residence;
+                }
+
+                ff14bot.Helpers.Logging.WriteDiagnostic("Residence Array Updated");
             }
             catch (Exception e)
             {
