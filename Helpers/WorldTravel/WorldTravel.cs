@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
+using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
+using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.Helpers.Ping;
 using LlamaLibrary.Logging;
@@ -153,6 +155,8 @@ namespace LlamaLibrary.Helpers.WorldTravel
                     return false;
                 }
             }
+
+            Core.Me.SetRun();
 
             if (travelCity == TravelCity.Cheapest)
             {

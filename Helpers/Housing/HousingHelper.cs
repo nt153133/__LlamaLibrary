@@ -41,11 +41,11 @@ namespace LlamaLibrary.Helpers.Housing
             }
         }
 
-        public static HouseLocation?[] AccessibleHouseLocations => Residences.Select(i => (HouseLocation?)i).ToArray();
+        //public static HouseLocation?[] AccessibleHouseLocations => Residences.Select(i => (HouseLocation?)i).ToArray();
 
-        public static HouseLocation? PersonalEstate => AccessibleHouseLocations[(int)HouseLocationIndex.PrivateEstate];
-        public static HouseLocation? FreeCompanyEstate => AccessibleHouseLocations[(int)HouseLocationIndex.FreeCompanyEstate];
-        public static HouseLocation?[] SharedEstates => new[] { AccessibleHouseLocations[(int)HouseLocationIndex.SharedEstate1], AccessibleHouseLocations[(int)HouseLocationIndex.SharedEstate2] };
+        public static HouseLocation? PersonalEstate => Residences.FirstOrDefault(i=> i.HouseLocationIndex == HouseLocationIndex.PrivateEstate);
+        public static HouseLocation? FreeCompanyEstate => Residences.FirstOrDefault(i=> i.HouseLocationIndex == HouseLocationIndex.FreeCompanyEstate);
+        public static HouseLocation?[] SharedEstates => Residences.Where(i=> i.HouseLocationIndex == HouseLocationIndex.SharedEstate1 || i.HouseLocationIndex == HouseLocationIndex.SharedEstate2).Select(i => (HouseLocation?)i).ToArray();
 
         public static IntPtr PositionPointer
         {
@@ -163,16 +163,7 @@ namespace LlamaLibrary.Helpers.Housing
             {
                 ff14bot.Helpers.Logging.WriteDiagnostic("Updating Residence Array");
                 //_residences = Core.Memory.ReadArray<ResidenceInfo>(Offsets.HouseLocationArray, 6);
-                _residences = new ResidenceInfo[6];
-
-                var baseAddress = Offsets.HouseLocationArray;
-                for (var i = 0; i < 6; i++)
-                {
-                    //ff14bot.Helpers.Logging.WriteDiagnostic("Updating Residence " + i + "");
-                    var address = baseAddress + (i * 0x19);
-                    var residence = Core.Memory.Read<ResidenceInfo>(address);
-                    _residences[i] = residence;
-                }
+                _residences = ResidentialHousingManager.GetResidences().ToArray();
 
                 ff14bot.Helpers.Logging.WriteDiagnostic("Residence Array Updated");
             }

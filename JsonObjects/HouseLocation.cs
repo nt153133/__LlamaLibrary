@@ -1,7 +1,9 @@
 ﻿using System;
 using LlamaLibrary.Enums;
+using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Helpers.Housing;
+using LlamaLibrary.Helpers.HousingTravel;
 
 namespace LlamaLibrary.JsonObjects
 {
@@ -34,8 +36,9 @@ namespace LlamaLibrary.JsonObjects
 
         public override string ToString()
         {
-            var zoneName = HousingZone.ToString();
+            var zoneName = HousingTraveler.TranslateZone(HousingZone).AddSpacesToEnum();
 
+            /*
             if (zoneName.Contains("Shirogane"))
             {
                 zoneName = "Shirogane";
@@ -50,12 +53,13 @@ namespace LlamaLibrary.JsonObjects
             }
             else if (zoneName.Contains("LavenderBeds"))
             {
-                zoneName = "LavenderBeds";
+                zoneName = "Lavender Beds";
             }
             else if (zoneName.Contains("Empyreum"))
             {
                 zoneName = "Empyreum";
             }
+            */
 
             return $"{World} - {zoneName} - W{Ward} P{Plot}";
         }
@@ -72,7 +76,7 @@ namespace LlamaLibrary.JsonObjects
                 return true;
             }
 
-            return World == other.World && HousingZone == other.HousingZone && Ward == other.Ward && Plot == other.Plot;
+            return World == other.World && HousingTraveler.TranslateZone(HousingZone) == HousingTraveler.TranslateZone(other.HousingZone) && Ward == other.Ward && Plot == other.Plot;
         }
 
         public override bool Equals(object obj)

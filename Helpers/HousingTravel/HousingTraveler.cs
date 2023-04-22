@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
 using ff14bot.Managers;
@@ -37,84 +38,35 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
         public static HousingZone TranslateZone(HousingZone zone)
         {
-            switch (zone)
+            zone = zone switch
             {
-                case HousingZone.ChambersMist:
-                    zone = HousingZone.Mist;
-                    break;
-                case HousingZone.ChambersLavenderBeds:
-                    zone = HousingZone.LavenderBeds;
-                    break;
-                case HousingZone.ChambersGoblet:
-                    zone = HousingZone.Goblet;
-                    break;
-                case HousingZone.ChambersShirogane:
-                    zone = HousingZone.Shirogane;
-                    break;
-                case HousingZone.ChambersEmpyreum:
-                    zone = HousingZone.Empyreum;
-                    break;
-                case HousingZone.ApartmentMist:
-                    zone = HousingZone.Mist;
-                    break;
-                case HousingZone.ApartmentLavenderBeds:
-                    zone = HousingZone.LavenderBeds;
-                    break;
-                case HousingZone.ApartmentGoblet:
-                    zone = HousingZone.Goblet;
-                    break;
-                case HousingZone.ApartmentShirogane:
-                    zone = HousingZone.Shirogane;
-                    break;
-                case HousingZone.ApartmentEmpyreum:
-                    zone = HousingZone.Empyreum;
-                    break;
-                case HousingZone.CottageMist:
-                    zone = HousingZone.Mist;
-                    break;
-                case HousingZone.CottageLavenderBeds:
-                    zone = HousingZone.LavenderBeds;
-                    break;
-                case HousingZone.CottageGoblet:
-                    zone = HousingZone.Goblet;
-                    break;
-                case HousingZone.CottageShirogane:
-                    zone = HousingZone.Shirogane;
-                    break;
-                case HousingZone.CottageEmpyreum:
-                    zone = HousingZone.Empyreum;
-                    break;
-                case HousingZone.HouseMist:
-                    zone = HousingZone.Mist;
-                    break;
-                case HousingZone.HouseLavenderBeds:
-                    zone = HousingZone.LavenderBeds;
-                    break;
-                case HousingZone.HouseGoblet:
-                    zone = HousingZone.Goblet;
-                    break;
-                case HousingZone.HouseShirogane:
-                    zone = HousingZone.Shirogane;
-                    break;
-                case HousingZone.HouseEmpyreum:
-                    zone = HousingZone.Empyreum;
-                    break;
-                case HousingZone.MansionMist:
-                    zone = HousingZone.Mist;
-                    break;
-                case HousingZone.MansionLavenderBeds:
-                    zone = HousingZone.LavenderBeds;
-                    break;
-                case HousingZone.MansionGoblet:
-                    zone = HousingZone.Goblet;
-                    break;
-                case HousingZone.MansionShirogane:
-                    zone = HousingZone.Shirogane;
-                    break;
-                case HousingZone.MansionEmpyreum:
-                    zone = HousingZone.Empyreum;
-                    break;
-            }
+                HousingZone.ChambersMist          => HousingZone.Mist,
+                HousingZone.ChambersLavenderBeds  => HousingZone.LavenderBeds,
+                HousingZone.ChambersGoblet        => HousingZone.Goblet,
+                HousingZone.ChambersShirogane     => HousingZone.Shirogane,
+                HousingZone.ChambersEmpyreum      => HousingZone.Empyreum,
+                HousingZone.ApartmentMist         => HousingZone.Mist,
+                HousingZone.ApartmentLavenderBeds => HousingZone.LavenderBeds,
+                HousingZone.ApartmentGoblet       => HousingZone.Goblet,
+                HousingZone.ApartmentShirogane    => HousingZone.Shirogane,
+                HousingZone.ApartmentEmpyreum     => HousingZone.Empyreum,
+                HousingZone.CottageMist           => HousingZone.Mist,
+                HousingZone.CottageLavenderBeds   => HousingZone.LavenderBeds,
+                HousingZone.CottageGoblet         => HousingZone.Goblet,
+                HousingZone.CottageShirogane      => HousingZone.Shirogane,
+                HousingZone.CottageEmpyreum       => HousingZone.Empyreum,
+                HousingZone.HouseMist             => HousingZone.Mist,
+                HousingZone.HouseLavenderBeds     => HousingZone.LavenderBeds,
+                HousingZone.HouseGoblet           => HousingZone.Goblet,
+                HousingZone.HouseShirogane        => HousingZone.Shirogane,
+                HousingZone.HouseEmpyreum         => HousingZone.Empyreum,
+                HousingZone.MansionMist           => HousingZone.Mist,
+                HousingZone.MansionLavenderBeds   => HousingZone.LavenderBeds,
+                HousingZone.MansionGoblet         => HousingZone.Goblet,
+                HousingZone.MansionShirogane      => HousingZone.Shirogane,
+                HousingZone.MansionEmpyreum       => HousingZone.Empyreum,
+                _                                 => zone
+            };
 
             return zone;
         }
@@ -135,6 +87,8 @@ namespace LlamaLibrary.Helpers.HousingTravel
                 return false;
             }
 
+            Log.Information($"Getting to {location}");
+
             if (location.World == WorldHelper.HomeWorld)
             {
                 if (!await WorldTravel.WorldTravel.GoToWorld(location.World))
@@ -144,6 +98,7 @@ namespace LlamaLibrary.Helpers.HousingTravel
                 }
 
                 TeleportHelper.UpdateTeleportArray();
+                await Coroutine.Sleep(200);
                 HousingHelper.UpdateResidenceArray();
 
                 var residence = GetResidentialDistrictByZone((ushort)location.HousingZone);
@@ -156,24 +111,24 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
                 var closestAetherytePlacard = residence.ClosestHousingAetheryte(recorded.PlacardLocation);
                 var closestAetheryteMe = residence.ClosestHousingAetheryte(Core.Me.Location);
+                var availableHouses = HousingHelper.Residences.ToDictionary(i => i.HouseLocationIndex, i => (HouseLocation?)i);
+                Log.Information("Checking if we can use a house teleport directly");
 
-                if (HousingHelper.AccessibleHouseLocations.Contains(location) && (closestAetheryteMe?.Key != closestAetherytePlacard?.Key))
+                if (((ushort)TranslateZone(recorded.HousingZone) == WorldManager.ZoneId) && (closestAetheryteMe?.Key == closestAetherytePlacard?.Key))
                 {
-                    var place = HouseLocationIndex.FreeCompanyRoom;
-                    for (var index = 0; index < HousingHelper.AccessibleHouseLocations.Length; index++)
-                    {
-                        var houseLocation = HousingHelper.AccessibleHouseLocations[index];
-                        if (houseLocation == null)
-                        {
-                            continue;
-                        }
+                    Log.Information("We are already in the zone and the closest aetheryte is the same as the placard");
+                    return await GetToResidential(location.World, location.HousingZone, recorded.EntranceLocation, location.Ward);
+                }
 
-                        if (houseLocation.Equals(location))
-                        {
-                            place = (HouseLocationIndex)index;
-                            break;
-                        }
+                if (availableHouses.Values.Contains(location))
+                {
+                    var place1 = availableHouses.FirstOrDefault(i => i.Value != null && i.Value.Equals(location));
+                    if (place1.Value == null)
+                    {
+                        return await GetToResidential(location.World, location.HousingZone, recorded.EntranceLocation, location.Ward);
                     }
+
+                    var place = place1.Key;
 
                     Log.Information($"We can use teleport to {place.AddSpacesToEnum()}");
                     switch (place)
@@ -205,6 +160,24 @@ namespace LlamaLibrary.Helpers.HousingTravel
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
+                    }
+                }
+                else
+                {
+                    Log.Information("We have no residential options to make it quicker");
+                    //list available houses
+                    var houses = availableHouses.Where(i => i.Value != null).Select(i => i.Value).ToList();
+                    if (houses.Count > 0)
+                    {
+                        Log.Information("Available houses:");
+                        foreach (var house in houses)
+                        {
+                            Log.Information($"- {house}");
+                        }
+                    }
+                    else
+                    {
+                        Log.Information("No houses available");
                     }
                 }
             }
