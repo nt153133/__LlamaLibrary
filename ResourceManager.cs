@@ -17,6 +17,7 @@ namespace LlamaLibrary
         public static readonly Lazy<List<CustomDeliveryNpc>> CustomDeliveryNpcs;
         public static readonly Dictionary<HousingZone, Lazy<Dictionary<int, RecordedPlot>>> HousingPlots;
         public static readonly Dictionary<GrandCompany, List<GCShopItemStored>> GCShopItems;
+        public static readonly Dictionary<uint, List<StoredRecipe>> Recipes_Anden;
 
         static ResourceManager()
         {
@@ -25,6 +26,8 @@ namespace LlamaLibrary
             DailyHunts = new Lazy<SortedDictionary<int, StoredHuntLocation>>(() => LoadResource<SortedDictionary<int, StoredHuntLocation>>(Resources.AllHunts));
             CustomDeliveryNpcs = new Lazy<List<CustomDeliveryNpc>>(() => LoadResource<List<CustomDeliveryNpc>>(Resources.CustomDeliveryNpcs));
             GCShopItems = new Lazy<Dictionary<GrandCompany, List<GCShopItemStored>>>(() => LoadResource<Dictionary<GrandCompany, List<GCShopItemStored>>>(Resources.GCShopItems)).Value;
+
+            Recipes_Anden = new Lazy<Dictionary<uint, List<StoredRecipe>>>(() => LoadResource<Dictionary<uint, List<StoredRecipe>>>(Resources.Recipes_Anden)).Value;
 
             HousingPlots = new Dictionary<HousingZone, Lazy<Dictionary<int, RecordedPlot>>>
             {

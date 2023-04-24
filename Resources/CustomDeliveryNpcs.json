@@ -110,5 +110,19 @@
     "Name": "Ameliance",
     "RequiredQuest": 70059,
     "Index": 8
+  },
+  {
+    "npcId": 1044547,
+    "Zone": 816,
+    "Location": {
+      "X": -241.203064,
+      "Y": 51.059,
+      "Z": 618.448669,
+      "MagnitudeSqr": 443264.7,
+      "Magnitude": 665.78125
+    },
+    "Name": "Anden",
+    "RequiredQuest": 70251,
+    "Index": 9
   }
 ]

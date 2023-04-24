@@ -157,6 +157,15 @@ namespace LlamaLibrary.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;38819&quot;:[{&quot;ItemId&quot;:38819,&quot;RecipeId&quot;:35400,&quot;RecipeLevel&quot;:535,&quot;Ingredients&quot;:[{&quot;Item&quot;:38829,&quot;Amount&quot;:1,&quot;Type&quot;:5},{&quot;Item&quot;:8,&quot;Amount&quot;:4,&quot;Type&quot;:3},{&quot;Item&quot;:13,&quot;Amount&quot;:2,&quot;Type&quot;:3}],&quot;CraftingClass&quot;:15,&quot;LisbethCanCraft&quot;:true},{&quot;ItemId&quot;:38819,&quot;RecipeId&quot;:35385,&quot;RecipeLevel&quot;:535,&quot;Ingredients&quot;:[{&quot;Item&quot;:38829,&quot;Amount&quot;:1,&quot;Type&quot;:5},{&quot;Item&quot;:11,&quot;Amount&quot;:4,&quot;Type&quot;:3},{&quot;Item&quot;:10,&quot;Amount&quot;:2,&quot;Type&quot;:3}],&quot;CraftingClass&quot;:12,&quot;LisbethCanCraft&quot;:true},{&quot;ItemId&quot;:38819,&quot;RecipeId&quot;:35390,&quot;RecipeLevel&quot;:535,&quot;Ingredients&quot;:[{&quot;Item&quot;:38829,&quot;Amou [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Recipes_Anden {
+            get {
+                return ResourceManager.GetString("Recipes_Anden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;1&quot;:{&quot;HousingZone&quot;:641,&quot;Plot&quot;:1,&quot;Size&quot;:1,&quot;PlacardLocation&quot;:{&quot;X&quot;:-18.0515137,&quot;Y&quot;:1.99890137,&quot;Z&quot;:123.6438,&quot;MagnitudeSqr&quot;:15617.6416,&quot;Magnitude&quot;:124.970566},&quot;EntranceLocation&quot;:{&quot;X&quot;:-116.6029,&quot;Y&quot;:2.02,&quot;Z&quot;:150.8374,&quot;MagnitudeSqr&quot;:36352.24,&quot;Magnitude&quot;:190.662628},&quot;IsInSubdivision&quot;:false},&quot;2&quot;:{&quot;HousingZone&quot;:641,&quot;Plot&quot;:2,&quot;Size&quot;:0,&quot;PlacardLocation&quot;:{&quot;X&quot;:-15.0301514,&quot;Y&quot;:14.5112915,&quot;Z&quot;:81.40686,&quot;MagnitudeSqr&quot;:7063.56,&quot;Magnitude&quot;:84.04499},&quot;EntranceLocation&quot;:{&quot;X&quot;:-16.3205776,&quot;Y&quot;:14.52,&quot;Z&quot;:77.8957443,&quot;MagnitudeSqr&quot;:654 [rest of string was truncated]&quot;;.
         /// </summary>
         public static string ShiroganePlots {

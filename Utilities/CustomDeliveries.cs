@@ -6,6 +6,7 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Behavior;
+using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
@@ -52,7 +53,7 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
-        public static async Task<bool> RunCustomDeliveriesBySelection(bool doZhloe, bool doMnaago, bool doKurenai, bool doAdkiragh, bool doKaishirr, bool doEhlltou, bool doCharlemend, bool doAmeliance, DohClasses dohClass = DohClasses.Carpenter)
+        public static async Task<bool> RunCustomDeliveriesBySelection(bool doZhloe, bool doMnaago, bool doKurenai, bool doAdkiragh, bool doKaishirr, bool doEhlltou, bool doCharlemend, bool doAmeliance, bool doAnden, DohClasses dohClass = DohClasses.Carpenter)
         {
             if (Navigator.NavigationProvider == null)
             {
@@ -107,6 +108,12 @@ namespace LlamaLibrary.Utilities
             if (doAmeliance)
             {
                 var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Ameliance");
+                await CraftThenHandinNpc(npc, dohClass, false);
+            }
+
+            if (doAnden)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Anden");
                 await CraftThenHandinNpc(npc, dohClass, false);
             }
 
@@ -187,6 +194,17 @@ namespace LlamaLibrary.Utilities
                     Log.Information($"Calling Lisbeth with {order}");
                     try
                     {
+                        var recipe = LookUpRecipe(AgentSatisfactionSupply.Instance.DoHItemId, dohClass);
+                        if (recipe != null)
+                        {
+                            Log.Information($"Buy mats for {DataManager.GetItem(AgentSatisfactionSupply.Instance.DoHItemId)}");
+                            if (!await GilShopping.GetRequiredItems(recipe, Math.Max(3, (int)AgentSatisfactionSupply.Instance.DeliveriesRemaining)))
+                            {
+                                Log.Information($"Failed to buy mats for {DataManager.GetItem(AgentSatisfactionSupply.Instance.DoHItemId)}");
+                                return;
+                            }
+                        }
+
                         await Lisbeth.ExecuteOrdersIgnoreHome(order);
                     }
                     catch (Exception)
@@ -201,6 +219,16 @@ namespace LlamaLibrary.Utilities
                 Log.Information("Have items to turn in");
                 await HandInCustomNpc(deliveryNpc);
             }
+        }
+
+        public static StoredRecipe? LookUpRecipe(uint resultingItem, DohClasses dohClass = DohClasses.Carpenter)
+        {
+            if (!ResourceManager.Recipes_Anden.TryGetValue(resultingItem, out var recipe))
+            {
+                return null;
+            }
+
+            return recipe.FirstOrDefault(i => i.CraftingClass == (ClassJobType)dohClass);
         }
 
         public static async Task<bool> HandInCustomNpc(CustomDeliveryNpc deliveryNpc)

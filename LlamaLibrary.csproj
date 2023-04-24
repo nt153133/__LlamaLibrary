@@ -144,14 +144,17 @@
     <Compile Include="JsonObjects\CustomDeliveryNpc.cs" />
     <Compile Include="JsonObjects\GCShopItemStored.cs" />
     <Compile Include="JsonObjects\HouseLocation.cs" />
+    <Compile Include="JsonObjects\IngredientType.cs" />
     <Compile Include="JsonObjects\JsonSettings.cs" />
     <Compile Include="JsonObjects\Lisbeth\AmountMode.cs" />
     <Compile Include="JsonObjects\Lisbeth\Order.cs" />
     <Compile Include="JsonObjects\Lisbeth\SourceType.cs" />
     <Compile Include="JsonObjects\MateriaItem.cs" />
+    <Compile Include="JsonObjects\RecipeIngredient.cs" />
     <Compile Include="JsonObjects\RecordedPlot.cs" />
     <Compile Include="JsonObjects\RetainerSale.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
+    <Compile Include="JsonObjects\StoredRecipe.cs" />
     <Compile Include="Managers\SnipeManager.cs" />
     <Compile Include="RemoteAgents\AgentAchievement.cs" />
     <Compile Include="RemoteAgents\AgentAWGrowthFragTrade.cs" />
@@ -370,6 +373,7 @@
     <Compile Include="TemplatePlugin.cs" />
     <Compile Include="Utilities\CustomDeliveries.cs" />
     <Compile Include="Utilities\GCDailyTurnins.cs" />
+    <Compile Include="Utilities\GilShopping.cs" />
     <Compile Include="Utilities\Housing.cs" />
     <Compile Include="Utilities\Hunts.cs" />
     <Compile Include="Utilities\Inventory.cs" />
@@ -392,6 +396,7 @@
     <Content Include="Resources\LavenderBeds.json" />
     <Content Include="Resources\Materia.json" />
     <Content Include="Resources\Mist.json" />
+    <Content Include="Resources\Recipes_Anden.json" />
     <Content Include="Resources\Shirogane.json" />
     <Content Include="Resources\Ventures.json" />
   </ItemGroup>
