@@ -93,6 +93,21 @@ namespace LlamaLibrary.RemoteAgents
             return await Coroutine.Wait(10000, () => !VoteMvp.Instance.IsOpen);
         }
 
+        public async Task<string> OpenAndVoteName(int index = 0)
+        {
+            if (!await MakeSureVoteOpen())
+            {
+                return string.Empty;
+            }
+
+            var selection = Math.Min(index, PlayerCount - 1);
+            var name = Instance.VoteOptions[selection].Name;
+            VoteMvp.Instance.Vote(selection);
+
+            await Coroutine.Wait(10000, () => !VoteMvp.Instance.IsOpen);
+            return name;
+        }
+
         public async Task<string> HandleMvpVote(IEnumerable<string> possibleNames)
         {
             Log.Information("Handling MVP Vote with possible names: " + string.Join(", ", possibleNames));
