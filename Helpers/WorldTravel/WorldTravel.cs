@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
@@ -23,86 +24,72 @@ namespace LlamaLibrary.Helpers.WorldTravel
     {
         private static readonly LLogger Log = new(nameof(WorldTravel), Colors.Chocolate);
 
-        private const TravelCity DefaultStart = TravelCity.Limsa;
+        private const TravelCity DefaultStart = TravelCity.Cheapest;
+
+        private readonly static ushort[] ValidZones = new ushort[] { 129, 130, 132 };
+
+        private static bool InValidZone => ValidZones.Contains(WorldManager.ZoneId);
 
         public static async Task OpenWorldTravelMenu(TravelCity travelCity = DefaultStart)
         {
-            GameObject? AE;
-
-            travelCity = (TravelCity)WorldManager.ZoneId switch
+            if (WorldTravelSelect.Instance.IsOpen)
             {
-                TravelCity.Limsa    => TravelCity.Limsa,
-                TravelCity.Uldah    => TravelCity.Uldah,
-                TravelCity.Gridania => TravelCity.Gridania,
-                _                   => travelCity
-            };
-
-            /*
-            switch (travelCity)
-            {
-                case TravelCity.Limsa:
-                    await Navigation.GetTo(129, new Vector3(-89.30112f, 18.80033f, -2.019181f));
-                    break;
-                case TravelCity.Uldah:
-                    await Navigation.GetTo(130, new Vector3(-147.672f, -3.154888f, -167.1899f));
-                    break;
-                case TravelCity.Gridania:
-                    await Navigation.GetTo(132, new Vector3(31.95396f, 2.200001f, 33.20696f));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(travelCity), travelCity, null);
+                Log.Information("World Travel Already Open");
+                return;
             }
-            */
 
-            AE = await GetAE(travelCity);
-            if (AE == default)
+            if (!InValidZone)
             {
+                travelCity = (TravelCity)WorldManager.ZoneId switch
+                {
+                    TravelCity.Limsa    => TravelCity.Limsa,
+                    TravelCity.Uldah    => TravelCity.Uldah,
+                    TravelCity.Gridania => TravelCity.Gridania,
+                    _                   => travelCity
+                };
+
+                if (travelCity == TravelCity.Cheapest)
+                {
+                    var cheapest = WorldManager.AvailableLocations.Where(i => ValidZones.Contains(i.ZoneId)).OrderBy(i => i.GilCost);
+
+                    if (cheapest.Any())
+                    {
+                        travelCity = (TravelCity)cheapest.First().ZoneId;
+                        Log.Information($"Cheapest Zone Found: {travelCity}");
+                    }
+                    else
+                    {
+                        Log.Error("No valid zones found");
+                        return;
+                    }
+                }
+
                 switch (travelCity)
                 {
                     case TravelCity.Limsa:
-                        await Navigation.GetTo(129, new Vector3(-89.30112f, 18.80033f, -2.019181f));
+                        await CommonTasks.Teleport(8);
                         break;
                     case TravelCity.Uldah:
-                        await Navigation.GetTo(130, new Vector3(-147.672f, -3.154888f, -167.1899f));
+                        await CommonTasks.Teleport(9);
                         break;
                     case TravelCity.Gridania:
-                        await Navigation.GetTo(132, new Vector3(31.95396f, 2.200001f, 33.20696f));
-                        break;
-                    case TravelCity.Cheapest:
+                        await CommonTasks.Teleport(2);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(travelCity), travelCity, null);
                 }
-
-                AE = await GetAE(travelCity);
             }
 
-            if (AE == default)
+            if (!InValidZone)
             {
+                Log.Error("Not in a valid zone");
                 return;
             }
 
-            if (!AE.IsWithinInteractRange)
-            {
-                await Navigation.OffMeshMoveInteract(AE);
-            }
+            AgentWorldTravelSelect.Instance.Toggle();
 
-            AE.Interact();
-
-            if (!await Coroutine.Wait(5000, () => Conversation.IsOpen))
-            {
-                Log.Information($"No Conversation");
-                AE.Interact();
-                if (await Coroutine.Wait(5000, () => Conversation.IsOpen))
-                {
-                    return;
-                }
-            }
-
-            SelectWorldVisit();
-
-            await Coroutine.Wait(5000, () => WorldTravelSelect.Instance.IsOpen);
-            await Coroutine.Sleep(1000);
+            await Coroutine.Wait(5000, () => WorldTravelSelect.Instance.IsOpen && AgentWorldTravelSelect.Instance.ChoicesPointer != IntPtr.Zero);
+            await Coroutine.Sleep(500);
         }
 
         public static async Task<bool> GetTo(WorldLocation worldLocation, TravelCity travelCity = TravelCity.Uldah)
