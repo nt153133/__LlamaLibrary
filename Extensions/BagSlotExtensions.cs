@@ -37,7 +37,7 @@ namespace LlamaLibrary.Extensions
 
             //6.3
             [Offset("Search 48 89 5C 24 ? 56 48 83 EC ? 80 3D ? ? ? ? ? 48 8B F2")]
-            [OffsetCN("Search 48 89 91 ? ? ? ? 33 D2 C7 81 ? ? ? ? ? ? ? ?")]
+            //pre 6.3 [OffsetCN("Search 48 89 91 ? ? ? ? 33 D2 C7 81 ? ? ? ? ? ? ? ?")]
             public static IntPtr MeldWindowFunc;
 
             [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F B7 F8 8B DA")]
@@ -52,7 +52,7 @@ namespace LlamaLibrary.Extensions
 
             //6.3
             [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 8B CD E8 ? ? ? ? 48 8B 7C 24 ? Add 1 Read32")]
-            [OffsetCN("Search BA ? ? ? ? E8 ? ? ? ? 48 8B CE E8 ? ? ? ? 89 AE ? ? ? ? Add 1 Read32")]
+            //pre 6.3 [OffsetCN("Search BA ? ? ? ? E8 ? ? ? ? 48 8B CE E8 ? ? ? ? 89 AE ? ? ? ? Add 1 Read32")]
             public static int DesynthId;
 
             [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 48 8B 4E ? 48 8B 01 Add 1 Read32")]

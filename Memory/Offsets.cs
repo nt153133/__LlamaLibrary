@@ -18,12 +18,12 @@ namespace LlamaLibrary.Memory
     {
         //6.3
         [Offset("Search 48 89 5C 24 ? 55 57 41 56 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 3D ? ? ? ? ?")]
-        [OffsetCN("Search 40 53 55 57 41 56 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 79 ? ?")]
+        // pre6.3 [OffsetCN("Search 40 53 55 57 41 56 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 79 ? ?")]
         public static IntPtr SalvageAgent;
 
         //6.3
         [Offset("Search 4C 8D 0D ? ? ? ? 45 33 C0 33 D2 Add 3 TraceRelative")]
-        [OffsetCN("Search 4C 8D 0D ? ? ? ? 45 33 C0 33 D2 48 8B C8 E8 ? ? ? ? Add 3 TraceRelative")]
+        // pre6.3 [OffsetCN("Search 4C 8D 0D ? ? ? ? 45 33 C0 33 D2 48 8B C8 E8 ? ? ? ? Add 3 TraceRelative")]
         public static IntPtr RepairVendor;
 
         /*
@@ -133,7 +133,7 @@ namespace LlamaLibrary.Memory
 
         //6.3
         [Offset("48 89 91 ? ? ? ? C3 ? ? ? ? ? ? ? ? 89 91 ? ? ? ? C3 ? ? ? ? ? ? ? ? ? 81 B9 ? ? ? ? ? ? ? ? Add 3 Read32")]
-        [OffsetCN("Search 48 89 91 ? ? ? ? C3 ? ? ? ? ? ? ? ? 48 83 39 ? Add 3 Read32")]
+        // pre6.3 [OffsetCN("Search 48 89 91 ? ? ? ? C3 ? ? ? ? ? ? ? ? 48 83 39 ? Add 3 Read32")]
         public static int CurrentRetainer;
 
         [Offset("Search 83 FA ? 73 ? 8B C2 0F B6 94 08 ? ? ? ? 80 FA ?")]

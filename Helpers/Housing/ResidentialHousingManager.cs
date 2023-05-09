@@ -13,7 +13,7 @@ public class ResidentialHousingManager
     internal static class Offsets
     {
         //6.3
-        [Offset("Search 83 F9 ? 77 ? 48 63 C1 48 8D 0D ? ? ? ? 8B 84 81 50 41 B1 00")]
+        [Offset("Search E8 ? ? ? ? 48 8B C8 E8 ? ? ? ? 0F B6 C8 0F B6 E8 E8 ? ? ? ? 84 C0 74 ? Add 1 TraceRelative")]
         internal static IntPtr GetResidentObject;
 
         [Offset("Search 40 53 48 83 EC ? 48 8B D9 48 83 F9 ? 74 ?")]

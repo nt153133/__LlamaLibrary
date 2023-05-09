@@ -3,7 +3,8 @@ using System.Runtime.InteropServices;
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
-#if RB_CN
+//#if RB_CN
+/*
 namespace LlamaLibrary.RemoteAgents
 {
 
@@ -53,4 +54,5 @@ namespace LlamaLibrary.RemoteAgents
     }
 
 }
-#endif
+//#endif
+*/
