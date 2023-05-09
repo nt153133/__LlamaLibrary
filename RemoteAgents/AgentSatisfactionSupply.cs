@@ -17,27 +17,27 @@ namespace LlamaLibrary.RemoteAgents
         {
             //6.3
             [Offset("Search 48 8D 05 ? ? ? ? 48 89 6B ? 48 89 03 48 8D BB ? ? ? ? Add 3 TraceRelative")]
-            [OffsetCN("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8D 4B ? Add 3 TraceRelative")]
+            // pre6.3 [OffsetCN("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8D 4B ? Add 3 TraceRelative")]
             internal static IntPtr VTable;
 
             //6.3
             [Offset("Search 48 8D B3 ? ? ? ? BA ? ? ? ? 4C 8B C6 Add 3 Read8")]
-            [OffsetCN("Search 4C 8D 47 ? BA ? ? ? ? 48 8D 0D ? ? ? ? Add 3 Read8")]
+            // pre6.3 [OffsetCN("Search 4C 8D 47 ? BA ? ? ? ? 48 8D 0D ? ? ? ? Add 3 Read8")]
             internal static int DoHItemId;
 
             //6.3
             [Offset("Search 4C 8D 83 ? ? ? ? BA ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 4C 8D 83 ? ? ? ? Add 3 Read32")]
-            [OffsetCN("Search 4C 8D 87 ? ? ? ? BA ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 4C 8D 87 ? ? ? ? Add 3 Read32")]
+            // pre6.3 [OffsetCN("Search 4C 8D 87 ? ? ? ? BA ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 4C 8D 87 ? ? ? ? Add 3 Read32")]
             internal static int DoLItemId;
 
             //6.3
             [Offset("Search 8B 8B ? ? ? ? 48 89 83 ? ? ? ? E8 ? ? ? ? 8B 8B ? ? ? ? 48 89 83 ? ? ? ? E8 ? ? ? ? 8B 8B ? ? ? ? Add 2 Read32")]
-            [OffsetCN("Search 4C 8D 87 ? ? ? ? BA ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 8B 4F ? Add 3 Read32")]
+            // pre6.3 [OffsetCN("Search 4C 8D 87 ? ? ? ? BA ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 8B 4F ? Add 3 Read32")]
             internal static int FshItemId;
 
             //6.3
             [Offset("Search 0F B7 73 ? BA ? ? ? ? E8 ? ? ? ? 89 B5 ? ? ? ? 48 8D 8D ? ? ? ? Add 3 Read8")]
-            [OffsetCN("Search 0F B7 73 ? 48 8D 8D ? ? ? ? Add 3 Read8")]
+            // pre6.3 [OffsetCN("Search 0F B7 73 ? 48 8D 8D ? ? ? ? Add 3 Read8")]
             internal static int CurrentRep;
 
             [Offset("Search 0F B7 73 ? BA ? ? ? ? E8 ? ? ? ? Add 3 Read8")]
@@ -56,13 +56,14 @@ namespace LlamaLibrary.RemoteAgents
 
             [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 01 41 0F B6 E9 41 8B F8")]
             internal static IntPtr OpenWindow;
-
+/*
 #if RB_CN
             //6.3 changes to no offset
             [Offset("Search 4C 8D 43 ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? Add 3 Read8")]
             [OffsetCN("Search 4C 8D 43 ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? Add 3 Read8")]
             internal static int NpcId;
 #endif
+*/
         }
 
         protected AgentSatisfactionSupply(IntPtr pointer) : base(pointer)
@@ -78,11 +79,11 @@ namespace LlamaLibrary.RemoteAgents
         //public byte Npc => Core.Memory.Read<byte>(Pointer + Offsets.Npc);
 
         //6.3
-#if RB_CN
-        public uint NpcId => Core.Memory.Read<uint>(Pointer + Offsets.NpcId);
-#else
+//#if RB_CN
+//        public uint NpcId => Core.Memory.Read<uint>(Pointer + Offsets.NpcId);
+//#else
         public uint NpcId => Core.Memory.Read<uint>(Pointer);
-#endif
+//#endif
 
         public uint CurrentRep => Core.Memory.Read<ushort>(Pointer + Offsets.CurrentRep);
         public uint MaxRep => Core.Memory.Read<ushort>(Pointer + Offsets.MaxRep);

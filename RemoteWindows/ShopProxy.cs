@@ -10,7 +10,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             //6.3
             [Offset("Search 8B 5E ? FF 50 ? F6 05 ? ? ? ? ? Add 2 Read8")]
-            [OffsetCN("Search 41 8B 5E ? FF 50 ? F6 05 ? ? ? ? ? Add 3 Read8")]
+            // pre6.3 [OffsetCN("Search 41 8B 5E ? FF 50 ? F6 05 ? ? ? ? ? Add 3 Read8")]
             internal static int ShopIdPointer;
         }
 
