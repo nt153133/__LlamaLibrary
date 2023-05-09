@@ -101,7 +101,6 @@ namespace LlamaLibrary.Extensions
             internal static IntPtr MeldItem;
 
             [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 45 33 F6 41 8B F1")]
-            [OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 56 41 57 48 83 EC ? 45 33 FF 41 8B E9")]
             internal static IntPtr DyeItem;
 
             [Offset("Search 0F B6 43 ? 88 47 ? 80 7B ? ? 74 ? 48 8B CB E8 ? ? ? ? 48 85 C0 74 ? 48 8B CB E8 ? ? ? ? 48 8B C8 E8 ? ? ? ? EB ? 8B 43 ? Add 3 Read8")]
