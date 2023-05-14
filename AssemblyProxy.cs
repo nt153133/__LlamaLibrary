@@ -1,7 +1,10 @@
 ﻿//!CompilerOption:AddRef:Clio.Localization.dll
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Windows.Media;
 using ff14bot;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using Newtonsoft.Json.Serialization;
 
@@ -9,6 +12,53 @@ namespace LlamaLibrary
 {
     public static class AssemblyProxy
     {
+        private static readonly Dictionary<string, Assembly> Assemblies = new Dictionary<string, Assembly>();
+        private static readonly LLogger Log = new LLogger("AssemblyProxy", Colors.Bisque, LogLevel.Information);
+        private static bool _initialized;
+
+        public static void Init()
+        {
+            if (_initialized)
+            {
+                return;
+            }
+
+            Assemblies.Add("Newtonsoft", typeof(JsonContract).Assembly);
+            Assemblies.Add("GreyMagic", Core.Memory.GetType().Assembly);
+            Assemblies.Add("ff14bot", Core.Me.GetType().Assembly);
+            Assemblies.Add("LlamaLibrary", typeof(OffsetManager).Assembly);
+            Assemblies.Add(Assembly.GetEntryAssembly()?.GetName().Name!, Assembly.GetEntryAssembly()!);
+
+            AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
+            _initialized = true;
+        }
+
+        public static void AddAssembly(string name, Assembly assembly)
+        {
+            //Add to dictionary, make sure it's not already there
+            if (Assemblies.ContainsKey(name))
+            {
+                return;
+            }
+
+            Assemblies.Add(name, assembly);
+        }
+
+        private static Assembly? OnAssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            if (Assemblies.TryGetValue(new AssemblyName(args.Name).Name, out var resolve))
+            {
+                return resolve;
+            }
+
+            if (!args.Name.Contains("resources"))
+            {
+                Log.Debug("Assembly not found: " + args.Name + "");
+            }
+
+            return null;
+        }
+
         public static Assembly OnCurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
         {
             var assemblyName = new AssemblyName(args.Name);
