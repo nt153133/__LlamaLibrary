@@ -27,9 +27,9 @@ public static class UIState
 
     public static IntPtr Instance => Core.Memory.Read<IntPtr>(Offsets.Instance);
 
-    public static bool CardUnlocked(int id) => Core.Memory.CallInjected64<bool>(Offsets.CardUnlocked, Instance, id);
+    public static bool CardUnlocked(int id) => Core.Memory.CallInjected64<bool>(Offsets.CardUnlocked, Offsets.Instance, id);
 
-    public static bool EmoteUnlocked(int id) => Core.Memory.CallInjected64<bool>(Offsets.EmoteUnlocked, Instance, id);
+    public static bool EmoteUnlocked(int id) => Core.Memory.CallInjected64<bool>(Offsets.EmoteUnlocked, Offsets.Instance, id);
 
     public static byte[] MinionArray => Core.Memory.ReadBytes(Offsets.MinionArray, 0x50);
 
