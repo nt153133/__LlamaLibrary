@@ -11,7 +11,8 @@ public enum DutyType
 {
     Dungeon,
     Trial,
-    Raid
+    Raid,
+    Guildhest
 }
 [Obfuscation(Exclude=true, ApplyToMembers=true)]
 public class ServerProfile

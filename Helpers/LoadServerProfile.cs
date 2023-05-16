@@ -297,30 +297,26 @@ public class LoadServerProfile
 
             if (DirectorManager.ActiveDirector is ff14bot.Directors.InstanceContentDirector director)
             {
-                if (dutyType == DutyType.Trial) // Trial
+                var time = new TimeSpan(1, 29, 59);
+                if (dutyType == DutyType.Raid)
                 {
-                    if (director.TimeLeftInDungeon >= new TimeSpan(0, 60, 0))
-                    {
-                        Log.Information("Barrier up");
-                        await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < new TimeSpan(0, 59, 58));
-                    }
+                    time = new TimeSpan(1, 59, 59);
                 }
 
-                if (dutyType == DutyType.Raid) // Raid
+                if (dutyType == DutyType.Trial)
                 {
-                    if (director.TimeLeftInDungeon >= new TimeSpan(2, 0, 0))
-                    {
-                        Log.Information("Barrier up");
-                        await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < new TimeSpan(1, 59, 58));
-                    }
+                    time = new TimeSpan(0, 59, 59);
                 }
-                else // Dungeon
+
+                if (dutyType == DutyType.Guildhest)
                 {
-                    if (director.TimeLeftInDungeon >= new TimeSpan(1, 30, 0))
-                    {
-                        Log.Information("Barrier up");
-                        await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < new TimeSpan(1, 29, 58));
-                    }
+                    time = new TimeSpan(0, 29, 59);
+                }
+
+                if (director.TimeLeftInDungeon >= time.Add(new TimeSpan(0,0,1)))
+                {
+                    Log.Information("Barrier up");
+                    await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < time);
                 }
             }
             else
