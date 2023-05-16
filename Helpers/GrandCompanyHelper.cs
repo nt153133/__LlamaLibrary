@@ -163,6 +163,17 @@ namespace LlamaLibrary.Helpers
 
             Log.Information("Moving to Barracks");
 
+            uint[] entranceIds = { 2007527, 2007529, 2006962 };
+            var entranceNpc = GameObjectManager.GameObjects.Where(r => r.IsTargetable && r.IsValid && entranceIds.Contains(r.NpcId)).OrderBy(r => r.Distance()).FirstOrDefault();
+            if (entranceNpc != null)
+            {
+                while (Core.Me.Location.Distance2D(entranceNpc.Location) > 1.5f)
+                {
+                    await Coroutine.Yield();
+                    await Navigation.FlightorMove(entranceNpc.Location);
+                }
+            }
+
             if (!await Navigation.GetToInteractNpc(npc, PartyYesNo.Instance) || !SelectYesno.IsOpen)
             {
                 Log.Error("Failed to get to Barracks");
