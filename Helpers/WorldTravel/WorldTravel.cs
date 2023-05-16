@@ -64,6 +64,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
                     }
                 }
 
+                Log.Information($"Traveling to {travelCity}");
                 switch (travelCity)
                 {
                     case TravelCity.Limsa:
