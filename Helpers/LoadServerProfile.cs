@@ -30,8 +30,13 @@ public class LoadServerProfile
     internal static readonly string NameValue = "DomesticHelper";
     private static readonly LLogger Log = new(NameValue, Colors.MediumPurple);
 
-    public static async Task LoadProfile(string profileName, int QueueType)
+    public static async Task LoadProfile(string profileName, int QueueType, bool GoToBarracks)
     {
+        if (GoToBarracks && (WorldManager.ZoneId != 534 && WorldManager.ZoneId != 535 && WorldManager.ZoneId != 536))
+        {
+            await LlamaLibrary.Helpers.GrandCompanyHelper.GetToGCBarracks();
+        }
+
         Log.Information("Loading Profile");
 
         var profileList = await GetProfileList("https://sts.llamamagic.net/profiles.json");
@@ -81,7 +86,7 @@ public class LoadServerProfile
     {
         var profileUri = new Uri(uri);
 
-        using (var client = new HttpClient() {Timeout = new TimeSpan(0, 0, 10)})
+        using (var client = new HttpClient() { Timeout = new TimeSpan(0, 0, 10) })
         {
             var response = (await Coroutine.ExternalTask(client.GetAsync(uri), 10_000)).Result;
             if (response.IsSuccessStatusCode)
@@ -104,22 +109,19 @@ public class LoadServerProfile
         if (TryLoad(newurl.ToString()))
             return;
 
-
         Log.Error($"Failed to load profile from server {newurl}");
-
 
         try
         {
             var profile = NeoProfile.Load(XElement.Parse(new WebClient().DownloadString(newurl), LoadOptions.SetLineInfo));
             Log.Information($"Loaded quest {profile.Name}. But have to load it one more time");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Log.Error("Failed to load profile from server attempt 1");
             Log.Error(ex.ToString());
             return;
         }
-
 
         var client = new WebClient();
         var newFile = Path.GetTempFileName();
@@ -140,7 +142,6 @@ public class LoadServerProfile
             Log.Error(ex.ToString());
             return;
         }
-
 
         return;
     }
@@ -230,8 +231,8 @@ public class LoadServerProfile
                 {
                     Log.Information("Waiting for queue pop.");
                     await Coroutine.Wait(-1,
-                        () => DutyManager.QueueState == QueueState.JoiningInstance ||
-                              DutyManager.QueueState == QueueState.None);
+                                         () => DutyManager.QueueState == QueueState.JoiningInstance ||
+                                               DutyManager.QueueState == QueueState.None);
                 }
 
                 if (DutyManager.QueueState == QueueState.JoiningInstance)
@@ -243,8 +244,8 @@ public class LoadServerProfile
                     await Coroutine.Sleep(waitTime);
                     DutyManager.Commence();
                     await Coroutine.Wait(-1,
-                        () => DutyManager.QueueState == QueueState.LoadingContent ||
-                              DutyManager.QueueState == QueueState.CommenceAvailable);
+                                         () => DutyManager.QueueState == QueueState.LoadingContent ||
+                                               DutyManager.QueueState == QueueState.CommenceAvailable);
                 }
 
                 if (DutyManager.QueueState == QueueState.LoadingContent)
@@ -313,7 +314,7 @@ public class LoadServerProfile
                     time = new TimeSpan(0, 29, 59);
                 }
 
-                if (director.TimeLeftInDungeon >= time.Add(new TimeSpan(0,0,1)))
+                if (director.TimeLeftInDungeon >= time.Add(new TimeSpan(0, 0, 1)))
                 {
                     Log.Information("Barrier up");
                     await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < time);
