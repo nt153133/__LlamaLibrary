@@ -86,6 +86,11 @@ namespace LlamaLibrary.ScriptConditions
             return false;
         }
 
+        public static bool HasLeve(int leveId)
+        {
+            return LlamaLibrary.RemoteWindows.GuildLeve.HasLeve((uint)leveId);
+        }
+
         public static bool HasLearnedMount(int mountID)
         {
             return ActionManager.AvailableMounts.Any(i => i.Id == (uint)mountID);
