@@ -41,9 +41,7 @@ namespace LlamaLibrary.RemoteAgents
             internal static int NumberOfCategories;
 
             //0x1223
-            //6.3
             [Offset("Search 40 38 B1 ? ? ? ? 0F 86 ? ? ? ? 4C 8B 64 24 ? Add 3 Read32")]
-            // pre6.3 [OffsetCN("Search 40 38 B1 ? ? ? ? 0F 86 ? ? ? ? 66 66 0F 1F 84 00 ? ? ? ? Add 3 Read32")]
             internal static int NumberOfSubCategories;
 
             //0x11A9
@@ -83,7 +81,9 @@ namespace LlamaLibrary.RemoteAgents
             internal static int CategorySubCount;
 
             //0x19C9
-            [Offset("Search F6 84 0A ? ? ? ? ? 75 ? 49 8B 52 ? Add 3 Read32")]
+            //6.4
+            [Offset("Search 80 BC 0A ? ? ? ? ? 74 ? 49 8B 52 ? Add 3 Read32")]
+            [OffsetCN("Search F6 84 0A ? ? ? ? ? 75 ? 49 8B 52 ? Add 3 Read32")]
             internal static int SubCategoryEnabled;
         }
 

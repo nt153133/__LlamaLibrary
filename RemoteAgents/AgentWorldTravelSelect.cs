@@ -15,11 +15,17 @@ namespace LlamaLibrary.RemoteAgents
             internal static IntPtr VTable;
             [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B6 50 ? 84 D2 TraceCall")]
             internal static IntPtr ExdData__getWorld;
-            [Offset("Search 48 8B 43 ? 0F B7 3C B0 Add 3 Read8")]
+            //6.4
+            [Offset("Search 48 8B 46 ? 0F B7 1C B8 Add 3 Read8")]
+            [OffsetCN("Search 48 8B 43 ? 0F B7 3C B0 Add 3 Read8")]
             internal static int ChoicesOffset;
-            [Offset("Search 66 89 7B ? E8 ? ? ? ? 0F B7 D0 Add 3 Read8")]
+            //6.4
+            [Offset("Search 66 89 5E ? E8 ? ? ? ? 0F B7 D0 Add 3 Read8")]
+            [OffsetCN("Search 66 89 7B ? E8 ? ? ? ? 0F B7 D0 Add 3 Read8")]
             internal static int CurrentWorldOffset;
-            [Offset("Search 3B 43 ? 0F 8F ? ? ? ? 48 8B 4B ? Add 2 Read8")]
+            //6.4
+            [Offset("Search 3B 46 ? 0F 8F ? ? ? ? Add 2 Read8")]
+            [OffsetCN("Search 3B 43 ? 0F 8F ? ? ? ? 48 8B 4B ? Add 2 Read8")]
             internal static int MaxWorldOffset;
         }
 

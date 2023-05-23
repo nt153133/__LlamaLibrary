@@ -17,8 +17,8 @@ namespace LlamaLibrary.Helpers
             //[OffsetCN("Search 48 8D 4B ? E8 ? ? ? ? 84 C0 74 ? 48 8B 74 24 ? Add 3 Read8")]
             internal static int Offset1;
 
-            [Offset("Search 41 89 9E ? ? ? ? 48 83 7E ? ? Add 3 Read32")]
-            //[OffsetCN("Search 41 89 8F ? ? ? ? 49 39 6E ? Add 3 Read32")]
+            [Offset("Search 41 89 9F ? ? ? ? 48 83 7D ? ? Add 3 Read32")]
+            [OffsetCN("Search 41 89 9E ? ? ? ? 48 83 7E ? ? Add 3 Read32")]
             internal static int DCOffset;
 
             [Offset("Search 0F B7 98 ? ? ? ? 66 85 FF Add 3 Read32")]
