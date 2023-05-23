@@ -34,6 +34,7 @@ using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteAgents;
 using Newtonsoft.Json;
 using LogLevel = LlamaLibrary.Logging.LogLevel;
+
 // ReSharper disable InterpolatedStringExpressionIsNotIFormattable
 
 namespace LlamaLibrary.Memory
@@ -127,6 +128,21 @@ namespace LlamaLibrary.Memory
                             {
                                 OffsetCache = new ConcurrentDictionary<string, long>();
                             }
+
+
+                            //Core.CurrentGameVer
+                            if (Core.CurrentGameVer == 8914697 && OffsetCache.ContainsKey("LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable") && OffsetCache["LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable"] != 0x196DC60)
+                            {
+                                Logger.Error("Resetting offsets due to game update");
+                                OffsetCache.TryRemove("LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable", out _);
+                            }
+                            /*else
+                            {
+                                Logger.Information("Game version: " + Core.CurrentGameVer);
+                                Logger.Information("Has key: " + OffsetCache.ContainsKey("LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable"));
+                                if (OffsetCache.ContainsKey("LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable"))
+                                    Logger.Information("Offset: " + OffsetCache["LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable"]);
+                            }*/
                         }
 
                         newStopwatch.Stop();
