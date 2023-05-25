@@ -40,6 +40,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
 
             if (!InValidZone)
             {
+                Log.Information($"Travel city: {travelCity}");
                 travelCity = (TravelCity)WorldManager.ZoneId switch
                 {
                     TravelCity.Limsa    => TravelCity.Limsa,
@@ -64,20 +65,29 @@ namespace LlamaLibrary.Helpers.WorldTravel
                     }
                 }
 
-                Log.Information($"Traveling to {travelCity}");
+                var ae = 8;
                 switch (travelCity)
                 {
                     case TravelCity.Limsa:
-                        await CommonTasks.Teleport(8);
+                        ae = 8;
                         break;
                     case TravelCity.Uldah:
-                        await CommonTasks.Teleport(9);
+                        ae = 9;
                         break;
                     case TravelCity.Gridania:
-                        await CommonTasks.Teleport(2);
+                        ae = 2;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(travelCity), travelCity, null);
+                }
+
+                Log.Information($"Traveling to {travelCity}. Calling Teleport {ae}");
+                var result = await CommonTasks.Teleport((uint)ae);
+                Log.Information($"Result from teleport: {result}");
+                if (!result)
+                {
+                    Log.Error("Unable to teleport");
+                    return;
                 }
             }
 
