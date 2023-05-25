@@ -56,6 +56,9 @@ namespace LlamaLibrary.Helpers
 
         public static string ZodiacWeaponRecreation => CustomTalk721117[Language];
 
+        public static string AnimusWeaponEnhancement => CustomTalk721069[Language];
+
+        public static string NovusWeaponRecreation => CustomTalk721104[Language];
         public static string AnimaWeaponRecreation => CustomTalk721230[Language];
 
         public static string BattlecraftLeves => GuildLeveText1[Language];
@@ -337,6 +340,26 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Renforcer une arme antique âtma" },
             { Language.Ger, "Atma-Waffe verstärken" },
             { Language.Chn, "强化“上古武器·魂晶”" }
+        };
+
+        //CustomTalk721069
+        private static readonly Dictionary<Language, string> CustomTalk721069 = new()
+        {
+            { Language.Eng, "Relic Weapon Animus Enhancement" },
+            { Language.Jap, "「古の武器・アニムス」の強化" },
+            { Language.Fre, "Renforcer une arme antique animus" },
+            { Language.Ger, "Animus-Waffe verstärken" },
+            { Language.Chn, "强化“上古武器·魂灵”" }
+        };
+
+        //CustomTalk721104
+        private static readonly Dictionary<Language, string> CustomTalk721104 = new()
+        {
+            { Language.Eng, "Relic Weapon Novus Enhancement" },
+            { Language.Jap, "「古の武器・ノウス」の強化" },
+            { Language.Fre, "Renforcer une arme antique novus" },
+            { Language.Ger, "Novus-Waffe verstärken" },
+            { Language.Chn, "强化“上古武器·新星”" }
         };
 
         //CustomTalk721117
