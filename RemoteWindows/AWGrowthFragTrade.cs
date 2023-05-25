@@ -26,12 +26,12 @@ namespace LlamaLibrary.RemoteWindows
 
         public void Trade()
         {
-            SendAction(1, 3, 3, 0, 1);
+            SendAction(2, 3, 3, 0, 1);
         }
 
         public void SetQuantity(int quantity)
         {
-            SendAction(1, 3, 2, 3, (ulong)quantity);
+            SendAction(2, 3, 2, 3, (ulong)quantity);
         }
 
         public static async Task<bool> CloseExchangeWindow()
