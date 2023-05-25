@@ -158,6 +158,7 @@
     <Compile Include="JsonObjects\RetainerSale.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="JsonObjects\StoredRecipe.cs" />
+    <Compile Include="Managers\RelicBookManager.cs" />
     <Compile Include="Managers\SnipeManager.cs" />
     <Compile Include="RemoteAgents\AgentAchievement.cs" />
     <Compile Include="RemoteAgents\AgentAWGrowthFragTrade.cs" />

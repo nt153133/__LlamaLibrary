@@ -50,6 +50,10 @@ namespace LlamaLibrary.Helpers
 
         public static string Cancel => Aetheryte11[Language];
 
+        public static string RelicWeaponZenithEnhancement => CustomTalk721061[Language];
+
+        public static string RelicWeaponAtmaEnhancement => CustomTalk721062[Language];
+
         public static string ZodiacWeaponRecreation => CustomTalk721117[Language];
 
         public static string AnimaWeaponRecreation => CustomTalk721230[Language];
@@ -82,7 +86,7 @@ namespace LlamaLibrary.Helpers
 
         static Translator()
         {
-            Language = (Language) typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+            Language = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
                 .First(i => i.FieldType == typeof(Language)).GetValue(null);
         }
 
@@ -313,6 +317,26 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Azurée" },
             { Language.Ger, "Himmelsstadt" },
             { Language.Chn, "" }
+        };
+
+        //CustomTalk721061
+        private static readonly Dictionary<Language, string> CustomTalk721061 = new()
+        {
+            { Language.Eng, "Relic Weapon Zenith Enhancement" },
+            { Language.Jap, "「古の武器・ゼニス」の強化" },
+            { Language.Fre, "Renforcer une arme antique zénith" },
+            { Language.Ger, "Zenit-Waffe verstärken" },
+            { Language.Chn, "强化“上古武器·天极”" }
+        };
+
+        //CustomTalk721062
+        private static readonly Dictionary<Language, string> CustomTalk721062 = new()
+        {
+            { Language.Eng, "Relic Weapon Atma Enhancement" },
+            { Language.Jap, "「古の武器・アートマ」の強化" },
+            { Language.Fre, "Renforcer une arme antique âtma" },
+            { Language.Ger, "Atma-Waffe verstärken" },
+            { Language.Chn, "强化“上古武器·魂晶”" }
         };
 
         //CustomTalk721117
