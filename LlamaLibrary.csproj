@@ -83,6 +83,7 @@
     <Compile Include="ExportedAPI.cs" />
     <Compile Include="Extensions\BagExtensions.cs" />
     <Compile Include="Extensions\BagSlotExtensions.cs" />
+    <Compile Include="Extensions\ClassJobExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\EventNpcExtensions.cs" />
     <Compile Include="Extensions\GatheringPointObjectExtensions.cs" />
