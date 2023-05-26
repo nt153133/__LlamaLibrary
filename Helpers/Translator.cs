@@ -58,7 +58,9 @@ namespace LlamaLibrary.Helpers
 
         public static string AnimusWeaponEnhancement => CustomTalk721069[Language];
 
-        public static string NovusWeaponRecreation => CustomTalk721104[Language];
+        public static string SoulglazingNovusWeapon => CustomTalk721103[Language];
+
+        public static string NovusWeaponEnhancement => CustomTalk721104[Language];
         public static string AnimaWeaponRecreation => CustomTalk721230[Language];
 
         public static string BattlecraftLeves => GuildLeveText1[Language];
@@ -350,6 +352,16 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Renforcer une arme antique animus" },
             { Language.Ger, "Animus-Waffe verstärken" },
             { Language.Chn, "强化“上古武器·魂灵”" }
+        };
+
+        //CustomTalk721103
+        private static readonly Dictionary<Language, string> CustomTalk721103 = new()
+        {
+            { Language.Eng, "Relic Weapon Novus Soulglazing" },
+            { Language.Jap, "「古の武器・ノウス」の絶霊化" },
+            { Language.Fre, "Effectuer un scellage éthéréen" },
+            { Language.Ger, "Novus-Waffe beschichten" },
+            { Language.Chn, "将“上古武器·新星”绝灵化" }
         };
 
         //CustomTalk721104
