@@ -65,6 +65,7 @@ namespace LlamaLibrary.Helpers
         public static string NovusWeaponEnhancement => CustomTalk721104[Language];
         public static string AnimaWeaponRecreation => CustomTalk721230[Language];
 
+        public static string MahatmaExchange => CustomTalk721147[Language];
         public static string BattlecraftLeves => GuildLeveText1[Language];
 
         public static string FieldcraftLeves => GuildLeveText2[Language];
@@ -394,6 +395,16 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Forger une arme du zodiaque" },
             { Language.Ger, "Zodiak-Waffe rekonstruieren" },
             { Language.Chn, "再铸“黄道武器”" }
+        };
+
+        //CustomTalk721147
+        private static readonly Dictionary<Language, string> CustomTalk721147 = new()
+        {
+            { Language.Eng, "Mahatma Exchange" },
+            { Language.Jap, "「マハトマ」を交換する" },
+            { Language.Fre, "Mahatma erwerben" },
+            { Language.Ger, "Obtenir des mahatma" },
+            { Language.Chn, "" }
         };
 
         //CustomTalk721230

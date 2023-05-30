@@ -97,7 +97,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int GetSkybuilderScrips()
         {
-            return (int) SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.SkybuildersScrips);
+            return (int)SpecialCurrencyManager.GetCurrencyCount(SpecialCurrency.SkybuildersScrips);
         }
 
         public static bool HasMap()
@@ -117,12 +117,12 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int NovusLightLevel()
         {
-            return (int) (InventoryManager.EquippedItems.First().SpiritBond * 100);
+            return (int)(InventoryManager.EquippedItems.First().SpiritBond * 100);
         }
 
         public static int ZodiacLightLevel()
         {
-            return (int) (InventoryManager.EquippedItems.First().SpiritBond * 100);
+            return (int)(InventoryManager.EquippedItems.First().SpiritBond * 100);
         }
 
         public static int ZodiacCompletedMahatma()
@@ -133,6 +133,11 @@ namespace LlamaLibrary.ScriptConditions
         public static bool ZodiacMahatmaIsDone()
         {
             return (ZodiacLightLevel() % 500) == 80;
+        }
+
+        public static int ZodiacCurrent()
+        {
+            return ZodiacCompletedMahatma() + 1;
         }
 
         public static int AethericDensity()
@@ -158,8 +163,8 @@ namespace LlamaLibrary.ScriptConditions
         public static int CurrentGCSeals()
         {
             uint[] sealTypes = { 20, 21, 22 };
-            var bagslot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.Currency).FirstOrDefault(i => i.RawItemId == sealTypes[(int) Core.Me.GrandCompany - 1]);
-            return (int) (bagslot?.Count ?? 0U);
+            var bagslot = InventoryManager.GetBagByInventoryBagId(InventoryBagId.Currency).FirstOrDefault(i => i.RawItemId == sealTypes[(int)Core.Me.GrandCompany - 1]);
+            return (int)(bagslot?.Count ?? 0U);
         }
 
         public static int MaxGCSeals()
@@ -169,10 +174,10 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int GetNPCIconId(int npcID)
         {
-            var npc = GameObjectManager.GetObjectByNPCId((uint) npcID);
+            var npc = GameObjectManager.GetObjectByNPCId((uint)npcID);
             if (npc != null)
             {
-                return (int) npc.IconId();
+                return (int)npc.IconId();
             }
 
             return 0;
@@ -180,7 +185,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int GilCount()
         {
-            return (int) InventoryManager.GetBagByInventoryBagId(InventoryBagId.Currency).Where(r => r.IsFilled).FirstOrDefault(item => item.RawItemId == DataManager.GetItem("Gil").Id).Count;
+            return (int)InventoryManager.GetBagByInventoryBagId(InventoryBagId.Currency).Where(r => r.IsFilled).FirstOrDefault(item => item.RawItemId == DataManager.GetItem("Gil").Id).Count;
         }
 
         public static bool MsLeftInDungeonGt(long time)
@@ -205,7 +210,7 @@ namespace LlamaLibrary.ScriptConditions
                 return 0;
             }
 
-            return (int) Core.Memory.Read<uint>(DirectorManager.ActiveDirector.Pointer + Offsets.CurrentMettle);
+            return (int)Core.Memory.Read<uint>(DirectorManager.ActiveDirector.Pointer + Offsets.CurrentMettle);
         }
 
         public static int NextResistanceRank()
@@ -215,27 +220,27 @@ namespace LlamaLibrary.ScriptConditions
                 return 0;
             }
 
-            return (int) Core.Memory.Read<uint>(DirectorManager.ActiveDirector.Pointer + Offsets.NextReistanceRank);
+            return (int)Core.Memory.Read<uint>(DirectorManager.ActiveDirector.Pointer + Offsets.NextReistanceRank);
         }
 
         public static bool IsDutyAvailable(int duty)
         {
-            return DutyManager.AvailableContent.Keys.Contains((uint) duty);
+            return DutyManager.AvailableContent.Keys.Contains((uint)duty);
         }
 
         public static bool IsSecretRecipeBookUnlocked(int tomeId)
         {
-            return CraftingHelper.IsFolkloreBookUnlockedItem((uint) tomeId);
+            return CraftingHelper.IsFolkloreBookUnlockedItem((uint)tomeId);
         }
 
         public static bool IsFolkloreBookUnlocked(int tomeId)
         {
-            return CraftingHelper.IsFolkloreBookUnlockedItem((uint) tomeId);
+            return CraftingHelper.IsFolkloreBookUnlockedItem((uint)tomeId);
         }
 
         public static bool HasDutyBeenCompleted(int duty)
         {
-            return GeneralFunctions.IsDutyComplete((uint) duty);
+            return GeneralFunctions.IsDutyComplete((uint)duty);
         }
 
         /*public static int GetLeveTodoArgsItem1(int index)
@@ -343,7 +348,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int DistanceSqrTo(string loc)
         {
-            return (int) Core.Me.Location.DistanceSqr(new Vector3(loc));
+            return (int)Core.Me.Location.DistanceSqr(new Vector3(loc));
         }
 
         public static bool HasLisbeth()
