@@ -56,6 +56,8 @@ namespace LlamaLibrary.Helpers
 
         public static string ZodiacWeaponRecreation => CustomTalk721117[Language];
 
+        public static string NexusWeaponEnhancement => CustomTalk721107[Language];
+
         public static string AnimusWeaponEnhancement => CustomTalk721069[Language];
 
         public static string SoulglazingNovusWeapon => CustomTalk721103[Language];
@@ -372,6 +374,16 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Renforcer une arme antique novus" },
             { Language.Ger, "Novus-Waffe verstärken" },
             { Language.Chn, "强化“上古武器·新星”" }
+        };
+
+        //CustomTalk721107
+        private static readonly Dictionary<Language, string> CustomTalk721107 = new()
+        {
+            { Language.Eng, "Relic Weapon Nexus Modification" },
+            { Language.Jap, "「古の武器・ネクサス」の調整" },
+            { Language.Fre, "Ajuster une arme antique nexus" },
+            { Language.Ger, "Nexus-Waffe modifizieren" },
+            { Language.Chn, "" }
         };
 
         //CustomTalk721117
