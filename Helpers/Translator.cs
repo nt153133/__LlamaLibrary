@@ -65,6 +65,8 @@ namespace LlamaLibrary.Helpers
         public static string NovusWeaponEnhancement => CustomTalk721104[Language];
         public static string AnimaWeaponRecreation => CustomTalk721230[Language];
 
+        public static string ZodiacWeaponAwakening => CustomTalk721146[Language];
+
         public static string MahatmaExchange => CustomTalk721147[Language];
         public static string BattlecraftLeves => GuildLeveText1[Language];
 
@@ -395,6 +397,16 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Forger une arme du zodiaque" },
             { Language.Ger, "Zodiak-Waffe rekonstruieren" },
             { Language.Chn, "再铸“黄道武器”" }
+        };
+
+        //CustomTalk721146
+        private static readonly Dictionary<Language, string> CustomTalk721146 = new()
+        {
+            { Language.Eng, "Zodiac Weapon Awakening" },
+            { Language.Jap, "「ゾディアックウェポン」を覚醒させる" },
+            { Language.Fre, "Réveiller la conscience d'une arme du zodiaque" },
+            { Language.Ger, "Zodiak-Waffe erwecken" },
+            { Language.Chn, "" }
         };
 
         //CustomTalk721147
