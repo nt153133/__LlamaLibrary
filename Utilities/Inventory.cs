@@ -211,8 +211,9 @@ namespace LlamaLibrary.Utilities
             {
                 return;
             }
+            List<uint> RelicSphereScrolls = new() { 7873, 7874, 7875, 7876, 7877, 7878, 7879, 7880, 7881, 7882, 9255 };
 
-            var gear = InventoryManager.FilledInventoryAndArmory.Where(x => x.SpiritBond == 100f);
+            var gear = InventoryManager.FilledInventoryAndArmory.Where(x => x.SpiritBond == 100f  && RelicSphereScrolls.Contains(x.RawItemId) == false);
             if (gear.Any())
             {
                 foreach (var slot in gear)
