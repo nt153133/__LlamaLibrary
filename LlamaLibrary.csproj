@@ -194,6 +194,7 @@
     <Compile Include="RemoteWindows\FishGuide2.cs" />
     <Compile Include="RemoteWindows\FreeCompanyChest.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
+    <Compile Include="RemoteWindows\Gathering.cs" />
     <Compile Include="RemoteWindows\GrandCompanyRankUp.cs" />
     <Compile Include="RemoteWindows\GuildLeveDifficulty.cs" />
     <Compile Include="RemoteWindows\HelpWindow.cs" />

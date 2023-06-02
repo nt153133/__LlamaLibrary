@@ -153,6 +153,13 @@ namespace LlamaLibrary.Helpers
                     await SmallTalk();
                 }
 
+                if (Gathering.Instance.IsOpen)
+                {
+                    Log.Information("Closing gathering window.");
+                    Gathering.Instance.Close();
+                    await Coroutine.Wait(3000, () => !Gathering.Instance.IsOpen);
+                }
+
                 if (Core.Me.HasTarget)
                 {
                     Log.Information($"Untargeting {Core.Me.CurrentTarget.Name}");
