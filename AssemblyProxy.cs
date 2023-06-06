@@ -32,7 +32,14 @@ namespace LlamaLibrary
             AddAssembly("GreyMagic", Core.Memory.GetType().Assembly);
             AddAssembly("ff14bot", Core.Me.GetType().Assembly);
             AddAssembly("LlamaLibrary", typeof(OffsetManager).Assembly);
-            AddAssembly(Assembly.GetEntryAssembly()?.GetName().Name!, Assembly.GetEntryAssembly()!);
+            try
+            {
+                AddAssembly(Assembly.GetEntryAssembly()?.GetName().Name!, Assembly.GetEntryAssembly()!);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.ToString());
+            }
 
             AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
         }
