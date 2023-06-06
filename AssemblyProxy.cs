@@ -1,5 +1,6 @@
 ﻿//!CompilerOption:AddRef:Clio.Localization.dll
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Media;
@@ -12,7 +13,7 @@ namespace LlamaLibrary
 {
     public static class AssemblyProxy
     {
-        private static readonly Dictionary<string, Assembly> Assemblies = new Dictionary<string, Assembly>();
+        private static readonly ConcurrentDictionary<string, Assembly> Assemblies = new ConcurrentDictionary<string, Assembly>();
         private static readonly LLogger Log = new LLogger("AssemblyProxy", Colors.Bisque, LogLevel.Information);
         private static bool _initialized;
         private static object _lock = new object();
@@ -52,7 +53,7 @@ namespace LlamaLibrary
                 return;
             }
 
-            Assemblies.Add(name, assembly);
+            Assemblies.TryAdd(name, assembly);
         }
 
         private static Assembly? OnAssemblyResolve(object sender, ResolveEventArgs args)
