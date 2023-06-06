@@ -15,22 +15,26 @@ namespace LlamaLibrary
         private static readonly Dictionary<string, Assembly> Assemblies = new Dictionary<string, Assembly>();
         private static readonly LLogger Log = new LLogger("AssemblyProxy", Colors.Bisque, LogLevel.Information);
         private static bool _initialized;
-
+        private static object _lock = new object();
         public static void Init()
         {
-            if (_initialized)
+            lock (_lock)
             {
-                return;
+                if (_initialized)
+                {
+                    return;
+                }
+
+                _initialized = true;
             }
 
-            Assemblies.Add("Newtonsoft", typeof(JsonContract).Assembly);
-            Assemblies.Add("GreyMagic", Core.Memory.GetType().Assembly);
-            Assemblies.Add("ff14bot", Core.Me.GetType().Assembly);
-            Assemblies.Add("LlamaLibrary", typeof(OffsetManager).Assembly);
-            Assemblies.Add(Assembly.GetEntryAssembly()?.GetName().Name!, Assembly.GetEntryAssembly()!);
+            AddAssembly("Newtonsoft", typeof(JsonContract).Assembly);
+            AddAssembly("GreyMagic", Core.Memory.GetType().Assembly);
+            AddAssembly("ff14bot", Core.Me.GetType().Assembly);
+            AddAssembly("LlamaLibrary", typeof(OffsetManager).Assembly);
+            AddAssembly(Assembly.GetEntryAssembly()?.GetName().Name!, Assembly.GetEntryAssembly()!);
 
             AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
-            _initialized = true;
         }
 
         public static void AddAssembly(string name, Assembly assembly)
