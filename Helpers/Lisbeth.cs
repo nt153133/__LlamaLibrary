@@ -13,6 +13,7 @@ using ff14bot.Managers;
 using ff14bot.Objects;
 using ff14bot.Settings;
 using LlamaLibrary.Logging;
+
 #pragma warning disable CS8603
 #pragma warning disable CS8602
 
@@ -40,9 +41,9 @@ namespace LlamaLibrary.Helpers
         private static Func<List<string>> _getHookList;
         private static Func<Task<bool>> _exitCrafting;
         private static Func<Task<bool>> _isProductKeyValid;
-        private static Func<string, Vector3, Task<bool>> _travelToWithArea;
-        private static Func<uint, uint, Vector3, Task<bool>> _travelTo;
-        private static Func<uint, Vector3, Task<bool>> _travelToWithoutSubzone;
+        //private static Func<string, Vector3, Func<bool>, bool, Task<bool>>? _travelToWithArea;
+        private static Func<uint, uint, Vector3, Func<bool>, bool, Task<bool>>? _travelTo;
+        private static Func<uint, Vector3, Func<bool>, bool, Task<bool>>? _travelToWithoutSubzone;
         private static Action _openWindow;
         private static Func<string, Task<string>> _getOrderExpansionAsJson;
         private static Func<Character, Task> _kill;
@@ -95,9 +96,9 @@ namespace LlamaLibrary.Helpers
                             _extractMateria = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "ExtractMateria");
                             _selfRepair = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepair");
                             _selfRepairWithMenderFallback = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepairWithMenderFallback");
-                            _travelTo = (Func<uint, uint, Vector3, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, uint, Vector3, Task<bool>>), apiObject, "TravelTo");
-                            _travelToWithArea = (Func<string, Vector3, Task<bool>>)Delegate.CreateDelegate(typeof(Func<string, Vector3, Task<bool>>), apiObject, "TravelToWithArea");
-                            _travelToWithoutSubzone = (Func<uint, Vector3, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, Vector3, Task<bool>>), apiObject, "TravelToWithoutSubzone");
+                            _travelToWithoutSubzone = (Func<uint, Vector3, Func<bool>, bool, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, Vector3, Func<bool>, bool, Task<bool>>), apiObject, "TravelToWithoutSubzone");
+                            _travelTo = (Func<uint, uint, Vector3, Func<bool>, bool, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, uint, Vector3, Func<bool>, bool, Task<bool>>), apiObject, "TravelTo");
+                            //_travelToWithArea = (Func<string, Vector3, Func<bool>, bool, Task<bool>>)Delegate.CreateDelegate(typeof(Func<string, Vector3, Func<bool>, bool, Task<bool>>), apiObject, "TravelToWithArea");
                             _openWindow = (System.Action)Delegate.CreateDelegate(typeof(System.Action), apiObject, "OpenWindow");
                             _getOrderExpansionAsJson = (Func<string, Task<string>>)Delegate.CreateDelegate(typeof(Func<string, Task<string>>), apiObject, "GetOrderExpansionAsJson");
                             _isProductKeyValid = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), apiObject, "IsProductKeyValid");
@@ -188,11 +189,19 @@ namespace LlamaLibrary.Helpers
             return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true });
         }
 
-        public static async Task<bool> TravelTo(string area, Vector3 position)
+        [Obsolete("Use TravelToZones instead")]
+        public static async Task<bool> TravelTo(string area, Vector3 position, Func<bool>? condition = null, bool land = true)
         {
+            return false;
+            /*
+            if (condition == null)
+            {
+                condition = AlwaysTrue;
+            }
+
             if (_travelToWithArea != null)
             {
-                return await _travelToWithArea(area, position);
+                return await _travelToWithArea(area, position, condition, land);
             }
 
             FindLisbeth();
@@ -201,18 +210,24 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            return await _travelToWithArea(area, position);
+            return await _travelToWithArea(area, position, condition, land);
+            */
+
         }
 
-        public static async Task<bool> TravelToZones(uint zoneId, uint subzoneId, Vector3 position)
+        public static async Task<bool> TravelToZones(uint zoneId, uint subzoneId, Vector3 position, Func<bool>? condition = null, bool land = true)
         {
-            return await _travelTo(zoneId, subzoneId, position);
+            condition ??= AlwaysTrue;
+            return subzoneId > 0
+                ? await _travelTo(zoneId, subzoneId, position, condition, land)
+                : await _travelToWithoutSubzone(zoneId, position, condition, land);
         }
 
-        public static async Task<bool> TravelToZones(uint zoneId, Vector3 position)
+        public static async Task<bool> TravelToZones(uint zoneId, Vector3 position, Func<bool>? condition = null, bool land = true)
         {
+            condition ??= AlwaysTrue;
             Log.Information($"Lisbeth Travel: Zone:{zoneId}  Pos:{position}");
-            return await _travelToWithoutSubzone(zoneId, position);
+            return await _travelToWithoutSubzone(zoneId, position, condition, land);
         }
 
         public static async Task StopGently()
@@ -223,6 +238,11 @@ namespace LlamaLibrary.Helpers
         public static void OpenSettings()
         {
             _openWindow();
+        }
+
+        private static bool AlwaysTrue()
+        {
+            return true;
         }
 
         public static void AddHook(string name, Func<Task> function)
