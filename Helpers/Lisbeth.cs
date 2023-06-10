@@ -215,6 +215,7 @@ namespace LlamaLibrary.Helpers
 
         }
 
+        [Obsolete("Stop using subzones")]
         public static async Task<bool> TravelToZones(uint zoneId, uint subzoneId, Vector3 position, Func<bool>? condition = null, bool land = true)
         {
             condition ??= AlwaysTrue;

@@ -82,9 +82,17 @@ namespace LlamaLibrary.Helpers
                 return true;
             }
 
-            if (Core.Me.HasTarget && Core.Me.CurrentTargetObjId != Core.Me.ObjectId)
+            try
             {
-                return true;
+                if (Core.Me.HasTarget && Core.Me.CurrentTargetObjId != Core.Me.ObjectId)
+                {
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.ToString());
+                return false;
             }
 
             return false;
