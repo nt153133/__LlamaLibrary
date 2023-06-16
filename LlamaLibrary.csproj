@@ -132,6 +132,7 @@
     <Compile Include="Helpers\OrderbotHelper.cs" />
     <Compile Include="Helpers\Ping\AddressGetter.cs" />
     <Compile Include="Helpers\Ping\PingChecker.cs" />
+    <Compile Include="Helpers\PlatypusHelper.cs" />
     <Compile Include="Helpers\ScreenshotHelper.cs" />
     <Compile Include="Helpers\ServerProfile.cs" />
     <Compile Include="Helpers\SpecialCharacters.cs" />
