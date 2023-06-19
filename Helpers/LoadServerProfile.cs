@@ -66,6 +66,7 @@ public class LoadServerProfile
         var dungeonDutyId = profile.DutyId;
         var dungeonZoneId = profile.ZoneId;
         var dutyType = profile.DutyType;
+        var unlockQuest = profile.UnlockQuest;
 
         if (profileType == ProfileType.Quest)
         {
@@ -75,7 +76,7 @@ public class LoadServerProfile
 
         if (profileType == ProfileType.Duty)
         {
-            await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType);
+            await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest);
             return;
         }
 
@@ -154,7 +155,7 @@ public class LoadServerProfile
         return NeoProfileManager.CurrentProfile != null && NeoProfileManager.CurrentProfile.Name != "Loading Profile";
     }
 
-    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType)
+    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest)
     {
         await GeneralFunctions.StopBusy(false);
 
@@ -162,6 +163,18 @@ public class LoadServerProfile
         {
             while (DutyManager.QueueState == QueueState.None)
             {
+                if (UnlockQuest != 0)
+                {
+                    if (!QuestLogManager.IsQuestCompleted((uint)UnlockQuest))
+                    {
+                        Log.Information($"Unlock quest {DataManager.GetLocalizedQuestName(UnlockQuest)} is not complete. Loading profile to complete quest.");
+                        ConditionParser.Initialize();
+                        NeoProfileManager.Load(profileUrl, false);
+                        NeoProfileManager.UpdateCurrentProfileBehavior();
+                        return;
+                    }
+                }
+
                 if (QueueType == 2)
                 {
                     Log.Information("Queuing for " + DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName);

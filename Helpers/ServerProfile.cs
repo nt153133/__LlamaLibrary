@@ -23,6 +23,5 @@ public class ServerProfile
     public string? URL { get; set; }
     public ushort ZoneId { get; set; }
     public ushort DutyId { get; set; }
-
-
+    public int UnlockQuest { get; set; }
 }
