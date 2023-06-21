@@ -1,6 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows.Media;
+using ff14bot.AClasses;
 using ff14bot.Managers;
 using LlamaLibrary.Logging;
 
@@ -30,23 +34,30 @@ namespace LlamaLibrary.Helpers
             FindPlatypus();
         }
 
-        public static bool HasPlatypus => BotManager.Bots.FirstOrDefault(c => c.EnglishName == "Platypus") != null;
+        public static bool HasPlatypus => PlatypusBotBase != null;
         public static Version Version => _version.Invoke();
         public static string VersionString => _versionString.Invoke();
 
+        private static string PlatypusPath => @$"{ff14bot.Helpers.Utils.AssemblyDirectory}\BotBases\Platypus";
+
+        private static string PlatypusAssemblyFile => "Platypus.dll";
+
+        private static string PlatypusLoaderFile => "PlatypusLoader.cs";
+
+        private static string PlatypusLoaderUrl = "https://rbplatypus.com/downloads/loader/PlatypusLoader.txt";
+#nullable enable
+        private static readonly BotBase? PlatypusBotBase = BotManager.Bots.FirstOrDefault(c => c.EnglishName == "Platypus");
+#nullable restore
+
         internal static void FindPlatypus()
         {
-#pragma warning disable IDE0007 // Use implicit type
-            var loader = BotManager.Bots.FirstOrDefault(c => c.EnglishName == "Platypus");
-#pragma warning restore IDE0007 // Use implicit type
-
-            if (loader == null)
+            if (PlatypusBotBase == null)
             {
                 return;
             }
 
-            var platypusObjectProperty = loader.GetType().GetProperty("Api");
-            var platypusApi = platypusObjectProperty?.GetValue(loader);
+            var platypusObjectProperty = PlatypusBotBase.GetType().GetProperty("Api");
+            var platypusApi = platypusObjectProperty?.GetValue(PlatypusBotBase);
 
             if (platypusApi == null)
             {
@@ -68,6 +79,52 @@ namespace LlamaLibrary.Helpers
             Log.Information("Platypus found.");
         }
 
+        public static bool InstallPlatypus()
+        {
+            if (File.Exists(@$"{PlatypusPath}\{PlatypusAssemblyFile}"))
+            {
+                // Platypus is already installed
+                return true;
+            }
+
+            if (!Directory.Exists(PlatypusPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(PlatypusPath);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Unable to install Platypus, could not create target directory {PlatypusPath}: {ex}");
+                    return false;
+                }
+            }
+
+            string platypusLoader;
+
+            try
+            {
+                platypusLoader = DownloadPlatypusLoader().Result;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Unable to download the Platypus loader to create a new installation: {ex}");
+                return false;
+            }
+
+            try
+            {
+                File.WriteAllText(@$"{PlatypusPath}\{PlatypusLoaderFile}", platypusLoader);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Unable to install Platypus, could not write loader inside {PlatypusPath}: {ex}");
+                return false;
+            }
+
+            return true;
+        }
+
         public static void ShowGui()
         {
             _showGui.Invoke();
@@ -76,6 +133,14 @@ namespace LlamaLibrary.Helpers
         public static bool CanProfileExecuteTask(TaskType taskType)
         {
             return _canProfileExecuteTask.Invoke(taskType);
+        }
+
+        private static async Task<string> DownloadPlatypusLoader()
+        {
+            using (var client = new HttpClient())
+            {
+                return client.GetStringAsync(PlatypusLoaderUrl).Result;
+            }
         }
     }
 }
