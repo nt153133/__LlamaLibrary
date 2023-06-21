@@ -130,6 +130,11 @@ namespace LlamaLibrary.ScriptConditions
             return ZodiacLightLevel() / 500;
         }
 
+        public static int ZodiacMahatmaProgress()
+        {
+            return ZodiacLightLevel() % 500;
+        }
+
         public static bool ZodiacMahatmaIsDone()
         {
             return (ZodiacLightLevel() % 500) == 80;
