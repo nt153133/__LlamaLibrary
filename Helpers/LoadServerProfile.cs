@@ -32,11 +32,6 @@ public class LoadServerProfile
 
     public static async Task LoadProfile(string profileName, int QueueType, bool GoToBarracks)
     {
-        if (GoToBarracks && (WorldManager.ZoneId != 534 && WorldManager.ZoneId != 535 && WorldManager.ZoneId != 536))
-        {
-            await LlamaLibrary.Helpers.GrandCompanyHelper.GetToGCBarracks();
-        }
-
         Log.Information("Loading Profile");
 
         var profileList = await GetProfileList("https://sts.llamamagic.net/profiles.json");
@@ -76,7 +71,7 @@ public class LoadServerProfile
 
         if (profileType == ProfileType.Duty)
         {
-            await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest);
+            await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks);
             return;
         }
 
@@ -155,7 +150,7 @@ public class LoadServerProfile
         return NeoProfileManager.CurrentProfile != null && NeoProfileManager.CurrentProfile.Name != "Loading Profile";
     }
 
-    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest)
+    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks)
     {
         await GeneralFunctions.StopBusy(false);
 
@@ -173,6 +168,11 @@ public class LoadServerProfile
                         NeoProfileManager.UpdateCurrentProfileBehavior();
                         return;
                     }
+                }
+
+                if (GoToBarracks && (WorldManager.ZoneId != 534 && WorldManager.ZoneId != 535 && WorldManager.ZoneId != 536))
+                {
+                    await LlamaLibrary.Helpers.GrandCompanyHelper.GetToGCBarracks();
                 }
 
                 if (QueueType == 2)
