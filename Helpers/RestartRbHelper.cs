@@ -10,11 +10,14 @@
     {
         private static readonly string TempFolderLocation = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
+        private static readonly string RebornbuddyExecutable = Path.Combine(ff14bot.Helpers.Utils.AssemblyDirectory, "RebornBuddy.exe");
+
         private static readonly string BatchFileName = "restart_rebornbuddy.bat";
 
         private static readonly string BatchFileContent = @$"@echo off
 set RB_PID=%1
 set FFXIV_PID=%2
+set RB_EXECUTABLE=%3
 
 title [RestartRbHelper] WaitForClose
 echo [RestartRbHelper] waiting for Rebornbuddy (PID: %RB_PID%, attached to FFXIV PID: %FFXIV_PID%) to close before restarting...
@@ -24,7 +27,7 @@ timeout /t 5 /nobreak
 taskkill /PID %RB_PID% /F /FI ""status eq not responding"" >nul
 TASKLIST /FI ""PID eq %RB_PID%"" | FINDSTR /I ""RebornBuddy.exe"" >nul && goto :whileRB
 
-start rebornbuddy.exe --processid=%FFXIV_PID% --autologin --autostart= 5000
+start %RB_EXECUTABLE% --processid=%FFXIV_PID% --autologin
 
 exit";
 
@@ -44,7 +47,7 @@ exit";
 
                 Log.Information("RestartRbHelper - Restarting Rebornbuddy");
                 Process RBprocess = Process.GetCurrentProcess();
-                Process.Start(Path.Combine(TempFolderLocation, BatchFileName), $"{RBprocess.Id} {ff14bot.Core.Memory.Process.Id}");
+                Process.Start(Path.Combine(TempFolderLocation, BatchFileName), $"{RBprocess.Id} {ff14bot.Core.Memory.Process.Id} {RebornbuddyExecutable}");
 
                 if (!RBprocess.CloseMainWindow())
                 {
