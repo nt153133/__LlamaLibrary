@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using ff14bot.AClasses;
 using ff14bot.Managers;
+using GreyMagic;
 using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers
@@ -38,16 +39,18 @@ namespace LlamaLibrary.Helpers
         public static Version Version => _version.Invoke();
         public static string VersionString => _versionString.Invoke();
 
-        private static string PlatypusPath => @$"{ff14bot.Helpers.Utils.AssemblyDirectory}\BotBases\Platypus";
+        private static string PlatypusPath => Path.Combine(ff14bot.Helpers.Utils.AssemblyDirectory, "BotBases", "Platypus");
+
+#nullable enable
+        private static readonly BotBase? PlatypusBotBase = BotManager.Bots.FirstOrDefault(c => c.EnglishName == "Platypus");
+#nullable restore
 
         private static string PlatypusAssemblyFile => "Platypus.dll";
 
         private static string PlatypusLoaderFile => "PlatypusLoader.cs";
 
         private static string PlatypusLoaderUrl = "https://rbplatypus.com/downloads/loader/PlatypusLoader.txt";
-#nullable enable
-        private static readonly BotBase? PlatypusBotBase = BotManager.Bots.FirstOrDefault(c => c.EnglishName == "Platypus");
-#nullable restore
+
 
         internal static void FindPlatypus()
         {
@@ -81,7 +84,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool InstallPlatypus()
         {
-            if (File.Exists(@$"{PlatypusPath}\{PlatypusAssemblyFile}"))
+            if (File.Exists(Path.Combine(PlatypusPath, PlatypusAssemblyFile)))
             {
                 // Platypus is already installed
                 return true;
@@ -114,7 +117,7 @@ namespace LlamaLibrary.Helpers
 
             try
             {
-                File.WriteAllText(@$"{PlatypusPath}\{PlatypusLoaderFile}", platypusLoader);
+                File.WriteAllText(Path.Combine(PlatypusPath, PlatypusLoaderFile), platypusLoader);
             }
             catch (Exception ex)
             {
