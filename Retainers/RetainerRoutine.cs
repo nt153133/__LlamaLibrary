@@ -346,8 +346,13 @@ namespace LlamaLibrary.Retainers
                 await Coroutine.Wait(13000, () => DialogOpen || RetainerList.Instance.IsOpen  || !Core.Me.CheckCondition(_OccupiedSummoningBellCondition));
             }
 
-            while (!RetainerList.Instance.IsOpen || !Core.Me.CheckCondition(_OccupiedSummoningBellCondition))
+            while (!RetainerList.Instance.IsOpen)
             {
+                if (!Core.Me.CheckCondition(_OccupiedSummoningBellCondition))
+                {
+                    break;
+                }
+
                 if (DialogOpen)
                 {
                     Next();
