@@ -105,6 +105,11 @@ namespace LlamaLibrary.Extensions
             return Core.Memory.Read<int>(rankRow);
         }
 
+        public static bool CheckCondition(this LocalPlayer player, byte condition)
+        {
+            return Core.Memory.Read<byte>(Memory.Offsets.Conditions + condition) == 1;
+        }
+
         public static ulong PlayerId(this LocalPlayer player)
         {
             return Core.Memory.Read<ulong>(Offsets.PlayerID);

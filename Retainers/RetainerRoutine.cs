@@ -27,6 +27,8 @@ namespace LlamaLibrary.Retainers
             (InventoryBagId)0xFA0, (InventoryBagId)0xFA1//, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005
         };
 
+        private static byte _OccupiedSummoningBellCondition = 0;
+
         public static async Task<bool> ReadRetainers(Task retainerTask)
         {
             if (!await HelperFunctions.OpenRetainerList())
@@ -166,8 +168,23 @@ namespace LlamaLibrary.Retainers
         {
             if (RetainerList.Instance.IsOpen)
             {
+                VerifyCondition();
                 RetainerList.Instance.Close();
-                await Coroutine.Wait(15000, () => !RetainerList.Instance.IsOpen);
+                if (!await Coroutine.Wait(15000, () => !RetainerList.Instance.IsOpen && !Core.Me.CheckCondition(_OccupiedSummoningBellCondition)))
+                {
+                    Log.Error("Could not close retainer list");
+                    await DeSelectRetainer();
+                    await GeneralFunctions.StopBusy(false);
+                    if (RetainerList.Instance.IsOpen)
+                    {
+                        RetainerList.Instance.Close();
+                    }
+
+                    if (!await Coroutine.Wait(15000, () => !RetainerList.Instance.IsOpen && !Core.Me.CheckCondition(_OccupiedSummoningBellCondition)))
+                    {
+                        Log.Error("Really could not close retainer list");
+                    }
+                }
             }
         }
 
@@ -292,12 +309,32 @@ namespace LlamaLibrary.Retainers
             return false;
         }
 
+        private static void VerifyCondition()
+        {
+            if (_OccupiedSummoningBellCondition != 0)
+            {
+                return;
+            }
+
+            try
+            {
+                _OccupiedSummoningBellCondition = Lua.GetReturnVal<byte>("return _G['CmnDefRetainerBell']:GetConditionId();");
+            }
+            catch
+            {
+                Log.Error("Could not get occupied summoning bell condition, defaulting to 0x50");
+                _OccupiedSummoningBellCondition = 0x50;
+            }
+        }
+
         public static async Task<bool> DeSelectRetainer()
         {
             if (!RetainerTasks.IsOpen)
             {
                 return true;
             }
+
+            VerifyCondition();
 
             RetainerTasks.CloseTasks();
 
@@ -309,7 +346,7 @@ namespace LlamaLibrary.Retainers
                 await Coroutine.Wait(13000, () => DialogOpen || RetainerList.Instance.IsOpen);
             }
 
-            while (!RetainerList.Instance.IsOpen)
+            while (!RetainerList.Instance.IsOpen || !Core.Me.CheckCondition(_OccupiedSummoningBellCondition))
             {
                 if (DialogOpen)
                 {
