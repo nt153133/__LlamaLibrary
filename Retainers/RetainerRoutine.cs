@@ -343,7 +343,7 @@ namespace LlamaLibrary.Retainers
             if (SelectYesno.IsOpen)
             {
                 SelectYesno.Yes();
-                await Coroutine.Wait(13000, () => DialogOpen || RetainerList.Instance.IsOpen);
+                await Coroutine.Wait(13000, () => DialogOpen || RetainerList.Instance.IsOpen  || !Core.Me.CheckCondition(_OccupiedSummoningBellCondition));
             }
 
             while (!RetainerList.Instance.IsOpen || !Core.Me.CheckCondition(_OccupiedSummoningBellCondition))
@@ -354,7 +354,7 @@ namespace LlamaLibrary.Retainers
                     await Coroutine.Sleep(100);
                 }
 
-                await Coroutine.Wait(13000, () => DialogOpen || RetainerList.Instance.IsOpen);
+                await Coroutine.Wait(13000, () => DialogOpen || RetainerList.Instance.IsOpen || !Core.Me.CheckCondition(_OccupiedSummoningBellCondition));
             }
 
             return RetainerList.Instance.IsOpen;
