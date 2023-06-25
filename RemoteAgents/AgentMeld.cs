@@ -8,6 +8,7 @@ namespace LlamaLibrary.RemoteAgents
     public class AgentMeld : AgentInterface<AgentMeld>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
+
         private static class Offsets
         {
             [Offset("Search 48 8D 05 ? ? ? ? 33 FF 48 89 03 48 8D 4B ? Add 3 TraceRelative")]
@@ -17,6 +18,15 @@ namespace LlamaLibrary.RemoteAgents
 
             [Offset("Search 38 9F ? ? ? ? 48 8D 8D ? ? ? ? Add 2 Read32")]
             internal static int CanMeld;
+
+            [Offset("Search 89 83 ? ? ? ? 48 89 83 ? ? ? ? 48 89 83 ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? Add 2 Read32")]
+            internal static int ItemsToMeldCount;
+
+            [Offset("Search 66 89 83 ? ? ? ? 66 89 83 ? ? ? ? 66 89 83 ? ? ? ? C6 83 ? ? ? ? ? Add 3 Read32")]
+            internal static int IndexOfSelectedItem;
+
+            [Offset("Search 0F BF B3 ? ? ? ? 49 8D 8F ? ? ? ? Add 3 Read32")]
+            internal static int MateriaCount;
         }
 
         protected AgentMeld(IntPtr pointer) : base(pointer)
@@ -26,5 +36,11 @@ namespace LlamaLibrary.RemoteAgents
         public bool CanMeld => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.CanMeld) == 1;
 
         public bool Ready => Core.Memory.NoCacheRead<byte>(LlamaLibrary.Memory.Offsets.Conditions + 7) == 0;
+
+        public byte ItemsToMeldCount => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.ItemsToMeldCount);
+
+        public byte IndexOfSelectedItem => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.IndexOfSelectedItem);
+
+        public byte MateriaCount => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.MateriaCount);
     }
 }
