@@ -192,7 +192,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
                                 }
 
                                 await Coroutine.Sleep(2000);
-                                Log.Information("Waiting for ping to update");
+                                //Log.Information("Waiting for ping to update");
                                 await PingChecker.UpdatePing();
                                 Log.Information($"CurrentWorld: {WorldHelper.CurrentWorld.WorldName()} Ping: {PingChecker.CurrentPing}");
                             }
