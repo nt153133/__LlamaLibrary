@@ -30,7 +30,12 @@ namespace LlamaLibrary
 
         protected TemplateBotBase()
         {
-            Log = new LLogger(BotBaseName, LogColor);
+            Log = GetLogger();
+        }
+
+        protected virtual LLogger GetLogger()
+        {
+            return new LLogger(BotBaseName, LogColor);
         }
 
         public override void Start()
