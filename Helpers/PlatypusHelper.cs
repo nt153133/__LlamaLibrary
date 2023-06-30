@@ -17,7 +17,7 @@ namespace LlamaLibrary.Helpers
         {
             None = 0,
             CurrencyGCSealsExchange = 1,
-            InventoryOpenUnlock = 2,
+            InventoryOpenUse = 2,
             InventoryExpertDelivery = 3,
         }
 
