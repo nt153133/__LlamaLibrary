@@ -32,7 +32,7 @@ namespace LlamaLibrary.Helpers.Ping
         public static async Task UpdatePing()
         {
             var ip = _addressGetter.GetAddress();
-            ff14bot.Helpers.Logging.Write($"PingChecker: Updating ping");
+            //ff14bot.Helpers.Logging.Write($"PingChecker: Updating ping");
             if (ip.Equals(IPAddress.Loopback))
             {
                 if (Translator.Language == Language.Chn)

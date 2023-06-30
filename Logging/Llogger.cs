@@ -43,7 +43,7 @@ namespace LlamaLibrary.Logging
         /// </summary>
         /// <param name="logLevel"><see cref="LogLevel"/> to evaluate.</param>
         /// <returns><see langword="true"/> if enabled.</returns>
-        public bool IsEnabled(LogLevel logLevel)
+        public virtual bool IsEnabled(LogLevel logLevel)
         {
             return logLevel >= LogLevel;
         }
@@ -53,10 +53,9 @@ namespace LlamaLibrary.Logging
         /// </summary>
         /// <param name="color">Log line <see cref="System.Windows.Media.Color"/>.</param>
         /// <param name="message">Text to write to log.</param>
-        public void WriteLog(Color color, string message)
+        public virtual void WriteLog(Color color, string message)
         {
             var logLine = $"[{_name}] {message}";
-
             ff14bot.Helpers.Logging.Write(ff14bot.Helpers.LogLevel.Quiet, color, logLine); //ff14bot.Helpers.LogLevel.Normal
             Console.WriteLine(logLine);  // Needed to appear in debugger, tests, etc
         }
@@ -67,7 +66,7 @@ namespace LlamaLibrary.Logging
         /// <param name="logLevel">Severity of this message.</param>
         /// <param name="color">Log line <see cref="System.Windows.Media.Color"/>.</param>
         /// <param name="message">Text to write to log.</param>
-        public void WriteFilteredLog(LogLevel logLevel, Color color, string message)
+        public virtual void WriteFilteredLog(LogLevel logLevel, Color color, string message)
         {
             if (IsEnabled(logLevel))
             {
@@ -79,7 +78,7 @@ namespace LlamaLibrary.Logging
         /// Writes a <see cref="LogLevel.Verbose"/> message to log.
         /// </summary>
         /// <param name="message">Text to write to log.</param>
-        public void Verbose(string message)
+        public virtual void Verbose(string message)
         {
             WriteFilteredLog(LogLevel.Verbose, Color, message);
         }
@@ -88,7 +87,7 @@ namespace LlamaLibrary.Logging
         /// Writes a <see cref="System.Diagnostics.Debug"/> message to log.
         /// </summary>
         /// <param name="message">Text to write to log.</param>
-        public void Debug(string message)
+        public virtual void Debug(string message)
         {
             WriteFilteredLog(LogLevel.Debug, Color, message);
         }
@@ -97,7 +96,7 @@ namespace LlamaLibrary.Logging
         /// Writes an <see cref="LogLevel.Information"/> message to log.
         /// </summary>
         /// <param name="message">Text to write to log.</param>
-        public void Information(string message)
+        public virtual void Information(string message)
         {
             WriteFilteredLog(LogLevel.Information, Color, message);
         }
@@ -106,7 +105,7 @@ namespace LlamaLibrary.Logging
         /// Writes a <see cref="LogLevel.Warning"/> message to log.
         /// </summary>
         /// <param name="message">Text to write to log.</param>
-        public void Warning(string message)
+        public virtual void Warning(string message)
         {
             WriteFilteredLog(LogLevel.Warning, Colors.Goldenrod, message);
         }
@@ -115,12 +114,12 @@ namespace LlamaLibrary.Logging
         /// Writes an <see cref="LogLevel.Error"/> message to log.
         /// </summary>
         /// <param name="message">Text to write to log.</param>
-        public void Error(string message)
+        public virtual void Error(string message)
         {
             WriteFilteredLog(LogLevel.Error, Colors.OrangeRed, message);
         }
 
-        public void Exception(Exception exception)
+        public virtual void Exception(Exception exception)
         {
             var frame = new StackFrame(1);
             var method = frame.GetMethod();

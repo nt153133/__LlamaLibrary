@@ -33,7 +33,7 @@ namespace LlamaLibrary
 
         public override void OnInitialize()
         {
-            Log = new LLogger(PluginName, LogColor);
+            Log = GetLogger();
             Log.Information("Initializing");
             _orderBotHooks = GetOrderBotHooks();
             _lisbethHooks = GetLisbethHooks();
@@ -45,6 +45,11 @@ namespace LlamaLibrary
                     _orderBotHooksCoroutines.Add(new ActionRunCoroutine(r => orderBotHook()));
                 }
             }
+        }
+
+        protected virtual LLogger GetLogger()
+        {
+            return new LLogger(PluginName, LogColor);
         }
 
         public override void OnEnabled()
