@@ -106,6 +106,7 @@
     <Compile Include="Helpers\CrystallineMeanHelper.cs" />
     <Compile Include="Helpers\CurrencyHelper.cs" />
     <Compile Include="Helpers\ExpertDelivery.cs" />
+    <Compile Include="Helpers\FishGuideHelper.cs" />
     <Compile Include="Helpers\HousingTravel\Districts\Empyreum.cs" />
     <Compile Include="Helpers\HousingTravel\Districts\LavenderBeds.cs" />
     <Compile Include="Helpers\HousingTravel\Districts\Mist.cs" />
