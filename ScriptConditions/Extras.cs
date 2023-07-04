@@ -145,6 +145,16 @@ namespace LlamaLibrary.ScriptConditions
             await SharedFateHelper.CachedRead();
         }
 
+        public static async Task UpdateFishGuide()
+        {
+            await FishGuideHelper.CachedRead();
+        }
+
+        public static bool HasCaughtFish(int fishID)
+        {
+            return FishGuideHelper.GetFishSync(fishID).HasCaught;
+        }
+
         public static int LLItemCollectableCount(int itemID)
         {
             return InventoryManager.FilledSlots.Count(i => i.RawItemId == itemID && i.IsCollectable);
