@@ -13,11 +13,12 @@ namespace LlamaLibrary.Helpers
 {
     public static class PlatypusHelper
     {
-        public enum TaskType
+        public enum TaskType : uint
         {
-            None,
-            CurrencyGcSealsTurnIn,
-            InventoryOpenUnlock
+            None = 0,
+            CurrencyGCSealsExchange = 1,
+            InventoryOpenUse = 2,
+            InventoryExpertDelivery = 3,
         }
 
         private static readonly LLogger Log = new("PlatypusHelper", Colors.MediumPurple);
@@ -50,7 +51,6 @@ namespace LlamaLibrary.Helpers
         private static string PlatypusLoaderFile => "PlatypusLoader.cs";
 
         private static string PlatypusLoaderUrl = "https://rbplatypus.com/downloads/loader/PlatypusLoader.txt";
-
 
         internal static void FindPlatypus()
         {
