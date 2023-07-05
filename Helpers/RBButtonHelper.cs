@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using ff14bot.AClasses;
 using ff14bot.Forms.ugh;
+using ff14bot.Interfaces;
 
 namespace LlamaLibrary.Helpers;
 
@@ -26,7 +28,7 @@ public static class RbButtonHelper
 
         var button = new Button
         {
-            Name = name,
+            Name = name.Replace(" ", ""),
             Content = content,
             Margin = new Thickness(0, 0, 0, 5),
             Width = 129,
@@ -37,6 +39,26 @@ public static class RbButtonHelper
         button.Click += (_, _) => handler.Invoke();
         Buttons.Add(name, button);
         _stackPanel.Children.Add(button);
+    }
+
+    public static void AddButton(IBotPlugin plugin)
+    {
+        AddButton($"Btn{plugin.Name.Replace(" ", "")}", plugin.Name, plugin.OnButtonPress);
+    }
+
+    public static void AddButton(BotBase botBase)
+    {
+        AddButton($"Btn{botBase.Name.Replace(" ", "")}", botBase.Name, botBase.OnButtonPress);
+    }
+
+    public static void RemoveButton(IBotPlugin plugin)
+    {
+        RemoveButton($"Btn{plugin.Name}");
+    }
+
+    public static void RemoveButton(BotBase botBase)
+    {
+        RemoveButton($"Btn{botBase.Name}");
     }
 
     public static void RemoveButton(string name)
