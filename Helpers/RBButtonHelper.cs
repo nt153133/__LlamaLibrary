@@ -38,6 +38,7 @@ public static class RbButtonHelper
         };
         button.Click += (_, _) => handler.Invoke();
         Buttons.Add(name, button);
+        ff14bot.Helpers.Logging.WriteDiagnostic($"Adding Button: {name.Replace("Btn","")}");
         _stackPanel.Children.Add(button);
     }
 
@@ -53,12 +54,12 @@ public static class RbButtonHelper
 
     public static void RemoveButton(IBotPlugin plugin)
     {
-        RemoveButton($"Btn{plugin.Name}");
+        RemoveButton($"Btn{plugin.Name.Replace(" ", "")}");
     }
 
     public static void RemoveButton(BotBase botBase)
     {
-        RemoveButton($"Btn{botBase.Name}");
+        RemoveButton($"Btn{botBase.Name.Replace(" ", "")}");
     }
 
     public static void RemoveButton(string name)
@@ -73,6 +74,7 @@ public static class RbButtonHelper
             return;
         }
 
+        ff14bot.Helpers.Logging.WriteDiagnostic($"Removing Button: {name.Replace("Btn","")}");
         _stackPanel.Children.Remove(Buttons[name]);
         Buttons.Remove(name);
     }

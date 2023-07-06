@@ -20,14 +20,14 @@ set FFXIV_PID=%2
 set RB_EXECUTABLE=%3
 
 title [RestartRbHelper] WaitForClose
-echo [RestartRbHelper] waiting for Rebornbuddy (PID: %RB_PID%, attached to FFXIV PID: %FFXIV_PID%) to close before restarting...
+echo [RestartRbHelper] waiting for Rebornbuddy (PID: %1, attached to FFXIV PID: %2) to close before restarting...
 
 :whileRB
 timeout /t 5 /nobreak
-taskkill /PID %RB_PID% /F /FI ""status eq not responding"" >nul
-TASKLIST /FI ""PID eq %RB_PID%"" | FINDSTR /I ""RebornBuddy.exe"" >nul && goto :whileRB
+taskkill /PID %1 /F /FI ""status eq not responding"" >nul
+TASKLIST /FI ""PID eq %1"" | FINDSTR /I ""RebornBuddy.exe"" >nul && goto :whileRB
 
-start %RB_EXECUTABLE% --processid=%FFXIV_PID% --autologin
+start rebornbuddy.exe --processid=%2 -a
 
 exit";
 
@@ -46,8 +46,9 @@ exit";
                 File.WriteAllText(Path.Combine(TempFolderLocation, BatchFileName), BatchFileContent);
 
                 Log.Information("RestartRbHelper - Restarting Rebornbuddy");
+                Log.Information($"RBExecutable location {RebornbuddyExecutable}");
                 Process RBprocess = Process.GetCurrentProcess();
-                Process.Start(Path.Combine(TempFolderLocation, BatchFileName), $"{RBprocess.Id} {ff14bot.Core.Memory.Process.Id} {RebornbuddyExecutable}");
+                Process.Start(Path.Combine(TempFolderLocation, BatchFileName), $"{RBprocess.Id} {ff14bot.Core.Memory.Process.Id} \"{RebornbuddyExecutable}\"");
 
                 if (!RBprocess.CloseMainWindow())
                 {
