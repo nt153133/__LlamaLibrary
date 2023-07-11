@@ -37,7 +37,7 @@ namespace LlamaLibrary.Managers
             { Language.Jap, "炎天の書" },
             { Language.Fre, "Livre du feu céleste" },
             { Language.Ger, "Tafel des Himmelsfeuers" },
-            { Language.Chn, "火天文书目前完成" }
+            { Language.Chn, "火天文书(提升力量)目前完成" }
         };
 
         //CmnDefRelicWeapon025GetNote_00167_10
@@ -47,7 +47,7 @@ namespace LlamaLibrary.Managers
             { Language.Jap, "水天の書" },
             { Language.Fre, "Livre de l'eau céleste " },
             { Language.Ger, "Tafel des Himmelsfalles " },
-            { Language.Chn, "水天文书目前完成" }
+            { Language.Chn, "水天文书(提升耐力)目前完成" }
         };
 
         //CmnDefRelicWeapon025GetNote_00167_11
@@ -57,7 +57,7 @@ namespace LlamaLibrary.Managers
             { Language.Jap, "風天の書" },
             { Language.Fre, "Livre du vent céleste" },
             { Language.Ger, "Tafel des Himmelswindes" },
-            { Language.Chn, "风天文书目前完成" }
+            { Language.Chn, "风天文书(提升直击)目前完成" }
         };
 
         //CmnDefRelicWeapon025GetNote_00167_12
@@ -67,7 +67,7 @@ namespace LlamaLibrary.Managers
             { Language.Jap, "土天の書" },
             { Language.Fre, "Livre de la terre céleste" },
             { Language.Ger, "Tafel der Himmelserde " },
-            { Language.Chn, "土天文书目前完成" }
+            { Language.Chn, "土天文书(提升技能速度)目前完成" }
         };
 
         //CmnDefRelicWeapon025GetNote_00167_13
