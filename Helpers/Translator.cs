@@ -386,7 +386,7 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "「古の武器・ネクサス」の調整" },
             { Language.Fre, "Ajuster une arme antique nexus" },
             { Language.Ger, "Nexus-Waffe modifizieren" },
-            { Language.Chn, "" }
+            { Language.Chn, "调整“上古武器·镇魂”" }
         };
 
         //CustomTalk721117
