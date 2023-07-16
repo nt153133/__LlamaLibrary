@@ -8,7 +8,7 @@
 
         public void PressButton()
         {
-            SendAction(1, 3, 0xB);
+            SendAction(3, 3, 0xB, 3, 2, 3, 0);
         }
 
         public void PauseCursor()
