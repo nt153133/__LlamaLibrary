@@ -79,7 +79,7 @@ namespace LlamaLibrary.Helpers
                 Log.Error(e.ToString());
             }
 
-            Log.Information("Platypus found.");
+            Log.Verbose("PlatypusHelper - Platypus found.");
         }
 
         public static bool InstallPlatypus()
@@ -135,6 +135,11 @@ namespace LlamaLibrary.Helpers
 
         public static bool CanProfileExecuteTask(TaskType taskType)
         {
+            if (!HasPlatypus)
+            {
+                return false;
+            }
+
             return _canProfileExecuteTask.Invoke(taskType);
         }
 
