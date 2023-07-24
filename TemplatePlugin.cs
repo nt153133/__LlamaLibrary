@@ -256,15 +256,13 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
         Interlocked.Exchange(ref _pulseDelay, _pulseDelayOld);
     }
 
-    private static void BotEventsOnOnBotStopRequested(BotEvents.BotStartStopRequestEventArgs args)
+    private static void BotEventsOnOnBotStopRequested(EventArgs eventArgs)
     {
-        ff14bot.Helpers.Logging.Write(Colors.Yellow, $@"{nameof(TemplatePlugin)}: BotEventsOnOnBotStopRequested");
         StartPulseThread();
     }
 
-    private static void BotEventsOnOnBotStartRequested(BotEvents.BotStartStopRequestEventArgs args)
+    private static void BotEventsOnOnBotStartRequested(EventArgs eventArgs)
     {
-        ff14bot.Helpers.Logging.Write(Colors.Yellow, $@"{nameof(TemplatePlugin)}: BotEventsOnOnBotStartRequested");
         StopPulseThread();
     }
 
@@ -285,7 +283,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
         }
 
         _pulseFlags = list.Aggregate((a, b) => a | b);
-        ff14bot.Helpers.Logging.Write(Colors.Yellow, $@"{nameof(TemplatePlugin)}: pulseFlags changed to: {_pulseFlags}");
+        //ff14bot.Helpers.Logging.Write(Colors.Yellow, $@"{nameof(TemplatePlugin)}: pulseFlags changed to: {_pulseFlags}");
     }
 
     public void AddTemporaryPulseFlag(PulseFlags flags)
@@ -362,8 +360,8 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
                 UpdatePulseFlags();
                 if (Interlocked.Increment(ref _requiredPulseFlagsCount) == 1)
                 {
-                    BotEvents.OnBotStartRequested += BotEventsOnOnBotStartRequested;
-                    BotEvents.OnBotStopRequested += BotEventsOnOnBotStopRequested;
+                    BotEvents.OnBotStarted += BotEventsOnOnBotStartRequested;
+                    BotEvents.OnBotStopped += BotEventsOnOnBotStopRequested;
                     StartPulseThread();
                     Log.Information("Setting start/stop pulse hooks");
                 }
@@ -390,8 +388,8 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
                 UpdatePulseFlags();
                 if (Interlocked.Decrement(ref _requiredPulseFlagsCount) == 0)
                 {
-                    BotEvents.OnBotStartRequested -= BotEventsOnOnBotStartRequested;
-                    BotEvents.OnBotStopRequested -= BotEventsOnOnBotStopRequested;
+                    BotEvents.OnBotStarted -= BotEventsOnOnBotStartRequested;
+                    BotEvents.OnBotStopped -= BotEventsOnOnBotStopRequested;
                     StopPulseThread();
                     Log.Information("Removing start/stop pulse hooks");
                 }
