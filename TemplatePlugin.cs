@@ -292,6 +292,12 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
         var newFlags = BreakDownPulseFlags(flags);
         foreach (var newFlag in newFlags)
         {
+            if (_tempPulseFlags.Contains(newFlag))
+            {
+                continue;
+            }
+
+            Log.Information($"Adding Temporary PulseFlag: {flags}");
             list.Add(newFlag);
             _tempPulseFlags.Add(newFlag);
         }
@@ -309,6 +315,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
             return;
         }
 
+        Log.Information($"Removing Temporary PulseFlag: {flags}");
         if (PulseFlagBreakdown.TryGetValue(TempListName, out var list))
         {
             var newFlags = BreakDownPulseFlags(flags);
@@ -350,7 +357,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
         if (RequiresPulseThread)
         {
             PulseFlagBreakdown.TryAdd(PluginName, BreakDownPulseFlags(PulseFlags));
-            foreach (var tempPulseFlag in _tempPulseFlags)
+            foreach (var tempPulseFlag in _tempPulseFlags.ToList())
             {
                 AddTemporaryPulseFlag(tempPulseFlag);
             }
@@ -378,7 +385,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
         if (RequiresPulseThread)
         {
             PulseFlagBreakdown.TryRemove(PluginName, out _);
-            foreach (var tempPulseFlag in _tempPulseFlags)
+            foreach (var tempPulseFlag in _tempPulseFlags.ToList())
             {
                 RemoveTemporaryPulseFlag(tempPulseFlag);
             }
