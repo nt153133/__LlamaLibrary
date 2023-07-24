@@ -18,6 +18,7 @@
 
         public bool Hq { get; set; }
 
+        // Consumable IDs are their TRUE ID (with HQ prefix).
         public int Food { get; set; }
 
         public int Medicine { get; set; }
@@ -65,5 +66,7 @@
         public int CraftCollectable { get; set; }
 
         public bool IsSideOrder { get; set; }
+
+        public bool SkipFinalItem { get; set; }
     }
 }
