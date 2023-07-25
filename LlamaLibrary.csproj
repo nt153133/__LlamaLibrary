@@ -184,6 +184,7 @@
     <Compile Include="RemoteAgents\AgentMJIHud.cs" />
     <Compile Include="RemoteAgents\AgentMJIPouch.cs" />
     <Compile Include="RemoteAgents\AgentSharlayanCraftworksSupply.cs" />
+    <Compile Include="RemoteAgents\AgentTripleTriadCoinExchange.cs" />
     <Compile Include="RemoteAgents\AgentVoteMVP.cs" />
     <Compile Include="RemoteAgents\AgentWorldTravelSelect.cs" />
     <Compile Include="RemoteAgents\AgentMJIRecipeNoteBook.cs" />
@@ -381,6 +382,7 @@
     <Compile Include="Structs\SquadronTimerData.cs" />
     <Compile Include="Structs\Telepo.cs" />
     <Compile Include="Structs\TeleportInfo.cs" />
+    <Compile Include="Structs\TripleTriadCoinExchangeCard.cs" />
     <Compile Include="TemplateAsyncBotbase.cs" />
     <Compile Include="TemplateBotBase.cs" />
     <Compile Include="TemplatePlugin.cs" />
