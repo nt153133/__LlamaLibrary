@@ -25,10 +25,14 @@ public struct TripleTriadCoinExchangeCard
     [FieldOffset(0x90)]
     public byte Index;
 
+    [FieldOffset(0x90)]
+    public uint SendAction;
+
     //This is fucked - ignore
     /*[FieldOffset(0x40)]
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0x20)]
     public byte[] name_bytes;*/
 
     public string Name => DataManager.GetItem(ItemId).CurrentLocaleName;
+
 }
