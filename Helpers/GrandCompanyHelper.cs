@@ -155,11 +155,13 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
+            /* Removing this as the quest check seems to be completely cursed.
             if (!npc.IsQuestCompleted)
             {
                 Log.Error("You have not completed the quest to unlock the Barracks");
                 return false;
             }
+            */
 
             Log.Information("Moving to Barracks");
 
