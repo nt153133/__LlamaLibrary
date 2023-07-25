@@ -262,6 +262,21 @@ namespace LlamaLibrary.Extensions
             }
         }
 
+        public static void NpcSellItem(this BagSlot bagSlot)
+        {
+            lock (Core.Memory.Executor.AssemblyLock)
+            {
+                using (Core.Memory.TemporaryCacheState(false))
+                {
+                    Core.Memory.CallInjected64<uint>(Offsets.SellFunc,
+                                                     Shop.ActiveShopPtr,
+                                                     bagSlot.Slot,
+                                                     (uint)bagSlot.BagId,
+                                                     0);
+                }
+            }
+        }
+
         public static void RemoveMateria(this BagSlot bagSlot)
         {
             lock (Core.Memory.Executor.AssemblyLock)
