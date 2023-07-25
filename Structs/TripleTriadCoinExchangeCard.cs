@@ -13,11 +13,17 @@ public struct TripleTriadCoinExchangeCard
     [FieldOffset(0x04)]
     public uint Price;
 
+    [FieldOffset(0x08)]
+    public uint CardId;
+
     [FieldOffset(0x88)]
     public uint Count;
 
     [FieldOffset(0x8C)]
     public uint Count1;
+
+    [FieldOffset(0x90)]
+    public byte Index;
 
     //This is fucked - ignore
     /*[FieldOffset(0x40)]

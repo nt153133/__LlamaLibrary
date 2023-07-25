@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
@@ -26,7 +27,7 @@ public class AgentTripleTriadCoinExchange : AgentInterface<AgentTripleTriadCoinE
 
     public IntPtr ListPtr => Core.Memory.Read<IntPtr>(Pointer + Offsets.ListPtr);
 
-    public TripleTriadCoinExchangeCard[] Cards => Core.Memory.ReadArray<TripleTriadCoinExchangeCard>(ListPtr, CardCount);
+    public TripleTriadCoinExchangeCard[] Cards => Core.Memory.ReadArray<TripleTriadCoinExchangeCard>(ListPtr, CardCount).OrderBy(i=> i.Price).ThenBy(i=> i.Index).ToArray();
 
     protected AgentTripleTriadCoinExchange(IntPtr pointer) : base(pointer)
     {
