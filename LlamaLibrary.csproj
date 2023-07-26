@@ -223,9 +223,11 @@
     <Compile Include="RemoteWindows\RelicSphereScroll.cs" />
     <Compile Include="RemoteWindows\RetainerHistory.cs" />
     <Compile Include="RemoteWindows\SharlayanCraftworksSupply.cs" />
+    <Compile Include="RemoteWindows\ShopCardDialog.cs" />
     <Compile Include="RemoteWindows\ShopExchangeItemDialog.cs" />
     <Compile Include="RemoteWindows\ShopProxy.cs" />
     <Compile Include="RemoteWindows\SpearFishing.cs" />
+    <Compile Include="RemoteWindows\TripleTriadCoinExchange.cs" />
     <Compile Include="RemoteWindows\VoteMvp.cs" />
     <Compile Include="RemoteWindows\WorldTravelFinderReady.cs" />
     <Compile Include="RemoteWindows\WorldTravelSelect.cs" />

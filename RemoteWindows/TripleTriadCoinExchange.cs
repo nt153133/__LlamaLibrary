@@ -17,6 +17,7 @@ namespace LlamaLibrary.RemoteWindows
             { "ElementPrices", 84 },
             { "ElementQuantities", 124 },
             { "TurninIdElements", 164 },
+            { "ElementInDeck", 204 },
         };
 
         public int GetNumberOfItems => IsOpen ? Elements[Properties["NumberOfItems"]].TrimmedData : 0;
@@ -40,6 +41,18 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = Elements;
             var costElements = new ArraySegment<TwoInt>(currentElements, Properties["ElementQuantities"], GetNumberOfItems).Select(i => (uint)i.TrimmedData).ToArray();
             return costElements;
+        }
+
+        public bool[] GetCardInDeck()
+        {
+            var currentElements = Elements;
+            var costElements = new ArraySegment<TwoInt>(currentElements, Properties["ElementInDeck"], GetNumberOfItems).Select(i => (int)i.TrimmedData == 1 ? true : false).ToArray();
+            return costElements;
+        }
+
+        public void OpenShopCardDialog(uint index)
+        {
+            SendAction(2, 3, 0, 4, index);
         }
     }
 }
