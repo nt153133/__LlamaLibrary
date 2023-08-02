@@ -146,6 +146,13 @@ namespace LlamaLibrary.Helpers
                 }
             }
 
+            var slots = GeneralFunctions.MainBagsFilledSlots().Where(x => x.RawItemId == 7767);
+            Log.Information($"Found {slots.Count()} slots filled with fish meal.");
+            if (slots.Count() < 1)
+            {
+                Log.Information($"No fertilizer in bag, skipping fertilize.");
+                return true;
+            }
             var plants = GardenManager.Plants.Where(r => r.Distance2D(gardenLoc) < 10).ToArray();
             foreach (var plant in plants)
             {
