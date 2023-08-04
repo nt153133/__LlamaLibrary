@@ -61,27 +61,33 @@ namespace LlamaLibrary.Helpers
             }
 
             var item = Items.FirstOrDefault(i => i.ItemID == ItemId);
-            Log.Information($"Want to buy {DataManager.GetItem(item.ItemID).LocaleName()}");
+            Log.Information($"Want to buy {qty:N0}x {DataManager.GetItem(item.ItemID).LocaleName()} ({ItemId}) with Grand Company Seals.");
+
             if (item.ItemID == 0)
             {
-                Log.Error($"Can't find item {(ActiveShopPtr + Offsets.GCArrayStart).ToString("X")}");
+                Log.Error($"Can't find item in Grand Company Shop 0x{(ActiveShopPtr + Offsets.GCArrayStart).ToString("X")}");
                 foreach (var item1 in Items)
                 {
                     Log.Error($"{item1}");
                 }
+
+                await CloseShop();
 
                 return 0;
             }
 
             if (item.Cost > Core.Me.GCSeals())
             {
-                Log.Error($"Don't have enough seals for {item.Item.LocaleName()}");
+                Log.Error($"Don't have enough Grand Company Seals for {item.Item.LocaleName()} ({ItemId}). Have: {Core.Me.GCSeals():N0}, Costs: {item.Cost:N0}");
+                await CloseShop();
+
                 return 0;
             }
 
             var oldBagQty = item.InBag;
             var qtyCanBuy = Math.Min(qty, CanAfford(item));
             Log.Information($"CanBuy {qtyCanBuy}");
+
             AgentGrandCompanyExchange.Instance.BuyItem(item.Index, qtyCanBuy);
             await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
             if (SelectYesno.IsOpen)
@@ -93,10 +99,8 @@ namespace LlamaLibrary.Helpers
 
             await Coroutine.Wait(3000, () => Items.FirstOrDefault(i => i.ItemID == ItemId).InBag != oldBagQty);
 
-            GrandCompanyExchange.Instance.Close();
-            await Coroutine.Wait(5000, () => !GrandCompanyExchange.Instance.IsOpen);
-            Core.Me.ClearTarget();
-            await Coroutine.Sleep(500);
+            await CloseShop();
+
             return qtyCanBuy;
         }
 
@@ -144,6 +148,8 @@ namespace LlamaLibrary.Helpers
                         Log.Error($"{item1}");
                     }
 
+                    await CloseShop();
+
                     return false;
                 }
 
@@ -168,11 +174,7 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Wait(3000, () => Items.FirstOrDefault(i => i.ItemID == ItemId).InBag != oldBagQty);
             }
 
-            GrandCompanyExchange.Instance.Close();
-            await Coroutine.Wait(5000, () => !GrandCompanyExchange.Instance.IsOpen);
-
-            Core.Me.ClearTarget();
-            await Coroutine.Sleep(500);
+            await CloseShop();
 
             return true;
 
@@ -248,6 +250,20 @@ namespace LlamaLibrary.Helpers
             }
 
             return GrandCompanyExchange.Instance.IsOpen;
+        }
+
+        public static async Task<bool> CloseShop()
+        {
+            GrandCompanyExchange.Instance.Close();
+            await Coroutine.Wait(5000, () => !GrandCompanyExchange.Instance.IsOpen);
+
+            if (!GrandCompanyExchange.Instance.IsOpen)
+            {
+                Core.Me.ClearTarget();
+                await Coroutine.Sleep(500);
+            }
+
+            return !GrandCompanyExchange.Instance.IsOpen;
         }
 
         public static bool IsBuyableItem(uint itemId)
