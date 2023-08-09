@@ -10,7 +10,7 @@ namespace LlamaLibrary.Helpers;
 
 public static class RbButtonHelper
 {
-    private static readonly Dictionary<string, Button> Buttons = new Dictionary<string, Button>();
+    public static readonly Dictionary<string, Button> Buttons = new Dictionary<string, Button>();
     private static StackPanel? _stackPanel;
 
     public static void AddButton(string name, string content, Action handler)
@@ -38,8 +38,18 @@ public static class RbButtonHelper
         };
         button.Click += (_, _) => handler.Invoke();
         Buttons.Add(name, button);
-        ff14bot.Helpers.Logging.WriteDiagnostic($"Adding Button: {name.Replace("Btn","")}");
+        ff14bot.Helpers.Logging.WriteDiagnostic($"Adding Button: {name.Replace("Btn", "")}");
         _stackPanel.Children.Add(button);
+    }
+
+    public static void ChangeButtonText(string buttonName, string content)
+    {
+        if (!Buttons.ContainsKey(buttonName))
+        {
+            return;
+        }
+
+        Buttons[buttonName].Content = content;
     }
 
     public static void AddButton(IBotPlugin plugin)
@@ -74,7 +84,7 @@ public static class RbButtonHelper
             return;
         }
 
-        ff14bot.Helpers.Logging.WriteDiagnostic($"Removing Button: {name.Replace("Btn","")}");
+        ff14bot.Helpers.Logging.WriteDiagnostic($"Removing Button: {name.Replace("Btn", "")}");
         _stackPanel.Children.Remove(Buttons[name]);
         Buttons.Remove(name);
     }
