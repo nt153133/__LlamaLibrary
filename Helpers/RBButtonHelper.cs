@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using ff14bot.AClasses;
 using ff14bot.Forms.ugh;
 using ff14bot.Interfaces;
@@ -10,36 +11,39 @@ namespace LlamaLibrary.Helpers;
 
 public static class RbButtonHelper
 {
-    public static readonly Dictionary<string, Button> Buttons = new Dictionary<string, Button>();
+    public static readonly ConcurrentDictionary<string, Button> Buttons = new ConcurrentDictionary<string, Button>();
     private static StackPanel? _stackPanel;
 
     public static void AddButton(string name, string content, Action handler)
     {
-        if (_stackPanel == null)
+        MainWpf.current.Dispatcher.Invoke(() =>
         {
-            _stackPanel = GenerateStackPanel();
-            ((MainWpf.current.FindName("BotBox") as ComboBox)?.Parent as Grid)?.Children.Add(_stackPanel);
-        }
+            if (_stackPanel == null)
+            {
+                _stackPanel = GenerateStackPanel();
+                ((MainWpf.current.FindName("BotBox") as ComboBox)?.Parent as Grid)?.Children.Add(_stackPanel);
+            }
 
-        if (Buttons.ContainsKey(name))
-        {
-            return;
-        }
+            if (Buttons.ContainsKey(name))
+            {
+                return;
+            }
 
-        var button = new Button
-        {
-            Name = name.Replace(" ", ""),
-            Content = content,
-            Margin = new Thickness(0, 0, 0, 5),
-            Width = 129,
-            Height = 18,
-            Visibility = Visibility.Visible,
-            IsEnabled = true,
-        };
-        button.Click += (_, _) => handler.Invoke();
-        Buttons.Add(name, button);
-        ff14bot.Helpers.Logging.WriteDiagnostic($"Adding Button: {name.Replace("Btn", "")}");
-        _stackPanel.Children.Add(button);
+            var button = new Button
+            {
+                Name = name.Replace(" ", ""),
+                Content = content,
+                Margin = new Thickness(0, 0, 0, 5),
+                Width = 129,
+                Height = 18,
+                Visibility = Visibility.Visible,
+                IsEnabled = true,
+            };
+            button.Click += (_, _) => handler.Invoke();
+            Buttons.TryAdd(name, button);
+            ff14bot.Helpers.Logging.WriteDiagnostic($"Adding Button: {name.Replace("Btn", "")}");
+            _stackPanel.Children.Add(button);
+        });
     }
 
     public static void ChangeButtonText(string buttonName, string content)
@@ -49,7 +53,22 @@ public static class RbButtonHelper
             return;
         }
 
-        Buttons[buttonName].Content = content;
+        MainWpf.current.Dispatcher.Invoke(() => { Buttons[buttonName].Content = content; });
+    }
+
+    public static void ChangeButtonText(string buttonName, string content, Color backgroundColor, Color foregroundColor)
+    {
+        if (!Buttons.ContainsKey(buttonName))
+        {
+            return;
+        }
+
+        MainWpf.current.Dispatcher.Invoke(() =>
+        {
+            Buttons[buttonName].Content = content;
+            Buttons[buttonName].Background = new SolidColorBrush(backgroundColor);
+            Buttons[buttonName].Foreground = new SolidColorBrush(foregroundColor);
+        });
     }
 
     public static void AddButton(IBotPlugin plugin)
@@ -85,8 +104,11 @@ public static class RbButtonHelper
         }
 
         ff14bot.Helpers.Logging.WriteDiagnostic($"Removing Button: {name.Replace("Btn", "")}");
-        _stackPanel.Children.Remove(Buttons[name]);
-        Buttons.Remove(name);
+        MainWpf.current.Dispatcher.Invoke(() =>
+        {
+            _stackPanel.Children.Remove(Buttons[name]);
+            Buttons.TryRemove(name, out _);
+        });
     }
 
     private static StackPanel GenerateStackPanel()
