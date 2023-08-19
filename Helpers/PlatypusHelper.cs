@@ -21,6 +21,7 @@ namespace LlamaLibrary.Helpers
             InventoryExpertDelivery = 3,
             InventorySell = 4,
             InventoryExchange = 5,
+            InventoryTrade = 5,
             InventoryDiscard = 6,
         }
 
