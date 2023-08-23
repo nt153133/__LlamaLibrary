@@ -45,9 +45,15 @@ namespace LlamaLibrary.Extensions
 
         public static bool IsWalking => Core.Memory.Read<byte>(Offsets.RunWalk) == 1;
 
-        public static bool IsFishing => FishingManager.State != FishingState.None;
+        public static bool IsFishing(this LocalPlayer play)
+        {
+            return FishingManager.State != FishingState.None;
+        }
 
-        public static bool IsOnFishingBoat = WorldManager.RawZoneId == TheEndeavor || WorldManager.RawZoneId == TheEndeaver_Ruby;
+        public static bool IsOnFishingBoat(this LocalPlayer play)
+        {
+            return WorldManager.RawZoneId == TheEndeavor || WorldManager.RawZoneId == TheEndeaver_Ruby;
+        }
 
         public static Location Location(this LocalPlayer play)
         {
