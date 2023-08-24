@@ -224,7 +224,6 @@
     <Compile Include="RemoteWindows\PartyYesNo.cs" />
     <Compile Include="RemoteWindows\RelicSphereScroll.cs" />
     <Compile Include="RemoteWindows\RetainerHistory.cs" />
-    <Compile Include="RemoteWindows\SalvageResult.cs" />
     <Compile Include="RemoteWindows\SharlayanCraftworksSupply.cs" />
     <Compile Include="RemoteWindows\ShopCardDialog.cs" />
     <Compile Include="RemoteWindows\ShopExchangeItemDialog.cs" />
