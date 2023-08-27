@@ -7,7 +7,7 @@
         {
         }
 
-        public int NumberOfItems => Elements[3].TrimmedData;
+        public int NumberOfItems => ElementCount < 4 ? 0 : Elements[3].TrimmedData;
 
         public uint[] ItemIds
         {
