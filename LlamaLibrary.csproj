@@ -217,8 +217,10 @@
     <Compile Include="RemoteWindows\MJIHud.cs" />
     <Compile Include="RemoteWindows\MJIPouch.cs" />
     <Compile Include="RemoteWindows\MJIRecipeNoteBook.cs" />
+    <Compile Include="RemoteWindows\NotificationIcLockoutWar.cs" />
     <Compile Include="RemoteWindows\NotificationLoot.cs" />
     <Compile Include="RemoteWindows\NotificationParty.cs" />
+    <Compile Include="RemoteWindows\NotificationReadyCheck.cs" />
     <Compile Include="RemoteWindows\PartyYesNo.cs" />
     <Compile Include="RemoteWindows\RelicSphereScroll.cs" />
     <Compile Include="RemoteWindows\RetainerHistory.cs" />

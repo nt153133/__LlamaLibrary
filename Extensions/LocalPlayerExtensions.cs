@@ -12,10 +12,14 @@ namespace LlamaLibrary.Extensions
 {
     public static class LocalPlayerExtensions
     {
+        public const uint TheEndeavor = 900;
+        public const uint TheEndeaver_Ruby = 1163;
+
         internal static class Offsets
         {
             /*[Offset("Search 44 88 84 0A ? ? ? ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 88 91 ? ? ? ? Add 4 Read32")]
             internal static int GatheringStateOffset;*/
+
             [Offset("Search 0F B6 15 ? ? ? ? 8D 42 ? 3C ? 77 ? FE CA 48 8D 0D ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr CurrentGC;
 
@@ -41,6 +45,16 @@ namespace LlamaLibrary.Extensions
 
         public static bool IsWalking => Core.Memory.Read<byte>(Offsets.RunWalk) == 1;
 
+        public static bool IsFishing(this LocalPlayer play)
+        {
+            return FishingManager.State != FishingState.None;
+        }
+
+        public static bool IsOnFishingBoat(this LocalPlayer play)
+        {
+            return WorldManager.RawZoneId == TheEndeavor || WorldManager.RawZoneId == TheEndeaver_Ruby;
+        }
+
         public static Location Location(this LocalPlayer play)
         {
             return new Location(WorldManager.ZoneId, Core.Me.Location);
@@ -50,6 +64,7 @@ namespace LlamaLibrary.Extensions
         {
             return Core.Memory.Read<byte>(player.Pointer + Offsets.GatheringStateOffset);
         }*/
+
         public static IntPtr MinionPtr(this LocalPlayer play)
         {
             return Core.Memory.Read<IntPtr>(play.Pointer + Offsets.MinionPtr);

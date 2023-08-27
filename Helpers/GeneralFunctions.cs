@@ -123,6 +123,11 @@ namespace LlamaLibrary.Helpers
                     }
                 }
 
+                if (GrandCompanySupplyList.Instance.IsOpen)
+                {
+                    GrandCompanySupplyList.Instance.Close();
+                }
+
                 if (CraftingLog.IsOpen || CraftingManager.IsCrafting || Synthesis.IsOpen)
                 {
                     Log.Information($"Closing Crafting Window.");

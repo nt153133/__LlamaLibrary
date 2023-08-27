@@ -19,6 +19,10 @@ namespace LlamaLibrary.Helpers
             CurrencyGCSealsExchange = 1,
             InventoryOpenUse = 2,
             InventoryExpertDelivery = 3,
+            InventorySell = 4,
+            InventoryExchange = 5,
+            InventoryTrade = 5,
+            InventoryDiscard = 6,
         }
 
         private static readonly LLogger Log = new("PlatypusHelper", Colors.MediumPurple);
