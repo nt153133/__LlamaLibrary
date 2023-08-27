@@ -319,6 +319,7 @@ namespace LlamaLibrary.Helpers
         {
             var moving = MoveResult.GeneratingPath;
             var target = new FlyToParameters(loc);
+            target.GroundNavParameters.DistanceTolerance = distance;
             while (!(moving == MoveResult.Done ||
                      moving == MoveResult.ReachedDestination ||
                      moving == MoveResult.Failed ||
@@ -375,6 +376,7 @@ namespace LlamaLibrary.Helpers
 
             var moving = MoveResult.GeneratingPath;
             var target = new MoveToParameters(loc);
+            target.DistanceTolerance = distance;
 
             var lastLoc = Core.Me.Location;
             Stopwatch sw = new Stopwatch();
