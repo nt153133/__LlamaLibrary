@@ -1033,7 +1033,6 @@ namespace LlamaLibrary.Helpers
 
         public static async Task TurninSplendorousCrafting()
         {
-
             var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
             {
                 // Connoisseur's Item, job index, position on list, collectability, reward item
@@ -1488,6 +1487,56 @@ namespace LlamaLibrary.Helpers
         public static bool IsDutyComplete(uint dutyId)
         {
             return DataManager.InstanceContentResults.TryGetValue(dutyId, out var instanceContentResult) && IsInstanceContentCompleted(instanceContentResult.Content);
+        }
+
+        public static async Task PassOnAllLoot()
+        {
+            if (!LlamaLibrary.RemoteWindows.NotificationLoot.Instance.IsOpen)
+            {
+                Log.Information($"Loot window not present, exiting");
+                return;
+            }
+
+            var window = RaptureAtkUnitManager.GetWindowByName("_Notification");
+
+            if (!NeedGreed.Instance.IsOpen && window != null)
+            {
+                window.SendAction(3, 3, 0, 3, 2, 6, 0x375B30E7);
+                await Coroutine.Wait(5000, () => NeedGreed.Instance.IsOpen);
+            }
+
+            if (NeedGreed.Instance.IsOpen)
+            {
+                for (var i = 0; i < NeedGreed.Instance.NumberOfItems; i++)
+                {
+                    NeedGreed.Instance.PassItem(i);
+                    await Coroutine.Sleep(500);
+                    await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
+                    if (SelectYesno.IsOpen)
+                    {
+                        SelectYesno.Yes();
+                    }
+
+                    if (!NeedGreed.Instance.IsOpen)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (NeedGreed.Instance.IsOpen)
+            {
+                NeedGreed.Instance.Close();
+            }
+        }
+
+        public static async Task VoteMVPTask()
+        {
+            Log.Information("Voting on MVP");
+
+            var name = await AgentVoteMVP.Instance.OpenAndVoteName();
+
+            Log.Information($"Voted for {name}");
         }
 
         public static bool IsInstanceContentCompleted(uint instantContentId)
