@@ -267,7 +267,7 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await GetToResidential(district, location, ward);
         }
 
-        public static async Task<bool> GetToResidential(ResidentialDistrict district, Vector3 location, int ward)
+        public static async Task<bool> GetToResidential(ResidentialDistrict district, Vector3 location, int ward, float distance = 2.5f)
         {
             if (!await district.SelectWard(ward))
             {
@@ -276,17 +276,17 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
             //in zone
 
-            return await district.TravelWithinZone(location, 2.5f);
+            return await district.TravelWithinZone(location, distance);
         }
 
-        public static async Task<bool> GetToResidential(ushort zone, Vector3 location, int ward)
+        public static async Task<bool> GetToResidential(ushort zone, Vector3 location, int ward = 1, float distance = 2.5f)
         {
             if (!HousingZones.Select(i => i.ZoneId).Contains(zone))
             {
                 return false;
             }
 
-            return await GetToResidential(HousingZones.First(i => i.ZoneId == zone), location, ward);
+            return await GetToResidential(HousingZones.First(i => i.ZoneId == zone), location, ward, distance);
         }
 
         public static async Task<bool> GetToResidential(World world, HousingZone zone, Vector3 entranceLocation, int ward)
