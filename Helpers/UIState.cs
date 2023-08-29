@@ -25,7 +25,7 @@ public static class UIState
         internal static IntPtr MinionArray;
     }
 
-    public static IntPtr Instance => Core.Memory.Read<IntPtr>(Offsets.Instance);
+    public static IntPtr Instance => Offsets.Instance;
 
     public static bool CardUnlocked(int id) => Core.Memory.CallInjected64<bool>(Offsets.CardUnlocked, Offsets.Instance, id);
 
