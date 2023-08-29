@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
+using ff14bot.Managers;
+using LlamaLibrary.Helpers;
+using LlamaLibrary.Helpers.LocationTracking;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
@@ -17,7 +20,7 @@ namespace LlamaLibrary.RetainerItemFinder
     {
         private static readonly LLogger Log = new(nameof(ItemFinder), Colors.Pink);
 
-        internal static IntPtr Pointer;
+        public static IntPtr Pointer;
 
         internal static IntPtr TreeStart => Core.Memory.ReadArray<IntPtr>(ParentStart, 3)[1];
 
@@ -30,6 +33,8 @@ namespace LlamaLibrary.RetainerItemFinder
         private static bool firstTimeSaddleRead = true;
 
         public static IntPtr Framework;
+
+        private static bool _hasGoneToDresser = false;
 
         static ItemFinder()
         {
@@ -150,6 +155,59 @@ namespace LlamaLibrary.RetainerItemFinder
             return result;
         }
 
+        public static int[] GetCachedGlamourDresserInventory()
+        {
+            var ids = Core.Memory.ReadArray<int>(Pointer + Offsets.GlamourDresserItemIds, 800);
+            return ids;
+        }
+
+        public static async Task<int[]> GetGlamourDressedUpdated()
+        {
+            if (_hasGoneToDresser)
+            {
+                return GetCachedGlamourDresserInventory();
+            }
+
+            if (!ShouldVisitGlamourDresser())
+            {
+                return GetCachedGlamourDresserInventory();
+            }
+
+            await UpdateGlamourDresser();
+
+            return GetCachedGlamourDresserInventory();
+        }
+
+        public static async Task UpdateGlamourDresser()
+        {
+            if (IsGlamourDresserCached)
+            {
+                _hasGoneToDresser = true;
+                return;
+            }
+
+            if (!_hasGoneToDresser)
+            {
+                var tracker = new LocationTracker();
+                if (await NavigationHelper.GoToGlamourDresser())
+                {
+                    RaptureAtkUnitManager.GetWindowByName("MiragePrismPrismBox").SendAction(1, 3uL, 0xFFFFFFFFuL);
+                    await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("MiragePrismPrismBox") == null);
+                    _hasGoneToDresser = true;
+                }
+
+                await tracker.GoBack();
+            }
+        }
+
+        public static bool IsGlamourDresserCached => Core.Memory.Read<byte>(Pointer + Offsets.GlamourDresserCached) == 1;
+
+        public static bool ShouldVisitGlamourDresser()
+        {
+            var ids = Core.Memory.ReadArray<int>(Pointer + Offsets.GlamourDresserItemIds, 800);
+            return ids.All(i => i == 0);
+        }
+
         private static void Visit(IntPtr nodePtr)
         {
             if (VisitedNodes.Contains(nodePtr))
@@ -206,6 +264,12 @@ namespace LlamaLibrary.RetainerItemFinder
 
             [Offset("Search 48 8D 8B ? ? ? ? 48 89 7C 24 ? 4C 89 64 24 ? Add 3 Read32")]
             internal static int SaddleBagItemQtys;
+
+            [Offset("Search 4D 8D 85 ? ? ? ? 41 B9 ? ? ? ? 0F 1F 80 ? ? ? ? 41 8B 08 85 C9 74 ? B8 ? ? ? ? F7 E1 C1 EA ? 69 C2 ? ? ? ? 2B C8 8B C6 FF C6 41 89 0C 87 49 83 C0 ? 49 83 E9 ? 75 ? 0F B6 4C 24 ? Add 3 Read32")]
+            internal static int GlamourDresserItemIds;
+
+            [Offset("Search 80 B9 ? ? ? ? ? 48 8B D9 74 ? 48 83 C4 ? Add 2 Read32")]
+            internal static int GlamourDresserCached;
         }
     }
 }
