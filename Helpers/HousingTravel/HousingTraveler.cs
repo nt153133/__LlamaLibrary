@@ -319,6 +319,11 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
         public static async Task<int> GetWardWithTeleport(Location targetLocation)
         {
+            if (!WorldHelper.IsOnHomeWorld)
+            {
+                return 1;
+            }
+
             var availableHouses = HousingHelper.Residences.Where(i => i.Zone != 255).ToDictionary(i => i.HouseLocationIndex, i => i);
             int ward = 1;
             if (availableHouses.Values.Any(i => i != null && (ushort)(ushort)HousingTraveler.TranslateZone((HousingZone)i.Zone) == targetLocation.ZoneId))
