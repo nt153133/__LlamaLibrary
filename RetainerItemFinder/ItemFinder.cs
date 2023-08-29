@@ -60,7 +60,7 @@ namespace LlamaLibrary.RetainerItemFinder
 
             VisitedNodes.Add(ParentStart);
 
-            Log.Information($"ParentStart {ParentStart.ToString("X")}");
+            //Log.Information($"ParentStart {ParentStart.ToString("X")}");
 
             Visit(TreeStart);
 
