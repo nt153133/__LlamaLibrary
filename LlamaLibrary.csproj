@@ -124,6 +124,8 @@
     <Compile Include="Helpers\IshgardHandin.cs" />
     <Compile Include="Helpers\ItemLinking.cs" />
     <Compile Include="Helpers\LoadServerProfile.cs" />
+    <Compile Include="Helpers\LocationTracking\HouseTravelHelper.cs" />
+    <Compile Include="Helpers\LocationTracking\LocationTracker.cs" />
     <Compile Include="Helpers\MessageHandling\ChatHandler.cs" />
     <Compile Include="Helpers\MessageHandling\ChatReceiver.cs" />
     <Compile Include="Helpers\MinionHelper.cs" />
