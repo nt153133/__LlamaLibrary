@@ -23,6 +23,9 @@ namespace LlamaLibrary.Helpers.Housing
 
             [Offset("Search E8 ?? ?? ?? ?? 83 CA FF 48 8B D8 8D 4A 02 TraceCall")]
             internal static IntPtr GetCurrentHouseId;
+
+            [Offset("Search E8 ?? ?? ?? ?? 0F B6 D8 3C FF TraceCall")]
+            internal static IntPtr GetCurrentPlot;
         }
 
         private static DateTime _lastHousingUpdate;
@@ -30,6 +33,8 @@ namespace LlamaLibrary.Helpers.Housing
         public static World _lastUpdateWorld;
 
         public static long CurrentHouseId => Core.Memory.CallInjected64<long>(Offsets.GetCurrentHouseId, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
+
+        public static byte CurrentPlot => Core.Memory.CallInjected64<byte>(Offsets.GetCurrentPlot, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
 
         private static ResidenceInfo[] _residences;
 
@@ -106,6 +111,25 @@ namespace LlamaLibrary.Helpers.Housing
                 }
 
                 return housingManager.Value.CurrentTerritory != IntPtr.Zero && housingManager.Value.CurrentTerritory == housingManager.Value.IndoorTerritory;
+            }
+        }
+
+        public static bool IsInsideWorkshop
+        {
+            get
+            {
+                var housingManager = HousingManager;
+                if (!housingManager.HasValue)
+                {
+                    return false;
+                }
+
+                if (housingManager.Value.CurrentTerritory == IntPtr.Zero)
+                {
+                    return false;
+                }
+
+                return housingManager.Value.WorkshopTerritory != IntPtr.Zero && housingManager.Value.CurrentTerritory == housingManager.Value.WorkshopTerritory;
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
@@ -14,6 +15,7 @@ using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.Helpers.HousingTravel;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
+using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Helpers.LocationTracking;
 
@@ -22,6 +24,9 @@ public static class HouseTravelHelper
     private static readonly LLogger Log = new LLogger("HouseTravelHelper", Colors.IndianRed);
     private const uint HouseEntranceId = 2002737;
     private const uint AptEntranceId = 2007402;
+    private static readonly uint[] AdditionalChambers = new uint[] { 2004353, 2004624, 2004625, 2004626, 2008126, 2011571 };
+    private static readonly uint[] HouseExits = new uint[] { 2002738, 2004361, 2007444 };
+    private const uint WorkShopExit = 2005124;
 
     public static async Task<bool> GoBackToHouse(HouseLocation? previousHouseLocation)
     {
@@ -47,6 +52,7 @@ public static class HouseTravelHelper
 
         if (!skip && !await HousingTraveler.GetToResidential(previousHouseLocation))
         {
+            Log.Error("Failed to get to residential");
             return false;
         }
 
@@ -180,6 +186,13 @@ public static class HouseTravelHelper
             return false;
         }
 
+        /*
+        if (HousingHelper.IsInsideHouse && HousingTraveler.TranslateZone((HousingZone)WorldManager.ZoneId) == HousingTraveler.TranslateZone((HousingZone)previousHouseLocation.HousingZone))
+        {
+            Log.Error("Failed to get to house");
+            return false;
+        }*/
+
         if (!await HousingTraveler.GetToResidential(previousHouseLocation.HousingZone, previousHouseLocation.Location, previousHouseLocation.Ward))
         {
             Log.Error("Failed to get to housing area");
@@ -192,18 +205,103 @@ public static class HouseTravelHelper
         return HousingHelper.IsInHousingArea && current != null && current.Ward == previousHouseLocation.Ward && current.HousingZone == previousHouseLocation.HousingZone && current.World == previousHouseLocation.World && current.Location.DistanceSqr(previousHouseLocation.Location) < 10;
     }
 
+    public static async Task<bool> GoIntoWorkshop()
+    {
+        if (HousingHelper.IsInsideWorkshop)
+        {
+            return true;
+        }
+
+        if (!HousingHelper.IsInsideHouse)
+        {
+            return false;
+        }
+
+        var gameObject = GameObjectManager.GetObjectsByNPCIds<GameObject>(AdditionalChambers);
+
+        if (gameObject == null || !gameObject.Any())
+        {
+            return false;
+        }
+
+        var entrance = gameObject.FirstOrDefault();
+
+        if (entrance == null)
+        {
+            return false;
+        }
+
+        if (!await NavigationHelper.InteractWithNpc(entrance) || !await Coroutine.Wait(10000, () => Conversation.IsOpen))
+        {
+            Log.Error("Could not get to workshop entrance");
+            return false;
+        }
+
+        var test = Conversation.GetConversationList.TakeWhile(line => !line.Contains(Translator.HouseWorkshop)).Count();
+
+        if (test == Conversation.GetConversationList.Count)
+        {
+            return false;
+        }
+
+        Conversation.SelectLine((uint)test);
+
+        if (!await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
+        {
+            return false;
+        }
+
+        await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+
+        return HousingHelper.IsInsideWorkshop;
+    }
+
+    public static async Task<bool> LeaveWorkshop()
+    {
+        if (!HousingHelper.IsInsideWorkshop)
+        {
+            return true;
+        }
+
+        var gameObject = GameObjectManager.GetObjectByNPCId<GameObject>(WorkShopExit);
+
+        if (gameObject == null)
+        {
+            return false;
+        }
+
+        if (!await NavigationHelper.InteractWithNpc(gameObject) || !await Coroutine.Wait(10000, () => SelectYesno.IsOpen))
+        {
+            Log.Error("Could not get to workshop exit");
+            return false;
+        }
+
+        SelectYesno.Yes();
+
+        if (!await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
+        {
+            return false;
+        }
+
+        await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+
+        return !HousingHelper.IsInsideWorkshop;
+    }
+
     internal static HouseLocation? CurrentHouseLocation
     {
         get
         {
-            if (!HousingHelper.IsInsideHouse && !HousingHelper.IsWithinPlot)
+            if (!HousingHelper.IsInsideHouse && !HousingHelper.IsWithinPlot && !HousingHelper.IsInsideWorkshop && !HousingHelper.IsInsideRoom)
             {
+                Log.Information("Not inside house or plot");
                 return null;
             }
 
             var info = HousingHelper.HousingPositionInfo;
             if (!info)
             {
+                Log.Error("Failed to get housing position info");
                 return null;
             }
 

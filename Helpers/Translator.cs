@@ -94,6 +94,10 @@ namespace LlamaLibrary.Helpers
 
         public static string CollectReward => GuildLeveText13[Language];
 
+        public static string HousePersonalRoom => CmnDefHousingPersonalRoomEntrance_00178_PersonalPrivate[Language];
+        public static string HouseOtherRoom => CmnDefHousingPersonalRoomEntrance_00178_OtherPrivate[Language];
+        public static string HouseWorkshop => CmnDefHousingPersonalRoomEntrance_00178_Workshop[Language];
+
         static Translator()
         {
             Language = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
@@ -557,6 +561,36 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Retirer une récompense" },
             { Language.Ger, "Meine Belohnung" },
             { Language.Chn, "领取报酬" }
+        };
+
+        //CmnDefHousingPersonalRoomEntrance_00178_1
+        private static readonly Dictionary<Language, string> CmnDefHousingPersonalRoomEntrance_00178_PersonalPrivate = new()
+        {
+            { Language.Eng, "Move to your private chambers" },
+            { Language.Jap, "自分の個室に移動する" },
+            { Language.Fre, "Aller dans votre chambre" },
+            { Language.Ger, "Das eigene Zimmer betreten" },
+            { Language.Chn, "移动到自己的房间" }
+        };
+
+        //CmnDefHousingPersonalRoomEntrance_00178_2
+        private static readonly Dictionary<Language, string> CmnDefHousingPersonalRoomEntrance_00178_OtherPrivate = new()
+        {
+            { Language.Eng, "Move to specified private chambers" },
+            { Language.Jap, "個室番号を指定して移動（ハウスアピール確認）" },
+            { Language.Fre, "Spécifier la chambre où aller (Voir les attraits)" },
+            { Language.Ger, "Ein bestimmtes Zimmer betreten (Zweck der Unterkunft einsehen)" },
+            { Language.Chn, "移动到指定号码房间（查看房屋宣传标签）" }
+        };
+
+        //CmnDefHousingPersonalRoomEntrance_00178_11
+        private static readonly Dictionary<Language, string> CmnDefHousingPersonalRoomEntrance_00178_Workshop = new()
+        {
+            { Language.Eng, "Move to the company workshop" },
+            { Language.Jap, "地下工房に移動する" },
+            { Language.Fre, "Aller dans l'atelier de compagnie" },
+            { Language.Ger, "schaftswerkstätte betreten" },
+            { Language.Chn, "移动到部队工房" }
         };
     }
 }

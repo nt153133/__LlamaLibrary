@@ -324,6 +324,11 @@ namespace LlamaLibrary.Helpers.HousingTravel
                 return 1;
             }
 
+            if (WorldManager.ZoneId == targetLocation.ZoneId && HousingHelper.IsInHousingArea)
+            {
+                return HousingHelper.HousingPositionInfo.Ward;
+            }
+
             var availableHouses = HousingHelper.Residences.Where(i => i.Zone != 255).ToDictionary(i => i.HouseLocationIndex, i => i);
             int ward = 1;
             if (availableHouses.Values.Any(i => i != null && (ushort)(ushort)HousingTraveler.TranslateZone((HousingZone)i.Zone) == targetLocation.ZoneId))
