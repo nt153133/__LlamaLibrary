@@ -20,11 +20,16 @@ namespace LlamaLibrary.Helpers.Housing
 
             [Offset("Search 48 8B 05 ? ? ? ? 48 83 F8 ? 74 ? 48 C1 E8 ? 0F B7 C8 Add 3 TraceRelative")]
             internal static IntPtr HouseLocationArray;
+
+            [Offset("Search E8 ?? ?? ?? ?? 83 CA FF 48 8B D8 8D 4A 02 TraceCall")]
+            internal static IntPtr GetCurrentHouseId;
         }
 
         private static DateTime _lastHousingUpdate;
 
         public static World _lastUpdateWorld;
+
+        public static long CurrentHouseId => Core.Memory.CallInjected64<long>(Offsets.GetCurrentHouseId, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
 
         private static ResidenceInfo[] _residences;
 
@@ -43,9 +48,9 @@ namespace LlamaLibrary.Helpers.Housing
 
         //public static HouseLocation?[] AccessibleHouseLocations => Residences.Select(i => (HouseLocation?)i).ToArray();
 
-        public static HouseLocation? PersonalEstate => Residences.FirstOrDefault(i=> i.HouseLocationIndex == HouseLocationIndex.PrivateEstate);
-        public static HouseLocation? FreeCompanyEstate => Residences.FirstOrDefault(i=> i.HouseLocationIndex == HouseLocationIndex.FreeCompanyEstate);
-        public static HouseLocation?[] SharedEstates => Residences.Where(i=> i.HouseLocationIndex == HouseLocationIndex.SharedEstate1 || i.HouseLocationIndex == HouseLocationIndex.SharedEstate2).Select(i => (HouseLocation?)i).ToArray();
+        public static HouseLocation? PersonalEstate => Residences.FirstOrDefault(i => i.HouseLocationIndex == HouseLocationIndex.PrivateEstate);
+        public static HouseLocation? FreeCompanyEstate => Residences.FirstOrDefault(i => i.HouseLocationIndex == HouseLocationIndex.FreeCompanyEstate);
+        public static HouseLocation?[] SharedEstates => Residences.Where(i => i.HouseLocationIndex == HouseLocationIndex.SharedEstate1 || i.HouseLocationIndex == HouseLocationIndex.SharedEstate2).Select(i => (HouseLocation?)i).ToArray();
 
         public static IntPtr PositionPointer
         {

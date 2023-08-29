@@ -4,6 +4,8 @@ using Clio.Utilities;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
 using ff14bot.Objects;
+using LlamaLibrary.Helpers.Housing;
+using LlamaLibrary.Helpers.HousingTravel;
 using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers.NPC
@@ -24,7 +26,33 @@ namespace LlamaLibrary.Helpers.NPC
 
         public bool IsQuestCompleted => !IsQuestRequired || ConditionParser.IsQuestCompleted(QuestRequiredId);
         public bool CanGetTo => Location.CanTeleportTo || Location.IsHousingLocation;
-        public int TeleportCost => Location.TeleportCost;
+
+        public int TeleportCost
+        {
+            get
+            {
+                if (!Location.IsHousingLocation)
+                {
+                    return Location.TeleportCost;
+                }
+
+                if (WorldManager.ZoneId == Location.ZoneId)
+                {
+                    return -1;
+                }
+
+                if (WorldHelper.IsOnHomeWorld && WorldManager.AvailableLocations.Any(i => i.ZoneId == Location.ZoneId))
+                {
+                    return (int)WorldManager.AvailableLocations.First(i => i.ZoneId == Location.ZoneId).GilCost;
+                }
+
+                var zone = HousingTraveler.HousingZones.First(i => i.ZoneId == Location.ZoneId);
+
+                return (int)WorldManager.AvailableLocations.First(i => i.AetheryteId == zone.TownAetheryteId).GilCost;
+
+            }
+        }
+
         public bool IsInCurrentArea => WorldManager.AetheryteIdsForZone(WorldManager.ZoneId).Select(i => i.Item1).Contains(Location.ClosestAetherytePrimaryResult.Id);
         public bool IsInCurrentZone => WorldManager.ZoneId == Location.ZoneId;
         public string Name => NpcHelper.GetNpcName(NpcId);
