@@ -44,6 +44,8 @@ public static class UIState
 
     public static IntPtr ExdGetItemPtr => Offsets.ExdGetItem;
 
+    public static int ItemActionOffset => Offsets.ItemActionOffset;
+
     public static bool CardUnlocked(int id) => Core.Memory.CallInjected64<bool>(Offsets.CardUnlocked, Offsets.Instance, id);
 
     public static bool EmoteUnlocked(int id) => Core.Memory.CallInjected64<bool>(Offsets.EmoteUnlocked, Offsets.Instance, id);
@@ -60,8 +62,12 @@ public static class UIState
 
         if (itemPtr == IntPtr.Zero)
         {
-            //Log.Information("Item not found in exd, trying again");
-            itemPtr = GetItemExdData(id);
+            Log.Information("Item not found in exd, trying again");
+            Core.Memory.ClearCache();
+            using (var locks = Core.Memory.AcquireFrame())
+            {
+                itemPtr = GetItemExdData(id);
+            }
         }
 
         if (itemPtr == IntPtr.Zero)
