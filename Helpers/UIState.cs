@@ -33,9 +33,16 @@ public static class UIState
 
         [Offset("Search E8 ?? ?? ?? ?? 83 F8 01 75 03 TraceCall")]
         internal static IntPtr IsItemActionUnlocked;
+
+        [Offset("Search 0F B7 8A ? ? ? ? E8 ? ? ? ? 48 8B F8 Add 3 Read32")]
+        internal static int ItemActionOffset;
     }
 
     public static IntPtr Instance => Offsets.Instance;
+
+    public static IntPtr IsItemActionUnlockedPtr => Offsets.IsItemActionUnlocked;
+
+    public static IntPtr ExdGetItemPtr => Offsets.ExdGetItem;
 
     public static bool CardUnlocked(int id) => Core.Memory.CallInjected64<bool>(Offsets.CardUnlocked, Offsets.Instance, id);
 
@@ -47,7 +54,41 @@ public static class UIState
 
     public static IntPtr GetItemExdData(uint id) => Core.Memory.CallInjected64<IntPtr>(Offsets.ExdGetItem, id);
 
-    public static bool IsItemActionUnlocked(uint id) => Core.Memory.CallInjected64<int>(Offsets.IsItemActionUnlocked, Offsets.Instance, GetItemExdData(id)) == 1;
+    public static bool IsItemActionUnlocked(uint id)
+    {
+        var itemPtr = GetItemExdData(id);
+
+        if (itemPtr == IntPtr.Zero)
+        {
+            //Log.Information("Item not found in exd, trying again");
+            itemPtr = GetItemExdData(id);
+        }
+
+        if (itemPtr == IntPtr.Zero)
+        {
+            Log.Information("Can't find item so making our own struct");
+            var item = DataManager.GetItem(id);
+
+            if (item == null)
+            {
+                Log.Error($"Item {id} not found in exd");
+                return false;
+            }
+
+            using (var newStruct = Core.Memory.CreateAllocatedMemory(0x98))
+            {
+                newStruct.Write(Offsets.ItemActionOffset, (ushort)item.ItemAction);
+                return Core.Memory.CallInjected64<int>(Offsets.IsItemActionUnlocked, Offsets.Instance, newStruct.Address) == 1;
+            }
+        }
+
+        if (itemPtr == IntPtr.Zero)
+        {
+            throw new Exception("Item not found in exd");
+        }
+
+        return Core.Memory.CallInjected64<int>(Offsets.IsItemActionUnlocked, Offsets.Instance, itemPtr) == 1;
+    }
 
     public static bool CanUnlockItem(uint itemId)
     {
@@ -97,7 +138,7 @@ public static class UIState
 
         if (!QuestLogManager.IsQuestCompleted(68554))
         {
-            return inventoryItem || retainerItem || saddlebagsItem || glamourDresserItem;
+            return inventoryItem || retainerItem || saddlebagsItem;
         }
 
         glamourDresserItem = forceGlamour ? (await ItemFinder.GetGlamourDressedUpdated()).Any(i => i % 1000000 == itemId) : ItemFinder.GetCachedGlamourDresserInventory().Any(i => i % 1000000 == itemId);
