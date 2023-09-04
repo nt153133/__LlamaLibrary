@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Buddy.Coroutines;
 
 namespace LlamaLibrary.RemoteWindows
 {
@@ -12,6 +14,23 @@ namespace LlamaLibrary.RemoteWindows
         public void SelectWheelsCategory()
         {
             SendAction(4, 3, 2, 0, 0, 4, 0, 4, 2);
+        }
+
+        public void SelectCraftType(int craftDraftCategory, int craftDraftType)
+        {
+            SendAction(7, 3, 2, 0, 0, 4, (ulong)craftDraftCategory, 4, (ulong)craftDraftType, 4, 0, 4, 0, 4, 0);
+        }
+
+        public void ClickBeginCraft(int craftSequence)
+        {
+            SendAction(5, 3, 1, 0, 0, 0, 0, 0, 0, 4, (ulong)craftSequence);
+        }
+
+        public async Task BeginCraft(int craftDraftCategory, int craftDraftType, int craftSequence)
+        {
+            SelectCraftType(craftDraftCategory, craftDraftType);
+            await Coroutine.Sleep(500);
+            ClickBeginCraft(craftSequence);
         }
 
         public void SelectWheel(uint ItemId)
