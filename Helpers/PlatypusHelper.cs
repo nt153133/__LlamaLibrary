@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Buddy.Coroutines;
 using ff14bot.AClasses;
 using ff14bot.Managers;
 using GreyMagic;
@@ -13,6 +14,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class PlatypusHelper
     {
+        [Obsolete]
         public enum TaskType : uint
         {
             None = 0,
@@ -31,9 +33,12 @@ namespace LlamaLibrary.Helpers
         private static object? _platypusApi;
 #nullable restore
         private static Action _showGui;
-        private static Func<TaskType, bool> _canProfileExecuteTask;
+
         private static Func<Version> _version;
         private static Func<string> _versionString;
+        private static Func<Task<bool>> _qolOpenTreasureCoffersInDuty;
+        private static Func<Task<bool>> _qolAutoLoot;
+        private static Func<Task<bool>> _qolWaitUntilAllLootIsGone;
 
         static PlatypusHelper()
         {
@@ -74,9 +79,12 @@ namespace LlamaLibrary.Helpers
             try
             {
                 _showGui = (Action)Delegate.CreateDelegate(typeof(Action), platypusApi, "ShowGui");
-                _canProfileExecuteTask = (Func<TaskType, bool>)Delegate.CreateDelegate(typeof(Func<TaskType, bool>), platypusApi, "CanProfileExecuteTask");
                 _version = (Func<Version>)Delegate.CreateDelegate(typeof(Func<Version>), platypusApi, "Version");
                 _versionString = (Func<string>)Delegate.CreateDelegate(typeof(Func<string>), platypusApi, "VersionString");
+
+                _qolOpenTreasureCoffersInDuty = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), platypusApi, "QolOpenTreasureCoffersInDuty");
+                _qolAutoLoot = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), platypusApi, "QolAutoLoot");
+                _qolWaitUntilAllLootIsGone = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), platypusApi, "QolWaitUntilAllLootIsGone");
             }
             catch (Exception e)
             {
@@ -134,9 +142,13 @@ namespace LlamaLibrary.Helpers
 
         public static void ShowGui()
         {
-            _showGui.Invoke();
+            if (HasPlatypus)
+            {
+                _showGui.Invoke();
+            }
         }
 
+        [Obsolete]
         public static bool CanProfileExecuteTask(TaskType taskType)
         {
             if (!HasPlatypus)
@@ -144,7 +156,46 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            return _canProfileExecuteTask.Invoke(taskType);
+            return true;
+        }
+
+        public static async Task<bool> QolOpenTreasureCoffersInDuty()
+        {
+            if (!HasPlatypus)
+            {
+                return false;
+            }
+
+            await Coroutine.Wait(30000, () => !QuestLogManager.InCutscene);
+            await Coroutine.Wait(5000, () => !MovementManager.IsOccupied);
+
+            return await _qolOpenTreasureCoffersInDuty();
+        }
+
+        public static async Task<bool> QolAutoLoot()
+        {
+            if (!HasPlatypus)
+            {
+                return false;
+            }
+
+            await Coroutine.Wait(30000, () => !QuestLogManager.InCutscene);
+            await Coroutine.Wait(5000, () => !MovementManager.IsOccupied);
+
+            return await _qolAutoLoot();
+        }
+
+        public static async Task<bool> QolWaitUntilAllLootIsGone()
+        {
+            if (!HasPlatypus)
+            {
+                return false;
+            }
+
+            await Coroutine.Wait(30000, () => !QuestLogManager.InCutscene);
+            await Coroutine.Wait(5000, () => !MovementManager.IsOccupied);
+
+            return await _qolWaitUntilAllLootIsGone();
         }
 
         private static async Task<string> DownloadPlatypusLoader()
