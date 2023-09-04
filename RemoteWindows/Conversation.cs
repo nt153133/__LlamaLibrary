@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Extensions;
 
 namespace LlamaLibrary.RemoteWindows
 {
@@ -44,7 +46,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public static bool SelectLineContains(string line)
         {
-            var index = GetConversationList.FindIndex(x => x.Contains(line));
+            var index = GetConversationList.FindIndex(x => x.Contains(line, StringComparison.InvariantCultureIgnoreCase));
             if (index == -1)
             {
                 return false;
