@@ -25,36 +25,13 @@ namespace LlamaLibrary.Helpers.NPC
         public bool IsQuestRequired => QuestRequiredId != 0;
 
         public bool IsQuestCompleted => !IsQuestRequired || ConditionParser.IsQuestCompleted(QuestRequiredId);
-        public bool CanGetTo => Location.CanTeleportTo || Location.IsHousingLocation;
+        public bool CanGetTo => Location.CanTeleportTo || Location.IsHousingLocation || WorldManager.ZoneId == Location.ZoneId;
 
-        public int TeleportCost
-        {
-            get
-            {
-                if (!Location.IsHousingLocation)
-                {
-                    return Location.TeleportCost;
-                }
+        public int TeleportCost => Location.TeleportCost;
 
-                if (WorldManager.ZoneId == Location.ZoneId)
-                {
-                    return -1;
-                }
+        public bool IsInCurrentArea => Location.IsInCurrentArea;
 
-                if (WorldHelper.IsOnHomeWorld && WorldManager.AvailableLocations.Any(i => i.ZoneId == Location.ZoneId))
-                {
-                    return (int)WorldManager.AvailableLocations.First(i => i.ZoneId == Location.ZoneId).GilCost;
-                }
-
-                var zone = HousingTraveler.HousingZones.First(i => i.ZoneId == Location.ZoneId);
-
-                return (int)WorldManager.AvailableLocations.First(i => i.AetheryteId == zone.TownAetheryteId).GilCost;
-
-            }
-        }
-
-        public bool IsInCurrentArea => WorldManager.AetheryteIdsForZone(WorldManager.ZoneId).Select(i => i.Item1).Contains(Location.ClosestAetherytePrimaryResult.Id);
-        public bool IsInCurrentZone => WorldManager.ZoneId == Location.ZoneId;
+        public bool IsInCurrentZone => Location.IsInCurrentZone;
         public string Name => NpcHelper.GetNpcName(NpcId);
         public GameObject? GameObject => GameObjectManager.GameObjects.Where(r => r.IsTargetable && r.NpcId == NpcId).OrderBy(r => r.Distance()).FirstOrDefault();
         public bool IsHousingZoneNpc => Location.IsHousingLocation;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Clio.Utilities;
 using ff14bot;
@@ -13,27 +14,76 @@ namespace LlamaLibrary.Helpers.NPC
     {
         [JsonProperty]
         public ushort ZoneId { get; set; }
+
         [JsonProperty]
         public Vector3 Coordinates { get; set; }
 
-        public AetheryteResult ClosestAetherytePrimaryResult => DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == Navigation.GetPrimaryAetheryte(ZoneId, Coordinates));
+        public AetheryteResult? ClosestAetherytePrimaryResult => DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == Navigation.GetPrimaryAetheryte(ZoneId, Coordinates));
 
-        public AetheryteResult ClosestAetheryteResult => DataManager.AetheryteCache.Values.Where(i => i.ZoneId == ZoneId).OrderBy(i => i.Position.Distance2DSqr(Coordinates)).FirstOrDefault();
+        public AetheryteResult? ClosestAetheryteResult => DataManager.AetheryteCache.Values.Where(i => i.ZoneId == ZoneId).OrderBy(i => i.Position.Distance2DSqr(Coordinates)).FirstOrDefault();
 
-        public bool CanTeleportTo => WorldManager.HasAetheryteId(ClosestAetherytePrimaryResult.Id);
+        public bool CanTeleportTo
+        {
+            get
+            {
+                var closestAetheryte = ClosestAetherytePrimaryResult;
+                return closestAetheryte != null && WorldManager.HasAetheryteId(closestAetheryte.Id);
+            }
+        }
 
         public bool IsHousingLocation => HousingTraveler.HousingZoneIds.Contains(ZoneId);
+
+        public bool IsInCurrentZone => WorldManager.ZoneId == ZoneId;
+
+        public bool IsInCurrentArea
+        {
+            get
+            {
+                var ae = ClosestAetherytePrimaryResult;
+                if (ae == null)
+                {
+                    return false;
+                }
+
+                return WorldManager.AetheryteIdsForZone(WorldManager.ZoneId).Select(i => i.Item1).Contains(ae.Id);
+            }
+        }
+
+        public bool CanGetTo => CanTeleportTo || IsHousingLocation || WorldManager.ZoneId == ZoneId;
 
         public int TeleportCost
         {
             get
             {
-                if (!CanTeleportTo)
+                if (!CanTeleportTo && !IsHousingLocation)
                 {
-                    return -1;
+                    return int.MaxValue;
                 }
 
-                return (int)WorldManager.AvailableLocations.First(i => i.AetheryteId == ClosestAetherytePrimaryResult.Id).GilCost;
+                if (WorldManager.ZoneId == ZoneId)
+                {
+                    return 0;
+                }
+
+                if (IsHousingLocation)
+                {
+                    if (WorldHelper.IsOnHomeWorld && WorldManager.AvailableLocations.Any(i => i.ZoneId == ZoneId))
+                    {
+                        return (int)WorldManager.AvailableLocations.First(i => i.ZoneId == ZoneId).GilCost;
+                    }
+
+                    var zone = HousingTraveler.HousingZones.First(i => i.ZoneId == ZoneId);
+
+                    return (int)WorldManager.AvailableLocations.First(i => i.AetheryteId == zone.TownAetheryteId).GilCost;
+                }
+
+                var ae = ClosestAetherytePrimaryResult;
+                if (ae == null)
+                {
+                    return int.MaxValue;
+                }
+
+                return (int)WorldManager.AvailableLocations.First(i => i.AetheryteId == ae.Id).GilCost;
             }
         }
 
@@ -117,6 +167,16 @@ namespace LlamaLibrary.Helpers.NPC
         public static Location CurrentLocation()
         {
             return new Location(WorldManager.ZoneId, Core.Me.Location);
+        }
+
+        public static Location? GetClosestLocation(IEnumerable<Location> locations)
+        {
+            if (locations.Any(i => i.IsInCurrentZone))
+            {
+                return locations.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Coordinates.Distance2DSqr(Core.Me.Location)).FirstOrDefault();
+            }
+
+            return locations.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Coordinates.Distance2DSqr(i.ClosestAetheryteResult.Position)).FirstOrDefault();
         }
     }
 }
