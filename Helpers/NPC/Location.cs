@@ -5,6 +5,7 @@ using Clio.Utilities;
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers.HousingTravel;
+using LlamaLibrary.Helpers.LocationTracking;
 using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers.NPC
@@ -49,7 +50,7 @@ namespace LlamaLibrary.Helpers.NPC
             }
         }
 
-        public bool CanGetTo => CanTeleportTo || IsHousingLocation || WorldManager.ZoneId == ZoneId;
+        public bool CanGetTo => CanTeleportTo || IsHousingLocation || WorldManager.ZoneId == ZoneId || HouseTravelHelper.WorkshopZones.Contains(ZoneId);
 
         public int TeleportCost
         {
@@ -176,7 +177,13 @@ namespace LlamaLibrary.Helpers.NPC
                 return locations.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Coordinates.Distance2DSqr(Core.Me.Location)).FirstOrDefault();
             }
 
-            return locations.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Coordinates.Distance2DSqr(i.ClosestAetheryteResult.Position)).FirstOrDefault();
+            var temp = locations.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost);
+            if (temp.All(i => i.ClosestAetheryteResult != null))
+            {
+                return temp.ThenBy(i => i.Coordinates.Distance2DSqr(i.ClosestAetheryteResult.Position)).FirstOrDefault();
+            }
+
+            return temp.FirstOrDefault();
         }
     }
 }

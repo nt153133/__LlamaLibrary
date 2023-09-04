@@ -57,78 +57,7 @@ public static class HouseTravelHelper
             return false;
         }
 
-        if (!HousingHelper.IsWithinPlot)
-        {
-            Log.Error("Not within plot");
-            MovementManager.MoveForwardStart();
-            await Coroutine.Wait(5000, () => HousingHelper.IsWithinPlot);
-            MovementManager.MoveStop();
-        }
-
-        MovementManager.MoveForwardStart();
-        await Coroutine.Sleep(1000);
-        MovementManager.MoveStop();
-
-        //Log.Information("Getting closest housing entrance");
-
-        var entranceIds = new[] { HouseEntranceId, AptEntranceId };
-
-        var locations = GameObjectManager.GetObjectsByNPCIds<GameObject>(entranceIds).OrderBy(x => x.DistanceSqr()).ToList();
-
-        var entrance = locations.FirstOrDefault();
-
-        if (entrance == null)
-        {
-            return false;
-        }
-
-        Log.Information("Found housing entrance, approaching");
-        await Navigation.GroundMove(entrance.Location, 2f);
-
-        if (!entrance.IsWithinInteractRange)
-        {
-            return false;
-        }
-
-        Navigator.NavigationProvider.ClearStuckInfo();
-        Navigator.Stop();
-        await Coroutine.Wait(5000, () => !GeneralFunctions.IsJumping);
-
-        entrance.Interact();
-
-        switch (entrance.NpcId)
-        {
-            // Handle different housing entrance menus
-            case HouseEntranceId:
-            {
-                Log.Information("Entering house");
-
-                if (await Coroutine.Wait(10000, () => SelectYesno.IsOpen))
-                {
-                    SelectYesno.Yes();
-                }
-
-                break;
-            }
-            case AptEntranceId:
-            {
-                Log.Information("Entering apartment");
-
-                if (await Coroutine.Wait(10000, () => SelectString.IsOpen))
-                {
-                    SelectString.ClickSlot(0);
-                }
-
-                break;
-            }
-        }
-
-        if (await Coroutine.Wait(10000, () => CommonBehaviors.IsLoading))
-        {
-            await CommonTasks.HandleLoading();
-        }
-
-        return HousingHelper.IsInsideHouse && CurrentHouseLocation.Equals(previousHouseLocation);
+        return await GetIntoHouse() && CurrentHouseLocation.Equals(previousHouseLocation);
     }
 
     internal static async Task<bool> GoBackToPlot(HouseLocation? previousHouseLocation)
@@ -206,11 +135,99 @@ public static class HouseTravelHelper
         return HousingHelper.IsInHousingArea && current != null && current.Ward == previousHouseLocation.Ward && current.HousingZone == previousHouseLocation.HousingZone && current.World == previousHouseLocation.World && current.Location.DistanceSqr(previousHouseLocation.Location) < 10;
     }
 
+    public static async Task<bool> GetIntoHouse()
+    {
+        if (!HousingHelper.IsWithinPlot)
+        {
+            Log.Error("Not within plot");
+            MovementManager.MoveForwardStart();
+            await Coroutine.Wait(5000, () => HousingHelper.IsWithinPlot);
+            MovementManager.MoveStop();
+        }
+
+        MovementManager.MoveForwardStart();
+        await Coroutine.Sleep(1000);
+        MovementManager.MoveStop();
+
+        //Log.Information("Getting closest housing entrance");
+
+        var entranceIds = new[] { HouseEntranceId, AptEntranceId };
+
+        var locations = GameObjectManager.GetObjectsByNPCIds<GameObject>(entranceIds).OrderBy(x => x.DistanceSqr()).ToList();
+
+        var entrance = locations.FirstOrDefault();
+
+        if (entrance == null)
+        {
+            return false;
+        }
+
+        Log.Information("Found housing entrance, approaching");
+        await Navigation.GroundMove(entrance.Location, 2f);
+
+        if (!entrance.IsWithinInteractRange)
+        {
+            return false;
+        }
+
+        Navigator.NavigationProvider.ClearStuckInfo();
+        Navigator.Stop();
+        await Coroutine.Wait(5000, () => !GeneralFunctions.IsJumping);
+
+        entrance.Interact();
+
+        switch (entrance.NpcId)
+        {
+            // Handle different housing entrance menus
+            case HouseEntranceId:
+            {
+                Log.Information("Entering house");
+
+                if (await Coroutine.Wait(10000, () => SelectYesno.IsOpen))
+                {
+                    SelectYesno.Yes();
+                }
+
+                break;
+            }
+            case AptEntranceId:
+            {
+                Log.Information("Entering apartment");
+
+                if (await Coroutine.Wait(10000, () => SelectString.IsOpen))
+                {
+                    SelectString.ClickSlot(0);
+                }
+
+                break;
+            }
+        }
+
+        if (await Coroutine.Wait(10000, () => CommonBehaviors.IsLoading))
+        {
+            await CommonTasks.HandleLoading();
+        }
+
+        return HousingHelper.IsInsideHouse;
+    }
+
     public static async Task<bool> GoIntoWorkshop()
     {
         if (WorkshopZones.Contains(WorldManager.ZoneId) || HousingHelper.IsInsideWorkshop)
         {
             return true;
+        }
+
+        if (!WorldHelper.IsOnHomeWorld)
+        {
+            return false;
+        }
+
+        if (HousingHelper.Residences.Any(i => i.HouseLocationIndex == HouseLocationIndex.FreeCompanyEstate) && !HousingHelper.IsInsideWorkshop && !HousingHelper.IsInsideHouse)
+        {
+            var estate = HousingHelper.Residences.First(i => i.HouseLocationIndex == HouseLocationIndex.FreeCompanyEstate);
+            await HousingTraveler.GetToResidential(estate);
+            await GetIntoHouse();
         }
 
         if (!HousingHelper.IsInsideHouse)
