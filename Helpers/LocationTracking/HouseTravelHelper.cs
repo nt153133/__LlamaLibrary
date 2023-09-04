@@ -27,6 +27,7 @@ public static class HouseTravelHelper
     private static readonly uint[] AdditionalChambers = new uint[] { 2004353, 2004624, 2004625, 2004626, 2008126, 2011571 };
     private static readonly uint[] HouseExits = new uint[] { 2002738, 2004361, 2007444 };
     private const uint WorkShopExit = 2005124;
+    public static readonly ushort[] WorkshopZones = { 423, 424, 425, 653, 984 };
 
     public static async Task<bool> GoBackToHouse(HouseLocation? previousHouseLocation)
     {
@@ -207,7 +208,7 @@ public static class HouseTravelHelper
 
     public static async Task<bool> GoIntoWorkshop()
     {
-        if (HousingHelper.IsInsideWorkshop)
+        if (WorkshopZones.Contains(WorldManager.ZoneId) || HousingHelper.IsInsideWorkshop)
         {
             return true;
         }
@@ -258,7 +259,7 @@ public static class HouseTravelHelper
 
     public static async Task<bool> LeaveWorkshop()
     {
-        if (!HousingHelper.IsInsideWorkshop)
+        if (!WorkshopZones.Contains(WorldManager.ZoneId) || !HousingHelper.IsInsideWorkshop)
         {
             return true;
         }
