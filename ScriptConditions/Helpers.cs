@@ -372,5 +372,15 @@ namespace LlamaLibrary.ScriptConditions
             checkedLisbeth = true;
             return hasLisbeth;
         }
+
+        public static bool HasItem(int itemId)
+        {
+            return UIState.HasItemSync((uint)itemId);
+        }
+
+        public static async Task<bool> HasItemCheck(int itemId)
+        {
+            return await UIState.HasItem((uint)itemId, true);
+        }
     }
 }

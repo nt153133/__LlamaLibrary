@@ -37,6 +37,7 @@ namespace LlamaLibrary.Helpers.Housing
         public static byte CurrentPlot => Core.Memory.CallInjected64<byte>(Offsets.GetCurrentPlot, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
 
         private static ResidenceInfo[] _residences;
+        public static IntPtr HousingInstance => Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress);
 
         public static ResidenceInfo[] Residences
         {

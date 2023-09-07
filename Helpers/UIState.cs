@@ -153,4 +153,38 @@ public static class UIState
 
         return inventoryItem || retainerItem || saddlebagsItem || glamourDresserItem;
     }
+
+    public static bool HasItemSync(uint itemId)
+    {
+        var item = DataManager.GetItem(itemId);
+
+        if (item == null)
+        {
+            Log.Error($"Item {itemId} not found in data manager");
+            return false;
+        }
+
+        if (item.ItemAction != 0)
+        {
+            return IsItemActionUnlocked(itemId);
+        }
+
+        var inventoryItem = InventoryManager.FilledInventoryAndArmory.Any(i => i.RawItemId == itemId);
+        var retainerItem = WorldHelper.IsOnHomeWorld && ItemFinder.GetCachedRetainerInventories().Any(i => i.Value.Inventory.Any(j => j.Key % 1000000 == itemId));
+
+        var saddlebagsItem = ItemFinder.GetCachedSaddlebagInventoryComplete().Inventory.Any(i => i.Key % 1000000 == itemId);
+
+        var glamourDresserItem = false;
+
+        if (!QuestLogManager.IsQuestCompleted(68554))
+        {
+            return inventoryItem || retainerItem || saddlebagsItem;
+        }
+
+        glamourDresserItem = ItemFinder.GetCachedGlamourDresserInventory().Any(i => i % 1000000 == itemId);
+
+        //Log.Information($"Item {itemId} found in inventory: {inventoryItem}, retainer: {retainerItem}, saddlebags: {saddlebagsItem}, glamour dresser: {glamourDresserItem}");
+
+        return inventoryItem || retainerItem || saddlebagsItem || glamourDresserItem;
+    }
 }
