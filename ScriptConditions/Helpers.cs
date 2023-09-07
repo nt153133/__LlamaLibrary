@@ -373,7 +373,7 @@ namespace LlamaLibrary.ScriptConditions
             return hasLisbeth;
         }
 
-        public static bool HasItem(int itemId)
+        public static bool HasItemAnywhere(int itemId)
         {
             return UIState.HasItemSync((uint)itemId);
         }
