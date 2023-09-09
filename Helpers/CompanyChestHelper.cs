@@ -7,6 +7,7 @@ using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot.Enums;
 using ff14bot.Managers;
+using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
@@ -24,7 +25,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class CompanyChestHelper
     {
-        public const uint HousingCompanyChest = 196627;
+        public static readonly uint[] HousingCompanyChest = new uint[] { 196627, 2000470 };
 
         private static readonly LLogger Log = new(nameof(CompanyChestHelper), Colors.BurlyWood);
 
@@ -77,12 +78,12 @@ namespace LlamaLibrary.Helpers
         {
             get
             {
-                if (!HousingHelper.IsInsideHouse || GameObjectManager.GetObjectByNPCId(HousingCompanyChest) == default)
+                if (!GameObjectManager.GetObjectsByNPCIds<GameObject>(HousingCompanyChest).Any()) //(!HousingHelper.IsInsideHouse && !HousingHelper.IsInsideWorkshop) ||
                 {
                     return NpcHelper.GetClosestNpc(ChestLocations);
                 }
 
-                return new Npc(GameObjectManager.GetObjectByNPCId(HousingCompanyChest));
+                return new Npc(GameObjectManager.GetObjectsByNPCIds<GameObject>(HousingCompanyChest).FirstOrDefault());
             }
         }
 
@@ -240,6 +241,18 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        public static async Task<bool> DepositItems(IEnumerable<uint> itemIds, InventoryBagId bagId)
+        {
+            var slots = InventoryManager.FilledSlots.Where(i => itemIds.Contains(i.TrueItemId));
+
+            if (slots.Any())
+            {
+                return await DepositItems(slots, bagId);
+            }
+
+            return true;
+        }
+
         public static async Task<bool> DepositItems(IEnumerable<BagSlot> bagSlots)
         {
             foreach (var slot in bagSlots)
@@ -253,7 +266,20 @@ namespace LlamaLibrary.Helpers
             return await CloseChest();
         }
 
-        public static async Task<bool> WithdrawItems(IEnumerable<uint> itemIds)
+        public static async Task<bool> DepositItems(IEnumerable<BagSlot> bagSlots, InventoryBagId bagId)
+        {
+            foreach (var slot in bagSlots)
+            {
+                if (!await DepositItem(slot, bagId, false))
+                {
+                    return false;
+                }
+            }
+
+            return await CloseChest();
+        }
+
+        public static async Task<bool> WithdrawItems(IEnumerable<uint> itemIds, uint amount = 1)
         {
             if (!await MakeSureChestIsOpen())
             {
@@ -264,13 +290,42 @@ namespace LlamaLibrary.Helpers
 
             if (slots.Any())
             {
-                return await WithdrawItems(slots);
+                return await WithdrawItems(slots, amount);
             }
 
             return true;
         }
 
-        public static async Task<bool> WithdrawItems(IEnumerable<BagSlot> bagSlots)
+        public static async Task<bool> WithdrawItems(IEnumerable<uint> itemIds, InventoryBagId bagId, uint amount = 1)
+        {
+            if (!await MakeSureChestIsOpen(bagId))
+            {
+                return false;
+            }
+
+            if (!ChestTabBags.Values.Contains(bagId))
+            {
+                Log.Error($"Bag {bagId} is not a valid chest tab");
+                return false;
+            }
+
+            if (!WithdrawBagIds.Contains(bagId))
+            {
+                Log.Error($"Bag {bagId} is not a valid withdraw chest tab");
+                return false;
+            }
+
+            var slots = InventoryManager.GetBagsByInventoryBagId(bagId).SelectMany(x => x.FilledSlots).Where(i => itemIds.Contains(i.TrueItemId));
+
+            if (slots.Any())
+            {
+                return await WithdrawItems(slots, amount);
+            }
+
+            return true;
+        }
+
+        public static async Task<bool> WithdrawItems(IEnumerable<BagSlot> bagSlots, uint amount = 1)
         {
             if (!await MakeSureChestIsOpen())
             {
@@ -279,7 +334,7 @@ namespace LlamaLibrary.Helpers
 
             foreach (var slot in bagSlots)
             {
-                if (!await WithdrawItem(slot, false))
+                if (!await WithdrawItem(slot, amount, false))
                 {
                     return false;
                 }
@@ -323,7 +378,42 @@ namespace LlamaLibrary.Helpers
             return result && !(bagSlot.IsValid && bagSlot.IsFilled);
         }
 
-        public static async Task<bool> WithdrawItem(BagSlot bagSlot, bool closeWindow = true)
+        public static async Task<bool> DepositItem(BagSlot bagSlot, InventoryBagId bagId, bool closeWindow = true)
+        {
+            if (!await MakeSureChestIsOpen(bagId))
+            {
+                return false;
+            }
+
+            var slot = GetNextOrStackSlot(bagSlot, bagId, TransactionType.Deposit);
+            if (slot == default)
+            {
+                Log.Information("Out of space in the destination");
+                return false;
+            }
+
+            var index = ChestTabBags.First(i => i.Value == slot.BagId).Key;
+
+            FreeCompanyChest.Instance.SelectItemTab(index);
+
+            await Coroutine.Sleep(500);
+
+            await Coroutine.Wait(5000, () => AgentFreeCompanyChest.Instance.FullyLoaded);
+
+            var result = await BagSlotMoveChest(bagSlot, slot);
+
+            await Coroutine.Sleep(200);
+            await Coroutine.Wait(5000, () => AgentFreeCompanyChest.Instance.FullyLoaded);
+
+            if (closeWindow)
+            {
+                result = result && await CloseChest();
+            }
+
+            return result && !(bagSlot.IsValid && bagSlot.IsFilled);
+        }
+
+        public static async Task<bool> WithdrawItem(BagSlot bagSlot, uint amount = 1, bool closeWindow = true)
         {
             if (!await MakeSureChestIsOpen())
             {
@@ -345,7 +435,7 @@ namespace LlamaLibrary.Helpers
 
             await Coroutine.Wait(5000, () => AgentFreeCompanyChest.Instance.FullyLoaded);
 
-            var result = await BagSlotMoveChest(bagSlot, slot);
+            var result = await BagSlotMoveChest(bagSlot, slot, amount);
 
             await Coroutine.Sleep(200);
             await Coroutine.Wait(5000, () => AgentFreeCompanyChest.Instance.FullyLoaded);
@@ -353,6 +443,11 @@ namespace LlamaLibrary.Helpers
             if (closeWindow)
             {
                 result = result && await CloseChest();
+            }
+
+            if (amount > 1)
+            {
+                return result;
             }
 
             return result && !(bagSlot.IsValid && bagSlot.IsFilled);
@@ -479,6 +574,45 @@ namespace LlamaLibrary.Helpers
             return bagList.OrderBy(i => (int)i).NextFreeBagSlot();
         }
 
+        public static BagSlot? GetNextOrStackSlot(BagSlot bagSlot, InventoryBagId bagId, TransactionType transactionType)
+        {
+            IEnumerable<InventoryBagId>? bagList;
+            switch (transactionType)
+            {
+                case TransactionType.Deposit:
+                    if (DepositBagIds.Contains(bagId))
+                    {
+                        bagList = new List<InventoryBagId>() { bagId };
+                    }
+                    else
+                    {
+                        Log.Error($"Bag {bagId} is not a valid chest tab");
+                        return null;
+                    }
+
+                    break;
+                case TransactionType.Withdrawal:
+                    bagList = Inventory.InventoryBagIds;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(transactionType), transactionType, null);
+            }
+
+            var bags = InventoryManager.GetBagsByInventoryBagId(bagList.ToArray()).SelectMany(x => x.FilledSlots);
+            var eqx = new BagSlotComparer();
+            var match = bags.Where(i => eqx.Equals(i, bagSlot));
+
+            if (match.Any())
+            {
+                Log.Information("Found item in chest so stacking");
+                return match.OrderByDescending(i => i.Count).First();
+            }
+
+            //Find retainer code that checks for stacks
+            //bags.free
+            return bagList.OrderBy(i => (int)i).NextFreeBagSlot();
+        }
+
         public static async Task<bool> BagSlotMoveChest(BagSlot source, BagSlot dest, uint count = 1)
         {
             var itemToMove = source.Item;
@@ -553,6 +687,35 @@ namespace LlamaLibrary.Helpers
             return FreeCompanyChest.Instance.IsOpen;
         }
 
+        public static async Task<bool> MakeSureChestIsOpen(InventoryBagId bagid)
+        {
+            if (FreeCompanyChest.Instance.IsOpen)
+            {
+                return true;
+            }
+
+            if (!WorldHelper.IsOnHomeWorld && !await WorldTravel.WorldTravel.MakeSureHome())
+            {
+                return false;
+            }
+
+            if (ClosestCompanyChest == null)
+            {
+                Log.Error("No company chest found");
+                return false;
+            }
+
+            if (!await Navigation.GetToInteractNpc(ClosestCompanyChest, FreeCompanyChest.Instance))
+            {
+                return false;
+            }
+
+            await PingChecker.UpdatePing();
+            await RefreshChestBag(bagid);
+
+            return FreeCompanyChest.Instance.IsOpen;
+        }
+
         public static async Task RefreshChestBags(bool gilOnly = false, bool crystalsOnly = false)
         {
             if (!FreeCompanyChest.Instance.IsOpen)
@@ -586,6 +749,16 @@ namespace LlamaLibrary.Helpers
             {
                 await AgentFreeCompanyChest.Instance.LoadBag(bag);
             }
+        }
+
+        public static async Task RefreshChestBag(InventoryBagId bagId)
+        {
+            if (!FreeCompanyChest.Instance.IsOpen)
+            {
+                return;
+            }
+
+            await AgentFreeCompanyChest.Instance.LoadBag(bagId);
         }
 
         private sealed class BagSlotComparer : IEqualityComparer<BagSlot>
