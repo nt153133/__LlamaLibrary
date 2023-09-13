@@ -9,19 +9,19 @@ namespace LlamaLibrary.ClientDataHelpers
 {
     public static class UiManagerProxy
     {
-        private static readonly PropertyInfo[] Properties;
+        private static readonly PropertyInfo[] Properties = typeof(DataManager).Assembly.GetType("ff14bot.Managers.UiManager")
+            .GetProperties(BindingFlags.Static | BindingFlags.Public);
 
         private static readonly Dictionary<string, int> VFunctionIds = new Dictionary<string, int>()
         {
             { "AcquaintanceModule", 15 },
             { "GetFieldMarkerModule", 49 },
             { "GetRecommendEquipModule", 32 },
+            { "GetInfoModule", 34 }
         };
 
         static UiManagerProxy()
         {
-            Properties = typeof(DataManager).Assembly.GetType("ff14bot.Managers.UiManager")
-                .GetProperties(BindingFlags.Static | BindingFlags.Public);
         }
 
         public static IntPtr VFunctionCall(int index) => Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(index), UIModule);
@@ -34,6 +34,8 @@ namespace LlamaLibrary.ClientDataHelpers
         public static IntPtr RecommendEquipModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetRecommendEquipModule"]), UIModule);
 
         public static IntPtr UIModule => (IntPtr)Properties.First(i => i.Name.Equals("UIModule")).GetValue(null);
+
+        public static IntPtr InfoModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetInfoModule"]), UIModule);
 
         public static IntPtr RaptureAtkModule => (IntPtr)Properties.First(i => i.Name.Equals("RaptureAtkModule")).GetValue(null);
 
