@@ -54,6 +54,7 @@ public class LoadServerProfile
         if (shortList == null || !shortList.Any())
         {
             Log.Error($"Profile {profileName} not found on server.");
+            TreeRoot.Stop($"Profile {profileName} not found on server.");
             return;
         }
 
@@ -64,6 +65,7 @@ public class LoadServerProfile
         var dungeonZoneId = profile.ZoneId;
         var dutyType = profile.DutyType;
         var unlockQuest = profile.UnlockQuest;
+        var reqItemLevel = profile.ItemLevel;
 
         if (profileType == ProfileType.Quest)
         {
@@ -73,7 +75,7 @@ public class LoadServerProfile
 
         if (profileType == ProfileType.Duty)
         {
-            await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks);
+            await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, reqItemLevel);
             return;
         }
 
@@ -96,6 +98,12 @@ public class LoadServerProfile
 
         Log.Error("Failed to get profile list from server");
         return new List<ServerProfile>();
+    }
+
+    public static string CurrentLocalizedZoneNameById(int zoneId)
+    {
+        ZoneNameResult zoneNameResult;
+        return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out zoneNameResult) ? (string)null : zoneNameResult.CurrentLocaleName;
     }
 
     internal static async Task LoadQuestProfile(string profileName, string profileUrl)
@@ -152,7 +160,7 @@ public class LoadServerProfile
         return NeoProfileManager.CurrentProfile != null && NeoProfileManager.CurrentProfile.Name != "Loading Profile";
     }
 
-    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks)
+    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, int ItemLevel)
     {
         await GeneralFunctions.StopBusy(false);
 
@@ -160,6 +168,13 @@ public class LoadServerProfile
         {
             while (DutyManager.QueueState == QueueState.None)
             {
+                if (!LlamaLibrary.ScriptConditions.Extras.IsDiscipleofWarClass() && !LlamaLibrary.ScriptConditions.Extras.IsDiscipleofMagicClass())
+                {
+                    Log.Error($"You must be on a DoW or DoM class to do a duty.");
+                    TreeRoot.Stop($"You must be on a DoW or DoM class to do a duty.");
+                    return;
+                }
+
                 if (UnlockQuest != 0)
                 {
                     if (!QuestLogManager.IsQuestCompleted((uint)UnlockQuest))
@@ -168,6 +183,16 @@ public class LoadServerProfile
                         ConditionParser.Initialize();
                         NeoProfileManager.Load(profileUrl, false);
                         NeoProfileManager.UpdateCurrentProfileBehavior();
+                        return;
+                    }
+                }
+
+                if (ItemLevel != 0)
+                {
+                    if (LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel() < ItemLevel)
+                    {
+                        Log.Error($"{CurrentLocalizedZoneNameById(dungeonZoneId)} requires minimum Item Level of {ItemLevel}. Your Item Level is {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}. Please upgrade your gear.");
+                        TreeRoot.Stop($"Please upgrade your gear");
                         return;
                     }
                 }
