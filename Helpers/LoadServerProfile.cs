@@ -170,8 +170,10 @@ public class LoadServerProfile
             {
                 if (!LlamaLibrary.ScriptConditions.Extras.IsDiscipleofWarClass() && !LlamaLibrary.ScriptConditions.Extras.IsDiscipleofMagicClass())
                 {
-                    Log.Error($"You must be on a DoW or DoM class to do a duty.");
-                    TreeRoot.Stop($"You must be on a DoW or DoM class to do a duty.");
+                    string message = $"You must be on a DoW or DoM class to do a duty..";
+                    Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                    Log.Error($"{message}");
+                    TreeRoot.Stop($"{message}");
                     return;
                 }
 
@@ -191,7 +193,9 @@ public class LoadServerProfile
                 {
                     if (LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel() < ItemLevel)
                     {
-                        Log.Error($"{CurrentLocalizedZoneNameById(dungeonZoneId)} requires minimum Item Level of {ItemLevel}. Your Item Level is {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}. Please upgrade your gear.");
+                        string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} requires minimum Item Level of {ItemLevel}. Your Item Level is {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}. Please upgrade your gear.";
+                        Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                        Log.Error($"{message}.");
                         TreeRoot.Stop($"Please upgrade your gear");
                         return;
                     }
