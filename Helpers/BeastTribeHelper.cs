@@ -33,7 +33,6 @@ namespace LlamaLibrary.Helpers
 
             //6.4
             [Offset("Search 48 81 C1 ? ? ? ? 48 03 C9 0F B6 1C C8 Add 3 Read32")]
-            [OffsetCN("Search 0F B6 9C C8 ? ? ? ? Add 4 Read32")]
             internal static int BeastTribeStart;
 
             [Offset("Search 66 89 BC C8 ? ? ? ? Add 4 Read32")]
@@ -41,7 +40,6 @@ namespace LlamaLibrary.Helpers
 
             //6.4
             [Offset("Search 83 FB ? 73 ? E8 ? ? ? ? 8B CB 48 81 C1 ? ? ? ? 48 03 C9 0F B6 1C C8 Add 2 Read8")]
-            [OffsetCN("Search 83 FB ? 73 ? E8 ? ? ? ? 8B CB 48 03 C9 0F B6 9C C8 ? ? ? ? Add 2 Read8")]
             internal static int BeastTribeCount;
         }
 

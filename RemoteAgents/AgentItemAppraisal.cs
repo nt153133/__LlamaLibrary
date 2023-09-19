@@ -14,7 +14,6 @@ namespace LlamaLibrary.RemoteAgents
             internal static IntPtr VTable;
             //6.4
             [Offset("Search 66 C7 87 ? ? ? ? ? ? 48 8D 45 ? Add 3 Read8")]
-            [OffsetCN("Search 66 C7 87 ? ? ? ? ? ? 48 8D 4D ? Add 3 Read8")]
             internal static int ItemAppraisalReady;
         }
 

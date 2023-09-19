@@ -246,7 +246,6 @@ namespace LlamaLibrary.RetainerItemFinder
             internal static IntPtr GFramework2;
 
             [Offset("Search E8 ? ? ? ? 48 8B D8 48 85 C0 74 ? 66 85 FF TraceCall")]
-            [OffsetCN("Search E8 ?? ?? ?? ?? 48 8B C8 48 85 C0 74 ?? 84 DB 74 ?? 38 1D ?? ?? ?? ?? TraceCall")]
             internal static IntPtr GetUiModule;
 
             //Broken pattern but it should be 0x88

@@ -83,7 +83,6 @@ namespace LlamaLibrary.RemoteAgents
             //0x19C9
             //6.4
             [Offset("Search 80 BC 0A ? ? ? ? ? 74 ? 49 8B 52 ? Add 3 Read32")]
-            [OffsetCN("Search F6 84 0A ? ? ? ? ? 75 ? 49 8B 52 ? Add 3 Read32")]
             internal static int SubCategoryEnabled;
         }
 

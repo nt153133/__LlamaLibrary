@@ -85,28 +85,7 @@ namespace LlamaLibrary.RemoteAgents
             return results;
         }
     }
-//6.4 agent changes
-    #if RB_CN
-    [StructLayout(LayoutKind.Sequential, Size = 0x10)]
-    public struct FishGuide2Item
-    {
-        public uint FishItem;
-        public ushort Index;
-        public ushort Unknown;
-        public ushort Unknown2;
-        public byte bHasCaught;
-        public byte Unknown3;
-        public ushort Unknown4;
-        public ushort Unknown5;
 
-        public bool HasCaught => bHasCaught == 1;
-
-        public override string ToString()
-        {
-            return $"{DataManager.GetItem(FishItem)} : {HasCaught}";
-        }
-    }
-    #else
     [StructLayout(LayoutKind.Sequential, Size = 0x10)]
     public struct FishGuide2Item
     {
@@ -127,5 +106,5 @@ namespace LlamaLibrary.RemoteAgents
             return $"{DataManager.GetItem(FishItem)} : {HasCaught}";
         }
     }
-    #endif
+
 }

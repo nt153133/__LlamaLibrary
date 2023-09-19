@@ -22,7 +22,6 @@ namespace LlamaLibrary.RemoteAgents
             internal static IntPtr MinionCount;
             //6.4
             [Offset("Search E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 66 83 78 ? ? 0F 86 ? ? ? ? TraceCall")]
-            [OffsetCN("Search E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 0F B7 58 ? 48 8D 4C 24 ? TraceCall")]
             internal static IntPtr GetCompanion;
         }
 

@@ -87,7 +87,6 @@ namespace LlamaLibrary.Memory
         public static IntPtr IsInstanceContentCompleted;
 
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 47 ? Add 3 TraceRelative")]
-        [OffsetCN("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 89 46 ? 4C 8D 45 ? Add 3 TraceRelative")]
         public static IntPtr UIStateTelepo;
 
         [Offset("Search 44 8B C2 4C 8B C9 41 C1 E8 ? 41 83 F8 ? 72 ? 32 C0 C3 0F B6 CA BA ? ? ? ? 83 E1 ? 41 8B C0 D3 E2")]
@@ -115,7 +114,6 @@ namespace LlamaLibrary.Memory
         public static int AnimaLight;
 
         [Offset("Search 48 8D 0D ? ? ? ? 40 88 74 24 ? E8 ? ? ? ? 8B D8 Add 3 TraceRelative")]
-        [OffsetCN("Search 48 8D 0D ? ? ? ? 44 88 74 24 ? E8 ? ? ? ? 8B F8 Add 3 TraceRelative")]
         public static IntPtr AnimaLightThing;
     }
 

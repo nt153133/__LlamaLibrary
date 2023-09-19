@@ -14,7 +14,6 @@ namespace LlamaLibrary.RemoteAgents
             internal static IntPtr VTable;
             //6.4
             [Offset("Search 89 79 ? 8B C7 83 C9 ? Add 2 Read8")]
-            [OffsetCN("Search 89 71 ? 8B C6 Add 2 Read8")]
             internal static int WardNumber;
             [Offset("Search 4D 8D 6C 24 ? 4C 8D 7F ? Add 4 Read8")]
             internal static int PlotOffset;

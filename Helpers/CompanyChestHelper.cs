@@ -435,7 +435,7 @@ namespace LlamaLibrary.Helpers
 
             await Coroutine.Wait(5000, () => AgentFreeCompanyChest.Instance.FullyLoaded);
 
-            var result = await BagSlotMoveChest(bagSlot, slot, amount);
+            var result = await BagSlotMoveChest(bagSlot, slot, Math.Min(amount, bagSlot.Count));
 
             await Coroutine.Sleep(200);
             await Coroutine.Wait(5000, () => AgentFreeCompanyChest.Instance.FullyLoaded);
