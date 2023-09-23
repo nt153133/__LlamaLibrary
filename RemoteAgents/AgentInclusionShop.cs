@@ -156,7 +156,8 @@ namespace LlamaLibrary.RemoteAgents
                                 break;
                             }
 
-                            shopItems.Add(new InclusionShopItem(shopItemStruct, cat, i, itemNum, (enabledByte & 1) == 1));
+                            //shopItems.Add(new InclusionShopItem(shopItemStruct, cat, i, itemNum, (enabledByte & 1) == 1));
+                            shopItems.Add(new InclusionShopItem(shopItemStruct, cat, i, itemNum, false));
                             itemNum += shopItemStruct.NumberOfItems;
                         }
                         while (shopItemStruct.ItemId > 0);
