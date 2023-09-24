@@ -315,10 +315,15 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            var slots = InventoryManager.GetBagsByInventoryBagId(bagId).SelectMany(x => x.FilledSlots).Where(i => itemIds.Contains(i.TrueItemId));
+            var slots = InventoryManager.GetBagsByInventoryBagId(bagId).SelectMany(x => x.FilledSlots).Where(i => itemIds.Contains(i.TrueItemId)).OrderBy(i => i.Count);
 
             if (slots.Any())
             {
+                if (slots.First().Count > amount)
+                {
+                    return await WithdrawItems(new List<BagSlot>() { slots.First() }, amount);
+                }
+
                 return await WithdrawItems(slots, amount);
             }
 
@@ -553,14 +558,23 @@ namespace LlamaLibrary.Helpers
 
         public static BagSlot? GetNextOrStackSlot(BagSlot bagSlot, TransactionType transactionType)
         {
-            var bagList = transactionType switch
+            IEqualityComparer<BagSlot> eqx;
+            IEnumerable<InventoryBagId>? bagList;
+            switch (transactionType)
             {
-                TransactionType.Deposit    => DepositBagIds,
-                TransactionType.Withdrawal => Inventory.InventoryBagIds,
-                _                          => throw new ArgumentOutOfRangeException(nameof(transactionType), transactionType, null),
-            };
+                case TransactionType.Deposit:
+                    bagList = DepositBagIds;
+                    eqx = new BagSlotComparerDeposit();
+                    break;
+                case TransactionType.Withdrawal:
+                    bagList = Inventory.InventoryBagIds;
+                    eqx = new BagSlotComparer();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(transactionType), transactionType, null);
+            }
+
             var bags = InventoryManager.GetBagsByInventoryBagId(bagList.ToArray()).SelectMany(x => x.FilledSlots);
-            var eqx = new BagSlotComparer();
             var match = bags.Where(i => eqx.Equals(i, bagSlot));
 
             if (match.Any())
@@ -577,6 +591,7 @@ namespace LlamaLibrary.Helpers
         public static BagSlot? GetNextOrStackSlot(BagSlot bagSlot, InventoryBagId bagId, TransactionType transactionType)
         {
             IEnumerable<InventoryBagId>? bagList;
+            IEqualityComparer<BagSlot> eqx;
             switch (transactionType)
             {
                 case TransactionType.Deposit:
@@ -590,16 +605,18 @@ namespace LlamaLibrary.Helpers
                         return null;
                     }
 
+                    eqx = new BagSlotComparerDeposit();
+
                     break;
                 case TransactionType.Withdrawal:
                     bagList = Inventory.InventoryBagIds;
+                    eqx = new BagSlotComparer();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(transactionType), transactionType, null);
             }
 
             var bags = InventoryManager.GetBagsByInventoryBagId(bagList.ToArray()).SelectMany(x => x.FilledSlots);
-            var eqx = new BagSlotComparer();
             var match = bags.Where(i => eqx.Equals(i, bagSlot));
 
             if (match.Any())
@@ -766,6 +783,19 @@ namespace LlamaLibrary.Helpers
             public bool Equals(BagSlot x, BagSlot y)
             {
                 return y != null && x != null && x.RawItemId == y.RawItemId && x.Count + y.Count <= x.Item.StackSize;
+            }
+
+            public int GetHashCode(BagSlot obj)
+            {
+                return obj.Item.GetHashCode();
+            }
+        }
+
+        private sealed class BagSlotComparerDeposit : IEqualityComparer<BagSlot>
+        {
+            public bool Equals(BagSlot x, BagSlot y)
+            {
+                return y != null && x != null && x.TrueItemId == y.TrueItemId && x.Count + y.Count <= x.Item.StackSize;
             }
 
             public int GetHashCode(BagSlot obj)
