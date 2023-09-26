@@ -36,7 +36,13 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<DeliveryStatus> DeliverItems(IEnumerable<uint> itemIds)
         {
-            return await DeliverItems(InventoryManager.FilledSlots.Where(i => itemIds.Contains(i.RawItemId)));
+            var slots = InventoryManager.FilledSlots.Where(i => itemIds.Contains(i.RawItemId));
+            if (!slots.Any())
+            {
+                return DeliveryStatus.Success;
+            }
+
+            return await DeliverItems(slots);
         }
 
         public static async Task<DeliveryStatus> DeliverItems(IEnumerable<BagSlot> bagSlots)
