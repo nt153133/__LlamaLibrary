@@ -35,12 +35,16 @@ namespace LlamaLibrary.Helpers
         private static Func<Task> _selfRepairWithMenderFallback;
         private static Func<Task> _stopGently;
         private static Action<string, Func<Task>> _addHook;
+        private static Action<string, Func<Task>> _addCompletionHook;
         private static Action<string, Func<Task>> _addCraftCycleHook;
         private static Action<string> _removeHook;
         private static Action<string> _removeCraftCycleHook;
+        private static Action<string> _removeCompletionHook;
         private static Func<List<string>> _getHookList;
         private static Func<Task<bool>> _exitCrafting;
+
         private static Func<Task<bool>> _isProductKeyValid;
+
         //private static Func<string, Vector3, Func<bool>, bool, Task<bool>>? _travelToWithArea;
         private static Func<uint, uint, Vector3, Func<bool>, bool, Task<bool>>? _travelTo;
         private static Func<uint, Vector3, Func<bool>, bool, Task<bool>>? _travelToWithoutSubzone;
@@ -89,6 +93,8 @@ namespace LlamaLibrary.Helpers
                             _addHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddHook");
                             _removeHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveHook");
                             _addCraftCycleHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddCraftCycleHook");
+                            _addCompletionHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddCompletionHook");
+                            _removeCompletionHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveCompletioneHook");
                             _removeCraftCycleHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveCraftCycleHook");
                             _getHookList = (Func<List<string>>)Delegate.CreateDelegate(typeof(Func<List<string>>), apiObject, "GetHookList");
                             _exitCrafting = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), apiObject, "ExitCrafting");
@@ -212,7 +218,6 @@ namespace LlamaLibrary.Helpers
 
             return await _travelToWithArea(area, position, condition, land);
             */
-
         }
 
         [Obsolete("Stop using subzones")]
@@ -254,6 +259,16 @@ namespace LlamaLibrary.Helpers
         public static void RemoveHook(string name)
         {
             _removeHook?.Invoke(name);
+        }
+
+        public static void AddCompletionHook(string name, Func<Task> function)
+        {
+            _addCompletionHook?.Invoke(name, function);
+        }
+
+        public static void RemoveCompletionHook(string name)
+        {
+            _removeCompletionHook?.Invoke(name);
         }
 
         public static void AddCraftCycleHook(string name, Func<Task> function)
