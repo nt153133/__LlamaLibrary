@@ -30,6 +30,35 @@ public class LoadServerProfile
     internal static readonly string NameValue = "DomesticHelper";
     private static readonly LLogger Log = new(NameValue, Colors.MediumPurple);
 
+    private static int TheTowerofZot = 783;
+    private static int TheStigmaDreamscape = 784;
+    private static int TheTowerofBabil = 785;
+    private static int TheAitiascope = 786;
+    private static int KtisisHyperboreia = 787;
+    private static int Vanaspati = 789;
+    private static int TheDeadEnds = 792;
+    private static int Smileton = 794;
+    private static int TheAetherfont = 822;
+    private static int AlzadaalsLegacy = 844;
+    private static int TheFellCourofTroia = 869;
+    private static int LapisManalis = 896;
+
+    private static List<int> EndwalkerDungeons = new()
+    {
+        TheTowerofZot,
+        TheStigmaDreamscape,
+        TheTowerofBabil,
+        TheAitiascope,
+        KtisisHyperboreia,
+        Vanaspati,
+        TheDeadEnds,
+        Smileton,
+        TheAetherfont,
+        AlzadaalsLegacy,
+        TheFellCourofTroia,
+        LapisManalis
+    };
+
     public static async Task LoadProfile(string profileName, int QueueType, bool GoToBarracks)
     {
         Log.Information("Loading Profile");
@@ -206,9 +235,17 @@ public class LoadServerProfile
                     await LlamaLibrary.Helpers.GrandCompanyHelper.GetToGCBarracks();
                 }
 
-                if (QueueType == 2)
+                if (QueueType == 2 || EndwalkerDungeons.Contains(dungeonDutyId))
                 {
-                    Log.Information("Queuing for " + DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName);
+                    if (EndwalkerDungeons.Contains(dungeonDutyId) && QueueType != 2)
+                    {
+                        Log.Information($"Endwalker dungeon automatically queueing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Duty Support");
+                    }
+                    else
+                    {
+                        Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Duty Support");
+                    }
+
                     if (!DawnStory.Instance.IsOpen)
                     {
                         AgentDawnStory.Instance.Toggle();
