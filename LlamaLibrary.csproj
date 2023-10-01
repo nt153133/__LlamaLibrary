@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="AssemblyProxy.cs" />
     <Compile Include="ClientDataHelpers\AtkArrayDataHolder.cs" />
+    <Compile Include="ClientDataHelpers\InventoryWatcher.cs" />
     <Compile Include="ClientDataHelpers\UiManagerProxy.cs" />
     <Compile Include="Data\Minions.cs" />
     <Compile Include="Data\TripleTriadCards.cs" />
@@ -148,6 +149,9 @@
     <Compile Include="Helpers\UIState.cs" />
     <Compile Include="Helpers\WorldTravel\WorldLocation.cs" />
     <Compile Include="Helpers\WorldTravel\WorldTravel.cs" />
+    <Compile Include="Hooks\AsmFunctionHook.cs" />
+    <Compile Include="Hooks\InventoryUpdatePatch.cs" />
+    <Compile Include="Hooks\PatchManager.cs" />
     <Compile Include="ICompiledAPIBotbase.cs" />
     <Compile Include="ICompiledAsyncBotbase.cs" />
     <Compile Include="ICompiledBotbase.cs" />

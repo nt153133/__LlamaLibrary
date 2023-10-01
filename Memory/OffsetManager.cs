@@ -29,11 +29,13 @@ using ff14bot.Helpers;
 using ff14bot.Managers;
 using GreyMagic;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Hooks;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteAgents;
 using Newtonsoft.Json;
 using LogLevel = LlamaLibrary.Logging.LogLevel;
+using PatchManager = LlamaLibrary.Hooks.PatchManager;
 
 // ReSharper disable InterpolatedStringExpressionIsNotIFormattable
 
@@ -129,7 +131,6 @@ namespace LlamaLibrary.Memory
                                 OffsetCache = new ConcurrentDictionary<string, long>();
                             }
 
-
                             //Core.CurrentGameVer
                             if (Core.CurrentGameVer == 8914697 && OffsetCache.ContainsKey("LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable") && OffsetCache["LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable"] != 0x196DC60)
                             {
@@ -204,6 +205,8 @@ namespace LlamaLibrary.Memory
                         File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
                         newStopwatch.Stop();
                         Logger.Debug($"OffsetManager File.WriteAllText took {newStopwatch.ElapsedMilliseconds}ms");
+                        PatchManager.Initialize();
+                        PatchManager.Enable<InventoryUpdatePatch>();
                         Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
                         //initStarted = true;
                         if (_debug)
