@@ -39,6 +39,7 @@ public class LoadServerProfile
     private static int TheDeadEnds = 792;
     private static int Smileton = 794;
     private static int TheAetherfont = 822;
+    private static int LunarSubterrane = 823;
     private static int AlzadaalsLegacy = 844;
     private static int TheFellCourofTroia = 869;
     private static int LapisManalis = 896;
@@ -54,6 +55,7 @@ public class LoadServerProfile
         TheDeadEnds,
         Smileton,
         TheAetherfont,
+        LunarSubterrane,
         AlzadaalsLegacy,
         TheFellCourofTroia,
         LapisManalis
