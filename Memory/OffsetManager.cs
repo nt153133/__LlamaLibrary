@@ -394,7 +394,36 @@ namespace LlamaLibrary.Memory
                 //var b1 = true;
                 try
                 {
-                    result = pf.FindSingle(offsetCN != null ? offsetCN.PatternCN : offset.Pattern, true);
+                    if (OffsetCache.ContainsKey(name) && !offset.IgnoreCache)
+                    {
+                        //Logger.Information("Found in cache");
+                        var offsetVal = OffsetCache[name];
+                        if (field.FieldType != typeof(int))
+                        {
+                            result = Core.Memory.GetAbsolute(new IntPtr(offsetVal));
+                        }
+                        else
+                        {
+                            result = new IntPtr(offsetVal);
+                        }
+                    }
+                    else
+                    {
+                        //Logger.Information($"Not found in cache : {field.DeclaringType.FullName}.{field.Name}");
+                        result = pf.FindSingle(offsetCN != null ? offsetCN.PatternCN : offset.Pattern, true);
+                        //result = pf.Find(offset.Pattern);
+                        if (result != IntPtr.Zero)
+                        {
+                            if (field.FieldType != typeof(int))
+                            {
+                                OffsetCache.TryAdd($"{field.DeclaringType?.FullName}.{field.Name}", Core.Memory.GetRelative(result).ToInt64());
+                            }
+                            else
+                            {
+                                OffsetCache.TryAdd($"{field.DeclaringType?.FullName}.{field.Name}", result.ToInt64());
+                            }
+                        }
+                    }
                     //result = pf.Find(offsetCN != null ? offsetCN.PatternCN : offset.Pattern);
                 }
                 catch (Exception e)
