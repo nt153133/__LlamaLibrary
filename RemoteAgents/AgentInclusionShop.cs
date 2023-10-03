@@ -28,8 +28,9 @@ namespace LlamaLibrary.RemoteAgents
             internal static int SecondPointer;
 
             //0x20
-            [Offset("Search 41 8B 47 ? 48 C1 EB ? Add 3 Read8")]
-            //[OffsetCN("Search 41 8B 46 ? 48 C1 EE ? Add 3 Read8")]
+            //6.5
+            [Offset("Search 41 8B 47 ? 49 8B DE Add 3 Read8")]
+            [OffsetCN("Search 41 8B 47 ? 48 C1 EB ? Add 3 Read8")]
             internal static int ShopKey;
 
             //0x38
@@ -44,24 +45,31 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 40 38 B1 ? ? ? ? 0F 86 ? ? ? ? 4C 8B 64 24 ? Add 3 Read32")]
             internal static int NumberOfSubCategories;
 
-            //0x11A9
-            [Offset("Search 41 0F B6 81 ? ? ? ? 48 69 D1 ? ? ? ? 48 69 C8 ? ? ? ? 41 0F B6 81 ? ? ? ? 4E 8B AC 0A ? ? ? ? Add 4 Read32")]
+            //0x11D1
+            //6.5
+            [Offset("Search 41 0F B6 80 ? ? ? ? 4C 6B E8 ? Add 4 Read32")]
+            [OffsetCN("Search 41 0F B6 81 ? ? ? ? 48 69 D1 ? ? ? ? 48 69 C8 ? ? ? ? 41 0F B6 81 ? ? ? ? 4E 8B AC 0A ? ? ? ? Add 4 Read32")]
             internal static int SubCategory;
 
             //0x11A8
             [Offset("Search 41 0F B6 80 ? ? ? ? 42 0F B6 94 00 ? ? ? ? Add 4 Read32")]
             internal static int Category;
 
-            //0x1158
-            [Offset("Search 42 0F B6 8C 08 ? ? ? ? 41 0F B6 81 ? ? ? ? 48 69 D1 ? ? ? ? 48 69 C8 ? ? ? ? 41 0F B6 81 ? ? ? ? 4E 8B AC 0A ? ? ? ? Add 5 Read32")]
+            //0x1180
+            //6.5
+            [Offset("Search 42 0F B6 94 00 ? ? ? ? 48 69 C2 ? ? ? ? Add 5 Read32")]
+            [OffsetCN("Search 42 0F B6 8C 08 ? ? ? ? 41 0F B6 81 ? ? ? ? 48 69 D1 ? ? ? ? 48 69 C8 ? ? ? ? 41 0F B6 81 ? ? ? ? 4E 8B AC 0A ? ? ? ? Add 5 Read32")]
             internal static int CategoryArray;
 
-            //0x1E0
-            [Offset("Search 4E 8B AC 0A ? ? ? ? Add 4 Read32")]
+            //0x208
+            [Offset("Search 4E 03 AC 00 ? ? ? ? Add 4 Read32")]
+            [OffsetCN("Search 4E 8B AC 0A ? ? ? ? Add 4 Read32")]
             internal static int SubCategoryArrayStart;
 
             //0x88
-            [Offset("Search 48 69 D1 ? ? ? ? 48 69 C8 ? ? ? ? 41 0F B6 81 ? ? ? ? 4E 8B AC 0A ? ? ? ? Add 3 Read8")]
+            //6.5
+            [Offset("Search 48 69 C1 ? ? ? ? 4E 03 AC 00 ? ? ? ? Add 3 Read8")]
+            [OffsetCN("Search 48 69 D1 ? ? ? ? 48 69 C8 ? ? ? ? 41 0F B6 81 ? ? ? ? 4E 8B AC 0A ? ? ? ? Add 3 Read8")]
             internal static int StructSizeCategory;
 
             //
@@ -69,11 +77,15 @@ namespace LlamaLibrary.RemoteAgents
             internal static int ItemCount;
 
             //0x19d0
-            [Offset("Search 48 69 C8 ? ? ? ? 41 0F B6 81 ? ? ? ? 4E 8B AC 0A ? ? ? ? Add 3 Read32")]
+            //6.5 unknown
+            [Offset("Search 48 69 D1 ? ? ? ? 49 8B 89 ? ? ? ? Add 3 Read32")]
+            [OffsetCN("Search 48 69 C8 ? ? ? ? 41 0F B6 81 ? ? ? ? 4E 8B AC 0A ? ? ? ? Add 3 Read32")]
             internal static int StructSizeSubCategory;
 
             //0x6C
-            [Offset("Search 48 6B C8 ? 48 8B 47 ? 4C 03 E9 Add 3 Read8")]
+            //6.5
+            [Offset("Search 8B 4B ? 85 C9 74 ? E8 ? ? ? ? 48 85 C0 74 ? 8B 4B ? Add 2 Read8")]
+            [OffsetCN("Search 48 6B C8 ? 48 8B 47 ? 4C 03 E9 Add 3 Read8")]
             internal static int StructSizeItem;
 
             //0x175
@@ -81,9 +93,13 @@ namespace LlamaLibrary.RemoteAgents
             internal static int CategorySubCount;
 
             //0x19C9
-            //6.4
             [Offset("Search 80 BC 0A ? ? ? ? ? 74 ? 49 8B 52 ? Add 3 Read32")]
             internal static int SubCategoryEnabled;
+
+            //6.5
+            [Offset("Search 45 8B 7C B4 ? Add 4 Read8")]
+            [OffsetValueCN(0)]
+            internal static int ItemStructAdjustment;
         }
 
         public IntPtr RegisteredVtable => Offsets.Vtable;
@@ -144,12 +160,11 @@ namespace LlamaLibrary.RemoteAgents
                         var subCategory = Instance.SubCategoryPtrByIndex(category, i);
                         var enabledByte =
                             Core.Memory.Read<byte>(subCategory + Offsets.SubCategoryEnabled);
-
                         var itemNum = 0;
                         InclusionShopItemStruct shopItemStruct;
                         do
                         {
-                            var pointer = subCategory + Offsets.StructSizeCategory + (Offsets.StructSizeItem * itemNum);
+                            var pointer = subCategory + Offsets.StructSizeCategory + ((Offsets.StructSizeItem + Offsets.ItemStructAdjustment) * itemNum);
                             shopItemStruct = Core.Memory.Read<InclusionShopItemStruct>(pointer);
                             if (shopItemStruct.ItemId == 0)
                             {
