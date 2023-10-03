@@ -13,8 +13,11 @@ public class InventoryUpdatePatch : AsmFunctionHook
         [Offset("Search E9 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 0D ? ? ? ?")]
         internal static IntPtr PatchLocation;
 
-        [Offset("Search E9 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 0D ? ? ? ? TraceCall")]
+        [Offset("Search E9 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 0D ? ? ? ? TraceCall", IgnoreCache = true)]
         internal static IntPtr OriginalJump;
+
+        [Offset("Search E8 ? ? ? ? 66 FF C6 49 83 C6 ? 66 83 FE ? 0F 82 ? ? ? ? TraceCall")]
+        internal static IntPtr OrginalCall;
     }
 
     public override IntPtr? Hook => Offsets.PatchLocation;
@@ -40,7 +43,7 @@ public class InventoryUpdatePatch : AsmFunctionHook
         asm.AddLine("JMP {0}", JumpTo);
         var jzPatch = asm.Assemble();
 
-        var procAddress = Core.Memory.GetProcAddress("kernel32", "GetTickCount");
+        var procAddress = Core.Memory.GetProcAddress("kernel32", "GetTickCount64");
         asm.Clear();
         asm.AddLine("push rcx");
         asm.AddLine("push rax");
@@ -51,9 +54,9 @@ public class InventoryUpdatePatch : AsmFunctionHook
         asm.AddLine("pop rcx");
         asm.AddLine("JMP [OriginalJmp]");
         asm.AddLine("[align 8]");
+        asm.AddLine("OriginalJmp: dq {0}", Offsets.OriginalJump.ToInt64());
         asm.AddLine("TickPtr: dq {0}", TickPtr.ToInt64());
         asm.AddLine("GetTickCount: dq {0}", procAddress);
-        asm.AddLine("OriginalJmp: dq {0}", Offsets.OriginalJump.ToInt64());
 
         if (JumpTo == null)
         {

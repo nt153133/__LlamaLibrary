@@ -131,12 +131,6 @@ namespace LlamaLibrary.Memory
                                 OffsetCache = new ConcurrentDictionary<string, long>();
                             }
 
-                            //Core.CurrentGameVer
-                            if (Core.CurrentGameVer == 8914697 && OffsetCache.ContainsKey("LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable") && OffsetCache["LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable"] != 0x196DC60)
-                            {
-                                Logger.Error("Resetting offsets due to game update");
-                                OffsetCache.TryRemove("LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable", out _);
-                            }
                             /*else
                             {
                                 Logger.Information("Game version: " + Core.CurrentGameVer);
@@ -205,8 +199,26 @@ namespace LlamaLibrary.Memory
                         File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
                         newStopwatch.Stop();
                         Logger.Debug($"OffsetManager File.WriteAllText took {newStopwatch.ElapsedMilliseconds}ms");
+
+                        if (InventoryUpdatePatch.Offsets.OrginalCall != InventoryUpdatePatch.Offsets.OriginalJump)
+                        {
+                            Logger.Information("Last patch not cleaned up, cleaning up now");
+                            var asm = Core.Memory.Asm;
+                            asm.Clear();
+                            asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatch.Offsets.PatchLocation);
+                            asm.AddLine("JMP {0}", InventoryUpdatePatch.Offsets.OrginalCall);
+                            var jzPatch = asm.Assemble();
+                            Core.Memory.WriteBytes(InventoryUpdatePatch.Offsets.PatchLocation, jzPatch);
+                        }
+                        else
+                        {
+                            //print them
+                            Logger.Information($"OriginalJump: {InventoryUpdatePatch.Offsets.OriginalJump.ToInt64():X}");
+                            Logger.Information($"OrginalCall: {InventoryUpdatePatch.Offsets.OrginalCall.ToInt64():X}");
+                        }
+
                         PatchManager.Initialize();
-                        PatchManager.Enable<InventoryUpdatePatch>();
+                        //PatchManager.Enable<InventoryUpdatePatch>();
                         Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
                         //initStarted = true;
                         if (_debug)
@@ -414,7 +426,7 @@ namespace LlamaLibrary.Memory
                 try
                 {
                     //Logger.Information("Offsetcache Count: " + OffsetCache.Count);
-                    if (OffsetCache.ContainsKey(name))
+                    if (OffsetCache.ContainsKey(name) && !offset.IgnoreCache)
                     {
                         //Logger.Information("Found in cache");
                         var offsetVal = OffsetCache[name];

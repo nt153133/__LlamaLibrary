@@ -15,11 +15,12 @@ namespace LlamaLibrary.Memory.Attributes
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class OffsetAttribute : Attribute
     {
-        public bool Numeric;
+        public bool IgnoreCache;
         public string Pattern = "";
         public string PatternCN = "";
 
-        public OffsetAttribute(string pattern, bool numeric = false, int expectedValue = 0)
+
+        public OffsetAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0)
         {
             Pattern = pattern;
             if (!Pattern.StartsWith("Search "))
@@ -32,10 +33,10 @@ namespace LlamaLibrary.Memory.Attributes
                 PatternCN = pattern;
             }
 
-            Numeric = numeric;
+            IgnoreCache = ignoreCache;
         }
 
-        public OffsetAttribute(string pattern, string cnpattern, bool numeric = false, int expectedValue = 0)
+        public OffsetAttribute(string pattern, string cnpattern, bool ignoreCache = false, int expectedValue = 0)
         {
             /*if (pattern != "")
                 Pattern = pattern;*/
@@ -45,13 +46,13 @@ namespace LlamaLibrary.Memory.Attributes
                 PatternCN = "Search " + PatternCN;
             }
 
-            Numeric = numeric;
+            IgnoreCache = ignoreCache;
         }
     }
 
     public class OffsetCNAttribute : OffsetAttribute
     {
-        public OffsetCNAttribute(string pattern, bool numeric = false, int expectedValue = 0) : base("", pattern, numeric, expectedValue)
+        public OffsetCNAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0) : base("", pattern, ignoreCache, expectedValue)
         {
         }
     }
