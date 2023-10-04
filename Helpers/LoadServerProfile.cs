@@ -94,6 +94,7 @@ public class LoadServerProfile
         var profileType = profile.Type;
         var dungeonDutyId = profile.DutyId;
         var dungeonZoneId = profile.ZoneId;
+        var dungeonLevel = profile.Level;
         var dutyType = profile.DutyType;
         var unlockQuest = profile.UnlockQuest;
         var reqItemLevel = profile.ItemLevel;
@@ -106,7 +107,7 @@ public class LoadServerProfile
 
         if (profileType == ProfileType.Duty)
         {
-            await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, reqItemLevel);
+            await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, reqItemLevel, dungeonLevel);
             return;
         }
 
@@ -191,7 +192,7 @@ public class LoadServerProfile
         return NeoProfileManager.CurrentProfile != null && NeoProfileManager.CurrentProfile.Name != "Loading Profile";
     }
 
-    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, int ItemLevel)
+    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, int ItemLevel, int dungeonLevel)
     {
         await GeneralFunctions.StopBusy(false);
 
@@ -206,6 +207,18 @@ public class LoadServerProfile
                     Log.Error($"{message}");
                     TreeRoot.Stop($"{message}");
                     return;
+                }
+
+                if (dungeonLevel != 0)
+                {
+                    if (Core.Me.ClassLevel < dungeonLevel)
+                    {
+                        string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} requires level {dungeonLevel}. Your level is {Core.Me.ClassLevel}. Please swap to a job that is at least level {dungeonLevel}.";
+                        Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                        Log.Error($"{message}");
+                        TreeRoot.Stop($"{message}");
+                        return;
+                    }
                 }
 
                 if (UnlockQuest != 0)

@@ -1,12 +1,14 @@
 ﻿using System.Reflection;
 
 namespace LlamaLibrary.Helpers;
+
 public enum ProfileType
 {
     Quest,
     Duty
 }
-[Obfuscation(Exclude=true, ApplyToMembers=true)]
+
+[Obfuscation(Exclude = true, ApplyToMembers = true)]
 public enum DutyType
 {
     Dungeon,
@@ -14,10 +16,12 @@ public enum DutyType
     Raid,
     Guildhest
 }
-[Obfuscation(Exclude=true, ApplyToMembers=true)]
+
+[Obfuscation(Exclude = true, ApplyToMembers = true)]
 public class ServerProfile
 {
     public string? Name { get; set; }
+    public int Level { get; set; }
     public ProfileType Type { get; set; }
     public DutyType DutyType { get; set; }
     public string? URL { get; set; }
