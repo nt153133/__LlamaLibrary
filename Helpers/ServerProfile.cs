@@ -29,4 +29,5 @@ public class ServerProfile
     public ushort DutyId { get; set; }
     public int UnlockQuest { get; set; }
     public int ItemLevel { get; set; }
+    public string Display { get => $"[{Level}] {Name}"; }
 }
