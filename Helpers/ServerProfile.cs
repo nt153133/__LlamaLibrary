@@ -8,7 +8,6 @@ public enum ProfileType
     Duty
 }
 
-[Obfuscation(Exclude = true, ApplyToMembers = true)]
 public enum DutyType
 {
     Dungeon,
@@ -17,7 +16,6 @@ public enum DutyType
     Guildhest
 }
 
-[Obfuscation(Exclude = true, ApplyToMembers = true)]
 public class ServerProfile
 {
     public string? Name { get; set; }
