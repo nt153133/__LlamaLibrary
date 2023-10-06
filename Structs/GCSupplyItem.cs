@@ -20,6 +20,9 @@ namespace LlamaLibrary.Structs
         [FieldOffset(0x84)]
         public uint ItemId;
 
+        [FieldOffset(0x94)]
+        public short ItemLevel;
+
         [FieldOffset(0x97)]
         public ushort BagSlotId;
 
