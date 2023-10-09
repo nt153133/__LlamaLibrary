@@ -139,5 +139,48 @@ namespace LlamaLibrary.Extensions
         {
             return Core.Memory.Read<int>(player.Pointer + Offsets.CurrentMount);
         }
+
+        public static bool IsTank(this ClassJobType CurrentJob)
+        {
+            return CurrentJob == ClassJobType.Gladiator || CurrentJob == ClassJobType.Marauder || CurrentJob == ClassJobType.Paladin || CurrentJob == ClassJobType.Warrior || CurrentJob == ClassJobType.DarkKnight || CurrentJob == ClassJobType.Gunbreaker;
+        }
+
+        //IsHealer
+        public static bool IsHealer(this ClassJobType CurrentJob)
+        {
+            return CurrentJob == ClassJobType.Conjurer || CurrentJob == ClassJobType.WhiteMage || CurrentJob == ClassJobType.Scholar || CurrentJob == ClassJobType.Astrologian;
+        }
+
+        //IsMeleeDps
+        public static bool IsMeleeDps(this ClassJobType CurrentJob)
+        {
+            return CurrentJob == ClassJobType.Pugilist || CurrentJob == ClassJobType.Lancer || CurrentJob == ClassJobType.Rogue || CurrentJob == ClassJobType.Samurai || CurrentJob == ClassJobType.Monk || CurrentJob == ClassJobType.Dragoon || CurrentJob == ClassJobType.Ninja;
+        }
+
+        //IsRangedDps
+        public static bool IsRangedDps(this ClassJobType CurrentJob)
+        {
+            return CurrentJob == ClassJobType.Archer || CurrentJob == ClassJobType.Machinist || CurrentJob == ClassJobType.Dancer || CurrentJob == ClassJobType.Bard;
+        }
+
+        public static GearSet[] SortedGearSets(this LocalPlayer player)
+        {
+            return GearsetManager.GearSets.OrderByDescending(i => i.ItemLevel).ThenByDescending(i => i.Class.IsTank()).ThenByDescending(i => i.Class.IsMeleeDps()).ThenByDescending(i => i.Class.IsRangedDps()).ToArray();
+        }
+
+        public static GearSet BestCombatGearSet(this LocalPlayer player)
+        {
+            return player.SortedGearSets().FirstOrDefault(i => i.Class.IsDow());
+        }
+
+        public static GearSet BestGatheringGearSet(this LocalPlayer player)
+        {
+            return player.SortedGearSets().FirstOrDefault(i => i.Class.IsDol());
+        }
+
+        public static GearSet BestCraftingGearSet(this LocalPlayer player)
+        {
+            return player.SortedGearSets().FirstOrDefault(i => i.Class.IsDoh());
+        }
     }
 }
