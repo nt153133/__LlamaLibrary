@@ -117,6 +117,9 @@ namespace LlamaLibrary.Extensions
             [Offset("Search 41 56 41 57 48 81 EC ? ? ? ? 83 B9 ? ? ? ? ? 4C 8B F2")]
             public static IntPtr StoreroomToInventory;
 
+            [Offset("Search 40 53 41 55 48 83 EC ? 48 8B DA")]
+            public static IntPtr InventoryToStoreroom;
+
             [Offset("Search E8 ? ? ? ? 89 83 ? ? ? ? C7 44 24 ? ? ? ? ? TraceCall")]
             internal static IntPtr GetPostingPriceSlot;
 
@@ -550,6 +553,26 @@ namespace LlamaLibrary.Extensions
             return true;
         }
 
+        public static bool InventoryToStoreroom(this BagSlot bagSlot)
+        {
+            if (!bagSlot.IsFilled)
+            {
+                return false;
+            }
+
+            lock (Core.Memory.Executor.AssemblyLock)
+            {
+                using (Core.Memory.TemporaryCacheState(false))
+                {
+                    Core.Memory.CallInjected64<uint>(Offsets.InventoryToStoreroom,
+                                                     HousingHelper.PositionPointer,
+                                                     bagSlot.Pointer);
+                }
+            }
+
+            return true;
+        }
+
         public static byte StainId(this BagSlot bagSlot)
         {
             return Core.Memory.Read<byte>(bagSlot.Pointer + Offsets.StainId);
@@ -704,6 +727,16 @@ namespace LlamaLibrary.Extensions
                 }
 
                 return true;
+            }
+
+            return false;
+        }
+
+        public static async Task<bool> TryInventoryToStoreroom(this BagSlot bagSlot, int waitMs = DefaultBagSlotMoveWait)
+        {
+            if (bagSlot.InventoryToStoreroom())
+            {
+                return await Coroutine.Wait(5000, () => !bagSlot.IsFilled);
             }
 
             return false;
