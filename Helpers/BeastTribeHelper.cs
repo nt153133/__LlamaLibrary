@@ -28,6 +28,9 @@ namespace LlamaLibrary.Helpers
             [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? TraceCall")]
             internal static IntPtr GetBeastTribeExd;
 
+            [Offset("Search E8 ? ? ? ? 4C 8B C8 EB ? 4C 8D 0D ? ? ? ? TraceCall")]
+            internal static IntPtr ResolveStringColumnIndirection;
+
             [Offset("Search 4C 8D 1D ? ? ? ? 88 44 24 ? Add 3 TraceRelative")]
             internal static IntPtr QuestPointer;
 
@@ -52,9 +55,10 @@ namespace LlamaLibrary.Helpers
             for (var i = 1; i <= Offsets.BeastTribeCount; i++)
             {
                 var result = Core.Memory.CallInjected64<IntPtr>(Offsets.GetBeastTribeExd, i);
-                tribes.Add(Core.Memory.Read<BeastTribeExd>(result));
-
-                Log.Verbose($"{Core.Memory.Read<BeastTribeExd>(result)}");
+                var name = Core.Memory.ReadStringUTF8(Core.Memory.CallInjected64<IntPtr>(Offsets.ResolveStringColumnIndirection, result));
+                var tribe = Core.Memory.Read<BeastTribeExd>(result);
+                tribe.Name = UppercaseFirst(name);
+                tribes.Add(tribe);
             }
 
             _beastTribes = tribes.ToArray();
@@ -68,6 +72,18 @@ namespace LlamaLibrary.Helpers
             {
                 Log.Information(tribes[i].Unlocked ? $"{_beastTribes[i].Name} - {tribes[i]} MaxRank: {_beastTribes[i].MaxRank}" : $"{_beastTribes[i].Name} - Not Unlocked");
             }
+        }
+
+        static string UppercaseFirst(string s)
+        {
+            // Check for empty string.
+            if (string.IsNullOrEmpty(s))
+            {
+                return string.Empty;
+            }
+
+            // Return char and concat substring.
+            return char.ToUpper(s[0]) + s.Substring(1);
         }
 
         public static void PrintDailies()
@@ -87,6 +103,7 @@ namespace LlamaLibrary.Helpers
             return Offsets.DailyQuestCount - accepted;
         }
 
+        /*
         public static string GetBeastTribeName(int index)
         {
             var result = Core.Memory.CallInjected64<IntPtr>(Offsets.GetBeastTribeExd, index);
@@ -98,6 +115,7 @@ namespace LlamaLibrary.Helpers
             var result = Core.Memory.CallInjected64<IntPtr>(Offsets.GetBeastTribeExd, index);
             return result != IntPtr.Zero ? Core.Memory.Read<byte>(result + 0x22) : 0;
         }
+        */
 
         public static DailyQuestRead[] GetCurrentDailies()
         {
@@ -107,8 +125,11 @@ namespace LlamaLibrary.Helpers
 
         public static BeastTribeStat[] GetBeastTribes()
         {
-            //Log.Information($"{(Offsets.QuestPointer + 1448).ToString("X")} {Offsets.BeastTribeStart}");//Offsets.BeastTribeStart
+            //6.5
+#if RB_CN
             return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + 2896, Offsets.BeastTribeCount);
+#endif
+            return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + 0xBC8, Offsets.BeastTribeCount);
         }
 
         public static int GetBeastTribeRank(int tribe)
