@@ -209,6 +209,7 @@ namespace LlamaLibrary.Memory
                             asm.AddLine("JMP {0}", InventoryUpdatePatch.Offsets.OrginalCall);
                             var jzPatch = asm.Assemble();
                             Core.Memory.WriteBytes(InventoryUpdatePatch.Offsets.PatchLocation, jzPatch);
+                            InventoryUpdatePatch.Offsets.OriginalJump = InventoryUpdatePatch.Offsets.OrginalCall;
                         }
 
                         PatchManager.Initialize();
