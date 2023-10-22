@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ff14bot.Enums;
+using ff14bot.Managers;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Extensions;
 
@@ -9,23 +11,35 @@ namespace LlamaLibrary.RemoteWindows
     public static class Conversation
     {
         public static bool IsOpen => SelectString.IsOpen || SelectIconString.IsOpen || CutSceneSelectString.IsOpen;
-
+        private static readonly byte[] badbytes = new byte[] { 02, 0x16, 01, 03 };
         public static List<string> GetConversationList
         {
             get
             {
+                var list = new List<string>();
                 if (SelectString.IsOpen)
                 {
-                    return SelectString.Lines();
+                    list = SelectString.Lines();
                 }
 
                 if (SelectIconString.IsOpen)
                 {
-                    return SelectIconString.Lines();
+                    list = SelectIconString.Lines();
                 }
 
-                return new List<string>();
+                if (DataManager.CurrentLanguage == Language.Ger || DataManager.CurrentLanguage == Language.Fre)
+                {
+                    list = list.Select(x => x.StripHypen()).ToList();
+                }
+
+                return list;
             }
+        }
+
+        public static string StripHypen(this string line)
+        {
+            var bytes = System.Text.Encoding.UTF8.GetBytes(line).Where(i=> !badbytes.Contains(i)).ToArray();
+            return System.Text.Encoding.UTF8.GetString(bytes);
         }
 
         public static void SelectLine(uint line)
