@@ -127,11 +127,13 @@ namespace LlamaLibrary.Helpers.WorldTravel
         {
             if (!WorldHelper.CheckDC((World)worldId))
             {
+                Log.Error("Not on the same DC");
                 return false;
             }
 
             if (WorldHelper.CurrentWorldId == worldId)
             {
+                Log.Information("Already on the same world");
                 return true;
             }
 
@@ -197,9 +199,20 @@ namespace LlamaLibrary.Helpers.WorldTravel
                                 Log.Information($"CurrentWorld: {WorldHelper.CurrentWorld.WorldName()} Ping: {PingChecker.CurrentPing}");
                             }
                         }
+                        else
+                        {
+                            Log.Error("Select Yesno did not open");
+                            return false;
+                        }
 
                         break;
                     }
+                }
+                else
+                {
+                    Log.Information($"Already on {((World)worldId).WorldName()}");
+                    WorldTravelSelect.Instance.Close();
+                    await Coroutine.Sleep(500);
                 }
 
                 if (WorldTravelSelect.Instance.IsOpen)
@@ -207,6 +220,11 @@ namespace LlamaLibrary.Helpers.WorldTravel
                     WorldTravelSelect.Instance.Close();
                     await Coroutine.Sleep(500);
                 }
+            }
+            else
+            {
+                Log.Error("World Travel Menu did not open");
+                return false;
             }
 
             if (WorldHelper.IsOnHomeWorld)
