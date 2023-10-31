@@ -1171,6 +1171,172 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        public static async Task TurninSplendorous651Crafting()
+        {
+            var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
+            {
+                // Connoisseur's Item, job index, position on list, collectability, reward item
+                { 41262, new CraftingRelicTurnin(41262, 0, 0, 800, 41278) },
+                { 41263, new CraftingRelicTurnin(41263, 1, 0, 800, 41279) },
+                { 41264, new CraftingRelicTurnin(41264, 2, 0, 800, 41280) },
+                { 41265, new CraftingRelicTurnin(41265, 3, 0, 800, 41281) },
+                { 41266, new CraftingRelicTurnin(41266, 4, 0, 800, 41282) },
+                { 41267, new CraftingRelicTurnin(41267, 5, 0, 800, 41283) },
+                { 41268, new CraftingRelicTurnin(41268, 6, 0, 800, 41284) },
+                { 41269, new CraftingRelicTurnin(41269, 7, 0, 800, 41285) },
+                { 41290, new CraftingRelicTurnin(41290, 8, 0, 580, 41296) },
+                { 41292, new CraftingRelicTurnin(41292, 9, 0, 580, 41297) },
+
+                { 41254, new CraftingRelicTurnin(41254, 0, 1, 750, 41270) },
+                { 41255, new CraftingRelicTurnin(41255, 1, 1, 750, 41271) },
+                { 41256, new CraftingRelicTurnin(41256, 2, 1, 750, 41272) },
+                { 41257, new CraftingRelicTurnin(41257, 3, 1, 750, 41273) },
+                { 41258, new CraftingRelicTurnin(41258, 4, 1, 750, 41274) },
+                { 41259, new CraftingRelicTurnin(41259, 5, 1, 750, 41275) },
+                { 41260, new CraftingRelicTurnin(41260, 6, 1, 750, 41276) },
+                { 41261, new CraftingRelicTurnin(41261, 7, 1, 750, 41277) },
+                { 41286, new CraftingRelicTurnin(41286, 8, 1, 570, 41294) },
+                { 41288, new CraftingRelicTurnin(41288, 9, 1, 570, 41295) },
+
+                { 39781, new CraftingRelicTurnin(39781, 0, 2, 780, 39797) },
+                { 39782, new CraftingRelicTurnin(39782, 1, 2, 780, 39798) },
+                { 39783, new CraftingRelicTurnin(39783, 2, 2, 780, 39799) },
+                { 39784, new CraftingRelicTurnin(39784, 3, 2, 780, 39800) },
+                { 39785, new CraftingRelicTurnin(39785, 4, 2, 780, 39801) },
+                { 39786, new CraftingRelicTurnin(39786, 5, 2, 780, 39802) },
+                { 39787, new CraftingRelicTurnin(39787, 6, 2, 780, 39803) },
+                { 39788, new CraftingRelicTurnin(39788, 7, 2, 780, 39804) },
+                { 39811, new CraftingRelicTurnin(39811, 8, 2, 580, 39821) },
+                { 39813, new CraftingRelicTurnin(39813, 9, 2, 570, 39822) },
+
+                { 39773, new CraftingRelicTurnin(39773, 0, 3, 720, 39789) },
+                { 39774, new CraftingRelicTurnin(39774, 1, 3, 720, 39790) },
+                { 39775, new CraftingRelicTurnin(39775, 2, 3, 720, 39791) },
+                { 39776, new CraftingRelicTurnin(39776, 3, 3, 720, 39792) },
+                { 39777, new CraftingRelicTurnin(39777, 4, 3, 720, 39793) },
+                { 39778, new CraftingRelicTurnin(39778, 5, 3, 720, 39794) },
+                { 39779, new CraftingRelicTurnin(39779, 6, 3, 720, 39795) },
+                { 39780, new CraftingRelicTurnin(39780, 7, 3, 720, 39796) },
+                { 39805, new CraftingRelicTurnin(39805, 8, 3, 720, 39817) },
+                { 39807, new CraftingRelicTurnin(39807, 9, 3, 720, 39818) },
+
+                { 38764, new CraftingRelicTurnin(38764, 0, 4, 660, 38780) },
+                { 38765, new CraftingRelicTurnin(38765, 1, 4, 660, 38781) },
+                { 38766, new CraftingRelicTurnin(38766, 2, 4, 660, 38782) },
+                { 38767, new CraftingRelicTurnin(38767, 3, 4, 660, 38783) },
+                { 38768, new CraftingRelicTurnin(38768, 4, 4, 660, 38784) },
+                { 38769, new CraftingRelicTurnin(38769, 5, 4, 660, 38785) },
+                { 38770, new CraftingRelicTurnin(38770, 6, 4, 660, 38786) },
+                { 38771, new CraftingRelicTurnin(38771, 7, 4, 660, 38787) },
+                { 38796, new CraftingRelicTurnin(38790, 8, 4, 570, 38805) },
+                { 38794, new CraftingRelicTurnin(38794, 9, 4, 570, 38800) },
+
+                { 38756, new CraftingRelicTurnin(38756, 0, 5, 540, 38772) },
+                { 38757, new CraftingRelicTurnin(38757, 1, 5, 540, 38773) },
+                { 38758, new CraftingRelicTurnin(38758, 2, 5, 540, 38774) },
+                { 38759, new CraftingRelicTurnin(38759, 3, 5, 540, 38775) },
+                { 38760, new CraftingRelicTurnin(38760, 4, 5, 540, 38776) },
+                { 38761, new CraftingRelicTurnin(38761, 5, 5, 540, 38777) },
+                { 38762, new CraftingRelicTurnin(38762, 6, 5, 540, 38778) },
+                { 38763, new CraftingRelicTurnin(38763, 7, 5, 540, 38779) },
+                { 38790, new CraftingRelicTurnin(38790, 8, 5, 570, 38801) },
+                { 38788, new CraftingRelicTurnin(38788, 9, 5, 570, 38804) },
+
+                { 41300, new CraftingRelicTurnin(41300, 10, 0, 9, 41304) },
+                { 41301, new CraftingRelicTurnin(41301, 10, 1, 384, 41304) },
+                { 41298, new CraftingRelicTurnin(41298, 10, 2, 501, 41303) },
+                { 41299, new CraftingRelicTurnin(41299, 10, 3, 501, 41303) },
+                { 39815, new CraftingRelicTurnin(39815, 10, 4, 94, 39823) },
+                { 39816, new CraftingRelicTurnin(39816, 10, 5, 47, 39824) },
+                { 39809, new CraftingRelicTurnin(39809, 10, 6, 82, 39819) },
+                { 39810, new CraftingRelicTurnin(39810, 10, 7, 322, 39820) },
+                { 38798, new CraftingRelicTurnin(38798, 10, 8, 9, 38806) },
+                { 38799, new CraftingRelicTurnin(38799, 10, 9, 425, 38807) },
+                { 38792, new CraftingRelicTurnin(38792, 10, 10, 47, 38802) },
+                { 38793, new CraftingRelicTurnin(38793, 10, 11, 283, 38803) },
+            };
+
+            var collectables = InventoryManager.FilledSlots.Where(i => i.IsCollectable).Select(x => x.RawItemId).Distinct();
+            var collectablesAll = InventoryManager.FilledSlots.Where(i => i.IsCollectable);
+
+            if (collectables.Any(i => turnItemList.Keys.Contains(i)))
+            {
+                Log.Information("Have collectables");
+                foreach (var collectable in collectablesAll)
+                {
+                    if (turnItemList.Keys.Contains(collectable.RawItemId))
+                    {
+                        var turnin = turnItemList[collectable.RawItemId];
+                        if (collectable.Collectability < turnin.MinCollectability)
+                        {
+                            Log.Information($"Discarding {collectable.Name} is at {collectable.Collectability} which is under {turnin.MinCollectability}");
+                            collectable.Discard();
+                        }
+                    }
+                }
+
+                collectables = InventoryManager.FilledSlots.Where(i => i.IsCollectable).Select(x => x.RawItemId).Distinct();
+
+                var npc = GameObjectManager.GetObjectByNPCId(1045069);
+                if (npc == null)
+                {
+                    await Navigation.GetTo(819, new Vector3(-39.10532f, 20.04979f, -171.9984f));
+                    npc = GameObjectManager.GetObjectByNPCId(1045069);
+                }
+
+                if (npc != null && !npc.IsWithinInteractRange)
+                {
+                    await Navigation.GetTo(819, new Vector3(-39.10532f, 20.04979f, -171.9984f));
+                }
+
+                if (npc != null && npc.IsWithinInteractRange)
+                {
+                    npc.Interact();
+                    await Coroutine.Wait(10000, () => Conversation.IsOpen);
+                    if (Conversation.IsOpen)
+                    {
+                        Conversation.SelectLine(0U);
+                    }
+                }
+
+                await Coroutine.Wait(10000, () => CollectablesShop.Instance.IsOpen);
+
+                if (CollectablesShop.Instance.IsOpen)
+                {
+                    Log.Verbose("CollectableShop window open");
+                    foreach (var item in collectables)
+                    {
+                        if (!turnItemList.Keys.Contains(item))
+                        {
+                            continue;
+                        }
+
+                        Log.Information($"Turning in {DataManager.GetItem(item).CurrentLocaleName}");
+                        var turnin = turnItemList[item];
+
+                        Log.Verbose($"Pressing job {turnin.Job}");
+                        CollectablesShop.Instance.SelectJob(turnin.Job);
+                        await Coroutine.Sleep(500);
+
+                        Log.Verbose($"Pressing position {turnin.Position}");
+                        CollectablesShop.Instance.SelectItem(turnin.Position);
+                        await Coroutine.Sleep(1000);
+                        var i = 0;
+                        while (CollectablesShop.Instance.TurninCount > 0)
+                        {
+                            Log.Verbose($"Pressing trade {i}");
+                            i++;
+                            CollectablesShop.Instance.Trade();
+                            await Coroutine.Sleep(100);
+                        }
+                    }
+
+                    CollectablesShop.Instance.Close();
+                    await Coroutine.Wait(10000, () => !CollectablesShop.Instance.IsOpen);
+                }
+            }
+        }
+
         public static async Task TurninCNSplendorousCrafting()
         {
             var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
