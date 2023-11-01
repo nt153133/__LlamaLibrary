@@ -204,6 +204,15 @@
     <Compile Include="RemoteWindows\ContentsTutorial.cs" />
     <Compile Include="RemoteWindows\DawnStory.cs" />
     <Compile Include="RemoteWindows\FGSEnterDialog.cs" />
+    <Compile Include="RemoteWindows\FGSExitDialog.cs" />
+    <Compile Include="RemoteWindows\FGSHudGoal.cs" />
+    <Compile Include="RemoteWindows\FGSHudRaceLog.cs" />
+    <Compile Include="RemoteWindows\FGSHudScore.cs" />
+    <Compile Include="RemoteWindows\FGSHudStatus.cs" />
+    <Compile Include="RemoteWindows\FGSResult.cs" />
+    <Compile Include="RemoteWindows\FGSSpectatorMenu.cs" />
+    <Compile Include="RemoteWindows\FGSStageDescription.cs" />
+    <Compile Include="RemoteWindows\FGSStageIntroBanner.cs" />
     <Compile Include="RemoteWindows\FishGuide2.cs" />
     <Compile Include="RemoteWindows\FreeCompanyChest.cs" />
     <Compile Include="RemoteWindows\FateProgress.cs" />
@@ -242,6 +251,10 @@
     <Compile Include="RemoteWindows\WorldTravelFinderReady.cs" />
     <Compile Include="RemoteWindows\WorldTravelSelect.cs" />
     <Compile Include="RemoteWindows\_CharaMakeFeature.cs" />
+    <Compile Include="RemoteWindows\_FGSCountDown.cs" />
+    <Compile Include="RemoteWindows\_FGSEliminated.cs" />
+    <Compile Include="RemoteWindows\_FGSQualified.cs" />
+    <Compile Include="RemoteWindows\_FGSRoundover.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="Retainers\CompleteRetainer.cs" />
     <Compile Include="Retainers\HelperFunctions.cs" />
