@@ -92,7 +92,7 @@ public class ResidenceInfo
             return null;
         }
 
-        return new HouseLocation(info.World, (HousingZone)info.Zone, info.Ward, info.Plot);
+        return new HouseLocation((HousingZone)info.Zone, info.Ward, info.Plot);
     }
 
     public override string ToString()
