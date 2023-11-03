@@ -42,6 +42,8 @@ namespace LlamaLibrary.Helpers
         private static Action<string> _removeCompletionHook;
         private static Func<List<string>> _getHookList;
         private static Func<Task<bool>> _exitCrafting;
+        private static Func<HashSet<uint>> _getAllOrderItems;
+        private static Action<HashSet<uint>> _setTrashExclusionItems;
 
         private static Func<Task<bool>> _isProductKeyValid;
 
@@ -85,6 +87,10 @@ namespace LlamaLibrary.Helpers
                     {
                         try
                         {
+                            // 6.51f3
+                            _getAllOrderItems = (Func<HashSet<uint>>)Delegate.CreateDelegate(typeof(Func<HashSet<uint>>), apiObject, "GetAllOrderItems");
+                            _setTrashExclusionItems = (Action<HashSet<uint>>)Delegate.CreateDelegate(typeof(Action<HashSet<uint>>), apiObject, "SetTrashExclusions");
+
                             _getCurrentAreaName = (Func<string>)Delegate.CreateDelegate(typeof(Func<string>), apiObject, "GetCurrentAreaName");
                             _stopGently = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGently");
                             _kill = (Func<Character, Task>)Delegate.CreateDelegate(typeof(Func<Character, Task>), apiObject, "Kill");
@@ -123,6 +129,13 @@ namespace LlamaLibrary.Helpers
             //_travelMethod = travelMethod;
 
             Log.Information("Lisbeth found.");
+        }
+
+        public static void SetTrashExclusionItems(HashSet<uint> items)
+        {
+            if (items == null) { return; }
+
+            _setTrashExclusionItems?.Invoke(items);
         }
 
         public static async Task<bool> HasLisbeth()

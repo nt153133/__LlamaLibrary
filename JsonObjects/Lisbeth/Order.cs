@@ -1,4 +1,6 @@
-﻿namespace LlamaLibrary.JsonObjects.Lisbeth
+﻿using System.Collections.Generic;
+
+namespace LlamaLibrary.JsonObjects.Lisbeth
 {
     public class Order
     {
@@ -68,5 +70,7 @@
         public bool IsSideOrder { get; set; }
 
         public bool SkipFinalItem { get; set; }
+
+        public HashSet<uint> TrashExclusionItems { get; set; }
     }
 }
