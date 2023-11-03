@@ -49,6 +49,7 @@ namespace LlamaLibrary.Helpers
 
         //private static Func<string, Vector3, Func<bool>, bool, Task<bool>>? _travelToWithArea;
         private static Func<uint, uint, Vector3, Func<bool>, bool, Task<bool>>? _travelTo;
+
         private static Func<uint, Vector3, Func<bool>, bool, Task<bool>>? _travelToWithoutSubzone;
         private static Action _openWindow;
         private static Func<string, Task<string>> _getOrderExpansionAsJson;
@@ -129,13 +130,6 @@ namespace LlamaLibrary.Helpers
             //_travelMethod = travelMethod;
 
             Log.Information("Lisbeth found.");
-        }
-
-        public static void SetTrashExclusionItems(HashSet<uint> items)
-        {
-            if (items == null) { return; }
-
-            _setTrashExclusionItems?.Invoke(items);
         }
 
         public static async Task<bool> HasLisbeth()
@@ -332,6 +326,18 @@ namespace LlamaLibrary.Helpers
         public static async Task<bool> IsProductKeyValid()
         {
             return await Coroutine.ExternalTask(_isProductKeyValid());
+        }
+
+        public static HashSet<uint> GetAllOrderItems()
+        {
+            return _getAllOrderItems?.Invoke();
+        }
+
+        public static void SetTrashExclusionItems(HashSet<uint> items)
+        {
+            if (items == null) { return; }
+
+            _setTrashExclusionItems?.Invoke(items);
         }
     }
 }
