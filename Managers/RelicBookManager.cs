@@ -34,8 +34,8 @@ namespace LlamaLibrary.Managers
         private static readonly Dictionary<Language, string> CmnDefRelicWeapon025GetNote_00167_9 = new()
         {
             { Language.Eng, "The Books of Fire" },
-            { Language.Jap, "炎天の書" },
-            { Language.Fre, "Livre du feu céleste" },
+            { Language.Jap, "炎の書" },
+            { Language.Fre, "Livre du feu" },
             { Language.Ger, "Tafel des Himmelsfeuers" },
             { Language.Chn, "火天文书(提升力量)目前完成" }
         };
@@ -44,9 +44,9 @@ namespace LlamaLibrary.Managers
         private static readonly Dictionary<Language, string> CmnDefRelicWeapon025GetNote_00167_10 = new()
         {
             { Language.Eng, "The Books of Fall" },
-            { Language.Jap, "水天の書" },
-            { Language.Fre, "Livre de l'eau céleste " },
-            { Language.Ger, "Tafel des Himmelsfalles " },
+            { Language.Jap, "水の書" },
+            { Language.Fre, "Livre de l'eau" },
+            { Language.Ger, "Tafel des Himmelsfalles" },
             { Language.Chn, "水天文书(提升耐力)目前完成" }
         };
 
@@ -54,8 +54,8 @@ namespace LlamaLibrary.Managers
         private static readonly Dictionary<Language, string> CmnDefRelicWeapon025GetNote_00167_11 = new()
         {
             { Language.Eng, "The Books of Wind" },
-            { Language.Jap, "風天の書" },
-            { Language.Fre, "Livre du vent céleste" },
+            { Language.Jap, "風の書" },
+            { Language.Fre, "Livre du vent" },
             { Language.Ger, "Tafel des Himmelswindes" },
             { Language.Chn, "风天文书(提升直击)目前完成" }
         };
@@ -64,9 +64,9 @@ namespace LlamaLibrary.Managers
         private static readonly Dictionary<Language, string> CmnDefRelicWeapon025GetNote_00167_12 = new()
         {
             { Language.Eng, "The Books of Earth" },
-            { Language.Jap, "土天の書" },
-            { Language.Fre, "Livre de la terre céleste" },
-            { Language.Ger, "Tafel der Himmelserde " },
+            { Language.Jap, "土の書" },
+            { Language.Fre, "Livre de la terre" },
+            { Language.Ger, "Tafel der Himmelserde" },
             { Language.Chn, "土天文书(提升技能速度)目前完成" }
         };
 
@@ -75,7 +75,7 @@ namespace LlamaLibrary.Managers
         {
             { Language.Eng, "The Book of Netherfire" },
             { Language.Jap, "炎獄の書" },
-            { Language.Fre, "Livre du feu infernal" },
+            { Language.Fre, "Livre du feu" },
             { Language.Ger, "Tafel des Jenseitsfeuers" },
             { Language.Chn, "火狱文书目前完成" }
         };
@@ -85,7 +85,7 @@ namespace LlamaLibrary.Managers
         {
             { Language.Eng, "The Book of Netherfall" },
             { Language.Jap, "水獄の書" },
-            { Language.Fre, "Livre de l'eau infernale" },
+            { Language.Fre, "Livre de l'eau" },
             { Language.Ger, "Tafel des Jenseitsfalles" },
             { Language.Chn, "水狱文书目前完成" }
         };
