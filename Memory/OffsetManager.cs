@@ -215,6 +215,22 @@ namespace LlamaLibrary.Memory
                         PatchManager.Initialize();
                         //PatchManager.Enable<InventoryUpdatePatch>();
                         Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+                        var lastCommitfile = Path.Combine(GeneralFunctions.SourceDirectory().Parent.FullName, "LastCommit.txt");
+                        if (File.Exists(lastCommitfile))
+                        {
+                            var lastCommit = File.ReadAllText(lastCommitfile).Trim();
+                            if (DateTime.TryParse(lastCommit, out DateTime result))
+                            {
+                                Logger.Information($"Last Commit: {result.ToUniversalTime():ddd, dd MMM yyy HH:mm:ss ‘UTC’}");
+                                Logger.Information($"Raw Last Commit: {lastCommit}");
+                            }
+                            else
+                            {
+                                Logger.Information($"Last Commit: '{lastCommit}'");
+                            }
+
+                            //Logger.Information($"Last Commit: {lastCommit}");
+                        }
                         //initStarted = true;
                         if (_debug)
                         {
