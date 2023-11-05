@@ -1,0 +1,15 @@
+name: Last Commit Action
+run-name: Update Last Commit File
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          echo ${{ github.event.head_commit.timestamp}} > LastCommit.txt
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Auto updating LastCommit.txt"
+          git push
