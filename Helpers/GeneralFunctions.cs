@@ -11,6 +11,7 @@ using Clio.Utilities;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Enums;
+using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Objects;
@@ -31,6 +32,22 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new(nameof(GeneralFunctions), Colors.Aquamarine);
 
+        private static FrameCachedObject<QuestLayout[]>? _questLayouts = null;
+
+        public static FrameCachedObject<QuestLayout[]>? QuestLayouts
+        {
+            get
+            {
+                if (_questLayouts == null)
+                {
+                    var field = typeof(QuestLogManager).GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).FirstOrDefault(i => i.FieldType == typeof(FrameCachedObject<QuestLayout[]>));
+                    _questLayouts = field?.GetValue(null) as FrameCachedObject<QuestLayout[]>;
+                }
+
+                return _questLayouts;
+            }
+        }
+
         public static readonly InventoryBagId[] MainBags = { InventoryBagId.Bag1, InventoryBagId.Bag2, InventoryBagId.Bag3, InventoryBagId.Bag4 };
 
         public static readonly InventoryBagId[] SaddlebagIds =
@@ -41,6 +58,22 @@ namespace LlamaLibrary.Helpers
         public static IEnumerable<BagSlot> MainBagsFilledSlots()
         {
             return InventoryManager.GetBagsByInventoryBagId(MainBags).SelectMany(x => x.FilledSlots);
+        }
+
+        public static ClassJobType QuestClass(int questId)
+        {
+            if (questId > 65536)
+            {
+                questId -= 65536;
+            }
+
+            var quest = QuestLayouts?.Value.FirstOrDefault(i => i.ID == questId);
+            if (quest == null)
+            {
+                return ClassJobType.Adventurer;
+            }
+
+            return (ClassJobType)quest.Value.QuestBytes[7];
         }
 
         public static bool IsJumping => Core.Memory.NoCacheRead<byte>(Offsets.Conditions + Offsets.JumpingCondition) != 0;
