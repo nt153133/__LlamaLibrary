@@ -454,7 +454,7 @@ public class LoadServerProfile
             }
         }
 
-        /*
+
         if (QueueType == 2 && !DutySupportDuties.Contains((uint)dungeonDutyId))
         {
             string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} is not a Duty Support dungeon.";
@@ -463,7 +463,7 @@ public class LoadServerProfile
             TreeRoot.Stop($"{message}");
             return false;
         }
-        */
+
 
         return true;
     }
@@ -487,7 +487,7 @@ public class LoadServerProfile
 
             if (row == IntPtr.Zero)
             {
-                row = GeneralFunctions.GetDawnContentRow(i + 200 - 32);
+                row = GeneralFunctions.GetDawnContentRow(i + 200 - 24);
             }
 
             if (row == IntPtr.Zero)
