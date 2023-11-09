@@ -120,6 +120,12 @@ namespace LlamaLibrary.Memory
 
         [Offset("Search 48 8D 0D ? ? ? ? 40 88 74 24 ? E8 ? ? ? ? 8B D8 Add 3 TraceRelative")]
         public static IntPtr AnimaLightThing;
+
+        [Offset("Search E8 ? ? ? ? 4C 8B A4 24 ? ? ? ? 8D 58 ? Add 1 TraceRelative")]
+        public static IntPtr GetDawnContentRowCount;
+
+        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 8B 08 E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 ? Add 1 TraceRelative")]
+        public static IntPtr GetDawnContentRow;
     }
 
     public static partial class Offsets

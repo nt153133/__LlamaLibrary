@@ -1743,6 +1743,16 @@ namespace LlamaLibrary.Helpers
             Log.Information($"Voted for {name}");
         }
 
+        public static uint GetDawnContentRowCount()
+        {
+            return Core.Memory.CallInjected64<uint>(Offsets.GetDawnContentRowCount, new object[] { IntPtr.Zero });
+        }
+
+        public static IntPtr GetDawnContentRow(uint index)
+        {
+            return Core.Memory.CallInjected64<IntPtr>(Offsets.GetDawnContentRow, new object[] { index });
+        }
+
         public static bool IsInstanceContentCompleted(uint instantContentId)
         {
             return Core.Memory.CallInjected64<bool>(Offsets.IsInstanceContentCompleted, instantContentId);
