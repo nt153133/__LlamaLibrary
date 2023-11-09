@@ -230,7 +230,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsDutyAvailable(int duty)
         {
-            return DutyManager.AvailableContent.Keys.Contains((uint)duty);
+            return GeneralFunctions.IsDutyUnlocked((uint)duty);
         }
 
         public static bool IsSecretRecipeBookUnlocked(int tomeId)
