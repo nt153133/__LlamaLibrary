@@ -107,8 +107,10 @@ public class LoadServerProfile
 
         if (profileType == ProfileType.Duty)
         {
-            await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, reqItemLevel, dungeonLevel);
-            return;
+            {
+                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, reqItemLevel, dungeonLevel);
+                return;
+            }
         }
 
         return;
@@ -196,55 +198,27 @@ public class LoadServerProfile
     {
         await GeneralFunctions.StopBusy(false);
 
+        if (UnlockQuest != 0)
+        {
+            if (!QuestLogManager.IsQuestCompleted((uint)UnlockQuest))
+            {
+                Log.Information($"Unlock quest {DataManager.GetLocalizedQuestName(UnlockQuest)} is not complete. Loading profile to complete quest.");
+                ConditionParser.Initialize();
+                NeoProfileManager.Load(profileUrl, false);
+                NeoProfileManager.UpdateCurrentProfileBehavior();
+                return;
+            }
+        }
+
+        if (!CanQueue(dungeonDutyId, dungeonZoneId, QueueType, UnlockQuest, ItemLevel, dungeonLevel))
+        {
+            return;
+        }
+
         while (WorldManager.ZoneId != dungeonZoneId)
         {
             while (DutyManager.QueueState == QueueState.None)
             {
-                if (!LlamaLibrary.ScriptConditions.Extras.IsDiscipleofWarClass() && !LlamaLibrary.ScriptConditions.Extras.IsDiscipleofMagicClass())
-                {
-                    string message = $"You must be on a DoW or DoM class to do a duty..";
-                    Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
-                    Log.Error($"{message}");
-                    TreeRoot.Stop($"{message}");
-                    return;
-                }
-
-                if (dungeonLevel != 0)
-                {
-                    if (Core.Me.ClassLevel < dungeonLevel)
-                    {
-                        string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} requires level {dungeonLevel}. Your level is {Core.Me.ClassLevel}. Please swap to a job that is at least level {dungeonLevel}.";
-                        Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
-                        Log.Error($"{message}");
-                        TreeRoot.Stop($"{message}");
-                        return;
-                    }
-                }
-
-                if (UnlockQuest != 0)
-                {
-                    if (!QuestLogManager.IsQuestCompleted((uint)UnlockQuest))
-                    {
-                        Log.Information($"Unlock quest {DataManager.GetLocalizedQuestName(UnlockQuest)} is not complete. Loading profile to complete quest.");
-                        ConditionParser.Initialize();
-                        NeoProfileManager.Load(profileUrl, false);
-                        NeoProfileManager.UpdateCurrentProfileBehavior();
-                        return;
-                    }
-                }
-
-                if (ItemLevel != 0)
-                {
-                    if (LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel() < ItemLevel)
-                    {
-                        string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} requires minimum Item Level of {ItemLevel}. Your Item Level is {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}. Please upgrade your gear.";
-                        Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
-                        Log.Error($"{message}.");
-                        TreeRoot.Stop($"Please upgrade your gear");
-                        return;
-                    }
-                }
-
                 if (GoToBarracks && (WorldManager.ZoneId != 534 && WorldManager.ZoneId != 535 && WorldManager.ZoneId != 536))
                 {
                     await LlamaLibrary.Helpers.GrandCompanyHelper.GetToGCBarracks();
@@ -432,5 +406,101 @@ public class LoadServerProfile
         }
 
         return;
+    }
+
+    internal static bool CanQueue(int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, int ItemLevel, int dungeonLevel)
+    {
+        if (!LlamaLibrary.Helpers.GeneralFunctions.IsDutyUnlocked((uint)dungeonDutyId))
+        {
+            string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} is not unlocked. Have you done the unlock quest?";
+            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+            Log.Error($"{message}");
+            TreeRoot.Stop($"{message}");
+            return false;
+        }
+
+        if (!LlamaLibrary.ScriptConditions.Extras.IsDiscipleofWarClass() && !LlamaLibrary.ScriptConditions.Extras.IsDiscipleofMagicClass())
+        {
+            string message = $"You must be on a DoW or DoM class to do a duty..";
+            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+            Log.Error($"{message}");
+            TreeRoot.Stop($"{message}");
+            return false;
+        }
+
+        if (dungeonLevel != 0)
+        {
+            if (Core.Me.ClassLevel < dungeonLevel)
+            {
+                string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} requires level {dungeonLevel}. Your level is {Core.Me.ClassLevel}. Please swap to a job that is at least level {dungeonLevel}.";
+                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                Log.Error($"{message}");
+                TreeRoot.Stop($"{message}");
+                return false;
+            }
+        }
+
+        if (ItemLevel != 0)
+        {
+            if (LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel() < ItemLevel)
+            {
+                string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} requires minimum Item Level of {ItemLevel}. Your Item Level is {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}. Please upgrade your gear.";
+                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                Log.Error($"{message}.");
+                TreeRoot.Stop($"Please upgrade your gear");
+                return false;
+            }
+        }
+
+        if (QueueType == 2 && !DutySupportDuties.Contains((uint)dungeonDutyId))
+        {
+            string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} is not a Duty Support dungeon.";
+            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+            Log.Error($"{message}");
+            TreeRoot.Stop($"{message}");
+            return false;
+        }
+
+        return true;
+    }
+
+    private static List<uint>? _dutySupportDuties;
+
+    public static List<uint> DutySupportDuties
+    {
+        get { return _dutySupportDuties ??= GetDutySupportDuties(); }
+    }
+
+    private static List<uint> GetDutySupportDuties()
+    {
+        var rowCount = GeneralFunctions.GetDawnContentRowCount();
+
+        var list = new List<uint>();
+
+        for (uint i = 0; i < rowCount; i++)
+        {
+            var row = GeneralFunctions.GetDawnContentRow(i);
+
+            if (row == IntPtr.Zero)
+            {
+                row = GeneralFunctions.GetDawnContentRow(i + 200);
+            }
+
+            if (row == IntPtr.Zero)
+            {
+                continue;
+            }
+
+            var content = Core.Memory.Read<uint>(row);
+
+            if (content == 0)
+            {
+                continue;
+            }
+
+            list.Add(content);
+        }
+
+        return list;
     }
 }
