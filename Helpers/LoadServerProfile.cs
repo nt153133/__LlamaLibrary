@@ -410,6 +410,7 @@ public class LoadServerProfile
 
     internal static bool CanQueue(int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, int ItemLevel, int dungeonLevel)
     {
+        /*
         if (!LlamaLibrary.Helpers.GeneralFunctions.IsDutyUnlocked((uint)dungeonDutyId))
         {
             string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} is not unlocked. Have you done the unlock quest?";
@@ -418,6 +419,7 @@ public class LoadServerProfile
             TreeRoot.Stop($"{message}");
             return false;
         }
+        */
 
         if (!LlamaLibrary.ScriptConditions.Extras.IsDiscipleofWarClass() && !LlamaLibrary.ScriptConditions.Extras.IsDiscipleofMagicClass())
         {
@@ -485,7 +487,7 @@ public class LoadServerProfile
 
             if (row == IntPtr.Zero)
             {
-                row = GeneralFunctions.GetDawnContentRow(i + 200);
+                row = GeneralFunctions.GetDawnContentRow(i + 200 - 32);
             }
 
             if (row == IntPtr.Zero)
