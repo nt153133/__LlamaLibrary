@@ -1688,6 +1688,11 @@ namespace LlamaLibrary.Helpers
             return DataManager.InstanceContentResults.TryGetValue(dutyId, out var instanceContentResult) && IsInstanceContentCompleted(instanceContentResult.Content);
         }
 
+        public static bool IsDutyUnlocked(uint dutyId)
+        {
+            return DataManager.InstanceContentResults.TryGetValue(dutyId, out var instanceContentResult) && Core.Memory.CallInjected64<bool>(Offsets.IsInstanceContentCompleted, instanceContentResult.Content);
+        }
+
         public static async Task PassOnAllLoot()
         {
             if (!LlamaLibrary.RemoteWindows.NotificationLoot.Instance.IsOpen)
