@@ -238,6 +238,11 @@ namespace LlamaLibrary.ScriptConditions
             return CraftingHelper.IsFolkloreBookUnlockedItem((uint)tomeId);
         }
 
+        public static bool DalamudDetected()
+        {
+            return GeneralFunctions.DalamudDetected();
+        }
+
         public static bool IsFolkloreBookUnlocked(int tomeId)
         {
             return CraftingHelper.IsFolkloreBookUnlockedItem((uint)tomeId);
