@@ -1758,6 +1758,11 @@ namespace LlamaLibrary.Helpers
             return Core.Memory.CallInjected64<bool>(Offsets.IsInstanceContentCompleted, instantContentId);
         }
 
+        public static bool DalamudDetected()
+        {
+            return Core.Memory.Process.Modules.Cast<ProcessModule>().Any(processModule => processModule.ModuleName == "Dalamud.dll");
+        }
+
         [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
         public static string SourceFileName()
         {
