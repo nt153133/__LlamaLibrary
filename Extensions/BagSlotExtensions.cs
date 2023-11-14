@@ -52,8 +52,10 @@ namespace LlamaLibrary.Extensions
             [Offset("Search 40 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F B7 F1")]
             public static IntPtr RemoveMateriaFunc;
 
+            //6.51 hotfix
+            [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 8B 7C 24 ? 84 C0 Add 1 Read32")]
             //6.51
-            [Offset("Search BA ? ? ? ? E8 ? ? ? ? 33 D2 48 8B CD E8 ? ? ? ? 48 8B 7C 24 ? Add 1 Read32")]
+            //[Offset("Search BA ? ? ? ? E8 ? ? ? ? 33 D2 48 8B CD E8 ? ? ? ? 48 8B 7C 24 ? Add 1 Read32")]
             [OffsetCN("Search BA ? ? ? ? E8 ? ? ? ? 48 8B CD E8 ? ? ? ? 48 8B 7C 24 ? Add 1 Read32")]
             public static int DesynthId;
 
