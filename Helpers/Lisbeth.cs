@@ -88,10 +88,6 @@ namespace LlamaLibrary.Helpers
                     {
                         try
                         {
-                            // 6.51f3
-                            _getAllOrderItems = (Func<HashSet<uint>>)Delegate.CreateDelegate(typeof(Func<HashSet<uint>>), apiObject, "GetAllOrderItems");
-                            _setTrashExclusionItems = (Action<HashSet<uint>>)Delegate.CreateDelegate(typeof(Action<HashSet<uint>>), apiObject, "SetTrashExclusions");
-
                             _getCurrentAreaName = (Func<string>)Delegate.CreateDelegate(typeof(Func<string>), apiObject, "GetCurrentAreaName");
                             _stopGently = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGently");
                             _kill = (Func<Character, Task>)Delegate.CreateDelegate(typeof(Func<Character, Task>), apiObject, "Kill");
@@ -115,6 +111,13 @@ namespace LlamaLibrary.Helpers
                             _openWindow = (System.Action)Delegate.CreateDelegate(typeof(System.Action), apiObject, "OpenWindow");
                             _getOrderExpansionAsJson = (Func<string, Task<string>>)Delegate.CreateDelegate(typeof(Func<string, Task<string>>), apiObject, "GetOrderExpansionAsJson");
                             _isProductKeyValid = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), apiObject, "IsProductKeyValid");
+
+                            // 6.51f3
+                            // Moving these to the bottom as CN doesn't have 6.51 yet
+                            #if !RB_CN
+                            _getAllOrderItems = (Func<HashSet<uint>>)Delegate.CreateDelegate(typeof(Func<HashSet<uint>>), apiObject, "GetAllOrderItems");
+                            _setTrashExclusionItems = (Action<HashSet<uint>>)Delegate.CreateDelegate(typeof(Action<HashSet<uint>>), apiObject, "SetTrashExclusions");
+                            #endif
                         }
                         catch (Exception e)
                         {
