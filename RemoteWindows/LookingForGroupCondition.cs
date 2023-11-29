@@ -46,6 +46,11 @@ namespace LlamaLibrary.RemoteWindows
             SendAction(2, 3, 0x21, 4, 1);
         }
 
+        public void SetIlvl(int ilvl)
+        {
+            SendAction(3, 3, 0xB, 4, (ulong)ilvl, 2, 1);
+        }
+
         public void EnableSprout()
         {
             SendAction(3, 3, 0x12, 4, 0, 4, 1);
