@@ -113,7 +113,7 @@ namespace LlamaLibrary.Helpers
         public static void ClearInput()
         {
             using var seStringAlloc = Core.Memory.CreateAllocatedMemory(0x68);
-            StringCtorFromSequence(seStringAlloc.Address, "\r", 0xFFFFFFFF);
+            StringCtorFromSequence(seStringAlloc.Address, "\0", 0xFFFFFFFF);
             Core.Memory.CallInjected64<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 1);
         }
     }
