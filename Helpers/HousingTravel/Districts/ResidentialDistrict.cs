@@ -370,6 +370,11 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 return false;
             }
 
+            if (closestAetheryte.Subdivision != closestAetheryteMe.Subdivision)
+            {
+                return true;
+            }
+
             if (!closestAetheryte.Equals(closestAetheryteMe))
             {
                 return closestAetheryteMe.Location.Distance(Core.Me.Location) < location.Distance(Core.Me.Location);
