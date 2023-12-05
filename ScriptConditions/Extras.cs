@@ -354,5 +354,10 @@ namespace LlamaLibrary.ScriptConditions
         {
             return DutyManager.InInstance && (AgentVoteMVP.Instance.CanToggle || VoteMvp.Instance.IsOpen);
         }
+
+        public static bool IsInNPCParty()
+        {
+            return PartyManager.VisibleMembers.Any(i=> i.GetType() == typeof(TrustPartyMember));
+        }
     }
 }
