@@ -29,11 +29,11 @@ public class GilShopping
         { 38827, 1044548 },
         { 38828, 1044548 },
         // Margrat Items
-        { 41071, 1046406 }, // Energizing Eye-lixir Components
-        { 41072, 1046406 }, // Researcher's Relaxtion Kit Components
         { 41073, 1046406 }, // Cushion Care Package Components
         { 41074, 1046406 }, // Feline Recreational Device Components
-        { 41075, 1046406 }, // Mesmerizing Minitature Components
+        { 41075, 1046406 }, // Mesmerizing Miniature Components
+        { 41076, 1046406 }, // Energizing Eye-lixir Components
+        { 41077, 1046406 }, // Researcher's Relaxtion Kit Components
     };
 
     public static Npc AndenVendor = new Npc(1044548, 816, new Vector3(-246.9673f, 51.059f, 617.0291f));
