@@ -53,7 +53,7 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
-        public static async Task<bool> RunCustomDeliveriesBySelection(bool doZhloe, bool doMnaago, bool doKurenai, bool doAdkiragh, bool doKaishirr, bool doEhlltou, bool doCharlemend, bool doAmeliance, bool doAnden, DohClasses dohClass = DohClasses.Carpenter)
+        public static async Task<bool> RunCustomDeliveriesBySelection(bool doZhloe, bool doMnaago, bool doKurenai, bool doAdkiragh, bool doKaishirr, bool doEhlltou, bool doCharlemend, bool doAmeliance, bool doAnden, bool doMargrat, DohClasses dohClass = DohClasses.Carpenter)
         {
             if (Navigator.NavigationProvider == null)
             {
@@ -114,6 +114,18 @@ namespace LlamaLibrary.Utilities
             if (doAnden)
             {
                 var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Anden");
+                await CraftThenHandinNpc(npc, dohClass, false);
+            }
+
+            if (doAnden)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Anden");
+                await CraftThenHandinNpc(npc, dohClass, false);
+            }
+
+            if (doMargrat)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Margrat");
                 await CraftThenHandinNpc(npc, dohClass, false);
             }
 

@@ -124,5 +124,19 @@
     "Name": "Anden",
     "RequiredQuest": 70251,
     "Index": 9
+  },
+  {
+    "npcId": 1046073,
+    "Zone": 956,
+    "Location": {
+      "X": -53.6355,
+      "Y": -29.49729,
+      "Z": -65.14081,
+      "MagnitudeSqr": 7990.181,
+      "Magnitude": 89.38781
+    },
+    "Name": "Margrat",
+    "RequiredQuest": 70351,
+    "Index": 10
   }
 ]
