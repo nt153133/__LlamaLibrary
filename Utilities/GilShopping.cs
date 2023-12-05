@@ -22,16 +22,24 @@ public class GilShopping
 
     public static Dictionary<uint, uint> ItemVendors = new()
     {
+        // Anden Items
         { 38829, 1044548 },
         { 38825, 1044548 },
         { 38826, 1044548 },
         { 38827, 1044548 },
         { 38828, 1044548 },
+        // Margrat Items
+        { 41071, 1046406 }, // Energizing Eye-lixir Components
+        { 41072, 1046406 }, // Researcher's Relaxtion Kit Components
+        { 41073, 1046406 }, // Cushion Care Package Components
+        { 41074, 1046406 }, // Feline Recreational Device Components
+        { 41075, 1046406 }, // Mesmerizing Minitature Components
     };
 
     public static Npc AndenVendor = new Npc(1044548, 816, new Vector3(-246.9673f, 51.059f, 617.0291f));
+    public static Npc MargratVendor = new Npc(1046406, 956, new Vector3(-54.89797f, -29.49739f, -53.02695f));
 
-    public static List<Npc> Vendors = new List<Npc>() { AndenVendor };
+    public static List<Npc> Vendors = new List<Npc>() { AndenVendor, MargratVendor };
 
     public static async Task<bool> GetRequiredItems(StoredRecipe recipe, int amount = 1)
     {
