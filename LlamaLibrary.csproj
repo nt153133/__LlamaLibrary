@@ -124,6 +124,7 @@
     <Compile Include="Helpers\InventoryHelpers.cs" />
     <Compile Include="Helpers\IshgardHandin.cs" />
     <Compile Include="Helpers\ItemLinking.cs" />
+    <Compile Include="Helpers\JumpNav.cs" />
     <Compile Include="Helpers\LoadServerProfile.cs" />
     <Compile Include="Helpers\LocationTracking\HouseTravelHelper.cs" />
     <Compile Include="Helpers\LocationTracking\LocationTracker.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="JsonObjects\RetainerSale.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="JsonObjects\StoredRecipe.cs" />
+    <Compile Include="Managers\RaceChocoboManager.cs" />
     <Compile Include="Managers\RelicBookManager.cs" />
     <Compile Include="Managers\SnipeManager.cs" />
     <Compile Include="RemoteAgents\AgentAchievement.cs" />
