@@ -252,6 +252,11 @@ namespace LlamaLibrary.Helpers
             }
 
             await Coroutine.Wait(3000, () => !SelectYesno.IsOpen);
+            await Coroutine.Wait(5000, () => CommonBehaviors.IsLoading);
+            if (CommonBehaviors.IsLoading)
+            {
+                await Coroutine.Wait(10000, () => !CommonBehaviors.IsLoading);
+            }
         }
 
         public static async Task<bool> GetToMap399()
