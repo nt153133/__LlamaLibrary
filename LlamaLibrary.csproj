@@ -157,6 +157,8 @@
     <Compile Include="ICompiledAsyncBotbase.cs" />
     <Compile Include="ICompiledBotbase.cs" />
     <Compile Include="ICompiledPlugin.cs" />
+    <Compile Include="IDisposableCompiledAsyncBotbase.cs" />
+    <Compile Include="IDisposableCompiledBotbase.cs" />
     <Compile Include="JsonObjects\CustomDeliveryNpc.cs" />
     <Compile Include="JsonObjects\GCShopItemStored.cs" />
     <Compile Include="JsonObjects\HouseLocation.cs" />
