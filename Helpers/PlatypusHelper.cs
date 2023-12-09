@@ -7,26 +7,12 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot.AClasses;
 using ff14bot.Managers;
-using GreyMagic;
 using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers
 {
     public static class PlatypusHelper
     {
-        [Obsolete]
-        public enum TaskType : uint
-        {
-            None = 0,
-            CurrencyGCSealsExchange = 1,
-            InventoryOpenUse = 2,
-            InventoryExpertDelivery = 3,
-            InventorySell = 4,
-            InventoryExchange = 5,
-            InventoryTrade = 5,
-            InventoryDiscard = 6,
-        }
-
         private static readonly LLogger Log = new("PlatypusHelper", Colors.MediumPurple);
 
 #nullable enable
@@ -59,7 +45,7 @@ namespace LlamaLibrary.Helpers
 
         private static string PlatypusLoaderFile => "PlatypusLoader.cs";
 
-        private static string PlatypusLoaderUrl = "https://rbplatypus.com/downloads/loader/PlatypusLoader.txt";
+        private const string PlatypusLoaderUrl = "https://rbplatypus.com/downloads/loader/PlatypusLoader.txt";
 
         internal static void FindPlatypus()
         {
@@ -146,17 +132,6 @@ namespace LlamaLibrary.Helpers
             {
                 _showGui.Invoke();
             }
-        }
-
-        [Obsolete]
-        public static bool CanProfileExecuteTask(TaskType taskType)
-        {
-            if (!HasPlatypus)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         public static async Task<bool> QolOpenTreasureCoffersInDuty()
