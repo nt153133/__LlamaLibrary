@@ -219,6 +219,18 @@ namespace LlamaLibrary.Helpers
                     }
                 }
 
+                if (GuildLeve.Instance.IsOpen)
+                {
+                    Log.Information($"Closing Leve Window.");
+                    GuildLeve.Instance.Close();
+                }
+
+                if (Conversation.IsOpen)
+                {
+                    Log.Information($"Closing Conversation");
+                    Conversation.SelectQuit();
+                }
+
                 await Coroutine.Wait(2500, () => !CheckIfBusy(leaveDuty, stopFishing, dismount));
                 await Coroutine.Sleep(500);
             }
