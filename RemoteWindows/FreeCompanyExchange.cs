@@ -30,7 +30,7 @@ namespace LlamaLibrary.RemoteWindows
             new FcActionShopItem(12, 5, 3010, 12, "That Which Binds Us"),
             new FcActionShopItem(13, 5, 2408, 13, "Meat and Mead"),
             new FcActionShopItem(14, 5, 3010, 14, "Proper Care"),
-            new FcActionShopItem(15, 5, 2408, 15, "Back on Your Feet"),
+            new FcActionShopItem(15, 5, 2408, 15, "Fleet-footed"),
             new FcActionShopItem(16, 5, 3010, 16, "Reduced Rates"),
             new FcActionShopItem(31, 8, 6020, 17, "The Heat of Battle II"),
             new FcActionShopItem(32, 8, 6020, 18, "Earth and Water II"),
@@ -47,7 +47,7 @@ namespace LlamaLibrary.RemoteWindows
             new FcActionShopItem(42, 8, 6020, 29, "That Which Binds Us II"),
             new FcActionShopItem(43, 8, 6020, 30, "Meat and Mead II"),
             new FcActionShopItem(44, 8, 6020, 31, "Proper Care II"),
-            new FcActionShopItem(45, 8, 4816, 32, "Back on Your Feet II"),
+            new FcActionShopItem(45, 8, 4816, 32, "Fleet-footed II"),
             new FcActionShopItem(46, 8, 6020, 33, "Reduced Rates II")
         };
 
