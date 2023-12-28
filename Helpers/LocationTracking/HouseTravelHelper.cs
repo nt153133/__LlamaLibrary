@@ -223,7 +223,7 @@ public static class HouseTravelHelper
             return false;
         }
 
-        if (HousingHelper.Residences.Any(i => i.HouseLocationIndex == HouseLocationIndex.FreeCompanyEstate) && !HousingHelper.IsInsideWorkshop && !HousingHelper.IsInsideHouse)
+        if (HousingHelper.Residences.Any(i => i.HouseLocationIndex == HouseLocationIndex.FreeCompanyEstate) && !HousingHelper.IsInsideWorkshop && !GameObjectManager.GetObjectsByNPCIds<GameObject>(AdditionalChambers).Any())
         {
             var estate = HousingHelper.Residences.First(i => i.HouseLocationIndex == HouseLocationIndex.FreeCompanyEstate);
             await HousingTraveler.GetToResidential(estate);
