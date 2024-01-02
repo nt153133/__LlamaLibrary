@@ -4,7 +4,7 @@ using System.Linq;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers;
 
-namespace NavigationTest.InclusionShop
+namespace LlamaLibrary.Structs
 {
     public class InclusionShopItem
     {

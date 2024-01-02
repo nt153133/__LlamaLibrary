@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
-using NavigationTest.InclusionShop;
+using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.RemoteAgents
 {
@@ -72,7 +72,7 @@ namespace LlamaLibrary.RemoteAgents
             [OffsetCN("Search 48 69 D1 ? ? ? ? 48 69 C8 ? ? ? ? 41 0F B6 81 ? ? ? ? 4E 8B AC 0A ? ? ? ? Add 3 Read8")]
             internal static int StructSizeCategory;
 
-            //
+
             [Offset("Search 0F B6 98 ? ? ? ? E8 ? ? ? ? 80 7C 24 ? ? Add 3 Read32")]
             internal static int ItemCount;
 
