@@ -1702,7 +1702,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool IsDutyUnlocked(uint dutyId)
         {
-            return DataManager.InstanceContentResults.TryGetValue(dutyId, out var instanceContentResult) && Core.Memory.CallInjected64<bool>(Offsets.IsInstanceContentCompleted, instanceContentResult.Content);
+            return DataManager.InstanceContentResults.TryGetValue(dutyId, out var instanceContentResult) && Core.Memory.CallInjected64<bool>(Offsets.IsInstanceContentUnlocked, instanceContentResult.Content);
         }
 
         public static async Task PassOnAllLoot()
