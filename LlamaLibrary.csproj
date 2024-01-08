@@ -423,6 +423,7 @@
     <Compile Include="Utilities\Inventory.cs" />
     <Compile Include="Utilities\Ishgard.cs" />
     <Compile Include="Utilities\RetainerHire.cs" />
+    <Compile Include="Utilities\RetainerJobs.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
