@@ -1,6 +1,8 @@
 name: Last Commit Action
 run-name: Update Last Commit File
 on: push
+  branches:
+    - main
 jobs:
   build:
     runs-on: ubuntu-latest
