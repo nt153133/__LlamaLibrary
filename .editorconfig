@@ -203,3 +203,6 @@ csharp_space_after_keywords_in_control_flow_statements=true
 
 # CS0649: Field 'LocalPlayerExtensions.Offsets.CurrentGC' is never assigned to, and will always have its default value
 dotnet_diagnostic.CS0649.severity = silent
+
+dotnet_diagnostic.CA1416.severity = none
+
