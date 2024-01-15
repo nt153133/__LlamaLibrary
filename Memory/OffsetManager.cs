@@ -102,9 +102,6 @@ namespace LlamaLibrary.Memory
 
                                 Logger.Information($"OffsetManager Init started {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
 
-                                var scriptThread = SetScriptsThread();
-                                scriptThread.Start();
-
                                 var newStopwatch = Stopwatch.StartNew();
                                 await SearchAndSetLL();
                                 newStopwatch.Stop();
@@ -116,7 +113,6 @@ namespace LlamaLibrary.Memory
                                 Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
 
                                 PrintLastCommit();
-                                await scriptThread;
                             }
                             finally
                             {
@@ -578,11 +574,12 @@ namespace LlamaLibrary.Memory
             return result;
         }
 
-        private static async Task SetScriptsThread()
+        internal static void SetScriptsThread()
         {
             // AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
+            Logger.Information("Setting ScriptManager");
             ScriptManager.AddNamespaces("LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras");
-            await Task.Run(() => ScriptManager.Init(typeof(ScriptConditions.Helpers)));
+            ScriptManager.Init(typeof(ScriptConditions.Helpers));
             Logger.Information("ScriptManager Set");
         }
 

@@ -14,6 +14,7 @@ public class LibraryClass : ILibrary
     public async Task<bool> PostOffsetWarmup()
     {
         OffsetManager.SetPostOffsets();
+        OffsetManager.SetScriptsThread();
         return true;
     }
 }
