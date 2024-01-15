@@ -45,8 +45,8 @@ namespace LlamaLibrary.Memory
     {
         private static readonly StringBuilder Sb = new();
 
-        private static readonly object InitLock = new();
-        private static readonly object InitLock1 = new();
+        private static readonly SemaphoreSlim InitLock = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim InitLock1 = new(1, 1);
         private static bool initStarted;
         private static bool initDone;
 
@@ -61,184 +61,74 @@ namespace LlamaLibrary.Memory
 
         public static LLogger Logger { get; } = new LLogger("LLOffsetManager", Colors.RosyBrown, LogLevel.Information);
 
-        public static void Init()
+        public static async Task<bool> Init()
         {
             var stopwatch = Stopwatch.StartNew();
             try
             {
-                lock (InitLock)
+                if (await InitLock.WaitAsync(new TimeSpan(0, 0, 30)))
                 {
-                    stopwatch.Restart();
-                    if (initDone)
+                    try
                     {
-                        Logger.Debug($"OffsetManager done {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                        return;
-                    }
-
-                    if (initStarted)
-                    {
-                        Logger.Information($"OffsetManager Init started but waiting {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                        while (!initDone)
-                        {
-                            Thread.Sleep(100);
-                        }
-
-                        return;
-                    }
-
-                    initStarted = true;
-                    lock (InitLock1)
-                    {
-                        stopwatch = Stopwatch.StartNew();
+                        stopwatch.Restart();
                         if (initDone)
                         {
-                            Logger.Information($"OffsetManager Init started but done now {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                            return;
+                            Logger.Debug($"OffsetManager done {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+                            return true;
                         }
 
-                        Logger.Information($"OffsetManager Init started {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-
-                        var scriptThread = new Thread(SetScriptsThread);
-                        scriptThread.Start();
-                        //SetScriptsThread();
-                        //newStopwatch.Stop();
-                        //Logger.Information($"OffsetManager SetScriptsManager took{newStopwatch.ElapsedMilliseconds}ms");
-
-                        var newStopwatch = Stopwatch.StartNew();
-
-                        var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
-                                  where t.Namespace != null && t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
-                                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
-
-                        newStopwatch.Stop();
-                        Logger.Debug($"OffsetManager Init GetTypes took {newStopwatch.ElapsedMilliseconds}ms");
-
-                        newStopwatch.Restart();
-                        if (!q1.Contains(typeof(Offsets)))
+                        if (initStarted)
                         {
-                            q1.Add(typeof(Offsets));
-                        }
-
-                        newStopwatch.Stop();
-                        Logger.Debug($"OffsetManager Init Add took {newStopwatch.ElapsedMilliseconds}ms");
-
-                        newStopwatch.Restart();
-                        if (File.Exists(OffsetFile))
-                        {
-                            OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(OffsetFile));
-                            if (OffsetCache == null)
+                            Logger.Information($"OffsetManager Init started but waiting {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+                            while (!initDone)
                             {
-                                OffsetCache = new ConcurrentDictionary<string, long>();
+                                await Task.Delay(100);
                             }
 
-                            /*else
-                            {
-                                Logger.Information("Game version: " + Core.CurrentGameVer);
-                                Logger.Information("Has key: " + OffsetCache.ContainsKey("LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable"));
-                                if (OffsetCache.ContainsKey("LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable"))
-                                    Logger.Information("Offset: " + OffsetCache["LlamaLibrary.RemoteAgents.AgentBagSlot+Offsets.VTable"]);
-                            }*/
+                            return true;
                         }
 
-                        newStopwatch.Stop();
-                        Logger.Debug($"OffsetManager Init Deserialize took {newStopwatch.ElapsedMilliseconds}ms");
-
-                        newStopwatch.Restart();
-                        SetOffsetObjects(q1);
-                        newStopwatch.Stop();
-                        Logger.Debug($"OffsetManager SetOffsetObjects took {newStopwatch.ElapsedMilliseconds}ms");
-
-                        newStopwatch.Restart();
-                        var vtables = new Dictionary<IntPtr, int>();
-                        var pointers = AgentModule.AgentVtables;
-                        for (var index = 0; index < pointers.Count; index++)
+                        initStarted = true;
+                        if (await InitLock1.WaitAsync(new TimeSpan(0, 0, 30)))
                         {
-                            if (vtables.ContainsKey(pointers[index]))
+                            try
                             {
-                                continue;
+                                stopwatch = Stopwatch.StartNew();
+                                if (initDone)
+                                {
+                                    Logger.Information($"OffsetManager Init started but done now {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+                                    return true;
+                                }
+
+                                Logger.Information($"OffsetManager Init started {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+
+                                var scriptThread = SetScriptsThread();
+                                scriptThread.Start();
+
+                                var newStopwatch = Stopwatch.StartNew();
+                                await SearchAndSetLL();
+                                newStopwatch.Stop();
+
+                                Logger.Debug($"OffsetManager SearchAndSetLL took {newStopwatch.ElapsedMilliseconds}ms");
+
+                                newStopwatch.Restart();
+
+                                Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+
+                                PrintLastCommit();
+                                await scriptThread;
                             }
-
-                            vtables.Add(pointers[index], index);
-                        }
-
-                        Logger.Debug($"OffsetManager AgentModule.AgentVtables took {newStopwatch.ElapsedMilliseconds}ms");
-                        var q = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Namespace != null && t.IsClass && t.Namespace == "LlamaLibrary.RemoteAgents" && typeof(IAgent).IsAssignableFrom(t)).ToList();
-                        newStopwatch.Stop();
-                        Logger.Debug($"OffsetManager GetTypesAgents took {newStopwatch.ElapsedMilliseconds}ms");
-
-                        newStopwatch.Restart();
-                        var names = new List<string>();
-                        foreach (var MyType in q)
-                        {
-                            var test = ((IAgent)Activator.CreateInstance(MyType,
-                                                                         BindingFlags.Instance | BindingFlags.NonPublic,
-                                                                         null,
-                                                                         new object[]
-                                                                         {
-                                                                             IntPtr.Zero
-                                                                         },
-                                                                         null)
-                                ).RegisteredVtable;
-
-                            if (vtables.ContainsKey(test))
+                            finally
                             {
-                                names.Add(MyType.Name);
-                                Logger.Debug($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
-                            }
-                            else
-                            {
-                                Logger.Error($"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
+                                InitLock1.Release();
                             }
                         }
-
-                        Logger.Information("Added agents: " + string.Join(", ", names));
-                        newStopwatch.Stop();
-                        Logger.Debug($"OffsetManager AgentModule.TryAddAgent took {newStopwatch.ElapsedMilliseconds}ms");
-
-                        newStopwatch.Restart();
-                        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
-                        newStopwatch.Stop();
-                        Logger.Debug($"OffsetManager File.WriteAllText took {newStopwatch.ElapsedMilliseconds}ms");
-
-                        if (InventoryUpdatePatch.Offsets.OrginalCall != InventoryUpdatePatch.Offsets.OriginalJump)
-                        {
-                            Logger.Information("Last patch not cleaned up, cleaning up now");
-                            var asm = Core.Memory.Asm;
-                            asm.Clear();
-                            asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatch.Offsets.PatchLocation);
-                            asm.AddLine("JMP {0}", InventoryUpdatePatch.Offsets.OrginalCall);
-                            var jzPatch = asm.Assemble();
-                            Core.Memory.WriteBytes(InventoryUpdatePatch.Offsets.PatchLocation, jzPatch);
-                            InventoryUpdatePatch.Offsets.OriginalJump = InventoryUpdatePatch.Offsets.OrginalCall;
-                        }
-
-                        PatchManager.Initialize();
-                        //PatchManager.Enable<InventoryUpdatePatch>();
-                        Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                        var lastCommitfile = Path.Combine(GeneralFunctions.SourceDirectory().Parent.FullName, "LastCommit.txt");
-                        if (File.Exists(lastCommitfile))
-                        {
-                            var lastCommit = File.ReadAllText(lastCommitfile).Trim();
-                            if (DateTime.TryParse(lastCommit, out DateTime result))
-                            {
-                                Logger.Information($"Last Commit: {result.ToUniversalTime():ddd, dd MMM yyy HH:mm:ss ‘UTC’}");
-                                Logger.Information($"Raw Last Commit: {lastCommit}");
-                            }
-                            else
-                            {
-                                Logger.Information($"Last Commit: '{lastCommit}'");
-                            }
-
-                            //Logger.Information($"Last Commit: {lastCommit}");
-                        }
-                        //initStarted = true;
-                        if (_debug)
-                        {
-                            foreach (var pair in OffsetCache)
-                            {
-                                Logger.Information($"{pair.Key} - {pair.Value:X}");
-                            }
-                        }
+                    }
+                    finally
+                    {
+                        initDone = true;
+                        initStarted = false;
+                        InitLock.Release();
                     }
                 }
             }
@@ -252,19 +142,127 @@ namespace LlamaLibrary.Memory
                 Logger.Debug($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
             }
 
-            /*
-            if (scriptThread != null)
-            {
-                var newStopwatch1 = Stopwatch.StartNew();
-                Logger.Information("Waiting on thread");
-                scriptThread.Join();
-                newStopwatch1.Stop();
-                Logger.Information($"OffsetManager scriptThread.Join took {newStopwatch1.ElapsedMilliseconds}ms");
-            }
-            */
-
             stopwatch.Stop();
             Logger.Information($"Total {stopwatch.ElapsedMilliseconds}ms");
+
+            return true;
+        }
+
+        private static void PrintLastCommit()
+        {
+            var lastCommitfile = Path.Combine(GeneralFunctions.SourceDirectory().Parent.FullName, "LastCommit.txt");
+            if (File.Exists(lastCommitfile))
+            {
+                var lastCommit = File.ReadAllText(lastCommitfile).Trim();
+                if (DateTime.TryParse(lastCommit, out DateTime result))
+                {
+                    Logger.Information($"Last Commit: {result.ToUniversalTime():ddd, dd MMM yyy HH:mm:ss ‘UTC’}");
+                    Logger.Information($"Raw Last Commit: {lastCommit}");
+                }
+                else
+                {
+                    Logger.Information($"Last Commit: '{lastCommit}'");
+                }
+            }
+        }
+
+        private static async Task SearchAndSetLL()
+        {
+            var llTypes = GetTypes();
+
+            if (File.Exists(OffsetFile))
+            {
+                OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(OffsetFile));
+                if (OffsetCache == null)
+                {
+                    OffsetCache = new ConcurrentDictionary<string, long>();
+                }
+            }
+
+            await SetOffsetObjects(llTypes);
+        }
+
+        private static List<Type> GetTypes()
+        {
+            var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
+                      where t.Namespace != null && t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
+                      select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+
+            if (!q1.Contains(typeof(Offsets)))
+            {
+                q1.Add(typeof(Offsets));
+            }
+
+            return q1;
+        }
+
+        internal static void SetPostOffsets()
+        {
+            Stopwatch newStopwatch = Stopwatch.StartNew();
+            var vtables = new Dictionary<IntPtr, int>();
+            var pointers = AgentModule.AgentVtables;
+            for (var index = 0; index < pointers.Count; index++)
+            {
+                if (vtables.ContainsKey(pointers[index]))
+                {
+                    continue;
+                }
+
+                vtables.Add(pointers[index], index);
+            }
+
+            Logger.Debug($"OffsetManager AgentModule.AgentVtables took {newStopwatch.ElapsedMilliseconds}ms");
+            var q = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Namespace != null && t.IsClass && t.Namespace == "LlamaLibrary.RemoteAgents" && typeof(IAgent).IsAssignableFrom(t)).ToList();
+            newStopwatch.Stop();
+            Logger.Debug($"OffsetManager GetTypesAgents took {newStopwatch.ElapsedMilliseconds}ms");
+
+            newStopwatch.Restart();
+            var names = new List<string>();
+            foreach (var MyType in q)
+            {
+                var test = ((IAgent)Activator.CreateInstance(MyType,
+                                                             BindingFlags.Instance | BindingFlags.NonPublic,
+                                                             null,
+                                                             new object[]
+                                                             {
+                                                                 IntPtr.Zero
+                                                             },
+                                                             null)
+                    ).RegisteredVtable;
+
+                if (vtables.ContainsKey(test))
+                {
+                    names.Add(MyType.Name);
+                    Logger.Debug($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
+                }
+                else
+                {
+                    Logger.Error($"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
+                }
+            }
+
+            Logger.Information("Added agents: " + string.Join(", ", names));
+            newStopwatch.Stop();
+            Logger.Debug($"OffsetManager AgentModule.TryAddAgent took {newStopwatch.ElapsedMilliseconds}ms");
+
+            newStopwatch.Restart();
+            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+            newStopwatch.Stop();
+            Logger.Debug($"OffsetManager File.WriteAllText took {newStopwatch.ElapsedMilliseconds}ms");
+
+            if (InventoryUpdatePatch.Offsets.OrginalCall != InventoryUpdatePatch.Offsets.OriginalJump)
+            {
+                Logger.Information("Last patch not cleaned up, cleaning up now");
+                var asm = Core.Memory.Asm;
+                asm.Clear();
+                asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatch.Offsets.PatchLocation);
+                asm.AddLine("JMP {0}", InventoryUpdatePatch.Offsets.OrginalCall);
+                var jzPatch = asm.Assemble();
+                Core.Memory.WriteBytes(InventoryUpdatePatch.Offsets.PatchLocation, jzPatch);
+                InventoryUpdatePatch.Offsets.OriginalJump = InventoryUpdatePatch.Offsets.OrginalCall;
+            }
+
+            PatchManager.Initialize();
         }
 
         public static void RegisterAgent(IAgent iagent)
@@ -325,56 +323,62 @@ namespace LlamaLibrary.Memory
         }
 
         [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-        public static void SetOffsetObjects(IEnumerable<Type> q1)
+        public static async Task SetOffsetObjects(IEnumerable<Type> q1)
         {
             var types = q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public));
 
             using var pf = new PatternFinder(Core.Memory);
-            Parallel.ForEach(types,
-                             type =>
-                             {
-                                 if (type.FieldType.IsClass)
-                                 {
-                                     var instance = Activator.CreateInstance(type.FieldType);
 
-                                     foreach (var field in type.FieldType.GetFields(BindingFlags.Instance))
-                                     {
-                                         //Logger.Information("Trying to set " + field.Name);
-                                         var res = ParseField(field, pf);
-                                         if (field.FieldType == typeof(IntPtr))
-                                         {
-                                             field.SetValue(instance, res);
-                                         }
-                                         else
-                                         {
-                                             field.SetValue(instance, (int)res);
-                                         }
-                                     }
+            //Take the list of types and search for the offsets using multiple tasks
+            var tasks = types.Select(type => Task.Run(() => SearchOffset(type, pf))).ToList();
 
-                                     //set the value
-                                     type.SetValue(null, instance);
-                                 }
-                                 else
-                                 {
-                                     //Logger.Information("Trying to set " + type.Name);
-                                     var res = ParseField(type, pf);
-                                     if (type.FieldType == typeof(IntPtr))
-                                     {
-                                         type.SetValue(null, res);
-                                     }
-                                     else
-                                     {
-                                         try
-                                         {
-                                             type.SetValue(null, res.ToInt32());
-                                         }
-                                         catch (Exception)
-                                         {
-                                             Logger.Error($"Error on {type.Name}");
-                                         }
-                                     }
-                                 }
-                             });
+            //Wait for all tasks to complete
+            await Task.WhenAll(tasks);
+        }
+
+        private static void SearchOffset(FieldInfo type, PatternFinder pf)
+        {
+            if (type.FieldType.IsClass)
+            {
+                var instance = Activator.CreateInstance(type.FieldType);
+
+                foreach (var field in type.FieldType.GetFields(BindingFlags.Instance))
+                {
+                    //Logger.Information("Trying to set " + field.Name);
+                    var res = ParseField(field, pf);
+                    if (field.FieldType == typeof(IntPtr))
+                    {
+                        field.SetValue(instance, res);
+                    }
+                    else
+                    {
+                        field.SetValue(instance, (int)res);
+                    }
+                }
+
+                //set the value
+                type.SetValue(null, instance);
+            }
+            else
+            {
+                //Logger.Information("Trying to set " + type.Name);
+                var res = ParseField(type, pf);
+                if (type.FieldType == typeof(IntPtr))
+                {
+                    type.SetValue(null, res);
+                }
+                else
+                {
+                    try
+                    {
+                        type.SetValue(null, res.ToInt32());
+                    }
+                    catch (Exception)
+                    {
+                        Logger.Error($"Error on {type.Name}");
+                    }
+                }
+            }
         }
 
         private static IntPtr ParseField(FieldInfo field, PatternFinder pf)
@@ -574,11 +578,11 @@ namespace LlamaLibrary.Memory
             return result;
         }
 
-        private static void SetScriptsThread()
+        private static async Task SetScriptsThread()
         {
             // AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
             ScriptManager.AddNamespaces("LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras");
-            ScriptManager.Init(typeof(ScriptConditions.Helpers));
+            await Task.Run(() => ScriptManager.Init(typeof(ScriptConditions.Helpers)));
             Logger.Information("ScriptManager Set");
         }
 

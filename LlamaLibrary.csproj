@@ -159,6 +159,7 @@
     <Compile Include="ICompiledPlugin.cs" />
     <Compile Include="IDisposableCompiledAsyncBotbase.cs" />
     <Compile Include="IDisposableCompiledBotbase.cs" />
+    <Compile Include="ILibrary.cs" />
     <Compile Include="JsonObjects\CustomDeliveryNpc.cs" />
     <Compile Include="JsonObjects\GCShopItemStored.cs" />
     <Compile Include="JsonObjects\HouseLocation.cs" />
@@ -173,6 +174,7 @@
     <Compile Include="JsonObjects\RetainerSale.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="JsonObjects\StoredRecipe.cs" />
+    <Compile Include="LibraryClass.cs" />
     <Compile Include="Managers\RaceChocoboManager.cs" />
     <Compile Include="Managers\RelicBookManager.cs" />
     <Compile Include="Managers\SnipeManager.cs" />
