@@ -31,8 +31,6 @@ namespace LlamaLibrary.Utilities
             new KeyValuePair<ClassJobType, int>(ClassJobType.Arcanist, 2142),
             new KeyValuePair<ClassJobType, int>(ClassJobType.Archer, 1889),
             new KeyValuePair<ClassJobType, int>(ClassJobType.Armorer, 2366),
-            new KeyValuePair<ClassJobType, int>(ClassJobType.Astrologian, 10524),
-            new KeyValuePair<ClassJobType, int>(ClassJobType.Bard, 1889),
             new KeyValuePair<ClassJobType, int>(ClassJobType.Blacksmith, 2340),
             new KeyValuePair<ClassJobType, int>(ClassJobType.Botanist, 2545),
             new KeyValuePair<ClassJobType, int>(ClassJobType.Carpenter, 2314),
@@ -48,6 +46,26 @@ namespace LlamaLibrary.Utilities
             new KeyValuePair<ClassJobType, int>(ClassJobType.Pugilist, 1680),
             new KeyValuePair<ClassJobType, int>(ClassJobType.Thaumaturge, 2055),
             new KeyValuePair<ClassJobType, int>(ClassJobType.Rogue, 7952),
+
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Astrologian, 10524), // Star Globe
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Bard, 1889), // Weathered Shortbow
+            new KeyValuePair<ClassJobType, int>(ClassJobType.BlackMage, 2055), // Weathered Scepter
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Dancer, 25644), // Deepgold War Quoits
+            new KeyValuePair<ClassJobType, int>(ClassJobType.DarkKnight, 10400), // Steel Claymore
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Gunbreaker, 25643), // Deepgold Gunblade
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Paladin, 1601), // Weathered Shortsword
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Dragoon, 1819), // Weathered Spear
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Warrior, 1749), // Weathered War Axe
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Monk, 1680), // Weathered Hora
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Machinist, 10462), // Steel-Barreled Carbine
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Ninja, 7952), // Weathered Daggers
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Reaper, 35760), // Deepgold War Scythe
+            new KeyValuePair<ClassJobType, int>(ClassJobType.RedMage, 18203), // Koppranickel Rapier
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Sage, 35778), // Stonegold Milpreves
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Samurai, 18046), // High Steel Tachi
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Scholar, 34091), // Gaja Codex
+            new KeyValuePair<ClassJobType, int>(ClassJobType.Summoner, 2142), // Weathered Grimoire
+            new KeyValuePair<ClassJobType, int>(ClassJobType.WhiteMage, 1995), // Weathered Cane
         };
 
         public static async Task<bool> GiveThemJobs(string job)
