@@ -173,6 +173,7 @@
     <Compile Include="JsonObjects\RetainerSale.cs" />
     <Compile Include="JsonObjects\StoredHuntLocation.cs" />
     <Compile Include="JsonObjects\StoredRecipe.cs" />
+    <Compile Include="LibraryClass.cs" />
     <Compile Include="Managers\RaceChocoboManager.cs" />
     <Compile Include="Managers\RelicBookManager.cs" />
     <Compile Include="Managers\SnipeManager.cs" />
