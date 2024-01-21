@@ -61,6 +61,11 @@ namespace LlamaLibrary.Memory
 
         public static LLogger Logger { get; } = new LLogger("LLOffsetManager", Colors.RosyBrown, LogLevel.Information);
 
+#if RB_CN
+        public static readonly bool IsChinese = true;
+#else
+        public static readonly bool IsChinese = false;
+#endif
         [Obsolete]
         public static void Init()
         {
@@ -389,7 +394,7 @@ namespace LlamaLibrary.Memory
             var name = $"{field.DeclaringType?.FullName}.{field.Name}";
             //var lang = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic).First(i => i.FieldType == typeof(Language)).GetValue(null);
 
-            if (Translator.Language == Language.Chn) //Translator.Language
+            if (IsChinese) //Translator.Language
             {
                 var offsetCN = (OffsetCNAttribute?)Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute)).FirstOrDefault();
                 var valcn = (OffsetValueCN?)Attribute.GetCustomAttributes(field, typeof(OffsetValueCN)).FirstOrDefault();
