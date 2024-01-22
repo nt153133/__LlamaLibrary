@@ -64,6 +64,7 @@ namespace LlamaLibrary.Memory
 #else
         public static readonly bool IsChinese = false;
 #endif
+        
         [Obsolete]
         public static void Init()
         {
