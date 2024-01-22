@@ -46,7 +46,7 @@ namespace LlamaLibrary.Utilities
             new KeyValuePair<ClassJobType, int>(ClassJobType.Pugilist, 1680),
             new KeyValuePair<ClassJobType, int>(ClassJobType.Thaumaturge, 2055),
             new KeyValuePair<ClassJobType, int>(ClassJobType.Rogue, 7952),
-            
+
             new KeyValuePair<ClassJobType, int>(ClassJobType.Astrologian, 10524), // Star Globe
             new KeyValuePair<ClassJobType, int>(ClassJobType.Bard, 1889), // Weathered Shortbow
             new KeyValuePair<ClassJobType, int>(ClassJobType.BlackMage, 2055), // Weathered Scepter
