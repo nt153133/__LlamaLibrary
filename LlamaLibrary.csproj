@@ -34,7 +34,6 @@
     <Content Include="Resources\Ventures.json" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <Compile Remove="Helpers\ChocoboHelper.cs" />
   </ItemGroup>
   <ItemGroup>
