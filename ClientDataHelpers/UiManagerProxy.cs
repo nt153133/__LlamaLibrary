@@ -26,7 +26,7 @@ public static class UiManagerProxy
 
     static UiManagerProxy()
     {
-        _uiModule = Core.Memory.CallInjected64<IntPtr>(Offsets.GetUiModule, Core.Memory.Read<IntPtr>(Offsets.Framework));
+       // _uiModule = Core.Memory.CallInjected64<IntPtr>(Offsets.GetUiModule, Core.Memory.Read<IntPtr>(Offsets.Framework));
     }
 
     public static IntPtr AcquaintanceModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["AcquaintanceModule"]), UIModule);
@@ -37,7 +37,7 @@ public static class UiManagerProxy
 
     //public static IntPtr UIModule => (IntPtr)Properties.First(i => i.Name.Equals("UIModule")).GetValue(null);
 
-    public static IntPtr UIModule => _uiModule;
+    public static IntPtr UIModule => _uiModule == IntPtr.Zero ? _uiModule = Core.Memory.CallInjected64<IntPtr>(Offsets.GetUiModule, Core.Memory.Read<IntPtr>(Offsets.Framework)) : _uiModule;
 
     public static IntPtr InfoModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetInfoModule"]), UIModule);
 
