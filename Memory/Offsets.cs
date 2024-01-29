@@ -170,5 +170,11 @@ namespace LlamaLibrary.Memory
         public static int RetainerNetworkPacket;
     }
 
+    public static partial class Offsets
+    {
+        [Offset("Search E8 ?? ?? ?? ?? 80 7B 1D 01 TraceCall")]
+        public static IntPtr GetUiModule;
+    }
+
 #pragma warning restore CS0649
 }
