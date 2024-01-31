@@ -1,10 +1,12 @@
 ﻿//!CompilerOption:AddRef:Clio.Localization.dll
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Media;
 using ff14bot;
+using GreyMagic;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 using Newtonsoft.Json.Serialization;
@@ -17,6 +19,7 @@ namespace LlamaLibrary
         private static readonly LLogger Log = new LLogger("AssemblyProxy", Colors.Bisque, LogLevel.Information);
         private static bool _initialized;
         private static object _lock = new object();
+
         public static void Init()
         {
             lock (_lock)
@@ -29,10 +32,18 @@ namespace LlamaLibrary
                 _initialized = true;
             }
 
-            AddAssembly("Newtonsoft", typeof(JsonContract).Assembly);
-            AddAssembly("GreyMagic", Core.Memory.GetType().Assembly);
-            AddAssembly("ff14bot", Core.Me.GetType().Assembly);
-            AddAssembly("LlamaLibrary", typeof(OffsetManager).Assembly);
+            try
+            {
+                AddAssembly("Newtonsoft", typeof(JsonContract).Assembly);
+                AddAssembly("GreyMagic", typeof(ExternalProcessMemory).Assembly);
+                AddAssembly("ff14bot", typeof(Core).Assembly);
+                AddAssembly("LlamaLibrary", typeof(OffsetManager).Assembly);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.ToString());
+            }
+
             try
             {
                 AddAssembly(Assembly.GetEntryAssembly()?.GetName().Name!, Assembly.GetEntryAssembly()!);

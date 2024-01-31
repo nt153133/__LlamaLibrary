@@ -196,27 +196,33 @@ public class LoadServerProfile
 
     internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, int ItemLevel, int dungeonLevel)
     {
-        await GeneralFunctions.StopBusy(false);
-
-        if (UnlockQuest != 0)
+        if (WorldManager.ZoneId == dungeonZoneId)
         {
-            if (!QuestLogManager.IsQuestCompleted((uint)UnlockQuest))
-            {
-                Log.Information($"Unlock quest {DataManager.GetLocalizedQuestName(UnlockQuest)} is not complete. Loading profile to complete quest.");
-                ConditionParser.Initialize();
-                NeoProfileManager.Load(profileUrl, false);
-                NeoProfileManager.UpdateCurrentProfileBehavior();
-                return;
-            }
-        }
-
-        if (!CanQueue(dungeonDutyId, dungeonZoneId, QueueType, UnlockQuest, ItemLevel, dungeonLevel))
-        {
-            return;
+            ConditionParser.Initialize();
+            NeoProfileManager.Load(profileUrl, false);
         }
 
         while (WorldManager.ZoneId != dungeonZoneId)
         {
+            await GeneralFunctions.StopBusy(false);
+
+            if (UnlockQuest != 0)
+            {
+                if (!QuestLogManager.IsQuestCompleted((uint)UnlockQuest))
+                {
+                    Log.Information($"Unlock quest {DataManager.GetLocalizedQuestName(UnlockQuest)} is not complete. Loading profile to complete quest.");
+                    ConditionParser.Initialize();
+                    NeoProfileManager.Load(profileUrl, false);
+                    NeoProfileManager.UpdateCurrentProfileBehavior();
+                    return;
+                }
+            }
+
+            if (!CanQueue(dungeonDutyId, dungeonZoneId, QueueType, UnlockQuest, ItemLevel, dungeonLevel))
+            {
+                return;
+            }
+
             while (DutyManager.QueueState == QueueState.None)
             {
                 if (GoToBarracks && (WorldManager.ZoneId != 534 && WorldManager.ZoneId != 535 && WorldManager.ZoneId != 536))
@@ -398,13 +404,6 @@ public class LoadServerProfile
             Log.Information("Should be ready");
         }
 
-        if (WorldManager.ZoneId == dungeonZoneId)
-        {
-            ConditionParser.Initialize();
-            NeoProfileManager.Load(profileUrl, false);
-            NeoProfileManager.UpdateCurrentProfileBehavior();
-        }
-
         return;
     }
 
@@ -454,7 +453,6 @@ public class LoadServerProfile
             }
         }
 
-
         if (QueueType == 2 && !DutySupportDuties.Contains((uint)dungeonDutyId))
         {
             string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} is not a Duty Support dungeon.";
@@ -463,7 +461,6 @@ public class LoadServerProfile
             TreeRoot.Stop($"{message}");
             return false;
         }
-
 
         return true;
     }

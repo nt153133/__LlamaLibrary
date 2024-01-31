@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using ff14bot.Managers;
 
-namespace NavigationTest.InclusionShop
+namespace LlamaLibrary.Structs
 {
     [StructLayout(LayoutKind.Explicit, Size = 0x6C)]
     public struct InclusionShopItemStruct
