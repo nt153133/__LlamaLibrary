@@ -7,11 +7,22 @@ A robust library of functions for RebornBuddy botbases/plugins for FFXIV
 
 ### Automatic Setup
 
-The easiest way to install LlamaLibrary is to install the [repoBuddy](https://github.com/Zimgineering/repoBuddy) plugin. It would be installed in the **/plugins** folder of your rebornBuddy folder. It will automatically install the files into the correct folders.
+The easiest way to install LlamaLibrary is to install the [updateBuddy](https://loader.updatebuddy.net/UpdateBuddy.zip) plugin. It would be installed in the **/plugins** folder of your rebornBuddy folder as such:
+```
+RebornBuddy
+└── Plugins
+    └── updateBuddy
+        ├── git2-a2bde63.dll
+        ├── LibGit2Sharp.dll
+        ├── Loader.cs
+        └── UpdateBuddy.dll
+```
+
+It will automatically install the files into the correct folders and keep them up to date.
 
 ### Manual Setup
 
-For those of you that don't want to use [repoBuddy](https://github.com/Zimgineering/repoBuddy) here's the manual installtion method. 
+For those of you that don't want to use [updateBuddy](https://loader.updatebuddy.net/UpdateBuddy.zip) here's the manual installtion method. 
 
 First off, make sure you remove any previous versions of LlamaLibrary you may have in the **/BotBases** folder.
 
