@@ -235,7 +235,7 @@ namespace LlamaLibrary.Memory
                 }
             }
 
-            Logger.Information("Added agents: " + string.Join(", ", names));
+            Logger.Information($"Added {names.Count} agents");
             newStopwatch.Stop();
             Logger.Debug($"OffsetManager AgentModule.TryAddAgent took {newStopwatch.ElapsedMilliseconds}ms");
 
@@ -321,10 +321,74 @@ namespace LlamaLibrary.Memory
         {
             var types = q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public));
 
+            List<FieldInfo> fields = new();
+            bool foundAll = true;
+            foreach (var type in types)
+            {
+                if (type.FieldType.IsClass)
+                {
+                    Logger.Error($"Parsing class {type.FieldType.Name}, this shouldn't happen");
+                }
+                else
+                {
+                    OffsetAttribute? offset;
+                    if (IsChinese)
+                    {
+                        offset = (OffsetAttribute?)Attribute.GetCustomAttributes(type, typeof(OffsetAttribute)).FirstOrDefault();
+                    }
+                    else
+                    {
+                        offset = (OffsetAttribute?)Attribute.GetCustomAttributes(type, typeof(OffsetAttribute)).FirstOrDefault();
+                    }
+
+                    if (offset == null)
+                    {
+                        continue;
+                    }
+
+                    var name = $"{type.DeclaringType?.FullName}.{type.Name}";
+                    //Logger.Information($"Parsing field {type.Name}");
+
+                    if (!offset.IgnoreCache && OffsetCache.TryGetValue(name, out var offsetVal))
+                    {
+                        //Logger.Information($"Found in cache: {name} {offsetVal}");
+                        if (type.FieldType == typeof(IntPtr))
+                        {
+                            //Logger.Info($"Offset found in cache: {0}", Core.Memory.GetAbsolute(new IntPtr(offsetVal)).ToString("X"));
+                            type.SetValue(null, Core.Memory.GetAbsolute(new IntPtr(offsetVal)));
+                        }
+                        else
+                        {
+                            //Logger.Info("Offset found in cache: {0}", offsetVal);
+                            type.SetValue(null, (int)offsetVal);
+                        }
+
+                        continue;
+                    }
+                    else
+                    {
+                        //Logger.Information($"{(offset.IgnoreCache ? "Skipping cache" : "Not found in cache" )} : {type.DeclaringType.FullName}.{type.Name}");
+                        fields.Add(type);
+                    }
+
+                    foundAll = false;
+                }
+            }
+
+            if (foundAll)
+            {
+                Logger.Information("All offsets found in cache");
+                return;
+            }
+            else
+            {
+                Logger.Information($"Not all ({fields.Count}) offsets found in cache");
+            }
+
             using var pf = new PatternFinder(Core.Memory);
 
             //Take the list of types and search for the offsets using multiple tasks
-            var tasks = types.Select(type => Task.Run(() => SearchOffset(type, pf))).ToList();
+            var tasks = fields.Select(type => Task.Run(() => SearchOffset(type, pf))).ToList();
 
             //Wait for all tasks to complete
             await Task.WhenAll(tasks);
