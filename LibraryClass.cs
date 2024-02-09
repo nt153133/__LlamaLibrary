@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿//!CompilerOption:Optimize:On
+using System.Threading.Tasks;
 using ff14bot.AClasses;
 using LlamaLibrary.Memory;
 
