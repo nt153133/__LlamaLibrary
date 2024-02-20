@@ -55,10 +55,10 @@ namespace LlamaLibrary.Helpers
             for (var i = 1; i <= Offsets.BeastTribeCount; i++)
             {
                 var result = Core.Memory.CallInjected64<IntPtr>(Offsets.GetBeastTribeExd, i);
-                var name = Core.Memory.ReadStringUTF8(Core.Memory.CallInjected64<IntPtr>(Offsets.ResolveStringColumnIndirection, result));
-                var tribe = Core.Memory.Read<BeastTribeExd>(result);
-                tribe.Name = UppercaseFirst(name);
-                tribes.Add(tribe);
+                var name = UppercaseFirst(Core.Memory.ReadStringUTF8(Core.Memory.CallInjected64<IntPtr>(Offsets.ResolveStringColumnIndirection, result)));
+                var tribe = Core.Memory.Read<BeastTribeExdTemp>(result);
+
+                tribes.Add(new BeastTribeExd(tribe, name));
             }
 
             _beastTribes = tribes.ToArray();

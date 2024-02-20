@@ -269,6 +269,7 @@
     <Compile Include="Retainers\RetainerTasks.cs" />
     <Compile Include="Structs\AnimaExchangeItemInfo.cs" />
     <Compile Include="Structs\BeastTribeExd.cs" />
+    <Compile Include="Structs\BeastTribeExdTemp.cs" />
     <Compile Include="Structs\BeastTribeStat.cs" />
     <Compile Include="Structs\CycleTime.cs" />
     <Compile Include="Structs\DailyQuestRead.cs" />
