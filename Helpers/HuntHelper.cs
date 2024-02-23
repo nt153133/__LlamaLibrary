@@ -24,7 +24,7 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new(nameof(HuntHelper), Colors.Gold);
 
-        private const int MaxOrderTypes = 0xE;
+        private const int MaxOrderTypes = 0x12;
 
         public static readonly List<HuntBoardNpc> HuntBoards = new()
         {
@@ -34,13 +34,16 @@ namespace LlamaLibrary.Helpers
             new HuntBoardNpc(2005909, 418, new Vector3(73.899414f, 24.307495f, 22.049255f), new uint[] { 1, 2, 3, 5 }), //Clan Hunt Board  Foundation(Ishgard)
             new HuntBoardNpc(2008655, 628, new Vector3(-31.540405f, 0.076233f, -43.86969f), new uint[] { 6, 7, 8, 9 }), //Clan Hunt Board  Kugane(Kugane)
             new HuntBoardNpc(2008654, 635, new Vector3(95.078857f, 0.62561f, 22.598572f), new uint[] { 6, 7, 8, 9 }), //Clan Hunt Board  Rhalgr's Reach(Gyr Abania)
-            new HuntBoardNpc(2010340, 819, new Vector3(-83.604248f, -0.01532f, -90.745422f), new uint[] { 10, 11, 12, 13 }) //Nuts Board  The Crystarium(The Crystarium) };
+            new HuntBoardNpc(2010340, 819, new Vector3(-83.604248f, -0.01532f, -90.745422f), new uint[] { 10, 11, 12, 13 }), //Nuts Board  The Crystarium(The Crystarium) };
+            new HuntBoardNpc(2012236, 962, new Vector3(29.37905f, -15.64699f, 100.2111f), new uint[] { 14, 15, 16, 17 }) //Guildship Hunt Board  Old Sharlayan  };
+
         };
 
         public static readonly int[] ARRHunts = new[] { 0 };
         public static readonly int[] ClanHunts = new[] { 1, 2, 3 };
         public static readonly int[] VerteranClanHunts = new[] { 6, 7, 8 };
         public static readonly int[] NutClanHunts = new[] { 10, 11, 12 };
+        public static readonly int[] EwHunts = new[] { 14, 15, 16 };
 
         private static class Offsets
         {
