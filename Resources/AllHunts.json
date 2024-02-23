@@ -6842,15 +6842,17 @@
     "Map": 960
   },
   "669": {
-    "BNpcNameKey": 10435,
-    "Location": {
-      "X": -341.7546,
-      "Y": 264.3315,
-      "Z": -437.9701,
-      "MagnitudeSqr": 373335.8,
-      "Magnitude": 611.0121
-    },
-    "Map": 960
+    "XXX": {
+      "BNpcNameKey": 10427,
+      "Location": {
+        "X": -546.5446,
+        "Y": 85.28471,
+        "Z": 448.6375,
+        "MagnitudeSqr": 536590.6,
+        "Magnitude": 732.5234
+      },
+      "Map": 960
+    }
   },
   "670": {
     "BNpcNameKey": 10430,
