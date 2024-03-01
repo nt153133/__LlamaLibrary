@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ff14bot;
 using LlamaLibrary.Memory;
@@ -26,7 +26,7 @@ public static class UiManagerProxy
 
     static UiManagerProxy()
     {
-        // _uiModule = Core.Memory.CallInjected64<IntPtr>(Offsets.GetUiModule, Core.Memory.Read<IntPtr>(Offsets.Framework));
+       // _uiModule = Core.Memory.CallInjected64<IntPtr>(Offsets.GetUiModule, Core.Memory.Read<IntPtr>(Offsets.Framework));
     }
 
     public static IntPtr AcquaintanceModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["AcquaintanceModule"]), UIModule);
