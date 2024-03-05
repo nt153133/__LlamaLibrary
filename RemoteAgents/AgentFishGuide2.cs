@@ -87,38 +87,6 @@ namespace LlamaLibrary.RemoteAgents
         }
     }
 
-    //6.5 Size and Layout is different
-#if RB_CN
-    [StructLayout(LayoutKind.Explicit, Size = 0x10)]
-    public struct FishGuide2Item
-    {
-        //0
-        [FieldOffset(0x0)]
-        public uint FishItem;
-        //0x4
-        [FieldOffset(0X4)]
-        public ushort Index;
-        //0x6
-        [FieldOffset(0x6)]
-        public ushort Unknown;
-        //0x8
-        [FieldOffset(0x8)]
-        public ushort Unknown2;
-        //0xA
-        [FieldOffset(0xA)]
-        public ushort Unknown5;
-        //0xC
-        [FieldOffset(0xC)]
-        public byte bHasCaught;
-
-        public bool HasCaught => bHasCaught == 1;
-
-        public override string ToString()
-        {
-            return $"{DataManager.GetItem(FishItem)} : {HasCaught}";
-        }
-    }
-#else
     [StructLayout(LayoutKind.Explicit, Size = 0x14)]
     public struct FishGuide2Item
     {
@@ -153,5 +121,4 @@ namespace LlamaLibrary.RemoteAgents
             return $"{DataManager.GetItem(FishItem)} : {HasCaught}";
         }
     }
-#endif
 }

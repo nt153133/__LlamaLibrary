@@ -54,15 +54,11 @@ namespace LlamaLibrary.Extensions
 
             //6.51 hotfix
             [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 8B 7C 24 ? 84 C0 Add 1 Read32")]
-            //6.51
-            //[Offset("Search BA ? ? ? ? E8 ? ? ? ? 33 D2 48 8B CD E8 ? ? ? ? 48 8B 7C 24 ? Add 1 Read32")]
-            [OffsetCN("Search BA ? ? ? ? E8 ? ? ? ? 48 8B CD E8 ? ? ? ? 48 8B 7C 24 ? Add 1 Read32")]
             public static int DesynthId;
 
-            //6.5
+            //6.5Done
             //BA ? ? ? ? E8 ? ? ? ? 48 8B 7C 24 ? 48 8B 5C 24 ? 84 C0 Add 1 Read32
             [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 8B 7C 24 ? 48 8B 5C 24 ? 84 C0 Add 1 Read32")]
-            [OffsetCN("Search BA ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 48 8B 4E ? 48 8B 01 Add 1 Read32")]
             public static int ReduceId;
 
             [Offset("Search 44 0F B7 7C 73 ? Add 5 Read8")]
