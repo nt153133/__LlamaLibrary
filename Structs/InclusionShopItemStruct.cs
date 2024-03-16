@@ -33,16 +33,6 @@ namespace LlamaLibrary.Structs
         [FieldOffset(0x2C)]
         public uint CostType3;
 
-#if RB_CN
-        [FieldOffset(0x44)]
-        public CostFlag CostFlag1;
-
-        [FieldOffset(0x45)]
-        public CostFlag CostFlag2;
-
-        [FieldOffset(0x46)]
-        public CostFlag CostFlag3;
-#else
         //6.5
         [FieldOffset(0x54)]
         public CostFlag CostFlag1;
@@ -54,7 +44,6 @@ namespace LlamaLibrary.Structs
         //6.5
         [FieldOffset(0x56)]
         public CostFlag CostFlag3;
-#endif
 
         [FieldOffset(0x48)]
         public bool ResultItemHQ;
