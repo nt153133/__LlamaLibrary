@@ -89,6 +89,7 @@ namespace LlamaLibrary.Helpers
             {
                 Log.Debug("Switching to Expert Delivery");
                 await GrandCompanySupplyList.Instance.SwitchToExpertDelivery();
+                await Coroutine.Sleep(500);
             }
 
             //Check Filter
@@ -215,7 +216,7 @@ namespace LlamaLibrary.Helpers
             }
 
             await GrandCompanySupplyList.Instance.SwitchToExpertDelivery();
-
+            await Coroutine.Sleep(250);
             return GrandCompanySupplyList.Instance.IsOpen;
         }
 
