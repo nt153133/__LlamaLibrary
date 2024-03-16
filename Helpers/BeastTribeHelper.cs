@@ -126,9 +126,6 @@ namespace LlamaLibrary.Helpers
         public static BeastTribeStat[] GetBeastTribes()
         {
             //6.5
-#if RB_CN
-            return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + 2896, Offsets.BeastTribeCount);
-#endif
             return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + 0xBC8, Offsets.BeastTribeCount);
         }
 
