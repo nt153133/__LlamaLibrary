@@ -66,6 +66,13 @@ namespace LlamaLibrary.Helpers.Ping
                 }
             }
 
+            if (ip.Equals(IPAddress.Loopback))
+            {
+                CurrentPing = 100;
+                lastWorld = WorldHelper.CurrentWorldId;
+                return;
+            }
+
             CurrentPing = (int)await PingTimeAverage(ip.ToString(), 3);
             lastWorld = WorldHelper.CurrentWorldId;
         }

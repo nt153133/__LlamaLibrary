@@ -34,10 +34,18 @@ namespace LlamaLibrary.Helpers
 
         public static readonly WaitTimer WaitTimer_0 = new(new TimeSpan(0, 0, 0, 15));
 
-        internal static async Task<Queue<NavGraph.INode>> GenerateNodes(uint ZoneId, Vector3 xyz)
+        internal static async Task<Queue<NavGraph.INode>?> GenerateNodes(uint ZoneId, Vector3 xyz)
         {
             Log.Information($"Getpath {ZoneId} {xyz}");
-            return await NavGraph.GetPathAsync(ZoneId, xyz);
+            try
+            {
+                return await NavGraph.GetPathAsync(ZoneId, xyz);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"NavGraph.GetPathAsync failed with an exception");
+                return null;
+            }
         }
 
         public static async Task<bool> GetTo(Location location)
