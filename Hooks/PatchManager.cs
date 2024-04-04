@@ -22,7 +22,7 @@ public static class PatchManager
             return true;
         }
 
-        Hooks.Add(new InstanceQuestDungeonHook());
+        //Hooks.Add(new InstanceQuestDungeonHook());
         Hooks.Add(new InventoryUpdatePatch());
 
         foreach (var hook in Hooks)
