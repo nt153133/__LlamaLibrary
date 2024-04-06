@@ -1795,5 +1795,17 @@ namespace LlamaLibrary.Helpers
 
             return null;
         }
+
+        public static string CurrentLocalizedZoneNameById(int zoneId)
+        {
+            ZoneNameResult zoneNameResult;
+            return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out zoneNameResult) ? (string)null : zoneNameResult.CurrentLocaleName;
+        }
+
+        public static string CurrentEnglishZoneNameById(int zoneId)
+        {
+            ZoneNameResult zoneNameResult;
+            return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out zoneNameResult) ? (string)null : zoneNameResult.EnglishName;
+        }
     }
 }
