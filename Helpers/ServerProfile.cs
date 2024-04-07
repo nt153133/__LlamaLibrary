@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using ff14bot.Managers;
 
 namespace LlamaLibrary.Helpers;
 
@@ -32,6 +33,6 @@ public class ServerProfile
 
     public string Display
     {
-        get => $"[{Level}] {GeneralFunctions.CurrentLocalizedZoneNameById(ZoneId)} {Difficulty} {Quality}";
+        get => $"[{Level}] {DataManager.InstanceContentResults[DutyId].CurrentLocaleName} {Quality}";
     }
 }
