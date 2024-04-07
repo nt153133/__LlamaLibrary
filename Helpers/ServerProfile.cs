@@ -21,6 +21,7 @@ public class ServerProfile
     public string? Name { get; set; }
     public int Level { get; set; }
     public string Quality { get; set; }
+    public string Difficulty { get; set; }
     public ProfileType Type { get; set; }
     public DutyType DutyType { get; set; }
     public string? URL { get; set; }
@@ -28,5 +29,9 @@ public class ServerProfile
     public ushort DutyId { get; set; }
     public int UnlockQuest { get; set; }
     public int ItemLevel { get; set; }
-    public string Display { get => $"[{Level}] {GeneralFunctions.CurrentLocalizedZoneNameById(ZoneId)} {Quality}"; }
+
+    public string Display
+    {
+        get => $"[{Level}] {GeneralFunctions.CurrentLocalizedZoneNameById(ZoneId)} {Difficulty} {Quality}";
+    }
 }
