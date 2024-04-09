@@ -10,6 +10,7 @@ namespace LlamaLibrary.Helpers.NPC
     public static class NpcHelper
     {
         private static Dictionary<uint, string>? EventObjectNames = null;
+        private static Dictionary<uint, (string Name, string Plural, string Title)> _ENpcResident = new();
 
         private static class Offsets
         {
@@ -82,6 +83,11 @@ namespace LlamaLibrary.Helpers.NPC
 
         public static (string Name, string Plural, string Title) CallGetENpcResident(uint npcId)
         {
+            if (_ENpcResident.TryGetValue(npcId, out var value))
+            {
+                return value;
+            }
+
             var ptr = Core.Memory.CallInjected64<IntPtr>(Offsets.GetENpcResident, npcId);
 
             if (ptr == IntPtr.Zero)
@@ -92,6 +98,7 @@ namespace LlamaLibrary.Helpers.NPC
             var name = Core.Memory.ReadStringUTF8(ptr + 0x18);
             var plural = Core.Memory.ReadStringUTF8(ptr + 0x18 + name.Length + 1);
             var title = Core.Memory.ReadStringUTF8(ptr + 0x18 + name.Length + 1 + 1 + plural.Length);
+            _ENpcResident.Add(npcId, (name, plural, title));
             return (name, plural, title);
         }
     }
