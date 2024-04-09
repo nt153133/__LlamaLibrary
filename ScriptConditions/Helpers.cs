@@ -280,7 +280,7 @@ namespace LlamaLibrary.ScriptConditions
                 //Logger.Info("Toggled");
                 try
                 {
-                    await WaitUntil(() => Character.Instance.IsOpen, timeout: 10000);
+                    await Coroutine.Wait(10000, () => Character.Instance.IsOpen);
                 }
                 catch (Exception e)
                 {
@@ -304,7 +304,7 @@ namespace LlamaLibrary.ScriptConditions
 
             try
             {
-                await WaitUntil(() => SelectYesno.IsOpen, timeout: 1500);
+                await Coroutine.Wait(10000, () => SelectYesno.IsOpen);
             }
             catch (Exception)
             {
@@ -323,7 +323,7 @@ namespace LlamaLibrary.ScriptConditions
 
             try
             {
-                await WaitUntil(() => !SelectYesno.IsOpen, timeout: 10000);
+                await Coroutine.Wait(10000, () => !SelectYesno.IsOpen);
             }
             catch (Exception)
             {
