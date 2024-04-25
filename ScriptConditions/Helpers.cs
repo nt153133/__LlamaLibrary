@@ -387,5 +387,25 @@ namespace LlamaLibrary.ScriptConditions
         {
             return await UIState.HasItem((uint)itemId, true);
         }
+
+        public static bool IsMinionSummoned()
+        {
+            return LlamaLibrary.Helpers.MinionHelper.IsMinionSummoned;
+        }
+
+        public static bool IsMinionUnlocked(int itemId)
+        {
+            return LlamaLibrary.Helpers.UIState.MinionUnlocked(itemId);
+        }
+
+        public static int MinionId()
+        {
+            if (!LlamaLibrary.Helpers.MinionHelper.IsMinionSummoned)
+            {
+                return 0;
+            }
+
+            return LlamaLibrary.Helpers.MinionHelper.MinionId;
+        }
     }
 }
