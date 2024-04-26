@@ -592,5 +592,38 @@ namespace LlamaLibrary.Helpers
             { Language.Ger, "schaftswerkstätte betreten" },
             { Language.Chn, "移动到部队工房" }
         };
+
+        public static string Hard => HardText[Language];
+
+        private static readonly Dictionary<Language, string> HardText = new()
+        {
+            { Language.Eng, "Hard" },
+            { Language.Jap, "Hard" },
+            { Language.Fre, "Hard" },
+            { Language.Ger, "Hard" },
+            { Language.Chn, "高难本" }
+        };
+
+        public static string Extreme => ExtremeText[Language];
+
+        private static readonly Dictionary<Language, string> ExtremeText = new()
+        {
+            { Language.Eng, "Extreme" },
+            { Language.Jap, "Extreme" },
+            { Language.Fre, "Extreme" },
+            { Language.Ger, "Extreme" },
+            { Language.Chn, "极难本" }
+        };
+
+        public static string Savage => SavageText[Language];
+
+        private static readonly Dictionary<Language, string> SavageText = new()
+        {
+            { Language.Eng, "Savage" },
+            { Language.Jap, "Savage" },
+            { Language.Fre, "Savage" },
+            { Language.Ger, "Savage" },
+            { Language.Chn, "绝难本" }
+        };
     }
 }

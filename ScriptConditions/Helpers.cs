@@ -280,7 +280,7 @@ namespace LlamaLibrary.ScriptConditions
                 //Logger.Info("Toggled");
                 try
                 {
-                    await WaitUntil(() => Character.Instance.IsOpen, timeout: 10000);
+                    await Coroutine.Wait(10000, () => Character.Instance.IsOpen);
                 }
                 catch (Exception e)
                 {
@@ -304,7 +304,7 @@ namespace LlamaLibrary.ScriptConditions
 
             try
             {
-                await WaitUntil(() => SelectYesno.IsOpen, timeout: 1500);
+                await Coroutine.Wait(10000, () => SelectYesno.IsOpen);
             }
             catch (Exception)
             {
@@ -323,7 +323,7 @@ namespace LlamaLibrary.ScriptConditions
 
             try
             {
-                await WaitUntil(() => !SelectYesno.IsOpen, timeout: 10000);
+                await Coroutine.Wait(10000, () => !SelectYesno.IsOpen);
             }
             catch (Exception)
             {
@@ -386,6 +386,26 @@ namespace LlamaLibrary.ScriptConditions
         public static async Task<bool> HasItemCheck(int itemId)
         {
             return await UIState.HasItem((uint)itemId, true);
+        }
+
+        public static bool IsMinionSummoned()
+        {
+            return LlamaLibrary.Helpers.MinionHelper.IsMinionSummoned;
+        }
+
+        public static bool IsMinionUnlocked(int itemId)
+        {
+            return LlamaLibrary.Helpers.UIState.MinionUnlocked(itemId);
+        }
+
+        public static int MinionId()
+        {
+            if (!LlamaLibrary.Helpers.MinionHelper.IsMinionSummoned)
+            {
+                return 0;
+            }
+
+            return LlamaLibrary.Helpers.MinionHelper.MinionId;
         }
     }
 }
