@@ -116,6 +116,55 @@ public class LoadServerProfile
         return;
     }
 
+    public static async Task LoadProfileByZone(int ZoneId)
+    {
+        Log.Information("Loading Profile by Zone ID");
+
+        await GeneralFunctions.StopBusy(false);
+
+        var profileList = await GetProfileList("https://sts.llamamagic.net/profiles.json");
+        if (profileList == null)
+        {
+            Log.Error("Profile List is null");
+            return;
+        }
+
+        if (!profileList.Any())
+        {
+            Log.Error("Profile List is empty");
+            return;
+        }
+
+        var shortList = profileList.Where(i => i != null && i.ZoneId != null && i.ZoneId == ZoneId).ToList();
+
+        if (shortList == null || !shortList.Any())
+        {
+            Log.Error($"Profile with ID {ZoneId} not found on server.");
+            TreeRoot.Stop($"Profile with ID {ZoneId} not found on server.");
+            return;
+        }
+
+        var profile = shortList.First();
+        var profileUrl = profile.URL;
+        var profileType = profile.Type;
+        var dungeonDutyId = profile.DutyId;
+        var dungeonZoneId = profile.ZoneId;
+        var dungeonLevel = profile.Level;
+        var dutyType = profile.DutyType;
+        var unlockQuest = profile.UnlockQuest;
+        var reqItemLevel = profile.ItemLevel;
+
+        if (profileType == ProfileType.Duty)
+        {
+            {
+                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, 1, unlockQuest, false, reqItemLevel, dungeonLevel);
+                return;
+            }
+        }
+
+        return;
+    }
+
     private static async Task<List<ServerProfile>> GetProfileList(string uri)
     {
         var profileUri = new Uri(uri);
