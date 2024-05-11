@@ -37,14 +37,7 @@
     <Compile Remove="Helpers\ChocoboHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="GreyMagic">
-      <HintPath>..\..\GreyMagic.dll</HintPath>
-    </Reference>
-    <Reference Include="RebornBuddy">
-      <HintPath>..\..\RebornBuddy.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="RebornBuddy.ReferenceAssemblies" Version="1.0.612.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
