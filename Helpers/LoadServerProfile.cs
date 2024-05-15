@@ -21,6 +21,7 @@ using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.Structs;
 using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers;
@@ -61,7 +62,77 @@ public class LoadServerProfile
         LapisManalis
     };
 
-    public static async Task LoadProfile(string profileName, int QueueType, bool GoToBarracks)
+    private static readonly string[] Greetings = new string[]
+    {
+        "Hola",
+        "Bonjour",
+        "Hallo",
+        "Ciao",
+        "Konnichiwa",
+        "What’s kicking, little chicken?",
+        "Hello, governor!",
+        "Whaddup bro?",
+        "Bonjour monsieur!",
+        "Ciao babydoll!",
+        "Bing bing! How’s it going?",
+        "Good day guys",
+        "Oooo la la. This guy again",
+        "Welcome to the club guys",
+        "What’s sizzling?",
+        "Whazzup?",
+        "Ni hao ma?",
+        "What’s up, buttercup?",
+        "Hello!",
+        "Hey",
+        "Heyo",
+        "Hihi",
+        "Hello new friends!",
+        "Hi new friends",
+        "Heya",
+        "Ello! o/",
+        "hello!",
+        "Hi, I just met you, and yes, this is crazy. Here’s my number – can we kill this guy, maybe?",
+        "Hi guys",
+        "What’s smokin’?",
+        "How is life sailing?",
+        "Hiya",
+        "Hi",
+        "Hey friends!",
+        "Yo",
+        "I come in peace. Okay, yeah maybe not.",
+        "Hello, my name is Inigo Montoya.",
+        "I'm Batman",
+        "‘Ello, mates",
+        "How you doin'?",
+        "What's cookin', good lookin'?",
+        "Aloha",
+        "Hey you, yeah you. I like your face.",
+        "Why, hello there!",
+        "This fight may be recorded for training purposes.",
+        "GOOOOOD MORNING, VIETNAM!",
+        "‘Sup, homeslice?",
+        "What’s crackin’?",
+        "Here's Johnny!",
+        "Whaddup",
+        "o/",
+        "o7",
+        "Greetings and salutations!",
+        "Top of the mornin’ to ya!",
+        "Howdy partners.",
+        "Ahoy there, matey.",
+        "Anyone else have chicken too?",
+        "Hey guys, glad to be here. Let's go have some fun.",
+        "Oh yeah, love fighting this guy"
+    };
+
+    private static readonly ShuffleCircularQueue<string> _greetingQueue = new ShuffleCircularQueue<string>(Greetings);
+
+    private static ShuffleCircularQueue<string> _greetingQueueCustom;
+
+    public static ChatBroadcaster PartyBroadcaster = new ChatBroadcaster(MessageType.Party);
+    public static ChatBroadcaster EmoteBroadcaster = new ChatBroadcaster(MessageType.StandardEmotes);
+
+    public static async Task LoadProfile(string profileName, int QueueType, bool GoToBarracks, bool sayHello, bool sayHelloCustom, string sayHelloMessages)
     {
         Log.Information("Loading Profile");
 
@@ -108,7 +179,7 @@ public class LoadServerProfile
         if (profileType == ProfileType.Duty)
         {
             {
-                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, reqItemLevel, dungeonLevel);
+                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, reqItemLevel, dungeonLevel, sayHello, sayHelloCustom, sayHelloMessages);
                 return;
             }
         }
@@ -157,7 +228,7 @@ public class LoadServerProfile
         if (profileType == ProfileType.Duty)
         {
             {
-                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, 1, unlockQuest, false, reqItemLevel, dungeonLevel);
+                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, 1, unlockQuest, false, reqItemLevel, dungeonLevel, false, false, "hi/welcome");
                 return;
             }
         }
@@ -243,7 +314,7 @@ public class LoadServerProfile
         return NeoProfileManager.CurrentProfile != null && NeoProfileManager.CurrentProfile.Name != "Loading Profile";
     }
 
-    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, int ItemLevel, int dungeonLevel)
+    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, int ItemLevel, int dungeonLevel, bool sayHello, bool sayHelloCustom, string SayHelloMessages)
     {
         if (WorldManager.ZoneId == dungeonZoneId)
         {
@@ -421,6 +492,8 @@ public class LoadServerProfile
 
             Log.Information("Should be in duty");
 
+            ShuffleCircularQueue<string> _greetingQueueCustom = new ShuffleCircularQueue<string>(SayHelloMessages.Split('/'));
+
             if (DirectorManager.ActiveDirector is ff14bot.Directors.InstanceContentDirector director)
             {
                 var time = new TimeSpan(1, 29, 59);
@@ -442,6 +515,20 @@ public class LoadServerProfile
                 if (director.TimeLeftInDungeon >= time.Add(new TimeSpan(0, 0, 1)))
                 {
                     Log.Information("Barrier up");
+                    if (sayHello && !sayHelloCustom)
+                    {
+                        var sentgreeting = _greetingQueue.Dequeue();
+                        Log.Information($"Saying '{sentgreeting}' the group");
+                        await PartyBroadcaster.Send(sentgreeting);
+                    }
+
+                    if (sayHelloCustom && sayHello)
+                    {
+                        var sentcustomgreeting = _greetingQueueCustom.Dequeue();
+                        Log.Information($"Saying '{sentcustomgreeting}' the group");
+                        await PartyBroadcaster.Send(sentcustomgreeting);
+                    }
+
                     await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < time);
                 }
             }
