@@ -1,9 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using ff14bot.Enums;
 using LlamaLibrary.Enums;
-using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
 namespace LlamaLibrary.Extensions

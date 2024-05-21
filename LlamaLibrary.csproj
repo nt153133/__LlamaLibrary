@@ -1,50 +1,54 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
-    <OutputType>Library</OutputType>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>10</LangVersion>
-    <Nullable>enable</Nullable>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWindowsForms>true</UseWindowsForms>
-    <UseWPF>true</UseWPF>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <ItemGroup>
-    <Content Include=".editorconfig" />
-    <Content Include="Resources\AllHunts.json" />
-    <Content Include="Resources\CustomDeliveryNpcs.json" />
-    <Content Include="Resources\Empyreum.json" />
-    <Content Include="Resources\GCShopItems.json" />
-    <Content Include="Resources\Goblet.json" />
-    <Content Include="Resources\LavenderBeds.json" />
-    <Content Include="Resources\Materia.json" />
-    <Content Include="Resources\Mist.json" />
-    <Content Include="Resources\Recipes_Anden.json" />
-    <Content Include="Resources\Shirogane.json" />
-    <Content Include="Resources\Ventures.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Helpers\ChocoboHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="RebornBuddy.ReferenceAssemblies" Version="1.0.612.3" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+    <PropertyGroup>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+        <OutputType>Library</OutputType>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>10</LangVersion>
+        <Nullable>enable</Nullable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <UseWindowsForms>true</UseWindowsForms>
+        <UseWPF>true</UseWPF>
+        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+        <TargetFrameworks>net8.0-windows;net481</TargetFrameworks>
+        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+        <OutputPath>bin\x64\Release\</OutputPath>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Include=".editorconfig"/>
+        <Content Include="Resources\AllHunts.json"/>
+        <Content Include="Resources\CustomDeliveryNpcs.json"/>
+        <Content Include="Resources\Empyreum.json"/>
+        <Content Include="Resources\GCShopItems.json"/>
+        <Content Include="Resources\Goblet.json"/>
+        <Content Include="Resources\LavenderBeds.json"/>
+        <Content Include="Resources\Materia.json"/>
+        <Content Include="Resources\Mist.json"/>
+        <Content Include="Resources\Recipes_Anden.json"/>
+        <Content Include="Resources\Shirogane.json"/>
+        <Content Include="Resources\Ventures.json"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="RebornBuddy.ReferenceAssemblies" Version="1.0.612.4" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="System.Resources.Extensions" Version="9.0.0-preview.4.24266.19"/>
+    </ItemGroup>
+    <ItemGroup>
+      <Reference Include="System.Web" Condition="'$(TargetFramework)' == 'net481'" />
+    </ItemGroup>
 </Project>
