@@ -9,7 +9,7 @@
         <UseWindowsForms>true</UseWindowsForms>
         <UseWPF>true</UseWPF>
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-        <TargetFrameworks>net8.0-windows;net481</TargetFrameworks>
+        <TargetFrameworks>net8.0-windows;net48</TargetFrameworks>
         <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -49,6 +49,6 @@
         <PackageReference Include="System.Resources.Extensions" Version="9.0.0-preview.4.24266.19"/>
     </ItemGroup>
     <ItemGroup>
-      <Reference Include="System.Web" Condition="'$(TargetFramework)' == 'net481'" />
+      <Reference Include="System.Web" Condition="'$(TargetFramework)' == 'net48'" />
     </ItemGroup>
 </Project>
