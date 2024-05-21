@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Xml.Linq;
@@ -12,12 +11,9 @@ using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Enums;
-using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
 using ff14bot.RemoteWindows;
-using LlamaLibrary.Helpers;
-using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
@@ -127,12 +123,12 @@ public class LoadServerProfile
 
     private static readonly ShuffleCircularQueue<string> _greetingQueue = new ShuffleCircularQueue<string>(Greetings);
 
-    private static ShuffleCircularQueue<string> _greetingQueueCustom;
+    //private static ShuffleCircularQueue<string> _greetingQueueCustom;
 
     public static ChatBroadcaster PartyBroadcaster = new ChatBroadcaster(MessageType.Party);
     public static ChatBroadcaster EmoteBroadcaster = new ChatBroadcaster(MessageType.StandardEmotes);
 
-    public static async Task LoadProfile(string profileName, int QueueType, bool GoToBarracks, bool sayHello, bool sayHelloCustom, string sayHelloMessages)
+    public static async Task LoadProfile(string profileName, int QueueType, bool GoToBarracks, bool sayHello = false, bool sayHelloCustom = false, string sayHelloMessages = "")
     {
         Log.Information("Loading Profile");
 
@@ -492,8 +488,6 @@ public class LoadServerProfile
 
             Log.Information("Should be in duty");
 
-            ShuffleCircularQueue<string> _greetingQueueCustom = new ShuffleCircularQueue<string>(SayHelloMessages.Split('/'));
-
             if (DirectorManager.ActiveDirector is ff14bot.Directors.InstanceContentDirector director)
             {
                 var time = new TimeSpan(1, 29, 59);
@@ -524,9 +518,13 @@ public class LoadServerProfile
 
                     if (sayHelloCustom && sayHello)
                     {
-                        var sentcustomgreeting = _greetingQueueCustom.Dequeue();
-                        Log.Information($"Saying '{sentcustomgreeting}' the group");
-                        await PartyBroadcaster.Send(sentcustomgreeting);
+                        ShuffleCircularQueue<string> greetingQueueCustomNew = new ShuffleCircularQueue<string>(SayHelloMessages.Split('/'));
+                        if (greetingQueueCustomNew.Any)
+                        {
+                            var sentcustomgreeting = greetingQueueCustomNew.Dequeue();
+                            Log.Information($"Saying '{sentcustomgreeting}' the group");
+                            await PartyBroadcaster.Send(sentcustomgreeting);
+                        }
                     }
 
                     await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < time);

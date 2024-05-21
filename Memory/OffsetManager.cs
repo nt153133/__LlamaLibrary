@@ -1,4 +1,4 @@
-﻿/*
+/*
 DeepDungeon is licensed under a
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
 
@@ -9,7 +9,6 @@ Orginal work done by zzi, contibutions by Omninewb, Freiheit, and mastahg
                                                                                  */
 
 using System;
-using System.CodeDom;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +23,6 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Clio.Utilities;
 using ff14bot;
-using ff14bot.Enums;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 using GreyMagic;
