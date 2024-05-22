@@ -117,7 +117,7 @@ namespace LlamaLibrary.Memory
 
                     newStopwatch.Restart();
 
-                    Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+                    Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1)?.GetMethod()?.DeclaringType?.Name}");
 
                     PrintLastCommit();
                 }
@@ -137,24 +137,27 @@ namespace LlamaLibrary.Memory
                 stopwatch.Stop();
                 Logger.Debug($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms");
             }
+
             return true;
         }
 
         private static void PrintLastCommit()
         {
-            var lastCommitfile = Path.Combine(GeneralFunctions.SourceDirectory().Parent.FullName, "LastCommit.txt");
-            if (File.Exists(lastCommitfile))
+            var lastCommitfile = Path.Combine(GeneralFunctions.SourceDirectory()?.Parent?.FullName ?? string.Empty, "LastCommit.txt");
+            if (!File.Exists(lastCommitfile))
             {
-                var lastCommit = File.ReadAllText(lastCommitfile).Trim();
-                if (DateTime.TryParse(lastCommit, out DateTime result))
-                {
-                    Logger.Information($"Last Commit: {result.ToUniversalTime():ddd, dd MMM yyy HH:mm:ss ‘UTC’}");
-                    Logger.Information($"Raw Last Commit: {lastCommit}");
-                }
-                else
-                {
-                    Logger.Information($"Last Commit: '{lastCommit}'");
-                }
+                return;
+            }
+
+            var lastCommit = File.ReadAllText(lastCommitfile).Trim();
+            if (DateTime.TryParse(lastCommit, out DateTime result))
+            {
+                Logger.Information($"Last Commit: {result.ToUniversalTime():ddd, dd MMM yyy HH:mm:ss ‘UTC’}");
+                Logger.Information($"Raw Last Commit: {lastCommit}");
+            }
+            else
+            {
+                Logger.Information($"Last Commit: '{lastCommit}'");
             }
         }
 
@@ -219,8 +222,7 @@ namespace LlamaLibrary.Memory
                                                              {
                                                                  IntPtr.Zero
                                                              },
-                                                             null)
-                    ).RegisteredVtable;
+                                                             null)!)!.RegisteredVtable;
 
                 if (vtables.ContainsKey(test))
                 {

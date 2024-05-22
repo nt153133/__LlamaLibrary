@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using ff14bot.Enums;
 using LlamaLibrary.Enums;
-using System.Reflection;
 
 namespace LlamaLibrary.Extensions
 {
