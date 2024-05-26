@@ -696,7 +696,7 @@ namespace LlamaLibrary.Memory
                       where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
                       select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
-            SetOffsetObjectsAsync(q1);
+            SetOffsetObjects(q1);
 
             while (!initDone)
             {
@@ -715,7 +715,7 @@ namespace LlamaLibrary.Memory
                       where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
                       select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
-            SetOffsetObjectsAsync(q1);
+            SetOffsetObjects(q1);
 
             File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
 
