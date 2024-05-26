@@ -1,4 +1,4 @@
-﻿/*
+/*
 DeepDungeon is licensed under a
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
 
@@ -9,7 +9,6 @@ Orginal work done by zzi, contibutions by Omninewb, Freiheit, and mastahg
                                                                                  */
 
 using System;
-using System.CodeDom;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +23,6 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Clio.Utilities;
 using ff14bot;
-using ff14bot.Enums;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 using GreyMagic;
@@ -119,7 +117,7 @@ namespace LlamaLibrary.Memory
 
                     newStopwatch.Restart();
 
-                    Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+                    Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1)?.GetMethod()?.DeclaringType?.Name}");
 
                     PrintLastCommit();
                 }
@@ -139,24 +137,27 @@ namespace LlamaLibrary.Memory
                 stopwatch.Stop();
                 Logger.Debug($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms");
             }
+
             return true;
         }
 
         private static void PrintLastCommit()
         {
-            var lastCommitfile = Path.Combine(GeneralFunctions.SourceDirectory().Parent.FullName, "LastCommit.txt");
-            if (File.Exists(lastCommitfile))
+            var lastCommitfile = Path.Combine(GeneralFunctions.SourceDirectory()?.Parent?.FullName ?? string.Empty, "LastCommit.txt");
+            if (!File.Exists(lastCommitfile))
             {
-                var lastCommit = File.ReadAllText(lastCommitfile).Trim();
-                if (DateTime.TryParse(lastCommit, out DateTime result))
-                {
-                    Logger.Information($"Last Commit: {result.ToUniversalTime():ddd, dd MMM yyy HH:mm:ss ‘UTC’}");
-                    Logger.Information($"Raw Last Commit: {lastCommit}");
-                }
-                else
-                {
-                    Logger.Information($"Last Commit: '{lastCommit}'");
-                }
+                return;
+            }
+
+            var lastCommit = File.ReadAllText(lastCommitfile).Trim();
+            if (DateTime.TryParse(lastCommit, out DateTime result))
+            {
+                Logger.Information($"Last Commit: {result.ToUniversalTime():ddd, dd MMM yyy HH:mm:ss ‘UTC’}");
+                Logger.Information($"Raw Last Commit: {lastCommit}");
+            }
+            else
+            {
+                Logger.Information($"Last Commit: '{lastCommit}'");
             }
         }
 
@@ -221,8 +222,7 @@ namespace LlamaLibrary.Memory
                                                              {
                                                                  IntPtr.Zero
                                                              },
-                                                             null)
-                    ).RegisteredVtable;
+                                                             null)!)!.RegisteredVtable;
 
                 if (vtables.ContainsKey(test))
                 {

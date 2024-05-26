@@ -13,7 +13,7 @@ namespace LlamaLibrary.Extensions
     public static class LocalPlayerExtensions
     {
         public const uint TheEndeavor = 900;
-        public const uint TheEndeaver_Ruby = 1163;
+        public const uint TheEndeaverRuby = 1163;
 
         internal static class Offsets
         {
@@ -28,7 +28,7 @@ namespace LlamaLibrary.Extensions
 
             //PlayerID 8byte ulong ID unique to that character which is included in MB listings
             [Offset("Search 48 8B 05 ? ? ? ? 48 8D 0D ? ? ? ? 41 8B DC Add 3 TraceRelative")]
-            internal static IntPtr PlayerID;
+            internal static IntPtr PlayerId;
 
             [Offset("Search 0F B6 05 ? ? ? ? 88 83 ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr RunWalk;
@@ -52,7 +52,7 @@ namespace LlamaLibrary.Extensions
 
         public static bool IsOnFishingBoat(this LocalPlayer play)
         {
-            return WorldManager.RawZoneId == TheEndeavor || WorldManager.RawZoneId == TheEndeaver_Ruby;
+            return WorldManager.RawZoneId == TheEndeavor || WorldManager.RawZoneId == TheEndeaverRuby;
         }
 
         public static Location Location(this LocalPlayer play)
@@ -127,7 +127,7 @@ namespace LlamaLibrary.Extensions
 
         public static ulong PlayerId(this LocalPlayer player)
         {
-            return Core.Memory.Read<ulong>(Offsets.PlayerID);
+            return Core.Memory.Read<ulong>(Offsets.PlayerId);
         }
 
         public static World HomeWorld(this Character? character)
@@ -140,27 +140,27 @@ namespace LlamaLibrary.Extensions
             return Core.Memory.Read<int>(player.Pointer + Offsets.CurrentMount);
         }
 
-        public static bool IsTank(this ClassJobType CurrentJob)
+        public static bool IsTank(this ClassJobType currentJob)
         {
-            return CurrentJob == ClassJobType.Gladiator || CurrentJob == ClassJobType.Marauder || CurrentJob == ClassJobType.Paladin || CurrentJob == ClassJobType.Warrior || CurrentJob == ClassJobType.DarkKnight || CurrentJob == ClassJobType.Gunbreaker;
+            return currentJob == ClassJobType.Gladiator || currentJob == ClassJobType.Marauder || currentJob == ClassJobType.Paladin || currentJob == ClassJobType.Warrior || currentJob == ClassJobType.DarkKnight || currentJob == ClassJobType.Gunbreaker;
         }
 
         //IsHealer
-        public static bool IsHealer(this ClassJobType CurrentJob)
+        public static bool IsHealer(this ClassJobType currentJob)
         {
-            return CurrentJob == ClassJobType.Conjurer || CurrentJob == ClassJobType.WhiteMage || CurrentJob == ClassJobType.Scholar || CurrentJob == ClassJobType.Astrologian;
+            return currentJob == ClassJobType.Conjurer || currentJob == ClassJobType.WhiteMage || currentJob == ClassJobType.Scholar || currentJob == ClassJobType.Astrologian;
         }
 
         //IsMeleeDps
-        public static bool IsMeleeDps(this ClassJobType CurrentJob)
+        public static bool IsMeleeDps(this ClassJobType currentJob)
         {
-            return CurrentJob == ClassJobType.Pugilist || CurrentJob == ClassJobType.Lancer || CurrentJob == ClassJobType.Rogue || CurrentJob == ClassJobType.Samurai || CurrentJob == ClassJobType.Monk || CurrentJob == ClassJobType.Dragoon || CurrentJob == ClassJobType.Ninja;
+            return currentJob == ClassJobType.Pugilist || currentJob == ClassJobType.Lancer || currentJob == ClassJobType.Rogue || currentJob == ClassJobType.Samurai || currentJob == ClassJobType.Monk || currentJob == ClassJobType.Dragoon || currentJob == ClassJobType.Ninja;
         }
 
         //IsRangedDps
-        public static bool IsRangedDps(this ClassJobType CurrentJob)
+        public static bool IsRangedDps(this ClassJobType currentJob)
         {
-            return CurrentJob == ClassJobType.Archer || CurrentJob == ClassJobType.Machinist || CurrentJob == ClassJobType.Dancer || CurrentJob == ClassJobType.Bard;
+            return currentJob == ClassJobType.Archer || currentJob == ClassJobType.Machinist || currentJob == ClassJobType.Dancer || currentJob == ClassJobType.Bard;
         }
 
         public static GearSet[] SortedGearSets(this LocalPlayer player)
