@@ -16,22 +16,11 @@ namespace LlamaLibrary.Memory
 #pragma warning disable CS0649
     public static partial class Offsets
     {
-        //6.3
         [Offset("Search 48 89 5C 24 ? 55 57 41 56 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 3D ? ? ? ? ?")]
-        // pre6.3 [OffsetCN("Search 40 53 55 57 41 56 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 79 ? ?")]
         public static IntPtr SalvageAgent;
 
-        //6.3
         [Offset("Search 4C 8D 0D ? ? ? ? 45 33 C0 33 D2 Add 3 TraceRelative")]
-        // pre6.3 [OffsetCN("Search 4C 8D 0D ? ? ? ? 45 33 C0 33 D2 48 8B C8 E8 ? ? ? ? Add 3 TraceRelative")]
         public static IntPtr RepairVendor;
-
-        /*
-        //6.3
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 80 3D ? ? ? ? ? 49 8B F9")]
-        [OffsetCN("Search 48 89 5C 24 ? 57 48 83 EC ? 88 51 ? 49 8B F9")]
-        public static IntPtr RepairWindowOpen;
-        */
 
         [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 B9 ? ? ? ? 4C 89 43 ? Add 3 TraceRelative")]
         public static IntPtr RepairVTable;
@@ -75,11 +64,8 @@ namespace LlamaLibrary.Memory
         public static IntPtr OpenTradeWindow;
 
         [Offset("Search 44 0F B7 0D ? ? ? ? 48 8D 57 ? Add 4 TraceRelative")]
-        [OffsetCN("Search 44 0F B7 0D ? ? ? ? 48 8D 57 ? Add 4 TraceRelative")]
         public static IntPtr ActorController_iLvl;
 
-        //  [Offset("Search 66 83 78 ? ? 74 ? 8B 78 ? E8 ? ? ? ? Add 3 Read8")]
-        //  public static int VentureTask;
         [Offset("Search 80 B9 ? ? ? ? ? 0F 94 C0 C3 ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 2 Read32")]
         public static int InventoryManagerFCTransfering;
 
@@ -104,7 +90,6 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 8B 93 ? ? ? ? Add 3 TraceRelative")]
         public static IntPtr PlayerState;
 
-        //6.5Done
         [Offset("Search E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? E9 ? ? ? ? 49 8D 8E ? ? ? ? TraceCall")]
         public static IntPtr ExecuteCommandInner;
 
@@ -141,9 +126,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 41 88 87 ? ? ? ? 40 0F 97 C5 Add 3 Read32")]
         public static int RetainerDataOrder;
 
-        //6.3
         [Offset("48 89 91 ? ? ? ? C3 ? ? ? ? ? ? ? ? 89 91 ? ? ? ? C3 ? ? ? ? ? ? ? ? ? 81 B9 ? ? ? ? ? ? ? ? Add 3 Read32")]
-        // pre6.3 [OffsetCN("Search 48 89 91 ? ? ? ? C3 ? ? ? ? ? ? ? ? 48 83 39 ? Add 3 Read32")]
         public static int CurrentRetainer;
 
         [Offset("Search 83 FA ? 73 ? 8B C2 0F B6 94 08 ? ? ? ? 80 FA ?")]
@@ -164,7 +147,6 @@ namespace LlamaLibrary.Memory
         [Offset("Search 8B 78 ? E8 ? ? ? ? 3B F8 Add 2 Read8")]
         public static int VentureFinishTime;
 
-        //B9 ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? C6 85 ? ? ? ? ? Add 1 Read32
         [Offset("Search B9 ? ? ? ? E8 ? ? ? ? 40 88 BD ? ? ? ? Add 1 Read32")]
         public static int RetainerNetworkPacket;
     }

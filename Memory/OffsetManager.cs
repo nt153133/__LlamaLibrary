@@ -30,738 +30,550 @@ using LlamaLibrary.Helpers;
 using LlamaLibrary.Hooks;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory.PatternFinders;
 using LlamaLibrary.RemoteAgents;
 using Newtonsoft.Json;
 using LogLevel = LlamaLibrary.Logging.LogLevel;
 using PatchManager = LlamaLibrary.Hooks.PatchManager;
 
+// ReSharper disable InconsistentNaming
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable AccessToDisposedClosure
+
 // ReSharper disable InterpolatedStringExpressionIsNotIFormattable
 
-namespace LlamaLibrary.Memory
+namespace LlamaLibrary.Memory;
+
+public static class OffsetManager
 {
-    public static class OffsetManager
-    {
-        private static readonly StringBuilder Sb = new();
+    private static readonly StringBuilder Sb = new();
 
-        //private static readonly SemaphoreSlim InitLock = new SemaphoreSlim(1, 1);
-        //private static readonly SemaphoreSlim InitLock1 = new(1, 1);
-        private static bool initStarted;
-        private static bool initDone;
+    //private static readonly SemaphoreSlim InitLock = new SemaphoreSlim(1, 1);
+    //private static readonly SemaphoreSlim InitLock1 = new(1, 1);
+    //private static bool initStarted;
+    private static bool initDone;
 
-        public static Dictionary<string, string> patterns = new();
-        public static Dictionary<string, string> constants = new();
+    public static readonly Dictionary<string, string> Patterns = new();
+    public static readonly Dictionary<string, string> Constants = new();
 
-        public static ConcurrentDictionary<string, long> OffsetCache = new ConcurrentDictionary<string, long>();
+    public static ConcurrentDictionary<string, long> OffsetCache = new();
 
-        private static readonly bool _debug = false;
+    private const bool _debug = false;
 
-        private static string OffsetFile => Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{Core.CurrentGameVer}.json");
+    private static string OffsetFile => Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{Core.CurrentGameVer}.json");
 
-        public static LLogger Logger { get; } = new LLogger("LLOffsetManager", Colors.RosyBrown, LogLevel.Information);
+    public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown, LogLevel.Debug);
 
 #if RB_CN
-        public static readonly bool IsChinese = true;
+        public const bool IsChinese = true;
 #else
-        public static readonly bool IsChinese = false;
+    public const bool IsChinese = false;
 #endif
-        [Obsolete]
-        public static void Init()
-        {
-            //Logger.Information($"Is init done {initDone}");
-        }
+    [Obsolete]
+    public static void Init()
+    {
+        //Logger.Information($"Is init done {initDone}");
+    }
 
-        public static async Task<bool> InitLib()
+    public static async Task<bool> InitLib()
+    {
+        var stopwatch = Stopwatch.StartNew();
+        try
         {
-            var stopwatch = Stopwatch.StartNew();
             try
             {
-                try
+                stopwatch.Restart();
+                /*if (initDone)
                 {
-                    stopwatch.Restart();
-                    /*if (initDone)
+                    Logger.Debug($"OffsetManager done {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+                    return true;
+                }
+
+                if (initStarted)
+                {
+                    Logger.Information($"OffsetManager Init started but waiting {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+                    while (!initDone)
                     {
-                        Logger.Debug($"OffsetManager done {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                        return true;
+                        await Task.Delay(100);
                     }
 
-                    if (initStarted)
-                    {
-                        Logger.Information($"OffsetManager Init started but waiting {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                        while (!initDone)
-                        {
-                            await Task.Delay(100);
-                        }
+                    return true;
+                }*/
 
-                        return true;
-                    }*/
+                //initStarted = true;
 
-                    initStarted = true;
-
-                    stopwatch = Stopwatch.StartNew();
-                    /*
-                    if (initDone)
-                    {
-                        Logger.Information($"OffsetManager Init started but done now {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                        return true;
-                    }
-
-                    Logger.Information($"OffsetManager Init started {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                    */
-
-                    var newStopwatch = Stopwatch.StartNew();
-
-                    await SearchAndSetLL();
-                    newStopwatch.Stop();
-
-                    Logger.Debug($"OffsetManager SearchAndSetLL took {newStopwatch.ElapsedMilliseconds}ms");
-
-                    newStopwatch.Restart();
-
-                    Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new System.Diagnostics.StackTrace().GetFrame(1)?.GetMethod()?.DeclaringType?.Name}");
-
-                    PrintLastCommit();
-                }
-                finally
+                stopwatch = Stopwatch.StartNew();
+                /*
+                if (initDone)
                 {
-                    initDone = true;
-                    initStarted = false;
+                    Logger.Information($"OffsetManager Init started but done now {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+                    return true;
                 }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e.ToString());
+
+                Logger.Information($"OffsetManager Init started {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
+                */
+
+                var newStopwatch = Stopwatch.StartNew();
+
+                await SearchAndSetLL();
+                newStopwatch.Stop();
+
+                Logger.Debug($"OffsetManager SearchAndSetLL took {newStopwatch.ElapsedMilliseconds}ms");
+
+                newStopwatch.Restart();
+
+                Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new StackTrace().GetFrame(1)?.GetMethod()?.DeclaringType?.Name}");
+
+                PrintLastCommit();
             }
             finally
             {
                 initDone = true;
-                stopwatch.Stop();
-                Logger.Debug($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms");
+                //initStarted = false;
             }
-
-            return true;
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e.ToString());
+        }
+        finally
+        {
+            initDone = true;
+            stopwatch.Stop();
+            Logger.Debug($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms");
         }
 
-        private static void PrintLastCommit()
+        return true;
+    }
+
+    private static void PrintLastCommit()
+    {
+        var lastCommitfile = Path.Combine(GeneralFunctions.SourceDirectory()?.Parent?.FullName ?? string.Empty, "LastCommit.txt");
+        if (!File.Exists(lastCommitfile))
         {
-            var lastCommitfile = Path.Combine(GeneralFunctions.SourceDirectory()?.Parent?.FullName ?? string.Empty, "LastCommit.txt");
-            if (!File.Exists(lastCommitfile))
+            return;
+        }
+
+        var lastCommit = File.ReadAllText(lastCommitfile).Trim();
+        if (DateTime.TryParse(lastCommit, out var result))
+        {
+            Logger.Information($"Last Commit: {result.ToUniversalTime():ddd, dd MMM yyy HH:mm:ss ‘UTC’}");
+            Logger.Information($"Raw Last Commit: {lastCommit}");
+        }
+        else
+        {
+            Logger.Information($"Last Commit: '{lastCommit}'");
+        }
+    }
+
+    private static async Task SearchAndSetLL()
+    {
+        var llTypes = GetTypes();
+
+        if (File.Exists(OffsetFile))
+        {
+            OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(OffsetFile)) ?? new ConcurrentDictionary<string, long>();
+        }
+
+        await SetOffsetObjectsAsync(llTypes);
+    }
+
+    private static List<Type> GetTypes()
+    {
+        var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
+                  where t.Namespace != null && t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
+                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+
+        if (!q1.Contains(typeof(Offsets)))
+        {
+            q1.Add(typeof(Offsets));
+        }
+
+        return q1;
+    }
+
+    internal static void SetPostOffsets()
+    {
+        var newStopwatch = Stopwatch.StartNew();
+        var vtables = new Dictionary<IntPtr, int>();
+        var pointers = AgentModule.AgentVtables;
+        for (var index = 0; index < pointers.Count; index++)
+        {
+            if (vtables.ContainsKey(pointers[index]))
+            {
+                continue;
+            }
+
+            vtables.Add(pointers[index], index);
+        }
+
+        Logger.Debug($"OffsetManager AgentModule.AgentVtables took {newStopwatch.ElapsedMilliseconds}ms");
+        var q = Assembly.GetExecutingAssembly().GetTypes().Where(t => t is { Namespace: "LlamaLibrary.RemoteAgents", IsClass: true } && typeof(IAgent).IsAssignableFrom(t)).ToList();
+        newStopwatch.Stop();
+        Logger.Debug($"OffsetManager GetTypesAgents took {newStopwatch.ElapsedMilliseconds}ms");
+
+        newStopwatch.Restart();
+        var names = new List<string>();
+        foreach (var myType in q)
+        {
+            var test = ((IAgent)Activator.CreateInstance(myType,
+                                                         BindingFlags.Instance | BindingFlags.NonPublic,
+                                                         null,
+                                                         new object[]
+                                                         {
+                                                             IntPtr.Zero
+                                                         },
+                                                         null)!).RegisteredVtable;
+
+            if (vtables.TryGetValue(test, out var vtable))
+            {
+                names.Add(myType.Name);
+                Logger.Debug($"\tTrying to add {myType.Name} {AgentModule.TryAddAgent(vtable, myType)}");
+            }
+            else
+            {
+                Logger.Error($"\tFound one {myType.Name} {test:X} but no agent");
+            }
+        }
+
+        Logger.Information($"Added {names.Count} agents");
+        newStopwatch.Stop();
+        Logger.Debug($"OffsetManager AgentModule.TryAddAgent took {newStopwatch.ElapsedMilliseconds}ms");
+
+        newStopwatch.Restart();
+        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+        newStopwatch.Stop();
+        Logger.Debug($"OffsetManager File.WriteAllText took {newStopwatch.ElapsedMilliseconds}ms");
+
+        if (InventoryUpdatePatch.Offsets.OrginalCall != InventoryUpdatePatch.Offsets.OriginalJump)
+        {
+            Logger.Information("Last patch not cleaned up, cleaning up now");
+            var asm = Core.Memory.Asm;
+            asm.Clear();
+            asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatch.Offsets.PatchLocation);
+            asm.AddLine("JMP {0}", InventoryUpdatePatch.Offsets.OrginalCall);
+            var jzPatch = asm.Assemble();
+            Core.Memory.WriteBytes(InventoryUpdatePatch.Offsets.PatchLocation, jzPatch);
+            InventoryUpdatePatch.Offsets.OriginalJump = InventoryUpdatePatch.Offsets.OrginalCall;
+        }
+
+        PatchManager.Initialize();
+    }
+
+    public static void RegisterAgent(IAgent iagent)
+    {
+        var vtables = new Dictionary<IntPtr, int>();
+        var pointers = AgentModule.AgentVtables;
+        for (var index = 0; index < pointers.Count; index++)
+        {
+            if (vtables.ContainsKey(pointers[index]))
+            {
+                continue;
+            }
+
+            vtables.Add(pointers[index], index);
+        }
+
+        if (vtables.TryGetValue(iagent.RegisteredVtable, out var vtable))
+        {
+            Logger.Information($"\tTrying to add {iagent.GetType()} {AgentModule.TryAddAgent(vtable, iagent.GetType())}");
+        }
+        else
+        {
+            Logger.Error($"\tFound one {iagent.RegisteredVtable:X} but no agent");
+        }
+    }
+
+    internal static void AddNamespacesToScriptManager(params string[] param)
+    {
+        var field =
+            typeof(ScriptManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+                .FirstOrDefault(f => f.FieldType == typeof(List<string>));
+
+        if (field == null)
+        {
+            return;
+        }
+
+        try
+        {
+            if (field.GetValue(null) is not List<string> list)
             {
                 return;
             }
 
-            var lastCommit = File.ReadAllText(lastCommitfile).Trim();
-            if (DateTime.TryParse(lastCommit, out DateTime result))
+            foreach (var ns in param)
             {
-                Logger.Information($"Last Commit: {result.ToUniversalTime():ddd, dd MMM yyy HH:mm:ss ‘UTC’}");
-                Logger.Information($"Raw Last Commit: {lastCommit}");
+                if (!list.Contains(ns))
+                {
+                    list.Add(ns);
+                    Logger.Information($"Added namespace '{ns}' to ScriptManager");
+                }
+            }
+        }
+        catch
+        {
+            Logger.Error("Failed to add namespaces to ScriptManager, this can cause issues with some profiles.");
+        }
+    }
+
+    public static IEnumerable<MemberInfo> MemberInfos(Type j)
+    {
+        IEnumerable<MemberInfo> infos = j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public).Where(i => !i.IsInitOnly && !i.IsPrivate);
+        return infos.Concat(j.GetProperties(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public).Where(i => i.CanWrite));
+    }
+
+    public static IEnumerable<MemberInfo> MemberInfos(IEnumerable<Type> j)
+    {
+        return j.SelectMany(MemberInfos);
+    }
+
+    [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
+    public static async Task SetOffsetObjectsAsync(IEnumerable<Type> q1)
+    {
+        var types = MemberInfos(q1);
+
+        List<MemberInfo> fields = new();
+        var foundAll = true;
+        foreach (var memberInfo in types)
+        {
+            var type = memberInfo.GetMemberType();
+            if (type == null)
+            {
+                Logger.Error($"Parsing class {memberInfo.Name}, this shouldn't happen");
             }
             else
             {
-                Logger.Information($"Last Commit: '{lastCommit}'");
-            }
-        }
+                //Logger.Information($"Parsing field {type.Name}");
 
-        private static async Task SearchAndSetLL()
-        {
-            var llTypes = GetTypes();
-
-            if (File.Exists(OffsetFile))
-            {
-                OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(OffsetFile));
-                if (OffsetCache == null)
+                if (!memberInfo.IgnoreCache() && OffsetCache.TryGetValue(memberInfo.MemberName(), out var offsetVal))
                 {
-                    OffsetCache = new ConcurrentDictionary<string, long>();
-                }
-            }
-
-            await SetOffsetObjectsAsync(llTypes);
-        }
-
-        private static List<Type> GetTypes()
-        {
-            var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
-                      where t.Namespace != null && t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
-                      select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
-
-            if (!q1.Contains(typeof(Offsets)))
-            {
-                q1.Add(typeof(Offsets));
-            }
-
-            return q1;
-        }
-
-        internal static void SetPostOffsets()
-        {
-            Stopwatch newStopwatch = Stopwatch.StartNew();
-            var vtables = new Dictionary<IntPtr, int>();
-            var pointers = AgentModule.AgentVtables;
-            for (var index = 0; index < pointers.Count; index++)
-            {
-                if (vtables.ContainsKey(pointers[index]))
-                {
+                    memberInfo.SetValue(offsetVal);
                     continue;
                 }
 
-                vtables.Add(pointers[index], index);
-            }
+                //Logger.Information($"{(offset.IgnoreCache ? "Skipping cache" : "Not found in cache" )} : {type.DeclaringType.FullName}.{type.Name}");
+                fields.Add(memberInfo);
 
-            Logger.Debug($"OffsetManager AgentModule.AgentVtables took {newStopwatch.ElapsedMilliseconds}ms");
-            var q = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Namespace != null && t.IsClass && t.Namespace == "LlamaLibrary.RemoteAgents" && typeof(IAgent).IsAssignableFrom(t)).ToList();
-            newStopwatch.Stop();
-            Logger.Debug($"OffsetManager GetTypesAgents took {newStopwatch.ElapsedMilliseconds}ms");
-
-            newStopwatch.Restart();
-            var names = new List<string>();
-            foreach (var MyType in q)
-            {
-                var test = ((IAgent)Activator.CreateInstance(MyType,
-                                                             BindingFlags.Instance | BindingFlags.NonPublic,
-                                                             null,
-                                                             new object[]
-                                                             {
-                                                                 IntPtr.Zero
-                                                             },
-                                                             null)!)!.RegisteredVtable;
-
-                if (vtables.ContainsKey(test))
-                {
-                    names.Add(MyType.Name);
-                    Logger.Debug($"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
-                }
-                else
-                {
-                    Logger.Error($"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
-                }
-            }
-
-            Logger.Information($"Added {names.Count} agents");
-            newStopwatch.Stop();
-            Logger.Debug($"OffsetManager AgentModule.TryAddAgent took {newStopwatch.ElapsedMilliseconds}ms");
-
-            newStopwatch.Restart();
-            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
-            newStopwatch.Stop();
-            Logger.Debug($"OffsetManager File.WriteAllText took {newStopwatch.ElapsedMilliseconds}ms");
-
-            if (InventoryUpdatePatch.Offsets.OrginalCall != InventoryUpdatePatch.Offsets.OriginalJump)
-            {
-                Logger.Information("Last patch not cleaned up, cleaning up now");
-                var asm = Core.Memory.Asm;
-                asm.Clear();
-                asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatch.Offsets.PatchLocation);
-                asm.AddLine("JMP {0}", InventoryUpdatePatch.Offsets.OrginalCall);
-                var jzPatch = asm.Assemble();
-                Core.Memory.WriteBytes(InventoryUpdatePatch.Offsets.PatchLocation, jzPatch);
-                InventoryUpdatePatch.Offsets.OriginalJump = InventoryUpdatePatch.Offsets.OrginalCall;
-            }
-
-            PatchManager.Initialize();
-        }
-
-        public static void RegisterAgent(IAgent iagent)
-        {
-            var vtables = new Dictionary<IntPtr, int>();
-            var pointers = AgentModule.AgentVtables;
-            for (var index = 0; index < pointers.Count; index++)
-            {
-                if (vtables.ContainsKey(pointers[index]))
-                {
-                    continue;
-                }
-
-                vtables.Add(pointers[index], index);
-            }
-
-            if (vtables.ContainsKey(iagent.RegisteredVtable))
-            {
-                Logger.Information($"\tTrying to add {iagent.GetType()} {AgentModule.TryAddAgent(vtables[iagent.RegisteredVtable], iagent.GetType())}");
-            }
-            else
-            {
-                Logger.Error($"\tFound one {iagent.RegisteredVtable.ToString("X")} but no agent");
+                foundAll = false;
             }
         }
 
-        internal static void AddNamespacesToScriptManager(params string[] param)
+        if (foundAll)
         {
-            var field =
-                typeof(ScriptManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
-                    .FirstOrDefault(f => f.FieldType == typeof(List<string>));
+            Logger.Information("All offsets found in cache");
+            return;
+        }
 
-            if (field == null)
+        Logger.Information($"Not all ({fields.Count}) offsets found in cache");
+
+        var pf = PatternFinderProxy.PatternFinder;
+
+        //Take the list of types and search for the offsets using multiple tasks
+        var tasks = fields.Select(type => Task.Run(() => SearchOffset(type, pf))).ToList();
+
+        //Wait for all tasks to complete
+        await Task.WhenAll(tasks);
+    }
+
+    public static void SetOffsetObjects(IEnumerable<Type> q1)
+    {
+        var types = MemberInfos(q1);
+
+        var pf = PatternFinderProxy.PatternFinder;
+        Parallel.ForEach(types, type => { SearchOffset(type, pf); });
+    }
+
+    private static void SearchOffset(MemberInfo info, ISearcher pf)
+    {
+        var type = info.GetMemberType();
+
+        //Logger.Information($"{info.Name} - {info.DeclaringType} - {info.ReflectedType}");
+
+        if (type is { IsClass: true, IsAbstract: false })
+        {
+            Logger.Information("Trying to set " + type.Name + " (Class)");
+            var instance = Activator.CreateInstance(type);
+
+            if (instance == null)
             {
+                Logger.Error($"Failed to create instance of {type.Name}");
                 return;
             }
 
-            try
+            foreach (var field in MemberInfos(type))
             {
-                if (field.GetValue(null) is not List<string> list)
-                {
-                    return;
-                }
+                Logger.Information("Trying to set " + field.Name);
+                var result = field.GetOffset(pf);
 
-                foreach (var ns in param)
-                {
-                    if (!list.Contains(ns))
-                    {
-                        list.Add(ns);
-                        Logger.Information($"Added namespace '{ns}' to ScriptManager");
-                    }
-                }
-            }
-            catch
-            {
-                Logger.Error("Failed to add namespaces to ScriptManager, this can cause issues with some profiles.");
-            }
-        }
-
-        [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-        public static async Task SetOffsetObjectsAsync(IEnumerable<Type> q1)
-        {
-            var types = q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public));
-
-            List<FieldInfo> fields = new();
-            bool foundAll = true;
-            foreach (var type in types)
-            {
-                if (type.FieldType.IsClass)
-                {
-                    Logger.Error($"Parsing class {type.FieldType.Name}, this shouldn't happen");
-                }
-                else
-                {
-                    OffsetAttribute? offset;
-                    if (IsChinese)
-                    {
-                        offset = (OffsetAttribute?)Attribute.GetCustomAttributes(type, typeof(OffsetAttribute)).FirstOrDefault();
-                    }
-                    else
-                    {
-                        offset = (OffsetAttribute?)Attribute.GetCustomAttributes(type, typeof(OffsetAttribute)).FirstOrDefault();
-                    }
-
-                    if (offset == null)
-                    {
-                        continue;
-                    }
-
-                    var name = $"{type.DeclaringType?.FullName}.{type.Name}";
-                    //Logger.Information($"Parsing field {type.Name}");
-
-                    if (!offset.IgnoreCache && OffsetCache.TryGetValue(name, out var offsetVal))
-                    {
-                        //Logger.Information($"Found in cache: {name} {offsetVal}");
-                        if (type.FieldType == typeof(IntPtr))
-                        {
-                            //Logger.Info($"Offset found in cache: {0}", Core.Memory.GetAbsolute(new IntPtr(offsetVal)).ToString("X"));
-                            type.SetValue(null, Core.Memory.GetAbsolute(new IntPtr(offsetVal)));
-                        }
-                        else
-                        {
-                            //Logger.Info("Offset found in cache: {0}", offsetVal);
-                            type.SetValue(null, (int)offsetVal);
-                        }
-
-                        continue;
-                    }
-                    else
-                    {
-                        //Logger.Information($"{(offset.IgnoreCache ? "Skipping cache" : "Not found in cache" )} : {type.DeclaringType.FullName}.{type.Name}");
-                        fields.Add(type);
-                    }
-
-                    foundAll = false;
-                }
-            }
-
-            if (foundAll)
-            {
-                Logger.Information("All offsets found in cache");
-                return;
-            }
-            else
-            {
-                Logger.Information($"Not all ({fields.Count}) offsets found in cache");
-            }
-
-            using var pf = new PatternFinder(Core.Memory);
-
-            //Take the list of types and search for the offsets using multiple tasks
-            var tasks = fields.Select(type => Task.Run(() => SearchOffset(type, pf))).ToList();
-
-            //Wait for all tasks to complete
-            await Task.WhenAll(tasks);
-        }
-
-        public static void SetOffsetObjects(IEnumerable<Type> q1)
-        {
-            var types = q1.SelectMany(j => j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public));
-
-            using var pf = new PatternFinder(Core.Memory);
-            Parallel.ForEach(types,
-                             type => { SearchOffset(type, pf); });
-        }
-
-        private static void SearchOffset(FieldInfo type, PatternFinder pf)
-        {
-            if (type.FieldType.IsClass)
-            {
-                var instance = Activator.CreateInstance(type.FieldType);
-
-                foreach (var field in type.FieldType.GetFields(BindingFlags.Instance))
-                {
-                    //Logger.Information("Trying to set " + field.Name);
-                    var res = ParseField(field, pf);
-                    if (field.FieldType == typeof(IntPtr))
-                    {
-                        field.SetValue(instance, res);
-                    }
-                    else
-                    {
-                        field.SetValue(instance, (int)res);
-                    }
-                }
-
-                //set the value
-                type.SetValue(null, instance);
-            }
-            else
-            {
-                //Logger.Information("Trying to set " + type.Name);
-                var res = ParseField(type, pf);
-                if (type.FieldType == typeof(IntPtr))
-                {
-                    type.SetValue(null, res);
-                }
-                else
-                {
-                    try
-                    {
-                        type.SetValue(null, res.ToInt32());
-                    }
-                    catch (Exception)
-                    {
-                        Logger.Error($"Error on {type.Name}");
-                    }
-                }
-            }
-        }
-
-        private static IntPtr ParseField(FieldInfo field, PatternFinder pf)
-        {
-            var offset = (OffsetAttribute?)Attribute.GetCustomAttributes(field, typeof(OffsetAttribute)).FirstOrDefault();
-
-            var valna = (OffsetValueNA?)Attribute.GetCustomAttributes(field, typeof(OffsetValueNA)).FirstOrDefault();
-
-            var result = IntPtr.Zero;
-            var name = $"{field.DeclaringType?.FullName}.{field.Name}";
-            //var lang = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic).First(i => i.FieldType == typeof(Language)).GetValue(null);
-
-            if (IsChinese) //Translator.Language
-            {
-                var offsetCN = (OffsetCNAttribute?)Attribute.GetCustomAttributes(field, typeof(OffsetCNAttribute)).FirstOrDefault();
-                var valcn = (OffsetValueCN?)Attribute.GetCustomAttributes(field, typeof(OffsetValueCN)).FirstOrDefault();
-
-                if (valcn != null)
-                {
-                    return (IntPtr)valcn.Value;
-                }
-
-                if (offset == null)
-                {
-                    return IntPtr.Zero;
-                }
-
-                //var b1 = true;
-                try
-                {
-                    if (OffsetCache.ContainsKey(name) && !offset.IgnoreCache)
-                    {
-                        //Logger.Information("Found in cache");
-                        var offsetVal = OffsetCache[name];
-                        if (field.FieldType != typeof(int))
-                        {
-                            result = Core.Memory.GetAbsolute(new IntPtr(offsetVal));
-                        }
-                        else
-                        {
-                            result = new IntPtr(offsetVal);
-                        }
-                    }
-                    else
-                    {
-                        //Logger.Information($"Not found in cache : {field.DeclaringType.FullName}.{field.Name}");
-                        result = pf.FindSingle(offsetCN != null ? offsetCN.PatternCN : offset.Pattern, true);
-                        //result = pf.Find(offset.Pattern);
-                        if (result != IntPtr.Zero)
-                        {
-                            if (field.FieldType != typeof(int))
-                            {
-                                OffsetCache.TryAdd($"{field.DeclaringType?.FullName}.{field.Name}", Core.Memory.GetRelative(result).ToInt64());
-                            }
-                            else
-                            {
-                                OffsetCache.TryAdd($"{field.DeclaringType?.FullName}.{field.Name}", result.ToInt64());
-                            }
-                        }
-                    }
-                    //result = pf.Find(offsetCN != null ? offsetCN.PatternCN : offset.Pattern);
-                }
-                catch (Exception e)
+                if (result == IntPtr.Zero)
                 {
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
                         Logger.Error($"[{field.DeclaringType?.DeclaringType?.Name}:{field.Name:,27}] Not Found");
-                        Logger.Exception(e);
+                        Logger.Error($"{field.GetPattern()}");
                     }
                     else
                     {
                         Logger.Error($"[{field.DeclaringType?.Name}:{field.Name:,27}] Not Found");
-                        Logger.Exception(e);
-                    }
-                }
-            }
-            else
-            {
-                if (valna != null)
-                {
-                    return (IntPtr)valna.Value;
-                }
-
-                if (offset == null)
-                {
-                    return IntPtr.Zero;
-                }
-
-                try
-                {
-                    //Logger.Information("Offsetcache Count: " + OffsetCache.Count);
-                    if (OffsetCache.ContainsKey(name) && !offset.IgnoreCache)
-                    {
-                        //Logger.Information("Found in cache");
-                        var offsetVal = OffsetCache[name];
-                        if (field.FieldType != typeof(int))
-                        {
-                            result = Core.Memory.GetAbsolute(new IntPtr(offsetVal));
-                        }
-                        else
-                        {
-                            result = new IntPtr(offsetVal);
-                        }
-                    }
-                    else
-                    {
-                        //Logger.Information($"Not found in cache : {field.DeclaringType.FullName}.{field.Name}");
-                        result = pf.FindSingle(offset.Pattern, true);
-                        //result = pf.Find(offset.Pattern);
-                        if (result != IntPtr.Zero)
-                        {
-                            if (field.FieldType != typeof(int))
-                            {
-                                OffsetCache.TryAdd($"{field.DeclaringType?.FullName}.{field.Name}", Core.Memory.GetRelative(result).ToInt64());
-                            }
-                            else
-                            {
-                                OffsetCache.TryAdd($"{field.DeclaringType?.FullName}.{field.Name}", result.ToInt64());
-                            }
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    if (field.DeclaringType != null && field.DeclaringType.IsNested)
-                    {
-                        Logger.Error($"[{field.DeclaringType.DeclaringType?.Name}:{field.Name:,27}] Not Found");
-                        Logger.Exception(e);
-                    }
-                    else
-                    {
-                        Logger.Error($"[{field.DeclaringType?.Name}:{field.Name:,27}] Not Found");
-                        Logger.Exception(e);
-                    }
-                }
-            }
-
-            /*
-            if (result == IntPtr.Zero)
-            {
-                if(field.DeclaringType != null && field.DeclaringType.IsNested)
-                    Log.Error($"[{field.DeclaringType.DeclaringType.Name}:{field.Name:,27}] Not Found");
-                else
-                {
-                    Log.Error($"[{field.DeclaringType.Name}:{field.Name:,27}] Not Found");
-                }
-            }
-            */
-
-            if (!_debug)
-            {
-                return result;
-            }
-
-            switch (field.DeclaringType)
-            {
-                //Sb.AppendLine($"{field.DeclaringType.FullName}.{field.Name}");
-                case { IsNested: true } when field.FieldType != typeof(int):
-                    Sb.AppendLine($"{field.DeclaringType?.DeclaringType?.Name}_{field.Name}, {offset.Pattern} - {offset.PatternCN}");
-                    patterns.Add($"{field.DeclaringType?.DeclaringType?.Name}_{field.Name}", offset.Pattern);
-                    break;
-                case { IsNested: true } when field.FieldType == typeof(int):
-                    //sb.AppendLine($"{field.DeclaringType.DeclaringType.Name}_{field.Name}, {offset.Pattern} - {offset.PatternCN}");
-                    constants.Add($"{field.DeclaringType?.DeclaringType?.Name}_{field.Name}", offset.Pattern);
-                    break;
-                default:
-                {
-                    if (field.FieldType != typeof(int))
-                    {
-                        Sb.AppendLine($"{field.Name}, {offset.Pattern}"); // - {offset.PatternCN}
-                        patterns.Add($"{field.Name}", offset.Pattern);
-                    }
-                    else
-                    {
-                        Sb.AppendLine($"{field.Name}, {offset.Pattern} "); //- {offsetCN?.PatternCN}
-                        constants.Add($"{field.Name}", offset.Pattern);
+                        Logger.Error($"{field.GetPattern()}");
                     }
 
-                    break;
-                }
-            }
-
-            if (valna != null)
-            {
-                Sb.AppendLine($"{field.DeclaringType?.Name},{field.Name},{valna}");
-            }
-
-            if (field.DeclaringType is { IsNested: true })
-            {
-                Logger.Information($"[{field.DeclaringType?.DeclaringType?.Name}:{field.Name:,27}] {result.ToInt64():X}");
-            }
-            else
-            {
-                Logger.Information($"[{field.DeclaringType?.Name}:{field.Name:,27}] {result.ToInt64():X}");
-            }
-
-            return result;
-        }
-
-        internal static void SetScriptsThread()
-        {
-            // AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
-            Logger.Information("Setting ScriptManager");
-            Task.Run(() =>
-            {
-                ScriptManager.AddNamespaces("LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras");
-                ScriptManager.Init(typeof(ScriptConditions.Helpers));
-                Logger.Information("ScriptManager Set");
-            });
-        }
-
-        public static string? GetRootNamespace(string? nameSpace)
-        {
-            return nameSpace != null && nameSpace.IndexOf('.') > 0 ? nameSpace.Substring(0, nameSpace.IndexOf('.')) : nameSpace;
-        }
-
-        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
-        public static string? GetCurrentNamespace()
-        {
-            var frame = new StackFrame(1);
-            var method = frame.GetMethod();
-            var type = method.DeclaringType;
-            return GetRootNamespace(type?.Namespace);
-        }
-
-        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
-        public static List<Type> GetOffsetClasses()
-        {
-            var frame = new StackFrame(1);
-            var method = frame.GetMethod();
-            var type = method.DeclaringType;
-
-            var q1 = (from t in method.DeclaringType?.Assembly.GetTypes()
-                      where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
-                      select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
-
-            return q1;
-        }
-
-        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
-        public static void SetOffsetClasses()
-        {
-            var frame = new StackFrame(1);
-            var method = frame.GetMethod();
-            var type = method.DeclaringType;
-
-            var q1 = (from t in method.DeclaringType?.Assembly.GetTypes()
-                      where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
-                      select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
-
-            SetOffsetObjects(q1);
-
-            while (!initDone)
-            {
-                Thread.Sleep(100);
-            }
-        }
-
-        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
-        public static void SetOffsetClassesAndAgents()
-        {
-            var frame = new StackFrame(1);
-            var method = frame.GetMethod();
-            var type = method.DeclaringType;
-
-            var q1 = (from t in method.DeclaringType?.Assembly.GetTypes()
-                      where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
-                      select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
-
-            SetOffsetObjects(q1);
-
-            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
-
-            var vtables = new Dictionary<IntPtr, int>();
-            var pointers = AgentModule.AgentVtables;
-
-            for (var index = 0; index < pointers.Count; index++)
-            {
-                if (vtables.ContainsKey(pointers[index]))
-                {
                     continue;
                 }
 
-                vtables.Add(pointers[index], index);
+                field.SetValue(instance, result);
+                Logger.Information($"Setting {result.ToString("X")} to {instance.DynamicString()}");
             }
 
-            var q = from t in method.DeclaringType?.Assembly.GetTypes()
-                    where t.IsClass && typeof(IAgent).IsAssignableFrom(t)
-                    select t;
-
-            foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
+            //set the value
+            info.SetValue(null, instance);
+        }
+        else
+        {
+            //Logger.Information("Trying to set " + type.Name);
+            var result = info.GetOffset(pf);
+            if (result == IntPtr.Zero)
             {
-                var test = ((IAgent)Activator.CreateInstance(MyType,
-                                                             BindingFlags.Instance | BindingFlags.NonPublic,
-                                                             null,
-                                                             new object[]
-                                                             {
-                                                                 IntPtr.Zero
-                                                             },
-                                                             null)
-                    ).RegisteredVtable;
-
-                if (vtables.ContainsKey(test))
+                if (info.DeclaringType != null && info.DeclaringType.IsNested)
                 {
-                    Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(vtables[test], MyType)}");
+                    Logger.Error($"[{info.DeclaringType?.DeclaringType?.Name}:{info.Name:,27}] Not Found");
+                    Logger.Error($"{info.GetPattern()}");
                 }
                 else
                 {
-                    Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {test.ToString("X")} but no agent");
+                    Logger.Error($"[{info.DeclaringType?.Name}:{info.Name:,27}] Not Found");
+                    Logger.Error($"{info.GetPattern()}");
                 }
             }
 
-            while (!initDone)
+            try
             {
-                Thread.Sleep(100);
+                info.SetValue(result);
             }
+            catch (Exception e)
+            {
+                Logger.Error($"Error on {info.GetMemberType()} {result.ToInt64():X}");
+                Logger.Exception(e);
+            }
+        }
+    }
+
+    internal static void SetScriptsThread()
+    {
+        // AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
+        Logger.Information("Setting ScriptManager");
+        Task.Run(() =>
+        {
+            ScriptManager.AddNamespaces("LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras");
+            ScriptManager.Init(typeof(ScriptConditions.Helpers));
+            Logger.Information("ScriptManager Set");
+        });
+    }
+
+    public static string? GetRootNamespace(string? nameSpace)
+    {
+        return nameSpace != null && nameSpace.IndexOf('.') > 0 ? nameSpace.Substring(0, nameSpace.IndexOf('.')) : nameSpace;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static string? GetCurrentNamespace()
+    {
+        var frame = new StackFrame(1);
+        var method = frame.GetMethod();
+        var type = method?.DeclaringType;
+        return GetRootNamespace(type?.Namespace);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static List<Type> GetOffsetClasses()
+    {
+        var frame = new StackFrame(1);
+        var method = frame.GetMethod();
+        var type = method?.DeclaringType;
+
+        var q1 = (from t in method?.DeclaringType?.Assembly.GetTypes()
+                  where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
+                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+
+        return q1;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void SetOffsetClasses()
+    {
+        var frame = new StackFrame(1);
+        var method = frame.GetMethod();
+        var type = method?.DeclaringType;
+
+        var q1 = (from t in method?.DeclaringType?.Assembly.GetTypes()
+                  where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
+                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+
+        SetOffsetObjects(q1);
+
+        while (!initDone)
+        {
+            Thread.Sleep(100);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void SetOffsetClassesAndAgents()
+    {
+        var frame = new StackFrame(1);
+        var method = frame.GetMethod();
+        var type = method?.DeclaringType;
+
+        var q1 = (from t in method?.DeclaringType?.Assembly.GetTypes()
+                  where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
+                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+
+        SetOffsetObjects(q1);
+
+        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+
+        var vtables = new Dictionary<IntPtr, int>();
+        var pointers = AgentModule.AgentVtables;
+
+        for (var index = 0; index < pointers.Count; index++)
+        {
+            if (vtables.ContainsKey(pointers[index]))
+            {
+                continue;
+            }
+
+            vtables.Add(pointers[index], index);
+        }
+
+        var q = from t in method?.DeclaringType?.Assembly.GetTypes()
+                where t.IsClass && typeof(IAgent).IsAssignableFrom(t)
+                select t;
+
+        foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
+        {
+            var test = ((IAgent)Activator.CreateInstance(MyType,
+                                                         BindingFlags.Instance | BindingFlags.NonPublic,
+                                                         null,
+                                                         new object[]
+                                                         {
+                                                             IntPtr.Zero
+                                                         },
+                                                         null)!).RegisteredVtable;
+
+            if (vtables.TryGetValue(test, out var value))
+            {
+                Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(value, MyType)}");
+            }
+            else
+            {
+                Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {test:X} but no agent");
+            }
+        }
+
+        while (!initDone)
+        {
+            Thread.Sleep(100);
         }
     }
 }
