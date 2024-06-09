@@ -34,7 +34,7 @@ public class OffsetAttribute : Attribute
     public virtual bool IsValid(ForceClientMode clientMode) => true;
     protected static readonly Language Language
 #if RB_CN
-        = Language.Chinese;
+        = Language.Chn;
 #else
         = Language.Eng;
 #endif
