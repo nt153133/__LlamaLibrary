@@ -215,7 +215,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
 
     private static void PulseThread()
     {
-        ff14bot.Helpers.Logging.Write(Colors.CornflowerBlue, $@"{nameof(TemplatePlugin)}: PulseThread Started with flags {_pulseFlags}");
+        ff14bot.Helpers.Logging.Write(Colors.CornflowerBlue, $@"{nameof(TemplatePlugin)}: PulseThread Started with flags {_pulseFlags} {_pulseThreadRunning}");
         while (_pulseThreadRunning)
         {
             try
@@ -225,6 +225,17 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
                     if (!(GameObjectManager.LocalPlayer == null))
                     {
                         Pulsator.Pulse(_pulseFlags);
+                        if (_pulseFlags.HasFlag(PulseFlags.Windows))
+                        {
+                            //ff14bot.Helpers.Logging.Write(Colors.CadetBlue, $@"{nameof(TemplatePlugin)}: Pulsing Windows");
+                            RaptureAtkUnitManager.Update();
+                        }
+
+                        if (_pulseFlags.HasFlag(PulseFlags.Plugins))
+                        {
+                            //ff14bot.Helpers.Logging.Write(Colors.CadetBlue, $@"{nameof(TemplatePlugin)}: Pulsing Plugins");
+                            PluginManager.PulseAllPlugins();
+                        }
                     }
                     else
                     {
