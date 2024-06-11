@@ -57,6 +57,4 @@ public interface ISearcher : IDisposable
     /// <param name="pattern">Hex based pattern with ? as wildcards.</param>
     /// <returns>Array of pointers matching the pattern.</returns>
     public IntPtr[] SearchMany(string pattern);
-
-    public ReadOnlySpan<byte> GetSlice(int start, int length);
 }

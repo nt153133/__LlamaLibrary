@@ -43,9 +43,4 @@ public class GreyMagicPf : PatternFinder, ISearcher
         _debounceDispatcher?.Debounce(30_000);
         return FindMany(pattern, ref dontRebase);
     }
-
-    public ReadOnlySpan<byte> GetSlice(int start, int length)
-    {
-        throw new NotImplementedException();
-    }
 }
