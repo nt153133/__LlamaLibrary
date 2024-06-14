@@ -53,8 +53,8 @@ public static class OffsetManager
     //private static bool initStarted;
     private static bool initDone;
 
-    public static readonly Dictionary<string, string> Patterns = new();
-    public static readonly Dictionary<string, string> Constants = new();
+    public static readonly Dictionary<string, string> patterns = new();
+    public static readonly Dictionary<string, string> constants = new();
 
     public static ConcurrentDictionary<string, long> OffsetCache = new();
 
