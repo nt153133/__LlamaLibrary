@@ -15,6 +15,7 @@ namespace LlamaLibrary.Helpers.NPC
         private static class Offsets
         {
             [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 48 8D 48 08 E8 ? ? ? ? EB ? 83 C8 ? TraceCall")]
+            [OffsetDawntrail("Search E8 ? ? ? ? 48 89 45 AF 48 8B D8 TraceCall")]
             internal static IntPtr GetENpcResident;
         }
 
