@@ -24,21 +24,27 @@ namespace LlamaLibrary.RemoteWindows
             internal static int NumberArrayData_IntArray;
 
             [Offset("Search BA ? ? ? ? 49 8B CC E8 ? ? ? ? 4C 8B 7C 24 ? 48 8B 74 24 ? Add 1 Read32")]
+            [OffsetDawntrail("Search 44 8B C5 BA ? ? ? ? 48 8B CE E8 ? ? ? ? 48 8B 4F 08 Add 4 Read32")]
             internal static int NumberArrayData_Count;
 
             [Offset("Search BF ? ? ? ? 41 BE ? ? ? ? 90 Add 7 Read32")]
+            [OffsetDawntrail("Search 41 BD ? ? ? ? 4C 89 7C 24 ? 41 BF ? ? ? ? 89 6C 24 68 Add D Read32")]
             internal static int NumberArrayData_Start;
 
             [Offset("Search BA ? ? ? ? 48 8B C8 4C 8B 10 41 FF 52 ? 49 8B 4D ? 4C 8B E0 Add 1 Read32")]
+            [OffsetDawntrail("Search BA ? ? ? ? 48 8B C8 4C 8B 00 41 FF 50 48 48 8B 4F 08 48 8B F0 Add 1 Read32")]
             internal static int NumberArrayIndex;
 
             [Offset("Search BA ? ? ? ? 48 8B C8 4C 8B 00 41 FF 50 ? 48 8B E8 4D 85 E4 Add 1 Read32")]
+            [OffsetDawntrail("Search BA ? ? ? ? 48 8B C8 4C 8B 00 41 FF 50 50 4C 8B E0 48 85 F6 Add 1 Read32")]
             internal static int StringArrayIndex;
 
             [Offset("Search 48 8B 43 ? 48 63 CA 45 84 C9 Add 3 Read8")]
+            [OffsetDawntrail("Search 48 8B 51 ? 0F 84 ? ? ? ? Add 3 Read8")]
             internal static int StringArrayData_StrArray;
 
             [Offset("Search BF ? ? ? ? 41 BE ? ? ? ? 90 Add 1 Read32")]
+            [OffsetDawntrail("Search 41 BD ? ? ? ? 4C 89 7C 24 ? 41 BF ? ? ? ? 89 6C 24 68 Add 2 Read32")]
             internal static int StringArrayData_Start;
 
             // GetSubModule
