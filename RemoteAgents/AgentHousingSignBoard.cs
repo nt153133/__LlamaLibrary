@@ -18,12 +18,15 @@ namespace LlamaLibrary.RemoteAgents
 
             //0x3A
             [Offset("Search 40 88 7B ? 44 88 63 ? Add 3 Read8")]
+            [OffsetDawntrail("Search 44 88 73 ? 40 88 7B ? E8 ? ? ? ? Add 3 Read8")]
             internal static int Ward;
 
             [Offset("Search 44 88 63 ? 66 44 89 43 ? Add 3 Read8")]
+            [OffsetDawntrail("Search 40 88 7B ? E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 ? Add 3 Read8")]
             internal static int Plot;
 
             [Offset("Search 66 44 89 73 ? 40 88 7B ? Add 4 Read8")]
+            [OffsetDawntrail("Search 66 89 73 ? 44 88 73 ? Add 3 Read8")]
             internal static int Zone;
 
             [Offset("Search 40 88 7B ? 88 43 ? Add 3 Read8")]

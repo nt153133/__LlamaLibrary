@@ -349,14 +349,18 @@ public class OffsetCNAttribute : OffsetAttribute
 
 public class OffsetDawntrailAttribute : OffsetAttribute
 {
+#if RB_DT
+    private static bool _isValid { get; } = true;
+#else
     private static bool _isValid { get; } = false;
+#endif
 
     public override bool IsValid(ForceClientMode clientMode)
     {
         return clientMode == ForceClientMode.Dawntrail || _isValid;
     }
 
-    public override int Priority { get; } = 2;
+    public override int Priority { get; } = 99;
 
     public OffsetDawntrailAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0) : base("", "", pattern, ignoreCache, expectedValue)
     {

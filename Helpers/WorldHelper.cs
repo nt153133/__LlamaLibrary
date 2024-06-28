@@ -14,6 +14,7 @@ namespace LlamaLibrary.Helpers
         private static class Offsets
         {
             [Offset("Search 48 8D 4B ? 4C 8B 47 ? E8 ? ? ? ? Add 3 Read8")]
+            [OffsetDawntrail("Search 48 8d 4f ? 0f b7 10 e8 ? ? ? ? 48 ? ? 74 ? 48 8b ? Add 8 Read32")]
             //[OffsetCN("Search 48 8D 4B ? E8 ? ? ? ? 84 C0 74 ? 48 8B 74 24 ? Add 3 Read8")]
             internal static int Offset1;
 
