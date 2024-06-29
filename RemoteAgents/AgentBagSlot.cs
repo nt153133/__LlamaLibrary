@@ -18,6 +18,8 @@ namespace LlamaLibrary.RemoteAgents
             [OffsetDawntrail("Search 48 8B 89 ? ? ? ? 48 85 C9 74 ? E8 ? ? ? ? 48 C7 86 ? ? ? ? ? ? ? ? BF ? ? ? ? 48 8D 9E ? ? ? ? 0F 1F 44 00 ? Add 3 Read32")]
             internal static int Offset;
             [Offset("Search 48 8B 48 ? 48 85 C9 0F 84 ? ? ? ? 44 8B 8B ? ? ? ? Add 3 Read8")]
+            //May be wrong
+            [OffsetDawntrail("Search 48 8B 48 ? 48 85 C9 0F 84 ? ? ? ? 8B 93 ? ? ? ? Add 3 Read8")]
             internal static int FuncOffset;
         }
 

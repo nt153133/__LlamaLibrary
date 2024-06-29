@@ -58,6 +58,8 @@ public static class OffsetManager
 
     public static ConcurrentDictionary<string, long> OffsetCache = new();
 
+    private const long _version = 1;
+
     private const bool _debug = false;
 
     private static string OffsetFile => Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{Core.CurrentGameVer}.json");
@@ -173,6 +175,11 @@ public static class OffsetManager
         if (File.Exists(OffsetFile))
         {
             OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(OffsetFile)) ?? new ConcurrentDictionary<string, long>();
+            if (!OffsetCache.ContainsKey("Version") || OffsetCache["Version"] != _version)
+            {
+                OffsetCache.Clear();
+                OffsetCache["Version"] = _version;
+            }
         }
 
         await SetOffsetObjectsAsync(llTypes);

@@ -26,6 +26,7 @@ namespace LlamaLibrary.RemoteAgents
             internal static int IndexOfSelectedItem;
 
             [Offset("Search 0F BF B3 ? ? ? ? 49 8D 8F ? ? ? ? Add 3 Read32")]
+            [OffsetDawntrail("Search 0F BF BE ? ? ? ? 4D 8D 64 24 ? Add 3 Read32")]
             internal static int MateriaCount;
         }
 

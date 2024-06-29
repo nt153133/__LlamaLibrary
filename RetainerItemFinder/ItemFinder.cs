@@ -254,7 +254,7 @@ namespace LlamaLibrary.RetainerItemFinder
             internal static int GetRaptureItemFinder;
 
             [Offset("Search 49 8D 8E ? ? ? ? 33 D2 FF 50 ? 41 80 BE ? ? ? ? ? Add 3 Read32")]
-            //[OffsetDawntrail("Search 49 8B 86 ? ? ? ? 49 8D 8E ? ? ? ? 33 D2 FF 50 60 41 0F B6 86 ? ? ? ? Add A Read32")] //TODO: this is the right area, but i don't know if this is the right offset.
+            [OffsetDawntrail("Search 49 8B 86 ? ? ? ? 49 8D 8E ? ? ? ? 33 D2 FF 50 60 41 0F B6 86 ? ? ? ? Add A Read32")] //TODO: this is the right area, but i don't know if this is the right offset.
             internal static int RaptureItemFinder;
 
             [Offset("Search 4C 8B 85 ? ? ? ? 48 89 B4 24 ? ? ? ? Add 3 Read32")]
