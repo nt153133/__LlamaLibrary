@@ -91,7 +91,7 @@ namespace LlamaLibrary.Managers
                 var first = Core.Memory.Read<IntPtr>(addr + Offsets.SnipeObjects);
                 var end = Core.Memory.Read<IntPtr>(addr + Offsets.SnipeObjects + 8);
 
-                var count = (end - first) / 0x48;
+                var count = (end.ToInt64() - first.ToInt64()) / 0x48;
                 Log.Information($"{count} snipe objects found");
                 return Core.Memory.ReadArray<SnipeObject>(first, (int)count);
             }
