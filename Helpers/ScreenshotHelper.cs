@@ -29,7 +29,7 @@ namespace LlamaLibrary.Helpers
             internal static int Filename;
 
             [Offset("Search C6 43 ? ? B0 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? 40 53 Add 2 Read16")]
-            [OffsetDawntrail("Search 48 C7 43 ? ? ? ? ? C6 43 ? ? b0 01 Add A Read16")]
+            [OffsetDawntrail("Search 48 C7 43 ? ? ? ? ? C6 43 ? ? b0 01 Add 10 Read16")]
             internal static int Busy;
 
             [Offset("Search F3 0F 10 15 ? ? ? ? 0F 57 C0 0F 2F D0 Add 4 TraceRelative")]

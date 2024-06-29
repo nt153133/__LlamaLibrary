@@ -28,7 +28,7 @@ namespace LlamaLibrary.RemoteWindows
             internal static int NumberArrayData_Count;
 
             [Offset("Search BF ? ? ? ? 41 BE ? ? ? ? 90 Add 7 Read32")]
-            [OffsetDawntrail("Search 41 BD ? ? ? ? 4C 89 7C 24 ? 41 BF ? ? ? ? 89 6C 24 68 Add D Read32")]
+            [OffsetDawntrail("Search 41 BD ? ? ? ? 4C 89 7C 24 ? 41 BF ? ? ? ? 89 6C 24 68 Add 13 Read32")]
             internal static int NumberArrayData_Start;
 
             [Offset("Search BA ? ? ? ? 48 8B C8 4C 8B 10 41 FF 52 ? 49 8B 4D ? 4C 8B E0 Add 1 Read32")]
