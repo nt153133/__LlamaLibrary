@@ -18,12 +18,19 @@ namespace LlamaLibrary.Helpers
         {
             [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 0F B6 F0 EB ? 44 0F BF CE Add 3 TraceRelative")]
             //[OffsetCN("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 0F B6 D8 EB ? Add 3 TraceRelative")]//changes in 6.2
+            [OffsetDawntrail("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 14 FF Add 3 TraceRelative")]
             internal static IntPtr RequestInfo;
+
             [Offset("Search 44 8B 44 CB ? 48 8B 8B ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 48 8B 93 ? ? ? ? 48 8B 01 48 8B 5C 24 ? 48 83 C4 ? 5F 48 FF A0 ? ? ? ? 48 83 BB ? ? ? ? ? Add 4 Read8")]
+            [OffsetDawntrail("Search 44 8B 44 CF ? 48 8B 8F ? ? ? ? E8 ? ? ? ? 48 8B 8F ? ? ? ? 48 8B 97 ? ? ? ? 48 8B 01 48 8B 5C 24 ? 48 83 C4 30 5F 48 FF A0 98 00 00 00 48 8B 81 ? ? ? ? Add 4 Read8")]
             internal static int ItemListStart;
+
             [Offset("Search 0F B6 89 ? ? ? ? 0F B6 43 ? Add 3 Read32")]
+            [OffsetDawntrail("Search 0F B6 81 ? ? ? ? 48 8B F9 0F B6 51 08 Add 3 Read32")]
             internal static int ItemCount;
+
             [Offset("Search 0F B6 43 ? 3A C8 0F 83 ? ? ? ? Add 3 Read8")]
+            [OffsetDawntrail("Search 48 8B F9 0F B6 51 ? Add 6 Read8")]
             internal static int ItemCount2;
         }
 

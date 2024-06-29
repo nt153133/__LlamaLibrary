@@ -19,6 +19,7 @@ namespace LlamaLibrary.Helpers
             internal static int Offset1;
 
             [Offset("Search 41 89 9F ? ? ? ? 48 83 7D ? ? Add 3 Read32")]
+            [OffsetDawntrail("Search 41 8B CC 41 89 8F ? ? ? ? Add 6 Read32")]
             internal static int DCOffset;
 
             [Offset("Search 0F B7 98 ? ? ? ? 66 85 FF Add 3 Read32")]
@@ -28,6 +29,7 @@ namespace LlamaLibrary.Helpers
             internal static int HomeWorld;
 
             [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B7 70 14 EB ? BE ? ? ? ? 0F B7 CD E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 14 EB ? B8 ? ? ? ? 66 3B F0 72 ? 0F B7 0B Add 1 TraceRelative")]
+            [OffsetDawntrail("Search 0F B7 4A 02 E8 ? ? ? ? 48 85 C0 Add 4 TraceCall")]
             internal static IntPtr GetPlaceName;
         }
 

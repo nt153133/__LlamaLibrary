@@ -48,12 +48,15 @@ namespace LlamaLibrary.Helpers
         private static class Offsets
         {
             [Offset("Search 89 84 2A ?? ?? ?? ?? 41 0F B6 D6 Add 3 Read32")]
+            [OffsetDawntrail("Search 48 8D 8B ? ? ? ? 48 83 FE 16 Add 3 Read32")]
             internal static int AcceptedHuntBitfieldOffset;
 
             [Offset("Search 48 89 5C 24 ?? 56 48 83 EC ?? 40 32 F6")]
+            [OffsetDawntrail("Search 48 89 5C 24 ? 56 48 83 EC 20 0F B6 DA 40 32 F6")]
             internal static IntPtr CheckMobBoardUnlocked;
 
             [Offset("Search E8 ?? ?? ?? ?? 8B 57 ?? 41 B9 ?? ?? ?? ?? 33 C9 TraceCall")]
+            [OffsetDawntrail("Search 48 83 EC 28 48 8B 05 ? ? ? ? 44 8B C1 BA 2f 00 00 00 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 05 48 83 C4 28 ")]
             internal static IntPtr Client__ExdData__getBNpcName;
 
             [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B6 40 ? 3B E8 TraceCall")]
@@ -66,15 +69,19 @@ namespace LlamaLibrary.Helpers
             internal static IntPtr Client__ExdData__getMobHuntTarget;
 
             [Offset("Search 49 83 F8 ?? 73 ?? 41 8B C0 Add 3 Read8")]
+            [OffsetDawntrail("Search 41 80 FE ? 0F 83 ? ? ? ? 41 0F B6 44 0E ? 48 89 74 24 ? 41 8B F6 48 89 7C 24 ? 4C 89 64 24 ? Add 2 Read8")]
             internal static IntPtr CountMobHuntOrderType;
 
             [Offset("Search 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 8B CE E8 ?? ?? ?? ?? Add 3 TraceRelative")]
+            [OffsetDawntrail("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 8B CF E8 ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr HuntData;
 
             [Offset("Search 41 8B 44 91 ?? C3 Add 4 Read8")]
+            [OffsetDawntrail("Search 42 8B 44 89 ? C3 Add 4 Read8")]
             internal static int KillCountOffset;
 
             [Offset("Search 48 83 EC ?? 80 FA ?? 73 ?? 0F B6 C2 45 33 C9 0F B6 D2 C7 44 24 ?? ?? ?? ?? ?? 44 0F B6 44 08 ?? B9 ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 83 C4 ?? C3 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 48 89 54 24 ??")]
+            [OffsetDawntrail("Search E8 ? ? ? ? 8B CF E8 ? ? ? ? 0F B7 D0 TraceCall")]
             internal static IntPtr YeetHuntOrderType;
         }
 

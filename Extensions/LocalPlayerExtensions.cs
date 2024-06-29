@@ -21,6 +21,7 @@ namespace LlamaLibrary.Extensions
             internal static int GatheringStateOffset;*/
 
             [Offset("Search 0F B6 15 ? ? ? ? 8D 42 ? 3C ? 77 ? FE CA 48 8D 0D ? ? ? ? Add 3 TraceRelative")]
+            [OffsetDawntrail("Search 0F B6 0D ? ? ? ? FE C9  Add 3 TraceRelative")]
             internal static IntPtr CurrentGC;
 
             [Offset("Search 48 83 EC ? 48 8B 05 ? ? ? ? 44 8B C1 BA ? ? ? ? 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? C3 48 8B 00 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? 80 F9 ?")]
@@ -37,9 +38,11 @@ namespace LlamaLibrary.Extensions
             internal static int MinionPtr;
 
             [Offset("Search 0F B7 86 ? ? ? ? 66 89 85 ? ? ? ? E8 ? ? ? ? 48 8B 85 ? ? ? ? Add 3 Read32")]
+            [OffsetDawntrail("Search 66 89 86 ? ? ? ? 48 8B 0D ? ? ? ? 48 8B 01 Add 3 Read32")]
             internal static int HomeWorld;
 
             [Offset("Search 66 83 B9 ? ? ? ? ? 48 8B DA Add 3 Read32")]
+            [OffsetDawntrail("Search 48 8B DA 66 83 B9 ? ? ? ? ?  Add 6 Read32")]
             internal static int CurrentMount;
         }
 

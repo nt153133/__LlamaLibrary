@@ -12,6 +12,7 @@ namespace LlamaLibrary.Helpers
         {
             //6.3
             [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 79 ? ? 49 8B D8")]
+            [OffsetDawntrail("Search E8 ? ? ? ? 84 C0 75 19 F3 0F 10 05 ? ? ? ?")]
             //pre 6.3 [OffsetCN("Search 40 53 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 79 ? ?")]
             internal static IntPtr ScreenshotFunc;
 
@@ -28,6 +29,7 @@ namespace LlamaLibrary.Helpers
             internal static int Filename;
 
             [Offset("Search C6 43 ? ? B0 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? 40 53 Add 2 Read16")]
+            [OffsetDawntrail("Search 48 C7 43 ? ? ? ? ? C6 43 ? ? b0 01 Add A Read16")]
             internal static int Busy;
 
             [Offset("Search F3 0F 10 15 ? ? ? ? 0F 57 C0 0F 2F D0 Add 4 TraceRelative")]

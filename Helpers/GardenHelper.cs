@@ -28,6 +28,7 @@ namespace LlamaLibrary.Helpers
         private static class Offsets
         {
             [Offset("Search 48 89 5C 24 ? 56 48 83 EC ? 48 8B F1 41 0F B7 D8 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ?")]
+            [OffsetDawntrail("Search E8 ? ? ? ? 48 8B CB C7 43 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? B0 01 TraceCall")]
             internal static IntPtr PlantFunction;
             [Offset("Search 41 8B 4E ? 8D 93 ? ? ? ? Add 3 Read8")]
             internal static int StructOffset;

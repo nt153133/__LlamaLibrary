@@ -14,6 +14,7 @@ public class ResidentialHousingManager
     {
         //6.3
         [Offset("Search E8 ? ? ? ? 48 8B C8 E8 ? ? ? ? 0F B6 C8 0F B6 E8 E8 ? ? ? ? 84 C0 74 ? Add 1 TraceRelative")]
+        [OffsetDawntrail("Search 33 C9 E8 ? ? ? ? 48 8B C8 E8 ? ? ? ?  Add 2 TraceCall")]
         internal static IntPtr GetResidentObject;
 
         [Offset("Search 40 53 48 83 EC ? 48 8B D9 48 83 F9 ? 74 ?")]

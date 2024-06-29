@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -19,18 +19,16 @@ namespace LlamaLibrary.Managers
         internal static class Offsets
         {
             [Offset("Search 48 8D 0D ? ? ? ? 32 DB E8 ? ? ? ? 84 C0 0F B6 CB BA ? ? ? ? 0F 45 CA 45 32 FF Add 3 TraceRelative")]
+            [OffsetDawntrail("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 05 45 32 E4 EB 0F Add 3 TraceRelative")]
             internal static IntPtr Instance;
 
             [Offset("Search 8B 83 ? ? ? ? 48 8B 54 24 ? 48 89 4D ? Add 2 Read32")]
-            internal static int Id;
+            [OffsetDawntrail("Search 8B 83 ? ? ? ? 89 45 10 48 8D 45 10 48 89 45 18 48 8D 42 01 48 3B C8 77 17 41 8B D6 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 54 24 ? 48 8B 4C 24 ? Add 2 Read32")]
+            internal static int Id; //0x5940
 
             //0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ?
-            [Offset("Search 0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ? Add 2 Read32")]
+            [Offset("Search 0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ? Add 3 Read32")]
             internal static int Active;
-
-            //48 2B 8B ? ? ? ? 49 8B C7 48 F7 E9 44 8B C7 Add 3 Read32
-            [Offset("Search 48 2B 8B ? ? ? ? 49 8B C7 48 F7 E9 44 8B C7 Add 3 Read32")]
-            internal static int Params;
 
             //66 C7 83 ? ? ? ? ? ? E9 ? ? ? ? 48 63 83 ? ? ? ? Add 3 Read32
             [Offset("Search 66 C7 83 ? ? ? ? ? ? E9 ? ? ? ? 48 63 83 ? ? ? ? Add 3 Read32")]
@@ -38,6 +36,7 @@ namespace LlamaLibrary.Managers
 
             //48 8B 8B ? ? ? ? 48 8B 0C D1 Add 3 Read32
             [Offset("Search 48 8B 8B ? ? ? ? 48 8B 0C D1 Add 3 Read32")]
+            [OffsetDawntrail("Search 48 8D 14 C9 48 8B 8B ? ? ? ? Add 7 Read32")]
             internal static int SnipeObjects;
 
             //0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ? Add 3 Read32
@@ -92,7 +91,7 @@ namespace LlamaLibrary.Managers
                 var first = Core.Memory.Read<IntPtr>(addr + Offsets.SnipeObjects);
                 var end = Core.Memory.Read<IntPtr>(addr + Offsets.SnipeObjects + 8);
 
-                var count = (uint)((end.ToInt64() - first.ToInt64()) / 0x48);
+                var count = (end - first) / 0x48;
                 Log.Information($"{count} snipe objects found");
                 return Core.Memory.ReadArray<SnipeObject>(first, (int)count);
             }
