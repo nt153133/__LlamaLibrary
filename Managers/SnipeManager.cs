@@ -27,7 +27,7 @@ namespace LlamaLibrary.Managers
             internal static int Id; //0x5940
 
             //0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ?
-            [Offset("Search 0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ? Add 2 Read32")]
+            [Offset("Search 0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ? Add 3 Read32")]
             internal static int Active;
 
             //66 C7 83 ? ? ? ? ? ? E9 ? ? ? ? 48 63 83 ? ? ? ? Add 3 Read32
@@ -36,7 +36,7 @@ namespace LlamaLibrary.Managers
 
             //48 8B 8B ? ? ? ? 48 8B 0C D1 Add 3 Read32
             [Offset("Search 48 8B 8B ? ? ? ? 48 8B 0C D1 Add 3 Read32")]
-            [OffsetDawntrail("Search 0F B6 93 ? ? ? ? 48 8B 83 ? ? ? ? Add 3 Read32")]
+            [OffsetDawntrail("Search 48 8D 14 C9 48 8B 8B ? ? ? ? Add 7 Read32")]
             internal static int SnipeObjects;
 
             //0F B6 83 ? ? ? ? 3C ? 0F 85 ? ? ? ? F3 0F 10 83 ? ? ? ? Add 3 Read32
@@ -91,7 +91,7 @@ namespace LlamaLibrary.Managers
                 var first = Core.Memory.Read<IntPtr>(addr + Offsets.SnipeObjects);
                 var end = Core.Memory.Read<IntPtr>(addr + Offsets.SnipeObjects + 8);
 
-                var count = (uint)((end.ToInt64() - first.ToInt64()) / 0x48);
+                var count = (end - first) / 0x48;
                 Log.Information($"{count} snipe objects found");
                 return Core.Memory.ReadArray<SnipeObject>(first, (int)count);
             }
