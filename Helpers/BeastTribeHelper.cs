@@ -32,6 +32,7 @@ namespace LlamaLibrary.Helpers
             internal static IntPtr ResolveStringColumnIndirection;
 
             [Offset("Search 4C 8D 1D ? ? ? ? 88 44 24 ? Add 3 TraceRelative")]
+            [OffsetDawntrail("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 44 24 ? ?  Add 3 TraceRelative")]
             internal static IntPtr QuestPointer;
 
             //6.4
