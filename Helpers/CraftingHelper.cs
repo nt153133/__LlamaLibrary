@@ -17,6 +17,7 @@ namespace LlamaLibrary.Helpers
         private static class Offsets
         {
             [Offset("Search 4C 8D 0D ?? ?? ?? ?? 4D 8B 13 49 8B CB Add 3 TraceRelative")]
+            [OffsetDawntrail("Search 4C 8D 0D ? ? ? ? 4C 8B 11 44 0F B7 41 ?  Add 3 TraceRelative")]
             internal static IntPtr DohLastAction;
 
             [Offset("Search 40 53 48 83 EC ? 8B D9 81 F9 ? ? ? ?")]
@@ -27,7 +28,7 @@ namespace LlamaLibrary.Helpers
             internal static IntPtr QuestPointer;
 
             [Offset("Search 81 F9 ? ? ? ? 72 ? 32 C0 48 83 C4 ? Add 2 Read32")]
-            [OffsetDawntrail("Search 81 F9 ? ? ? ? 73 38  Add 2 Read32")]
+            [OffsetDawntrail("Search 81 F9 ? ? ? ? 73 38 Add 2 Read32")]
             internal static int NumberOfRecipes;
 
             [Offset("Search 81 F9 ? ? ? ? 73 ? 44 0F B6 84 01 ? ? ? ?  Add 2 Read32")]
