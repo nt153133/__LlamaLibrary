@@ -11,6 +11,7 @@ namespace LlamaLibrary.RemoteWindows
         private static class Offsets
         {
             [Offset("Search 89 86 ? ? ? ? 8B D0 Add 2 Read32")]
+            [OffsetDawntrail("Search 89 87 ? ? ? ? 8B D0 48 39 B7 ? ? ? ? Add 2 Read32")]
             internal static int EligibilityArray;
         }
 
