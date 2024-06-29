@@ -23,15 +23,18 @@ namespace LlamaLibrary.Helpers
             internal static IntPtr HasCraftedRecipe;
 
             [Offset("Search 4C 8D 1D ? ? ? ? 88 44 24 ? Add 3 TraceRelative")]
+            [OffsetDawntrail("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 44 24 ? ?  Add 3 TraceRelative")]
             internal static IntPtr QuestPointer;
 
             [Offset("Search 81 F9 ? ? ? ? 72 ? 32 C0 48 83 C4 ? Add 2 Read32")]
+            [OffsetDawntrail("Search 81 F9 ? ? ? ? 73 38  Add 2 Read32")]
             internal static int NumberOfRecipes;
 
             [Offset("Search 81 F9 ? ? ? ? 73 ? 44 0F B6 84 01 ? ? ? ?  Add 2 Read32")]
             internal static int LengthOfArray;
 
             [Offset("Search 44 0F B6 84 01 ? ? ? ? 0F B6 C3 Add 5 Read32")]
+            [OffsetDawntrail("Search 44 0F B6 84 01 ? ? ? ? 0F B6 CB  Add 5 Read32")]
             internal static int OffsetRecipes;
         }
 
