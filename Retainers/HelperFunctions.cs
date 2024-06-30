@@ -71,7 +71,10 @@ namespace LlamaLibrary.Retainers
             (819, new Vector3(-69.840576f, -7.705872f, 123.491211f)), //The Crystarium(The Crystarium)
             (819, new Vector3(-64.255798f, 19.97406f, -144.274109f)), //The Crystarium(The Crystarium)
             (820, new Vector3(7.186951f, 83.17688f, 31.448853f)), //Eulmore(Eulmore)
-            (962, new Vector3(41.85025f, 2.453362f, -38.73349f)) //Old Sharlayan
+            (962, new Vector3(41.85025f, 2.453362f, -38.73349f)), //Old Sharlayan
+            (1185, new Vector3(183.00134f, -17.990417f, 25.802979f)), //Tuliyollal > Wachumeqimeqi
+            (1185, new Vector3(18.57019f, -14.023071f, 120.408936f)), //Tuliyollal > Bayside Bevi Marketplace
+            (1186, new Vector3(-151.59845f, 0.59503174f, -15.304871f)), //Solution Nine
         };
 
         public static readonly uint GilItemId = DataManager.GetItem("Gil").Id; // 1;
