@@ -26,12 +26,14 @@ namespace LlamaLibrary.Managers
         {
             Log.Information($"Clicking on {position}");
 
-            using (var mem = Core.Memory.CreateAllocatedMemory(256))
-            {
-                var func = Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(Window.Pointer) + (8 * 2));
+            Window.SendAction(2, 0x3, 0xd, 0x5, position);
 
-                Core.Memory.CallInjected64<IntPtr>(func, Window.Pointer, 25UL, position, mem.Address);
-            }
+            //using (var mem = Core.Memory.CreateAllocatedMemory(256))
+            //{
+            //    var func = Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(Window.Pointer) + (8 * 2));
+
+            //    Core.Memory.CallInjected64<IntPtr>(func, Window.Pointer, 25UL, position, mem.Address);
+            //}
         }
     }
 }
