@@ -34,10 +34,11 @@ namespace LlamaLibrary.Helpers
             internal static IntPtr GCGetMaxSealsByRank;
 
             [Offset("Search 48 8D 9E ? ? ? ? 4C 89 B4 24 ? ? ? ? Add 3 Read32")]
+            [OffsetDawntrail("Search 48 8D 9E ? ? ? ? 4C 89 A4 24 ? ? ? ? Add 3 Read32")]
             internal static int GCArrayStart;
 
             [Offset("Search 41 83 FD ? 0F 82 ? ? ? ? 41 0F B6 97 ? ? ? ? Add 3 Read8")]
-            [OffsetDawntrail("Search 89 44 24 34 83 F8 ?? 0F 82 Add 6 Read8")]
+            [OffsetDawntrail("Search 83 F8 ? 0F 82 ? ? ? ? 41 0F B6 97 ? ? ? ? Add 2 Read8")]
             internal static int GCShopCount;
 
             [Offset("Search 48 8B 05 ? ? ? ? 33 C9 40 84 FF Add 3 TraceRelative")]
