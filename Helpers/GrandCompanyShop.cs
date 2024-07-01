@@ -41,6 +41,7 @@ namespace LlamaLibrary.Helpers
             internal static int GCShopCount;
 
             [Offset("Search 48 8B 05 ? ? ? ? 33 C9 40 84 FF Add 3 TraceRelative")]
+            [OffsetDawntrail("Search 48 8B 05 ? ? ? ? 33 C9 40 84 FF 48 0F 45 C1 48 89 05 ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr GCShopPtr;
         }
 
