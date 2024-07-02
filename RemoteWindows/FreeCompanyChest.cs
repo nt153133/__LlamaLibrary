@@ -9,13 +9,17 @@ namespace LlamaLibrary.RemoteWindows
     {
         private static class Offsets
         {
+            // For Dawntrail I assume these are in the same order.
             [Offset("Search 8B 9E ? ? ? ? 8B CF D3 EB Add 2 Read32")]
+            [OffsetDawntrail("Search 89 91 ? ? ? ? 4C 8B F1 44 89 81 ? ? ? ? Add 2 Read32")]
             internal static int ItemPermissions;
 
             [Offset("Search 44 89 81 ? ? ? ? 4C 8D B1 ? ? ? ? Add 3 Read32")]
+            [OffsetDawntrail("Search 44 89 81 ? ? ? ? 44 89 89 ? ? ? ? 48 8D B1 ? ? ? ? Add 3 Read32")]
             internal static int CrystalsPermission;
 
             [Offset("Search 44 89 89 ? ? ? ? 33 FF Add 3 Read32")]
+            [OffsetDawntrail("Search 44 89 89 ? ? ? ? 48 8D B1 ? ? ? ? Add 3 Read32")]
             internal static int GilPermission;
         }
 

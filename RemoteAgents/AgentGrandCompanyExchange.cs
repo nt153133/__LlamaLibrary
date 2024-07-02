@@ -16,6 +16,7 @@ namespace LlamaLibrary.RemoteAgents
 
             //0x69 byte
             [Offset("Search 0F B6 41 ? 48 8B CB 88 83 ? ? ? ? Add 3 Read8")]
+            [OffsetDawntrail("Search 0F B6 51 ? 48 8B CB 88 93 ? ? ? ? Add 3 Read8")]
             internal static int Rank;
 
             //0x6a byte
@@ -24,6 +25,7 @@ namespace LlamaLibrary.RemoteAgents
 
             //BuyItem (ShopPtr, 0, index, count)
             [Offset("Search 40 55 53 56 57 41 56 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 0F B7 71 ?")]
+            [OffsetDawntrail("Search E8 ? ? ? ? 0F B6 D8 84 C0 74 ? 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 8B C8 48 8B 10 FF 92 ? ? ? ? Add 1 TraceRelative")]
             internal static IntPtr BuyItem;
         }
 

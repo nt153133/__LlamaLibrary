@@ -6,25 +6,16 @@ namespace LlamaLibrary.Extensions
     {
         public static bool CanAssign()
         {
-            var WindowByName = RaptureAtkUnitManager.GetWindowByName("RetainerTaskAsk");
-            if (WindowByName == null)
-            {
-                return false;
-            }
+            var windowByName = RaptureAtkUnitManager.GetWindowByName("RetainerTaskAsk");
 
-            var remoteButton = WindowByName.FindButton(40);
-            return remoteButton != null && remoteButton.Clickable;
+            var remoteButton = windowByName?.FindButton(40);
+            return remoteButton is { Clickable: true };
         }
 
         public static string GetErrorReason()
         {
-            var WindowByName = RaptureAtkUnitManager.GetWindowByName("RetainerTaskAsk");
-            if (WindowByName == null || WindowByName.FindLabel(39) == null)
-            {
-                return "";
-            }
-
-            return WindowByName.FindLabel(39).Text;
+            var windowByName = RaptureAtkUnitManager.GetWindowByName("RetainerTaskAsk");
+            return windowByName?.FindLabel(39) == null ? "" : windowByName.FindLabel(39).Text;
         }
     }
 }

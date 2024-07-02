@@ -18,6 +18,7 @@ namespace LlamaLibrary.RemoteWindows
         private static class Offsets
         {
             [Offset("Search 88 05 ? ? ? ? 0F B7 41 06 Add 2 TraceRelative")]
+            [OffsetDawntrail("Search 88 05 ? ? ? ? E8 ? ? ? ? 48 8B C8 48 83 C4 ? Add 2 TraceRelative")]
             public static IntPtr AllowancesPtr;
         }
 

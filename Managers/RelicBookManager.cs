@@ -201,6 +201,7 @@ namespace LlamaLibrary.Managers
             internal static IntPtr UIRelicNote;
 
             [Offset("Search 40 57 48 83 EC ? 41 8B F8 41 83 F8 ? 72 ? 33 C0 48 83 C4 ? 5F C3 48 89 5C 24 ?")]
+            [OffsetDawntrail("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 56 41 57 48 83 EC 20 45 8B F8 ")]
             internal static IntPtr GetNumOfRelicNoteCompleted;
         }
     }

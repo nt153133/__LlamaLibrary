@@ -215,19 +215,48 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
 
     private static void PulseThread()
     {
-        ff14bot.Helpers.Logging.Write(Colors.CornflowerBlue, $@"{nameof(TemplatePlugin)}: PulseThread Started with flags {_pulseFlags}");
+        ff14bot.Helpers.Logging.Write(Colors.CornflowerBlue, $@"{nameof(TemplatePlugin)}: PulseThread Started with flags {_pulseFlags} {_pulseThreadRunning}");
         while (_pulseThreadRunning)
         {
             try
             {
                 if (!TreeRoot.IsRunning)
                 {
-                    Pulsator.Pulse(_pulseFlags);
+                    if (!(GameObjectManager.LocalPlayer == null))
+                    {
+                        Pulsator.Pulse(_pulseFlags);
+                        if (_pulseFlags.HasFlag(PulseFlags.Windows))
+                        {
+                            //ff14bot.Helpers.Logging.Write(Colors.CadetBlue, $@"{nameof(TemplatePlugin)}: Pulsing Windows");
+                            RaptureAtkUnitManager.Update();
+                        }
+
+                        if (_pulseFlags.HasFlag(PulseFlags.Plugins))
+                        {
+                            //ff14bot.Helpers.Logging.Write(Colors.CadetBlue, $@"{nameof(TemplatePlugin)}: Pulsing Plugins");
+                            PluginManager.PulseAllPlugins();
+                        }
+                    }
+                    else
+                    {
+                        if (_pulseFlags.HasFlag(PulseFlags.Windows))
+                        {
+                            //ff14bot.Helpers.Logging.Write(Colors.CornflowerBlue, $@"{nameof(TemplatePlugin)}: Pulsing Windows");
+                            RaptureAtkUnitManager.Update();
+                        }
+
+                        if (_pulseFlags.HasFlag(PulseFlags.Plugins))
+                        {
+                            //ff14bot.Helpers.Logging.Write(Colors.CornflowerBlue, $@"{nameof(TemplatePlugin)}: Pulsing Plugins");
+                            PluginManager.PulseAllPlugins();
+                        }
+                    }
                 }
             }
-            catch
+            catch (Exception e)
             {
                 // ignored
+                //ff14bot.Helpers.Logging.WriteException(e);
             }
 
             Thread.Sleep(_pulseDelay);

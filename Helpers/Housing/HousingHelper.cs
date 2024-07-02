@@ -16,12 +16,15 @@ namespace LlamaLibrary.Helpers.Housing
         internal static class Offsets
         {
             [Offset("Search 48 39 1D ? ? ? ? 75 ? 45 33 C0 33 D2 B9 ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 48 8B C8 E8 ? ? ? ? 48 89 05 ? ? ? ? Add 3 TraceRelative")]
+            [OffsetDawntrail("Search 48 8B 0D ? ? ? ? E8 ? ? ? ? 0F B6 F8 84 C0 75 18 44 8B C5 Add 3 TraceRelative")]
             internal static IntPtr PositionInfoAddress;
 
             [Offset("Search 48 8B 05 ? ? ? ? 48 83 F8 ? 74 ? 48 C1 E8 ? 0F B7 C8 Add 3 TraceRelative")]
+            [OffsetDawntrail("Search 48 8B 1D ? ? ? ? 48 83 FB FF Add 3 TraceRelative")] // Needs to be tested
             internal static IntPtr HouseLocationArray;
 
             [Offset("Search E8 ?? ?? ?? ?? 83 CA FF 48 8B D8 8D 4A 02 TraceCall")]
+            [OffsetDawntrail("Search E8 ? ? ? ? BA ? ? ? ? 48 8B F8 8D 4A 02 TraceCall")]
             internal static IntPtr GetCurrentHouseId;
 
             [Offset("Search E8 ?? ?? ?? ?? 0F B6 D8 3C FF TraceCall")]

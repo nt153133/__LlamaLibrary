@@ -14,9 +14,11 @@ public class AgentTripleTriadCoinExchange : AgentInterface<AgentTripleTriadCoinE
     private static class Offsets
     {
         [Offset("Search 3B 79 ? 0F 83 ? ? ? ? 48 8B 41 ? Add 2 Read8")]
+        [OffsetDawntrail("Search 3B 59 ? 0F 83 ? ? ? ? 48 8B 41 ? Add 2 Read8")]
         internal static int CardCount;
 
         [Offset("Search 48 03 59 ? 48 8B CB 41 89 3C 06 Add 3 Read8")]
+        [OffsetDawntrail("Search 48 03 79 ? 41 89 1C 06 Add 3 Read8")]
         internal static int ListPtr;
 
         [Offset("Search 48 8D 05 ? ? ? ? 48 8B D3 48 8D 4F ? 48 89 07 E8 ? ? ? ? 48 8B 5C 24 ? 33 C0 48 89 47 ? 48 89 47 ? 48 89 47 ? 48 89 47 ? 89 87 ? ? ? ? Add 3 TraceRelative")]
@@ -26,9 +28,11 @@ public class AgentTripleTriadCoinExchange : AgentInterface<AgentTripleTriadCoinE
         //internal static IntPtr OpenSellWindow;
 
         [Offset("Search 41 8B 96 ? ? ? ? 49 8B CE 49 8B 46 ? Add 3 Read8")]
+        [OffsetDawntrail("Search 8B 96 ? ? ? ? 48 8B CE 48 8B 46 ? Add 2 Read8")]
         internal static int SelectedCardIndex;
 
         [Offset("Search 49 8B 46 ? 8B 14 90 48 69 D2 ? ? ? ? Add 3 Read8")]
+        [OffsetDawntrail("Search 48 8B 46 ? 8B 14 90 Add 3 Read8")]
         internal static int CardIndexArray;
     }
 

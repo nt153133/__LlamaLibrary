@@ -1676,8 +1676,8 @@ namespace LlamaLibrary.Helpers
             if (turninItems.Any())
             {
                 await InteractWithDenys(3);
-                await Coroutine.Wait(10000, () => ShopExchangeItem.Instance.IsOpen);
-                if (ShopExchangeItem.Instance.IsOpen)
+                await Coroutine.Wait(10000, () => LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.IsOpen);
+                if (LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.IsOpen)
                 {
                     Log.Information($"Window Open");
                     foreach (var turnin in turninItems)
@@ -1685,12 +1685,12 @@ namespace LlamaLibrary.Helpers
                         var reward = GatheringItems[turnin.RawItemId].Reward;
                         var amt = turnin.Count / GatheringItems[turnin.RawItemId].Cost;
                         Log.Information($"Buying {amt}x{DataManager.GetItem(reward).CurrentLocaleName}");
-                        await ShopExchangeItem.Instance.Purchase(reward, amt);
+                        await LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.Purchase(reward, amt);
                         await Coroutine.Sleep(500);
                     }
 
-                    ShopExchangeItem.Instance.Close();
-                    await Coroutine.Wait(10000, () => !ShopExchangeItem.Instance.IsOpen);
+                    LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.Close();
+                    await Coroutine.Wait(10000, () => !LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.IsOpen);
                 }
             }
         }

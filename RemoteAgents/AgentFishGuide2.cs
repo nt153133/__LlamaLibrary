@@ -19,18 +19,22 @@ namespace LlamaLibrary.RemoteAgents
         {
             //6.3
             [Offset("Search 48 8D 05 ? ? ? ? 33 C9 48 89 03 BA ? ? ? ? Add 3 TraceRelative")]
+            [OffsetDawntrail("Search 48 8D 05 ? ? ? ? 48 89 07 48 8D 4F ? 33 C0 48 89 77 ? Add 3 TraceRelative")]
             internal static IntPtr Vtable;
 
             //6.3 0x58
             [Offset("Search 4C 8B 47 ? 0F B6 44 4F ? Add 3 Read8")]
+            [OffsetDawntrail("Search 48 8B 4B ? 44 8B C7 48 8B 41 ? Add 3 Read8")]
             internal static int InfoOffset;
 
             //0x28
             [Offset("Search 49 8B 40 ? 49 8B C8 48 8B 1C D0 Add 3 Read8")]
+            [OffsetDawntrail("Search 48 8B 41 ? 48 8B 51 ? 48 2B D0 Add 3 Read8")]
             internal static int StartingPointer;
 
             //0x30
             [Offset("Search 49 8B 40 ? 49 2B 40 ? 48 C1 F8 ? 8B DA Add 3 Read8")]
+            [OffsetDawntrail("Search 48 8B 51 ? 48 2B D0 48 C1 FA ? 4C 3B C2 Add 3 Read8")]
             internal static int EndingPointer;
         }
 

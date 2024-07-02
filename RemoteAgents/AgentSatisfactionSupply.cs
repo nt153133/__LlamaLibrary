@@ -22,6 +22,7 @@ namespace LlamaLibrary.RemoteAgents
 
             //6.3
             [Offset("Search 48 8D B3 ? ? ? ? BA ? ? ? ? 4C 8B C6 Add 3 Read8")]
+            [OffsetDawntrail("Search 4C 8D 83 ? ? ? ? BA ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 4C 8D 83 ? ? ? ? Add 3 Read8")]
             // pre6.3 [OffsetCN("Search 4C 8D 47 ? BA ? ? ? ? 48 8D 0D ? ? ? ? Add 3 Read8")]
             internal static int DoHItemId;
 
