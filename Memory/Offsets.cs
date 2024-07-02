@@ -92,11 +92,12 @@ namespace LlamaLibrary.Memory
         public static IntPtr IsSecretRecipeBookUnlocked;
 
         [Offset("Search 40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 75 ?")]
+        [OffsetDawntrail("Search 40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ?")]
         public static IntPtr IsFolkloreBookUnlocked;
 
         [Offset("Search 40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ?")]
+        [OffsetDawntrail("Search 40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ?")]
         public static IntPtr IsOrnamentUnlocked;
-
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 8B 93 ? ? ? ? Add 3 TraceRelative")]
         [OffsetDawntrail("Search 48 8D 0D ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? 0F B7 50 ? 48 8D 0D ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? 0F B7 50 ? Add 3 TraceRelative")]
         public static IntPtr PlayerState;
