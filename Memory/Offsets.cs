@@ -24,6 +24,7 @@ namespace LlamaLibrary.Memory
         public static IntPtr RepairVendor;
 
         [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 B9 ? ? ? ? 4C 89 43 ? Add 3 TraceRelative")]
+        [OffsetDawntrail("Search 48 8D 05 ? ? ? ? 4C 89 43 ? 48 89 03 B9 ? ? ? ? Add 3 TraceRelative")]
         public static IntPtr RepairVTable;
 
         [Offset("Search 48 8B 0D ? ? ? ? 4C 8B C0 33 D2 Add 3 TraceRelative")]
@@ -64,6 +65,7 @@ namespace LlamaLibrary.Memory
         public static int NextReistanceRank;
 
         [Offset("Search 48 89 6C 24 ? 57 41 56 41 57 48 83 EC ? 48 8B E9 44 8B FA")]
+        [OffsetDawntrail("Search 48 89 6C 24 ? 56 57 41 56 48 83 EC ? 48 8B E9 44 8B F2")]
         public static IntPtr OpenTradeWindow;
 
         [Offset("Search 44 0F B7 0D ? ? ? ? 48 8D 57 ? Add 4 TraceRelative")]
@@ -71,7 +73,7 @@ namespace LlamaLibrary.Memory
         public static IntPtr ActorController_iLvl;
 
         [Offset("Search 80 B9 ? ? ? ? ? 0F 94 C0 C3 ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 2 Read32")]
-        [OffsetDawntrail("Seach 80 B9 ? ? ? ? ? 75 ? 80 B9 ? ? ? ? ? 75 ? B0 ? C3 32 C0 C3 ? ? ? ? ? ? ? ? 48 83 EC ? Add 2 Read32")]
+        [OffsetDawntrail("Search 80 B9 ? ? ? ? ? 75 ? 80 B9 ? ? ? ? ? 75 ? B0 ? C3 32 C0 C3 ? ? ? ? ? ? ? ? 48 83 EC ? Add 2 Read32")]
         public static int InventoryManagerFCTransfering;
 
         [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? 8B F9 E8 ? ? ? ? 48 8B D8 48 85 C0 75 ? 32 C0 48 8B 5C 24 ? 48 83 C4 ? 5F C3 0F B6 88 ? ? ? ? E8 ? ? ? ? 48 8B C8")]

@@ -36,6 +36,7 @@ namespace LlamaLibrary.RemoteAgents
             internal static int Size;
 
             [Offset("Search 0F 11 4B ? 41 80 7D ? ? Add 3 Read8")]
+            [OffsetDawntrail("Search 0F 11 4B ? F2 41 0F 10 45 ? Add 3 Read8")]
             internal static int WinningLotteryNumber;
 
             [Offset("Search 0F 11 43 ? 41 0F 10 4D ? Add 3 Read8")]

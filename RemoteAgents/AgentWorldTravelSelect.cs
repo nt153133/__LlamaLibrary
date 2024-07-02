@@ -15,6 +15,7 @@ namespace LlamaLibrary.RemoteAgents
             [OffsetDawntrail("Search 48 8D 05 ? ? ? ? 48 89 03 48 8D 7B ? 48 89 6B ? 48 89 6B ? 8D 75 ? 48 89 6B ? 48 89 6B ? Add 3 TraceRelative")]
             internal static IntPtr VTable;
             [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B6 50 ? 84 D2 TraceCall")]
+            [OffsetDawntrail("Search E8 ? ? ? ? 48 85 C0 74 ? 80 78 ? ? 75 ? 8B 44 24 ? Add 1 TraceRelative")]
             [Obsolete]
             internal static IntPtr ExdData__getWorld;
             //6.4

@@ -11,6 +11,7 @@ namespace LlamaLibrary.RemoteAgents
         private static class Offsets
         {
             [Offset("Search 44 0F B6 5B ? 40 84 F6 Add 4 Read8")]
+            [OffsetDawntrail("Search 45 0F B6 5E ? 45 84 DB 75 ? 49 8B 8C D9 ? ? ? ? Add 4 Read8")]
             internal static int DawnTrustId;
             [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 8D 4B ? Add 3 TraceRelative")]
             [OffsetDawntrail("Search 48 8D 05 ? ? ? ? C6 46 ? ? 33 ED Add 3 TraceRelative")]
