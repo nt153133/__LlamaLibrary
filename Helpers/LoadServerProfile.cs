@@ -618,13 +618,10 @@ public class LoadServerProfile
 
             if (row == IntPtr.Zero)
             {
-                Log.Information($"Row {i} is null");
 #if RB_DT
                 row = GeneralFunctions.GetDawnContentRow(i + 200 - 32);
-                Log.Information($"dt" );
 #else
                 row = GeneralFunctions.GetDawnContentRow(i + 200 - 24);
-                Log.Information($"non dt" );
 #endif
             }
 
