@@ -1,1 +1,1408 @@
-{"1":[{"Key":5724,"Stat":"","Tier":0,"Value":0},{"Key":5725,"Stat":"","Tier":1,"Value":0},{"Key":5726,"Stat":"","Tier":2,"Value":0},{"Key":5727,"Stat":"","Tier":3,"Value":0}],"2":[{"Key":5604,"Stat":"Strength","Tier":0,"Value":0},{"Key":5605,"Stat":"Strength","Tier":1,"Value":0},{"Key":5606,"Stat":"Strength","Tier":2,"Value":0},{"Key":5607,"Stat":"Strength","Tier":3,"Value":0},{"Key":5608,"Stat":"Strength","Tier":4,"Value":0},{"Key":18006,"Stat":"Strength","Tier":5,"Value":0}],"3":[{"Key":5609,"Stat":"Vitality","Tier":0,"Value":0},{"Key":5610,"Stat":"Vitality","Tier":1,"Value":0},{"Key":5611,"Stat":"Vitality","Tier":2,"Value":0},{"Key":5612,"Stat":"Vitality","Tier":3,"Value":0},{"Key":5613,"Stat":"Vitality","Tier":4,"Value":0},{"Key":18007,"Stat":"Vitality","Tier":5,"Value":0}],"4":[{"Key":5614,"Stat":"Dexterity","Tier":0,"Value":0},{"Key":5615,"Stat":"Dexterity","Tier":1,"Value":0},{"Key":5616,"Stat":"Dexterity","Tier":2,"Value":0},{"Key":5617,"Stat":"Dexterity","Tier":3,"Value":0},{"Key":5618,"Stat":"Dexterity","Tier":4,"Value":0},{"Key":18008,"Stat":"Dexterity","Tier":5,"Value":0}],"5":[{"Key":5619,"Stat":"Intelligence","Tier":0,"Value":0},{"Key":5620,"Stat":"Intelligence","Tier":1,"Value":0},{"Key":5621,"Stat":"Intelligence","Tier":2,"Value":0},{"Key":5622,"Stat":"Intelligence","Tier":3,"Value":0},{"Key":5623,"Stat":"Intelligence","Tier":4,"Value":0},{"Key":18009,"Stat":"Intelligence","Tier":5,"Value":0}],"6":[{"Key":5624,"Stat":"Mind","Tier":0,"Value":0},{"Key":5625,"Stat":"Mind","Tier":1,"Value":0},{"Key":5626,"Stat":"Mind","Tier":2,"Value":0},{"Key":5627,"Stat":"Mind","Tier":3,"Value":0},{"Key":5628,"Stat":"Mind","Tier":4,"Value":0},{"Key":18010,"Stat":"Mind","Tier":5,"Value":0}],"7":[{"Key":5629,"Stat":"Piety","Tier":0,"Value":1},{"Key":5630,"Stat":"Piety","Tier":1,"Value":2},{"Key":5631,"Stat":"Piety","Tier":2,"Value":3},{"Key":5632,"Stat":"Piety","Tier":3,"Value":4},{"Key":5633,"Stat":"Piety","Tier":4,"Value":6},{"Key":18011,"Stat":"Piety","Tier":5,"Value":16},{"Key":25186,"Stat":"Piety","Tier":6,"Value":8},{"Key":26727,"Stat":"Piety","Tier":7,"Value":24},{"Key":33917,"Stat":"Piety","Tier":8,"Value":12},{"Key":33930,"Stat":"Piety","Tier":9,"Value":36}],"8":[{"Key":5634,"Stat":"Fire Resistance","Tier":0,"Value":0},{"Key":5635,"Stat":"Fire Resistance","Tier":1,"Value":0},{"Key":5636,"Stat":"Fire Resistance","Tier":2,"Value":0},{"Key":5637,"Stat":"Fire Resistance","Tier":3,"Value":0},{"Key":5638,"Stat":"Fire Resistance","Tier":4,"Value":0},{"Key":18012,"Stat":"Fire Resistance","Tier":5,"Value":0}],"9":[{"Key":5639,"Stat":"Ice Resistance","Tier":0,"Value":0},{"Key":5640,"Stat":"Ice Resistance","Tier":1,"Value":0},{"Key":5641,"Stat":"Ice Resistance","Tier":2,"Value":0},{"Key":5642,"Stat":"Ice Resistance","Tier":3,"Value":0},{"Key":5643,"Stat":"Ice Resistance","Tier":4,"Value":0},{"Key":18013,"Stat":"Ice Resistance","Tier":5,"Value":0}],"10":[{"Key":5644,"Stat":"Wind Resistance","Tier":0,"Value":0},{"Key":5645,"Stat":"Wind Resistance","Tier":1,"Value":0},{"Key":5646,"Stat":"Wind Resistance","Tier":2,"Value":0},{"Key":5647,"Stat":"Wind Resistance","Tier":3,"Value":0},{"Key":5648,"Stat":"Wind Resistance","Tier":4,"Value":0},{"Key":18014,"Stat":"Wind Resistance","Tier":5,"Value":0}],"11":[{"Key":5649,"Stat":"Earth Resistance","Tier":0,"Value":0},{"Key":5650,"Stat":"Earth Resistance","Tier":1,"Value":0},{"Key":5651,"Stat":"Earth Resistance","Tier":2,"Value":0},{"Key":5652,"Stat":"Earth Resistance","Tier":3,"Value":0},{"Key":5653,"Stat":"Earth Resistance","Tier":4,"Value":0},{"Key":18015,"Stat":"Earth Resistance","Tier":5,"Value":0}],"12":[{"Key":5654,"Stat":"Lightning Resistance","Tier":0,"Value":0},{"Key":5655,"Stat":"Lightning Resistance","Tier":1,"Value":0},{"Key":5656,"Stat":"Lightning Resistance","Tier":2,"Value":0},{"Key":5657,"Stat":"Lightning Resistance","Tier":3,"Value":0},{"Key":5658,"Stat":"Lightning Resistance","Tier":4,"Value":0},{"Key":18016,"Stat":"Lightning Resistance","Tier":5,"Value":0}],"13":[{"Key":5659,"Stat":"Water Resistance","Tier":0,"Value":0},{"Key":5660,"Stat":"Water Resistance","Tier":1,"Value":0},{"Key":5661,"Stat":"Water Resistance","Tier":2,"Value":0},{"Key":5662,"Stat":"Water Resistance","Tier":3,"Value":0},{"Key":5663,"Stat":"Water Resistance","Tier":4,"Value":0},{"Key":18017,"Stat":"Water Resistance","Tier":5,"Value":0}],"14":[{"Key":5664,"Stat":"Direct Hit Rate","Tier":0,"Value":1},{"Key":5665,"Stat":"Direct Hit Rate","Tier":1,"Value":2},{"Key":5666,"Stat":"Direct Hit Rate","Tier":2,"Value":3},{"Key":5667,"Stat":"Direct Hit Rate","Tier":3,"Value":4},{"Key":5668,"Stat":"Direct Hit Rate","Tier":4,"Value":6},{"Key":18018,"Stat":"Direct Hit Rate","Tier":5,"Value":16},{"Key":25187,"Stat":"Direct Hit Rate","Tier":6,"Value":8},{"Key":26728,"Stat":"Direct Hit Rate","Tier":7,"Value":24},{"Key":33918,"Stat":"Direct Hit Rate","Tier":8,"Value":12},{"Key":33931,"Stat":"Direct Hit Rate","Tier":9,"Value":36}],"15":[{"Key":5669,"Stat":"Critical Hit","Tier":0,"Value":1},{"Key":5670,"Stat":"Critical Hit","Tier":1,"Value":2},{"Key":5671,"Stat":"Critical Hit","Tier":2,"Value":3},{"Key":5672,"Stat":"Critical Hit","Tier":3,"Value":4},{"Key":5673,"Stat":"Critical Hit","Tier":4,"Value":6},{"Key":18019,"Stat":"Critical Hit","Tier":5,"Value":16},{"Key":25188,"Stat":"Critical Hit","Tier":6,"Value":8},{"Key":26729,"Stat":"Critical Hit","Tier":7,"Value":24},{"Key":33919,"Stat":"Critical Hit","Tier":8,"Value":12},{"Key":33932,"Stat":"Critical Hit","Tier":9,"Value":36}],"16":[{"Key":5674,"Stat":"Determination","Tier":0,"Value":1},{"Key":5675,"Stat":"Determination","Tier":1,"Value":2},{"Key":5676,"Stat":"Determination","Tier":2,"Value":3},{"Key":5677,"Stat":"Determination","Tier":3,"Value":4},{"Key":5678,"Stat":"Determination","Tier":4,"Value":6},{"Key":18020,"Stat":"Determination","Tier":5,"Value":16},{"Key":25189,"Stat":"Determination","Tier":6,"Value":8},{"Key":26730,"Stat":"Determination","Tier":7,"Value":24},{"Key":33920,"Stat":"Determination","Tier":8,"Value":12},{"Key":33933,"Stat":"Determination","Tier":9,"Value":36}],"17":[{"Key":5679,"Stat":"Tenacity","Tier":0,"Value":1},{"Key":5680,"Stat":"Tenacity","Tier":1,"Value":2},{"Key":5681,"Stat":"Tenacity","Tier":2,"Value":3},{"Key":5682,"Stat":"Tenacity","Tier":3,"Value":4},{"Key":5683,"Stat":"Tenacity","Tier":4,"Value":6},{"Key":18021,"Stat":"Tenacity","Tier":5,"Value":16},{"Key":25190,"Stat":"Tenacity","Tier":6,"Value":8},{"Key":26731,"Stat":"Tenacity","Tier":7,"Value":24},{"Key":33921,"Stat":"Tenacity","Tier":8,"Value":12},{"Key":33934,"Stat":"Tenacity","Tier":9,"Value":36}],"18":[{"Key":5684,"Stat":"Gathering","Tier":0,"Value":3},{"Key":5685,"Stat":"Gathering","Tier":1,"Value":4},{"Key":5686,"Stat":"Gathering","Tier":2,"Value":5},{"Key":5687,"Stat":"Gathering","Tier":3,"Value":6},{"Key":5688,"Stat":"Gathering","Tier":4,"Value":10},{"Key":18022,"Stat":"Gathering","Tier":5,"Value":15},{"Key":25191,"Stat":"Gathering","Tier":6,"Value":12},{"Key":26732,"Stat":"Gathering","Tier":7,"Value":20},{"Key":33922,"Stat":"Gathering","Tier":8,"Value":14},{"Key":33935,"Stat":"Gathering","Tier":9,"Value":25}],"19":[{"Key":5689,"Stat":"Perception","Tier":0,"Value":3},{"Key":5690,"Stat":"Perception","Tier":1,"Value":4},{"Key":5691,"Stat":"Perception","Tier":2,"Value":5},{"Key":5692,"Stat":"Perception","Tier":3,"Value":6},{"Key":5693,"Stat":"Perception","Tier":4,"Value":10},{"Key":18023,"Stat":"Perception","Tier":5,"Value":15},{"Key":25192,"Stat":"Perception","Tier":6,"Value":12},{"Key":26733,"Stat":"Perception","Tier":7,"Value":20},{"Key":33923,"Stat":"Perception","Tier":8,"Value":14},{"Key":33936,"Stat":"Perception","Tier":9,"Value":25}],"20":[{"Key":5694,"Stat":"GP","Tier":0,"Value":1},{"Key":5695,"Stat":"GP","Tier":1,"Value":2},{"Key":5696,"Stat":"GP","Tier":2,"Value":3},{"Key":5697,"Stat":"GP","Tier":3,"Value":4},{"Key":5698,"Stat":"GP","Tier":4,"Value":6},{"Key":18024,"Stat":"GP","Tier":5,"Value":8},{"Key":25193,"Stat":"GP","Tier":6,"Value":7},{"Key":26734,"Stat":"GP","Tier":7,"Value":9},{"Key":33924,"Stat":"GP","Tier":8,"Value":8},{"Key":33937,"Stat":"GP","Tier":9,"Value":10}],"21":[{"Key":5699,"Stat":"Craftsmanship","Tier":0,"Value":3},{"Key":5700,"Stat":"Craftsmanship","Tier":1,"Value":4},{"Key":5701,"Stat":"Craftsmanship","Tier":2,"Value":5},{"Key":5702,"Stat":"Craftsmanship","Tier":3,"Value":6},{"Key":5703,"Stat":"Craftsmanship","Tier":4,"Value":11},{"Key":18025,"Stat":"Craftsmanship","Tier":5,"Value":16},{"Key":25194,"Stat":"Craftsmanship","Tier":6,"Value":14},{"Key":26735,"Stat":"Craftsmanship","Tier":7,"Value":21},{"Key":33925,"Stat":"Craftsmanship","Tier":8,"Value":18},{"Key":33938,"Stat":"Craftsmanship","Tier":9,"Value":27}],"22":[{"Key":5704,"Stat":"CP","Tier":0,"Value":1},{"Key":5705,"Stat":"CP","Tier":1,"Value":2},{"Key":5706,"Stat":"CP","Tier":2,"Value":3},{"Key":5707,"Stat":"CP","Tier":3,"Value":4},{"Key":5708,"Stat":"CP","Tier":4,"Value":6},{"Key":18026,"Stat":"CP","Tier":5,"Value":8},{"Key":25195,"Stat":"CP","Tier":6,"Value":7},{"Key":26736,"Stat":"CP","Tier":7,"Value":9},{"Key":33926,"Stat":"CP","Tier":8,"Value":8},{"Key":33939,"Stat":"CP","Tier":9,"Value":10}],"23":[{"Key":5709,"Stat":"Control","Tier":0,"Value":1},{"Key":5710,"Stat":"Control","Tier":1,"Value":2},{"Key":5711,"Stat":"Control","Tier":2,"Value":3},{"Key":5712,"Stat":"Control","Tier":3,"Value":4},{"Key":5713,"Stat":"Control","Tier":4,"Value":7},{"Key":18027,"Stat":"Control","Tier":5,"Value":10},{"Key":25196,"Stat":"Control","Tier":6,"Value":9},{"Key":26737,"Stat":"Control","Tier":7,"Value":13},{"Key":33927,"Stat":"Control","Tier":8,"Value":12},{"Key":33940,"Stat":"Control","Tier":9,"Value":18}],"24":[{"Key":5714,"Stat":"Skill Speed","Tier":0,"Value":1},{"Key":5715,"Stat":"Skill Speed","Tier":1,"Value":2},{"Key":5716,"Stat":"Skill Speed","Tier":2,"Value":3},{"Key":5717,"Stat":"Skill Speed","Tier":3,"Value":4},{"Key":5718,"Stat":"Skill Speed","Tier":4,"Value":6},{"Key":18028,"Stat":"Skill Speed","Tier":5,"Value":16},{"Key":25197,"Stat":"Skill Speed","Tier":6,"Value":8},{"Key":26738,"Stat":"Skill Speed","Tier":7,"Value":24},{"Key":33928,"Stat":"Skill Speed","Tier":8,"Value":12},{"Key":33941,"Stat":"Skill Speed","Tier":9,"Value":36}],"25":[{"Key":5719,"Stat":"Spell Speed","Tier":0,"Value":1},{"Key":5720,"Stat":"Spell Speed","Tier":1,"Value":2},{"Key":5721,"Stat":"Spell Speed","Tier":2,"Value":3},{"Key":5722,"Stat":"Spell Speed","Tier":3,"Value":4},{"Key":5723,"Stat":"Spell Speed","Tier":4,"Value":6},{"Key":18029,"Stat":"Spell Speed","Tier":5,"Value":16},{"Key":25198,"Stat":"Spell Speed","Tier":6,"Value":8},{"Key":26739,"Stat":"Spell Speed","Tier":7,"Value":24},{"Key":33929,"Stat":"Spell Speed","Tier":8,"Value":12},{"Key":33942,"Stat":"Spell Speed","Tier":9,"Value":36}]}
+{
+  "1": [
+    {
+      "Key": 5724,
+      "Stat": "",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5725,
+      "Stat": "",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5726,
+      "Stat": "",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5727,
+      "Stat": "",
+      "Tier": 3,
+      "Value": 0
+    }
+  ],
+  "2": [
+    {
+      "Key": 5604,
+      "Stat": "Strength",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5605,
+      "Stat": "Strength",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5606,
+      "Stat": "Strength",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5607,
+      "Stat": "Strength",
+      "Tier": 3,
+      "Value": 0
+    },
+    {
+      "Key": 5608,
+      "Stat": "Strength",
+      "Tier": 4,
+      "Value": 0
+    },
+    {
+      "Key": 18006,
+      "Stat": "Strength",
+      "Tier": 5,
+      "Value": 0
+    }
+  ],
+  "3": [
+    {
+      "Key": 5609,
+      "Stat": "Vitality",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5610,
+      "Stat": "Vitality",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5611,
+      "Stat": "Vitality",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5612,
+      "Stat": "Vitality",
+      "Tier": 3,
+      "Value": 0
+    },
+    {
+      "Key": 5613,
+      "Stat": "Vitality",
+      "Tier": 4,
+      "Value": 0
+    },
+    {
+      "Key": 18007,
+      "Stat": "Vitality",
+      "Tier": 5,
+      "Value": 0
+    }
+  ],
+  "4": [
+    {
+      "Key": 5614,
+      "Stat": "Dexterity",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5615,
+      "Stat": "Dexterity",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5616,
+      "Stat": "Dexterity",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5617,
+      "Stat": "Dexterity",
+      "Tier": 3,
+      "Value": 0
+    },
+    {
+      "Key": 5618,
+      "Stat": "Dexterity",
+      "Tier": 4,
+      "Value": 0
+    },
+    {
+      "Key": 18008,
+      "Stat": "Dexterity",
+      "Tier": 5,
+      "Value": 0
+    }
+  ],
+  "5": [
+    {
+      "Key": 5619,
+      "Stat": "Intelligence",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5620,
+      "Stat": "Intelligence",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5621,
+      "Stat": "Intelligence",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5622,
+      "Stat": "Intelligence",
+      "Tier": 3,
+      "Value": 0
+    },
+    {
+      "Key": 5623,
+      "Stat": "Intelligence",
+      "Tier": 4,
+      "Value": 0
+    },
+    {
+      "Key": 18009,
+      "Stat": "Intelligence",
+      "Tier": 5,
+      "Value": 0
+    }
+  ],
+  "6": [
+    {
+      "Key": 5624,
+      "Stat": "Mind",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5625,
+      "Stat": "Mind",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5626,
+      "Stat": "Mind",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5627,
+      "Stat": "Mind",
+      "Tier": 3,
+      "Value": 0
+    },
+    {
+      "Key": 5628,
+      "Stat": "Mind",
+      "Tier": 4,
+      "Value": 0
+    },
+    {
+      "Key": 18010,
+      "Stat": "Mind",
+      "Tier": 5,
+      "Value": 0
+    }
+  ],
+  "7": [
+    {
+      "Key": 5629,
+      "Stat": "Piety",
+      "Tier": 0,
+      "Value": 1
+    },
+    {
+      "Key": 5630,
+      "Stat": "Piety",
+      "Tier": 1,
+      "Value": 2
+    },
+    {
+      "Key": 5631,
+      "Stat": "Piety",
+      "Tier": 2,
+      "Value": 3
+    },
+    {
+      "Key": 5632,
+      "Stat": "Piety",
+      "Tier": 3,
+      "Value": 4
+    },
+    {
+      "Key": 5633,
+      "Stat": "Piety",
+      "Tier": 4,
+      "Value": 6
+    },
+    {
+      "Key": 18011,
+      "Stat": "Piety",
+      "Tier": 5,
+      "Value": 16
+    },
+    {
+      "Key": 25186,
+      "Stat": "Piety",
+      "Tier": 6,
+      "Value": 8
+    },
+    {
+      "Key": 26727,
+      "Stat": "Piety",
+      "Tier": 7,
+      "Value": 24
+    },
+    {
+      "Key": 33917,
+      "Stat": "Piety",
+      "Tier": 8,
+      "Value": 12
+    },
+    {
+      "Key": 33930,
+      "Stat": "Piety",
+      "Tier": 9,
+      "Value": 36
+    },
+    {
+      "Key": 41757,
+      "Stat": "Piety",
+      "Tier": 10,
+      "Value": 18
+    },
+    {
+      "Key": 41770,
+      "Stat": "Piety",
+      "Tier": 11,
+      "Value": 54
+    }
+  ],
+  "8": [
+    {
+      "Key": 5634,
+      "Stat": "Fire Resistance",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5635,
+      "Stat": "Fire Resistance",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5636,
+      "Stat": "Fire Resistance",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5637,
+      "Stat": "Fire Resistance",
+      "Tier": 3,
+      "Value": 0
+    },
+    {
+      "Key": 5638,
+      "Stat": "Fire Resistance",
+      "Tier": 4,
+      "Value": 0
+    },
+    {
+      "Key": 18012,
+      "Stat": "Fire Resistance",
+      "Tier": 5,
+      "Value": 0
+    }
+  ],
+  "9": [
+    {
+      "Key": 5639,
+      "Stat": "Ice Resistance",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5640,
+      "Stat": "Ice Resistance",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5641,
+      "Stat": "Ice Resistance",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5642,
+      "Stat": "Ice Resistance",
+      "Tier": 3,
+      "Value": 0
+    },
+    {
+      "Key": 5643,
+      "Stat": "Ice Resistance",
+      "Tier": 4,
+      "Value": 0
+    },
+    {
+      "Key": 18013,
+      "Stat": "Ice Resistance",
+      "Tier": 5,
+      "Value": 0
+    }
+  ],
+  "10": [
+    {
+      "Key": 5644,
+      "Stat": "Wind Resistance",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5645,
+      "Stat": "Wind Resistance",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5646,
+      "Stat": "Wind Resistance",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5647,
+      "Stat": "Wind Resistance",
+      "Tier": 3,
+      "Value": 0
+    },
+    {
+      "Key": 5648,
+      "Stat": "Wind Resistance",
+      "Tier": 4,
+      "Value": 0
+    },
+    {
+      "Key": 18014,
+      "Stat": "Wind Resistance",
+      "Tier": 5,
+      "Value": 0
+    }
+  ],
+  "11": [
+    {
+      "Key": 5649,
+      "Stat": "Earth Resistance",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5650,
+      "Stat": "Earth Resistance",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5651,
+      "Stat": "Earth Resistance",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5652,
+      "Stat": "Earth Resistance",
+      "Tier": 3,
+      "Value": 0
+    },
+    {
+      "Key": 5653,
+      "Stat": "Earth Resistance",
+      "Tier": 4,
+      "Value": 0
+    },
+    {
+      "Key": 18015,
+      "Stat": "Earth Resistance",
+      "Tier": 5,
+      "Value": 0
+    }
+  ],
+  "12": [
+    {
+      "Key": 5654,
+      "Stat": "Lightning Resistance",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5655,
+      "Stat": "Lightning Resistance",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5656,
+      "Stat": "Lightning Resistance",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5657,
+      "Stat": "Lightning Resistance",
+      "Tier": 3,
+      "Value": 0
+    },
+    {
+      "Key": 5658,
+      "Stat": "Lightning Resistance",
+      "Tier": 4,
+      "Value": 0
+    },
+    {
+      "Key": 18016,
+      "Stat": "Lightning Resistance",
+      "Tier": 5,
+      "Value": 0
+    }
+  ],
+  "13": [
+    {
+      "Key": 5659,
+      "Stat": "Water Resistance",
+      "Tier": 0,
+      "Value": 0
+    },
+    {
+      "Key": 5660,
+      "Stat": "Water Resistance",
+      "Tier": 1,
+      "Value": 0
+    },
+    {
+      "Key": 5661,
+      "Stat": "Water Resistance",
+      "Tier": 2,
+      "Value": 0
+    },
+    {
+      "Key": 5662,
+      "Stat": "Water Resistance",
+      "Tier": 3,
+      "Value": 0
+    },
+    {
+      "Key": 5663,
+      "Stat": "Water Resistance",
+      "Tier": 4,
+      "Value": 0
+    },
+    {
+      "Key": 18017,
+      "Stat": "Water Resistance",
+      "Tier": 5,
+      "Value": 0
+    }
+  ],
+  "14": [
+    {
+      "Key": 5664,
+      "Stat": "Direct Hit Rate",
+      "Tier": 0,
+      "Value": 1
+    },
+    {
+      "Key": 5665,
+      "Stat": "Direct Hit Rate",
+      "Tier": 1,
+      "Value": 2
+    },
+    {
+      "Key": 5666,
+      "Stat": "Direct Hit Rate",
+      "Tier": 2,
+      "Value": 3
+    },
+    {
+      "Key": 5667,
+      "Stat": "Direct Hit Rate",
+      "Tier": 3,
+      "Value": 4
+    },
+    {
+      "Key": 5668,
+      "Stat": "Direct Hit Rate",
+      "Tier": 4,
+      "Value": 6
+    },
+    {
+      "Key": 18018,
+      "Stat": "Direct Hit Rate",
+      "Tier": 5,
+      "Value": 16
+    },
+    {
+      "Key": 25187,
+      "Stat": "Direct Hit Rate",
+      "Tier": 6,
+      "Value": 8
+    },
+    {
+      "Key": 26728,
+      "Stat": "Direct Hit Rate",
+      "Tier": 7,
+      "Value": 24
+    },
+    {
+      "Key": 33918,
+      "Stat": "Direct Hit Rate",
+      "Tier": 8,
+      "Value": 12
+    },
+    {
+      "Key": 33931,
+      "Stat": "Direct Hit Rate",
+      "Tier": 9,
+      "Value": 36
+    },
+    {
+      "Key": 41758,
+      "Stat": "Direct Hit Rate",
+      "Tier": 10,
+      "Value": 18
+    },
+    {
+      "Key": 41771,
+      "Stat": "Direct Hit Rate",
+      "Tier": 11,
+      "Value": 54
+    }
+  ],
+  "15": [
+    {
+      "Key": 5669,
+      "Stat": "Critical Hit",
+      "Tier": 0,
+      "Value": 1
+    },
+    {
+      "Key": 5670,
+      "Stat": "Critical Hit",
+      "Tier": 1,
+      "Value": 2
+    },
+    {
+      "Key": 5671,
+      "Stat": "Critical Hit",
+      "Tier": 2,
+      "Value": 3
+    },
+    {
+      "Key": 5672,
+      "Stat": "Critical Hit",
+      "Tier": 3,
+      "Value": 4
+    },
+    {
+      "Key": 5673,
+      "Stat": "Critical Hit",
+      "Tier": 4,
+      "Value": 6
+    },
+    {
+      "Key": 18019,
+      "Stat": "Critical Hit",
+      "Tier": 5,
+      "Value": 16
+    },
+    {
+      "Key": 25188,
+      "Stat": "Critical Hit",
+      "Tier": 6,
+      "Value": 8
+    },
+    {
+      "Key": 26729,
+      "Stat": "Critical Hit",
+      "Tier": 7,
+      "Value": 24
+    },
+    {
+      "Key": 33919,
+      "Stat": "Critical Hit",
+      "Tier": 8,
+      "Value": 12
+    },
+    {
+      "Key": 33932,
+      "Stat": "Critical Hit",
+      "Tier": 9,
+      "Value": 36
+    },
+    {
+      "Key": 41759,
+      "Stat": "Critical Hit",
+      "Tier": 10,
+      "Value": 18
+    },
+    {
+      "Key": 41772,
+      "Stat": "Critical Hit",
+      "Tier": 11,
+      "Value": 54
+    }
+  ],
+  "16": [
+    {
+      "Key": 5674,
+      "Stat": "Determination",
+      "Tier": 0,
+      "Value": 1
+    },
+    {
+      "Key": 5675,
+      "Stat": "Determination",
+      "Tier": 1,
+      "Value": 2
+    },
+    {
+      "Key": 5676,
+      "Stat": "Determination",
+      "Tier": 2,
+      "Value": 3
+    },
+    {
+      "Key": 5677,
+      "Stat": "Determination",
+      "Tier": 3,
+      "Value": 4
+    },
+    {
+      "Key": 5678,
+      "Stat": "Determination",
+      "Tier": 4,
+      "Value": 6
+    },
+    {
+      "Key": 18020,
+      "Stat": "Determination",
+      "Tier": 5,
+      "Value": 16
+    },
+    {
+      "Key": 25189,
+      "Stat": "Determination",
+      "Tier": 6,
+      "Value": 8
+    },
+    {
+      "Key": 26730,
+      "Stat": "Determination",
+      "Tier": 7,
+      "Value": 24
+    },
+    {
+      "Key": 33920,
+      "Stat": "Determination",
+      "Tier": 8,
+      "Value": 12
+    },
+    {
+      "Key": 33933,
+      "Stat": "Determination",
+      "Tier": 9,
+      "Value": 36
+    },
+    {
+      "Key": 41760,
+      "Stat": "Determination",
+      "Tier": 10,
+      "Value": 18
+    },
+    {
+      "Key": 41773,
+      "Stat": "Determination",
+      "Tier": 11,
+      "Value": 54
+    }
+  ],
+  "17": [
+    {
+      "Key": 5679,
+      "Stat": "Tenacity",
+      "Tier": 0,
+      "Value": 1
+    },
+    {
+      "Key": 5680,
+      "Stat": "Tenacity",
+      "Tier": 1,
+      "Value": 2
+    },
+    {
+      "Key": 5681,
+      "Stat": "Tenacity",
+      "Tier": 2,
+      "Value": 3
+    },
+    {
+      "Key": 5682,
+      "Stat": "Tenacity",
+      "Tier": 3,
+      "Value": 4
+    },
+    {
+      "Key": 5683,
+      "Stat": "Tenacity",
+      "Tier": 4,
+      "Value": 6
+    },
+    {
+      "Key": 18021,
+      "Stat": "Tenacity",
+      "Tier": 5,
+      "Value": 16
+    },
+    {
+      "Key": 25190,
+      "Stat": "Tenacity",
+      "Tier": 6,
+      "Value": 8
+    },
+    {
+      "Key": 26731,
+      "Stat": "Tenacity",
+      "Tier": 7,
+      "Value": 24
+    },
+    {
+      "Key": 33921,
+      "Stat": "Tenacity",
+      "Tier": 8,
+      "Value": 12
+    },
+    {
+      "Key": 33934,
+      "Stat": "Tenacity",
+      "Tier": 9,
+      "Value": 36
+    },
+    {
+      "Key": 41761,
+      "Stat": "Tenacity",
+      "Tier": 10,
+      "Value": 18
+    },
+    {
+      "Key": 41774,
+      "Stat": "Tenacity",
+      "Tier": 11,
+      "Value": 54
+    }
+  ],
+  "18": [
+    {
+      "Key": 5684,
+      "Stat": "Gathering",
+      "Tier": 0,
+      "Value": 3
+    },
+    {
+      "Key": 5685,
+      "Stat": "Gathering",
+      "Tier": 1,
+      "Value": 4
+    },
+    {
+      "Key": 5686,
+      "Stat": "Gathering",
+      "Tier": 2,
+      "Value": 5
+    },
+    {
+      "Key": 5687,
+      "Stat": "Gathering",
+      "Tier": 3,
+      "Value": 6
+    },
+    {
+      "Key": 5688,
+      "Stat": "Gathering",
+      "Tier": 4,
+      "Value": 10
+    },
+    {
+      "Key": 18022,
+      "Stat": "Gathering",
+      "Tier": 5,
+      "Value": 15
+    },
+    {
+      "Key": 25191,
+      "Stat": "Gathering",
+      "Tier": 6,
+      "Value": 12
+    },
+    {
+      "Key": 26732,
+      "Stat": "Gathering",
+      "Tier": 7,
+      "Value": 20
+    },
+    {
+      "Key": 33922,
+      "Stat": "Gathering",
+      "Tier": 8,
+      "Value": 14
+    },
+    {
+      "Key": 33935,
+      "Stat": "Gathering",
+      "Tier": 9,
+      "Value": 25
+    },
+    {
+      "Key": 41762,
+      "Stat": "Gathering",
+      "Tier": 10,
+      "Value": 20
+    },
+    {
+      "Key": 41775,
+      "Stat": "Gathering",
+      "Tier": 11,
+      "Value": 36
+    }
+  ],
+  "19": [
+    {
+      "Key": 5689,
+      "Stat": "Perception",
+      "Tier": 0,
+      "Value": 3
+    },
+    {
+      "Key": 5690,
+      "Stat": "Perception",
+      "Tier": 1,
+      "Value": 4
+    },
+    {
+      "Key": 5691,
+      "Stat": "Perception",
+      "Tier": 2,
+      "Value": 5
+    },
+    {
+      "Key": 5692,
+      "Stat": "Perception",
+      "Tier": 3,
+      "Value": 6
+    },
+    {
+      "Key": 5693,
+      "Stat": "Perception",
+      "Tier": 4,
+      "Value": 10
+    },
+    {
+      "Key": 18023,
+      "Stat": "Perception",
+      "Tier": 5,
+      "Value": 15
+    },
+    {
+      "Key": 25192,
+      "Stat": "Perception",
+      "Tier": 6,
+      "Value": 12
+    },
+    {
+      "Key": 26733,
+      "Stat": "Perception",
+      "Tier": 7,
+      "Value": 20
+    },
+    {
+      "Key": 33923,
+      "Stat": "Perception",
+      "Tier": 8,
+      "Value": 14
+    },
+    {
+      "Key": 33936,
+      "Stat": "Perception",
+      "Tier": 9,
+      "Value": 25
+    },
+    {
+      "Key": 41763,
+      "Stat": "Perception",
+      "Tier": 10,
+      "Value": 20
+    },
+    {
+      "Key": 41776,
+      "Stat": "Perception",
+      "Tier": 11,
+      "Value": 36
+    }
+  ],
+  "20": [
+    {
+      "Key": 5694,
+      "Stat": "GP",
+      "Tier": 0,
+      "Value": 1
+    },
+    {
+      "Key": 5695,
+      "Stat": "GP",
+      "Tier": 1,
+      "Value": 2
+    },
+    {
+      "Key": 5696,
+      "Stat": "GP",
+      "Tier": 2,
+      "Value": 3
+    },
+    {
+      "Key": 5697,
+      "Stat": "GP",
+      "Tier": 3,
+      "Value": 4
+    },
+    {
+      "Key": 5698,
+      "Stat": "GP",
+      "Tier": 4,
+      "Value": 6
+    },
+    {
+      "Key": 18024,
+      "Stat": "GP",
+      "Tier": 5,
+      "Value": 8
+    },
+    {
+      "Key": 25193,
+      "Stat": "GP",
+      "Tier": 6,
+      "Value": 7
+    },
+    {
+      "Key": 26734,
+      "Stat": "GP",
+      "Tier": 7,
+      "Value": 9
+    },
+    {
+      "Key": 33924,
+      "Stat": "GP",
+      "Tier": 8,
+      "Value": 8
+    },
+    {
+      "Key": 33937,
+      "Stat": "GP",
+      "Tier": 9,
+      "Value": 10
+    },
+    {
+      "Key": 41764,
+      "Stat": "GP",
+      "Tier": 10,
+      "Value": 9
+    },
+    {
+      "Key": 41777,
+      "Stat": "GP",
+      "Tier": 11,
+      "Value": 11
+    }
+  ],
+  "21": [
+    {
+      "Key": 5699,
+      "Stat": "Craftsmanship",
+      "Tier": 0,
+      "Value": 3
+    },
+    {
+      "Key": 5700,
+      "Stat": "Craftsmanship",
+      "Tier": 1,
+      "Value": 4
+    },
+    {
+      "Key": 5701,
+      "Stat": "Craftsmanship",
+      "Tier": 2,
+      "Value": 5
+    },
+    {
+      "Key": 5702,
+      "Stat": "Craftsmanship",
+      "Tier": 3,
+      "Value": 6
+    },
+    {
+      "Key": 5703,
+      "Stat": "Craftsmanship",
+      "Tier": 4,
+      "Value": 11
+    },
+    {
+      "Key": 18025,
+      "Stat": "Craftsmanship",
+      "Tier": 5,
+      "Value": 16
+    },
+    {
+      "Key": 25194,
+      "Stat": "Craftsmanship",
+      "Tier": 6,
+      "Value": 14
+    },
+    {
+      "Key": 26735,
+      "Stat": "Craftsmanship",
+      "Tier": 7,
+      "Value": 21
+    },
+    {
+      "Key": 33925,
+      "Stat": "Craftsmanship",
+      "Tier": 8,
+      "Value": 18
+    },
+    {
+      "Key": 33938,
+      "Stat": "Craftsmanship",
+      "Tier": 9,
+      "Value": 27
+    },
+    {
+      "Key": 41765,
+      "Stat": "Craftsmanship",
+      "Tier": 10,
+      "Value": 22
+    },
+    {
+      "Key": 41778,
+      "Stat": "Craftsmanship",
+      "Tier": 11,
+      "Value": 33
+    }
+  ],
+  "22": [
+    {
+      "Key": 5704,
+      "Stat": "CP",
+      "Tier": 0,
+      "Value": 1
+    },
+    {
+      "Key": 5705,
+      "Stat": "CP",
+      "Tier": 1,
+      "Value": 2
+    },
+    {
+      "Key": 5706,
+      "Stat": "CP",
+      "Tier": 2,
+      "Value": 3
+    },
+    {
+      "Key": 5707,
+      "Stat": "CP",
+      "Tier": 3,
+      "Value": 4
+    },
+    {
+      "Key": 5708,
+      "Stat": "CP",
+      "Tier": 4,
+      "Value": 6
+    },
+    {
+      "Key": 18026,
+      "Stat": "CP",
+      "Tier": 5,
+      "Value": 8
+    },
+    {
+      "Key": 25195,
+      "Stat": "CP",
+      "Tier": 6,
+      "Value": 7
+    },
+    {
+      "Key": 26736,
+      "Stat": "CP",
+      "Tier": 7,
+      "Value": 9
+    },
+    {
+      "Key": 33926,
+      "Stat": "CP",
+      "Tier": 8,
+      "Value": 8
+    },
+    {
+      "Key": 33939,
+      "Stat": "CP",
+      "Tier": 9,
+      "Value": 10
+    },
+    {
+      "Key": 41766,
+      "Stat": "CP",
+      "Tier": 10,
+      "Value": 9
+    },
+    {
+      "Key": 41779,
+      "Stat": "CP",
+      "Tier": 11,
+      "Value": 11
+    }
+  ],
+  "23": [
+    {
+      "Key": 5709,
+      "Stat": "Control",
+      "Tier": 0,
+      "Value": 1
+    },
+    {
+      "Key": 5710,
+      "Stat": "Control",
+      "Tier": 1,
+      "Value": 2
+    },
+    {
+      "Key": 5711,
+      "Stat": "Control",
+      "Tier": 2,
+      "Value": 3
+    },
+    {
+      "Key": 5712,
+      "Stat": "Control",
+      "Tier": 3,
+      "Value": 4
+    },
+    {
+      "Key": 5713,
+      "Stat": "Control",
+      "Tier": 4,
+      "Value": 7
+    },
+    {
+      "Key": 18027,
+      "Stat": "Control",
+      "Tier": 5,
+      "Value": 10
+    },
+    {
+      "Key": 25196,
+      "Stat": "Control",
+      "Tier": 6,
+      "Value": 9
+    },
+    {
+      "Key": 26737,
+      "Stat": "Control",
+      "Tier": 7,
+      "Value": 13
+    },
+    {
+      "Key": 33927,
+      "Stat": "Control",
+      "Tier": 8,
+      "Value": 12
+    },
+    {
+      "Key": 33940,
+      "Stat": "Control",
+      "Tier": 9,
+      "Value": 18
+    },
+    {
+      "Key": 41767,
+      "Stat": "Control",
+      "Tier": 10,
+      "Value": 15
+    },
+    {
+      "Key": 41780,
+      "Stat": "Control",
+      "Tier": 11,
+      "Value": 23
+    }
+  ],
+  "24": [
+    {
+      "Key": 5714,
+      "Stat": "Skill Speed",
+      "Tier": 0,
+      "Value": 1
+    },
+    {
+      "Key": 5715,
+      "Stat": "Skill Speed",
+      "Tier": 1,
+      "Value": 2
+    },
+    {
+      "Key": 5716,
+      "Stat": "Skill Speed",
+      "Tier": 2,
+      "Value": 3
+    },
+    {
+      "Key": 5717,
+      "Stat": "Skill Speed",
+      "Tier": 3,
+      "Value": 4
+    },
+    {
+      "Key": 5718,
+      "Stat": "Skill Speed",
+      "Tier": 4,
+      "Value": 6
+    },
+    {
+      "Key": 18028,
+      "Stat": "Skill Speed",
+      "Tier": 5,
+      "Value": 16
+    },
+    {
+      "Key": 25197,
+      "Stat": "Skill Speed",
+      "Tier": 6,
+      "Value": 8
+    },
+    {
+      "Key": 26738,
+      "Stat": "Skill Speed",
+      "Tier": 7,
+      "Value": 24
+    },
+    {
+      "Key": 33928,
+      "Stat": "Skill Speed",
+      "Tier": 8,
+      "Value": 12
+    },
+    {
+      "Key": 33941,
+      "Stat": "Skill Speed",
+      "Tier": 9,
+      "Value": 36
+    },
+    {
+      "Key": 41768,
+      "Stat": "Skill Speed",
+      "Tier": 10,
+      "Value": 18
+    },
+    {
+      "Key": 41781,
+      "Stat": "Skill Speed",
+      "Tier": 11,
+      "Value": 54
+    }
+  ],
+  "25": [
+    {
+      "Key": 5719,
+      "Stat": "Spell Speed",
+      "Tier": 0,
+      "Value": 1
+    },
+    {
+      "Key": 5720,
+      "Stat": "Spell Speed",
+      "Tier": 1,
+      "Value": 2
+    },
+    {
+      "Key": 5721,
+      "Stat": "Spell Speed",
+      "Tier": 2,
+      "Value": 3
+    },
+    {
+      "Key": 5722,
+      "Stat": "Spell Speed",
+      "Tier": 3,
+      "Value": 4
+    },
+    {
+      "Key": 5723,
+      "Stat": "Spell Speed",
+      "Tier": 4,
+      "Value": 6
+    },
+    {
+      "Key": 18029,
+      "Stat": "Spell Speed",
+      "Tier": 5,
+      "Value": 16
+    },
+    {
+      "Key": 25198,
+      "Stat": "Spell Speed",
+      "Tier": 6,
+      "Value": 8
+    },
+    {
+      "Key": 26739,
+      "Stat": "Spell Speed",
+      "Tier": 7,
+      "Value": 24
+    },
+    {
+      "Key": 33929,
+      "Stat": "Spell Speed",
+      "Tier": 8,
+      "Value": 12
+    },
+    {
+      "Key": 33942,
+      "Stat": "Spell Speed",
+      "Tier": 9,
+      "Value": 36
+    },
+    {
+      "Key": 41769,
+      "Stat": "Spell Speed",
+      "Tier": 10,
+      "Value": 18
+    },
+    {
+      "Key": 41782,
+      "Stat": "Spell Speed",
+      "Tier": 11,
+      "Value": 54
+    }
+  ]
+}
