@@ -63,7 +63,7 @@ namespace LlamaLibrary.RemoteAgents
             //0x1180
             //6.5Done
             [Offset("Search 42 0F B6 94 00 ? ? ? ? 48 69 C2 ? ? ? ? Add 5 Read32")]
-            [OffsetDawntrail("Search 42 0F B6 94 00 ? ? ? ? 32 C0 Add 4 Read32")]
+            [OffsetDawntrail("Search 42 0F B6 94 00 ? ? ? ? 32 C0 Add 5 Read32")]
             internal static int CategoryArray;
 
             //0x208
