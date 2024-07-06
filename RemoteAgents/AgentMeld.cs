@@ -17,6 +17,7 @@ namespace LlamaLibrary.RemoteAgents
             internal static IntPtr VTable;
 
             [Offset("Search 38 9F ? ? ? ? 48 8D 8D ? ? ? ? Add 2 Read32")]
+            [OffsetDawntrail("Search 0F B6 9F ? ? ? ? 48 8D 8D ? ? ? ? BA ? ? ? ? 44 89 AD ? ? ? ? Add 3 Read32")]
             internal static int CanMeld;
 
             [Offset("Search 89 83 ? ? ? ? 48 89 83 ? ? ? ? 48 89 83 ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? Add 2 Read32")]
