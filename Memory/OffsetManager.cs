@@ -32,6 +32,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Memory.PatternFinders;
 using LlamaLibrary.RemoteAgents;
+using LlamaLibrary.Settings;
 using Newtonsoft.Json;
 using LogLevel = LlamaLibrary.Logging.LogLevel;
 using PatchManager = LlamaLibrary.Hooks.PatchManager;
@@ -64,13 +65,16 @@ public static class OffsetManager
 
     private static string OffsetFile => Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{Core.CurrentGameVer}.json");
 
-    public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown, LogLevel.Debug);
+    public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown, LogLevel.Information);
 
 #if RB_CN
         public const bool IsChinese = true;
 #else
     public const bool IsChinese = false;
 #endif
+
+    private static bool _isNewGameBuild;
+
     [Obsolete]
     public static void Init()
     {
@@ -179,10 +183,29 @@ public static class OffsetManager
             {
                 OffsetCache.Clear();
                 OffsetCache["Version"] = _version;
+                _isNewGameBuild = true;
             }
         }
 
         await SetOffsetObjectsAsync(llTypes);
+    }
+
+    internal static void ClearOffsetFromCache(MemberInfo? info)
+    {
+        if (info == null)
+        {
+            Logger.Error("MemberInfo is null");
+            return;
+        }
+
+        OffsetCache.TryRemove(info.MemberName(), out _);
+        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+    }
+
+    internal static void ClearOffsetFromCache(string name)
+    {
+        OffsetCache.TryRemove(name, out _);
+        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
     }
 
     private static List<Type> GetTypes()
@@ -247,24 +270,53 @@ public static class OffsetManager
         newStopwatch.Stop();
         Logger.Debug($"OffsetManager AgentModule.TryAddAgent took {newStopwatch.ElapsedMilliseconds}ms");
 
+        if (LlamaLibrarySettings.Instance.TempDisableInventoryHook && InventoryUpdatePatch.Offsets.OrginalCall == InventoryUpdatePatch.Offsets.OriginalJump)
+        {
+            LlamaLibrarySettings.Instance.TempDisableInventoryHook = false;
+        }
+
+        if (Core.CurrentGameVer != LlamaLibrarySettings.Instance.LastRevision && InventoryUpdatePatch.Offsets.OrginalCall == InventoryUpdatePatch.Offsets.OriginalJump)
+        {
+            LlamaLibrarySettings.Instance.LastRevision = Core.CurrentGameVer;
+            Logger.Information($"Setting revision to {Core.CurrentGameVer} in {LlamaLibrarySettings.Instance.FilePath}");
+        }
+
+        var skipInventoryPatch = LlamaLibrarySettings.Instance.TempDisableInventoryHook || LlamaLibrarySettings.Instance.DisableInventoryHook;
+
+        Logger.Information($"TempDisableInventoryHook: {LlamaLibrarySettings.Instance.TempDisableInventoryHook} DisableInventoryHook: {LlamaLibrarySettings.Instance.DisableInventoryHook}");
+
+        if (!skipInventoryPatch)
+        {
+            if (InventoryUpdatePatch.Offsets.OrginalCall != InventoryUpdatePatch.Offsets.OriginalJump || InventoryUpdatePatch.Offsets.OrginalCall == IntPtr.Zero || InventoryUpdatePatch.Offsets.OriginalJump == IntPtr.Zero)
+            {
+                if (!_isNewGameBuild && InventoryUpdatePatch.Offsets.OrginalCall != IntPtr.Zero && InventoryUpdatePatch.Offsets.OriginalJump != IntPtr.Zero)
+                {
+                    Logger.Information("Last patch not cleaned up, cleaning up now");
+                    var asm = Core.Memory.Asm;
+                    asm.Clear();
+                    asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatch.Offsets.PatchLocation);
+                    asm.AddLine("JMP {0}", InventoryUpdatePatch.Offsets.OrginalCall);
+                    var jzPatch = asm.Assemble();
+                    Core.Memory.WriteBytes(InventoryUpdatePatch.Offsets.PatchLocation, jzPatch);
+                    InventoryUpdatePatch.Offsets.OriginalJump = InventoryUpdatePatch.Offsets.OrginalCall;
+                }
+                else
+                {
+                    Logger.Error("New game build and inventory patch offsets don't match");
+                    var memberInfo = typeof(InventoryUpdatePatch.Offsets).GetMember("OrginalCall", BindingFlags.NonPublic | BindingFlags.Static).FirstOrDefault();
+                    ClearOffsetFromCache(memberInfo);
+                    LlamaLibrarySettings.Instance.TempDisableInventoryHook = true;
+                    skipInventoryPatch = true;
+                }
+            }
+        }
+
         newStopwatch.Restart();
         File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
         newStopwatch.Stop();
         Logger.Debug($"OffsetManager File.WriteAllText took {newStopwatch.ElapsedMilliseconds}ms");
 
-        if (InventoryUpdatePatch.Offsets.OrginalCall != InventoryUpdatePatch.Offsets.OriginalJump)
-        {
-            Logger.Information("Last patch not cleaned up, cleaning up now");
-            var asm = Core.Memory.Asm;
-            asm.Clear();
-            asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatch.Offsets.PatchLocation);
-            asm.AddLine("JMP {0}", InventoryUpdatePatch.Offsets.OrginalCall);
-            var jzPatch = asm.Assemble();
-            Core.Memory.WriteBytes(InventoryUpdatePatch.Offsets.PatchLocation, jzPatch);
-            InventoryUpdatePatch.Offsets.OriginalJump = InventoryUpdatePatch.Offsets.OrginalCall;
-        }
-
-        PatchManager.Initialize();
+        PatchManager.Initialize(skipInventoryPatch);
     }
 
     public static void RegisterAgent(IAgent iagent)

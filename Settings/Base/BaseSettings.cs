@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using System.Windows.Threading;
+using ff14bot.Forms.ugh;
 using ff14bot.Helpers;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
@@ -27,7 +28,16 @@ public abstract class BaseSettings : INotifyPropertyChanged
 
     public BaseSettings(string path)
     {
-        Dispatcher = Dispatcher.CurrentDispatcher;
+        Dispatcher = MainWpf.current.Dispatcher;
+        _saveDebounceDispatcher = new DebounceDispatcher(SaveLocal);
+        _logger = new LLogger($"{GetType().Name}", Colors.Peru, LogLevel.Debug);
+        FilePath = path;
+        LoadFrom(FilePath);
+    }
+
+    public BaseSettings(string path, Dispatcher dispatcher)
+    {
+        Dispatcher = dispatcher;
         _saveDebounceDispatcher = new DebounceDispatcher(SaveLocal);
         _logger = new LLogger($"{GetType().Name}", Colors.Peru, LogLevel.Debug);
         FilePath = path;
@@ -43,7 +53,7 @@ public abstract class BaseSettings : INotifyPropertyChanged
     protected Dispatcher Dispatcher { get; }
 
     [JsonIgnore]
-    private string FilePath { get; }
+    public string FilePath { get; }
 
     public static string GetSettingsFilePath(params string[] subPathParts)
     {
@@ -216,6 +226,7 @@ public abstract class BaseSettings : INotifyPropertyChanged
         {
             if (!_loaded)
             {
+                _logger.Information("Not loaded yet");
                 return;
             }
 
