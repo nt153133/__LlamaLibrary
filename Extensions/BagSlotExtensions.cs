@@ -412,7 +412,14 @@ namespace LlamaLibrary.Extensions
             {
                 if (materiaType[i] > 0)
                 {
-                    materia.Add(ResourceManager.MateriaList.Value[materiaType[i]].First(j => j.Tier == materiaLevel[i]));
+                    try
+                    {
+                        materia.Add(ResourceManager.MateriaList.Value[materiaType[i]].First(j => j.Tier == materiaLevel[i]));
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
                 }
             }
 

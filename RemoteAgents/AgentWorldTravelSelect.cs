@@ -28,6 +28,7 @@ namespace LlamaLibrary.RemoteAgents
             internal static int CurrentWorldOffset;
             //6.4
             [Offset("Search 3B 46 ? 0F 8F ? ? ? ? Add 2 Read8")]
+            [OffsetDawntrail("Search 3B 43 ? 0F 8F ? ? ? ? 48 8B 4B ? Add 2 Read8")]
             internal static int MaxWorldOffset;
         }
 

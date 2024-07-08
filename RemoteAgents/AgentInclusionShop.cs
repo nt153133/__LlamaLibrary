@@ -63,7 +63,7 @@ namespace LlamaLibrary.RemoteAgents
             //0x1180
             //6.5Done
             [Offset("Search 42 0F B6 94 00 ? ? ? ? 48 69 C2 ? ? ? ? Add 5 Read32")]
-            [OffsetDawntrail("Search 42 0F B6 94 00 ? ? ? ? 32 C0 Add 4 Read32")]
+            [OffsetDawntrail("Search 42 0F B6 94 00 ? ? ? ? 32 C0 Add 5 Read32")]
             internal static int CategoryArray;
 
             //0x208
@@ -85,6 +85,7 @@ namespace LlamaLibrary.RemoteAgents
             //0x19d0
             //6.5 Done
             [Offset("Search 48 69 D1 ? ? ? ? 49 8B 89 ? ? ? ? Add 3 Read32")]
+            [OffsetDawntrail("Search 48 69 D1 ? ? ? ? 4B 8B 8C 01 ? ? ? ? Add 3 Read32")]
             internal static int StructSizeSubCategory;
 
             //0x6C

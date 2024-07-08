@@ -606,7 +606,7 @@ public class LoadServerProfile
         get { return _dutySupportDuties ??= GetDutySupportDuties(); }
     }
 
-    private static List<uint> GetDutySupportDuties()
+    public static List<uint> GetDutySupportDuties()
     {
         var rowCount = GeneralFunctions.GetDawnContentRowCount();
 
@@ -618,8 +618,14 @@ public class LoadServerProfile
 
             if (row == IntPtr.Zero)
             {
+#if RB_DT
+                row = GeneralFunctions.GetDawnContentRow(i + 200 - 32);
+#else
                 row = GeneralFunctions.GetDawnContentRow(i + 200 - 24);
+#endif
             }
+
+
 
             if (row == IntPtr.Zero)
             {
