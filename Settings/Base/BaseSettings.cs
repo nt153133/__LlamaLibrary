@@ -40,7 +40,7 @@ public abstract class BaseSettings : INotifyPropertyChanged
 
     public static string SettingsPath => Path.Combine(AssemblyPath, "Settings");
 
-    private Dispatcher Dispatcher { get; }
+    protected Dispatcher Dispatcher { get; }
 
     [JsonIgnore]
     private string FilePath { get; }
@@ -95,15 +95,27 @@ public abstract class BaseSettings : INotifyPropertyChanged
 
                 foreach (var propertyInfo in properties)
                 {
-                    //Check if property is a observable collection
+                    //Check if property is an observable collection
                     if (typeof(INotifyCollectionChanged).IsAssignableFrom(propertyInfo.PropertyType))
                     {
+                        //_logger.Debug($"Property {propertyInfo.Name} is an INotifyCollectionChanged");
                         //Set list changed event to trigger on property change
                         var collection = propertyInfo.GetValue(this) as INotifyCollectionChanged;
                         if (collection != null)
                         {
                             if (propertyInfo.PropertyType.IsGenericType && typeof(INotifyPropertyChanged).IsAssignableFrom(propertyInfo.PropertyType.GenericTypeArguments[0]))
                             {
+                                //_logger.Debug($"Property {propertyInfo.Name} is an INotifyPropertyChanged with generic type {propertyInfo.PropertyType.GenericTypeArguments[0]}");
+
+                                //loop through all items in collection and add property changed event
+                                foreach (var item in (IEnumerable<object>)collection)
+                                {
+                                    if (item is INotifyPropertyChanged notifyPropertyChanged)
+                                    {
+                                        notifyPropertyChanged.PropertyChanged += OnNotifyPropertyChangedOnPropertyChanged;
+                                    }
+                                }
+
                                 collection.CollectionChanged += (_, args) =>
                                 {
                                     OnPropertyChanged(propertyInfo.Name);
@@ -129,14 +141,12 @@ public abstract class BaseSettings : INotifyPropertyChanged
                                             }
                                         }
                                     }
-
-                                    return;
-
-                                    void OnNotifyPropertyChangedOnPropertyChanged(object? o, PropertyChangedEventArgs eventArgs)
-                                    {
-                                        OnPropertyChanged(propertyInfo.Name);
-                                    }
                                 };
+
+                                void OnNotifyPropertyChangedOnPropertyChanged(object? o, PropertyChangedEventArgs eventArgs)
+                                {
+                                    OnPropertyChanged(propertyInfo.Name);
+                                }
                             }
                             else
                             {
