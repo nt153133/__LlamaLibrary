@@ -24,7 +24,11 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new(nameof(HuntHelper), Colors.Gold);
 
+#if RB_DT
+        private const int MaxOrderTypes = 0x16;
+#else
         private const int MaxOrderTypes = 0x12;
+#endif
 
         public static readonly List<HuntBoardNpc> HuntBoards = new()
         {
@@ -36,7 +40,6 @@ namespace LlamaLibrary.Helpers
             new HuntBoardNpc(2008654, 635, new Vector3(95.078857f, 0.62561f, 22.598572f), new uint[] { 6, 7, 8, 9 }), //Clan Hunt Board  Rhalgr's Reach(Gyr Abania)
             new HuntBoardNpc(2010340, 819, new Vector3(-83.604248f, -0.01532f, -90.745422f), new uint[] { 10, 11, 12, 13 }), //Nuts Board  The Crystarium(The Crystarium) };
             new HuntBoardNpc(2012236, 962, new Vector3(29.37905f, -15.64699f, 100.2111f), new uint[] { 14, 15, 16, 17 }) //Guildship Hunt Board  Old Sharlayan  };
-
         };
 
         public static readonly int[] ARRHunts = new[] { 0 };
@@ -97,6 +100,8 @@ namespace LlamaLibrary.Helpers
 
                 var orderType = GetMobHuntOrderType(j);
 
+                Log.Information(orderType.ToString());
+
                 if (!unlocked)
                 {
                     Log.Information($"Not Unlocked {orderType.Item.CurrentLocaleName}");
@@ -106,6 +111,7 @@ namespace LlamaLibrary.Helpers
                 var listStart = orderType.OrderStart - 1;
                 var dailyNum = Core.Memory.Read<byte>(Offsets.HuntData + 8 + j);
 
+                Log.Information($"List Start {listStart} DailyNum {dailyNum}");
                 Log.Information($"{orderType.Item.CurrentLocaleName}");
                 var max = 5;
                 if (orderType.Type == MobHuntType.Weekly)
@@ -149,8 +155,12 @@ namespace LlamaLibrary.Helpers
                 }
 
                 var listStart = orderType.OrderStart - 1;
-                var v8 = Core.Memory.Read<byte>(Offsets.HuntData + j + 0x1A); //0x16
+#if RB_DT
+                var v8 = Core.Memory.Read<byte>(Offsets.HuntData + j + 0x1E); //0x16
 
+#else
+                var v8 = Core.Memory.Read<byte>(Offsets.HuntData + j + 0x1A); //0x16
+#endif
                 Log.Information($"{orderType.Item.CurrentLocaleName}");
                 var max = 5;
                 if (orderType.Type == MobHuntType.Weekly)
@@ -230,7 +240,12 @@ namespace LlamaLibrary.Helpers
             }
 
             var listStart = orderType.OrderStart - 1;
-            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1A);
+#if RB_DT
+            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1E); //0x1A
+#else
+            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1A); //0x1A
+#endif
+
             if ((listStart + v8 > 620) && !accepted[orderTypeIndex])
             {
                 Log.Verbose($"Have not been picked up {orderTypeIndex} {listStart + v8} {accepted[orderTypeIndex]}");
@@ -299,8 +314,13 @@ namespace LlamaLibrary.Helpers
             var listStart = orderType.OrderStart - 1;
 
             //Log.Information($"{(Offsets.HuntData + orderTypeIndex).ToString("X")}");
+#if RB_DT
+            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1E); //0x8
+
+#else
             var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1A); //0x8
 
+#endif
             var max = 5;
 
             for (byte i = 0; i < max; i++)
@@ -384,14 +404,12 @@ namespace LlamaLibrary.Helpers
 
         public static bool OrderTypeUnlocked(int typeKey)
         {
-            var unlockState = Core.Memory.CallInjected64<byte>(
-                Offsets.CheckMobBoardUnlocked,
-                new object[2]
-                {
-                    Offsets.HuntData,
-                    (uint)typeKey
-                }
-            );
+            var unlockState = Core.Memory.CallInjected64<byte>(Offsets.CheckMobBoardUnlocked,
+                                                               new object[2]
+                                                               {
+                                                                   Offsets.HuntData,
+                                                                   (uint)typeKey
+                                                               });
 
             return unlockState > 0;
         }
@@ -411,11 +429,9 @@ namespace LlamaLibrary.Helpers
 
         public static void DiscardMobHuntType(uint typekey)
         {
-            Core.Memory.CallInjected64<IntPtr>(
-                Offsets.YeetHuntOrderType,
-                Offsets.HuntData,
-                typekey
-            );
+            Core.Memory.CallInjected64<IntPtr>(Offsets.YeetHuntOrderType,
+                                               Offsets.HuntData,
+                                               typekey);
         }
 
         public static List<(uint OrderType, HuntOrderStatus HuntOrderStatus)> GetDailyStatus(int[] dailyOrderTypes)
@@ -436,7 +452,7 @@ namespace LlamaLibrary.Helpers
                     continue;
                 }
 
-                //Log.Debug($"oldDilies = {oldDailies} count server {serverDailies.Count}");
+                Log.Debug($"oldDailies = {oldDailies} count server {serverDailies.Count}");
 
                 if ((accepted && dailies.All(i => i.IsFinished)) || !accepted)
                 {

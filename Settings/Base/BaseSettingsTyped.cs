@@ -1,4 +1,5 @@
-﻿using ff14bot;
+﻿using System.Windows.Threading;
+using ff14bot;
 using LlamaLibrary.Extensions;
 
 namespace LlamaLibrary.Settings.Base;
@@ -13,6 +14,14 @@ public class BaseSettings<T> : BaseSettings
     }
 
     public BaseSettings(string settingsFilePath) : base(settingsFilePath)
+    {
+    }
+
+    public BaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"{typeof(T).Name}.json"), dispatcher)
+    {
+    }
+
+    public BaseSettings(string settingsFilePath, Dispatcher dispatcher) : base(settingsFilePath, dispatcher)
     {
     }
 
@@ -38,6 +47,14 @@ public class CharacterBaseSettings<T> : BaseSettings<T>
     public CharacterBaseSettings(string fileName) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId()}", fileName))
     {
     }
+
+    public CharacterBaseSettings(string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId()}", fileName), dispatcher)
+    {
+    }
+
+    public CharacterBaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId()}", $"{typeof(T).Name}.json"), dispatcher)
+    {
+    }
 }
 
 public class AccountBaseSettings<T> : BaseSettings<T>
@@ -47,7 +64,15 @@ public class AccountBaseSettings<T> : BaseSettings<T>
     {
     }
 
+    public AccountBaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{Core.Me.AccountId()}", $"{typeof(T).Name}.json"), dispatcher)
+    {
+    }
+
     public AccountBaseSettings(string fileName) : base(GetSettingsFilePath($"Account_{Core.Me.AccountId()}", fileName))
+    {
+    }
+
+    public AccountBaseSettings(string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{Core.Me.AccountId()}", fileName), dispatcher)
     {
     }
 
@@ -55,7 +80,15 @@ public class AccountBaseSettings<T> : BaseSettings<T>
     {
     }
 
+    public AccountBaseSettings(int accountId, Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{accountId}", $"{typeof(T).Name}.json"), dispatcher)
+    {
+    }
+
     public AccountBaseSettings(int accountId) : base(GetSettingsFilePath($"Account_{accountId}", $"{typeof(T).Name}.json"))
+    {
+    }
+
+    public AccountBaseSettings(int accountId, string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{accountId}", fileName), dispatcher)
     {
     }
 }
@@ -67,7 +100,15 @@ public class HomeWorldBaseSettings<T> : BaseSettings<T>
     {
     }
 
+    public HomeWorldBaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"HomeWorld_{Core.Me.HomeWorld()}", $"{typeof(T).Name}.json"), dispatcher)
+    {
+    }
+
     public HomeWorldBaseSettings(string fileName) : base(GetSettingsFilePath($"HomeWorld_{Core.Me.HomeWorld()}", fileName))
+    {
+    }
+
+    public HomeWorldBaseSettings(string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"HomeWorld_{Core.Me.HomeWorld()}", fileName), dispatcher)
     {
     }
 }

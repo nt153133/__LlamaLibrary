@@ -53,6 +53,11 @@ namespace LlamaLibrary.ScriptConditions
             return FateManager.ActiveFates.Any(i => i.Id == (uint)fateID);
         }
 
+        public static bool IsAnyFateActive()
+        {
+            return FateManager.ActiveFates.Any();
+        }
+
         public static bool IsLeveActive(int leveId)
         {
             if (DirectorManager.ActiveDirector == null)
@@ -245,8 +250,8 @@ namespace LlamaLibrary.ScriptConditions
 #if RB_DT
     or ClassJobType.Viper
 #endif
-                => true,
-                _                                                                                                                                                                                                                                                                                                                                                                                                                                          => false
+                    => true,
+                _ => false
             };
         }
 
@@ -258,8 +263,8 @@ namespace LlamaLibrary.ScriptConditions
 #if RB_DT
     or ClassJobType.Pictomancer
 #endif
-                => true,
-                _                                                                                                                                                                                                                                                                                 => false
+                    => true,
+                _ => false
             };
         }
 
@@ -365,7 +370,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsInNPCParty()
         {
-            return PartyManager.VisibleMembers.Any(i=> i.GetType() == typeof(TrustPartyMember));
+            return PartyManager.VisibleMembers.Any(i => i.GetType() == typeof(TrustPartyMember));
         }
     }
 }

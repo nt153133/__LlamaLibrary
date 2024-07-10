@@ -14,7 +14,7 @@ public static class PatchManager
     //public static List<DirectAsmPatch> DirectAsmPatches { get; } = new();
     public static bool Initialized { get; set; }
 
-    public static bool Initialize()
+    public static bool Initialize(bool skipInventory = false)
     {
         Log.Information("Initializing PatchManager");
         if (Initialized)
@@ -23,7 +23,15 @@ public static class PatchManager
         }
 
         //Hooks.Add(new InstanceQuestDungeonHook());
-        Hooks.Add(new InventoryUpdatePatch());
+
+        if (!skipInventory)
+        {
+            Hooks.Add(new InventoryUpdatePatch());
+        }
+        else
+        {
+            Log.Information("Skipping Inventory Patch");
+        }
 
         foreach (var hook in Hooks)
         {
