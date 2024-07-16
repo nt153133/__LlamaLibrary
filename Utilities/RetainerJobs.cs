@@ -112,9 +112,9 @@ namespace LlamaLibrary.Utilities
 
                 var order = new Order()
                 {
-                    Amount = (uint)count,
+                    Amount = count,
                     AmountMode = AmountMode.Restock,
-                    Item = (uint)weapon,
+                    Item = weapon,
                     Type = SourceType.Purchase
                 };
 

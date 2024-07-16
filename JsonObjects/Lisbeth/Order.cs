@@ -1,76 +1,123 @@
-﻿using System.Collections.Generic;
+﻿using System.Runtime.Serialization;
 
 namespace LlamaLibrary.JsonObjects.Lisbeth
 {
     public class Order
     {
-        public int Id { get; set; }
+        // The ID is assigned by Lisbeth to reference an order on other stuff. Must be unique within a list of orders.
+        [DataMember(Order = 1)]
+        public int Id;
 
-        public int Group { get; set; }
+        [DataMember(Order = 2)]
+        public int Group;
 
-        public uint Item { get; set; }
+        // The item's RAW ID.
+        [DataMember(Order = 3)]
+        public int Item;
 
-        public uint Amount { get; set; }
+        [DataMember(Order = 4)]
+        public int Amount;
 
-        public bool Enabled { get; set; } = true;
+        [DataMember(Order = 5)]
+        public bool Enabled;
 
-        public SourceType Type { get; set; }
+        [DataMember(Order = 6)]
+        public SourceType Type;
 
-        public bool Collectable { get; set; }
+        [DataMember(Order = 7)]
+        public bool Collectable;
 
-        public bool Hq { get; set; }
+        [DataMember(Order = 8)]
+        public bool Hq;
 
         // Consumable IDs are their TRUE ID (with HQ prefix).
-        public int Food { get; set; }
+        [DataMember(Order = 9)]
+        public int Food;
 
-        public int Medicine { get; set; }
+        // True item ID to account for HQ or NQ.
+        [DataMember(Order = 10)]
+        public int Medicine;
 
-        public int Manual { get; set; }
+        // True item ID to account for HQ or NQ.
+        [DataMember(Order = 11)]
+        public int Manual;
 
-        public string Macro { get; set; }
+        // By macro name.
+        [DataMember(Order = 12)]
+        public string Macro;
 
-        public bool IsPrimary { get; set; }
+        // Should be true for all orders you request. Only suborders are not primary.
+        [DataMember(Order = 13)]
+        public bool IsPrimary;
 
-        public AmountMode AmountMode { get; set; }
+        // Restock or Absolute
+        [DataMember(Order = 14)]
+        public AmountMode AmountMode;
 
-        public bool QuickSynth { get; set; }
+        [DataMember(Order = 15)]
+        public bool QuickSynth;
 
-        public bool IsForTurnIn { get; set; }
+        // Leve order type.
+        [DataMember(Order = 18)]
+        public int LeveId;
 
-        public string FishingRecord { get; set; }
+        // Fishing Expedition.
+        [DataMember(Order = 20)]
+        public int FishingExpeditionSpotId;
 
-        public int LeveId { get; set; }
+        // Fishing Expedition.
+        [DataMember(Order = 21)]
+        public int FishingExpeditionBaitId;
 
-        //public LisScripType ExchangeCostScrip;
+        // Fishing Expedition.
+        [DataMember(Order = 22)]
+        public bool UseSnagging;
 
-        public int FishingExpeditionSpotId { get; set; }
+        // Fishing Expedition.
+        [DataMember(Order = 23)]
+        public bool UseFishEyes;
 
-        public int FishingExpeditionBaitId { get; set; }
+        // Fishing Expedition.
+        [DataMember(Order = 24)]
+        public string FishingExpeditionWeatherPatterns;
 
-        public bool UseSnagging { get; set; }
+        // Fishing Expedition.
+        [DataMember(Order = 25)]
+        public int FishingExpeditionStartHour;
 
-        public bool UseFishEyes { get; set; }
+        // Fishing Expedition.
+        [DataMember(Order = 26)]
+        public int FishingExpeditionEndHour;
 
-        public string FishingExpeditionWeatherPatterns { get; set; }
+        // Fishing Expedition.
+        [DataMember(Order = 27)]
+        public HooksetOption HooksetOption;
 
-        public int FishingExpeditionStartHour { get; set; }
+        // Assigned during execution. Used when pausing and resuming orders.
+        [DataMember(Order = 28)]
+        public int OriginalAmount;
 
-        public int FishingExpeditionEndHour { get; set; }
+        // The order will stop execution once this level is reached while doing it.
+        // If this is > 0 then amount mode is forced into absolute, makes no sense for a restock order.
+        [DataMember(Order = 29)]
+        public int ConditionalLevel;
 
-        //public HooksetOption HooksetOption;
+        // The job whose level gets checked while executing the order.
+        [DataMember(Order = 30)]
+        public Job ConditionalJob;
 
-        public int OriginalAmount { get; set; }
+        [DataMember(Order = 32)]
+        public bool IsSideOrder;
 
-        public int ConditionalLevel { get; set; }
+        // Fishing Expedition.
+        [DataMember(Order = 33)]
+        public FishingMode FishingExpeditionMode;
 
-        //public Job ConditionalJob;
+        // Fishing Expedition.
+        [DataMember(Order = 34)]
+        public bool UseChum;
 
-        public int CraftCollectable { get; set; }
-
-        public bool IsSideOrder { get; set; }
-
-        public bool SkipFinalItem { get; set; }
-
-        public HashSet<uint> TrashExclusionItems { get; set; }
+        [DataMember(Order = 35)]
+        public bool SkipFinalItem;
     }
 }
