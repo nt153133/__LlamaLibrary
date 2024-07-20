@@ -19,7 +19,7 @@ namespace LlamaLibrary.JsonObjects.Lisbeth
         public uint Amount { get; set; }
 
         [DataMember(Order = 5)]
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
 
         [DataMember(Order = 6)]
         public SourceType Type { get; set; }
