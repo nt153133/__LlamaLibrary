@@ -131,6 +131,8 @@ public static class OffsetManager
                 Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new StackTrace().GetFrame(1)?.GetMethod()?.DeclaringType?.Name}");
 
                 PrintLastCommit();
+
+                Logger.Information($"Dalamud Dectected: {GeneralFunctions.DalamudDetected()}");
             }
             finally
             {
