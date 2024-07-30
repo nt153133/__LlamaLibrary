@@ -101,7 +101,6 @@ namespace LlamaLibrary.Helpers
                             _removeHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveHook");
                             _addCraftHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddCraftCycleHook");
                             _addCompletionHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddCompletionHook");
-                            _addCraftHook = (Action<string, Func<Task>>) Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddCraftCycleHook");
                             _removeCraftHook = (Action<string>) Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveCraftCycleHook");
                             _removeCompletionHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveCompletioneHook");
                             _getHookList = (Func<List<string>>)Delegate.CreateDelegate(typeof(Func<List<string>>), apiObject, "GetHookList");
@@ -125,10 +124,10 @@ namespace LlamaLibrary.Helpers
                             // 7.01
 #if !RB_CN
                             // Moving these to the bottom as CN doesn't have 6.51 yet
-                            _addGrindHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddGrindHook");
-                            _addGatherHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddGatherHook");
-                            _removeGatherHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveGathereHook");
-                            _removeGrindHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveGrindHook");
+                            _addGrindHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddGrindCycleHook");
+                            _addGatherHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddGatherCycleHook");
+                            _removeGatherHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveGatherCycleHook");
+                            _removeGrindHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveGrindCycleHook");
 #endif
                         }
                         catch (Exception e)
