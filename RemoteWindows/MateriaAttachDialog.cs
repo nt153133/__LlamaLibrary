@@ -10,7 +10,17 @@ public class MateriaAttachDialog : RemoteWindow<MateriaAttachDialog>
     {
     }
 
-    public int MeldChance => Elements[43].TrimmedData;
+    public int MeldChance
+    {
+        get
+        {
+#if RB_DT
+            return Elements[41].TrimmedData;
+#else
+            return Elements[43].TrimmedData;
+#endif
+        }
+    }
 
     public void ClickAttach()
     {
