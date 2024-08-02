@@ -285,6 +285,7 @@ namespace LlamaLibrary.Helpers
                     {
                         await Coroutine.Sleep(500);
                         await FreeCompanyExchange.Instance.BuyAction(actionId);
+                        await Coroutine.Sleep(500);
                         FreeCompanyExchange.Instance.Close();
                     }
                 }
@@ -413,6 +414,7 @@ namespace LlamaLibrary.Helpers
 
                 if (GrandCompanySupplyList.Instance.IsOpen)
                 {
+                    await Coroutine.Sleep(500);
                     GrandCompanySupplyList.Instance.Close();
                     await Coroutine.Wait(5000, () => SelectString.IsOpen);
                     if (SelectString.IsOpen)
