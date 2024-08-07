@@ -16,10 +16,12 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 41 80 BE ? ? ? ? ? 0F 84 ? ? ? ? BA ? ? ? ? Add 3 Read32")]
             internal static int IsReady;
             [Offset("Search 41 C6 86 ? ? ? ? ? EB ? 41 C6 86 ? ? ? ? ? Add 3 Read32")]
+            [OffsetDawntrail("Search 41 C6 86 ? ? ? ? ? EB ? 41 C6 86 ? ? ? ? ? 4C 8D 9C 24 ? ? ? ? Add 3 Read32")]
             internal static int CursorLocked;
             [Offset("Search 89 9F ? ? ? ? 48 8B 5C 24 ? 89 B7 ? ? ? ? 48 8B 74 24 ? 89 AF ? ? ? ? Add 2 Read32")]
             internal static int DoubleDownRemaining;
             [Offset("Search 48 8B AA ? ? ? ? 48 8B F9 48 85 ED Add 3 Read32")]
+            [OffsetDawntrail("Search 48 8B AA ? ? ? ? 48 8B D9 48 85 ED 0F 84 ? ? ? ? 48 8B 89 ? ? ? ? Add 3 Read32")]
             internal static int LastOffset;
         }
 
