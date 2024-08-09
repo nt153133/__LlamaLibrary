@@ -17,10 +17,18 @@ namespace LlamaLibrary.RemoteWindows
 
         public static readonly Dictionary<string, int> Properties = new()
         {
+#if RB_DT
+            {
+                "TurnInItemId",
+                10
+            },
+#else
             {
                 "TurnInItemId",
                 8
             },
+#endif
+
             {
                 "EsteemLevel",
                 6
