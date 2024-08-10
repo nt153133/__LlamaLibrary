@@ -24,12 +24,12 @@ namespace LlamaLibrary.RemoteWindows
 
     public abstract class RemoteWindow
     {
-#if RB_CN
-        private const int Offset0 = 0x1CA;
-        private const int Offset2 = 0x160;
-#else
+#if RB_DT
         private const int Offset0 = 0x1DA; //0F BF 93 ? ? ? ? 41 B1 ? 4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
         private const int Offset2 = 0x170; //4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
+#else
+        private const int Offset0 = 0x1CA;
+        private const int Offset2 = 0x160;
 #endif
 
         public virtual bool IsOpen => WindowByName != null;
