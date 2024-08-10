@@ -8,6 +8,7 @@ using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Helpers
 {
+#if RB_DT
     public class DirectorHelper
     {
         internal static class Offsets
@@ -76,4 +77,6 @@ namespace LlamaLibrary.Helpers
             [FieldOffset(0x88)] public uint MapRowId;
         }
     }
+
+#endif
 }
