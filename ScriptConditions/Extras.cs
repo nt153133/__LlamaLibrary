@@ -124,9 +124,9 @@ namespace LlamaLibrary.ScriptConditions
             return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint)npcID && i.IsVisible && i.IsTargetable);
         }
 
-        public async static Task<bool> AchievementComplete(int achID)
+        public static bool AchievementComplete(int achID)
         {
-            return await LlamaLibrary.Helpers.Achievements.IsCompleteSingleAchievement(achID);
+            return Achievements.HasAchievement(achID);
         }
 
         public static bool IsDutyEnded()
