@@ -6873,5 +6873,1228 @@
       "Magnitude": 611.0121
     },
     "Map": 960
+  },
+
+  "684": {
+    "BNpcNameKey": 13079,
+    "Location": {
+      "X": 469.96643,
+      "Y": -142.11539,
+      "Z": -387.54916,
+      "MagnitudeSqr": 407483.94,
+      "Magnitude": 638.34467
+    },
+    "Map": 1187
+  },
+  "685": {
+    "BNpcNameKey": 13080,
+    "Location": {
+      "X": -42.657997,
+      "Y": -117.05637,
+      "Z": -350.07568,
+      "MagnitudeSqr": 133305.67,
+      "Magnitude": 365.1105
+    },
+    "Map": 1187
+  },
+  "686": {
+    "BNpcNameKey": 13081,
+    "Location": {
+      "X": 592.9624,
+      "Y": 97.489075,
+      "Z": 642.6792,
+      "MagnitudeSqr": 767756.4,
+      "Magnitude": 876.2171
+    },
+    "Map": 1187
+  },
+  "687": {
+    "BNpcNameKey": 13082,
+    "Location": {
+      "X": 303.30917,
+      "Y": -128.80644,
+      "Z": -300.1645,
+      "MagnitudeSqr": 203307.94,
+      "Magnitude": 450.89682
+    },
+    "Map": 1187
+  },
+  "688": {
+    "BNpcNameKey": 13083,
+    "Location": {
+      "X": 52.54181,
+      "Y": -154.0559,
+      "Z": -451.88422,
+      "MagnitudeSqr": 217980.02,
+      "Magnitude": 466.8833
+    },
+    "Map": 1187
+  },
+  "689": {
+    "BNpcNameKey": 13084,
+    "Location": {
+      "X": -6.7118125,
+      "Y": 49.539284,
+      "Z": 562.20703,
+      "MagnitudeSqr": 344477.3,
+      "Magnitude": 586.9219
+    },
+    "Map": 1187
+  },
+  "690": {
+    "BNpcNameKey": 13085,
+    "Location": {
+      "X": -249.70946,
+      "Y": 54.995335,
+      "Z": 414.0035,
+      "MagnitudeSqr": 219296.08,
+      "Magnitude": 468.2906
+    },
+    "Map": 1187
+  },
+  "691":  {
+    "BNpcNameKey": 13086,
+    "Location": {
+      "X": 547.4914,
+      "Y": -95.09078,
+      "Z": -91.90086,
+      "MagnitudeSqr": 330016.94,
+      "Magnitude": 574.471
+    },
+    "Map": 1187
+  },
+  "692": {
+    "BNpcNameKey": 13087,
+    "Location": {
+      "X": 169.17418,
+      "Y": -192.69223,
+      "Z": -545.01074,
+      "MagnitudeSqr": 367554.84,
+      "Magnitude": 606.263
+    },
+    "Map": 1187
+  },
+  "693": {
+    "BNpcNameKey": 13088,
+    "Location": {
+      "X": 228.30324,
+      "Y": -94.3297,
+      "Z": -252.48642,
+      "MagnitudeSqr": 138249.88,
+      "Magnitude": 371.81967
+    },
+    "Map": 1187
+  },
+  "694": {
+    "BNpcNameKey": 13089,
+    "Location": {
+      "X": 418.98782,
+      "Y": -144.12837,
+      "Z": -311.1342,
+      "MagnitudeSqr": 300812.03,
+      "Magnitude": 548.4633
+    },
+    "Map": 1187
+  },
+  "695": {
+    "BNpcNameKey": 13090,
+    "Location": {
+      "X": 80.353966,
+      "Y": -107.506805,
+      "Z": -252.75912,
+      "MagnitudeSqr": 73136.53,
+      "Magnitude": 270.43765
+    },
+    "Map": 1187
+  },
+  "696": {
+    "BNpcNameKey": 13091,
+    "Location": {
+      "X": -188.91144,
+      "Y": -83.68099,
+      "Z": -240.0142,
+      "MagnitudeSqr": 95175.66,
+      "Magnitude": 308.50552
+    },
+    "Map": 1187
+  },
+  "697": {
+    "BNpcNameKey": 13092,
+    "Location": {
+      "X": -271.6386,
+      "Y": -92.91621,
+      "Z": -419.9837,
+      "MagnitudeSqr": 269275.66,
+      "Magnitude": 518.9178
+    },
+    "Map": 1187
+  },
+  "698": {
+    "BNpcNameKey": 13093,
+    "Location": {
+      "X": -65.23578,
+      "Y": 38.134968,
+      "Z": 135.70895,
+      "MagnitudeSqr": 20564.379,
+      "Magnitude": 143.40286
+    },
+    "Map": 1187
+  },
+  "699": {
+    "BNpcNameKey": 13094,
+    "Location": {
+      "X": -231.67679,
+      "Y": 63.851986,
+      "Z": 114.6402,
+      "MagnitudeSqr": 76083.69,
+      "Magnitude": 275.8327
+    },
+    "Map": 1187
+  },
+  "700": {
+    "BNpcNameKey": 13095,
+    "Location": {
+      "X": 611.3444,
+      "Y": 121.148544,
+      "Z": 283.87924,
+      "MagnitudeSqr": 442644.72,
+      "Magnitude": 665.3155
+    },
+    "Map": 1187
+  },
+  "701": {
+    "BNpcNameKey": 13096,
+    "Location": {
+      "X": 221.3483,
+      "Y": 47.62992,
+      "Z": 19.590273,
+      "MagnitudeSqr": 50095.914,
+      "Magnitude": 223.82117
+    },
+    "Map": 1187
+  },
+  "702": {
+    "BNpcNameKey": 13097,
+    "Location": {
+      "X": -641.74866,
+      "Y": 58.999577,
+      "Z": 169.73439,
+      "MagnitudeSqr": 431900.6,
+      "Magnitude": 657.19147
+    },
+    "Map": 1187
+  },
+  "703": {
+    "BNpcNameKey": 13098,
+    "Location": {
+      "X": 318.26294,
+      "Y": 61.468414,
+      "Z": 391.29224,
+      "MagnitudeSqr": 248945.72,
+      "Magnitude": 498.9446
+    },
+    "Map": 1187
+  },
+  "704": {
+    "BNpcNameKey": 12943,
+    "Location": {
+      "X": -466.21616,
+      "Y": 126.99967,
+      "Z": 101.26522,
+      "MagnitudeSqr": 224126.42,
+      "Magnitude": 473.41992
+    },
+    "Map": 1188
+  },
+  "705": {
+    "BNpcNameKey": 12930,
+    "Location": {
+      "X": -702.84985,
+      "Y": -0.39999998,
+      "Z": -578.31476,
+      "MagnitudeSqr": 796060,
+      "Magnitude": 892.2219
+    },
+    "Map": 1188
+  },
+  "706": {
+    "BNpcNameKey": 12944,
+    "Location": {
+      "X": -108.76916,
+      "Y": 109.200035,
+      "Z": 306.53534,
+      "MagnitudeSqr": 104465.234,
+      "Magnitude": 323.21082
+    },
+    "Map": 1188
+  },
+  "707": {
+    "BNpcNameKey": 12931,
+    "Location": {
+      "X": -128.10095,
+      "Y": 34.84293,
+      "Z": -775.2778,
+      "MagnitudeSqr": 610372.44,
+      "Magnitude": 781.26337
+    },
+    "Map": 1188
+  },
+  "708": {
+    "BNpcNameKey": 12939,
+    "Location": {
+      "X": 475.8642,
+      "Y": 5.5081587,
+      "Z": -429.61594,
+      "MagnitudeSqr": 435716.5,
+      "Magnitude": 660.08826
+    },
+    "Map": 1188
+  },
+  "709": {
+    "BNpcNameKey": 12932,
+    "Location": {
+      "X": -56.1284,
+      "Y": 4.086828,
+      "Z": -360.06943,
+      "MagnitudeSqr": 124239.64,
+      "Magnitude": 352.47644
+    },
+    "Map": 1188
+  },
+  "710": {
+    "BNpcNameKey": 12933,
+    "Location": {
+      "X": -284.50824,
+      "Y": 5.15514,
+      "Z": -345.98282,
+      "MagnitudeSqr": 206501.28,
+      "Magnitude": 454.42413
+    },
+    "Map": 1188
+  },
+  "711": {
+    "BNpcNameKey": 12934,
+    "Location": {
+      "X": -446.7518,
+      "Y": -0.39999998,
+      "Z": -291.93124,
+      "MagnitudeSqr": 291444.56,
+      "Magnitude": 539.8561
+    },
+    "Map": 1188
+  },
+  "712": {
+    "BNpcNameKey": 12935,
+    "Location": {
+      "X": -424.47357,
+      "Y": -0.40000004,
+      "Z": -114.37426,
+      "MagnitudeSqr": 191405.25,
+      "Magnitude": 437.49887
+    },
+    "Map": 1188
+  },
+  "713": {
+    "BNpcNameKey": 12936,
+    "Location": {
+      "X": -29.696426,
+      "Y": 1.2694895,
+      "Z": -371.5104,
+      "MagnitudeSqr": 136344.73,
+      "Magnitude": 369.24887
+    },
+    "Map": 1188
+  },
+  "714": {
+    "BNpcNameKey": 12937,
+    "Location": {
+      "X": 272.03693,
+      "Y": -0.39999998,
+      "Z": -437.1013,
+      "MagnitudeSqr": 290224.62,
+      "Magnitude": 538.725
+    },
+    "Map": 1188
+  },
+  "715": {
+    "BNpcNameKey": 12940,
+    "Location": {
+      "X": 742.48303,
+      "Y": 23.290827,
+      "Z": -639.77856,
+      "MagnitudeSqr": 949247.5,
+      "Magnitude": 974.29333
+    },
+    "Map": 1188
+  },
+  "716": {
+    "BNpcNameKey": 12941,
+    "Location": {
+      "X": 567.16254,
+      "Y": 15.94939,
+      "Z": -370.05112,
+      "MagnitudeSqr": 444833.25,
+      "Magnitude": 666.9582
+    },
+    "Map": 1188
+  },
+  "717": {
+    "BNpcNameKey": 12942,
+    "Location": {
+      "X": 684.9251,
+      "Y": 13.53052,
+      "Z": -192.73305,
+      "MagnitudeSqr": 502213.66,
+      "Magnitude": 708.67035
+    },
+    "Map": 1188
+  },
+  "718": {
+    "BNpcNameKey": 12945,
+    "Location": {
+      "X": 338.41595,
+      "Y": 114.17026,
+      "Z": 171.15474,
+      "MagnitudeSqr": 155758.03,
+      "Magnitude": 394.66193
+    },
+    "Map": 1188
+  },
+  "719": {
+    "BNpcNameKey": 12946,
+    "Location": {
+      "X": -131.89851,
+      "Y": 121.0614,
+      "Z": 38.614265,
+      "MagnitudeSqr": 33610.883,
+      "Magnitude": 183.33272
+    },
+    "Map": 1188
+  },
+  "720": {
+    "BNpcNameKey": 12947,
+    "Location": {
+      "X": -670.90045,
+      "Y": 127.59763,
+      "Z": 636.12305,
+      "MagnitudeSqr": 892398.7,
+      "Magnitude": 944.6686
+    },
+    "Map": 1188
+  },
+  "721": {
+    "BNpcNameKey": 12948,
+    "Location": {
+      "X": 607.1329,
+      "Y": 110.77925,
+      "Z": 299.72406,
+      "MagnitudeSqr": 487031.72,
+      "Magnitude": 697.8766
+    },
+    "Map": 1188
+  },
+  "722": {
+    "BNpcNameKey": 12949,
+    "Location": {
+      "X": 775.968,
+      "Y": 124.4818,
+      "Z": 666.60675,
+      "MagnitudeSqr": 1087602.6,
+      "Magnitude": 1042.8818
+    },
+    "Map": 1188
+  },
+  "723": {
+    "BNpcNameKey": 12950,
+    "Location": {
+      "X": -190.52124,
+      "Y": 109.20004,
+      "Z": 563.38055,
+      "MagnitudeSqr": 394684.7,
+      "Magnitude": 628.2394
+    },
+    "Map": 1188
+  },
+  "724": {
+    "BNpcNameKey": 12951,
+    "Location": {
+      "X": -643.6169,
+      "Y": 130.08553,
+      "Z": 252.58662,
+      "MagnitudeSqr": 492430.28,
+      "Magnitude": 701.73376
+    },
+    "Map": 1188
+  },
+  "725": {
+    "BNpcNameKey": 12952,
+    "Location": {
+      "X": -217.80637,
+      "Y": 110.07658,
+      "Z": 194.85458,
+      "MagnitudeSqr": 89671.04,
+      "Magnitude": 299.45123
+    },
+    "Map": 1188
+  },
+  "726": {
+    "BNpcNameKey": 12938,
+    "Location": {
+      "X": -414.3083,
+      "Y": -0.39999998,
+      "Z": -564.8035,
+      "MagnitudeSqr": 474316.38,
+      "Magnitude": 688.7063
+    },
+    "Map": 1188
+  },
+  "727": {
+    "BNpcNameKey": 12953,
+    "Location": {
+      "X": 29.450567,
+      "Y": 6.1168737,
+      "Z": -450.81644,
+      "MagnitudeSqr": 197287.06,
+      "Magnitude": 444.17007
+    },
+    "Map": 1189
+  },
+  "728": {
+    "BNpcNameKey": 12964,
+    "Location": {
+      "X": -176.53899,
+      "Y": -156.5631,
+      "Z": 189.94986,
+      "MagnitudeSqr": 86525.97,
+      "Magnitude": 294.15295
+    },
+    "Map": 1189
+  },
+  "729": {
+    "BNpcNameKey": 12954,
+    "Location": {
+      "X": -183.17001,
+      "Y": 12.500085,
+      "Z": -458.47562,
+      "MagnitudeSqr": 233869.1,
+      "Magnitude": 483.60013
+    },
+    "Map": 1189
+  },
+  "730": {
+    "BNpcNameKey": 12965,
+    "Location": {
+      "X": 394.28796,
+      "Y": -155.02701,
+      "Z": 490.36633,
+      "MagnitudeSqr": 445469.94,
+      "Magnitude": 667.43536
+    },
+    "Map": 1189
+  },
+  "731": {
+    "BNpcNameKey": 12966,
+    "Location": {
+      "X": -553.57965,
+      "Y": -159.83246,
+      "Z": 255.73659,
+      "MagnitudeSqr": 422550.1,
+      "Magnitude": 650.0385
+    },
+    "Map": 1189
+  },
+  "732": {
+    "BNpcNameKey": 12956,
+    "Location": {
+      "X": -409.74255,
+      "Y": 32.96106,
+      "Z": -588.0437,
+      "MagnitudeSqr": 504448.62,
+      "Magnitude": 710.2455
+    },
+    "Map": 1189
+  },
+  "733": {
+    "BNpcNameKey": 12957,
+    "Location": {
+      "X": -130.3115,
+      "Y": 15.90365,
+      "Z": -796.74805,
+      "MagnitudeSqr": 653811.8,
+      "Magnitude": 808.5863
+    },
+    "Map": 1189
+  },
+  "734": {
+    "BNpcNameKey": 12958,
+    "Location": {
+      "X": 84.65863,
+      "Y": 8.205902,
+      "Z": -737.4185,
+      "MagnitudeSqr": 606740.56,
+      "Magnitude": 778.93555
+    },
+    "Map": 1189
+  },
+  "735": {
+    "BNpcNameKey": 12959,
+    "Location": {
+      "X": 510.32278,
+      "Y": 23.581303,
+      "Z": -417.16312,
+      "MagnitudeSqr": 450429.84,
+      "Magnitude": 671.1407
+    },
+    "Map": 1189
+  },
+  "736": {
+    "BNpcNameKey": 12960,
+    "Location": {
+      "X": 638.3464,
+      "Y": 15.39336,
+      "Z": -333.4232,
+      "MagnitudeSqr": 486130.22,
+      "Magnitude": 697.2304
+    },
+    "Map": 1189
+  },
+  "737": {
+    "BNpcNameKey": 12961,
+    "Location": {
+      "X": 657.62494,
+      "Y": 19.756723,
+      "Z": -98.07646,
+      "MagnitudeSqr": 426733.56,
+      "Magnitude": 653.2485
+    },
+    "Map": 1189
+  },
+  "738": {
+    "BNpcNameKey": 12962,
+    "Location": {
+      "X": 531.6432,
+      "Y": 10.3288355,
+      "Z": 94.56345,
+      "MagnitudeSqr": 284558.6,
+      "Magnitude": 533.4403
+    },
+    "Map": 1189
+  },
+  "739": {
+    "BNpcNameKey": 12967,
+    "Location": {
+      "X": 341.9058,
+      "Y": -159.87155,
+      "Z": 722.6182,
+      "MagnitudeSqr": 666306.56,
+      "Magnitude": 816.27606
+    },
+    "Map": 1189
+  },
+  "740": {
+    "BNpcNameKey": 12969,
+    "Location": {
+      "X": -178.84543,
+      "Y": -170.81636,
+      "Z": 445.1336,
+      "MagnitudeSqr": 290713.8,
+      "Magnitude": 539.17883
+    },
+    "Map": 1189
+  },
+  "741": {
+    "BNpcNameKey": 12970,
+    "Location": {
+      "X": 157.66232,
+      "Y": -160.12042,
+      "Z": -21.665495,
+      "MagnitudeSqr": 43111.266,
+      "Magnitude": 207.63252
+    },
+    "Map": 1189
+  },
+  "742": {
+    "BNpcNameKey": 12971,
+    "Location": {
+      "X": -481.07294,
+      "Y": -157.34346,
+      "Z": 617.3047,
+      "MagnitudeSqr": 675049.9,
+      "Magnitude": 821.6142
+    },
+    "Map": 1189
+  },
+  "743": {
+    "BNpcNameKey": 12955,
+    "Location": {
+      "X": -457.5371,
+      "Y": 20.094637,
+      "Z": 85.13429,
+      "MagnitudeSqr": 223594.86,
+      "Magnitude": 472.8582
+    },
+    "Map": 1189
+  },
+  "744": {
+    "BNpcNameKey": 12972,
+    "Location": {
+      "X": 597.3603,
+      "Y": 15.639658,
+      "Z": 448.03824,
+      "MagnitudeSqr": 568559.1,
+      "Magnitude": 754.0286
+    },
+    "Map": 1190
+  },
+  "745":{
+    "BNpcNameKey": 12989,
+    "Location": {
+      "X": 243.4429,
+      "Y": -10.631257,
+      "Z": -371.49435,
+      "MagnitudeSqr": 187127.69,
+      "Magnitude": 432.58258
+    },
+    "Map": 1190
+  },
+  "746": {
+    "BNpcNameKey": 12975,
+    "Location": {
+      "X": -436.13107,
+      "Y": 30.898151,
+      "Z": -251.92653,
+      "MagnitudeSqr": 242354.56,
+      "Magnitude": 492.2952
+    },
+    "Map": 1190
+  },
+  "747": {
+    "BNpcNameKey": 12990,
+    "Location": {
+      "X": -323.4225,
+      "Y": 19.369387,
+      "Z": -547.4091,
+      "MagnitudeSqr": 371652.56,
+      "Magnitude": 609.6331
+    },
+    "Map": 1190
+  },
+  "748": {
+    "BNpcNameKey": 12991,
+    "Location": {
+      "X": 8.779131,
+      "Y": 7.1746893,
+      "Z": -556.1365,
+      "MagnitudeSqr": 351814.25,
+      "Magnitude": 593.13934
+    },
+    "Map": 1190
+  },
+  "749": {
+    "BNpcNameKey": 12992,
+    "Location": {
+      "X": 383.04233,
+      "Y": -9.602828,
+      "Z": 64.16669,
+      "MagnitudeSqr": 148310.61,
+      "Magnitude": 385.11118
+    },
+    "Map": 1190
+  },
+  "750": {
+    "BNpcNameKey": 12976,
+    "Location": {
+      "X": 140.58986,
+      "Y": -8.20869,
+      "Z": 330.00827,
+      "MagnitudeSqr": 140767.66,
+      "Magnitude": 375.19016
+    },
+    "Map": 1190
+  },
+  "751": {
+    "BNpcNameKey": 12993,
+    "Location": {
+      "X": 707.29175,
+      "Y": -14.600283,
+      "Z": -228.19107,
+      "MagnitudeSqr": 593094.94,
+      "Magnitude": 770.1266
+    },
+    "Map": 1190
+  },
+  "752": {
+    "BNpcNameKey": 12994,
+    "Location": {
+      "X": 619.13245,
+      "Y": -11.339903,
+      "Z": -750.9778,
+      "MagnitudeSqr": 947100.9,
+      "Magnitude": 973.1911
+    },
+    "Map": 1190
+  },
+  "753": {
+    "BNpcNameKey": 12995,
+    "Location": {
+      "X": 143.58224,
+      "Y": -6.0601835,
+      "Z": -320.7149,
+      "MagnitudeSqr": 115931.97,
+      "Magnitude": 340.48785
+    },
+    "Map": 1190
+  },
+  "754": {
+    "BNpcNameKey": 12996,
+    "Location": {
+      "X": 105.90718,
+      "Y": -0.16326755,
+      "Z": -39.094112,
+      "MagnitudeSqr": 8926.107,
+      "Magnitude": 94.47808
+    },
+    "Map": 1190
+  },
+  "755": {
+    "BNpcNameKey": 12977,
+    "Location": {
+      "X": -68.5502,
+      "Y": 6.519532,
+      "Z": -40.75099,
+      "MagnitudeSqr": 3489.4458,
+      "Magnitude": 59.07153
+    },
+    "Map": 1190
+  },
+  "756": {
+    "BNpcNameKey": 12978,
+    "Location": {
+      "X": -288.86627,
+      "Y": 4.3162785,
+      "Z": 55.005917,
+      "MagnitudeSqr": 99085.266,
+      "Magnitude": 314.7781
+    },
+    "Map": 1190
+  },
+  "757": {
+    "BNpcNameKey": 12997,
+    "Location": {
+      "X": -599.2756,
+      "Y": 34.89169,
+      "Z": -413.13388,
+      "MagnitudeSqr": 515387.7,
+      "Magnitude": 717.9051
+    },
+    "Map": 1190
+  },
+  "758": {
+    "BNpcNameKey": 12986,
+    "Location": {
+      "X": -425.96228,
+      "Y": -9.183392,
+      "Z": 398.59937,
+      "MagnitudeSqr": 363676.2,
+      "Magnitude": 603.0557
+    },
+    "Map": 1190
+  },
+  "759": {
+    "BNpcNameKey": 12987,
+    "Location": {
+      "X": -297.86777,
+      "Y": -3.0909166,
+      "Z": 405.82254,
+      "MagnitudeSqr": 279444.2,
+      "Magnitude": 528.6248
+    },
+    "Map": 1190
+  },
+  "760": {
+    "BNpcNameKey": 12988,
+    "Location": {
+      "X": -145.71613,
+      "Y": -19.684803,
+      "Z": 607.61475,
+      "MagnitudeSqr": 429668.8,
+      "Magnitude": 655.4913
+    },
+    "Map": 1190
+  },
+  "761": {
+    "BNpcNameKey": 13101,
+    "Location": {
+      "X": 573.4756,
+      "Y": 109.27065,
+      "Z": 416.79315,
+      "MagnitudeSqr": 577611.4,
+      "Magnitude": 760.0075
+    },
+    "Map": 1191
+  },
+  "762": {
+    "BNpcNameKey": 13102,
+    "Location": {
+      "X": 760.4971,
+      "Y": 131.98961,
+      "Z": -268.4069,
+      "MagnitudeSqr": 702780.4,
+      "Magnitude": 838.31995
+    },
+    "Map": 1191
+  },
+  "763": {
+    "BNpcNameKey": 13103,
+    "Location": {
+      "X": 107.33879,
+      "Y": 47.908363,
+      "Z": -248.15247,
+      "MagnitudeSqr": 71872.76,
+      "Magnitude": 268.09094
+    },
+    "Map": 1191
+  },
+  "764": {
+    "BNpcNameKey": 13104,
+    "Location": {
+      "X": -339.05917,
+      "Y": 39.29915,
+      "Z": -283.13126,
+      "MagnitudeSqr": 202313.53,
+      "Magnitude": 449.79276
+    },
+    "Map": 1191
+  },
+  "765": {
+    "BNpcNameKey": 13105,
+    "Location": {
+      "X": -10.885015,
+      "Y": 67.9257,
+      "Z": 249.48134,
+      "MagnitudeSqr": 64898.04,
+      "Magnitude": 254.75093
+    },
+    "Map": 1191
+  },
+  "766": {
+    "BNpcNameKey": 13106,
+    "Location": {
+      "X": -458.59152,
+      "Y": 7.4912615,
+      "Z": 281.7279,
+      "MagnitudeSqr": 273117.4,
+      "Magnitude": 522.6064
+    },
+    "Map": 1191
+  },
+  "767": {
+    "BNpcNameKey": 13107,
+    "Location": {
+      "X": -239.78212,
+      "Y": -1.7263154,
+      "Z": 624.64246,
+      "MagnitudeSqr": 464603.4,
+      "Magnitude": 681.6182
+    },
+    "Map": 1191
+  },
+  "768": {
+    "BNpcNameKey": 13408,
+    "Location": {
+      "X": -458.59152,
+      "Y": 7.4912615,
+      "Z": 281.7279,
+      "MagnitudeSqr": 270689.62,
+      "Magnitude": 520.2784
+    },
+    "Map": 1191
+  },
+  "769": {
+    "BNpcNameKey": 13109,
+    "Location": {
+      "X": 583.6686,
+      "Y": 145.81699,
+      "Z": 662.1728,
+      "MagnitudeSqr": 762654.4,
+      "Magnitude": 873.30084
+    },
+    "Map": 1191
+  },
+  "770": {
+    "BNpcNameKey": 13110,
+    "Location": {
+      "X": -254.69878,
+      "Y": 3.4549882,
+      "Z": 599.09564,
+      "MagnitudeSqr": 416512.3,
+      "Magnitude": 645.3776
+    },
+    "Map": 1191
+  },
+  "771": {
+    "BNpcNameKey": 13111,
+    "Location": {
+      "X": 472.6108,
+      "Y": 78.71927,
+      "Z": -266.45816,
+      "MagnitudeSqr": 270603.3,
+      "Magnitude": 520.19543
+    },
+    "Map": 1191
+  },
+  "772": {
+    "BNpcNameKey": 13112,
+    "Location": {
+      "X": 223.21384,
+      "Y": 94.47782,
+      "Z": -252.46727,
+      "MagnitudeSqr": 138327.42,
+      "Magnitude": 371.92395
+    },
+    "Map": 1191
+  },
+  "773": {
+    "BNpcNameKey": 13113,
+    "Location": {
+      "X": 670.3421,
+      "Y": 131.99356,
+      "Z": -356.7412,
+      "MagnitudeSqr": 627334.8,
+      "Magnitude": 792.0447
+    },
+    "Map": 1191
+  },
+  "774": {
+    "BNpcNameKey": 13114,
+    "Location": {
+      "X": -434.05228,
+      "Y": -14.000011,
+      "Z": 692.8348,
+      "MagnitudeSqr": 650306.4,
+      "Magnitude": 806.4158
+    },
+    "Map": 1191
+  },
+  "775": {
+    "BNpcNameKey": 13115,
+    "Location": {
+      "X": -609.7792,
+      "Y": 22.64685,
+      "Z": -45.557472,
+      "MagnitudeSqr": 401551.53,
+      "Magnitude": 633.6809
+    },
+    "Map": 1191
+  },
+  "776": {
+    "BNpcNameKey": 13116,
+    "Location": {
+      "X": 404.77383,
+      "Y": 131.14479,
+      "Z": 148.49382,
+      "MagnitudeSqr": 190212.98,
+      "Magnitude": 436.13412
+    },
+    "Map": 1191
+  },
+  "777": {
+    "BNpcNameKey": 13117,
+    "Location": {
+      "X": 648.1198,
+      "Y": 143.86879,
+      "Z": 162.29355,
+      "MagnitudeSqr": 415919.47,
+      "Magnitude": 644.9182
+    },
+    "Map": 1191
+  },
+  "778": {
+    "BNpcNameKey": 13118,
+    "Location": {
+      "X": -300.51877,
+      "Y": 30.999998,
+      "Z": -58.533504,
+      "MagnitudeSqr": 86485.97,
+      "Magnitude": 294.08496
+    },
+    "Map": 1192
+  },
+  "779": {
+    "BNpcNameKey": 13119,
+    "Location": {
+      "X": 351.63776,
+      "Y": -0.9336488,
+      "Z": 492.83176,
+      "MagnitudeSqr": 365243.94,
+      "Magnitude": 604.3541
+    },
+    "Map": 1192
+  },
+  "780": {
+    "BNpcNameKey": 13120,
+    "Location": {
+      "X": 419.5788,
+      "Y": 10.618773,
+      "Z": 301.84027,
+      "MagnitudeSqr": 275740.25,
+      "Magnitude": 525.10974
+    },
+    "Map": 1192
+  },
+  "781": {
+    "BNpcNameKey": 13121,
+    "Location": {
+      "X": 500.96906,
+      "Y": -0.02465725,
+      "Z": 686.9522,
+      "MagnitudeSqr": 714297.7,
+      "Magnitude": 845.1613
+    },
+    "Map": 1192
+  },
+  "782": {
+    "BNpcNameKey": 13122,
+    "Location": {
+      "X": -163.79128,
+      "Y": -0.099999964,
+      "Z": 454.82547,
+      "MagnitudeSqr": 236491.69,
+      "Magnitude": 486.3041
+    },
+    "Map": 1192
+  },
+  "783": {
+    "BNpcNameKey": 13124,
+    "Location": {
+      "X": -584.53625,
+      "Y": -0.3399999,
+      "Z": 685.0753,
+      "MagnitudeSqr": 839808.56,
+      "Magnitude": 916.4107
+    },
+    "Map": 1192
+  },
+  "784": {
+    "BNpcNameKey": 13125,
+    "Location": {
+      "X": -423.63983,
+      "Y": -0.049999952,
+      "Z": 658.6166,
+      "MagnitudeSqr": 590331.7,
+      "Magnitude": 768.33044
+    },
+    "Map": 1192
+  },
+  "785": {
+    "BNpcNameKey": 13127,
+    "Location": {
+      "X": 763.0884,
+      "Y": 40.461006,
+      "Z": 393.20728,
+      "MagnitudeSqr": 734723.06,
+      "Magnitude": 857.15985
+    },
+    "Map": 1192
+  },
+  "786": {
+    "BNpcNameKey": 13129,
+    "Location": {
+      "X": 286.40677,
+      "Y": 43.945732,
+      "Z": -708.6177,
+      "MagnitudeSqr": 557250.25,
+      "Magnitude": 746.49194
+    },
+    "Map": 1192
+  },
+  "787": {
+    "BNpcNameKey": 13130,
+    "Location": {
+      "X": 319.37354,
+      "Y": 26.866932,
+      "Z": -201.27847,
+      "MagnitudeSqr": 152156.3,
+      "Magnitude": 390.07217
+    },
+    "Map": 1192
+  },
+  "788": {
+    "BNpcNameKey": 13131,
+    "Location": {
+      "X": 693.4075,
+      "Y": 26.026403,
+      "Z": -31.072422,
+      "MagnitudeSqr": 460868.66,
+      "Magnitude": 678.8731
+    },
+    "Map": 1192
+  },
+  "789": {
+    "BNpcNameKey": 13132,
+    "Location": {
+      "X": 485.64453,
+      "Y": 105.91082,
+      "Z": -412.57782,
+      "MagnitudeSqr": 444373.12,
+      "Magnitude": 666.61316
+    },
+    "Map": 1192
+  },
+  "790": {
+    "BNpcNameKey": 13133,
+    "Location": {
+      "X": 430.45593,
+      "Y": 25.180704,
+      "Z": -242.36436,
+      "MagnitudeSqr": 250889.02,
+      "Magnitude": 500.8882
+    },
+    "Map": 1192
+  },
+  "791": {
+    "BNpcNameKey": 13136,
+    "Location": {
+      "X": -115.06573,
+      "Y": 38,
+      "Z": -3.8031008,
+      "MagnitudeSqr": 8220.917,
+      "Magnitude": 90.66927
+    },
+    "Map": 1192
+  },
+  "792": {
+    "BNpcNameKey": 13137,
+    "Location": {
+      "X": -418.49542,
+      "Y": 38,
+      "Z": -33.689766,
+      "MagnitudeSqr": 198046.52,
+      "Magnitude": 445.02417
+    },
+    "Map": 1192
+  },
+  "793": {
+    "BNpcNameKey": 13138,
+    "Location": {
+      "X": -436.649,
+      "Y": -5.1945124,
+      "Z": -515.0771,
+      "MagnitudeSqr": 432141.88,
+      "Magnitude": 657.375
+    },
+    "Map": 1192
+  },
+  "794": {
+    "BNpcNameKey": 13139,
+    "Location": {
+      "X": -357.89218,
+      "Y": 38.1147,
+      "Z": -346.45248,
+      "MagnitudeSqr": 236261.16,
+      "Magnitude": 486.06702
+    },
+    "Map": 1192
   }
 }
+

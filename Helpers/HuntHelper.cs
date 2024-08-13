@@ -39,7 +39,9 @@ namespace LlamaLibrary.Helpers
             new HuntBoardNpc(2008655, 628, new Vector3(-31.540405f, 0.076233f, -43.86969f), new uint[] { 6, 7, 8, 9 }), //Clan Hunt Board  Kugane(Kugane)
             new HuntBoardNpc(2008654, 635, new Vector3(95.078857f, 0.62561f, 22.598572f), new uint[] { 6, 7, 8, 9 }), //Clan Hunt Board  Rhalgr's Reach(Gyr Abania)
             new HuntBoardNpc(2010340, 819, new Vector3(-83.604248f, -0.01532f, -90.745422f), new uint[] { 10, 11, 12, 13 }), //Nuts Board  The Crystarium(The Crystarium) };
-            new HuntBoardNpc(2012236, 962, new Vector3(29.37905f, -15.64699f, 100.2111f), new uint[] { 14, 15, 16, 17 }) //Guildship Hunt Board  Old Sharlayan  };
+            new HuntBoardNpc(2012236, 962, new Vector3(29.37905f, -15.64699f, 100.2111f), new uint[] { 14, 15, 16, 17 }), //Guildship Hunt Board  Old Sharlayan  };
+            new HuntBoardNpc(2014155, 1185, new Vector3(25.65039f, -14.023071f, 135.39331f), new uint[] { 18, 19, 20, 21 }) //Hunt Board Tuliyollal };
+
         };
 
         public static readonly int[] ARRHunts = new[] { 0 };
@@ -47,6 +49,7 @@ namespace LlamaLibrary.Helpers
         public static readonly int[] VerteranClanHunts = new[] { 6, 7, 8 };
         public static readonly int[] NutClanHunts = new[] { 10, 11, 12 };
         public static readonly int[] EwHunts = new[] { 14, 15, 16 };
+        public static readonly int[] DtHunts = new[] { 18, 19, 20 };
 
         private static class Offsets
         {
