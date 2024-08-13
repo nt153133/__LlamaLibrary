@@ -8,6 +8,7 @@
         ISHGARD = 4,
         KUGANE = 7,
         CRYSTARIUM = 10,
-        OldSharlayan = 12
+        OldSharlayan = 12,
+        Tuliyollal = 14,
     }
 }
