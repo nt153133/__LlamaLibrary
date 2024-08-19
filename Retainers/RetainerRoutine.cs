@@ -338,7 +338,15 @@ namespace LlamaLibrary.Retainers
 
             RetainerTasks.CloseTasks();
 
-            await Coroutine.Wait(13000, () => DialogOpen || SelectYesno.IsOpen);
+            if (!await Coroutine.Wait(5000, () => !RetainerTasks.IsOpen ))
+            {
+                Log.Error("Could not close retainer task window");
+            }
+
+            if (!await Coroutine.Wait(13000, () => DialogOpen || SelectYesno.IsOpen))
+            {
+                Log.Error("Could not find dialog or select yesno");
+            }
 
             if (SelectYesno.IsOpen)
             {
