@@ -43,7 +43,7 @@ namespace LlamaLibrary.Extensions
             internal static int MinionPtr;
 
             [Offset("Search 0F B7 86 ? ? ? ? 66 89 85 ? ? ? ? E8 ? ? ? ? 48 8B 85 ? ? ? ? Add 3 Read32")]
-            [OffsetDawntrail("Search 66 89 86 ? ? ? ? 48 8B 0D ? ? ? ? 48 8B 01 Add 3 Read32")]
+            [OffsetDawntrail("Search 41 0F B7 86 ? ? ? ? 66 89 86 ? ? ? ? 48 8B 0D ? ? ? ? Add 4 Read32")]
             internal static int HomeWorld;
 
             [Offset("Search 66 83 B9 ? ? ? ? ? 48 8B DA Add 3 Read32")]

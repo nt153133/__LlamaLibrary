@@ -33,6 +33,7 @@ namespace LlamaLibrary.Extensions
             public static IntPtr ItemDiscardFunc;
 
             [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 8B FA 33 DB")]
+            [OffsetDawntrail("Search 48 89 5C 24 ? 48 89 6C 24 ? 56 41 56 41 57 48 83 EC ? 4C 8B 89 ? ? ? ? 4C 8D 3D ? ? ? ?")]
             public static IntPtr ItemLowerQualityFunc;
 
             [Offset("Search 40 55 53 56 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 8D 82 ? ? ? ?")]

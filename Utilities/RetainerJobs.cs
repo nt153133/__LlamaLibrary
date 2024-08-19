@@ -118,7 +118,7 @@ namespace LlamaLibrary.Utilities
                     Type = SourceType.Purchase
                 };
 
-                if (!await Lisbeth.ExecuteOrders((new List<Order>() { order }).GetOrderJson()))
+                if (!await Lisbeth.ExecuteOrders(new List<Order>() { order }.GetOrderJson()))
                 {
                     Log.Error("Could not purchase pickaxes");
                     TreeRoot.Stop("Could not purchase pickaxes");

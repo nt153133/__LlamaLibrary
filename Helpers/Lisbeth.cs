@@ -35,11 +35,15 @@ namespace LlamaLibrary.Helpers
         private static Func<Task> _selfRepairWithMenderFallback;
         private static Func<Task> _stopGently;
         private static Action<string, Func<Task>> _addHook;
+        private static Action<string, Func<Task>> _addCraftHook;
         private static Action<string, Func<Task>> _addCompletionHook;
-        private static Action<string, Func<Task>> _addCraftCycleHook;
+        private static Action<string, Func<Task>> _addGrindHook;
+        private static Action<string, Func<Task>> _addGatherHook;
         private static Action<string> _removeHook;
-        private static Action<string> _removeCraftCycleHook;
+        private static Action<string> _removeCraftHook;
         private static Action<string> _removeCompletionHook;
+        private static Action<string> _removeGrindHook;
+        private static Action<string> _removeGatherHook;
         private static Func<List<string>> _getHookList;
         private static Func<Task<bool>> _exitCrafting;
         private static Func<HashSet<uint>> _getAllOrderItems;
@@ -95,10 +99,10 @@ namespace LlamaLibrary.Helpers
                             //_stopGentlyAndWait = (Func<Task>) Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "StopGentlyAndWait");
                             _addHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddHook");
                             _removeHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveHook");
-                            _addCraftCycleHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddCraftCycleHook");
+                            _addCraftHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddCraftCycleHook");
                             _addCompletionHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddCompletionHook");
+                            _removeCraftHook = (Action<string>) Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveCraftCycleHook");
                             _removeCompletionHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveCompletioneHook");
-                            _removeCraftCycleHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveCraftCycleHook");
                             _getHookList = (Func<List<string>>)Delegate.CreateDelegate(typeof(Func<List<string>>), apiObject, "GetHookList");
                             _exitCrafting = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), apiObject, "ExitCrafting");
                             _equipOptimalGear = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "EquipOptimalGear");
@@ -107,17 +111,24 @@ namespace LlamaLibrary.Helpers
                             _selfRepairWithMenderFallback = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "SelfRepairWithMenderFallback");
                             _travelToWithoutSubzone = (Func<uint, Vector3, Func<bool>, bool, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, Vector3, Func<bool>, bool, Task<bool>>), apiObject, "TravelToWithoutSubzone");
                             _travelTo = (Func<uint, uint, Vector3, Func<bool>, bool, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, uint, Vector3, Func<bool>, bool, Task<bool>>), apiObject, "TravelTo");
+
                             //_travelToWithArea = (Func<string, Vector3, Func<bool>, bool, Task<bool>>)Delegate.CreateDelegate(typeof(Func<string, Vector3, Func<bool>, bool, Task<bool>>), apiObject, "TravelToWithArea");
                             _openWindow = (System.Action)Delegate.CreateDelegate(typeof(System.Action), apiObject, "OpenWindow");
                             _getOrderExpansionAsJson = (Func<string, Task<string>>)Delegate.CreateDelegate(typeof(Func<string, Task<string>>), apiObject, "GetOrderExpansionAsJson");
                             _isProductKeyValid = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), apiObject, "IsProductKeyValid");
 
                             // 6.51f3
-                            // Moving these to the bottom as CN doesn't have 6.51 yet
-                            #if !RB_CN
                             _getAllOrderItems = (Func<HashSet<uint>>)Delegate.CreateDelegate(typeof(Func<HashSet<uint>>), apiObject, "GetAllOrderItems");
                             _setTrashExclusionItems = (Action<HashSet<uint>>)Delegate.CreateDelegate(typeof(Action<HashSet<uint>>), apiObject, "SetTrashExclusions");
-                            #endif
+
+                            // 7.01
+#if !RB_CN
+                            // Moving these to the bottom as CN doesn't have 6.51 yet
+                            _addGrindHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddGrindCycleHook");
+                            _addGatherHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddGatherCycleHook");
+                            _removeGatherHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveGatherCycleHook");
+                            _removeGrindHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveGrindCycleHook");
+#endif
                         }
                         catch (Exception e)
                         {
@@ -281,14 +292,26 @@ namespace LlamaLibrary.Helpers
             _removeCompletionHook?.Invoke(name);
         }
 
-        public static void AddCraftCycleHook(string name, Func<Task> function)
+        public static void AddCraftHook(string name, Func<Task> function)
         {
-            _addCraftCycleHook?.Invoke(name, function);
+            _addCraftHook?.Invoke(name, function);
         }
 
+        [Obsolete("Use AddCraftHook instead")]
+        public static void AddCraftCycleHook(string name, Func<Task> function)
+        {
+            _addCraftHook?.Invoke(name, function);
+        }
+
+        public static void RemoveCraftHook(string name)
+        {
+            _removeCraftHook?.Invoke(name);
+        }
+
+        [Obsolete("Use RemoveCraftHook instead")]
         public static void RemoveCraftCycleHook(string name)
         {
-            _removeCraftCycleHook?.Invoke(name);
+            _removeCraftHook?.Invoke(name);
         }
 
         public static List<string> GetHookList()
@@ -341,6 +364,26 @@ namespace LlamaLibrary.Helpers
             if (items == null) { return; }
 
             _setTrashExclusionItems?.Invoke(items);
+        }
+
+        public static void AddGrindHook(string name, Func<Task> function)
+        {
+            _addGrindHook?.Invoke(name, function);
+        }
+
+        public static void AddGatherHook(string name, Func<Task> function)
+        {
+            _addGatherHook?.Invoke(name, function);
+        }
+
+        public static void RemoveGrindHook(string name)
+        {
+            _removeGrindHook?.Invoke(name);
+        }
+
+        public static void RemoveGatherHook(string name)
+        {
+            _removeGatherHook?.Invoke(name);
         }
     }
 }

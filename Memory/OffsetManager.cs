@@ -59,11 +59,33 @@ public static class OffsetManager
 
     public static ConcurrentDictionary<string, long> OffsetCache = new();
 
-    private const long _version = 14;
+    private const long _version = 22;
 
     private const bool _debug = false;
 
-    private static string OffsetFile => Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{Core.CurrentGameVer}.json");
+    private static int GameVersion
+    {
+        get
+        {
+            if (GameVersion1 != 0)
+            {
+                return GameVersion1;
+            }
+
+            try
+            {
+                GameVersion1 = Core.CurrentGameVer;
+            }
+            catch
+            {
+                GameVersion1 = 0;
+            }
+
+            return GameVersion1;
+        }
+    }
+
+    private static string OffsetFile { get; } = Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{GameVersion}.json");
 
     public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown, LogLevel.Information);
 
@@ -74,6 +96,7 @@ public static class OffsetManager
 #endif
 
     private static bool _isNewGameBuild;
+    private static int GameVersion1 = 0;
 
     [Obsolete]
     public static void Init()
@@ -131,6 +154,8 @@ public static class OffsetManager
                 Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new StackTrace().GetFrame(1)?.GetMethod()?.DeclaringType?.Name}");
 
                 PrintLastCommit();
+
+                Logger.Information($"Dalamud Dectected: {GeneralFunctions.DalamudDetected()}");
             }
             finally
             {
@@ -176,7 +201,7 @@ public static class OffsetManager
     {
         var llTypes = GetTypes();
 
-        if (File.Exists(OffsetFile))
+        if (File.Exists(OffsetFile) && GameVersion != 0)
         {
             OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(OffsetFile)) ?? new ConcurrentDictionary<string, long>();
             if (!OffsetCache.ContainsKey("Version") || OffsetCache["Version"] != _version)
@@ -199,7 +224,10 @@ public static class OffsetManager
         }
 
         OffsetCache.TryRemove(info.MemberName(), out _);
-        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+        if (GameVersion != 0)
+        {
+            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+        }
     }
 
     internal static void ClearOffsetFromCache(string name)
@@ -275,10 +303,10 @@ public static class OffsetManager
             LlamaLibrarySettings.Instance.TempDisableInventoryHook = false;
         }
 
-        if (Core.CurrentGameVer != LlamaLibrarySettings.Instance.LastRevision && InventoryUpdatePatch.Offsets.OrginalCall == InventoryUpdatePatch.Offsets.OriginalJump)
+        if (GameVersion != LlamaLibrarySettings.Instance.LastRevision && InventoryUpdatePatch.Offsets.OrginalCall == InventoryUpdatePatch.Offsets.OriginalJump)
         {
-            LlamaLibrarySettings.Instance.LastRevision = Core.CurrentGameVer;
-            Logger.Information($"Setting revision to {Core.CurrentGameVer} in {LlamaLibrarySettings.Instance.FilePath}");
+            LlamaLibrarySettings.Instance.LastRevision = GameVersion;
+            Logger.Information($"Setting revision to {GameVersion} in {LlamaLibrarySettings.Instance.FilePath}");
         }
 
         var skipInventoryPatch = LlamaLibrarySettings.Instance.TempDisableInventoryHook || LlamaLibrarySettings.Instance.DisableInventoryHook;
@@ -312,7 +340,11 @@ public static class OffsetManager
         }
 
         newStopwatch.Restart();
-        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+        if (GameVersion != 0)
+        {
+            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+        }
+
         newStopwatch.Stop();
         Logger.Debug($"OffsetManager File.WriteAllText took {newStopwatch.ElapsedMilliseconds}ms");
 
@@ -590,7 +622,10 @@ public static class OffsetManager
 
         SetOffsetObjects(q1);
 
-        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+        if (GameVersion != 0)
+        {
+            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+        }
 
         var vtables = new Dictionary<IntPtr, int>();
         var pointers = AgentModule.AgentVtables;
