@@ -181,10 +181,11 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsCastingClass()
         {
+            // (ClassJobType)0x2A Pictomancer
             return Core.Me.CurrentJob switch
             {
-                ClassJobType.Arcanist or ClassJobType.Summoner or ClassJobType.Thaumaturge or ClassJobType.BlackMage or ClassJobType.RedMage or ClassJobType.BlueMage => true,
-                _                                                                                                                                                     => false
+                ClassJobType.Arcanist or ClassJobType.Summoner or ClassJobType.Thaumaturge or ClassJobType.BlackMage or ClassJobType.RedMage or ClassJobType.BlueMage or (ClassJobType)0x2A => true,
+                _                                                                                                                                                                           => false
             };
         }
 
@@ -199,10 +200,11 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsAimingClass()
         {
+            // (ClassJobType)0x29 Viper
             return Core.Me.CurrentJob switch
             {
-                ClassJobType.Archer or ClassJobType.Bard or ClassJobType.Dancer or ClassJobType.Machinist => true,
-                _                                                                                         => false
+                ClassJobType.Archer or ClassJobType.Bard or ClassJobType.Dancer or ClassJobType.Machinist or (ClassJobType)0x29 => true,
+                _                                                                                                               => false
             };
         }
 
