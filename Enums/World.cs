@@ -92,6 +92,18 @@ namespace LlamaLibrary.Enums
         Seraph = 405, //Dynamis
         Halicarnassus = 406, //Dynamis
         Maduin = 407, //Dynamis
+        Cuchulainn = 408, //Dynamis
+        Kraken = 409, //Dynamis
+        Rafflesia = 410, //Dynamis
+        Golem = 411, //Dynamis
+        Titania = 412, //Shadow
+        Innocence = 413, //Shadow
+        Pixie = 414, //Shadow
+        Tycoon = 415, //Shadow
+        Wyvern = 416, //Shadow
+        Lakshmi = 417, //Shadow
+        Eden = 418, //Shadow
+        Syldra = 419, //Shadow
 
         // DC Group: 陆行鸟
         [Description("拉诺西亚")]
