@@ -200,10 +200,9 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsAimingClass()
         {
-            // (ClassJobType)0x29 Viper
             return Core.Me.CurrentJob switch
             {
-                ClassJobType.Archer or ClassJobType.Bard or ClassJobType.Dancer or ClassJobType.Machinist or (ClassJobType)0x29 => true,
+                ClassJobType.Archer or ClassJobType.Bard or ClassJobType.Dancer or ClassJobType.Machinist => true,
                 _                                                                                                               => false
             };
         }
@@ -228,10 +227,11 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsScoutingClass()
         {
+            // (ClassJobType)0x29 Viper
             return Core.Me.CurrentJob switch
             {
-                ClassJobType.Rogue or ClassJobType.Ninja => true,
-                _                                        => false
+                ClassJobType.Rogue or ClassJobType.Ninja or (ClassJobType)0x29 => true,
+                _                                                              => false
             };
         }
 
