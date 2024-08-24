@@ -164,81 +164,91 @@ namespace LlamaLibrary.Helpers.WorldTravel
 
             await OpenWorldTravelMenu(travelCity);
 
-            if (WorldTravelSelect.Instance.IsOpen)
-            {
-                var Choices = AgentWorldTravelSelect.Instance.Choices;
-
-                if (AgentWorldTravelSelect.Instance.CurrentWorld != worldId)
-                {
-                    for (var i = 0; i < Choices.Length; i++)
-                    {
-                        if (Choices[i].WorldID != worldId)
-                        {
-                            continue;
-                        }
-
-                        Log.Information($"Going to: {((World)Choices[i].WorldID).WorldName()}");
-                        WorldTravelSelect.Instance.SelectWorld(i);
-                        if (!await Coroutine.Wait(5000, () => SelectYesno.IsOpen))
-                        {
-                            Log.Error("Select Yesno did not open");
-                            WorldTravelSelect.Instance.Close();
-                            return false;
-                        }
-
-                        if (SelectYesno.IsOpen)
-                        {
-                            SelectYesno.Yes();
-                            await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
-                            if (!await Coroutine.Wait(1_200_000, () => WorldTravelFinderReady.Instance.IsOpen))
-                            {
-                                Log.Error("WorldTravelFinderReady did not open");
-                                WorldTravelSelect.Instance.Close();
-                                await Coroutine.Wait(5000, () => !WorldTravelSelect.Instance.IsOpen);
-                                return false;
-                            }
-
-                            if (WorldTravelFinderReady.Instance.IsOpen)
-                            {
-                                await Coroutine.Wait(-1, () => !WorldTravelFinderReady.Instance.IsOpen);
-                                await Coroutine.Sleep(2000);
-                                if (CommonBehaviors.IsLoading)
-                                {
-                                    await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
-                                }
-
-                                await Coroutine.Sleep(2000);
-                                //Log.Information("Waiting for ping to update");
-                                await PingChecker.UpdatePing();
-                                Log.Information($"CurrentWorld: {WorldHelper.CurrentWorld.WorldName()} Ping: {PingChecker.CurrentPing}");
-                            }
-                        }
-                        else
-                        {
-                            Log.Error("Select Yesno did not open");
-                            return false;
-                        }
-
-                        break;
-                    }
-                }
-                else
-                {
-                    Log.Information($"Already on {((World)worldId).WorldName()}");
-                    WorldTravelSelect.Instance.Close();
-                    await Coroutine.Sleep(500);
-                }
-
-                if (WorldTravelSelect.Instance.IsOpen)
-                {
-                    WorldTravelSelect.Instance.Close();
-                    await Coroutine.Sleep(500);
-                }
-            }
-            else
+            if (!WorldTravelSelect.Instance.IsOpen)
             {
                 Log.Error("World Travel Menu did not open");
                 return false;
+            }
+
+            var Choices = AgentWorldTravelSelect.Instance.Choices;
+
+            if (AgentWorldTravelSelect.Instance.CurrentWorld == worldId)
+            {
+                Log.Information($"Already on {((World)worldId).WorldName()}");
+                WorldTravelSelect.Instance.Close();
+                await Coroutine.Sleep(500);
+                return true;
+            }
+
+            for (var i = 0; i < Choices.Length; i++)
+            {
+                if (Choices[i].WorldID != worldId)
+                {
+                    continue;
+                }
+
+                Log.Information($"Going to: {((World)Choices[i].WorldID).WorldName()} test");
+                WorldTravelSelect.Instance.SelectWorld(i);
+                if (!await Coroutine.Wait(5000, () => SelectYesno.IsOpen))
+                {
+                    Log.Error("Select Yesno did not open");
+                    WorldTravelSelect.Instance.Close();
+                    return false;
+                }
+
+                if (!SelectYesno.IsOpen)
+                {
+                    Log.Error("Select Yesno did not open");
+                    WorldTravelSelect.Instance.Close();
+                    return false;
+                }
+
+                Log.Information("Selecting Yes");
+                SelectYesno.Yes();
+                if (!await Coroutine.Wait(5000, () => !SelectYesno.IsOpen))
+                {
+                    Log.Error("Select Yesno did not close");
+                    WorldTravelSelect.Instance.Close();
+                    return false;
+                }
+
+                if (!await Coroutine.Wait(12_000, () => WorldTravelFinderReady.Instance.IsOpen))
+                {
+                    Log.Error("WorldTravelFinderReady did not open");
+                    WorldTravelSelect.Instance.Close();
+                    await Coroutine.Wait(5000, () => !WorldTravelSelect.Instance.IsOpen);
+                    return false;
+                }
+
+                if (WorldTravelFinderReady.Instance.IsOpen)
+                {
+                    Log.Information("WorldTravelFinderReady is open");
+                    await Coroutine.Wait(-1, () => !WorldTravelFinderReady.Instance.IsOpen);
+                    Log.Information("WorldTravelFinderReady is closed");
+                    await Coroutine.Sleep(2000);
+                    if (CommonBehaviors.IsLoading)
+                    {
+                        await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+                    }
+
+                    await Coroutine.Sleep(2000);
+                    //Log.Information("Waiting for ping to update");
+                    await PingChecker.UpdatePing();
+                    Log.Information($"CurrentWorld: {WorldHelper.CurrentWorld.WorldName()} Ping: {PingChecker.CurrentPing}");
+                }
+                else
+                {
+                    Log.Error("WorldTravelFinderReady did not open");
+                    return false;
+                }
+
+                break;
+            }
+
+            if (WorldTravelSelect.Instance.IsOpen)
+            {
+                WorldTravelSelect.Instance.Close();
+                await Coroutine.Sleep(500);
             }
 
             if (WorldHelper.IsOnHomeWorld)
