@@ -179,11 +179,25 @@ namespace LlamaLibrary.Helpers.WorldTravel
 
                         Log.Information($"Going to: {((World)Choices[i].WorldID).WorldName()}");
                         WorldTravelSelect.Instance.SelectWorld(i);
-                        await Coroutine.Wait(5000, () => SelectYesno.IsOpen);
+                        if (!await Coroutine.Wait(5000, () => SelectYesno.IsOpen))
+                        {
+                            Log.Error("Select Yesno did not open");
+                            WorldTravelSelect.Instance.Close();
+                            return false;
+                        }
+
                         if (SelectYesno.IsOpen)
                         {
                             SelectYesno.Yes();
-                            await Coroutine.Wait(1_200_000, () => WorldTravelFinderReady.Instance.IsOpen);
+                            await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
+                            if (!await Coroutine.Wait(1_200_000, () => WorldTravelFinderReady.Instance.IsOpen))
+                            {
+                                Log.Error("WorldTravelFinderReady did not open");
+                                WorldTravelSelect.Instance.Close();
+                                await Coroutine.Wait(5000, () => !WorldTravelSelect.Instance.IsOpen);
+                                return false;
+                            }
+
                             if (WorldTravelFinderReady.Instance.IsOpen)
                             {
                                 await Coroutine.Wait(-1, () => !WorldTravelFinderReady.Instance.IsOpen);
