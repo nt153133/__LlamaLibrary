@@ -9,26 +9,18 @@ using LlamaLibrary.RemoteAgents;
 
 namespace LlamaLibrary.RemoteWindows;
 
-public class SharlayanCraftworksSupply : RemoteWindow<SharlayanCraftworksSupply>
+public class BankaCraftworksSupply : RemoteWindow<BankaCraftworksSupply>
 {
-    public SharlayanCraftworksSupply() : base("SharlayanCraftworksSupply")
+    public BankaCraftworksSupply() : base("BankaCraftworksSupply")
     {
     }
 
     public static readonly Dictionary<string, int> Properties = new()
     {
-#if RB_DT
-            {
-                "TurnInItemId",
-                10
-            },
-#else
         {
             "TurnInItemId",
             8
         },
-#endif
-
         {
             "EsteemLevel",
             6
@@ -41,6 +33,8 @@ public class SharlayanCraftworksSupply : RemoteWindow<SharlayanCraftworksSupply>
 
     public int TurnInItemId => Elements[Properties["TurnInItemId"]].TrimmedData;
 
+    public uint TurnInItemRawItemId => (uint)Elements[Properties["TurnInItemId"]].TrimmedData % 500_000;
+
     public int EsteemLevel => Elements[Properties["EsteemLevel"]].TrimmedData;
 
     public int Esteem => Elements[Properties["Esteem"]].TrimmedData;
@@ -50,6 +44,7 @@ public class SharlayanCraftworksSupply : RemoteWindow<SharlayanCraftworksSupply>
         SendAction(1, 3, 0);
     }
 
+#if RB_DT
     public async Task HandOverItems()
     {
         if (HelpWindow.Instance.IsOpen)
@@ -64,7 +59,7 @@ public class SharlayanCraftworksSupply : RemoteWindow<SharlayanCraftworksSupply>
         {
             if (slot != null)
             {
-                AgentSharlayanCraftworksSupply.Instance.HandIn(slot);
+                AgentBankaCraftworksSupply.Instance.HandIn(slot);
                 await Coroutine.Sleep(700);
             }
         }
@@ -113,4 +108,5 @@ public class SharlayanCraftworksSupply : RemoteWindow<SharlayanCraftworksSupply>
         }
         */
     }
+#endif
 }
