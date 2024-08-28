@@ -52,7 +52,11 @@ namespace LlamaLibrary.RemoteWindows
 
         public void OpenShopCardDialog(uint index)
         {
+#if RB_DT
+            SendAction(2, 3, 0, 5, index);
+#else
             SendAction(2, 3, 0, 4, index);
+#endif
         }
     }
 }
