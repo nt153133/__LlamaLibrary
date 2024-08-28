@@ -13,8 +13,13 @@ namespace LlamaLibrary.RemoteWindows
 
         public static Dictionary<string, int> Properties = new()
         {
+#if RB_DT
+            { "CardId", 0 },
+            { "ItemId", 1 },
+#else
             { "ItemId", 0 },
             { "CardId", 1 },
+#endif
             { "Price", 4 },
             { "QuantityOwned", 6 },
         };
