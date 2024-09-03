@@ -27,42 +27,41 @@ public class LoadServerProfile
     internal static readonly string NameValue = "DomesticHelper";
     private static readonly LLogger Log = new(NameValue, Colors.MediumPurple);
 
-    private static int HolminsterSwitch = 837;
-    private static int DohnMheg = 821;
-    private static int QitanaRavel = 823;
-    private static int MalikahsWell = 836;
-    private static int MtGulg = 822;
-    private static int Amaurot = 838;
-    private static int GrandCosmos = 884;
-    private static int AnamnesisAnyder = 898;
-    private static int HeroesGauntlet = 916;
-    private static int MatoyasRelict = 933;
-    private static int Paglthan = 938;
+    private static int HolminsterSwitch = 676;
+    private static int DohnMheg = 649;
+    private static int QitanaRavel = 651;
+    private static int MalikahsWell = 656;
+    private static int MtGulg = 659;
+    private static int Amaurot = 652;
+    private static int GrandCosmos = 692;
+    private static int AnamnesisAnyder = 714;
+    private static int HeroesGauntlet = 737;
+    private static int MatoyasRelict = 746;
+    private static int Paglthan = 777;
     private static int TheTowerofZot = 783;
     private static int TheTowerofBabil = 785;
     private static int Vanaspati = 789;
     private static int KtisisHyperboreia = 787;
     private static int TheAitiascope = 786;
     private static int TheDeadEnds = 792;
-    private static int AlzadaasLegacy = 792;
+    private static int AlzadaasLegacy = 844;
     private static int Smileton = 794;
-    private static int AlzadaalsLegacy = 1050;
     private static int TheFellCourofTroia = 869;
     private static int LapisManalis = 896;
-    private static int Aetherfont = 1126;
-    private static int LunarSubterrane = 1164;
+    private static int Aetherfont = 822;
+    private static int LunarSubterrane = 823;
 
     private static int TheStigmaDreamscape = 784;
 
-    private static int Ihuykatumu = 1167;
-    private static int WorqorZormor = 1193;
-    private static int SkydeepCenote = 1194;
-    private static int Vanguard = 1198;
-    private static int Origenics = 1208;
-    private static int Alexandria = 1199;
+    private static int Ihuykatumu = 826;
+    private static int WorqorZormor = 824;
+    private static int SkydeepCenote = 829;
+    private static int Vanguard = 831;
+    private static int Origenics = 825;
+    private static int Alexandria = 827;
 
-    private static int WorqorLarDor = 1195;
-    private static int Everkeep = 1200;
+    private static int WorqorLarDor = 832;
+    private static int Everkeep = 995;
 
     private static List<int> EndwalkerDungeons = new()
     {
@@ -76,7 +75,7 @@ public class LoadServerProfile
         Smileton,
         Aetherfont,
         LunarSubterrane,
-        AlzadaalsLegacy,
+        AlzadaasLegacy,
         TheFellCourofTroia,
         LapisManalis
     };
@@ -112,7 +111,7 @@ public class LoadServerProfile
         KtisisHyperboreia,
         TheAitiascope,
         TheDeadEnds,
-        AlzadaalsLegacy,
+        AlzadaasLegacy,
         TheFellCourofTroia,
         LapisManalis,
         Aetherfont,
@@ -440,7 +439,7 @@ public class LoadServerProfile
 
                 if (QueueType == 3)
                 {
-                    if (!TrustDungeons.Contains(dungeonZoneId))
+                    if (!TrustDungeons.Contains(dungeonDutyId))
                     {
                         string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Trust dungeon.\nPlease select a different Queue Type or dungeon.";
                         Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
@@ -451,20 +450,29 @@ public class LoadServerProfile
 
                     Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Trust");
 
-                    if (LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen)
+                    if (LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId != trustId)
                     {
                         Log.Information("Closing Trust window");
                         AgentDawn.Instance.Toggle();
                     }
 
-                    if (!LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen)
+                    if (AgentDawn.Instance.TrustId != trustId)
                     {
+                        Log.Information($"Setting Trust dungeon to {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName}");
+                        AgentDawn.Instance.TrustId = trustId;
+                        await Coroutine.Wait(5000, () => AgentDawn.Instance.TrustId == trustId);
                         if (AgentDawn.Instance.TrustId != trustId)
                         {
-                            Log.Information($"Setting Trust dungeon to {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName}");
-                            AgentDawn.Instance.TrustId = trustId;
+                            string message = $"Something went wrong when attempting to select {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as Trust dungeon.";
+                            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                            Log.Error($"{message}");
+                            TreeRoot.Stop($"{message}");
+                            break;
                         }
+                    }
 
+                    if (!Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId == trustId)
+                    {
                         Log.Information("Opening Trust window");
                         AgentDawn.Instance.Toggle();
                         await Coroutine.Wait(8000, () => Dawn.Instance.IsOpen);
