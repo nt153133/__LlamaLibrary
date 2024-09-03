@@ -440,12 +440,13 @@ public class LoadServerProfile
 
                 if (QueueType == 3)
                 {
-                    if (!TrustDungeons.Contains(dungeonDutyId))
+                    if (!TrustDungeons.Contains(dungeonZoneId))
                     {
-                        string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a trust dungeon.";
+                        string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Trust dungeon.\nPlease select a different Queue Type or dungeon.";
                         Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
                         Log.Error($"{message}");
                         TreeRoot.Stop($"{message}");
+                        break;
                     }
 
                     Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Trust");
