@@ -31,6 +31,8 @@ public class ServerProfile
     public int UnlockQuest { get; set; }
     public int ItemLevel { get; set; }
 
+    public int TrustId { get; set; }
+
     public string Display
     {
         get => $"[{Level}] {DataManager.InstanceContentResults[DutyId].CurrentLocaleName} {Quality}";

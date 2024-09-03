@@ -27,19 +27,42 @@ public class LoadServerProfile
     internal static readonly string NameValue = "DomesticHelper";
     private static readonly LLogger Log = new(NameValue, Colors.MediumPurple);
 
+    private static int HolminsterSwitch = 837;
+    private static int DohnMheg = 821;
+    private static int QitanaRavel = 823;
+    private static int MalikahsWell = 836;
+    private static int MtGulg = 822;
+    private static int Amaurot = 838;
+    private static int GrandCosmos = 884;
+    private static int AnamnesisAnyder = 898;
+    private static int HeroesGauntlet = 916;
+    private static int MatoyasRelict = 933;
+    private static int Paglthan = 938;
     private static int TheTowerofZot = 783;
-    private static int TheStigmaDreamscape = 784;
     private static int TheTowerofBabil = 785;
-    private static int TheAitiascope = 786;
-    private static int KtisisHyperboreia = 787;
     private static int Vanaspati = 789;
+    private static int KtisisHyperboreia = 787;
+    private static int TheAitiascope = 786;
     private static int TheDeadEnds = 792;
+    private static int AlzadaasLegacy = 792;
     private static int Smileton = 794;
-    private static int TheAetherfont = 822;
-    private static int LunarSubterrane = 823;
-    private static int AlzadaalsLegacy = 844;
+    private static int AlzadaalsLegacy = 1050;
     private static int TheFellCourofTroia = 869;
     private static int LapisManalis = 896;
+    private static int Aetherfont = 1126;
+    private static int LunarSubterrane = 1164;
+
+    private static int TheStigmaDreamscape = 784;
+
+    private static int Ihuykatumu = 1167;
+    private static int WorqorZormor = 1193;
+    private static int SkydeepCenote = 1194;
+    private static int Vanguard = 1198;
+    private static int Origenics = 1208;
+    private static int Alexandria = 1199;
+
+    private static int WorqorLarDor = 1195;
+    private static int Everkeep = 1200;
 
     private static List<int> EndwalkerDungeons = new()
     {
@@ -51,11 +74,57 @@ public class LoadServerProfile
         Vanaspati,
         TheDeadEnds,
         Smileton,
-        TheAetherfont,
+        Aetherfont,
         LunarSubterrane,
         AlzadaalsLegacy,
         TheFellCourofTroia,
         LapisManalis
+    };
+
+    private static List<int> DawntrailDungeons = new()
+    {
+        Ihuykatumu,
+        WorqorZormor,
+        SkydeepCenote,
+        Vanguard,
+        Origenics,
+        Alexandria,
+        WorqorLarDor,
+        Everkeep,
+    };
+
+    private static List<int> TrustDungeons = new()
+    {
+        HolminsterSwitch,
+        DohnMheg,
+        QitanaRavel,
+        MalikahsWell,
+        MtGulg,
+        Amaurot,
+        GrandCosmos,
+        AnamnesisAnyder,
+        HeroesGauntlet,
+        MatoyasRelict,
+        Paglthan,
+        TheTowerofZot,
+        TheTowerofBabil,
+        Vanaspati,
+        KtisisHyperboreia,
+        TheAitiascope,
+        TheDeadEnds,
+        AlzadaalsLegacy,
+        TheFellCourofTroia,
+        LapisManalis,
+        Aetherfont,
+        LunarSubterrane,
+        Ihuykatumu,
+        WorqorZormor,
+        SkydeepCenote,
+        Vanguard,
+        Origenics,
+        Alexandria,
+        WorqorLarDor,
+        Everkeep,
     };
 
     private static readonly string[] Greetings = new string[]
@@ -165,6 +234,7 @@ public class LoadServerProfile
         var dutyType = profile.DutyType;
         var unlockQuest = profile.UnlockQuest;
         var reqItemLevel = profile.ItemLevel;
+        var trustId = profile.TrustId;
 
         if (profileType == ProfileType.Quest)
         {
@@ -175,7 +245,7 @@ public class LoadServerProfile
         if (profileType == ProfileType.Duty)
         {
             {
-                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, reqItemLevel, dungeonLevel, sayHello, sayHelloCustom, sayHelloMessages);
+                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, reqItemLevel, dungeonLevel, sayHello, sayHelloCustom, sayHelloMessages, trustId);
                 return;
             }
         }
@@ -220,16 +290,38 @@ public class LoadServerProfile
         var dutyType = profile.DutyType;
         var unlockQuest = profile.UnlockQuest;
         var reqItemLevel = profile.ItemLevel;
+        var trustId = profile.TrustId;
 
         if (profileType == ProfileType.Duty)
         {
             {
-                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, 1, unlockQuest, false, reqItemLevel, dungeonLevel, false, false, "hi/welcome");
+                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, 1, unlockQuest, false, reqItemLevel, dungeonLevel, false, false, "hi/welcome", trustId);
                 return;
             }
         }
 
         return;
+    }
+
+    public static async Task LoadTrust()
+    {
+        if (LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen)
+        {
+            ff14bot.Helpers.Logging.WriteDiagnostic("Closing Dawn window");
+            LlamaLibrary.RemoteAgents.AgentDawn.Instance.Toggle();
+        }
+
+        LlamaLibrary.RemoteAgents.AgentDawn.Instance.TrustId = 27;
+
+        if (!LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen)
+        {
+            ff14bot.Helpers.Logging.WriteDiagnostic("Openning Dawn window");
+            LlamaLibrary.RemoteAgents.AgentDawn.Instance.Toggle();
+            await Coroutine.Wait(8000, () => LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen);
+        }
+
+        ff14bot.Helpers.Logging.WriteDiagnostic("Clicking Register");
+        LlamaLibrary.RemoteWindows.Dawn.Instance.Register();
     }
 
     private static async Task<List<ServerProfile>> GetProfileList(string uri)
@@ -310,7 +402,7 @@ public class LoadServerProfile
         return NeoProfileManager.CurrentProfile != null && NeoProfileManager.CurrentProfile.Name != "Loading Profile";
     }
 
-    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, int ItemLevel, int dungeonLevel, bool sayHello, bool sayHelloCustom, string SayHelloMessages)
+    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, int ItemLevel, int dungeonLevel, bool sayHello, bool sayHelloCustom, string SayHelloMessages, int trustId)
     {
         if (WorldManager.ZoneId == dungeonZoneId)
         {
@@ -346,16 +438,57 @@ public class LoadServerProfile
                     await LlamaLibrary.Helpers.GrandCompanyHelper.GetToGCBarracks();
                 }
 
-                if (QueueType == 2 || EndwalkerDungeons.Contains(dungeonDutyId))
+                if (QueueType == 3)
                 {
-                    if (EndwalkerDungeons.Contains(dungeonDutyId) && QueueType != 2)
+                    if (!TrustDungeons.Contains(dungeonDutyId))
                     {
-                        Log.Information($"Endwalker dungeon automatically queueing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Duty Support");
+                        string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a trust dungeon.";
+                        Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                        Log.Error($"{message}");
+                        TreeRoot.Stop($"{message}");
                     }
-                    else
+
+                    Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Trust");
+
+                    if (LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen)
                     {
-                        Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Duty Support");
+                        Log.Information("Closing Trust window");
+                        AgentDawn.Instance.Toggle();
                     }
+
+                    if (!LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen)
+                    {
+                        if (AgentDawn.Instance.TrustId != trustId)
+                        {
+                            Log.Information($"Setting Trust dungeon to {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName}");
+                            AgentDawn.Instance.TrustId = trustId;
+                        }
+
+                        Log.Information("Opening Trust window");
+                        AgentDawn.Instance.Toggle();
+                        await Coroutine.Wait(8000, () => Dawn.Instance.IsOpen);
+                    }
+
+                    if (Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId == trustId)
+                    {
+                        Log.Information("Clicking Register");
+                        Dawn.Instance.Register();
+                    }
+
+                    await Coroutine.Wait(10000, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
+                    if (DutyManager.QueueState != QueueState.None)
+                    {
+                        Log.Information("Queued for Dungeon");
+                    }
+                    else if (DutyManager.QueueState == QueueState.None)
+                    {
+                        Log.Error("Something went wrong, queueing again...");
+                    }
+                }
+
+                if (QueueType == 2)
+                {
+                    Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Duty Support");
 
                     if (!DawnStory.Instance.IsOpen)
                     {
@@ -624,8 +757,6 @@ public class LoadServerProfile
                 row = GeneralFunctions.GetDawnContentRow(i + 200 - 24);
 #endif
             }
-
-
 
             if (row == IntPtr.Zero)
             {
