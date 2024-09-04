@@ -95,6 +95,12 @@ public static class OffsetManager
     public const bool IsChinese = false;
 #endif
 
+#if RB_DT
+        public const bool IsDawntrail = true;
+#else
+    public const bool IsDawntrail = false;
+#endif
+
     private static bool _isNewGameBuild;
     private static int GameVersion1 = 0;
 

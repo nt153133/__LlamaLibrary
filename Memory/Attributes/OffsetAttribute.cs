@@ -349,7 +349,7 @@ public class OffsetCNAttribute : OffsetAttribute
 
 public class OffsetDawntrailAttribute : OffsetAttribute
 {
-#if RB_CN
+#if !RB_DT
     private static bool _isValid { get; } = false;
 #else
     private static bool _isValid { get; } = true;
