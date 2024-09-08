@@ -9,7 +9,7 @@
         <UseWindowsForms>true</UseWindowsForms>
         <UseWPF>true</UseWPF>
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-        <TargetFrameworks>net48</TargetFrameworks>
+        <TargetFrameworks>net48;net8.0-windows</TargetFrameworks>
         <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
         <Configurations>Debug;Release;Release2</Configurations>
     </PropertyGroup>
