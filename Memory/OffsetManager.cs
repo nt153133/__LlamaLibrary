@@ -90,15 +90,15 @@ public static class OffsetManager
     public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown, LogLevel.Information);
 
 #if RB_CN
-        public const bool IsChinese = true;
+        public static bool IsChinese = true;
 #else
-    public const bool IsChinese = false;
+    public static bool IsChinese = false;
 #endif
 
 #if RB_DT
-        public const bool IsDawntrail = true;
+        public static bool IsDawntrail = true;
 #else
-    public const bool IsDawntrail = false;
+    public static bool IsDawntrail = false;
 #endif
 
     private static bool _isNewGameBuild;
