@@ -5,13 +5,26 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>10</LangVersion>
         <Nullable>enable</Nullable>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <UseWindowsForms>true</UseWindowsForms>
         <UseWPF>true</UseWPF>
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
         <TargetFrameworks>net48;net8.0-windows</TargetFrameworks>
         <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
         <Configurations>Debug;Release;Release2</Configurations>
+        <EnableWindowsTargetingPack>true</EnableWindowsTargetingPack>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
+        <ImplicitUsings>disable</ImplicitUsings>
+    </PropertyGroup>
+    <PropertyGroup>
+        <PackageId>LlamaLibrary</PackageId>
+        <Authors>nt153133</Authors>
+        <Product>LlamaLibrary</Product>
+        <Title>LlamaLibrary</Title>
+        <RepositoryUrl>https://github.com/nt153133/__LlamaLibrary.git</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+        <PackageReadmeFile>Readme.md</PackageReadmeFile>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
         <OutputPath>bin\x64\Release\</OutputPath>
@@ -49,6 +62,7 @@
         <Content Include="Resources\Recipes_Anden.json" />
         <Content Include="Resources\Shirogane.json" />
         <Content Include="Resources\Ventures.json" />
+        <None Include="Readme.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
     <ItemGroup>
