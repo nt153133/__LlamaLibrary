@@ -1,6 +1,7 @@
 ﻿name: Release.yml
 on:
     release:
+        types: [published]
 
 jobs:
     build:

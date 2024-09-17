@@ -1,6 +1,13 @@
 name: Last Commit Action
 run-name: Update Last Commit File
-on: push
+on:
+    push:
+        paths:
+            - '**.cs'
+            - '**.csproj'
+            - '**.sln'
+            - '**.json'
+            - '**.resx'
 jobs:
   build:
     runs-on: ubuntu-latest
