@@ -1,5 +1,6 @@
 ﻿using System.Windows.Threading;
 using ff14bot;
+using LlamaLibrary.Events;
 using LlamaLibrary.Extensions;
 
 namespace LlamaLibrary.Settings.Base;
@@ -31,9 +32,14 @@ public class BaseSettings<T> : BaseSettings
         set => _instance = value;
     }
 
-    public static void SetInstance(T instance)
+    public static void SetInstance(T? instance)
     {
         _instance = instance;
+    }
+
+    public static void ClearInstance()
+    {
+        SetInstance(null);
     }
 }
 
@@ -60,19 +66,19 @@ public class CharacterBaseSettings<T> : BaseSettings<T>
 public class AccountBaseSettings<T> : BaseSettings<T>
     where T : BaseSettings<T>, new()
 {
-    public AccountBaseSettings() : base(GetSettingsFilePath($"Account_{Core.Me.AccountId()}", $"{typeof(T).Name}.json"))
+    public AccountBaseSettings() : base(GetSettingsFilePath($"Account_{LoginEvents.AccountId}", $"{typeof(T).Name}.json"))
     {
     }
 
-    public AccountBaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{Core.Me.AccountId()}", $"{typeof(T).Name}.json"), dispatcher)
+    public AccountBaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{LoginEvents.AccountId}", $"{typeof(T).Name}.json"), dispatcher)
     {
     }
 
-    public AccountBaseSettings(string fileName) : base(GetSettingsFilePath($"Account_{Core.Me.AccountId()}", fileName))
+    public AccountBaseSettings(string fileName) : base(GetSettingsFilePath($"Account_{LoginEvents.AccountId}", fileName))
     {
     }
 
-    public AccountBaseSettings(string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{Core.Me.AccountId()}", fileName), dispatcher)
+    public AccountBaseSettings(string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{LoginEvents.AccountId}", fileName), dispatcher)
     {
     }
 
