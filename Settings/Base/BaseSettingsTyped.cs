@@ -46,20 +46,24 @@ public class BaseSettings<T> : BaseSettings
 public class CharacterBaseSettings<T> : BaseSettings<T>
     where T : BaseSettings<T>, new()
 {
-    public CharacterBaseSettings() : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId()}", $"{typeof(T).Name}.json"))
+    public CharacterBaseSettings() : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId():X16}", $"{typeof(T).Name}.json"))
     {
+        LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 
-    public CharacterBaseSettings(string fileName) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId()}", fileName))
+    public CharacterBaseSettings(string fileName) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId():X16}", fileName))
     {
+        LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 
-    public CharacterBaseSettings(string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId()}", fileName), dispatcher)
+    public CharacterBaseSettings(string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId():X16}", fileName), dispatcher)
     {
+        LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 
-    public CharacterBaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId()}", $"{typeof(T).Name}.json"), dispatcher)
+    public CharacterBaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId():X16}", $"{typeof(T).Name}.json"), dispatcher)
     {
+        LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 }
 
@@ -104,17 +108,21 @@ public class HomeWorldBaseSettings<T> : BaseSettings<T>
 {
     public HomeWorldBaseSettings() : base(GetSettingsFilePath($"HomeWorld_{Core.Me.HomeWorld()}", $"{typeof(T).Name}.json"))
     {
+        LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 
     public HomeWorldBaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"HomeWorld_{Core.Me.HomeWorld()}", $"{typeof(T).Name}.json"), dispatcher)
     {
+        LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 
     public HomeWorldBaseSettings(string fileName) : base(GetSettingsFilePath($"HomeWorld_{Core.Me.HomeWorld()}", fileName))
     {
+        LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 
     public HomeWorldBaseSettings(string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"HomeWorld_{Core.Me.HomeWorld()}", fileName), dispatcher)
     {
+        LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 }
