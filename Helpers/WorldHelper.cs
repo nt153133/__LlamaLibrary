@@ -71,7 +71,7 @@ namespace LlamaLibrary.Helpers
             { WorldDCGroupType.Aether, new World[] { World.Jenova, World.Faerie, World.Siren, World.Gilgamesh, World.Midgardsormr, World.Adamantoise, World.Cactuar, World.Sargatanas } },
             { WorldDCGroupType.Gaia, new World[] { World.Alexander, World.Fenrir, World.Ultima, World.Ifrit, World.Bahamut, World.Tiamat, World.Durandal, World.Ridill } },
             { WorldDCGroupType.Elemental, new World[] { World.Carbuncle, World.Kujata, World.Typhon, World.Garuda, World.Atomos, World.Tonberry, World.Aegis, World.Gungnir } },
-            { WorldDCGroupType.Dynamis, new World[] { World.Marilith, World.Seraph, World.Halicarnassus, World.Maduin } },
+            { WorldDCGroupType.Dynamis, new World[] { World.Marilith, World.Seraph, World.Halicarnassus, World.Maduin, World.Cuchulainn, World.Golem, World.Kraken, World.Rafflesia } },
 
             //Chinese
             { WorldDCGroupType.Chocobo, new World[] { World.LaNuoXiYa, World.HuanYingQunDao, World.MengYaChi, World.ShenYiZhiDi, World.HongYuHai, World.YuZhouHeYin, World.WoXianXiRan, World.ChenXiWangZuo } },
