@@ -19,7 +19,7 @@ public static class QTEHelper
     public static bool ShouldCheck => DutyManager.InInstance && RaptureAtkUnitManager.GetWindowByName("QTE", true) != null;
 
     public static bool QteOpen => ShouldCheck && WindowOpen;
-    private static byte Flags(AtkAddonControl control) => Core.Memory.Read<byte>(control.Pointer + 0x182);
+    private static byte Flags(AtkAddonControl control) => Core.Memory.Read<byte>(control.Pointer + 0x192);
 
     private static Process _process;
 
