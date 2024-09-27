@@ -1,4 +1,5 @@
-﻿using ff14bot.Behavior;
+﻿using System;
+using ff14bot.Behavior;
 using TreeSharp;
 
 namespace LlamaLibrary
@@ -16,5 +17,13 @@ namespace LlamaLibrary
         void Stop();
         void OnButtonPress();
         void Initialize();
+    }
+
+    public interface ICompiledBotbaseFull : ICompiledBotbase, IDisposable
+    {
+        string Version { get; }
+        void Pulse();
+        void OnShutdown();
+        string EnglishName { get; }
     }
 }

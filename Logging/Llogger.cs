@@ -38,6 +38,13 @@ namespace LlamaLibrary.Logging
             LogLevel = logLevel;
         }
 
+        public LLogger(string name, LogLevel logLevel = LogLevel.Information)
+        {
+            _name = name;
+            Color = Colors.Gainsboro;
+            LogLevel = logLevel;
+        }
+
         /// <summary>
         /// Checks if <see cref="LogLevel"/> will print from this <see cref="LLogger"/>.
         /// </summary>
@@ -57,7 +64,7 @@ namespace LlamaLibrary.Logging
         {
             var logLine = $"[{_name}] {message}";
             ff14bot.Helpers.Logging.Write(ff14bot.Helpers.LogLevel.Quiet, color, logLine); //ff14bot.Helpers.LogLevel.Normal
-            Console.WriteLine(logLine);  // Needed to appear in debugger, tests, etc
+            Console.WriteLine(logLine); // Needed to appear in debugger, tests, etc
         }
 
         /// <summary>
