@@ -100,6 +100,11 @@ public class OffsetAttribute : Attribute
             Pattern = "Search " + Pattern;
         }
 
+        if (string.IsNullOrEmpty(PatternCN))
+        {
+            PatternCN = Pattern;
+        }
+
         IgnoreCache = ignoreCache;
         ExpectedValue = expectedValue;
     }
