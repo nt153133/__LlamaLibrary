@@ -89,117 +89,109 @@ public abstract class BaseSettings : INotifyPropertyChanged
 
         if (File.Exists(file))
         {
-            try
+            Dispatcher.Invoke(() =>
             {
-                Dispatcher.Invoke(() =>
+                try
                 {
-                    try
-                    {
-                        JsonConvert.PopulateObject(File.ReadAllText(file), this);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.Exception(e);
-                    }
-                });
+                    JsonConvert.PopulateObject(File.ReadAllText(file), this);
+                }
+                catch (Exception e)
+                {
+                    _logger.Exception(e);
+                }
+            });
+        }
 
-                foreach (var propertyInfo in properties)
+        foreach (var propertyInfo in properties)
+        {
+            //Check if property is an observable collection
+            if (typeof(INotifyCollectionChanged).IsAssignableFrom(propertyInfo.PropertyType))
+            {
+                //_logger.Debug($"Property {propertyInfo.Name} is an INotifyCollectionChanged");
+                //Set list changed event to trigger on property change
+                if (propertyInfo.GetValue(this) is INotifyCollectionChanged collection)
                 {
-                    //Check if property is an observable collection
-                    if (typeof(INotifyCollectionChanged).IsAssignableFrom(propertyInfo.PropertyType))
+                    if (propertyInfo.PropertyType.IsGenericType && typeof(INotifyPropertyChanged).IsAssignableFrom(propertyInfo.PropertyType.GenericTypeArguments[0]))
                     {
-                        //_logger.Debug($"Property {propertyInfo.Name} is an INotifyCollectionChanged");
-                        //Set list changed event to trigger on property change
-                        var collection = propertyInfo.GetValue(this) as INotifyCollectionChanged;
-                        if (collection != null)
+                        //_logger.Debug($"Property {propertyInfo.Name} is an INotifyPropertyChanged with generic type {propertyInfo.PropertyType.GenericTypeArguments[0]}");
+
+                        //loop through all items in collection and add property changed event
+                        foreach (var item in (IEnumerable<object>)collection)
                         {
-                            if (propertyInfo.PropertyType.IsGenericType && typeof(INotifyPropertyChanged).IsAssignableFrom(propertyInfo.PropertyType.GenericTypeArguments[0]))
+                            if (item is INotifyPropertyChanged notifyPropertyChanged)
                             {
-                                //_logger.Debug($"Property {propertyInfo.Name} is an INotifyPropertyChanged with generic type {propertyInfo.PropertyType.GenericTypeArguments[0]}");
+                                notifyPropertyChanged.PropertyChanged += OnNotifyPropertyChangedOnPropertyChanged;
+                            }
+                        }
 
-                                //loop through all items in collection and add property changed event
-                                foreach (var item in (IEnumerable<object>)collection)
+                        collection.CollectionChanged += (_, args) =>
+                        {
+                            OnPropertyChanged(propertyInfo.Name);
+
+                            if (args is { Action: NotifyCollectionChangedAction.Add, NewItems: not null })
+                            {
+                                foreach (var item in args.NewItems)
                                 {
                                     if (item is INotifyPropertyChanged notifyPropertyChanged)
                                     {
                                         notifyPropertyChanged.PropertyChanged += OnNotifyPropertyChangedOnPropertyChanged;
                                     }
                                 }
+                            }
 
-                                collection.CollectionChanged += (_, args) =>
+                            if (args is { Action: NotifyCollectionChangedAction.Remove, OldItems: not null })
+                            {
+                                foreach (var item in args.OldItems)
                                 {
-                                    OnPropertyChanged(propertyInfo.Name);
-
-                                    if (args is { Action: NotifyCollectionChangedAction.Add, NewItems: not null })
+                                    if (item is INotifyPropertyChanged notifyPropertyChanged)
                                     {
-                                        foreach (var item in args.NewItems)
-                                        {
-                                            if (item is INotifyPropertyChanged notifyPropertyChanged)
-                                            {
-                                                notifyPropertyChanged.PropertyChanged += OnNotifyPropertyChangedOnPropertyChanged;
-                                            }
-                                        }
+                                        notifyPropertyChanged.PropertyChanged -= OnNotifyPropertyChangedOnPropertyChanged;
                                     }
-
-                                    if (args is { Action: NotifyCollectionChangedAction.Remove, OldItems: not null })
-                                    {
-                                        foreach (var item in args.OldItems)
-                                        {
-                                            if (item is INotifyPropertyChanged notifyPropertyChanged)
-                                            {
-                                                notifyPropertyChanged.PropertyChanged -= OnNotifyPropertyChangedOnPropertyChanged;
-                                            }
-                                        }
-                                    }
-                                };
-
-                                void OnNotifyPropertyChangedOnPropertyChanged(object? o, PropertyChangedEventArgs eventArgs)
-                                {
-                                    OnPropertyChanged(propertyInfo.Name);
                                 }
                             }
-                            else
-                            {
-                                collection.CollectionChanged += (_, _) => { OnPropertyChanged(propertyInfo.Name); };
-                            }
-                        }
-                        else
+                        };
+
+                        void OnNotifyPropertyChangedOnPropertyChanged(object? o, PropertyChangedEventArgs eventArgs)
                         {
-                            _logger.Error($"Property {propertyInfo.Name} is not an INotifyCollectionChanged it is {propertyInfo.PropertyType}");
+                            OnPropertyChanged(propertyInfo.Name);
                         }
                     }
-
-                    if (typeof(IBindingList).IsAssignableFrom(propertyInfo.PropertyType))
+                    else
                     {
-                        //Set list changed event to trigger on property change
-                        var collection = propertyInfo.GetValue(this) as IBindingList;
-                        if (collection != null)
-                        {
-                            collection.ListChanged += (_, _) => { OnPropertyChanged(propertyInfo.Name); };
-                        }
-                        else
-                        {
-                            _logger.Error($"Property {propertyInfo.Name} is not an IBindingList it is {propertyInfo.PropertyType}");
-                        }
-                    }
-
-                    if (typeof(INotifyPropertyChanged).IsAssignableFrom(propertyInfo.PropertyType))
-                    {
-                        var notifyPropertyChanged = propertyInfo.GetValue(this) as INotifyPropertyChanged;
-                        if (notifyPropertyChanged != null)
-                        {
-                            notifyPropertyChanged.PropertyChanged += (_, _) => { OnPropertyChanged(propertyInfo.Name); };
-                        }
-                        else
-                        {
-                            _logger.Error($"Property {propertyInfo.Name} is not an INotifyPropertyChanged it is {propertyInfo.PropertyType}");
-                        }
+                        collection.CollectionChanged += (_, _) => { OnPropertyChanged(propertyInfo.Name); };
                     }
                 }
+                else
+                {
+                    _logger.Error($"Property {propertyInfo.Name} is not an INotifyCollectionChanged it is {propertyInfo.PropertyType}");
+                }
             }
-            catch (Exception e)
+
+            if (typeof(IBindingList).IsAssignableFrom(propertyInfo.PropertyType))
             {
-                _logger.Exception(e);
+                //Set list changed event to trigger on property change
+                var collection = propertyInfo.GetValue(this) as IBindingList;
+                if (collection != null)
+                {
+                    collection.ListChanged += (_, _) => { OnPropertyChanged(propertyInfo.Name); };
+                }
+                else
+                {
+                    _logger.Error($"Property {propertyInfo.Name} is not an IBindingList it is {propertyInfo.PropertyType}");
+                }
+            }
+
+            if (typeof(INotifyPropertyChanged).IsAssignableFrom(propertyInfo.PropertyType))
+            {
+                var notifyPropertyChanged = propertyInfo.GetValue(this) as INotifyPropertyChanged;
+                if (notifyPropertyChanged != null)
+                {
+                    notifyPropertyChanged.PropertyChanged += (_, _) => { OnPropertyChanged(propertyInfo.Name); };
+                }
+                else
+                {
+                    _logger.Error($"Property {propertyInfo.Name} is not an INotifyPropertyChanged it is {propertyInfo.PropertyType}");
+                }
             }
         }
 
