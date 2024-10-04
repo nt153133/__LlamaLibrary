@@ -200,6 +200,16 @@ public class LoadServerProfile
     {
         Log.Information("Loading Profile");
 
+        if (DutyManager.QueueState == QueueState.InQueue)
+        {
+            Log.Information("Already in queue");
+        }
+
+        if (DutyManager.QueueState == QueueState.InDungeon)
+        {
+            Log.Information("Already in dungeon");
+        }
+
         await GeneralFunctions.StopBusy(false);
 
         var profileList = await GetProfileList("https://sts.llamamagic.net/profiles.json");
