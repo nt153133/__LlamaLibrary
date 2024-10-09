@@ -315,7 +315,7 @@ public static class OffsetManager
             Logger.Information($"Setting revision to {GameVersion} in {LlamaLibrarySettings.Instance.FilePath}");
         }
 
-        var skipInventoryPatch = LlamaLibrarySettings.Instance.TempDisableInventoryHook || LlamaLibrarySettings.Instance.DisableInventoryHook;
+        var skipInventoryPatch = LlamaLibrarySettings.Instance.TempDisableInventoryHook || LlamaLibrarySettings.Instance.DisableInventoryHook || LibraryClass.SafeMode;
 
         Logger.Information($"TempDisableInventoryHook: {LlamaLibrarySettings.Instance.TempDisableInventoryHook} DisableInventoryHook: {LlamaLibrarySettings.Instance.DisableInventoryHook}");
 

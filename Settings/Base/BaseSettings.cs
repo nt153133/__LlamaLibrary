@@ -252,6 +252,11 @@ public abstract class BaseSettings : INotifyPropertyChanged
             return;
         }
 
+        if (!_loaded)
+        {
+            return;
+        }
+
         _debounceDispatchers![propertyName].Debounce(50, propertyName, DispatcherPriority.ApplicationIdle, Dispatcher);
     }
 
