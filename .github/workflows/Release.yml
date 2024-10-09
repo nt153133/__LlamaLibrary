@@ -1,5 +1,6 @@
 ﻿name: Release.yml
 on:
+    workflow_dispatch:
     release:
         types: [published]
 
@@ -28,7 +29,7 @@ jobs:
                   echo "$MAJOR.$MINOR.$BUILD.$REVISION"
                   echo "VERSION=$MAJOR.$MINOR.$BUILD.$REVISION" >> $GITHUB_ENV
             - name: Create Nuget Package
-              run: dotnet pack -c Release -p:TargetFramework=net8.0-windows -p:Version=$VERSION --output nupkgs
+              run: dotnet pack -c Release -p:Version=$VERSION --output nupkgs
             - name: Push nuget
               run: dotnet nuget push nupkgs/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
               env:
