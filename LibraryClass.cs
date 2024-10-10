@@ -43,9 +43,6 @@ public class LibraryClass : ILibrary
             });
         }
 
-        ff14bot.Helpers.Logging.WriteDiagnostic($"Shift Key: {GetKeyState(VirtualKeyStates.VK_SHIFT)}");
-        ff14bot.Helpers.Logging.WriteDiagnostic($"Ctrl Key: {GetKeyState(VirtualKeyStates.VK_CONTROL)}");
-
         return await OffsetManager.InitLib();
     }
 
