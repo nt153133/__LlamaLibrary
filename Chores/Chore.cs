@@ -53,9 +53,9 @@ public abstract class Chore : INotifyPropertyChanged, IEquatable<Chore>
     }
 
     /// <summary>
-    /// Gets the interval between checks.
+    /// Gets or sets the interval between checks.
     /// </summary>
-    public TimeSpan CheckInterval { get; } = TimeSpan.FromMinutes(1);
+    public virtual TimeSpan CheckInterval { get; protected set; } = TimeSpan.FromMinutes(1);
 
     /// <summary>
     /// Gets or sets the last error message.
