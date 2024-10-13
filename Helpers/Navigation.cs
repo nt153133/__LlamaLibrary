@@ -325,7 +325,7 @@ namespace LlamaLibrary.Helpers
             Navigator.NavigationProvider.ClearStuckInfo();
             Navigator.Stop();
             await Coroutine.Wait(5000, () => !GeneralFunctions.IsJumping);
-            return moving == MoveResult.ReachedDestination;
+            return moving == MoveResult.ReachedDestination || stopCondition();
         }
 
         public static async Task<bool> FlightorMove(Vector3 loc, float distance)
@@ -348,7 +348,7 @@ namespace LlamaLibrary.Helpers
             Navigator.NavigationProvider.ClearStuckInfo();
             Navigator.Stop();
             await Coroutine.Wait(5000, () => !GeneralFunctions.IsJumping);
-            return moving == MoveResult.ReachedDestination;
+            return Core.Me.Distance(loc) <= distance;
         }
 
         public static async Task<bool> FlightorMove(FateData fate)

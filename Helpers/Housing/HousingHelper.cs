@@ -29,6 +29,9 @@ namespace LlamaLibrary.Helpers.Housing
 
             [Offset("Search E8 ?? ?? ?? ?? 0F B6 D8 3C FF TraceCall")]
             internal static IntPtr GetCurrentPlot;
+
+            [Offset("Search 48 8B 41 ? 48 85 C0 74 ? 8B 80 ? ? ? ? 48 C1 E8 ?")]
+            internal static IntPtr GetCurrentWard;
         }
 
         private static DateTime _lastHousingUpdate;
@@ -38,6 +41,8 @@ namespace LlamaLibrary.Helpers.Housing
         public static long CurrentHouseId => Core.Memory.CallInjected64<long>(Offsets.GetCurrentHouseId, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
 
         public static byte CurrentPlot => Core.Memory.CallInjected64<byte>(Offsets.GetCurrentPlot, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
+
+        public static byte CurrentWard => Core.Memory.CallInjected64<byte>(Offsets.GetCurrentWard, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
 
         private static ResidenceInfo[] _residences;
         public static IntPtr HousingInstance => Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress);

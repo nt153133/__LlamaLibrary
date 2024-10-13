@@ -37,34 +37,10 @@ namespace LlamaLibrary.JsonObjects
         public override string ToString()
         {
             var zoneName = HousingTraveler.TranslateZone(HousingZone).AddSpacesToEnum();
-
-            /*
-            if (zoneName.Contains("Shirogane"))
-            {
-                zoneName = "Shirogane";
-            }
-            else if (zoneName.Contains("Mist"))
-            {
-                zoneName = "Mist";
-            }
-            else if (zoneName.Contains("Goblet"))
-            {
-                zoneName = "Goblet";
-            }
-            else if (zoneName.Contains("LavenderBeds"))
-            {
-                zoneName = "Lavender Beds";
-            }
-            else if (zoneName.Contains("Empyreum"))
-            {
-                zoneName = "Empyreum";
-            }
-            */
-
             return $"{World} - {zoneName} - W{Ward} P{Plot}";
         }
 
-        public bool Equals(HouseLocation other)
+        public bool Equals(HouseLocation? other)
         {
             if (other is null)
             {
@@ -79,7 +55,7 @@ namespace LlamaLibrary.JsonObjects
             return World == other.World && HousingTraveler.TranslateZone(HousingZone) == HousingTraveler.TranslateZone(other.HousingZone) && Ward == other.Ward && Plot == other.Plot;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {
@@ -101,14 +77,7 @@ namespace LlamaLibrary.JsonObjects
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = (int)World;
-                hashCode = (hashCode * 397) ^ (int)HousingZone;
-                hashCode = (hashCode * 397) ^ Ward;
-                hashCode = (hashCode * 397) ^ Plot;
-                return hashCode;
-            }
+            return HashCode.Combine(World, HousingZone, Ward, Plot);
         }
     }
 }

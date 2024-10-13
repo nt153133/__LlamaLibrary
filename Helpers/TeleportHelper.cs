@@ -50,12 +50,12 @@ namespace LlamaLibrary.Helpers
 
         public static void UpdateTeleportArray()
         {
-            Log.Information("Updating teleport");
+            //Log.Information("Updating teleport");
             CallUpdate();
             _lastUpdate = DateTime.Now;
             _lastUpdateWorld = WorldHelper.CurrentWorld;
             _teleportList = Core.Memory.Read<Telepo>(LlamaLibrary.Memory.Offsets.UIStateTelepo).TeleportInfos;
-            Log.Information("Finished updating teleport");
+            //Log.Information("Finished updating teleport");
         }
 
         public static void CallUpdate()

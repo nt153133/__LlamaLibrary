@@ -71,6 +71,34 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return zone;
         }
 
+        public static async Task<bool> EnterHouse(HouseLocation location)
+        {
+            if (!await GetToResidential(location))
+            {
+                return false;
+            }
+
+            var recordedPlot = GetRecordedPlot(location.HousingZone, location.Plot);
+
+            if (recordedPlot == null)
+            {
+                Log.Error($"Recorded plot null for {location.HousingZone} {location.Plot}");
+                return false;
+            }
+
+            return await EnterHouse(recordedPlot);
+        }
+
+        public static async Task<bool> EnterHouse(RecordedPlot recordedPlot)
+        {
+            if (HousingHelper.IsInsideHouse && HousingHelper.CurrentHouseLocation?.Plot == recordedPlot.Plot)
+            {
+                return true;
+            }
+
+            return await recordedPlot.Enter();
+        }
+
         public static RecordedPlot? GetRecordedPlot(HousingZone zone, int plot)
         {
             return !HousingZonesEnums.Contains(TranslateZone(zone)) ? null : ResourceManager.HousingPlots[TranslateZone(zone)].Value[plot];
@@ -264,7 +292,7 @@ namespace LlamaLibrary.Helpers.HousingTravel
                 return false;
             }
 
-            return await GetToResidential(district, location, ward);
+            return await GetToResidential(district, location, ward, 1f);
         }
 
         public static async Task<bool> GetToResidential(ResidentialDistrict district, Vector3 location, int ward, float distance = 2.5f)

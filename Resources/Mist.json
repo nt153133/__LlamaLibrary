@@ -1,1 +1,1366 @@
-{"1":{"HousingZone":339,"Plot":1,"Size":1,"PlacardLocation":{"X":-55.1918945,"Y":41.5197754,"Z":-104.753235,"MagnitudeSqr":15743.2773,"Magnitude":125.472214},"EntranceLocation":{"X":-57.35543,"Y":40,"Z":-107.9916,"MagnitudeSqr":22607.6641,"Magnitude":150.358459},"IsInSubdivision":false},"2":{"HousingZone":339,"Plot":2,"Size":2,"PlacardLocation":{"X":-121.599182,"Y":35.5687256,"Z":-83.84839,"MagnitudeSqr":23082.0488,"Magnitude":151.92778},"EntranceLocation":{"X":-130.644669,"Y":36.056736,"Z":-86.4466858,"MagnitudeSqr":25841.1465,"Magnitude":160.751816},"IsInSubdivision":false},"3":{"HousingZone":339,"Plot":3,"Size":0,"PlacardLocation":{"X":-93.09534,"Y":32.1812744,"Z":-73.04492,"MagnitudeSqr":15037.9375,"Magnitude":122.629265},"EntranceLocation":{"X":-91.9584351,"Y":31.9999638,"Z":-64.35096,"MagnitudeSqr":13621.3975,"Magnitude":116.710739},"IsInSubdivision":false},"4":{"HousingZone":339,"Plot":4,"Size":1,"PlacardLocation":{"X":-75.1506958,"Y":19.3942261,"Z":-20.5539551,"MagnitudeSqr":6446.228,"Magnitude":80.28841},"EntranceLocation":{"X":-78.58864,"Y":18.07774,"Z":-15.658802,"MagnitudeSqr":6748.177,"Magnitude":82.1472855},"IsInSubdivision":false},"5":{"HousingZone":339,"Plot":5,"Size":2,"PlacardLocation":{"X":-123.857544,"Y":19.97406,"Z":17.8988037,"MagnitudeSqr":16060.0215,"Magnitude":126.728142},"EntranceLocation":{"X":-129.601089,"Y":19.9999962,"Z":17.3694267,"MagnitudeSqr":17498.14,"Magnitude":132.280533},"IsInSubdivision":false},"6":{"HousingZone":339,"Plot":6,"Size":1,"PlacardLocation":{"X":-51.4076538,"Y":14.6028442,"Z":5.32537842,"MagnitudeSqr":2884.34961,"Magnitude":53.7061424},"EntranceLocation":{"X":-46.0291824,"Y":14.0906982,"Z":6.3401165,"MagnitudeSqr":2357.43042,"Magnitude":48.5533752},"IsInSubdivision":false},"7":{"HousingZone":339,"Plot":7,"Size":1,"PlacardLocation":{"X":-37.0031738,"Y":25.7419434,"Z":-37.30841,"MagnitudeSqr":3423.8,"Magnitude":58.51325},"EntranceLocation":{"X":-39.2266235,"Y":24.0699978,"Z":-42.6421928,"MagnitudeSqr":3936.44922,"Magnitude":62.741127},"IsInSubdivision":false},"8":{"HousingZone":339,"Plot":8,"Size":0,"PlacardLocation":{"X":-24.8264771,"Y":37.52185,"Z":-83.60425,"MagnitudeSqr":9013.914,"Magnitude":94.9416351},"EntranceLocation":{"X":-21.8474426,"Y":35.99997,"Z":-88.01116,"MagnitudeSqr":9519.273,"Magnitude":97.5667648},"IsInSubdivision":false},"9":{"HousingZone":339,"Plot":9,"Size":0,"PlacardLocation":{"X":52.8114,"Y":39.56665,"Z":-100.38916,"MagnitudeSqr":14432.5469,"Magnitude":120.135536},"EntranceLocation":{"X":48.8577156,"Y":37.99997,"Z":-95.81692,"MagnitudeSqr":13011.9561,"Magnitude":114.069962},"IsInSubdivision":false},"10":{"HousingZone":339,"Plot":10,"Size":0,"PlacardLocation":{"X":64.16406,"Y":41.58081,"Z":-110.88739,"MagnitudeSqr":18142.0039,"Magnitude":134.692261},"EntranceLocation":{"X":67.5363541,"Y":41.99997,"Z":-115.061287,"MagnitudeSqr":19564.2559,"Magnitude":139.872284},"IsInSubdivision":false},"11":{"HousingZone":339,"Plot":11,"Size":0,"PlacardLocation":{"X":16.8306885,"Y":26.5964355,"Z":-49.17987,"MagnitudeSqr":3409.30225,"Magnitude":58.38923},"EntranceLocation":{"X":13.20515,"Y":24.99997,"Z":-52.6158447,"MagnitudeSqr":3567.80151,"Magnitude":59.7310753},"IsInSubdivision":false},"12":{"HousingZone":339,"Plot":12,"Size":0,"PlacardLocation":{"X":50.6446533,"Y":26.5964355,"Z":-44.2053833,"MagnitudeSqr":5226.367,"Magnitude":72.29362},"EntranceLocation":{"X":47.25787,"Y":25.99997,"Z":-49.3749046,"MagnitudeSqr":5347.18555,"Magnitude":73.12445},"IsInSubdivision":false},"13":{"HousingZone":339,"Plot":13,"Size":0,"PlacardLocation":{"X":72.46509,"Y":19.2720947,"Z":-19.1500854,"MagnitudeSqr":5989.328,"Magnitude":77.39075},"EntranceLocation":{"X":67.97375,"Y":17.99997,"Z":-21.6176777,"MagnitudeSqr":5411.753,"Magnitude":73.56462},"IsInSubdivision":false},"14":{"HousingZone":339,"Plot":14,"Size":1,"PlacardLocation":{"X":104.173218,"Y":30.6248779,"Z":-59.8917236,"MagnitudeSqr":15376.9609,"Magnitude":124.003876},"EntranceLocation":{"X":99.14175,"Y":29.1000137,"Z":-59.26249,"MagnitudeSqr":14187.9395,"Magnitude":119.113136},"IsInSubdivision":false},"15":{"HousingZone":339,"Plot":15,"Size":2,"PlacardLocation":{"X":125.993774,"Y":45.5786133,"Z":-88.51758,"MagnitudeSqr":25787.2031,"Magnitude":160.583939},"EntranceLocation":{"X":131.565292,"Y":46.0,"Z":-88.07707,"MagnitudeSqr":27182.9961,"Magnitude":164.872665},"IsInSubdivision":false},"16":{"HousingZone":339,"Plot":16,"Size":0,"PlacardLocation":{"X":123.155518,"Y":29.7398682,"Z":-41.3062134,"MagnitudeSqr":17757.9453,"Magnitude":133.258942},"EntranceLocation":{"X":125.636856,"Y":28.0906658,"Z":-38.144577,"MagnitudeSqr":18028.7148,"Magnitude":134.271057},"IsInSubdivision":false},"17":{"HousingZone":339,"Plot":17,"Size":0,"PlacardLocation":{"X":97.30664,"Y":23.63617,"Z":-25.3452759,"MagnitudeSqr":10669.6338,"Magnitude":103.293922},"EntranceLocation":{"X":100.999977,"Y":21.99997,"Z":-23.8864784,"MagnitudeSqr":11255.5576,"Magnitude":106.092216},"IsInSubdivision":false},"18":{"HousingZone":339,"Plot":18,"Size":0,"PlacardLocation":{"X":85.1300049,"Y":17.6546631,"Z":-0.6256714,"MagnitudeSqr":7559.19629,"Magnitude":86.94364},"EntranceLocation":{"X":83.01888,"Y":16.9999714,"Z":3.84024882,"MagnitudeSqr":7195.88135,"Magnitude":84.8285446},"IsInSubdivision":false},"19":{"HousingZone":339,"Plot":19,"Size":0,"PlacardLocation":{"X":33.21875,"Y":7.583679,"Z":37.15564,"MagnitudeSqr":2541.539,"Magnitude":50.41368},"EntranceLocation":{"X":37.9783859,"Y":8.09997,"Z":34.616,"MagnitudeSqr":2706.23486,"Magnitude":52.0214844},"IsInSubdivision":false},"20":{"HousingZone":339,"Plot":20,"Size":0,"PlacardLocation":{"X":55.22229,"Y":5.783081,"Z":47.68445,"MagnitudeSqr":5356.752,"Magnitude":73.1898346},"EntranceLocation":{"X":60.6543045,"Y":5.99996853,"Z":45.530262,"MagnitudeSqr":5787.94873,"Magnitude":76.07857},"IsInSubdivision":false},"21":{"HousingZone":339,"Plot":21,"Size":0,"PlacardLocation":{"X":75.05908,"Y":4.68450928,"Z":61.4785156,"MagnitudeSqr":9435.418,"Magnitude":97.13608},"EntranceLocation":{"X":81.30532,"Y":4.99996948,"Z":60.1536064,"MagnitudeSqr":10254.0107,"Magnitude":101.262093},"IsInSubdivision":false},"22":{"HousingZone":339,"Plot":22,"Size":0,"PlacardLocation":{"X":132.738159,"Y":19.4857788,"Z":63.3707275,"MagnitudeSqr":22014.9629,"Magnitude":148.3744},"EntranceLocation":{"X":129.950256,"Y":17.99997,"Z":59.828392,"MagnitudeSqr":20790.5039,"Magnitude":144.189133},"IsInSubdivision":false},"23":{"HousingZone":339,"Plot":23,"Size":0,"PlacardLocation":{"X":124.8645,"Y":19.2720947,"Z":27.359375,"MagnitudeSqr":16711.0938,"Magnitude":129.2714},"EntranceLocation":{"X":122.289345,"Y":17.9999714,"Z":32.06504,"MagnitudeSqr":16306.85,"Magnitude":127.698273},"IsInSubdivision":false},"24":{"HousingZone":339,"Plot":24,"Size":0,"PlacardLocation":{"X":146.471313,"Y":23.6056519,"Z":6.82073975,"MagnitudeSqr":22057.5957,"Magnitude":148.518},"EntranceLocation":{"X":150.093842,"Y":21.99997,"Z":5.1340766,"MagnitudeSqr":23038.52,"Magnitude":151.784454},"IsInSubdivision":false},"25":{"HousingZone":339,"Plot":25,"Size":0,"PlacardLocation":{"X":174.791992,"Y":33.5545654,"Z":31.5404053,"MagnitudeSqr":32672.9453,"Magnitude":180.756592},"EntranceLocation":{"X":172.384369,"Y":31.9999714,"Z":28.0270081,"MagnitudeSqr":31525.8828,"Magnitude":177.5553},"IsInSubdivision":false},"26":{"HousingZone":339,"Plot":26,"Size":0,"PlacardLocation":{"X":155.138428,"Y":29.67871,"Z":52.475708,"MagnitudeSqr":27702.457,"Magnitude":166.440552},"EntranceLocation":{"X":157.297562,"Y":27.99997,"Z":56.0688858,"MagnitudeSqr":28670.2422,"Magnitude":169.322891},"IsInSubdivision":false},"27":{"HousingZone":339,"Plot":27,"Size":0,"PlacardLocation":{"X":182.482544,"Y":37.6134033,"Z":6.85125732,"MagnitudeSqr":34761.59,"Magnitude":186.4446},"EntranceLocation":{"X":185.891022,"Y":35.99997,"Z":4.360922,"MagnitudeSqr":35870.49,"Magnitude":189.395065},"IsInSubdivision":false},"28":{"HousingZone":339,"Plot":28,"Size":0,"PlacardLocation":{"X":203.051758,"Y":41.61133,"Z":37.9490967,"MagnitudeSqr":44401.6523,"Magnitude":210.717},"EntranceLocation":{"X":199.8601,"Y":39.99997,"Z":34.46041,"MagnitudeSqr":42731.58,"Magnitude":206.716171},"IsInSubdivision":false},"29":{"HousingZone":339,"Plot":29,"Size":1,"PlacardLocation":{"X":177.99646,"Y":39.5970459,"Z":74.93701,"MagnitudeSqr":38866.2227,"Magnitude":197.145187},"EntranceLocation":{"X":181.2426,"Y":38.04373,"Z":71.86338,"MagnitudeSqr":39460.5469,"Magnitude":198.64679},"IsInSubdivision":false},"30":{"HousingZone":339,"Plot":30,"Size":1,"PlacardLocation":{"X":134.416748,"Y":19.6383667,"Z":83.32947,"MagnitudeSqr":25397.3281,"Magnitude":159.365387},"EntranceLocation":{"X":132.763474,"Y":19.9999962,"Z":86.82873,"MagnitudeSqr":25565.37,"Magnitude":159.891739},"IsInSubdivision":false},"31":{"HousingZone":339,"Plot":31,"Size":1,"PlacardLocation":{"X":-599.359131,"Y":41.58081,"Z":-759.1516,"MagnitudeSqr":937271.5,"Magnitude":968.1278},"EntranceLocation":{"X":-596.0918,"Y":40.1,"Z":-761.918152,"MagnitudeSqr":937452.7,"Magnitude":968.2214},"IsInSubdivision":true},"32":{"HousingZone":339,"Plot":32,"Size":2,"PlacardLocation":{"X":-620.203,"Y":35.5687256,"Z":-825.589355,"MagnitudeSqr":1067514.75,"Magnitude":1033.206},"EntranceLocation":{"X":-620.269,"Y":36.0604668,"Z":-831.8207,"MagnitudeSqr":1077959.63,"Magnitude":1038.24829},"IsInSubdivision":true},"33":{"HousingZone":339,"Plot":33,"Size":0,"PlacardLocation":{"X":-630.9758,"Y":32.08972,"Z":-796.96344,"MagnitudeSqr":1034311.0,"Magnitude":1017.0108},"EntranceLocation":{"X":-633.6541,"Y":31.9999676,"Z":-799.9197,"MagnitudeSqr":1042413.0,"Magnitude":1020.98627},"IsInSubdivision":true},"34":{"HousingZone":339,"Plot":34,"Size":1,"PlacardLocation":{"X":-683.4058,"Y":19.6077881,"Z":-779.1409,"MagnitudeSqr":1074488.5,"Magnitude":1036.57532},"EntranceLocation":{"X":-687.8729,"Y":18.0758629,"Z":-781.1045,"MagnitudeSqr":1083620.13,"Magnitude":1040.9707},"IsInSubdivision":true},"35":{"HousingZone":339,"Plot":35,"Size":2,"PlacardLocation":{"X":-722.011169,"Y":19.97406,"Z":-827.908752,"MagnitudeSqr":1207132.0,"Magnitude":1098.69556},"EntranceLocation":{"X":-720.0544,"Y":19.9999981,"Z":-831.4844,"MagnitudeSqr":1210244.5,"Magnitude":1100.11108},"IsInSubdivision":true},"36":{"HousingZone":339,"Plot":36,"Size":1,"PlacardLocation":{"X":-709.285156,"Y":14.7249146,"Z":-755.4589,"MagnitudeSqr":1074020.5,"Magnitude":1036.34961},"EntranceLocation":{"X":-710.090149,"Y":14.0999966,"Z":-749.91095,"MagnitudeSqr":1066793.25,"Magnitude":1032.85681},"IsInSubdivision":true},"37":{"HousingZone":339,"Plot":37,"Size":1,"PlacardLocation":{"X":-666.712463,"Y":25.619873,"Z":-740.9324,"MagnitudeSqr":994142.7,"Magnitude":997.067},"EntranceLocation":{"X":-661.5451,"Y":23.9999981,"Z":-743.8502,"MagnitudeSqr":991531.063,"Magnitude":995.756531},"IsInSubdivision":true},"38":{"HousingZone":339,"Plot":38,"Size":0,"PlacardLocation":{"X":-620.599731,"Y":37.6134033,"Z":-728.8777,"MagnitudeSqr":917821.5,"Magnitude":958.03},"EntranceLocation":{"X":-615.886658,"Y":35.9999657,"Z":-726.8923,"MagnitudeSqr":908984.75,"Magnitude":953.4069},"IsInSubdivision":true},"39":{"HousingZone":339,"Plot":39,"Size":0,"PlacardLocation":{"X":-603.4181,"Y":39.56665,"Z":-651.148254,"MagnitudeSqr":789673.0,"Magnitude":888.6355},"EntranceLocation":{"X":-608.2764,"Y":38.0906677,"Z":-654.6879,"MagnitudeSqr":800067.4,"Magnitude":894.464844},"IsInSubdivision":true},"40":{"HousingZone":339,"Plot":40,"Size":0,"PlacardLocation":{"X":-593.164,"Y":41.58081,"Z":-639.82605,"MagnitudeSqr":762949.9,"Magnitude":873.470032},"EntranceLocation":{"X":-590.8434,"Y":42.099968,"Z":-635.963745,"MagnitudeSqr":755318.2,"Magnitude":869.090454},"IsInSubdivision":true},"41":{"HousingZone":339,"Plot":41,"Size":0,"PlacardLocation":{"X":-655.054565,"Y":26.5964355,"Z":-687.159546,"MagnitudeSqr":901992.1,"Magnitude":949.732666},"EntranceLocation":{"X":-651.967651,"Y":24.9999714,"Z":-689.430542,"MagnitudeSqr":901001.25,"Magnitude":949.2109},"IsInSubdivision":true},"42":{"HousingZone":339,"Plot":42,"Size":0,"PlacardLocation":{"X":-659.845947,"Y":26.5964355,"Z":-653.3456,"MagnitudeSqr":862964.5,"Magnitude":928.9588},"EntranceLocation":{"X":-654.0159,"Y":25.9999676,"Z":-656.0652,"MagnitudeSqr":858834.4,"Magnitude":926.733154},"IsInSubdivision":true},"43":{"HousingZone":339,"Plot":43,"Size":0,"PlacardLocation":{"X":-684.8707,"Y":19.4246826,"Z":-631.5862,"MagnitudeSqr":868326.3,"Magnitude":931.8403},"EntranceLocation":{"X":-682.2088,"Y":17.9999676,"Z":-636.022156,"MagnitudeSqr":870257.0,"Magnitude":932.8757},"IsInSubdivision":true},"44":{"HousingZone":339,"Plot":44,"Size":1,"PlacardLocation":{"X":-644.1901,"Y":30.6248779,"Z":-599.8779,"MagnitudeSqr":775772.3,"Magnitude":880.779358},"EntranceLocation":{"X":-645.6244,"Y":29.1000118,"Z":-604.2517,"MagnitudeSqr":782797.75,"Magnitude":884.7586},"IsInSubdivision":true},"45":{"HousingZone":339,"Plot":45,"Size":2,"PlacardLocation":{"X":-615.5032,"Y":45.5786133,"Z":-577.99646,"MagnitudeSqr":715001.5,"Magnitude":845.577637},"EntranceLocation":{"X":-615.4224,"Y":45.9999962,"Z":-571.3875,"MagnitudeSqr":707344.438,"Magnitude":841.0377},"IsInSubdivision":true},"46":{"HousingZone":339,"Plot":46,"Size":0,"PlacardLocation":{"X":-662.7146,"Y":29.7398682,"Z":-580.895752,"MagnitudeSqr":777515.0,"Magnitude":881.7681},"EntranceLocation":{"X":-666.0594,"Y":27.9999676,"Z":-579.0739,"MagnitudeSqr":779745.7,"Magnitude":883.0321},"IsInSubdivision":true},"47":{"HousingZone":339,"Plot":47,"Size":0,"PlacardLocation":{"X":-678.706055,"Y":23.7888184,"Z":-606.5614,"MagnitudeSqr":829124.5,"Magnitude":910.562744},"EntranceLocation":{"X":-680.074341,"Y":21.9999676,"Z":-602.365356,"MagnitudeSqr":825829.1,"Magnitude":908.7514},"IsInSubdivision":true},"48":{"HousingZone":339,"Plot":48,"Size":0,"PlacardLocation":{"X":-703.3036,"Y":17.7766724,"Z":-618.8907,"MagnitudeSqr":877977.6,"Magnitude":937.0046},"EntranceLocation":{"X":-708.040466,"Y":16.9999714,"Z":-621.766357,"MagnitudeSqr":888203.75,"Magnitude":942.4456},"IsInSubdivision":true},"49":{"HousingZone":339,"Plot":49,"Size":0,"PlacardLocation":{"X":-741.3291,"Y":7.64471436,"Z":-670.771362,"MagnitudeSqr":999561.5,"Magnitude":999.7807},"EntranceLocation":{"X":-738.3854,"Y":7.99996567,"Z":-665.8497,"MagnitudeSqr":988632.75,"Magnitude":994.3001},"IsInSubdivision":true},"50":{"HousingZone":339,"Plot":50,"Size":0,"PlacardLocation":{"X":-751.7052,"Y":5.783081,"Z":-648.79834,"MagnitudeSqr":986033.4,"Magnitude":992.9921},"EntranceLocation":{"X":-748.8318,"Y":5.99996662,"Z":-643.081665,"MagnitudeSqr":974339.1,"Magnitude":987.0862},"IsInSubdivision":true},"51":{"HousingZone":339,"Plot":51,"Size":0,"PlacardLocation":{"X":-765.5299,"Y":4.714966,"Z":-628.9617,"MagnitudeSqr":981651.1,"Magnitude":990.7831},"EntranceLocation":{"X":-764.3472,"Y":4.99996662,"Z":-622.9699,"MagnitudeSqr":972343.2,"Magnitude":986.074646},"IsInSubdivision":true},"52":{"HousingZone":339,"Plot":52,"Size":0,"PlacardLocation":{"X":-767.422,"Y":19.5467529,"Z":-571.2521,"MagnitudeSqr":915647.5,"Magnitude":956.8947},"EntranceLocation":{"X":-763.7373,"Y":17.9999714,"Z":-573.524963,"MagnitudeSqr":912549.563,"Magnitude":955.2746},"IsInSubdivision":true},"53":{"HousingZone":339,"Plot":53,"Size":0,"PlacardLocation":{"X":-731.4107,"Y":19.2415161,"Z":-579.1562,"MagnitudeSqr":870753.75,"Magnitude":933.141846},"EntranceLocation":{"X":-736.112061,"Y":17.9999714,"Z":-581.906433,"MagnitudeSqr":880800.0,"Magnitude":938.50946},"IsInSubdivision":true},"54":{"HousingZone":339,"Plot":54,"Size":0,"PlacardLocation":{"X":-710.8721,"Y":23.5751343,"Z":-557.427368,"MagnitudeSqr":816620.1,"Magnitude":903.670349},"EntranceLocation":{"X":-708.7555,"Y":21.9999676,"Z":-553.942566,"MagnitudeSqr":809670.75,"Magnitude":899.8171},"IsInSubdivision":true},"55":{"HousingZone":339,"Plot":55,"Size":0,"PlacardLocation":{"X":-735.5917,"Y":33.585083,"Z":-529.1982,"MagnitudeSqr":822273.75,"Magnitude":906.7931},"EntranceLocation":{"X":-731.635864,"Y":32.0999641,"Z":-531.6151,"MagnitudeSqr":818936.1,"Magnitude":904.950867},"IsInSubdivision":true},"56":{"HousingZone":339,"Plot":56,"Size":0,"PlacardLocation":{"X":-756.6491,"Y":29.6176758,"Z":-548.8823,"MagnitudeSqr":874666.9,"Magnitude":935.236267},"EntranceLocation":{"X":-759.9093,"Y":27.9999676,"Z":-546.2809,"MagnitudeSqr":876668.938,"Magnitude":936.306},"IsInSubdivision":true},"57":{"HousingZone":339,"Plot":57,"Size":0,"PlacardLocation":{"X":-710.9026,"Y":37.6134033,"Z":-521.294,"MagnitudeSqr":778544.75,"Magnitude":882.3518},"EntranceLocation":{"X":-708.851257,"Y":35.9999657,"Z":-517.908447,"MagnitudeSqr":771995.25,"Magnitude":878.6326},"IsInSubdivision":true},"58":{"HousingZone":339,"Plot":58,"Size":0,"PlacardLocation":{"X":-742.031,"Y":41.61133,"Z":-500.907928,"MagnitudeSqr":803250.25,"Magnitude":896.2423},"EntranceLocation":{"X":-738.663757,"Y":40.099968,"Z":-504.395172,"MagnitudeSqr":801646.6,"Magnitude":895.3472},"IsInSubdivision":true},"59":{"HousingZone":339,"Plot":59,"Size":1,"PlacardLocation":{"X":-778.9578,"Y":39.5970459,"Z":-526.0243,"MagnitudeSqr":885044.8,"Magnitude":940.7682},"EntranceLocation":{"X":-776.0671,"Y":38.00001,"Z":-522.5633,"MagnitudeSqr":876796.5,"Magnitude":936.374146},"IsInSubdivision":true},"60":{"HousingZone":339,"Plot":60,"Size":1,"PlacardLocation":{"X":-787.289246,"Y":19.6383667,"Z":-569.5735,"MagnitudeSqr":944624.0,"Magnitude":971.917664},"EntranceLocation":{"X":-791.284058,"Y":20.1,"Z":-571.4673,"MagnitudeSqr":953109.25,"Magnitude":976.273132},"IsInSubdivision":true}}
+{
+  "1": {
+    "HousingZone": 339,
+    "Plot": 1,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": -55.191895,
+      "Y": 41.519775,
+      "Z": -104.753235
+    },
+    "EntranceLocation": {
+      "X": -57.35543,
+      "Y": 40.0,
+      "Z": -107.9916
+    },
+    "CenterLocation": {
+      "X": -72.2356,
+      "Y": 47.5943,
+      "Z": -107.701
+    },
+    "Radius": 16.5,
+    "IsInSubdivision": false
+  },
+  "2": {
+    "HousingZone": 339,
+    "Plot": 2,
+    "Size": 2,
+    "PlacardLocation": {
+      "X": -121.59918,
+      "Y": 35.568726,
+      "Z": -83.84839
+    },
+    "EntranceLocation": {
+      "X": -130.64467,
+      "Y": 36.056736,
+      "Z": -86.446686
+    },
+    "CenterLocation": {
+      "X": -144.092,
+      "Y": 47.9212,
+      "Z": -99.9273
+    },
+    "Radius": 20.5,
+    "IsInSubdivision": false
+  },
+  "3": {
+    "HousingZone": 339,
+    "Plot": 3,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -93.09534,
+      "Y": 32.181274,
+      "Z": -73.04492
+    },
+    "EntranceLocation": {
+      "X": -91.958435,
+      "Y": 31.999964,
+      "Z": -64.35096
+    },
+    "CenterLocation": {
+      "X": -96.005,
+      "Y": 38.4242,
+      "Z": -59.9264
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "4": {
+    "HousingZone": 339,
+    "Plot": 4,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": -75.150696,
+      "Y": 19.394226,
+      "Z": -20.553955
+    },
+    "EntranceLocation": {
+      "X": -78.58864,
+      "Y": 18.07774,
+      "Z": -15.658802
+    },
+    "CenterLocation": {
+      "X": -91.981,
+      "Y": 25.8393,
+      "Z": -11.768
+    },
+    "Radius": 16.5,
+    "IsInSubdivision": false
+  },
+  "5": {
+    "HousingZone": 339,
+    "Plot": 5,
+    "Size": 2,
+    "PlacardLocation": {
+      "X": -123.857544,
+      "Y": 19.97406,
+      "Z": 17.898804
+    },
+    "EntranceLocation": {
+      "X": -129.60109,
+      "Y": 19.999996,
+      "Z": 17.369427
+    },
+    "CenterLocation": {
+      "X": -147.961,
+      "Y": 31.4693,
+      "Z": 28.1063
+    },
+    "Radius": 24.5,
+    "IsInSubdivision": false
+  },
+  "6": {
+    "HousingZone": 339,
+    "Plot": 6,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": -51.407654,
+      "Y": 14.602844,
+      "Z": 5.3253784
+    },
+    "EntranceLocation": {
+      "X": -46.029182,
+      "Y": 14.090698,
+      "Z": 6.3401165
+    },
+    "CenterLocation": {
+      "X": -35.7381,
+      "Y": 22.7075,
+      "Z": -3.93301
+    },
+    "Radius": 16.5,
+    "IsInSubdivision": false
+  },
+  "7": {
+    "HousingZone": 339,
+    "Plot": 7,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": -37.003174,
+      "Y": 25.741943,
+      "Z": -37.30841
+    },
+    "EntranceLocation": {
+      "X": -39.226624,
+      "Y": 24.069998,
+      "Z": -42.642193
+    },
+    "CenterLocation": {
+      "X": -39.9135,
+      "Y": 30.9619,
+      "Z": -56.0925
+    },
+    "Radius": 16.5,
+    "IsInSubdivision": false
+  },
+  "8": {
+    "HousingZone": 339,
+    "Plot": 8,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -24.826477,
+      "Y": 37.52185,
+      "Z": -83.60425
+    },
+    "EntranceLocation": {
+      "X": -21.847443,
+      "Y": 35.99997,
+      "Z": -88.01116
+    },
+    "CenterLocation": {
+      "X": -12.0237,
+      "Y": 43.3226,
+      "Z": -91.8978
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "9": {
+    "HousingZone": 339,
+    "Plot": 9,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 52.8114,
+      "Y": 39.56665,
+      "Z": -100.38916
+    },
+    "EntranceLocation": {
+      "X": 48.857716,
+      "Y": 37.99997,
+      "Z": -95.81692
+    },
+    "CenterLocation": {
+      "X": 40.0482,
+      "Y": 45.3142,
+      "Z": -99.9611
+    },
+    "Radius": 12.0,
+    "IsInSubdivision": false
+  },
+  "10": {
+    "HousingZone": 339,
+    "Plot": 10,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 64.16406,
+      "Y": 41.58081,
+      "Z": -110.88739
+    },
+    "EntranceLocation": {
+      "X": 67.536354,
+      "Y": 41.99997,
+      "Z": -115.06129
+    },
+    "CenterLocation": {
+      "X": 63.9979,
+      "Y": 50.9741,
+      "Z": -124.041
+    },
+    "Radius": 12.0,
+    "IsInSubdivision": false
+  },
+  "11": {
+    "HousingZone": 339,
+    "Plot": 11,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 16.830688,
+      "Y": 26.596436,
+      "Z": -49.17987
+    },
+    "EntranceLocation": {
+      "X": 13.20515,
+      "Y": 24.99997,
+      "Z": -52.615845
+    },
+    "CenterLocation": {
+      "X": 3.91649,
+      "Y": 30.7432,
+      "Z": -56.028
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "12": {
+    "HousingZone": 339,
+    "Plot": 12,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 50.644653,
+      "Y": 26.596436,
+      "Z": -44.205383
+    },
+    "EntranceLocation": {
+      "X": 47.25787,
+      "Y": 25.99997,
+      "Z": -49.374905
+    },
+    "CenterLocation": {
+      "X": 47.9871,
+      "Y": 31.9163,
+      "Z": -60.0058
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "13": {
+    "HousingZone": 339,
+    "Plot": 13,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 72.46509,
+      "Y": 19.272095,
+      "Z": -19.150085
+    },
+    "EntranceLocation": {
+      "X": 67.97375,
+      "Y": 17.99997,
+      "Z": -21.617678
+    },
+    "CenterLocation": {
+      "X": 64.0494,
+      "Y": 26.1353,
+      "Z": -32.0057
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "14": {
+    "HousingZone": 339,
+    "Plot": 14,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": 104.17322,
+      "Y": 30.624878,
+      "Z": -59.891724
+    },
+    "EntranceLocation": {
+      "X": 99.14175,
+      "Y": 29.100014,
+      "Z": -59.26249
+    },
+    "CenterLocation": {
+      "X": 83.6044,
+      "Y": 36.3088,
+      "Z": -63.1764
+    },
+    "Radius": 16.12,
+    "IsInSubdivision": false
+  },
+  "15": {
+    "HousingZone": 339,
+    "Plot": 15,
+    "Size": 2,
+    "PlacardLocation": {
+      "X": 125.993774,
+      "Y": 45.578613,
+      "Z": -88.51758
+    },
+    "EntranceLocation": {
+      "X": 131.56529,
+      "Y": 46.0,
+      "Z": -88.07707
+    },
+    "CenterLocation": {
+      "X": 148.047,
+      "Y": 57.6093,
+      "Z": -104.033
+    },
+    "Radius": 24.5,
+    "IsInSubdivision": false
+  },
+  "16": {
+    "HousingZone": 339,
+    "Plot": 16,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 123.15552,
+      "Y": 29.739868,
+      "Z": -41.306213
+    },
+    "EntranceLocation": {
+      "X": 125.636856,
+      "Y": 28.090666,
+      "Z": -38.144577
+    },
+    "CenterLocation": {
+      "X": 135.921,
+      "Y": 34.6152,
+      "Z": -33.9394
+    },
+    "Radius": 12.05,
+    "IsInSubdivision": false
+  },
+  "17": {
+    "HousingZone": 339,
+    "Plot": 17,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 97.30664,
+      "Y": 23.63617,
+      "Z": -25.345276
+    },
+    "EntranceLocation": {
+      "X": 100.99998,
+      "Y": 21.99997,
+      "Z": -23.886478
+    },
+    "CenterLocation": {
+      "X": 111.99,
+      "Y": 27.1198,
+      "Z": -20.0241
+    },
+    "Radius": 12.05,
+    "IsInSubdivision": false
+  },
+  "18": {
+    "HousingZone": 339,
+    "Plot": 18,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 85.130005,
+      "Y": 17.654663,
+      "Z": -0.6256714
+    },
+    "EntranceLocation": {
+      "X": 83.01888,
+      "Y": 16.999971,
+      "Z": 3.8402488
+    },
+    "CenterLocation": {
+      "X": 71.8692,
+      "Y": 24.9809,
+      "Z": 3.88334
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "19": {
+    "HousingZone": 339,
+    "Plot": 19,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 33.21875,
+      "Y": 7.583679,
+      "Z": 37.15564
+    },
+    "EntranceLocation": {
+      "X": 37.978386,
+      "Y": 8.09997,
+      "Z": 34.616
+    },
+    "CenterLocation": {
+      "X": 42.0128,
+      "Y": 15.072,
+      "Z": 23.973
+    },
+    "Radius": 12.3,
+    "IsInSubdivision": false
+  },
+  "20": {
+    "HousingZone": 339,
+    "Plot": 20,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 55.22229,
+      "Y": 5.783081,
+      "Z": 47.68445
+    },
+    "EntranceLocation": {
+      "X": 60.654305,
+      "Y": 5.9999685,
+      "Z": 45.530262
+    },
+    "CenterLocation": {
+      "X": 66.1418,
+      "Y": 14.1896,
+      "Z": 35.8438
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "21": {
+    "HousingZone": 339,
+    "Plot": 21,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 75.05908,
+      "Y": 4.6845093,
+      "Z": 61.478516
+    },
+    "EntranceLocation": {
+      "X": 81.30532,
+      "Y": 4.9999695,
+      "Z": 60.153606
+    },
+    "CenterLocation": {
+      "X": 88.0938,
+      "Y": 13.093,
+      "Z": 51.9848
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "22": {
+    "HousingZone": 339,
+    "Plot": 22,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 132.73816,
+      "Y": 19.485779,
+      "Z": 63.370728
+    },
+    "EntranceLocation": {
+      "X": 129.95026,
+      "Y": 17.99997,
+      "Z": 59.828392
+    },
+    "CenterLocation": {
+      "X": 119.871,
+      "Y": 24.3248,
+      "Z": 55.9862
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "23": {
+    "HousingZone": 339,
+    "Plot": 23,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 124.8645,
+      "Y": 19.272095,
+      "Z": 27.359375
+    },
+    "EntranceLocation": {
+      "X": 122.289345,
+      "Y": 17.999971,
+      "Z": 32.06504
+    },
+    "CenterLocation": {
+      "X": 111.91,
+      "Y": 24.9638,
+      "Z": 27.8804
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "24": {
+    "HousingZone": 339,
+    "Plot": 24,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 146.47131,
+      "Y": 23.605652,
+      "Z": 6.8207397
+    },
+    "EntranceLocation": {
+      "X": 150.09384,
+      "Y": 21.99997,
+      "Z": 5.1340766
+    },
+    "CenterLocation": {
+      "X": 150.078,
+      "Y": 29.8736,
+      "Z": -6.00744
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "25": {
+    "HousingZone": 339,
+    "Plot": 25,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 174.79199,
+      "Y": 33.554565,
+      "Z": 31.540405
+    },
+    "EntranceLocation": {
+      "X": 172.38437,
+      "Y": 31.999971,
+      "Z": 28.027008
+    },
+    "CenterLocation": {
+      "X": 161.945,
+      "Y": 39.0026,
+      "Z": 23.9923
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "26": {
+    "HousingZone": 339,
+    "Plot": 26,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 155.13843,
+      "Y": 29.67871,
+      "Z": 52.475708
+    },
+    "EntranceLocation": {
+      "X": 157.29756,
+      "Y": 27.99997,
+      "Z": 56.068886
+    },
+    "CenterLocation": {
+      "X": 167.817,
+      "Y": 35.8595,
+      "Z": 56.1197
+    },
+    "Radius": 12.1,
+    "IsInSubdivision": false
+  },
+  "27": {
+    "HousingZone": 339,
+    "Plot": 27,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 182.48254,
+      "Y": 37.613403,
+      "Z": 6.8512573
+    },
+    "EntranceLocation": {
+      "X": 185.89102,
+      "Y": 35.99997,
+      "Z": 4.360922
+    },
+    "CenterLocation": {
+      "X": 186.032,
+      "Y": 42.1419,
+      "Z": -5.9631
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "28": {
+    "HousingZone": 339,
+    "Plot": 28,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": 203.05176,
+      "Y": 41.61133,
+      "Z": 37.949097
+    },
+    "EntranceLocation": {
+      "X": 199.8601,
+      "Y": 39.99997,
+      "Z": 34.46041
+    },
+    "CenterLocation": {
+      "X": 195.948,
+      "Y": 47.3955,
+      "Z": 23.9774
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": false
+  },
+  "29": {
+    "HousingZone": 339,
+    "Plot": 29,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": 177.99646,
+      "Y": 39.597046,
+      "Z": 74.93701
+    },
+    "EntranceLocation": {
+      "X": 181.2426,
+      "Y": 38.04373,
+      "Z": 71.86338
+    },
+    "CenterLocation": {
+      "X": 195.998,
+      "Y": 45.553,
+      "Z": 63.907
+    },
+    "Radius": 16.0,
+    "IsInSubdivision": false
+  },
+  "30": {
+    "HousingZone": 339,
+    "Plot": 30,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": 134.41675,
+      "Y": 19.638367,
+      "Z": 83.32947
+    },
+    "EntranceLocation": {
+      "X": 132.76347,
+      "Y": 19.999996,
+      "Z": 86.82873
+    },
+    "CenterLocation": {
+      "X": 140.161,
+      "Y": 28.1559,
+      "Z": 99.9734
+    },
+    "Radius": 16.5,
+    "IsInSubdivision": false
+  },
+  "31": {
+    "HousingZone": 339,
+    "Plot": 31,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": -599.35913,
+      "Y": 41.58081,
+      "Z": -759.1516
+    },
+    "EntranceLocation": {
+      "X": -596.0918,
+      "Y": 40.1,
+      "Z": -761.91815
+    },
+    "CenterLocation": {
+      "X": -596.299,
+      "Y": 47.5943,
+      "Z": -776.236
+    },
+    "Radius": 16.5,
+    "IsInSubdivision": true
+  },
+  "32": {
+    "HousingZone": 339,
+    "Plot": 32,
+    "Size": 2,
+    "PlacardLocation": {
+      "X": -620.203,
+      "Y": 35.568726,
+      "Z": -825.58936
+    },
+    "EntranceLocation": {
+      "X": -620.269,
+      "Y": 36.060467,
+      "Z": -831.8207
+    },
+    "CenterLocation": {
+      "X": -604.073,
+      "Y": 47.9212,
+      "Z": -848.092
+    },
+    "Radius": 20.5,
+    "IsInSubdivision": true
+  },
+  "33": {
+    "HousingZone": 339,
+    "Plot": 33,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -630.9758,
+      "Y": 32.08972,
+      "Z": -796.96344
+    },
+    "EntranceLocation": {
+      "X": -633.6541,
+      "Y": 31.999968,
+      "Z": -799.9197
+    },
+    "CenterLocation": {
+      "X": -644.073,
+      "Y": 38.4242,
+      "Z": -800.005
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "34": {
+    "HousingZone": 339,
+    "Plot": 34,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": -683.4058,
+      "Y": 19.607788,
+      "Z": -779.1409
+    },
+    "EntranceLocation": {
+      "X": -687.8729,
+      "Y": 18.075863,
+      "Z": -781.1045
+    },
+    "CenterLocation": {
+      "X": -692.232,
+      "Y": 25.8393,
+      "Z": -795.981
+    },
+    "Radius": 16.5,
+    "IsInSubdivision": true
+  },
+  "35": {
+    "HousingZone": 339,
+    "Plot": 35,
+    "Size": 2,
+    "PlacardLocation": {
+      "X": -722.01117,
+      "Y": 19.97406,
+      "Z": -827.90875
+    },
+    "EntranceLocation": {
+      "X": -720.0544,
+      "Y": 19.999998,
+      "Z": -831.4844
+    },
+    "CenterLocation": {
+      "X": -732.106,
+      "Y": 31.4693,
+      "Z": -851.961
+    },
+    "Radius": 24.5,
+    "IsInSubdivision": true
+  },
+  "36": {
+    "HousingZone": 339,
+    "Plot": 36,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": -709.28516,
+      "Y": 14.724915,
+      "Z": -755.4589
+    },
+    "EntranceLocation": {
+      "X": -710.09015,
+      "Y": 14.099997,
+      "Z": -749.91095
+    },
+    "CenterLocation": {
+      "X": -700.067,
+      "Y": 22.7075,
+      "Z": -739.738
+    },
+    "Radius": 16.5,
+    "IsInSubdivision": true
+  },
+  "37": {
+    "HousingZone": 339,
+    "Plot": 37,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": -666.71246,
+      "Y": 25.619873,
+      "Z": -740.9324
+    },
+    "EntranceLocation": {
+      "X": -661.5451,
+      "Y": 23.999998,
+      "Z": -743.8502
+    },
+    "CenterLocation": {
+      "X": -647.907,
+      "Y": 30.9619,
+      "Z": -743.914
+    },
+    "Radius": 16.5,
+    "IsInSubdivision": true
+  },
+  "38": {
+    "HousingZone": 339,
+    "Plot": 38,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -620.59973,
+      "Y": 37.613403,
+      "Z": -728.8777
+    },
+    "EntranceLocation": {
+      "X": -615.88666,
+      "Y": 35.999966,
+      "Z": -726.8923
+    },
+    "CenterLocation": {
+      "X": -612.102,
+      "Y": 43.3226,
+      "Z": -716.024
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "39": {
+    "HousingZone": 339,
+    "Plot": 39,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -603.4181,
+      "Y": 39.56665,
+      "Z": -651.14825
+    },
+    "EntranceLocation": {
+      "X": -608.2764,
+      "Y": 38.090668,
+      "Z": -654.6879
+    },
+    "CenterLocation": {
+      "X": -604.039,
+      "Y": 45.3142,
+      "Z": -663.952
+    },
+    "Radius": 12.0,
+    "IsInSubdivision": true
+  },
+  "40": {
+    "HousingZone": 339,
+    "Plot": 40,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -593.164,
+      "Y": 41.58081,
+      "Z": -639.82605
+    },
+    "EntranceLocation": {
+      "X": -590.8434,
+      "Y": 42.099968,
+      "Z": -635.96375
+    },
+    "CenterLocation": {
+      "X": -579.959,
+      "Y": 50.9741,
+      "Z": -640.002
+    },
+    "Radius": 12.0,
+    "IsInSubdivision": true
+  },
+  "41": {
+    "HousingZone": 339,
+    "Plot": 41,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -655.05457,
+      "Y": 26.596436,
+      "Z": -687.15955
+    },
+    "EntranceLocation": {
+      "X": -651.96765,
+      "Y": 24.999971,
+      "Z": -689.43054
+    },
+    "CenterLocation": {
+      "X": -647.972,
+      "Y": 30.7432,
+      "Z": -700.083
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "42": {
+    "HousingZone": 339,
+    "Plot": 42,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -659.84595,
+      "Y": 26.596436,
+      "Z": -653.3456
+    },
+    "EntranceLocation": {
+      "X": -654.0159,
+      "Y": 25.999968,
+      "Z": -656.0652
+    },
+    "CenterLocation": {
+      "X": -643.994,
+      "Y": 31.9163,
+      "Z": -656.013
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "43": {
+    "HousingZone": 339,
+    "Plot": 43,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -684.8707,
+      "Y": 19.424683,
+      "Z": -631.5862
+    },
+    "EntranceLocation": {
+      "X": -682.2088,
+      "Y": 17.999968,
+      "Z": -636.02216
+    },
+    "CenterLocation": {
+      "X": -671.994,
+      "Y": 26.1353,
+      "Z": -639.951
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "44": {
+    "HousingZone": 339,
+    "Plot": 44,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": -644.1901,
+      "Y": 30.624878,
+      "Z": -599.8779
+    },
+    "EntranceLocation": {
+      "X": -645.6244,
+      "Y": 29.100012,
+      "Z": -604.2517
+    },
+    "CenterLocation": {
+      "X": -640.823,
+      "Y": 36.3088,
+      "Z": -620.396
+    },
+    "Radius": 16.12,
+    "IsInSubdivision": true
+  },
+  "45": {
+    "HousingZone": 339,
+    "Plot": 45,
+    "Size": 2,
+    "PlacardLocation": {
+      "X": -615.5032,
+      "Y": 45.578613,
+      "Z": -577.99646
+    },
+    "EntranceLocation": {
+      "X": -615.4224,
+      "Y": 45.999996,
+      "Z": -571.3875
+    },
+    "CenterLocation": {
+      "X": -599.967,
+      "Y": 57.6093,
+      "Z": -555.953
+    },
+    "Radius": 24.5,
+    "IsInSubdivision": true
+  },
+  "46": {
+    "HousingZone": 339,
+    "Plot": 46,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -662.7146,
+      "Y": 29.739868,
+      "Z": -580.89575
+    },
+    "EntranceLocation": {
+      "X": -666.0594,
+      "Y": 27.999968,
+      "Z": -579.0739
+    },
+    "CenterLocation": {
+      "X": -670.061,
+      "Y": 34.6152,
+      "Z": -568.079
+    },
+    "Radius": 12.05,
+    "IsInSubdivision": true
+  },
+  "47": {
+    "HousingZone": 339,
+    "Plot": 47,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -678.70605,
+      "Y": 23.788818,
+      "Z": -606.5614
+    },
+    "EntranceLocation": {
+      "X": -680.07434,
+      "Y": 21.999968,
+      "Z": -602.36536
+    },
+    "CenterLocation": {
+      "X": -683.976,
+      "Y": 27.1198,
+      "Z": -592.01
+    },
+    "Radius": 12.05,
+    "IsInSubdivision": true
+  },
+  "48": {
+    "HousingZone": 339,
+    "Plot": 48,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -703.3036,
+      "Y": 17.776672,
+      "Z": -618.8907
+    },
+    "EntranceLocation": {
+      "X": -708.04047,
+      "Y": 16.999971,
+      "Z": -621.76636
+    },
+    "CenterLocation": {
+      "X": -707.883,
+      "Y": 24.9809,
+      "Z": -632.131
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "49": {
+    "HousingZone": 339,
+    "Plot": 49,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -741.3291,
+      "Y": 7.6447144,
+      "Z": -670.77136
+    },
+    "EntranceLocation": {
+      "X": -738.3854,
+      "Y": 7.9999657,
+      "Z": -665.8497
+    },
+    "CenterLocation": {
+      "X": -727.973,
+      "Y": 15.072,
+      "Z": -661.987
+    },
+    "Radius": 12.3,
+    "IsInSubdivision": true
+  },
+  "50": {
+    "HousingZone": 339,
+    "Plot": 50,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -751.7052,
+      "Y": 5.783081,
+      "Z": -648.79834
+    },
+    "EntranceLocation": {
+      "X": -748.8318,
+      "Y": 5.9999666,
+      "Z": -643.08167
+    },
+    "CenterLocation": {
+      "X": -739.844,
+      "Y": 14.1896,
+      "Z": -637.858
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "51": {
+    "HousingZone": 339,
+    "Plot": 51,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -765.5299,
+      "Y": 4.714966,
+      "Z": -628.9617
+    },
+    "EntranceLocation": {
+      "X": -764.3472,
+      "Y": 4.9999666,
+      "Z": -622.9699
+    },
+    "CenterLocation": {
+      "X": -755.985,
+      "Y": 13.093,
+      "Z": -615.906
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "52": {
+    "HousingZone": 339,
+    "Plot": 52,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -767.422,
+      "Y": 19.546753,
+      "Z": -571.2521
+    },
+    "EntranceLocation": {
+      "X": -763.7373,
+      "Y": 17.999971,
+      "Z": -573.52496
+    },
+    "CenterLocation": {
+      "X": -759.986,
+      "Y": 24.3248,
+      "Z": -584.129
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "53": {
+    "HousingZone": 339,
+    "Plot": 53,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -731.4107,
+      "Y": 19.241516,
+      "Z": -579.1562
+    },
+    "EntranceLocation": {
+      "X": -736.11206,
+      "Y": 17.999971,
+      "Z": -581.90643
+    },
+    "CenterLocation": {
+      "X": -731.88,
+      "Y": 24.9638,
+      "Z": -592.09
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "54": {
+    "HousingZone": 339,
+    "Plot": 54,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -710.8721,
+      "Y": 23.575134,
+      "Z": -557.42737
+    },
+    "EntranceLocation": {
+      "X": -708.7555,
+      "Y": 21.999968,
+      "Z": -553.94257
+    },
+    "CenterLocation": {
+      "X": -697.993,
+      "Y": 29.8736,
+      "Z": -553.922
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "55": {
+    "HousingZone": 339,
+    "Plot": 55,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -735.5917,
+      "Y": 33.585083,
+      "Z": -529.1982
+    },
+    "EntranceLocation": {
+      "X": -731.63586,
+      "Y": 32.099964,
+      "Z": -531.6151
+    },
+    "CenterLocation": {
+      "X": -727.992,
+      "Y": 39.0026,
+      "Z": -542.055
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "56": {
+    "HousingZone": 339,
+    "Plot": 56,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -756.6491,
+      "Y": 29.617676,
+      "Z": -548.8823
+    },
+    "EntranceLocation": {
+      "X": -759.9093,
+      "Y": 27.999968,
+      "Z": -546.2809
+    },
+    "CenterLocation": {
+      "X": -760.12,
+      "Y": 35.8595,
+      "Z": -536.183
+    },
+    "Radius": 12.1,
+    "IsInSubdivision": true
+  },
+  "57": {
+    "HousingZone": 339,
+    "Plot": 57,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -710.9026,
+      "Y": 37.613403,
+      "Z": -521.294
+    },
+    "EntranceLocation": {
+      "X": -708.85126,
+      "Y": 35.999966,
+      "Z": -517.90845
+    },
+    "CenterLocation": {
+      "X": -698.037,
+      "Y": 42.1419,
+      "Z": -517.968
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "58": {
+    "HousingZone": 339,
+    "Plot": 58,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -742.031,
+      "Y": 41.61133,
+      "Z": -500.90793
+    },
+    "EntranceLocation": {
+      "X": -738.66376,
+      "Y": 40.099968,
+      "Z": -504.39517
+    },
+    "CenterLocation": {
+      "X": -727.977,
+      "Y": 47.3955,
+      "Z": -508.052
+    },
+    "Radius": 12.5,
+    "IsInSubdivision": true
+  },
+  "59": {
+    "HousingZone": 339,
+    "Plot": 59,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": -778.9578,
+      "Y": 39.597046,
+      "Z": -526.0243
+    },
+    "EntranceLocation": {
+      "X": -776.0671,
+      "Y": 38.00001,
+      "Z": -522.5633
+    },
+    "CenterLocation": {
+      "X": -767.907,
+      "Y": 45.553,
+      "Z": -508.002
+    },
+    "Radius": 16.0,
+    "IsInSubdivision": true
+  },
+  "60": {
+    "HousingZone": 339,
+    "Plot": 60,
+    "Size": 1,
+    "PlacardLocation": {
+      "X": -787.28925,
+      "Y": 19.638367,
+      "Z": -569.5735
+    },
+    "EntranceLocation": {
+      "X": -791.28406,
+      "Y": 20.1,
+      "Z": -571.4673
+    },
+    "CenterLocation": {
+      "X": -803.973,
+      "Y": 28.1559,
+      "Z": -563.839
+    },
+    "Radius": 16.5,
+    "IsInSubdivision": true
+  },
+  "61": {
+    "HousingZone": 339,
+    "Plot": 61,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -168.20541,
+      "Y": 31.5,
+      "Z": -48.53
+    },
+    "EntranceLocation": {
+      "X": -168.20541,
+      "Y": 31.5,
+      "Z": -48.53
+    },
+    "CenterLocation": {
+      "X": -165.372,
+      "Y": 31.5,
+      "Z": -48.538
+    },
+    "Radius": 10.0,
+    "IsInSubdivision": false
+  },
+  "62": {
+    "HousingZone": 339,
+    "Plot": 62,
+    "Size": 0,
+    "PlacardLocation": {
+      "X": -655.4156,
+      "Y": 31.5,
+      "Z": -872.14
+    },
+    "EntranceLocation": {
+      "X": -655.4156,
+      "Y": 31.5,
+      "Z": -872.14
+    },
+    "CenterLocation": {
+      "X": -655.603,
+      "Y": 31.5,
+      "Z": -869.174
+    },
+    "Radius": 10.0,
+    "IsInSubdivision": true
+  }
+}

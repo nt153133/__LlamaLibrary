@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Clio.Utilities;
+using ff14bot.ServiceClient;
 using LlamaLibrary.JsonObjects.Lisbeth;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -82,6 +84,16 @@ namespace LlamaLibrary.Extensions
         public static bool Contains(this string? source, string toCheck, StringComparison comp)
         {
             return source?.IndexOf(toCheck, comp) >= 0;
+        }
+
+        public static bool Contains(this BoundingCircle source, Vector2 toCheck)
+        {
+            return source.Center.ToVector2().Distance(toCheck) <= source.Radius;
+        }
+
+        public static bool ContainsIgnoreZ(this BoundingCircle source, Vector3 toCheck)
+        {
+            return source.Center.ToVector2().Distance(toCheck.ToVector2()) <= source.Radius;
         }
     }
 }
