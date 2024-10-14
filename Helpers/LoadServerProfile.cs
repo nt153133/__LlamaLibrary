@@ -196,9 +196,28 @@ public class LoadServerProfile
     public static ChatBroadcaster PartyBroadcaster = new ChatBroadcaster(MessageType.Party);
     public static ChatBroadcaster EmoteBroadcaster = new ChatBroadcaster(MessageType.StandardEmotes);
 
+    // Queue Type - 0 for standard, 1 for Undersized, 2 for Duty Support, 3 for Trust
     public static async Task LoadProfile(string profileName, int QueueType, bool GoToBarracks, bool sayHello = false, bool sayHelloCustom = false, string sayHelloMessages = "")
     {
-        Log.Information("Loading Profile");
+        var loadingMessage = "";
+
+        switch (QueueType)
+        {
+            case 0:
+                loadingMessage = $"Loading {profileName} with Standard Live Party";
+                break;
+            case 1:
+                loadingMessage = $"Loading {profileName} in unsynced party";
+                break;
+            case 2:
+                loadingMessage = $"Loading {profileName} with Duty Support";
+                break;
+            case 3:
+                loadingMessage = $"Loading {profileName} with Trust";
+                break;
+        }
+
+        Log.Information(loadingMessage);
 
         if (DutyManager.QueueState == QueueState.InQueue)
         {
