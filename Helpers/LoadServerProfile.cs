@@ -511,16 +511,17 @@ public class LoadServerProfile
                     {
                         Log.Information("Clicking Register");
                         Dawn.Instance.Register();
+                        await Coroutine.Wait(8000, () => !Dawn.Instance.IsOpen);
                     }
 
                     await Coroutine.Wait(10000, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
                     if (DutyManager.QueueState != QueueState.None)
                     {
-                        Log.Information("Queued for Dungeon");
+                        Log.Information("Queued for Trust Dungeon");
                     }
                     else if (DutyManager.QueueState == QueueState.None)
                     {
-                        Log.Error("Something went wrong, queueing again...");
+                        Log.Error("Something went wrong attempting to queue for Trust, queueing again...");
                     }
                 }
 
@@ -544,11 +545,11 @@ public class LoadServerProfile
                     await Coroutine.Wait(10000, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
                     if (DutyManager.QueueState != QueueState.None)
                     {
-                        Log.Information("Queued for Dungeon");
+                        Log.Information("Queued for Duty Support Dungeon");
                     }
                     else if (DutyManager.QueueState == QueueState.None)
                     {
-                        Log.Error("Something went wrong, queueing again...");
+                        Log.Error("Something went wrong attempting to queue for Duty Support, queueing again...");
                     }
                 }
                 else
@@ -572,11 +573,11 @@ public class LoadServerProfile
 
                         if (DutyManager.QueueState != QueueState.None)
                         {
-                            Log.Information("Queued for Dungeon");
+                            Log.Information("Queued for regular Dungeon");
                         }
                         else if (DutyManager.QueueState == QueueState.None)
                         {
-                            Log.Error("Something went wrong, queuing again...");
+                            Log.Error("Something went wrong attempting to queue regular dungeon, queuing again...");
                         }
                     }
                     else
