@@ -62,8 +62,8 @@ namespace LlamaLibrary.Extensions
             //This client function does desynth, remove materia and reduce depending on the 2nd param
             //7.1
             //TODO: Update this offset (no?)
-            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F BF F1")]
-            //[OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F BF F1")]
+            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 41 0F BF E9")]
+            [OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F BF F1")]
             public static IntPtr RemoveMateriaFunc;
 
             //7.1

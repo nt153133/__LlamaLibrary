@@ -31,13 +31,11 @@ namespace LlamaLibrary.Extensions
             [Offset("Search 48 8B 05 ? ? ? ? 48 8D 0D ? ? ? ? 41 8B DC Add 3 TraceRelative")]
             internal static IntPtr PlayerId;
 
-#if RB_DT
-            [Offset("Search 48 89 BB ? ? ? ? 80 A3 ? ? ? ? ? 88 83 ? ? ? ? Add 3 Read32")]
+            //7.1
+            [Offset("Search 48 89 B3 ? ? ? ? 48 89 B3 ? ? ? ? 48 8B 74 24 ? 89 BB ? ? ? ? Add 3 Read32")]
+            [OffsetCN("Search 48 89 BB ? ? ? ? 80 A3 ? ? ? ? ? 88 83 ? ? ? ? Add 3 Read32")]
             internal static int AccountId;
-#else
-            [Offset("Search 48 8B 05 ? ? ? ? 48 8D 0D ? ? ? ? 41 8B DC Add 3 TraceRelative")]
-            internal static int AccountId;
-#endif
+
 
             [Offset("Search 0F B6 05 ? ? ? ? 88 83 ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr RunWalk;
@@ -144,10 +142,7 @@ namespace LlamaLibrary.Extensions
 
         public static ulong AccountId(this LocalPlayer player)
         {
-#if RB_DT
             return Core.Memory.Read<ulong>(player.Pointer + Offsets.AccountId);
-#endif
-            return 0;
         }
 
 

@@ -16,8 +16,9 @@ namespace LlamaLibrary.Memory
 #pragma warning disable CS0649
     public static partial class Offsets
     {
-        [Offset("Search 48 89 5C 24 ? 55 57 41 56 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 80 3D ? ? ? ? ?")]
-        [OffsetDawntrail("Search 40 55 53 57 41 54 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 3D ? ? ? ? ?")]
+        //7.1
+        [Offset("Search E8 ? ? ? ? 48 8B C7 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 48 8D 4B ? Add 1 TraceRelative")]
+        [OffsetCN("Search 40 55 53 57 41 54 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 3D ? ? ? ? ?")]
         public static IntPtr SalvageAgent;
 
         [Offset("Search 4C 8D 0D ? ? ? ? 45 33 C0 33 D2 Add 3 TraceRelative")]
@@ -76,12 +77,14 @@ namespace LlamaLibrary.Memory
         [OffsetDawntrail("Search 80 B9 ? ? ? ? ? 75 ? 80 B9 ? ? ? ? ? 75 ? B0 ? C3 32 C0 C3 ? ? ? ? ? ? ? ? 48 83 EC ? Add 2 Read32")]
         public static int InventoryManagerFCTransfering;
 
-        [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? 8B F9 E8 ? ? ? ? 48 8B D8 48 85 C0 75 ? 32 C0 48 8B 5C 24 ? 48 83 C4 ? 5F C3 0F B6 88 ? ? ? ? E8 ? ? ? ? 48 8B C8")]
-        [OffsetDawntrail("Search 48 89 5C 24 ? 57 48 83 EC ? 8B D9 E8 ? ? ? ? 48 8B F8")]
+        //7.1
+        [Offset("Search E8 ? ? ? ? 84 C0 74 ? 48 FF C3 48 83 FB ? 72 ? B0 ? 48 8B 4C 24 ? Add 1 TraceRelative")]
+        [OffsetCN("Search 48 89 5C 24 ? 57 48 83 EC ? 8B D9 E8 ? ? ? ? 48 8B F8")]
         public static IntPtr IsInstanceContentCompleted;
 
-        [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? 8B F9 E8 ? ? ? ? 48 8B D8 48 85 C0 75 ? 32 C0 48 8B 5C 24 ? 48 83 C4 ? 5F C3 0F B6 88 ? ? ? ? E8 ? ? ? ? 48 85 C0")]
-        [OffsetDawntrail("Search E8 ? ? ? ? 84 C0 75 ? B0 ? 48 83 C4 ? 5B C3 8B CB Add 1 TraceRelative")]
+        //7.1
+        [Offset("Search E8 ? ? ? ? 3C ? 75 ? 32 C0 48 8B 5C 24 ? 48 8B 74 24 ? Add 1 TraceRelative")]
+        [OffsetCN("Search E8 ? ? ? ? 84 C0 75 ? B0 ? 48 83 C4 ? 5B C3 8B CB Add 1 TraceRelative")]
         public static IntPtr IsInstanceContentUnlocked;
 
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 47 ? Add 3 TraceRelative")]
@@ -98,6 +101,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ?")]
         [OffsetDawntrail("Search 40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ?")]
         public static IntPtr IsOrnamentUnlocked;
+
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 8B 93 ? ? ? ? Add 3 TraceRelative")]
         [OffsetDawntrail("Search 48 8D 0D ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? 0F B7 50 ? 48 8D 0D ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? 0F B7 50 ? Add 3 TraceRelative")]
         public static IntPtr PlayerState;
