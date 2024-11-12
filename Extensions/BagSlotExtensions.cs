@@ -61,14 +61,13 @@ namespace LlamaLibrary.Extensions
 
             //This client function does desynth, remove materia and reduce depending on the 2nd param
             //7.1
-            //TODO: Update this offset
+            //TODO: Update this offset (no?)
             [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F BF F1")]
-            [OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F BF F1")]
+            //[OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F BF F1")]
             public static IntPtr RemoveMateriaFunc;
 
             //7.1
-            //TODO: Update this offset
-            [Offset("Search BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? 33 D2 Add 1 Read32")]
+            [Offset("Search BA ? ? ? ? E8 ? ? ? ? 33 D2 48 8B CE E8 ? ? ? ? 48 8D 55 F0 Add 1 Read32")]
             [OffsetCN("Search BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? 33 D2 Add 1 Read32")]
             public static int DesynthId;
 
@@ -86,8 +85,7 @@ namespace LlamaLibrary.Extensions
             public static int BagSlotMateriaLevel;
 
             //7.1
-            //TODO: Update this offset
-            [Offset("Search BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? EB ? 44 0F B7 46 ? Add 1 Read32")]
+            [Offset("Search BA ? ? ? ? E8 ? ? ? ? EB ? 48 8B 01 48 8B D9 Add 1 Read32")]
             [OffsetCN("Search BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? EB ? 44 0F B7 46 ? Add 1 Read32")]
             public static int RemoveMateriaId;
 
@@ -115,8 +113,7 @@ namespace LlamaLibrary.Extensions
             public static IntPtr AddToSaddle;
 
             //7.1
-            //TODO: Update this offset
-            [Offset("Search 40 53 56 57 41 56 41 57 48 83 EC ? 45 33 FF")]
+            [Offset("Search E8 ? ? ? ? EB ? 44 89 B3 ? ? ? ? Add 1 TraceRelative")]
             [OffsetCN("Search 40 53 56 57 41 56 41 57 48 83 EC ? 45 33 FF")]
             public static IntPtr FCChestMove;
 
@@ -131,20 +128,18 @@ namespace LlamaLibrary.Extensions
             internal static IntPtr MeldItem;
 
             //7.1
-            //TODO: Update this offset
-            [Offset("Search E8 ? ? ? ? 84 C0 74 07 C6 83 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 30 TraceCall")]
+            [Offset("Search E8 ? ? ? ? 84 C0 74 ? C6 87 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? 41 56 TraceCall")]
             [OffsetCN("Search E8 ? ? ? ? 84 C0 74 07 C6 83 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 30 TraceCall")]
             internal static IntPtr DyeItem;
 
             //7.1
-            //TODO: Update this offset
-            [Offset("Search 0F B7 43 ? 66 89 47 ? F2 0F 10 43 ?  Add 3 Read8")]
-            [OffsetCN("Search 0F B7 43 ? 66 89 47 ? F2 0F 10 43 ?  Add 3 Read8")]
+            //TODO: Check this
+            [Offset("Search 66 89 43 ? 8B 47 ? 89 43 ? 0F B6 47 ? 88 43 ? E8 ? ? ? ? 85 C0 Add 3 Read8")]
+            [OffsetCN("Search 0F B7 43 ? 66 89 47 ? F2 0F 10 43 ? Add 3 Read8")]
             public static int StainId;
 
             //7.1
-            //TODO: Update this offset
-            [Offset("Search 8B 48 ? 40 88 6C 24 ? Add 2 Read8")]
+            [Offset("Search 44 8B 42 ? 0F B7 D3 Add 3 Read8")]
             [OffsetCN("Search 8B 48 ? 40 88 6C 24 ? Add 2 Read8")]
             internal static int PlayerMeldOffset;
 

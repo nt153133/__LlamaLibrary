@@ -269,7 +269,6 @@ namespace LlamaLibrary.RetainerItemFinder
             internal static int SaddleBagItemQtys;
 
             //7.1
-            //TODO: Update this offset
             [Offset("Search 49 8D 9D ? ? ? ? BF ? ? ? ? 0F 1F 40 ? Add 3 Read32")]
             [OffsetCN("Search 4D 8D 85 ? ? ? ? 41 B9 ? ? ? ? 0F 1F 80 ? ? ? ? Add 3 Read32")]
             internal static int GlamourDresserItemIds;
