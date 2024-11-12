@@ -19,8 +19,9 @@ namespace LlamaLibrary.Helpers
 
         private static class Offsets
         {
-            [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B E9 33 D2")]
-            [OffsetDawntrail("Search E8 ? ? ? ? 49 89 47 68 TraceCall")]
+            //7.1
+            [Offset("Search E8 ? ? ? ? 49 89 44 24 ? 4C 8B F8 TraceCall")]
+            [OffsetCN("Search E8 ? ? ? ? 49 89 47 68 TraceCall")]
             internal static IntPtr UpdatePlayerAetheryteList;
         }
 

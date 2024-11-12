@@ -28,16 +28,21 @@ namespace LlamaLibrary.Extensions
 
         public static class Offsets
         {
-            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 56 48 83 EC ? 8B DA 41 0F B7 E8")]
-            [OffsetDawntrail("Search E8 ? ? ? ? 48 8D 8B ? ? ? ? E8 ? ? ? ? 45 33 ED 44 89 6B ? Add 1 TraceRelative")]
+            //7.1
+            //TODO: Check This
+            [Offset("Search E8 ? ? ? ? 48 8D 8B ? ? ? ? 48 8B 11 Add 1 TraceRelative")]
+            [OffsetCN("Search E8 ? ? ? ? 48 8D 8B ? ? ? ? E8 ? ? ? ? 45 33 ED 44 89 6B ? Add 1 TraceRelative")]
             public static IntPtr ItemDiscardFunc;
 
-            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 8B FA 33 DB")]
-            [OffsetDawntrail("Search 48 89 5C 24 ? 48 89 6C 24 ? 56 41 56 41 57 48 83 EC ? 4C 8B 89 ? ? ? ? 4C 8D 3D ? ? ? ?")]
+            //7.1
+            //TODO: Check This
+            [Offset("Search E8 ? ? ? ? 45 33 ED 44 89 6B ? 41 C6 44 24 ? ? E9 ? ? ? ? 44 0F B7 83 ? ? ? ? 48 8D 0D ? ? ? ? 8B 93 ? ? ? ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? 85 C0 0F 8E ? ? ? ? 48 8B CF E8 ? ? ? ? 44 0F B7 83 ? ? ? ? 48 8D 0D ? ? ? ? 8B 93 ? ? ? ? 44 8B C8 E8 ? ? ? ? 45 33 ED 44 89 6B ? 41 C6 44 24 ? ? E9 ? ? ? ? 44 0F B7 83 ? ? ? ? Add 1 TraceRelative")]
+            [OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 56 41 56 41 57 48 83 EC ? 4C 8B 89 ? ? ? ? 4C 8D 3D ? ? ? ?")]
             public static IntPtr ItemLowerQualityFunc;
 
-            [Offset("Search 40 55 53 56 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 8D 82 ? ? ? ?")]
-            [OffsetDawntrail("Search 40 55 53 56 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 17 44 8D B2 ? ? ? ? ")]
+            //7.1
+            [Offset("Search 40 55 53 56 57 41 55 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 8D B2 ? ? ? ?")]
+            [OffsetCN("Search 40 55 53 56 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 17 44 8D B2 ? ? ? ? ")]
             public static IntPtr ItemSplitFunc;
 
             //6.3
@@ -45,22 +50,26 @@ namespace LlamaLibrary.Extensions
             //pre 6.3 [OffsetCN("Search 48 89 91 ? ? ? ? 33 D2 C7 81 ? ? ? ? ? ? ? ?")]
             public static IntPtr MeldWindowFunc;
 
-            [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F B7 F8 8B DA")]
-            [OffsetDawntrail("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8")]
+
+            [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8")]
             public static IntPtr ExtractMateriaFunc;
 
-            [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 83 7E ? ? 75 ? 48 8B 06 Add 3 TraceRelative")]
-            [OffsetDawntrail("Search 48 8D 0D ? ? ? ? 8B 16 E8 ? ? ? ? 83 7B ? ? Add 3 TraceRelative")]
+            //7.1
+            [Offset("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 83 7E ? ? Add 3 TraceRelative")]
+            [OffsetCN("Search 48 8D 0D ? ? ? ? 8B 16 E8 ? ? ? ? 83 7B ? ? Add 3 TraceRelative")]
             public static IntPtr ExtractMateriaParam;
 
             //This client function does desynth, remove materia and reduce depending on the 2nd param
-            [Offset("Search 40 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F B7 F1")]
-            [OffsetDawntrail("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F BF F1")]
+            //7.1
+            //TODO: Update this offset
+            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F BF F1")]
+            [OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 45 0F BF F1")]
             public static IntPtr RemoveMateriaFunc;
 
-            //6.51 hotfix
-            [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 8B 7C 24 ? 84 C0 Add 1 Read32")]
-            [OffsetDawntrail("Search BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? 33 D2 Add 1 Read32")]
+            //7.1
+            //TODO: Update this offset
+            [Offset("Search BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? 33 D2 Add 1 Read32")]
+            [OffsetCN("Search BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? 33 D2 Add 1 Read32")]
             public static int DesynthId;
 
             //6.5Done
@@ -76,8 +85,10 @@ namespace LlamaLibrary.Extensions
             [OffsetDawntrail("Search 0F B6 44 18 ? 4D 8B 37 Add 4 Read8")]
             public static int BagSlotMateriaLevel;
 
-            [Offset("Search BA ? ? ? ? E8 ? ? ? ? EB ? 44 0F B7 41 ? Add 1 Read32")]
-            [OffsetDawntrail("Search BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? EB ? 44 0F B7 46 ? Add 1 Read32")]
+            //7.1
+            //TODO: Update this offset
+            [Offset("Search BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? EB ? 44 0F B7 46 ? Add 1 Read32")]
+            [OffsetCN("Search BA ? ? ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? EB ? 44 0F B7 46 ? Add 1 Read32")]
             public static int RemoveMateriaId;
 
             [Offset("Search 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 83 B9 ? ? ? ? ? 41 8B F0 8B EA 48 8B F9 0F 85 ? ? ? ?")]
@@ -103,7 +114,10 @@ namespace LlamaLibrary.Extensions
             [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 41 56 48 83 EC ? 45 8B F1")]
             public static IntPtr AddToSaddle;
 
+            //7.1
+            //TODO: Update this offset
             [Offset("Search 40 53 56 57 41 56 41 57 48 83 EC ? 45 33 FF")]
+            [OffsetCN("Search 40 53 56 57 41 56 41 57 48 83 EC ? 45 33 FF")]
             public static IntPtr FCChestMove;
 
             [Offset("Search 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 63 F2 48 8B F9")]
@@ -116,15 +130,22 @@ namespace LlamaLibrary.Extensions
             [OffsetDawntrail("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 8B E9 41 0F B7 D9 48 8B 0D ? ? ? ? 41 8B F8 0F B7 F2 E8 ? ? ? ? 48 8B C8 48 85 C0 74 4A ")]
             internal static IntPtr MeldItem;
 
-            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 45 33 F6 41 8B F1")]
-            [OffsetDawntrail("Search E8 ? ? ? ? 84 C0 74 07 C6 83 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 30 TraceCall")]
+            //7.1
+            //TODO: Update this offset
+            [Offset("Search E8 ? ? ? ? 84 C0 74 07 C6 83 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 30 TraceCall")]
+            [OffsetCN("Search E8 ? ? ? ? 84 C0 74 07 C6 83 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 30 TraceCall")]
             internal static IntPtr DyeItem;
 
-            [Offset("Search 0F B6 43 ? 88 47 ? 80 7B ? ? 74 ? 48 8B CB E8 ? ? ? ? 48 85 C0 74 ? 48 8B CB E8 ? ? ? ? 48 8B C8 E8 ? ? ? ? EB ? 8B 43 ? Add 3 Read8")]
-            [OffsetDawntrail("Search 0F B7 43 ? 66 89 47 ? F2 0F 10 43 ?  Add 3 Read8")]
+            //7.1
+            //TODO: Update this offset
+            [Offset("Search 0F B7 43 ? 66 89 47 ? F2 0F 10 43 ?  Add 3 Read8")]
+            [OffsetCN("Search 0F B7 43 ? 66 89 47 ? F2 0F 10 43 ?  Add 3 Read8")]
             public static int StainId;
 
+            //7.1
+            //TODO: Update this offset
             [Offset("Search 8B 48 ? 40 88 6C 24 ? Add 2 Read8")]
+            [OffsetCN("Search 8B 48 ? 40 88 6C 24 ? Add 2 Read8")]
             internal static int PlayerMeldOffset;
 
             [Offset("Search 41 56 41 57 48 81 EC ? ? ? ? 83 B9 ? ? ? ? ? 4C 8B F2")]

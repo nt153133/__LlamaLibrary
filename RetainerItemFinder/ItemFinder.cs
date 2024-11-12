@@ -253,8 +253,9 @@ namespace LlamaLibrary.RetainerItemFinder
             [OffsetDawntrail("Search 48 FF A0 88 00 00 00 49 8B 00 Add 3 Read8")] //Yes it's hard coded but just as a refrence since this isn't used anywhere.
             internal static int GetRaptureItemFinder;
 
-            [Offset("Search 49 8D 8E ? ? ? ? 33 D2 FF 50 ? 41 80 BE ? ? ? ? ? Add 3 Read32")]
-            [OffsetDawntrail("Search 49 8B 86 ? ? ? ? 49 8D 8E ? ? ? ? 33 D2 FF 50 60 41 0F B6 86 ? ? ? ? Add A Read32")] //TODO: this is the right area, but i don't know if this is the right offset.
+            //7.1
+            [Offset("Search 49 8B 86 ? ? ? ? 49 8D 8E ? ? ? ? 33 D2 FF 50 ? 41 0F B6 86 ? ? ? ? Add A Read32")]
+            [OffsetCN("Search 49 8B 86 ? ? ? ? 49 8D 8E ? ? ? ? 33 D2 FF 50 60 41 0F B6 86 ? ? ? ? Add A Read32")]
             internal static int RaptureItemFinder;
 
             [Offset("Search 4C 8B 85 ? ? ? ? 48 89 B4 24 ? ? ? ? Add 3 Read32")]
@@ -267,8 +268,10 @@ namespace LlamaLibrary.RetainerItemFinder
             [Offset("Search 48 8D 8B ? ? ? ? 48 89 7C 24 ? 4C 89 64 24 ? Add 3 Read32")]
             internal static int SaddleBagItemQtys;
 
-            [Offset("Search 4D 8D 85 ? ? ? ? 41 B9 ? ? ? ? 0F 1F 80 ? ? ? ? 41 8B 08 85 C9 74 ? B8 ? ? ? ? F7 E1 C1 EA ? 69 C2 ? ? ? ? 2B C8 8B C6 FF C6 41 89 0C 87 49 83 C0 ? 49 83 E9 ? 75 ? 0F B6 4C 24 ? Add 3 Read32")]
-            [OffsetDawntrail("Search 4D 8D 85 ? ? ? ? 41 B9 ? ? ? ? 0F 1F 80 ? ? ? ? Add 3 Read32")]
+            //7.1
+            //TODO: Update this offset
+            [Offset("Search 49 8D 9D ? ? ? ? BF ? ? ? ? 0F 1F 40 ? Add 3 Read32")]
+            [OffsetCN("Search 4D 8D 85 ? ? ? ? 41 B9 ? ? ? ? 0F 1F 80 ? ? ? ? Add 3 Read32")]
             internal static int GlamourDresserItemIds;
 
             [Offset("Search 80 B9 ? ? ? ? ? 48 8B D9 74 ? 48 83 C4 ? Add 2 Read32")]

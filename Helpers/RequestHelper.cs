@@ -16,9 +16,9 @@ namespace LlamaLibrary.Helpers
 
         internal static class Offsets
         {
-            [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 0F B6 F0 EB ? 44 0F BF CE Add 3 TraceRelative")]
-            //[OffsetCN("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 0F B6 D8 EB ? Add 3 TraceRelative")]//changes in 6.2
-            [OffsetDawntrail("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 14 FF Add 3 TraceRelative")]
+            //7.1
+            [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 44 0F B6 E8 EB ? Add 3 TraceRelative")]
+            [OffsetCN("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 14 FF Add 3 TraceRelative")]
             internal static IntPtr RequestInfo;
 
             [Offset("Search 44 8B 44 CB ? 48 8B 8B ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 48 8B 93 ? ? ? ? 48 8B 01 48 8B 5C 24 ? 48 83 C4 ? 5F 48 FF A0 ? ? ? ? 48 83 BB ? ? ? ? ? Add 4 Read8")]

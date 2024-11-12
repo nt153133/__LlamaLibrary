@@ -11,9 +11,7 @@ namespace LlamaLibrary.RemoteAgents
     {
         internal static class Offsets
         {
-            //0x
-            [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? 48 8D 05 ? ? ? ? 48 89 41 ? E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 TraceRelative")]
-            [OffsetDawntrail("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? 48 8D 05 ? ? ? ? 48 89 41 ? E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 48 83 EC ? 48 8B DA Add 3 TraceRelative")]
+            [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? 48 8D 05 ? ? ? ? 48 89 41 ? E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 48 83 EC ? 48 8B DA Add 3 TraceRelative")]
             internal static IntPtr Vtable;
 
             //(__int64 AgentPointer, char Category)
@@ -31,9 +29,10 @@ namespace LlamaLibrary.RemoteAgents
             internal static int SecondPointer;
 
             //0x20
-            //6.5Done
-            [Offset("Search 41 8B 47 ? 49 8B DE Add 3 Read8")]
-            [OffsetDawntrail("Search 8B 45 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 75 ? B2 ? Add 2 Read8")]
+            //7.1
+            //TODO: Update this offset
+            [Offset("Search 8B 45 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 75 ? B2 ? Add 2 Read8")]
+            [OffsetCN("Search 8B 45 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 75 ? B2 ? Add 2 Read8")]
             internal static int ShopKey;
 
             //0x38
@@ -46,8 +45,10 @@ namespace LlamaLibrary.RemoteAgents
             internal static int NumberOfCategories;
 
             //0x1223
-            [Offset("Search 40 38 B1 ? ? ? ? 0F 86 ? ? ? ? 4C 8B 64 24 ? Add 3 Read32")]
-            [OffsetDawntrail("Search 40 38 B9 ? ? ? ? 0F 86 ? ? ? ? 45 8B FE Add 3 Read32")]
+            //7.1
+            //TODO: Update this offset
+            [Offset("Search 40 38 B9 ? ? ? ? 0F 86 ? ? ? ? 45 8B FE Add 3 Read32")]
+            [OffsetCN("Search 40 38 B9 ? ? ? ? 0F 86 ? ? ? ? 45 8B FE Add 3 Read32")]
             internal static int NumberOfSubCategories;
 
             //0x11D1
@@ -102,9 +103,10 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 80 BC 0A ? ? ? ? ? 74 ? 49 8B 52 ? Add 3 Read32")]
             internal static int SubCategoryEnabled;
 
-            //6.5
-            [Offset("Search 45 8B 7C B4 ? Add 4 Read8")]
-            [OffsetDawntrail("Search 45 8B 64 B7 ? Add 4 Read8")]
+            //7.1
+            //TODO: Update this offset
+            [Offset("Search 45 8B 64 B7 ? Add 4 Read8")]
+            [OffsetCN("Search 45 8B 64 B7 ? Add 4 Read8")]
             internal static int ItemStructAdjustment;
         }
 
