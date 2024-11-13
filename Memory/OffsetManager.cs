@@ -91,8 +91,10 @@ public static class OffsetManager
 
 #if RB_CN
         public static bool IsChinese = true;
+    public static bool Is7_1 = false;
 #else
     public static bool IsChinese = false;
+    public static bool Is7_1 = true;
 #endif
 
 #if RB_DT
