@@ -11,8 +11,7 @@ namespace LlamaLibrary.Helpers
         private static class Offsets
         {
             //7.1
-            //TODO: Update this offset
-            [Offset("Search E8 ? ? ? ? 84 C0 75 19 F3 0F 10 05 ? ? ? ? Add 1 TraceRelative")]
+            [Offset("Search E8 ? ? ? ? 84 C0 75 ? C6 05 ? ? ? ? ? E8 ? ? ? ? 48 89 05 ? ? ? ? Add 1 TraceRelative")]
             [OffsetCN("Search E8 ? ? ? ? 84 C0 75 19 F3 0F 10 05 ? ? ? ? Add 1 TraceRelative")]
             internal static IntPtr ScreenshotFunc;
 
@@ -23,23 +22,21 @@ namespace LlamaLibrary.Helpers
             internal static IntPtr ScreenshotStruct;
 
             //7.1
-            //TODO: Update this offset
-            [Offset("Search C6 05 ? ? ? ? ? 48 83 C4 ? 5F C3 48 8B 4F ? Add 2 TraceRelative")]
+            [Offset("Search C6 05 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? Add 2 TraceRelative")]
             [OffsetCN("Search C6 05 ? ? ? ? ? 48 83 C4 ? 5F C3 48 8B 4F ? Add 2 TraceRelative")]
             internal static IntPtr ScreenshotState;
 
             [Offset("Search 48 8D 4B ? 48 8D 44 24 ? 48 3B C1 Add 3 Read8")]
             internal static int Filename;
 
-            [Offset("Search C6 43 ? ? B0 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? 40 53 Add 2 Read16")]
-            [OffsetDawntrail("Search C6 43 ? ? B0 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 48 81 EC ? ? ? ? Add 2 Read16")]
+            [Offset("Search C6 43 ? ? B0 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 48 81 EC ? ? ? ? Add 2 Read16")]
             internal static int Busy;
 
             //7.1
             //TODO: Update this offset
-            [Offset("Search F3 0F 10 15 ? ? ? ? 0F 57 C0 0F 2F D0 Add 4 TraceRelative")]
+            /*[Offset("Search F3 0F 10 15 ? ? ? ? 0F 57 C0 0F 2F D0 Add 4 TraceRelative")]
             [OffsetCN("Search F3 0F 10 15 ? ? ? ? 0F 57 C0 0F 2F D0 Add 4 TraceRelative")]
-            internal static IntPtr FloatThing;
+            internal static IntPtr FloatThing;*/
         }
 
         public static IntPtr ScreenshotStruct => Core.Memory.Read<IntPtr>(Offsets.ScreenshotStruct);

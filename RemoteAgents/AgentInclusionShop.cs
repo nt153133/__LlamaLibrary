@@ -30,8 +30,7 @@ namespace LlamaLibrary.RemoteAgents
 
             //0x20
             //7.1
-            //TODO: Update this offset
-            [Offset("Search 8B 45 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 75 ? B2 ? Add 2 Read8")]
+            [Offset("Search 41 8B 44 24 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 75 ? Add 2 Read8")]
             [OffsetCN("Search 8B 45 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 75 ? B2 ? Add 2 Read8")]
             internal static int ShopKey;
 
@@ -46,8 +45,7 @@ namespace LlamaLibrary.RemoteAgents
 
             //0x1223
             //7.1
-            //TODO: Update this offset
-            [Offset("Search 40 38 B9 ? ? ? ? 0F 86 ? ? ? ? 45 8B FE Add 3 Read32")]
+            [Offset("Search 40 38 B9 ? ? ? ? 0F 86 ? ? ? ? 4C 8B 6C 24 ? Add 3 Read32")]
             [OffsetCN("Search 40 38 B9 ? ? ? ? 0F 86 ? ? ? ? 45 8B FE Add 3 Read32")]
             internal static int NumberOfSubCategories;
 
@@ -104,8 +102,7 @@ namespace LlamaLibrary.RemoteAgents
             internal static int SubCategoryEnabled;
 
             //7.1
-            //TODO: Update this offset
-            [Offset("Search 45 8B 64 B7 ? Add 4 Read8")]
+            [Offset("Search 47 8B 64 B5 ? Add 4 Read8")]
             [OffsetCN("Search 45 8B 64 B7 ? Add 4 Read8")]
             internal static int ItemStructAdjustment;
         }
