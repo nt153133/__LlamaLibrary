@@ -23,6 +23,9 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 48 8B AA ? ? ? ? 48 8B F9 48 85 ED Add 3 Read32")]
             [OffsetDawntrail("Search 48 8B AA ? ? ? ? 48 8B D9 48 85 ED 0F 84 ? ? ? ? 48 8B 89 ? ? ? ? Add 3 Read32")]
             internal static int LastOffset;
+
+            [Offset("Search 48 8B 40 ? 48 8B CF 4C 8B 0F Add 3 Read8")]
+            internal static int LastLastOffset;
         }
 
         public IntPtr addressLocation = IntPtr.Zero;
@@ -56,7 +59,7 @@ namespace LlamaLibrary.RemoteAgents
             var intptr_1 = Core.Memory.Read<IntPtr>(intptr_0 + 0x38);
             var intptr_2 = Core.Memory.Read<IntPtr>(intptr_1 + 0x18);
             var intptr_3 = Core.Memory.Read<IntPtr>(intptr_2 + Offsets.LastOffset); //0x310
-            addressLocation = Core.Memory.Read<IntPtr>(intptr_3 + 0x20);
+            addressLocation = Core.Memory.Read<IntPtr>(intptr_3 + Offsets.LastLastOffset);
         }
 
         private ushort LocationValue(int percent)

@@ -87,7 +87,10 @@ namespace LlamaLibrary.Memory
         [OffsetCN("Search E8 ? ? ? ? 84 C0 75 ? B0 ? 48 83 C4 ? 5B C3 8B CB Add 1 TraceRelative")]
         public static IntPtr IsInstanceContentUnlocked;
 
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 47 ? Add 3 TraceRelative")]
+        //7.1
+        //48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 44 24 ?
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 44 24 ? Add 3 TraceRelative")]
+        [OffsetCN("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 47 ? Add 3 TraceRelative")]
         public static IntPtr UIStateTelepo;
 
         [Offset("Search 44 8B C2 4C 8B C9 41 C1 E8 ? 41 83 F8 ? 72 ? 32 C0 C3 0F B6 CA BA ? ? ? ? 83 E1 ? 41 8B C0 D3 E2")]
