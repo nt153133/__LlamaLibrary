@@ -1,4 +1,7 @@
-﻿namespace LlamaLibrary.RemoteWindows
+﻿using System.Linq;
+using ff14bot.Managers;
+
+namespace LlamaLibrary.RemoteWindows
 {
     public class JournalDetail : RemoteWindow<JournalDetail>
     {
@@ -19,6 +22,17 @@
         public override void Close()
         {
             SendAction(1, 3uL, 0xFFFFFFFFuL);
+        }
+
+        public void AbandonQuest(int globalId)
+        {
+            var rawId = QuestLogManager.ActiveQuests.FirstOrDefault(i => i.GlobalId == globalId)?.RawId ?? 0;
+            if (rawId == 0)
+            {
+                return;
+            }
+
+            SendAction(2, 3, 0x7, 5, rawId);
         }
     }
 }
