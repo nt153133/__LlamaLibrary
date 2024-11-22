@@ -30,7 +30,7 @@ namespace LlamaLibrary.RemoteAgents
 
             //0x20
             //7.1
-            [Offset("Search 41 8B 44 24 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 75 ? Add 2 Read8")]
+            [Offset("Search 41 8B 44 24 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 75 ? Add 4 Read8")]
             [OffsetCN("Search 8B 45 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 75 ? B2 ? Add 2 Read8")]
             internal static int ShopKey;
 
