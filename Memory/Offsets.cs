@@ -156,7 +156,8 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 83 39 ? 4C 8B C9")]
         public static IntPtr GetNumberOfRetainers;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 8B E9 41 8B D9 48 8B 0D ? ? ? ? 41 8B F8 8B F2")]
+        [Offset("Search E8 ? ? ? ? 48 8B 06 48 8B CE FF 50 ? 44 89 76 ? E9 ? ? ? ? 40 84 FF Add 1 TraceRelative")]
+        [OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 8B E9 41 8B D9 48 8B 0D ? ? ? ? 41 8B F8 8B F2")]
         public static IntPtr ExecuteCommand; //RequestRetainerData
 
         [Offset("Search 48 8D 56 ? EB ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 Read8")]
