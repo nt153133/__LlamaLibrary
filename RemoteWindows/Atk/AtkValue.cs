@@ -111,6 +111,17 @@ public class AtkValue : IDisposable
         return value._bool;
     }
 
+    public static implicit operator AtkValue((ValueType type, int value) value)
+    {
+        return value.type switch
+        {
+            ValueType.Int    => new AtkValue((int)value.value),
+            ValueType.UInt   => new AtkValue((uint)value.value),
+            ValueType.Float  => new AtkValue((float) value.value),
+            _                => new AtkValue(0)
+        };
+    }
+
 
     public static implicit operator AtkValue((ValueType type, object value) value)
     {
