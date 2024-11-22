@@ -68,9 +68,14 @@ namespace LlamaLibrary.Helpers
                 return 0;
             }
 
+            //7.1 Used to be +1
             LlamaLibrary.RemoteWindows.InclusionShop.Instance.SetSubCategory(shopItem.SubCategory + 1);
 
-            await Coroutine.Wait(10000, () => AgentInclusionShop.Instance.SelectedSubCategory == shopItem.SubCategory);
+            if (!await Coroutine.Wait(2000, () => AgentInclusionShop.Instance.SelectedSubCategory == shopItem.SubCategory))
+            {
+                LlamaLibrary.RemoteWindows.InclusionShop.Instance.SetSubCategory(shopItem.SubCategory);
+                await Coroutine.Wait(5000, () => AgentInclusionShop.Instance.SelectedSubCategory == shopItem.SubCategory);
+            }
 
             if (AgentInclusionShop.Instance.SelectedSubCategory != shopItem.SubCategory)
             {
