@@ -171,6 +171,12 @@ namespace LlamaLibrary.Memory
 
         [Offset("Search B9 ? ? ? ? E8 ? ? ? ? 40 88 BD ? ? ? ? Add 1 Read32")]
         public static int RetainerNetworkPacket;
+
+        [Offset("Search E8 ? ? ? ? 0F B6 F0 48 8D 5C 24 ? Add 1 TraceRelative")]
+        internal static IntPtr SendAction;
+
+        [Offset("Search 66 83 FA ? 75 ? 53 48 83 EC ? 48 8B D9 BA ? ? ? ? 48 8D 4C 24 ?")]
+        internal static IntPtr DialogueOkay;
     }
 
     public static partial class Offsets

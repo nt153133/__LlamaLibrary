@@ -4,6 +4,7 @@ using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.RemoteWindows.Atk;
 
 namespace LlamaLibrary.RemoteWindows
 {
@@ -30,7 +31,7 @@ namespace LlamaLibrary.RemoteWindows
         private const int Offset2 = 0x170; //4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
 #else
         private const int Offset0 = 0x1E2; //0F BF 93 ? ? ? ? 41 B1 ? 4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
-        private const int Offset2 = 0x178 ;//4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
+        private const int Offset2 = 0x178; //4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
 #endif
 
         public virtual bool IsOpen => WindowByName != null;
@@ -122,6 +123,19 @@ namespace LlamaLibrary.RemoteWindows
             return await WaitTillWindowOpen(5000);
 
             //return SyncRoutines.WaitUntil(() => IsOpen, 50, 5000, true);
+        }
+
+        public void SendAction(bool updateState = true, params AtkValue[] parms)
+        {
+            if (WindowByName == null)
+            {
+                return;
+            }
+
+            if (IsOpen)
+            {
+                AtkClientFunctions.SendActionPtr(WindowByName.Pointer, updateState, parms);
+            }
         }
     }
 }
