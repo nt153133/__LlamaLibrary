@@ -82,7 +82,8 @@ namespace LlamaLibrary.Helpers.WorldTravel
                 }
 
                 Log.Information($"Traveling to {travelCity}. Calling Teleport {ae}");
-                var result = await CommonTasks.Teleport((uint)ae);
+                //var result = await CommonTasks.Teleport((uint)ae);
+                var result = await TeleportHelper.TeleportByIdTicket((uint)ae);
                 Log.Information($"Result from teleport: {result}");
                 if (!result)
                 {

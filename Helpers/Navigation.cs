@@ -148,9 +148,10 @@ namespace LlamaLibrary.Helpers
 
                     Log.Verbose("Can teleport to AE");
                     await Coroutine.Sleep(1000);
-                    WorldManager.TeleportById(AE.Item1);
-                    await Coroutine.Wait(20000, () => WorldManager.ZoneId == AE.Item1);
-                    await Coroutine.Sleep(2000);
+                    //WorldManager.TeleportById(AE.Item1);
+                    await TeleportHelper.TeleportByIdTicket(AE.Item1);
+                   // await Coroutine.Wait(20000, () => WorldManager.ZoneId == AE.Item1);
+                    await Coroutine.Sleep(1000);
                     return await GetTo(ZoneId, XYZ);
                 }
                 else
@@ -532,7 +533,7 @@ namespace LlamaLibrary.Helpers
                     var AE = WorldManager.AetheryteIdsForZone(npc.Location.ZoneId).OrderBy(i => i.Item2.DistanceSqr(npc.Location.Coordinates)).First();
 
                     Log.Information("Can teleport to AE");
-                    await CommonTasks.Teleport(AE.Item1);
+                    await TeleportHelper.TeleportByIdTicket(AE.Item1);
                 }
             }
 
@@ -560,7 +561,8 @@ namespace LlamaLibrary.Helpers
                     var AE = WorldManager.AetheryteIdsForZone(ZoneId).OrderBy(i => i.Item2.DistanceSqr(XYZ)).First();
 
                     Log.Information("Can teleport to AE");
-                    await CommonTasks.Teleport(AE.Item1);
+                    //await CommonTasks.Teleport(AE.Item1);
+                    await TeleportHelper.TeleportByIdTicket(AE.Item1);
                 }
             }
 

@@ -784,7 +784,8 @@ namespace LlamaLibrary.Helpers
         private static async Task<bool> GoToHousingBell(WorldManager.TeleportLocation house)
         {
             Log.Information($"Teleporting to housing: (ZID: {house.ZoneId}, AID: {house.AetheryteId}) {house.Name}");
-            await CommonTasks.Teleport(house.AetheryteId);
+            //await CommonTasks.Teleport(house.AetheryteId);
+            await TeleportHelper.TeleportByIdTicket(house.AetheryteId);
 
             Log.Information("Waiting for zone to change");
             await Coroutine.Wait(20000, () => WorldManager.ZoneId == house.ZoneId);
