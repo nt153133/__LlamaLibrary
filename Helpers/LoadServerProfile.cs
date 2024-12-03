@@ -710,6 +710,13 @@ public class LoadServerProfile
             Log.Information("Should be ready");
         }
 
+        if (WorldManager.ZoneId == dungeonZoneId)
+        {
+            Log.Information($"Loading {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} profile.");
+            ConditionParser.Initialize();
+            NeoProfileManager.Load(profileUrl, false);
+        }
+
         return;
     }
 
