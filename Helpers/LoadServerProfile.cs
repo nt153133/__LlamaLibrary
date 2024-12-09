@@ -59,6 +59,7 @@ public class LoadServerProfile
     private static int Vanguard = 831;
     private static int Origenics = 825;
     private static int Alexandria = 827;
+    private static int Yuweyawata = 1008;
 
     private static int WorqorLarDor = 832;
     private static int Everkeep = 995;
@@ -90,6 +91,7 @@ public class LoadServerProfile
         Alexandria,
         WorqorLarDor,
         Everkeep,
+        Yuweyawata
     };
 
     private static List<int> TrustDungeons = new()
@@ -124,6 +126,7 @@ public class LoadServerProfile
         Alexandria,
         WorqorLarDor,
         Everkeep,
+        Yuweyawata
     };
 
     private static readonly string[] Greetings = new string[]
@@ -466,125 +469,128 @@ public class LoadServerProfile
                     await LlamaLibrary.Helpers.GrandCompanyHelper.GetToGCBarracks();
                 }
 
-                if (QueueType == 3)
+                while (DutyManager.QueueState == QueueState.None)
                 {
-                    if (!TrustDungeons.Contains(dungeonDutyId))
+                    if (QueueType == 3)
                     {
-                        string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Trust dungeon.\nPlease select a different Queue Type or dungeon.";
-                        Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
-                        Log.Error($"{message}");
-                        TreeRoot.Stop($"{message}");
-                        break;
-                    }
-
-                    Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Trust");
-
-                    if (LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId != trustId)
-                    {
-                        Log.Information("Closing Trust window");
-                        AgentDawn.Instance.Toggle();
-                    }
-
-                    if (AgentDawn.Instance.TrustId != trustId)
-                    {
-                        Log.Information($"Setting Trust dungeon to {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName}");
-                        AgentDawn.Instance.TrustId = trustId;
-                        await Coroutine.Wait(5000, () => AgentDawn.Instance.TrustId == trustId);
-                        if (AgentDawn.Instance.TrustId != trustId)
+                        if (!TrustDungeons.Contains(dungeonDutyId))
                         {
-                            string message = $"Something went wrong when attempting to select {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as Trust dungeon.";
+                            string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Trust dungeon.\nPlease select a different Queue Type or dungeon.";
                             Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
                             Log.Error($"{message}");
                             TreeRoot.Stop($"{message}");
                             break;
                         }
-                    }
 
-                    if (!Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId == trustId)
-                    {
-                        Log.Information("Opening Trust window");
-                        AgentDawn.Instance.Toggle();
-                        await Coroutine.Wait(8000, () => Dawn.Instance.IsOpen);
-                    }
+                        Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Trust");
 
-                    if (Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId == trustId)
-                    {
-                        Log.Information("Clicking Register");
-                        Dawn.Instance.Register();
-                        await Coroutine.Wait(8000, () => !Dawn.Instance.IsOpen);
-                    }
-
-                    await Coroutine.Wait(10000, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
-                    if (DutyManager.QueueState != QueueState.None)
-                    {
-                        Log.Information("Queued for Trust Dungeon");
-                    }
-                    else if (DutyManager.QueueState == QueueState.None)
-                    {
-                        Log.Error("Something went wrong attempting to queue for Trust, queueing again...");
-                    }
-                }
-
-                if (QueueType == 2)
-                {
-                    Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Duty Support");
-
-                    if (!DawnStory.Instance.IsOpen)
-                    {
-                        AgentDawnStory.Instance.Toggle();
-                    }
-
-                    if (await Coroutine.Wait(8000, () => DawnStory.Instance.IsOpen))
-                    {
-                        if (await DawnStory.Instance.SelectDuty(dungeonDutyId))
+                        if (LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId != trustId)
                         {
-                            DawnStory.Instance.Commence();
-                        }
-                    }
-
-                    await Coroutine.Wait(10000, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
-                    if (DutyManager.QueueState != QueueState.None)
-                    {
-                        Log.Information("Queued for Duty Support Dungeon");
-                    }
-                    else if (DutyManager.QueueState == QueueState.None)
-                    {
-                        Log.Error("Something went wrong attempting to queue for Duty Support, queueing again...");
-                    }
-                }
-                else
-                {
-                    if (!PartyManager.IsInParty || (PartyManager.IsInParty && PartyManager.IsPartyLeader))
-                    {
-                        if (QueueType == 0)
-                        {
-                            Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as normal group.");
-                            GameSettingsManager.JoinWithUndersizedParty = false;
+                            Log.Information("Closing Trust window");
+                            AgentDawn.Instance.Toggle();
                         }
 
-                        if (QueueType == 1)
+                        if (AgentDawn.Instance.TrustId != trustId)
                         {
-                            Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as undersized party.");
-                            GameSettingsManager.JoinWithUndersizedParty = true;
+                            Log.Information($"Setting Trust dungeon to {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName}");
+                            LlamaLibrary.RemoteAgents.AgentDawn.Instance.TrustId = trustId;
+                            await Coroutine.Wait(5000, () => AgentDawn.Instance.TrustId == trustId);
+                            if (AgentDawn.Instance.TrustId != trustId)
+                            {
+                                string message = $"Something went wrong when attempting to select {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as Trust dungeon.";
+                                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                                Log.Error($"{message}");
+                                TreeRoot.Stop($"{message}");
+                                break;
+                            }
                         }
 
-                        DutyManager.Queue(DataManager.InstanceContentResults[(uint)dungeonDutyId]);
+                        if (!Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId == trustId)
+                        {
+                            Log.Information("Opening Trust window");
+                            AgentDawn.Instance.Toggle();
+                            await Coroutine.Wait(8000, () => Dawn.Instance.IsOpen);
+                        }
+
+                        if (Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId == trustId)
+                        {
+                            Log.Information("Clicking Register");
+                            Dawn.Instance.Register();
+                            await Coroutine.Wait(8000, () => !Dawn.Instance.IsOpen);
+                        }
+
                         await Coroutine.Wait(10000, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
-
                         if (DutyManager.QueueState != QueueState.None)
                         {
-                            Log.Information("Queued for regular Dungeon");
+                            Log.Information("Queued for Trust Dungeon");
                         }
                         else if (DutyManager.QueueState == QueueState.None)
                         {
-                            Log.Error("Something went wrong attempting to queue regular dungeon, queuing again...");
+                            Log.Error("Something went wrong attempting to queue for Trust, queueing again...");
                         }
                     }
-                    else
+
+                    if (QueueType == 2)
                     {
-                        Log.Information("In a party, waiting for dungeon queue.");
-                        await Coroutine.Wait(-1, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
-                        Log.Information("Queued for Dungeon");
+                        Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Duty Support");
+
+                        if (!DawnStory.Instance.IsOpen)
+                        {
+                            AgentDawnStory.Instance.Toggle();
+                        }
+
+                        if (await Coroutine.Wait(8000, () => DawnStory.Instance.IsOpen))
+                        {
+                            if (await DawnStory.Instance.SelectDuty(dungeonDutyId))
+                            {
+                                DawnStory.Instance.Commence();
+                            }
+                        }
+
+                        await Coroutine.Wait(10000, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
+                        if (DutyManager.QueueState != QueueState.None)
+                        {
+                            Log.Information("Queued for Duty Support Dungeon");
+                        }
+                        else if (DutyManager.QueueState == QueueState.None)
+                        {
+                            Log.Error("Something went wrong attempting to queue for Duty Support, queueing again...");
+                        }
+                    }
+                    if (QueueType == 0 || QueueType == 1)
+                    {
+                        if (!PartyManager.IsInParty || (PartyManager.IsInParty && PartyManager.IsPartyLeader))
+                        {
+                            if (QueueType == 0)
+                            {
+                                Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as normal group.");
+                                GameSettingsManager.JoinWithUndersizedParty = false;
+                            }
+
+                            if (QueueType == 1)
+                            {
+                                Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as undersized party.");
+                                GameSettingsManager.JoinWithUndersizedParty = true;
+                            }
+
+                            DutyManager.Queue(DataManager.InstanceContentResults[(uint)dungeonDutyId]);
+                            await Coroutine.Wait(10000, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
+
+                            if (DutyManager.QueueState != QueueState.None)
+                            {
+                                Log.Information("Queued for regular Dungeon");
+                            }
+                            else if (DutyManager.QueueState == QueueState.None)
+                            {
+                                Log.Error("Something went wrong attempting to queue regular dungeon, queuing again...");
+                            }
+                        }
+                        else
+                        {
+                            Log.Information("In a party, waiting for dungeon queue.");
+                            await Coroutine.Wait(-1, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
+                            Log.Information("Queued for Dungeon");
+                        }
                     }
                 }
             }
