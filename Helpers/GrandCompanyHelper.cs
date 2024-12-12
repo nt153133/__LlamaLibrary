@@ -325,10 +325,10 @@ namespace LlamaLibrary.Helpers
             if (GrandCompanyRankUp.Instance.IsOpen)
             {
                 GrandCompanyRankUp.Instance.Confirm();
-                await Coroutine.Wait(10000, () => QuestLogManager.InCutscene);
+                await Coroutine.Wait(10000, () => QuestLogManager.InCutscene || Talk.DialogOpen || !MovementManager.IsOccupied);
             }
 
-            while (QuestLogManager.InCutscene)
+            while (MovementManager.IsOccupied)
             {
                 Talk.Next();
                 await Coroutine.Sleep(500);
