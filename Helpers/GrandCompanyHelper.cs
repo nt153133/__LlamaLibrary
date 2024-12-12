@@ -322,9 +322,17 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Sleep(500);
             }
 
-            GrandCompanyRankUp.Instance.Confirm();
+            if (GrandCompanyRankUp.Instance.IsOpen)
+            {
+                GrandCompanyRankUp.Instance.Confirm();
+                await Coroutine.Wait(10000, () => QuestLogManager.InCutscene);
+            }
 
-            await SmallTalk();
+            while (QuestLogManager.InCutscene)
+            {
+                Talk.Next();
+                await Coroutine.Sleep(500);
+            }
         }
 
         public static async Task GCHandInExpert()
