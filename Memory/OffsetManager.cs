@@ -90,11 +90,13 @@ public static class OffsetManager
     public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown, LogLevel.Information);
 
 #if RB_CN
-        public static bool IsChinese = true;
+    public static bool IsChinese = true;
     public static bool Is7_1 = false;
+    public static bool Is7_15 = false;
 #else
     public static bool IsChinese = false;
     public static bool Is7_1 = true;
+    public static bool Is7_15 = true;
 #endif
 
 #if RB_DT
