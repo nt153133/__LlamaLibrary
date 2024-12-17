@@ -138,5 +138,19 @@
     "Name": "Margrat",
     "RequiredQuest": 70351,
     "Index": 10
+  },
+  {
+    "npcId": 1048605,
+    "Zone": 1190,
+    "Location": {
+      "X": -358.38867,
+      "Y": 19.728025,
+      "Z": -105.02789,
+      "MagnitudeSqr": 373.98193,
+      "Magnitude": 139862.48
+    },
+    "Name": "Nitowikwe",
+    "RequiredQuest": 70775,
+    "Index": 11
   }
 ]

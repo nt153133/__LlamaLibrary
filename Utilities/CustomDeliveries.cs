@@ -53,7 +53,7 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
-        public static async Task<bool> RunCustomDeliveriesBySelection(bool doZhloe, bool doMnaago, bool doKurenai, bool doAdkiragh, bool doKaishirr, bool doEhlltou, bool doCharlemend, bool doAmeliance, bool doAnden, bool doMargrat, DohClasses dohClass = DohClasses.Carpenter)
+        public static async Task<bool> RunCustomDeliveriesBySelection(bool doZhloe, bool doMnaago, bool doKurenai, bool doAdkiragh, bool doKaishirr, bool doEhlltou, bool doCharlemend, bool doAmeliance, bool doAnden, bool doMargrat, bool doNitowikwe, DohClasses dohClass = DohClasses.Carpenter)
         {
             if (Navigator.NavigationProvider == null)
             {
@@ -126,6 +126,12 @@ namespace LlamaLibrary.Utilities
             if (doMargrat)
             {
                 var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Margrat");
+                await CraftThenHandinNpc(npc, dohClass, false);
+            }
+
+            if (doNitowikwe)
+            {
+                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Nitowikwe");
                 await CraftThenHandinNpc(npc, dohClass, false);
             }
 
