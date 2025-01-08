@@ -34,12 +34,19 @@ public class GilShopping
         { 41075, 1046406 }, // Mesmerizing Miniature Components
         { 41076, 1046406 }, // Energizing Eye-lixir Components
         { 41077, 1046406 }, // Researcher's Relaxtion Kit Components
+        // Nitowikwe Items
+        { 44860, 1048606 }, // Rail Grindstone Components
+        { 44861, 1048606 }, // Carriage Seat Components
+        { 44862, 1048606 }, // Map Printing Components
+        { 44863, 1048606 }, // Engineer's Supply Kit Components
+        { 44864, 1048606 }, // Railroad Repair Kit Kit Components
     };
 
     public static Npc AndenVendor = new Npc(1044548, 816, new Vector3(-246.9673f, 51.059f, 617.0291f));
     public static Npc MargratVendor = new Npc(1046406, 956, new Vector3(-54.89797f, -29.49739f, -53.02695f));
+    public static Npc NitowikweVendor = new Npc(1048606, 1190, new Vector3(-360.06714f, 19.493467f, -109.056274f));
 
-    public static List<Npc> Vendors = new List<Npc>() { AndenVendor, MargratVendor };
+    public static List<Npc> Vendors = new List<Npc>() { AndenVendor, MargratVendor, NitowikweVendor };
 
     public static async Task<bool> GetRequiredItems(StoredRecipe recipe, int amount = 1)
     {
