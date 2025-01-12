@@ -50,7 +50,6 @@ namespace LlamaLibrary.Extensions
             //pre 6.3 [OffsetCN("Search 48 89 91 ? ? ? ? 33 D2 C7 81 ? ? ? ? ? ? ? ?")]
             public static IntPtr MeldWindowFunc;
 
-
             [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8")]
             public static IntPtr ExtractMateriaFunc;
 
@@ -618,6 +617,16 @@ namespace LlamaLibrary.Extensions
 
         public static byte DyeItem(this BagSlot item, BagSlot dye)
         {
+            using var bagid = Core.Memory.CreateAllocatedMemory(8);
+            using var bagslot = Core.Memory.CreateAllocatedMemory(4);
+            bagid.AllocateOfChunk("bagid",8);
+            bagid.Write("bagid",0x270F00000000+ (long)dye.BagId);
+            bagslot.AllocateOfChunk("bagslot",4);
+            int test = -1 << 16;
+            int test2 = test + dye.Slot;
+
+            bagslot.Write("bagslot", test2);
+
             lock (Core.Memory.Executor.AssemblyLock)
             {
                 using (Core.Memory.TemporaryCacheState(false))
@@ -626,8 +635,8 @@ namespace LlamaLibrary.Extensions
                                                             Memory.Offsets.g_InventoryManager,
                                                             item.BagId,
                                                             item.Slot,
-                                                            dye.BagId,
-                                                            dye.Slot);
+                                                            bagid.Address,
+                                                            bagslot.Address);
                 }
             }
         }
