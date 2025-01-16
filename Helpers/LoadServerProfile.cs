@@ -557,6 +557,7 @@ public class LoadServerProfile
                             Log.Error("Something went wrong attempting to queue for Duty Support, queueing again...");
                         }
                     }
+
                     if (QueueType == 0 || QueueType == 1)
                     {
                         if (!PartyManager.IsInParty || (PartyManager.IsInParty && PartyManager.IsPartyLeader))
@@ -721,6 +722,12 @@ public class LoadServerProfile
             Log.Information($"Loading {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} profile.");
             ConditionParser.Initialize();
             NeoProfileManager.Load(profileUrl, false);
+        }
+        else
+        {
+            Log.Error($"Something went wrong, we're in a duty but the Zone Id isn't the expected ID.");
+            TreeRoot.Stop("Something went wrong, we're in a duty but the Zone Id isn't the expected ID");
+            return;
         }
 
         return;
