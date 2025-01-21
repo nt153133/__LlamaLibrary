@@ -45,12 +45,12 @@ namespace LlamaLibrary.ScriptConditions
             32903, 32904, 32905, 32906, 32907
         };
 
-        private static readonly uint[] IdList3 = 
-		{ 
+        private static readonly uint[] IdList3 =
+		{
 			35626, 35627, 35628, 35629, 35630, 35631, 35632, 35633, 35634, 35635, 35636, 35637, 35638, 35639, 35640, 35641, 35642, 35643, 35644, 35645, 35646, 35647, 35648, 35649, 35650, 35651, 35652, 35653, 35654, 35655, 35656, 35657, 35658, 35659, 35660, 35661, 35662, 35663, 35664, 35665,
 			44185, 44186, 44187, 44188, 44189, 44190, 44191, 44192, 44193, 44194, 44195, 44196, 44197, 44198, 44199, 44200, 44201, 44202, 44203, 44204, 44205, 44206, 44207, 44208, 44209, 44210, 44211, 44212, 44213, 44214, 44215, 44216, 44217, 44218, 44219, 44220, 44221, 44222, 44223, 44224, 44225, 44226, 44227, 44228, 44229, 44230, 44231, 44232
 		};
-		
+
         private static bool hasLisbeth = false;
         private static bool checkedLisbeth = false;
 
@@ -152,6 +152,18 @@ namespace LlamaLibrary.ScriptConditions
         public static int AethericDensity()
         {
             return Core.Memory.Read<int>(Offsets.AnimaLightThing + Offsets.AnimaLight);
+        }
+
+        public static bool IsVersionGreater(float version)
+        {
+            if (LlamaLibrary.Memory.OffsetManager.CurrentGameVersion >= version)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public static int GetInstanceTodo(int objective)
