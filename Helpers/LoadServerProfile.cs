@@ -786,12 +786,12 @@ public class LoadServerProfile
 
         if (DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel != 0)
         {
-            if (GearsetManager.ActiveGearset.ItemLevel < DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel)
+            if (LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel() < DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel)
             {
 #if RB_CN
-                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 需要最低物品等级 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}。您的装备等级为 {GearsetManager.ActiveGearset.ItemLevel}。请升级您的装备品级。";
+                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 需要最低物品等级 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}。您的装备等级为 {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}。请升级您的装备品级。";
 #else
-                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} requires minimum Item Level of {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}. Your Item Level is {GearsetManager.ActiveGearset.ItemLevel}. Please upgrade your gear.";
+                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} requires minimum Item Level of {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}. Your Item Level is {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}. Please upgrade your gear.";
 #endif
                 Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
                 Log.Error($"{message}.");
