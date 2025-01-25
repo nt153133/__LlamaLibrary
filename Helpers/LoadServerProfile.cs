@@ -261,10 +261,8 @@ public class LoadServerProfile
         var profileType = profile.Type;
         var dungeonDutyId = profile.DutyId;
         var dungeonZoneId = profile.ZoneId;
-        var dungeonLevel = profile.Level;
         var dutyType = profile.DutyType;
         var unlockQuest = profile.UnlockQuest;
-        var reqItemLevel = profile.ItemLevel;
         var trustId = profile.TrustId;
 
         if (profileType == ProfileType.Quest)
@@ -276,7 +274,7 @@ public class LoadServerProfile
         if (profileType == ProfileType.Duty)
         {
             {
-                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, reqItemLevel, dungeonLevel, sayHello, sayHelloCustom, sayHelloMessages, trustId);
+                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, sayHello, sayHelloCustom, sayHelloMessages, trustId);
                 return;
             }
         }
@@ -317,16 +315,14 @@ public class LoadServerProfile
         var profileType = profile.Type;
         var dungeonDutyId = profile.DutyId;
         var dungeonZoneId = profile.ZoneId;
-        var dungeonLevel = profile.Level;
         var dutyType = profile.DutyType;
         var unlockQuest = profile.UnlockQuest;
-        var reqItemLevel = profile.ItemLevel;
         var trustId = profile.TrustId;
 
         if (profileType == ProfileType.Duty)
         {
             {
-                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, 1, unlockQuest, false, reqItemLevel, dungeonLevel, false, false, "hi/welcome", trustId);
+                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, 1, unlockQuest, false, false, false, "hi/welcome", trustId);
                 return;
             }
         }
@@ -433,7 +429,7 @@ public class LoadServerProfile
         return NeoProfileManager.CurrentProfile != null && NeoProfileManager.CurrentProfile.Name != "Loading Profile";
     }
 
-    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, int ItemLevel, int dungeonLevel, bool sayHello, bool sayHelloCustom, string SayHelloMessages, int trustId)
+    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, bool sayHello, bool sayHelloCustom, string SayHelloMessages, int trustId)
     {
         if (WorldManager.ZoneId == dungeonZoneId)
         {
@@ -457,7 +453,7 @@ public class LoadServerProfile
                 }
             }
 
-            if (!CanQueue(dungeonDutyId, dungeonZoneId, QueueType, UnlockQuest, ItemLevel, dungeonLevel))
+            if (!CanQueue(dungeonDutyId, dungeonZoneId, QueueType, UnlockQuest))
             {
                 return;
             }
@@ -475,7 +471,12 @@ public class LoadServerProfile
                     {
                         if (!TrustDungeons.Contains(dungeonDutyId))
                         {
+#if RB_CN
+                                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 不是亲信副本。\\n请选择其他队列类型或副本";
+#else
                             string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Trust dungeon.\nPlease select a different Queue Type or dungeon.";
+
+#endif
                             Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
                             Log.Error($"{message}");
                             TreeRoot.Stop($"{message}");
@@ -497,7 +498,12 @@ public class LoadServerProfile
                             await Coroutine.Wait(5000, () => AgentDawn.Instance.TrustId == trustId);
                             if (AgentDawn.Instance.TrustId != trustId)
                             {
+#if RB_CN
+                                string message = $"无法将 {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 选择为亲信副本。";
+#else
                                 string message = $"Something went wrong when attempting to select {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as Trust dungeon.";
+
+#endif
                                 Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
                                 Log.Error($"{message}");
                                 TreeRoot.Stop($"{message}");
@@ -733,7 +739,7 @@ public class LoadServerProfile
         return;
     }
 
-    internal static bool CanQueue(int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, int ItemLevel, int dungeonLevel)
+    internal static bool CanQueue(int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest)
     {
         /*
         if (!LlamaLibrary.Helpers.GeneralFunctions.IsDutyUnlocked((uint)dungeonDutyId))
@@ -748,18 +754,29 @@ public class LoadServerProfile
 
         if (!LlamaLibrary.ScriptConditions.Extras.IsDiscipleofWarClass() && !LlamaLibrary.ScriptConditions.Extras.IsDiscipleofMagicClass())
         {
+#if RB_CN
+            string message = $"执行任务需要您使用战斗职业 (DoW) 或魔法职业 (DoM)";
+#else
             string message = $"You must be on a DoW or DoM class to do a duty..";
+
+#endif
             Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
             Log.Error($"{message}");
             TreeRoot.Stop($"{message}");
             return false;
         }
 
-        if (dungeonLevel != 0)
+        if (DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel != 0)
         {
-            if (Core.Me.ClassLevel < dungeonLevel)
+            if (Core.Me.ClassLevel < DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel)
             {
-                string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} requires level {dungeonLevel}. Your level is {Core.Me.ClassLevel}. Please swap to a job that is at least level {dungeonLevel}.";
+#if RB_CN
+                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 需要 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel} 级。您的等级为 {Core.Me.ClassLevel} 级。请切换到至少 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel} 级的职业.";
+#else
+                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} requires level {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel}. Your level is {Core.Me.ClassLevel}. Please swap to a job that is at least level {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel}.";
+
+#endif
+
                 Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
                 Log.Error($"{message}");
                 TreeRoot.Stop($"{message}");
@@ -767,11 +784,15 @@ public class LoadServerProfile
             }
         }
 
-        if (ItemLevel != 0)
+        if (DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel != 0)
         {
-            if (LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel() < ItemLevel)
+            if (GearsetManager.ActiveGearset.ItemLevel < DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel)
             {
-                string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} requires minimum Item Level of {ItemLevel}. Your Item Level is {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}. Please upgrade your gear.";
+#if RB_CN
+                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 需要最低物品等级 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}。您的装备等级为 {GearsetManager.ActiveGearset.ItemLevel}。请升级您的装备品级。";
+#else
+                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} requires minimum Item Level of {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}. Your Item Level is {GearsetManager.ActiveGearset.ItemLevel}. Please upgrade your gear.";
+#endif
                 Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
                 Log.Error($"{message}.");
                 TreeRoot.Stop($"Please upgrade your gear");
@@ -781,7 +802,11 @@ public class LoadServerProfile
 
         if (QueueType == 2 && !DutySupportDuties.Contains((uint)dungeonDutyId))
         {
-            string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} is not a Duty Support dungeon.";
+#if RB_CN
+            string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 不是亲信支持副本";
+#else
+            string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Duty Support dungeon.";
+#endif
             Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
             Log.Error($"{message}");
             TreeRoot.Stop($"{message}");
