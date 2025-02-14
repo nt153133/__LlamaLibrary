@@ -65,78 +65,169 @@ namespace LlamaLibrary.Utilities
 
             if (doZhloe)
             {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Zhloe Aliapoh");
-                await CraftThenHandinNpc(npc, dohClass, false);
+                var npc = DeliveryNpcs.Where(i => i.Name == "Zhloe Aliapoh").FirstOrDefault();
+
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
             }
 
             if (doMnaago)
             {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "M'naago");
-                await CraftThenHandinNpc(npc, dohClass, false);
+                var npc = DeliveryNpcs.Where(i => i.Name == "M'naago").FirstOrDefault();
+
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
             }
 
             if (doKurenai)
             {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Kurenai");
-                await CraftThenHandinNpc(npc, dohClass, false);
+                var npc = DeliveryNpcs.Where(i => i.Name == "Kurenai").FirstOrDefault();
+
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
             }
 
             if (doAdkiragh)
             {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Adkiragh");
-                await CraftThenHandinNpc(npc, dohClass, false);
+                var npc = DeliveryNpcs.Where(i => i.Name == "Adkiragh").FirstOrDefault();
+
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
             }
 
             if (doKaishirr)
             {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Kai-Shirr");
-                await CraftThenHandinNpc(npc, dohClass, false);
+                var npc = DeliveryNpcs.Where(i => i.Name == "Kai-Shirr").FirstOrDefault();
+
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
             }
 
             if (doEhlltou)
             {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Ehll Tou");
-                await CraftThenHandinNpc(npc, dohClass, false);
+                var npc = DeliveryNpcs.Where(i => i.Name == "Ehll Tou").FirstOrDefault();
+
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
             }
 
             if (doCharlemend)
             {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Charlemend");
-                await CraftThenHandinNpc(npc, dohClass, false);
+                var npc = DeliveryNpcs.Where(i => i.Name == "Charlemend").FirstOrDefault();
+
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
             }
 
             if (doAmeliance)
             {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Ameliance");
-                await CraftThenHandinNpc(npc, dohClass, false);
+                var npc = DeliveryNpcs.Where(i => i.Name == "Ameliance").FirstOrDefault();
+
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
             }
 
             if (doAnden)
             {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Anden");
-                await CraftThenHandinNpc(npc, dohClass, false);
-            }
+                var npc = DeliveryNpcs.Where(i => i.Name == "Anden").FirstOrDefault();
 
-            if (doAnden)
-            {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Anden");
-                await CraftThenHandinNpc(npc, dohClass, false);
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
             }
 
             if (doMargrat)
             {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Margrat");
-                await CraftThenHandinNpc(npc, dohClass, false);
+                var npc = DeliveryNpcs.Where(i => i.Name == "Margrat").FirstOrDefault();
+
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
             }
 
             if (doNitowikwe)
             {
-                var npc = DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).FirstOrDefault(i => i.Name == "Nitowikwe");
-                await CraftThenHandinNpc(npc, dohClass, false);
+                var npc = DeliveryNpcs.Where(i => i.Name == "Nitowikwe").FirstOrDefault();
+
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
             }
 
             TreeRoot.Stop("Stop Requested");
             return true;
+        }
+
+        public static async Task NotUnlocked(CustomDeliveryNpc deliveryNpc)
+        {
+            string message = $"{DataManager.GetLocalizedNPCName((int)deliveryNpc.npcId)} not unlocked.\nPlease complete the quest '{DataManager.GetLocalizedQuestName(deliveryNpc.RequiredQuest)}' or run the unlock profile.";
+
+            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(29, 226, 213), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+            Log.Error($"{message}");
+            TreeRoot.Stop($"{message}");
         }
 
         public static async Task<(uint ItemId, int DeliveriesReamining)> GetCraftingDeliveryItems(CustomDeliveryNpc deliveryNpc)
@@ -162,16 +253,6 @@ namespace LlamaLibrary.Utilities
 
         public static async Task CraftThenHandinNpc(CustomDeliveryNpc deliveryNpc, DohClasses dohClass = DohClasses.Carpenter, bool stopAtFiveHearts = true)
         {
-            if (!QuestLogManager.IsQuestCompleted((uint)deliveryNpc.RequiredQuest))
-            {
-                string message = $"{deliveryNpc.Name} not unlocked. Please run the unlock profile.";
-
-                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
-                Log.Error($"{message}");
-                TreeRoot.Stop($"{message}");
-                return;
-            }
-
             await AgentSatisfactionSupply.Instance.LoadWindow(deliveryNpc.Index);
             var items = new List<uint>();
             /*
