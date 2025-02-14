@@ -162,6 +162,16 @@ namespace LlamaLibrary.Utilities
 
         public static async Task CraftThenHandinNpc(CustomDeliveryNpc deliveryNpc, DohClasses dohClass = DohClasses.Carpenter, bool stopAtFiveHearts = true)
         {
+            if (!QuestLogManager.IsQuestCompleted((uint)deliveryNpc.RequiredQuest))
+            {
+                string message = $"{deliveryNpc.Name} not unlocked. Please run the unlock profile.";
+
+                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                Log.Error($"{message}");
+                TreeRoot.Stop($"{message}");
+                return;
+            }
+
             await AgentSatisfactionSupply.Instance.LoadWindow(deliveryNpc.Index);
             var items = new List<uint>();
             /*
