@@ -59,7 +59,7 @@ public static class OffsetManager
 
     public static ConcurrentDictionary<string, long> OffsetCache = new();
 
-    private const long _version = 30;
+    private const long _version = 31;
 
     private const bool _debug = false;
 
