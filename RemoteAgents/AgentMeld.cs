@@ -37,7 +37,7 @@ namespace LlamaLibrary.RemoteAgents
             internal static int MateriaCount;
 
             [Offset("Search 48 8B 85 ? ? ? ? 48 0F BF 95 ? ? ? ? Add 3 Read32")]
-            [OffsetCN("Search 48 8B 86 ? ? ? ? 48 0F BF 96 ? ? ? ? Add 3 Read32")]
+            //[OffsetCN("Search 48 8B 86 ? ? ? ? 48 0F BF 96 ? ? ? ? Add 3 Read32")]
             internal static int StructStart;
 
             [Offset("Search 48 8B 88 ? ? ? ? 4C 8B 04 D1 Add 3 Read32")]
