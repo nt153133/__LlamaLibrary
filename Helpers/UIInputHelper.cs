@@ -29,7 +29,7 @@ namespace LlamaLibrary.Helpers
 
             //7.1
             [Offset("Search E8 ? ? ? ? EB ? 33 DB 48 89 1F TraceCall")]
-            [OffsetCN("Search E8 ? ? ? ? 44 2B F7 TraceCall")]
+            //[OffsetCN("Search E8 ? ? ? ? 44 2B F7 TraceCall")]
             internal static IntPtr Utf8StringCtor;
 
             [Offset("Search E8 ? ? ? ? B0 ? 66 89 9F ? ? ? ? TraceCall")]

@@ -12,7 +12,7 @@ namespace LlamaLibrary.Helpers
         {
             //7.1
             [Offset("Search E8 ? ? ? ? 84 C0 75 ? C6 05 ? ? ? ? ? E8 ? ? ? ? 48 89 05 ? ? ? ? Add 1 TraceRelative")]
-            [OffsetCN("Search E8 ? ? ? ? 84 C0 75 19 F3 0F 10 05 ? ? ? ? Add 1 TraceRelative")]
+            //[OffsetCN("Search E8 ? ? ? ? 84 C0 75 19 F3 0F 10 05 ? ? ? ? Add 1 TraceRelative")]
             internal static IntPtr ScreenshotFunc;
 
             [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? BB ? ? ? ? 83 FA ?")]
@@ -23,7 +23,7 @@ namespace LlamaLibrary.Helpers
 
             //7.1
             [Offset("Search C6 05 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? Add 2 TraceRelative")]
-            [OffsetCN("Search C6 05 ? ? ? ? ? 48 83 C4 ? 5F C3 48 8B 4F ? Add 2 TraceRelative")]
+            //[OffsetCN("Search C6 05 ? ? ? ? ? 48 83 C4 ? 5F C3 48 8B 4F ? Add 2 TraceRelative")]
             internal static IntPtr ScreenshotState;
 
             [Offset("Search 48 8D 4B ? 48 8D 44 24 ? 48 3B C1 Add 3 Read8")]

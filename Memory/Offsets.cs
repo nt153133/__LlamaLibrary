@@ -18,7 +18,7 @@ namespace LlamaLibrary.Memory
     {
         //7.1
         [Offset("Search E8 ? ? ? ? 48 8B C7 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 48 8D 4B ? Add 1 TraceRelative")]
-        [OffsetCN("Search 40 55 53 57 41 54 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 3D ? ? ? ? ?")]
+        //[OffsetCN("Search 40 55 53 57 41 54 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 3D ? ? ? ? ?")]
         public static IntPtr SalvageAgent;
 
         [Offset("Search 4C 8D 0D ? ? ? ? 45 33 C0 33 D2 Add 3 TraceRelative")]
@@ -79,18 +79,18 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search E8 ? ? ? ? 84 C0 74 ? 48 FF C3 48 83 FB ? 72 ? B0 ? 48 8B 4C 24 ? Add 1 TraceRelative")]
-        [OffsetCN("Search 48 89 5C 24 ? 57 48 83 EC ? 8B D9 E8 ? ? ? ? 48 8B F8")]
+        //[OffsetCN("Search 48 89 5C 24 ? 57 48 83 EC ? 8B D9 E8 ? ? ? ? 48 8B F8")]
         public static IntPtr IsInstanceContentCompleted;
 
         //7.1
         [Offset("Search E8 ? ? ? ? 3C ? 75 ? 32 C0 48 8B 5C 24 ? 48 8B 74 24 ? Add 1 TraceRelative")]
-        [OffsetCN("Search E8 ? ? ? ? 84 C0 75 ? B0 ? 48 83 C4 ? 5B C3 8B CB Add 1 TraceRelative")]
+        //[OffsetCN("Search E8 ? ? ? ? 84 C0 75 ? B0 ? 48 83 C4 ? 5B C3 8B CB Add 1 TraceRelative")]
         public static IntPtr IsInstanceContentUnlocked;
 
         //7.1
         //48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 44 24 ?
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 44 24 ? Add 3 TraceRelative")]
-        [OffsetCN("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 47 ? Add 3 TraceRelative")]
+        //[OffsetCN("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 47 ? Add 3 TraceRelative")]
         public static IntPtr UIStateTelepo;
 
         [Offset("Search 44 8B C2 4C 8B C9 41 C1 E8 ? 41 83 F8 ? 72 ? 32 C0 C3 0F B6 CA BA ? ? ? ? 83 E1 ? 41 8B C0 D3 E2")]

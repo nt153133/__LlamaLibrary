@@ -26,13 +26,15 @@ namespace LlamaLibrary.RemoteWindows
     public abstract class RemoteWindow
     {
         //7.1
+        /*
 #if RB_CN
         private const int Offset0 = 0x1DA; //0F BF 93 ? ? ? ? 41 B1 ? 4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
         private const int Offset2 = 0x170; //4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
 #else
+*/
         private const int Offset0 = 0x1E2; //0F BF 93 ? ? ? ? 41 B1 ? 4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
         private const int Offset2 = 0x178; //4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
-#endif
+
 
         public virtual bool IsOpen => WindowByName != null;
 

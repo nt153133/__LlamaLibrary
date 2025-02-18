@@ -32,7 +32,7 @@ namespace LlamaLibrary.Helpers
 
             //7.1
             [Offset("Search 41 B8 ? ? ? ? 89 7C 24 ? E8 ? ? ? ? Add 2 Read32")]
-            [OffsetCN("Search 41 B8 ? ? ? ? 89 5C 24 ? E8 ? ? ? ? 84 C0 75 ? Add 2 Read32")]
+            //[OffsetCN("Search 41 B8 ? ? ? ? 89 5C 24 ? E8 ? ? ? ? 84 C0 75 ? Add 2 Read32")]
             internal static int DecipherSpell;
         }
 

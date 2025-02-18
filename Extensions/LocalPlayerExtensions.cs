@@ -33,7 +33,7 @@ namespace LlamaLibrary.Extensions
 
             //7.1
             [Offset("Search 48 89 B3 ? ? ? ? 48 89 B3 ? ? ? ? 48 8B 74 24 ? 89 BB ? ? ? ? Add 3 Read32")]
-            [OffsetCN("Search 48 89 BB ? ? ? ? 80 A3 ? ? ? ? ? 88 83 ? ? ? ? Add 3 Read32")]
+            //[OffsetCN("Search 48 89 BB ? ? ? ? 80 A3 ? ? ? ? ? 88 83 ? ? ? ? Add 3 Read32")]
             internal static int AccountId;
 
 
