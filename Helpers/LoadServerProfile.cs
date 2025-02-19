@@ -227,11 +227,6 @@ public class LoadServerProfile
             Log.Information("Already in queue");
         }
 
-        if (DutyManager.QueueState == QueueState.InDungeon)
-        {
-            Log.Information("Already in dungeon");
-        }
-
         await GeneralFunctions.StopBusy(false);
 
         var profileList = await GetProfileList("https://sts.llamamagic.net/profiles.json");
@@ -273,6 +268,14 @@ public class LoadServerProfile
 
         if (profileType == ProfileType.Duty)
         {
+            if (DutyManager.QueueState == QueueState.InDungeon)
+            {
+                Log.Information("Already in dungeon");
+                Log.Information($"Loading {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} profile.");
+                ConditionParser.Initialize();
+                NeoProfileManager.Load(profileUrl, false);
+            }
+            else
             {
                 await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, sayHello, sayHelloCustom, sayHelloMessages, trustId);
                 return;
@@ -431,14 +434,8 @@ public class LoadServerProfile
 
     internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, bool sayHello, bool sayHelloCustom, string SayHelloMessages, int trustId)
     {
-        if (WorldManager.ZoneId == dungeonZoneId && DutyManager.QueueState == QueueState.InDungeon)
-        {
-            Log.Information("Already in dungeon");
-            ConditionParser.Initialize();
-            NeoProfileManager.Load(profileUrl, false);
-        }
 
-        while (WorldManager.ZoneId != dungeonZoneId)
+        while (DutyManager.QueueState != QueueState.InDungeon)
         {
             await GeneralFunctions.StopBusy(false);
 
