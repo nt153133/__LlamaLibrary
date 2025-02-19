@@ -431,8 +431,9 @@ public class LoadServerProfile
 
     internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, bool sayHello, bool sayHelloCustom, string SayHelloMessages, int trustId)
     {
-        if (WorldManager.ZoneId == dungeonZoneId)
+        if (WorldManager.ZoneId == dungeonZoneId && DutyManager.QueueState == QueueState.InDungeon)
         {
+            Log.Information("Already in dungeon");
             ConditionParser.Initialize();
             NeoProfileManager.Load(profileUrl, false);
         }
