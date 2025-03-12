@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
+using Clio.Common;
 using Clio.Utilities;
 using Clio.Utilities.Helpers;
 using ff14bot;
@@ -33,6 +34,8 @@ namespace LlamaLibrary.Helpers
         private static readonly LLogger Log = new("NavigationHelper", Colors.MediumPurple);
 
         public static readonly WaitTimer WaitTimer_0 = new(new TimeSpan(0, 0, 0, 15));
+
+        public static readonly Random Random = new();
 
         internal static async Task<Queue<NavGraph.INode>?> GenerateNodes(uint ZoneId, Vector3 xyz)
         {
@@ -150,7 +153,7 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Sleep(1000);
                     //WorldManager.TeleportById(AE.Item1);
                     await TeleportHelper.TeleportByIdTicket(AE.Item1);
-                   // await Coroutine.Wait(20000, () => WorldManager.ZoneId == AE.Item1);
+                    // await Coroutine.Wait(20000, () => WorldManager.ZoneId == AE.Item1);
                     await Coroutine.Sleep(1000);
                     return await GetTo(ZoneId, XYZ);
                 }
@@ -744,6 +747,80 @@ namespace LlamaLibrary.Helpers
             var ae = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.IsAetheryte && i.AethernetGroup == group);
 
             return ae?.Id ?? 0;
+        }
+
+        public static Location GetRandomPoint(int range, float distance, float heading)
+        {
+            var point = Random.Next(-range, range) / 10f;
+            return new Location(WorldManager.ZoneId, MathEx.GetPointAt(Core.Me.Location, distance, heading + point));
+        }
+
+        public static Location GetRandomPoint(int range, float distance, GameObject gameObject)
+        {
+            return GetRandomPoint(range, distance, gameObject.Heading);
+        }
+
+        public static async Task<bool> GetToSpotInFrontOf(ushort zoneId, Vector3 location, uint npcId, float distance = 4f, int range = 6)
+        {
+            var path = await NavGraph.GetPathAsync(zoneId, location);
+
+            if (path == null || path.Count == 0)
+            {
+                Log.Error("Path is null");
+                return false;
+            }
+
+            var object0 = new object();
+            var composite = NavGraph.NavGraphConsumer(j => path);
+
+            while (path.Count > 0)
+            {
+                composite.Start(object0);
+                await Coroutine.Yield();
+                while (composite.Tick(object0) == RunStatus.Running)
+                {
+                    await Coroutine.Yield();
+                }
+
+                composite.Stop(object0);
+                await Coroutine.Yield();
+
+                if (GameObjectManager.GetObjectByNPCId(npcId) != null)
+                {
+                    Log.Information("Found NPC");
+                    break;
+                }
+            }
+
+            Navigator.Stop();
+
+            var newLocation = GetRandomPoint(range, distance, GameObjectManager.GetObjectByNPCId(npcId));
+
+            await GetTo(newLocation);
+
+            var npc = GameObjectManager.GetObjectByNPCId(npcId);
+
+            if (npc != null && !npc.IsWithinInteractRange)
+            {
+                await OffMeshMoveInteract(npc);
+            }
+
+            if (Core.Me.IsMounted)
+            {
+                await CommonTasks.StopAndDismount();
+            }
+
+            return npc != null && !npc.IsWithinInteractRange;
+        }
+
+        public static async Task<bool> GetToSpotInFrontOf(Npc npc, float distance = 4f, int range = 6)
+        {
+            return await GetToSpotInFrontOf(npc.Location.ZoneId, npc.Location.Coordinates, npc.NpcId, distance, range);
+        }
+
+        public static async Task<bool> GetToSpotInFrontOf(Location location, uint npcId, float distance = 4f, int range = 6)
+        {
+            return await GetToSpotInFrontOf(location.ZoneId, location.Coordinates, npcId, distance, range);
         }
     }
 }

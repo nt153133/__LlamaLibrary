@@ -625,5 +625,17 @@ namespace LlamaLibrary.Helpers
             { Language.Ger, "Savage" },
             { Language.Chn, "绝难本" }
         };
+
+        public static string TripleTriadChallenge => Addon9184[Language];
+
+        //Addon9184
+        private static readonly Dictionary<Language, string> Addon9184 = new()
+        {
+            { Language.Eng, "Triple Triad Challenge" },
+            { Language.Jap, "カード対戦を申し込む" },
+            { Language.Fre, "Défier à Triple Triade" },
+            { Language.Ger, "Triple Triad spielen" },
+            { Language.Chn, "幻卡挑战" }
+        };
     }
 }
