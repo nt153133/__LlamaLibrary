@@ -140,6 +140,7 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
+        /*
         /// <summary>
         /// Travels to the Firmament and plays "Kupo of Fortune" minigame with every available Kupo Voucher.
         /// </summary>
@@ -226,6 +227,7 @@ namespace LlamaLibrary.Helpers
             Log.Information("Done playing Kupo of Fortune.");
             return false;
         }
+        */
 
         /// <summary>
         /// Travels to the Firmament and turns in Skybuilders' collectables for specified crafting job.
@@ -302,7 +304,7 @@ namespace LlamaLibrary.Helpers
                         await Coroutine.Wait(5000, () => !Request.IsOpen);
                         await Coroutine.Sleep(300);
                     }
-#if !RB_DT
+/*#if !RB_DT
                     if (Translator.Language != Language.Chn)
                     {
                         Log.Information($"Kupo Vouchers: {HWDSupply.Instance.GetKupoVoucherCount()}");
@@ -322,7 +324,7 @@ namespace LlamaLibrary.Helpers
                             break;
                         }
                     }
-#endif
+#endif*/
                     if (!SelectYesno.IsOpen)
                     {
                         continue; // No scrip overcap warning prompt yet
