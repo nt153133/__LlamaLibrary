@@ -24,6 +24,7 @@
         Leve,
         FishingExpedition,
         ResourceApproval,
-        Any
+        Any,
+        TomestoneExchange
     }
 }
