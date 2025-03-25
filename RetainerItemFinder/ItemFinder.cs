@@ -273,7 +273,9 @@ namespace LlamaLibrary.RetainerItemFinder
             //[OffsetCN("Search 4D 8D 85 ? ? ? ? 41 B9 ? ? ? ? 0F 1F 80 ? ? ? ? Add 3 Read32")]
             internal static int GlamourDresserItemIds;
 
-            [Offset("Search 80 B9 ? ? ? ? ? 48 8B D9 74 ? 48 83 C4 ? Add 2 Read32")]
+            //7.2
+            [Offset("Search 80 B9 ? ? ? ? ? 48 8B E9 74 Add 2 Read32")]
+            [OffsetCN("Search 80 B9 ? ? ? ? ? 48 8B D9 74 ? 48 83 C4 ? Add 2 Read32")]
             internal static int GlamourDresserCached;
         }
     }
