@@ -25,7 +25,9 @@ namespace LlamaLibrary.Helpers
             [Offset("Search 41 83 F8 ? 72 ? 32 C0 C3 0F B6 40 ? Add 3 Read8")]
             internal static int DailyQuestCount;
 
-            [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? TraceCall")]
+            //7.2
+            [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? 73 ? TraceCall")]
+            [OffsetCN("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? TraceCall")]
             internal static IntPtr GetBeastTribeExd;
 
             [Offset("Search E8 ? ? ? ? 4C 8B C8 EB ? 4C 8D 0D ? ? ? ? TraceCall")]
@@ -128,7 +130,8 @@ namespace LlamaLibrary.Helpers
         public static BeastTribeStat[] GetBeastTribes()
         {
             //6.5
-            return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + 0xBC8, Offsets.BeastTribeCount);
+           // return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + 0xBC8, Offsets.BeastTribeCount);
+           return Core.Memory.ReadArray<BeastTribeStat>(Offsets.QuestPointer + 0xCA8, Offsets.BeastTribeCount);
         }
 
         public static int GetBeastTribeRank(int tribe)
