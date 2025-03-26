@@ -31,11 +31,15 @@ namespace LlamaLibrary.Extensions
             [Offset("Search 48 8B 05 ? ? ? ? 48 8D 0D ? ? ? ? 41 8B DC Add 3 TraceRelative")]
             internal static IntPtr PlayerId;
 
-            //7.1
-            [Offset("Search 48 89 B3 ? ? ? ? 48 89 B3 ? ? ? ? 48 8B 74 24 ? 89 BB ? ? ? ? Add 3 Read32")]
-            //[OffsetCN("Search 48 89 BB ? ? ? ? 80 A3 ? ? ? ? ? 88 83 ? ? ? ? Add 3 Read32")]
-            internal static int AccountId;
+            //Useless as of 7.2, kept for reference. New method is in AccountIdLocation which only works on the current account (not other players) and still works on CN 7.1
+            //[Offset("Search 48 89 B3 ? ? ? ? 48 89 B3 ? ? ? ? 48 8B 74 24 ? 89 BB ? ? ? ? Add 3 Read32")]
+            //internal static int AccountId;
 
+            [Offset("Search 48 8B 3D ? ? ? ? 48 85 FF 74 ? 48 89 5C 24 ? Add 3 TraceRelative")]
+            internal static IntPtr AccountIdLocation;
+
+            [Offset("Search 48 89 77 ? C7 07 ? ? ? ? Add 3 Read8")]
+            internal static int AccountIdOffset;
 
             [Offset("Search 0F B6 05 ? ? ? ? 88 83 ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr RunWalk;
@@ -139,12 +143,18 @@ namespace LlamaLibrary.Extensions
             return Core.Memory.Read<ulong>(Offsets.PlayerId);
         }
 
+        private static ulong _accountId = 0;
 
         public static ulong AccountId(this LocalPlayer player)
         {
-            return Core.Memory.Read<ulong>(player.Pointer + Offsets.AccountId);
-        }
+            if (_accountId == 0)
+            {
+                var accountIdLocation = Core.Memory.Read<IntPtr>(Offsets.AccountIdLocation);
+                _accountId = Core.Memory.Read<ulong>(accountIdLocation + Offsets.AccountIdOffset);
+            }
 
+            return _accountId;
+        }
 
         public static World HomeWorld(this Character? character)
         {
