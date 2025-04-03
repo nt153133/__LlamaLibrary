@@ -15,6 +15,7 @@ public static class UiManagerProxy
         { "GetRaptureAtkModule", 7 },
         { "GetRaptureShellModule", 9 },
         { "AcquaintanceModule", 15 },
+        { "GoldSaucerModule", 29},
         { "GetFieldMarkerModule", 49 },
         { "GetRecommendEquipModule", 32 },
         { "GetInfoModule", 34 },
@@ -28,6 +29,8 @@ public static class UiManagerProxy
     {
        // _uiModule = Core.Memory.CallInjected64<IntPtr>(Offsets.GetUiModule, Core.Memory.Read<IntPtr>(Offsets.Framework));
     }
+
+    public static IntPtr GoldSaucerModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GoldSaucerModule"]), UIModule);
 
     public static IntPtr AcquaintanceModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["AcquaintanceModule"]), UIModule);
 

@@ -49,7 +49,7 @@ public record TripleTriadCardStore
 
     public override string ToString()
     {
-        return $"{Id} - {Name} - {ItemName}({ItemId})";
+        return $"{Id} - {Name} - {ItemName} ({ItemId})";
     }
 }
 
