@@ -11,6 +11,7 @@ using ff14bot.Objects;
 using LlamaLibrary.ClientDataHelpers;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Memory;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -209,10 +210,10 @@ namespace LlamaLibrary.Helpers
                 allocatedMemory2.Write("dword4", 64);
                 allocatedMemory2.Write("dword8", array.Length + 1);
                 allocatedMemory2.Write("dwordC", 0);
-                Core.Memory.CallInjected64<int>(Offsets.ExecuteCommandInner,
-                                                UiManagerProxy.RaptureShellModule,
-                                                allocatedMemory2.Address,
-                                                UiManagerProxy.UIModule);
+                Core.Memory.CallInjectedWraper<int>(Offsets.ExecuteCommandInner,
+                                                    UiManagerProxy.RaptureShellModule,
+                                                    allocatedMemory2.Address,
+                                                    UiManagerProxy.UIModule);
             }
         }
     }

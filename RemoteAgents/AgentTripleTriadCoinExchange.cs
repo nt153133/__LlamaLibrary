@@ -48,7 +48,7 @@ public class AgentTripleTriadCoinExchange : AgentInterface<AgentTripleTriadCoinE
         set => Core.Memory.Write(Pointer + Offsets.SelectedCardIndex, value);
     }
 
-    //private void OpenSellWindowRaw(IntPtr cardPTr) => Core.Memory.CallInjected64<IntPtr>(Offsets.OpenSellWindow, Pointer, cardPTr);
+    //private void OpenSellWindowRaw(IntPtr cardPTr) => Core.Memory.CallInjectedWraper<IntPtr>(Offsets.OpenSellWindow, Pointer, cardPTr);
 
     public TripleTriadCoinExchangeCard[] Cards
     {

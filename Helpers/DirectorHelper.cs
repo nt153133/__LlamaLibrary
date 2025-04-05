@@ -5,6 +5,8 @@ using ff14bot;
 using ff14bot.Directors;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
+
 
 namespace LlamaLibrary.Helpers
 {
@@ -35,7 +37,7 @@ namespace LlamaLibrary.Helpers
             if (ActiveDirectorAddress != CurrentDirector)
             {
                 CurrentDirector = ActiveDirectorAddress;
-                CurrentDirectorTodoArgs = Core.Memory.CallInjected64<IntPtr>(Offsets.GetTodoArgs, Offsets.ActiveDirector);
+                CurrentDirectorTodoArgs = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetTodoArgs, Offsets.ActiveDirector);
             }
 
             if (CurrentDirector == IntPtr.Zero)

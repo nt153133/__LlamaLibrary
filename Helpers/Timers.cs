@@ -5,6 +5,7 @@ using ff14bot.Helpers;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers;
 
@@ -12,7 +13,7 @@ public static class Timers
 {
     private static readonly LLogger Log = new("TimersHelper", Colors.Peru);
 
-    private static readonly FrameCachedValue<ulong> CurrentTimeCachedValue = new(() => Core.Memory.CallInjected64<ulong>(Offsets.GetCurrentTime, 0));
+    private static readonly FrameCachedValue<ulong> CurrentTimeCachedValue = new(() => Core.Memory.CallInjectedWraper<ulong>(Offsets.GetCurrentTime, 0));
 
     // ReSharper disable once MemberCanBePrivate.Global
     internal static class Offsets
@@ -61,7 +62,7 @@ public static class Timers
 
     public static CycleTime GetCycleRow(int index)
     {
-        var cyclePtr = Core.Memory.CallInjected64<IntPtr>(Offsets.GetCycleExd, index);
+        var cyclePtr = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetCycleExd, index);
 
         return cyclePtr != IntPtr.Zero ? Core.Memory.Read<CycleTime>(cyclePtr) : default;
     }

@@ -2,6 +2,7 @@
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteAgents
 {
@@ -26,11 +27,11 @@ namespace LlamaLibrary.RemoteAgents
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<uint>(
-                    Offsets.HandInFunc,
-                    Pointer + Offsets.HandinParmOffset,
-                    slot.Slot,
-                    (int)slot.BagId);
+                Core.Memory.CallInjectedWraper<uint>(
+                                                     Offsets.HandInFunc,
+                                                     Pointer + Offsets.HandinParmOffset,
+                                                     slot.Slot,
+                                                     (int)slot.BagId);
             }
         }
     }

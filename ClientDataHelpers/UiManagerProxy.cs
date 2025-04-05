@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ff14bot;
 using LlamaLibrary.Memory;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.ClientDataHelpers;
 
@@ -27,42 +28,42 @@ public static class UiManagerProxy
 
     static UiManagerProxy()
     {
-       // _uiModule = Core.Memory.CallInjected64<IntPtr>(Offsets.GetUiModule, Core.Memory.Read<IntPtr>(Offsets.Framework));
+       // _uiModule = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetUiModule, Core.Memory.Read<IntPtr>(Offsets.Framework));
     }
 
-    public static IntPtr GoldSaucerModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GoldSaucerModule"]), UIModule);
+    public static IntPtr GoldSaucerModule { get; } = Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(VFunctionIds["GoldSaucerModule"]), UIModule);
 
-    public static IntPtr AcquaintanceModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["AcquaintanceModule"]), UIModule);
+    public static IntPtr AcquaintanceModule { get; } = Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(VFunctionIds["AcquaintanceModule"]), UIModule);
 
-    public static IntPtr FieldMarkerModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetFieldMarkerModule"]), UIModule);
+    public static IntPtr FieldMarkerModule { get; } = Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(VFunctionIds["GetFieldMarkerModule"]), UIModule);
 
-    public static IntPtr RecommendEquipModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetRecommendEquipModule"]), UIModule);
+    public static IntPtr RecommendEquipModule { get; } = Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(VFunctionIds["GetRecommendEquipModule"]), UIModule);
 
     //public static IntPtr UIModule => (IntPtr)Properties.First(i => i.Name.Equals("UIModule")).GetValue(null);
 
-    public static IntPtr UIModule => _uiModule == IntPtr.Zero ? _uiModule = Core.Memory.CallInjected64<IntPtr>(Offsets.GetUiModule, Core.Memory.Read<IntPtr>(Offsets.Framework)) : _uiModule;
+    public static IntPtr UIModule => _uiModule == IntPtr.Zero ? _uiModule = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetUiModule, Core.Memory.Read<IntPtr>(Offsets.Framework)) : _uiModule;
 
-    public static IntPtr InfoModule { get; } = Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetInfoModule"]), UIModule);
+    public static IntPtr InfoModule { get; } = Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(VFunctionIds["GetInfoModule"]), UIModule);
 
-    public static IntPtr RaptureTextModule => Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetRaptureTextModule"]), UIModule);
+    public static IntPtr RaptureTextModule => Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(VFunctionIds["GetRaptureTextModule"]), UIModule);
 
-    public static IntPtr UIInputData => Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetUIInputData"]), UIModule);
+    public static IntPtr UIInputData => Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(VFunctionIds["GetUIInputData"]), UIModule);
 
-    public static IntPtr UIInputModule => Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetUIInputModule"]), UIModule);
+    public static IntPtr UIInputModule => Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(VFunctionIds["GetUIInputModule"]), UIModule);
 
-    public static IntPtr UIInputModule_Topic2 => Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetUIInputModule_Topic"]), UIModule);
+    public static IntPtr UIInputModule_Topic2 => Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(VFunctionIds["GetUIInputModule_Topic"]), UIModule);
 
     //public static IntPtr RaptureAtkModule => (IntPtr)Properties.First(i => i.Name.Equals("RaptureAtkModule")).GetValue(null);
 
-    public static IntPtr RaptureAtkModule => Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetRaptureAtkModule"]), UIModule);
+    public static IntPtr RaptureAtkModule => Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(VFunctionIds["GetRaptureAtkModule"]), UIModule);
 
     //public static IntPtr RaptureShellModule => (IntPtr)Properties.First(i => i.Name.Equals("RaptureShellModule")).GetValue(null);
 
-    public static IntPtr RaptureShellModule => Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(VFunctionIds["GetRaptureShellModule"]), UIModule);
+    public static IntPtr RaptureShellModule => Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(VFunctionIds["GetRaptureShellModule"]), UIModule);
 
     public static IntPtr VFunctionCall(int index)
     {
-        return Core.Memory.CallInjected64<IntPtr>(VFunctionAddress(index), UIModule);
+        return Core.Memory.CallInjectedWraper<IntPtr>(VFunctionAddress(index), UIModule);
     }
 
     public static IntPtr VFunctionAddress(int index)

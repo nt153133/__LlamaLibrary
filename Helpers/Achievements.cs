@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -49,7 +50,7 @@ namespace LlamaLibrary.Helpers
 
         public static void RequestAchievement(int achievementId)
         {
-            Core.Memory.CallInjected64<byte>(Offsets.RequestAchievementFunction, Offsets.AchievementInstancePtr, achievementId);
+            Core.Memory.CallInjectedWraper<byte>(Offsets.RequestAchievementFunction, Offsets.AchievementInstancePtr, achievementId);
         }
 
         public static bool HasAchievement(int achievementId)
@@ -58,7 +59,7 @@ namespace LlamaLibrary.Helpers
 
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                done = Core.Memory.CallInjected64<bool>(Offsets.IsCompletePtr, Offsets.AchievementInstancePtr, achievementId);
+                done = Core.Memory.CallInjectedWraper<bool>(Offsets.IsCompletePtr, Offsets.AchievementInstancePtr, achievementId);
             }
 
             return done;

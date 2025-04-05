@@ -7,6 +7,7 @@ using ff14bot;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -58,8 +59,8 @@ namespace LlamaLibrary.Helpers
 
             for (var i = 1; i <= Offsets.BeastTribeCount; i++)
             {
-                var result = Core.Memory.CallInjected64<IntPtr>(Offsets.GetBeastTribeExd, i);
-                var name = UppercaseFirst(Core.Memory.ReadStringUTF8(Core.Memory.CallInjected64<IntPtr>(Offsets.ResolveStringColumnIndirection, result)));
+                var result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetBeastTribeExd, i);
+                var name = UppercaseFirst(Core.Memory.ReadStringUTF8(Core.Memory.CallInjectedWraper<IntPtr>(Offsets.ResolveStringColumnIndirection, result)));
                 var tribe = Core.Memory.Read<BeastTribeExdTemp>(result);
 
                 tribes.Add(new BeastTribeExd(tribe, name));
@@ -110,13 +111,13 @@ namespace LlamaLibrary.Helpers
         /*
         public static string GetBeastTribeName(int index)
         {
-            var result = Core.Memory.CallInjected64<IntPtr>(Offsets.GetBeastTribeExd, index);
+            var result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetBeastTribeExd, index);
             return result != IntPtr.Zero ? Core.Memory.ReadString(result + 0x28, Encoding.UTF8) : "";
         }
 
         public static int GetBeastTribeMaxRank(int index)
         {
-            var result = Core.Memory.CallInjected64<IntPtr>(Offsets.GetBeastTribeExd, index);
+            var result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetBeastTribeExd, index);
             return result != IntPtr.Zero ? Core.Memory.Read<byte>(result + 0x22) : 0;
         }
         */

@@ -3,6 +3,7 @@ using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteAgents
 {
@@ -40,7 +41,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public void BuyItem(uint index, int qty)
         {
-            Core.Memory.CallInjected64<IntPtr>(Offsets.BuyItem, GrandCompanyShop.ActiveShopPtr, 0, index, qty);
+            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.BuyItem, GrandCompanyShop.ActiveShopPtr, 0, index, qty);
         }
     }
 }

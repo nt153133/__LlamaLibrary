@@ -24,6 +24,7 @@ using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Retainers;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Utilities;
 using Character = LlamaLibrary.RemoteWindows.Character;
 
 namespace LlamaLibrary.Helpers
@@ -721,7 +722,7 @@ namespace LlamaLibrary.Helpers
                     Log.Information($"OPEN: AgentId {AgentId} Offset {repairVendor.ToInt64():X} Func {repairWindow.ToInt64():X}");
                     lock (Core.Memory.Executor.AssemblyLock)
                     {
-                        Core.Memory.CallInjected64<IntPtr>(repairWindow,
+                        Core.Memory.CallInjectedWraper<IntPtr>(repairWindow,
                                                            ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
                                                            0,
                                                            0,
@@ -1703,7 +1704,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool IsDutyUnlocked(uint dutyId)
         {
-            return DataManager.InstanceContentResults.TryGetValue(dutyId, out var instanceContentResult) && Core.Memory.CallInjected64<bool>(Offsets.IsInstanceContentUnlocked, instanceContentResult.Content);
+            return DataManager.InstanceContentResults.TryGetValue(dutyId, out var instanceContentResult) && Core.Memory.CallInjectedWraper<bool>(Offsets.IsInstanceContentUnlocked, instanceContentResult.Content);
         }
 
         public static async Task PassOnAllLoot()
@@ -1758,17 +1759,17 @@ namespace LlamaLibrary.Helpers
 
         public static uint GetDawnContentRowCount()
         {
-            return Core.Memory.CallInjected64<uint>(Offsets.GetDawnContentRowCount, new object[] { IntPtr.Zero });
+            return Core.Memory.CallInjectedWraper<uint>(Offsets.GetDawnContentRowCount, new object[] { IntPtr.Zero });
         }
 
         public static IntPtr GetDawnContentRow(uint index)
         {
-            return Core.Memory.CallInjected64<IntPtr>(Offsets.GetDawnContentRow, new object[] { index });
+            return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetDawnContentRow, new object[] { index });
         }
 
         public static bool IsInstanceContentCompleted(uint instantContentId)
         {
-            return Core.Memory.CallInjected64<bool>(Offsets.IsInstanceContentCompleted, instantContentId);
+            return Core.Memory.CallInjectedWraper<bool>(Offsets.IsInstanceContentCompleted, instantContentId);
         }
 
         public static bool DalamudDetected()

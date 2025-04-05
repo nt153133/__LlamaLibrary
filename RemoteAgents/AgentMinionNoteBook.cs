@@ -4,6 +4,7 @@ using System.Text;
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteAgents
 {
@@ -40,7 +41,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public static string GetMinionName(int index)
         {
-            var result = Core.Memory.CallInjected64<IntPtr>(Offsets.GetCompanion, index);
+            var result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetCompanion, index);
             return result != IntPtr.Zero ? Core.Memory.ReadString(result + 0x30, Encoding.UTF8) : "";
         }
     }

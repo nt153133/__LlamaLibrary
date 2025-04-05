@@ -6,6 +6,7 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -54,7 +55,7 @@ namespace LlamaLibrary.Helpers
         {
             get
             {
-                var ptr = Core.Memory.CallInjected64<IntPtr>(Offsets.GetPlaceName, WorldManager.SubZoneId);
+                var ptr = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetPlaceName, WorldManager.SubZoneId);
                 return Core.Memory.ReadStringUTF8(ptr + 24);
             }
         }

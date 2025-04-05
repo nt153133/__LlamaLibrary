@@ -11,6 +11,7 @@ using LlamaLibrary.Enums;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers;
 
@@ -52,7 +53,7 @@ public static class TeleportHelper
 
     public static void CallUpdate()
     {
-        Core.Memory.CallInjected64<IntPtr>(Offsets.UpdatePlayerAetheryteList, Memory.Offsets.UIStateTelepo, 0);
+        Core.Memory.CallInjectedWraper<IntPtr>(Offsets.UpdatePlayerAetheryteList, Memory.Offsets.UIStateTelepo, 0);
     }
 
     public static async Task<bool> TeleportToApartment()
@@ -218,7 +219,7 @@ public static class TeleportHelper
 
     public static bool TeleportUsingTicket(uint ae, byte subIndex = 0)
     {
-        return Core.Memory.CallInjected64<byte>(Offsets.TeleportWithSettings, Offsets.Telepo, ae, subIndex) != 0;
+        return Core.Memory.CallInjectedWraper<byte>(Offsets.TeleportWithSettings, Offsets.Telepo, ae, subIndex) != 0;
     }
 
     public static async Task<bool> TeleportWithTicket(AetheryteResult aetheryte)

@@ -8,6 +8,7 @@ using LlamaLibrary.Enums;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers.Housing
 {
@@ -38,11 +39,11 @@ namespace LlamaLibrary.Helpers.Housing
 
         public static World _lastUpdateWorld;
 
-        public static long CurrentHouseId => Core.Memory.CallInjected64<long>(Offsets.GetCurrentHouseId, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
+        public static long CurrentHouseId => Core.Memory.CallInjectedWraper<long>(Offsets.GetCurrentHouseId, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
 
-        public static byte CurrentPlot => Core.Memory.CallInjected64<byte>(Offsets.GetCurrentPlot, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
+        public static byte CurrentPlot => Core.Memory.CallInjectedWraper<byte>(Offsets.GetCurrentPlot, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
 
-        public static byte CurrentWard => Core.Memory.CallInjected64<byte>(Offsets.GetCurrentWard, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
+        public static byte CurrentWard => Core.Memory.CallInjectedWraper<byte>(Offsets.GetCurrentWard, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
 
         private static ResidenceInfo[] _residences;
         public static IntPtr HousingInstance => Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress);

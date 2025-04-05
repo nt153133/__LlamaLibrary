@@ -5,6 +5,7 @@ using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteAgents
 {
@@ -67,7 +68,7 @@ namespace LlamaLibrary.RemoteAgents
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                return Core.Memory.CallInjected64<byte>(Offsets.BagRequestCall, Memory.Offsets.g_InventoryManager, bagId);
+                return Core.Memory.CallInjectedWraper<byte>(Offsets.BagRequestCall, Memory.Offsets.g_InventoryManager, bagId);
             }
         }
 

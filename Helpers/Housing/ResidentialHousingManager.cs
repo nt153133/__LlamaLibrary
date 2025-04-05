@@ -5,6 +5,7 @@ using ff14bot;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers.Housing;
 
@@ -25,12 +26,12 @@ public class ResidentialHousingManager
 
     public static long GetResidentialObject(int index, uint subIndex = 0xFFFFFFFF)
     {
-        return Core.Memory.CallInjected64<long>(Offsets.GetResidentObject, index, subIndex);
+        return Core.Memory.CallInjectedWraper<long>(Offsets.GetResidentObject, index, subIndex);
     }
 
     public static bool CheckValid(long index)
     {
-        return Core.Memory.CallInjected64<bool>(Offsets.CheckValid, index);
+        return Core.Memory.CallInjectedWraper<bool>(Offsets.CheckValid, index);
     }
 
     public static IEnumerable<ResidenceInfo> GetResidences()

@@ -10,6 +10,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteAgents
 {
@@ -47,7 +48,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public void Buy(int index, int qty)
         {
-            Core.Memory.CallInjected64<int>(Offsets.BuyFunction, Pointer, index, qty);
+            Core.Memory.CallInjectedWraper<int>(Offsets.BuyFunction, Pointer, index, qty);
         }
 
         public static async Task<bool> BuyCrystalSand(uint itemToSpend, int qty, bool buyAnyAmount = false)

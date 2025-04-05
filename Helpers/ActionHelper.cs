@@ -8,6 +8,7 @@ using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -39,7 +40,7 @@ namespace LlamaLibrary.Helpers
         public static bool UseAction(ff14bot.Enums.ActionType actionType, uint actionID, long targetID = 0xE000_0000, uint a4 = 0, uint a5 = 0, uint a6 = 0, uint a7 = 0)
         {
             Core.Memory.ClearCallCache();
-            var result = Core.Memory.CallInjected64<byte>(Offsets.DoAction, new object[8]
+            var result = Core.Memory.CallInjectedWraper<byte>(Offsets.DoAction, new object[8]
             {
                 Offsets.ActionManagerParam, //rcx
                 (uint)actionType, //rdx
@@ -64,7 +65,7 @@ namespace LlamaLibrary.Helpers
             }
 
             Core.Memory.ClearCallCache();
-            var result = Core.Memory.CallInjected64<byte>(Offsets.DoAction, new object[8]
+            var result = Core.Memory.CallInjectedWraper<byte>(Offsets.DoAction, new object[8]
             {
                 Offsets.ActionManagerParam, //rcx
                 (uint)ff14bot.Enums.ActionType.Spell, //rdx

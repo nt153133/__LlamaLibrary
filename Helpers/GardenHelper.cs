@@ -18,6 +18,7 @@ using ff14bot.RemoteWindows;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -213,13 +214,13 @@ namespace LlamaLibrary.Helpers
 
         public static async Task Plant(BagSlot seeds, BagSlot soil)
         {
-            var result = Core.Memory.CallInjected64<IntPtr>(Offsets.PlantFunction, new object[3]
+            var result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction, new object[3]
             {
                 AgentHousingPlant.Instance.Pointer,
                 (uint)soil.BagId,
                 soil.Slot
             });
-            result = Core.Memory.CallInjected64<IntPtr>(Offsets.PlantFunction, new object[3]
+            result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction, new object[3]
             {
                 AgentHousingPlant.Instance.Pointer,
                 (uint)seeds.BagId,

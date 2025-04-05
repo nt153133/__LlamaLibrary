@@ -11,6 +11,7 @@ using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Retainers;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteWindows
 {
@@ -115,8 +116,8 @@ namespace LlamaLibrary.RemoteWindows
             get
             {
                 var func = Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(UiManagerProxy.UIModule) + Offsets.GetSomethingModuleVtblFunction);
-                var subModule = Core.Memory.CallInjected64<IntPtr>(func, UiManagerProxy.UIModule);
-                var pointer = Core.Memory.CallInjected64<IntPtr>(Offsets.GetSubModule, subModule, Offsets.SubModule);
+                var subModule = Core.Memory.CallInjectedWraper<IntPtr>(func, UiManagerProxy.UIModule);
+                var pointer = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetSubModule, subModule, Offsets.SubModule);
                 return pointer;
             }
         }
@@ -134,7 +135,7 @@ namespace LlamaLibrary.RemoteWindows
                 var name = fullRets.First(i => i.Unique == retainerId).Name;
                 Core.Memory.Write(HistoryCountLocation, 99);
                 Core.Memory.Write(retainerIdLocation, retainerId);
-                Core.Memory.CallInjected64<IntPtr>(Offsets.RequestSales, raptureStruct);
+                Core.Memory.CallInjectedWraper<IntPtr>(Offsets.RequestSales, raptureStruct);
                 if (await Coroutine.Wait(5000, () => Core.Memory.NoCacheRead<int>(HistoryCountLocation) != 99))
                 {
                     result.Add(retainerId, Sales.ToList());
