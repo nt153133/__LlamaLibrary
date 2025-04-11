@@ -3,6 +3,7 @@ using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Objects;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Extensions
 {
@@ -22,7 +23,7 @@ namespace LlamaLibrary.Extensions
 
         public static int OpenTradeWindow(this BattleCharacter otherPlayer)
         {
-            return otherPlayer.Type == GameObjectType.Pc ? Core.Memory.CallInjected64<IntPtr>(Memory.Offsets.OpenTradeWindow, Memory.Offsets.g_InventoryManager, otherPlayer.ObjectId).ToInt32() : -1;
+            return otherPlayer.Type == GameObjectType.Pc ? Core.Memory.CallInjectedWraper<IntPtr>(Memory.Offsets.OpenTradeWindow, Memory.Offsets.g_InventoryManager, otherPlayer.ObjectId).ToInt32() : -1;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteWindows
 {
@@ -35,7 +36,7 @@ namespace LlamaLibrary.RemoteWindows
 
                 if (agent != null)
                 {
-                    Core.Memory.CallInjected64<uint>(Offsets.KupoFunction, new object[2]
+                    Core.Memory.CallInjectedWraper<uint>(Offsets.KupoFunction, new object[2]
                     {
                         agent.Pointer,
                         1U

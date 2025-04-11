@@ -1,6 +1,7 @@
 ﻿using System;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.ClientDataHelpers
 {
@@ -31,12 +32,12 @@ namespace LlamaLibrary.ClientDataHelpers
 
         public static IntPtr GetNumberArray(int index)
         {
-            return Core.Memory.CallInjected64<IntPtr>(GetNumArrayFunction, RaptureAtkModule, index);
+            return Core.Memory.CallInjectedWraper<IntPtr>(GetNumArrayFunction, RaptureAtkModule, index);
         }
 
         public static IntPtr GetStringArray(int index)
         {
-            return Core.Memory.CallInjected64<IntPtr>(GetStringArrayFunction, RaptureAtkModule, index);
+            return Core.Memory.CallInjectedWraper<IntPtr>(GetStringArrayFunction, RaptureAtkModule, index);
         }
     }
 }

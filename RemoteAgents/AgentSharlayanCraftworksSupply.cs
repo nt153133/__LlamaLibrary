@@ -2,6 +2,7 @@
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteAgents;
 
@@ -37,7 +38,7 @@ public class AgentSharlayanCraftworksSupply : AgentInterface<AgentSharlayanCraft
     {
         lock (Core.Memory.Executor.AssemblyLock)
         {
-            Core.Memory.CallInjected64<uint>(
+            Core.Memory.CallInjectedWraper<uint>(
                                              Offsets.HandIn,
                                              Pointer + Offsets.PointerOffset,
                                              slot.Slot,
@@ -49,7 +50,7 @@ public class AgentSharlayanCraftworksSupply : AgentInterface<AgentSharlayanCraft
         var instance = Pointer + Offsets.PointerOffset;
         lock (Core.Memory.Executor.AssemblyLock)
         {
-            Core.Memory.CallInjected64<uint>(Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(instance)),
+            Core.Memory.CallInjectedWraper<uint>(Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(instance)),
                                              instance,
                                              slot.Slot,
                                              (int)slot.BagId);

@@ -5,6 +5,7 @@ using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -50,10 +51,10 @@ namespace LlamaLibrary.Helpers
             uint result;
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                result = Core.Memory.CallInjected64<uint>(
-                    Offsets.GetSpecialCurrencyItemId,
-                    SpecialCurrencyStorage,
-                    (byte)index);
+                result = Core.Memory.CallInjectedWraper<uint>(
+                                                              Offsets.GetSpecialCurrencyItemId,
+                                                              SpecialCurrencyStorage,
+                                                              (byte)index);
             }
 
             CurrencyCache.Add(index, result);
@@ -71,9 +72,9 @@ namespace LlamaLibrary.Helpers
             uint result;
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                result = Core.Memory.CallInjected64<uint>(
-                    Offsets.GetTomeItemId,
-                    (int)index);
+                result = Core.Memory.CallInjectedWraper<uint>(
+                                                              Offsets.GetTomeItemId,
+                                                              (int)index);
             }
 
             TomeCache.Add(index, result);

@@ -7,6 +7,7 @@ using ff14bot.RemoteWindows;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -50,7 +51,7 @@ namespace LlamaLibrary.Helpers
         {
             using (Core.Memory.TemporaryCacheState(false))
             {
-                return Core.Memory.CallInjected64<bool>(
+                return Core.Memory.CallInjectedWraper<bool>(
                     Offsets.HasCraftedRecipe,
                     recipeId);
             }
@@ -89,7 +90,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool IsSecretRecipeBookUnlocked(uint key)
         {
-            return Core.Memory.CallInjected64<byte>(Memory.Offsets.IsSecretRecipeBookUnlocked, Memory.Offsets.PlayerState, key) == 1;
+            return Core.Memory.CallInjectedWraper<byte>(Memory.Offsets.IsSecretRecipeBookUnlocked, Memory.Offsets.PlayerState, key) == 1;
         }
 
         public static bool IsSecretRecipeBookUnlockedItem(uint key)
@@ -104,7 +105,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool IsFolkloreBookUnlocked(uint key)
         {
-            return Core.Memory.CallInjected64<byte>(Memory.Offsets.IsFolkloreBookUnlocked, Memory.Offsets.PlayerState, key) == 1;
+            return Core.Memory.CallInjectedWraper<byte>(Memory.Offsets.IsFolkloreBookUnlocked, Memory.Offsets.PlayerState, key) == 1;
         }
 
         public static bool IsFolkloreBookUnlockedItem(uint key)

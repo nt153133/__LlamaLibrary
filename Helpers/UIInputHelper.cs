@@ -4,6 +4,7 @@ using System.Windows.Media;
 using ff14bot;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -78,7 +79,7 @@ namespace LlamaLibrary.Helpers
 
         public static void StringCtor(IntPtr ptr)
         {
-            Core.Memory.CallInjected64<int>(Offsets.Utf8StringCtor, ptr);
+            Core.Memory.CallInjectedWraper<int>(Offsets.Utf8StringCtor, ptr);
         }
 
         public static void StringCtorFromSequence(IntPtr ptr, string input, uint length)
@@ -89,7 +90,7 @@ namespace LlamaLibrary.Helpers
                 Core.Memory.CreateAllocatedMemory(array.Length + 30);
             allocatedMemory.AllocateOfChunk("start", array.Length);
             allocatedMemory.WriteBytes("start", array);
-            Core.Memory.CallInjected64<int>(Offsets.Utf8StringFromSequenceCtor, ptr, allocatedMemory.Address, length);
+            Core.Memory.CallInjectedWraper<int>(Offsets.Utf8StringFromSequenceCtor, ptr, allocatedMemory.Address, length);
         }
 
         public static void SetString(IntPtr ptr, string input)
@@ -101,7 +102,7 @@ namespace LlamaLibrary.Helpers
             allocatedMemory.AllocateOfChunk("start", array.Length);
             allocatedMemory.WriteBytes("start", array);
 
-            Core.Memory.CallInjected64<int>(Offsets.Utf8SetString, ptr, allocatedMemory.Address);
+            Core.Memory.CallInjectedWraper<int>(Offsets.Utf8SetString, ptr, allocatedMemory.Address);
         }
 
         public static void SendInput(string input)
@@ -112,7 +113,7 @@ namespace LlamaLibrary.Helpers
             Log.Verbose($"Constructed string at {seStringAlloc.Address}");
             SetString(seStringAlloc.Address, input);
             Log.Verbose($"Set string at {seStringAlloc.Address}");
-            Core.Memory.CallInjected64<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 0);
+            Core.Memory.CallInjectedWraper<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 0);
             Log.Verbose($"Sent string to focus at {GetInputTextPtr}");
         }
 
@@ -120,7 +121,7 @@ namespace LlamaLibrary.Helpers
         {
             using var seStringAlloc = Core.Memory.CreateAllocatedMemory(0x68);
             StringCtorFromSequence(seStringAlloc.Address, "\0", 0xFFFFFFFF);
-            Core.Memory.CallInjected64<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 1);
+            Core.Memory.CallInjectedWraper<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 1);
         }
     }
 }

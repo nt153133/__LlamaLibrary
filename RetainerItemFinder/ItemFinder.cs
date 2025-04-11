@@ -12,6 +12,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Retainers;
+using LlamaLibrary.Utilities;
 
 #pragma warning disable 649
 namespace LlamaLibrary.RetainerItemFinder
@@ -39,7 +40,7 @@ namespace LlamaLibrary.RetainerItemFinder
         static ItemFinder()
         {
             Framework = Core.Memory.Read<IntPtr>(Offsets.GFramework2);
-            var getUiModule = Core.Memory.CallInjected64<IntPtr>(Offsets.GetUiModule, Framework);
+            var getUiModule = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetUiModule, Framework);
             var getRaptureItemFinder = getUiModule + Offsets.RaptureItemFinder;
 
             Pointer = getRaptureItemFinder;

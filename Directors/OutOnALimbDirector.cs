@@ -1,6 +1,7 @@
 ﻿using System;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Directors
 {
@@ -82,7 +83,7 @@ namespace LlamaLibrary.Directors
                     return -1;
                 }
 
-                return Core.Memory.CallInjected64<int>(Offsets.RemainingTimeFunction, Offsets.ActiveDirectorPtr);
+                return Core.Memory.CallInjectedWraper<int>(Offsets.RemainingTimeFunction, Offsets.ActiveDirectorPtr);
             }
         }
 

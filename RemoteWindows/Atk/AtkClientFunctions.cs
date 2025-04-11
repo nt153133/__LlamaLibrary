@@ -2,6 +2,7 @@
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteWindows.Atk;
 
@@ -73,7 +74,7 @@ internal static class AtkClientFunctions
 
         lock (Core.Memory.GetLock())
         {
-            Core.Memory.CallInjected64<IntPtr>(Offsets.SendAction, windowPtr, param.Length / 2, allocated.Address, (byte)(updateState ? 1 : 0));
+            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.SendAction, windowPtr, param.Length / 2, allocated.Address, (byte)(updateState ? 1 : 0));
         }
     }
 
@@ -85,6 +86,6 @@ internal static class AtkClientFunctions
             return;
         }
 
-        Core.Memory.CallInjected64<IntPtr>(Offsets.DialogueOkay, window.Pointer, 0x19);
+        Core.Memory.CallInjectedWraper<IntPtr>(Offsets.DialogueOkay, window.Pointer, 0x19);
     }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -49,7 +50,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool CallScreenshotRaw()
         {
-            return Core.Memory.CallInjected64<bool>(
+            return Core.Memory.CallInjectedWraper<bool>(
                 Offsets.ScreenshotFunc,
                 ScreenshotStruct,
                 Offsets.CallbackFunction,

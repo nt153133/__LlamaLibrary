@@ -6,6 +6,7 @@ using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteAgents
 {
@@ -103,7 +104,7 @@ namespace LlamaLibrary.RemoteAgents
                 await Coroutine.Wait(5000, () => !SatisfactionSupply.Instance.IsOpen);
             }
 
-            Core.Memory.CallInjected64<IntPtr>(Offsets.OpenWindow,
+            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.OpenWindow,
                                                Pointer,
                                                0U,
                                                npc,

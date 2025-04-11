@@ -14,6 +14,7 @@ using LlamaLibrary.Helpers.Ping;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteAgents;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Extensions
 {
@@ -177,7 +178,7 @@ namespace LlamaLibrary.Extensions
                 {
                     using (Core.Memory.TemporaryCacheState(false))
                     {
-                        return Core.Memory.CallInjected64<uint>(Offsets.ItemSplitFunc,
+                        return Core.Memory.CallInjectedWraper<uint>(Offsets.ItemSplitFunc,
                                                                 Memory.Offsets.g_InventoryManager,
                                                                 (uint)bagSlot.BagId,
                                                                 bagSlot.Slot,
@@ -193,7 +194,7 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<uint>(Offsets.ItemDiscardFunc,
+                Core.Memory.CallInjectedWraper<uint>(Offsets.ItemDiscardFunc,
                                                  Memory.Offsets.g_InventoryManager,
                                                  (uint)bagSlot.BagId,
                                                  bagSlot.Slot);
@@ -204,7 +205,7 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<uint>(Offsets.RemoveMateriaFunc,
+                Core.Memory.CallInjectedWraper<uint>(Offsets.RemoveMateriaFunc,
                                                  Offsets.EventHandler,
                                                  Offsets.DesynthId,
                                                  (uint)bagSlot.BagId,
@@ -221,7 +222,7 @@ namespace LlamaLibrary.Extensions
                 {
                     using (Core.Memory.TemporaryCacheState(false))
                     {
-                        Core.Memory.CallInjected64<uint>(Offsets.ItemLowerQualityFunc,
+                        Core.Memory.CallInjectedWraper<uint>(Offsets.ItemLowerQualityFunc,
                                                          Memory.Offsets.g_InventoryManager,
                                                          (uint)bagSlot.BagId,
                                                          bagSlot.Slot);
@@ -238,7 +239,7 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<uint>(Offsets.RemoveMateriaFunc,
+                Core.Memory.CallInjectedWraper<uint>(Offsets.RemoveMateriaFunc,
                                                  Offsets.EventHandler,
                                                  Offsets.ReduceId,
                                                  (uint)bagSlot.BagId,
@@ -258,7 +259,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjected64<uint>(Offsets.RetainerRetrieveQuantity,
+                    Core.Memory.CallInjectedWraper<uint>(Offsets.RetainerRetrieveQuantity,
                                                      Memory.Offsets.g_InventoryManager,
                                                      (uint)bagSlot.BagId,
                                                      bagSlot.Slot,
@@ -273,7 +274,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjected64<uint>(Offsets.EntrustRetainerFunc,
+                    Core.Memory.CallInjectedWraper<uint>(Offsets.EntrustRetainerFunc,
                                                      AgentRetainerInventory.Instance.Pointer,
                                                      0,
                                                      (uint)bagSlot.BagId,
@@ -289,7 +290,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjected64<uint>(Offsets.SellFunc,
+                    Core.Memory.CallInjectedWraper<uint>(Offsets.SellFunc,
                                                      AgentRetainerInventory.Instance.RetainerShopPointer,
                                                      bagSlot.Slot,
                                                      (uint)bagSlot.BagId,
@@ -304,7 +305,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjected64<uint>(Offsets.SellFunc,
+                    Core.Memory.CallInjectedWraper<uint>(Offsets.SellFunc,
                                                      Shop.ActiveShopPtr,
                                                      bagSlot.Slot,
                                                      (uint)bagSlot.BagId,
@@ -317,7 +318,7 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<uint>(Offsets.RemoveMateriaFunc,
+                Core.Memory.CallInjectedWraper<uint>(Offsets.RemoveMateriaFunc,
                                                  Offsets.EventHandler,
                                                  Offsets.RemoveMateriaId,
                                                  (uint)bagSlot.BagId,
@@ -337,7 +338,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjected64<uint>(Offsets.ExtractMateriaFunc,
+                    Core.Memory.CallInjectedWraper<uint>(Offsets.ExtractMateriaFunc,
                                                      Offsets.ExtractMateriaParam,
                                                      (uint)bagSlot.BagId,
                                                      bagSlot.Slot);
@@ -352,7 +353,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjected64<IntPtr>(Offsets.MeldItem,
+                    Core.Memory.CallInjectedWraper<IntPtr>(Offsets.MeldItem,
                                                        (int)Equipment.BagId,
                                                        (short)Equipment.Slot,
                                                        (int)Materia.BagId,
@@ -369,7 +370,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjected64<uint>(Offsets.MeldWindowFunc,
+                    Core.Memory.CallInjectedWraper<uint>(Offsets.MeldWindowFunc,
                                                      AgentMeld.Instance.Pointer,
                                                      bagSlot.Pointer);
                 }
@@ -382,7 +383,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjected64<uint>(Offsets.GetPostingPriceSlot,
+                    return Core.Memory.CallInjectedWraper<uint>(Offsets.GetPostingPriceSlot,
                                                             Memory.Offsets.g_InventoryManager,
                                                             slot.Slot);
                 }
@@ -449,7 +450,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    result = Core.Memory.CallInjected64<uint>(Offsets.TradeBagSlot,
+                    result = Core.Memory.CallInjectedWraper<uint>(Offsets.TradeBagSlot,
                                                               Memory.Offsets.g_InventoryManager,
                                                               bagSlot.Slot,
                                                               (uint)bagSlot.BagId);
@@ -460,7 +461,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjected64<uint>(Offsets.TradeBagSlot,
+                    Core.Memory.CallInjectedWraper<uint>(Offsets.TradeBagSlot,
                                                      Memory.Offsets.g_InventoryManager,
                                                      bagSlot.Slot,
                                                      (uint)bagSlot.BagId);
@@ -499,7 +500,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjected64<byte>(Offsets.BagSlotUseItem,
+                    return Core.Memory.CallInjectedWraper<byte>(Offsets.BagSlotUseItem,
                                                             InventoryManager,
                                                             TrueItemId,
                                                             inventoryContainer,
@@ -514,7 +515,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjected64<IntPtr>(Offsets.RemoveFromSaddle,
+                    return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.RemoveFromSaddle,
                                                               InventoryManager,
                                                               inventoryContainer,
                                                               inventorySlot,
@@ -529,7 +530,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjected64<IntPtr>(Offsets.AddToSaddle,
+                    return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.AddToSaddle,
                                                               InventoryManager,
                                                               inventoryContainer,
                                                               inventorySlot,
@@ -544,7 +545,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjected64<IntPtr>(Offsets.PlaceAetherWheel,
+                    return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlaceAetherWheel,
                                                               AgentBagSlot.Instance.PointerForAether,
                                                               (int)inventorySlot,
                                                               inventoryContainer);
@@ -556,7 +557,7 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                return Core.Memory.CallInjected64<IntPtr>(Offsets.FCChestMove,
+                return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.FCChestMove,
                                                           AgentFreeCompanyChest.Instance.Pointer,
                                                           sourceContainer,
                                                           sourceSlot,
@@ -581,7 +582,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjected64<uint>(Offsets.StoreroomToInventory,
+                    Core.Memory.CallInjectedWraper<uint>(Offsets.StoreroomToInventory,
                                                      HousingHelper.PositionPointer,
                                                      bagSlot.Pointer);
                 }
@@ -601,7 +602,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjected64<uint>(Offsets.InventoryToStoreroom,
+                    Core.Memory.CallInjectedWraper<uint>(Offsets.InventoryToStoreroom,
                                                      HousingHelper.PositionPointer,
                                                      bagSlot.Pointer);
                 }
@@ -631,7 +632,7 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjected64<byte>(Offsets.DyeItem,
+                    return Core.Memory.CallInjectedWraper<byte>(Offsets.DyeItem,
                                                             Memory.Offsets.g_InventoryManager,
                                                             item.BagId,
                                                             item.Slot,

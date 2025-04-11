@@ -16,6 +16,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Utilities;
 using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers
@@ -397,17 +398,17 @@ namespace LlamaLibrary.Helpers
 
         public static MobHuntTarget GetMobHuntTarget(int mob)
         {
-            return Core.Memory.Read<MobHuntTarget>(Core.Memory.CallInjected64<IntPtr>(Offsets.Client__ExdData__getMobHuntTarget, (uint)mob));
+            return Core.Memory.Read<MobHuntTarget>(Core.Memory.CallInjectedWraper<IntPtr>(Offsets.Client__ExdData__getMobHuntTarget, (uint)mob));
         }
 
         public static MobHuntOrderType GetMobHuntOrderType(int typeKey)
         {
-            return Core.Memory.Read<MobHuntOrderType>(Core.Memory.CallInjected64<IntPtr>(Offsets.Client__ExdData__getMobHuntOrderType, (uint)typeKey));
+            return Core.Memory.Read<MobHuntOrderType>(Core.Memory.CallInjectedWraper<IntPtr>(Offsets.Client__ExdData__getMobHuntOrderType, (uint)typeKey));
         }
 
         public static bool OrderTypeUnlocked(int typeKey)
         {
-            var unlockState = Core.Memory.CallInjected64<byte>(Offsets.CheckMobBoardUnlocked,
+            var unlockState = Core.Memory.CallInjectedWraper<byte>(Offsets.CheckMobBoardUnlocked,
                                                                new object[2]
                                                                {
                                                                    Offsets.HuntData,
@@ -427,12 +428,12 @@ namespace LlamaLibrary.Helpers
         public static MobHuntOrder GetMobHuntOrder(uint typeKey, uint mobIndex)
         {
             Core.Memory.ClearCallCache();
-            return Core.Memory.Read<MobHuntOrder>(Core.Memory.CallInjected64<IntPtr>(Offsets.Client__ExdData__getMobHuntOrder, typeKey, mobIndex));
+            return Core.Memory.Read<MobHuntOrder>(Core.Memory.CallInjectedWraper<IntPtr>(Offsets.Client__ExdData__getMobHuntOrder, typeKey, mobIndex));
         }
 
         public static void DiscardMobHuntType(uint typekey)
         {
-            Core.Memory.CallInjected64<IntPtr>(Offsets.YeetHuntOrderType,
+            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.YeetHuntOrderType,
                                                Offsets.HuntData,
                                                typekey);
         }

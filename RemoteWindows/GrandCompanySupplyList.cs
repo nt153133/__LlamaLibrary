@@ -8,6 +8,7 @@ using ff14bot.Enums;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteWindows
 {
@@ -109,7 +110,7 @@ namespace LlamaLibrary.RemoteWindows
             SendAction(2, 3, 5, 3, filter);
             if (WindowByName != null)
             {
-                Core.Memory.CallInjected64<IntPtr>(Offsets.SetFilter, WindowByName.Pointer, (int)filter);
+                Core.Memory.CallInjectedWraper<IntPtr>(Offsets.SetFilter, WindowByName.Pointer, (int)filter);
             }
         }
 

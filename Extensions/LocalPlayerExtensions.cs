@@ -7,6 +7,7 @@ using ff14bot.Objects;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Extensions
 {
@@ -126,7 +127,7 @@ namespace LlamaLibrary.Extensions
             IntPtr rankRow;
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                rankRow = Core.Memory.CallInjected64<IntPtr>(Offsets.GCGetMaxSealsByRank,
+                rankRow = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GCGetMaxSealsByRank,
                                                              gcRank);
             }
 

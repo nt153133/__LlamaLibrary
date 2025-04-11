@@ -18,6 +18,7 @@ using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Retainers
 {
@@ -524,7 +525,7 @@ namespace LlamaLibrary.Retainers
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                return Core.Memory.CallInjected64<int>(Offsets.GetNumberOfRetainers,
+                return Core.Memory.CallInjectedWraper<int>(Offsets.GetNumberOfRetainers,
                                                        Offsets.RetainerData);
             }
         }
@@ -544,7 +545,7 @@ namespace LlamaLibrary.Retainers
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjected64<IntPtr>(Offsets.ExecuteCommand,
+                Core.Memory.CallInjectedWraper<IntPtr>(Offsets.ExecuteCommand,
                                                    (uint)Offsets.RetainerNetworkPacket,
                                                    0U,
                                                    0U,

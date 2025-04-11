@@ -7,6 +7,7 @@ using ff14bot.Managers;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RetainerItemFinder;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers;
 
@@ -46,15 +47,15 @@ public static class UIState
 
     public static int ItemActionOffset => Offsets.ItemActionOffset;
 
-    public static bool CardUnlocked(int id) => Core.Memory.CallInjected64<bool>(Offsets.CardUnlocked, Offsets.Instance, id);
+    public static bool CardUnlocked(int id) => Core.Memory.CallInjectedWraper<bool>(Offsets.CardUnlocked, Offsets.Instance, id);
 
-    public static bool EmoteUnlocked(int id) => Core.Memory.CallInjected64<bool>(Offsets.EmoteUnlocked, Offsets.Instance, id);
+    public static bool EmoteUnlocked(int id) => Core.Memory.CallInjectedWraper<bool>(Offsets.EmoteUnlocked, Offsets.Instance, id);
 
     public static byte[] MinionArray => Core.Memory.ReadBytes(Offsets.MinionArray, 0x50);
 
     public static bool MinionUnlocked(int id) => ((1 << (id & 7)) & MinionArray[id >> 3]) > 0;
 
-    public static IntPtr GetItemExdData(uint id) => Core.Memory.CallInjected64<IntPtr>(Offsets.ExdGetItem, id);
+    public static IntPtr GetItemExdData(uint id) => Core.Memory.CallInjectedWraper<IntPtr>(Offsets.ExdGetItem, id);
 
     public static bool IsItemActionUnlocked(uint id)
     {
@@ -84,7 +85,7 @@ public static class UIState
             using (var newStruct = Core.Memory.CreateAllocatedMemory(0x98))
             {
                 newStruct.Write(Offsets.ItemActionOffset, (ushort)item.ItemAction);
-                return Core.Memory.CallInjected64<int>(Offsets.IsItemActionUnlocked, Offsets.Instance, newStruct.Address) == 1;
+                return Core.Memory.CallInjectedWraper<int>(Offsets.IsItemActionUnlocked, Offsets.Instance, newStruct.Address) == 1;
             }
         }
 
@@ -93,7 +94,7 @@ public static class UIState
             throw new Exception("Item not found in exd");
         }
 
-        return Core.Memory.CallInjected64<int>(Offsets.IsItemActionUnlocked, Offsets.Instance, itemPtr) == 1;
+        return Core.Memory.CallInjectedWraper<int>(Offsets.IsItemActionUnlocked, Offsets.Instance, itemPtr) == 1;
     }
 
     public static bool CanUnlockItem(uint itemId)

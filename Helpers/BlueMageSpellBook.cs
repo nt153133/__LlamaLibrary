@@ -7,6 +7,7 @@ using Buddy.Coroutines;
 using ff14bot;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -39,7 +40,7 @@ namespace LlamaLibrary.Helpers
 
         public static void SetSpell(int index, uint spellId)
         {
-            Core.Memory.CallInjected64<IntPtr>(Offsets.SetSpell, new object[3]
+            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.SetSpell, new object[3]
             {
                 Offsets.ActionManager,
                 index,

@@ -7,6 +7,7 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Managers
 
@@ -120,7 +121,7 @@ namespace LlamaLibrary.Managers
 
         public static byte GetNumOfRelicNoteCompleted(uint relicId, RelicBookType relicBookType)
         {
-            return Core.Memory.CallInjected64<byte>(Offsets.GetNumOfRelicNoteCompleted, Offsets.UIRelicNote, relicId, (byte)relicBookType);
+            return Core.Memory.CallInjectedWraper<byte>(Offsets.GetNumOfRelicNoteCompleted, Offsets.UIRelicNote, relicId, (byte)relicBookType);
         }
 
         public static byte NumOfFireCompleted(uint relicId)

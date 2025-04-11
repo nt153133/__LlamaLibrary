@@ -32,7 +32,7 @@ namespace LlamaLibrary.Managers
             //{
             //    var func = Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(Window.Pointer) + (8 * 2));
 
-            //    Core.Memory.CallInjected64<IntPtr>(func, Window.Pointer, 25UL, position, mem.Address);
+            //    Core.Memory.CallInjectedWraper<IntPtr>(func, Window.Pointer, 25UL, position, mem.Address);
             //}
         }
     }

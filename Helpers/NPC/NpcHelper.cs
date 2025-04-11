@@ -4,6 +4,7 @@ using System.Linq;
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers.NPC
 {
@@ -90,7 +91,7 @@ namespace LlamaLibrary.Helpers.NPC
                 return value;
             }
 
-            var ptr = Core.Memory.CallInjected64<IntPtr>(Offsets.GetENpcResident, npcId);
+            var ptr = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetENpcResident, npcId);
 
             if (ptr == IntPtr.Zero)
             {
