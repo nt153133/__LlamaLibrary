@@ -34,7 +34,7 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return $"new HousingAetheryte({Key}, {NpcId}, \"{Name}\", new Vector3({Location.X}f, {Location.Y}f, {Location.Z}f), {Subdivision.ToString().ToLower()}),";
         }
 
-        public bool Equals(HousingAetheryte other)
+        public bool Equals(HousingAetheryte? other)
         {
             if (other is null)
             {
@@ -49,7 +49,7 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return Key == other.Key && NpcId == other.NpcId && Location.Equals(other.Location);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {

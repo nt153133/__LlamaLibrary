@@ -35,7 +35,7 @@ public abstract class BaseSettings : INotifyPropertyChanged
         LoadFrom(FilePath);
     }
 
-    public BaseSettings(string path, Dispatcher dispatcher)
+    public BaseSettings(string path, Dispatcher? dispatcher)
     {
         Dispatcher = dispatcher;
         _saveDebounceDispatcher = new DebounceDispatcher(SaveLocal);
@@ -50,7 +50,7 @@ public abstract class BaseSettings : INotifyPropertyChanged
 
     public static string SettingsPath => Path.Combine(AssemblyPath, "Settings");
 
-    protected Dispatcher Dispatcher { get; }
+    protected Dispatcher? Dispatcher { get; }
 
     [JsonIgnore]
     public string FilePath { get; }
@@ -89,7 +89,7 @@ public abstract class BaseSettings : INotifyPropertyChanged
 
         if (File.Exists(file))
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher?.Invoke(() =>
             {
                 try
                 {
@@ -239,9 +239,9 @@ public abstract class BaseSettings : INotifyPropertyChanged
         }
     }
 
-    private void OnPropertyChangedDebounce(object propertyName)
+    private void OnPropertyChangedDebounce(object? propertyName)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((string)propertyName));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((string)(propertyName ?? string.Empty)));
         Save();
     }
 

@@ -30,7 +30,7 @@ namespace LlamaLibrary.Utilities
         internal static bool Bool0;
 
         internal static bool InFight => GameObjectManager.Attackers.Any();
-        internal static BattleCharacter FirstAttacker => GameObjectManager.Attackers.FirstOrDefault();
+        internal static BattleCharacter? FirstAttacker => GameObjectManager.Attackers.FirstOrDefault();
 
         private static readonly int[] DailyOrderTypes = { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
 

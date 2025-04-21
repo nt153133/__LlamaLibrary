@@ -130,7 +130,7 @@ namespace LlamaLibrary.Logging
         {
             var frame = new StackFrame(1);
             var method = frame.GetMethod();
-            Error($"{method.GetType().Name} {method.Name} \n{exception}");
+            Error($"{method?.GetType().Name} {method?.Name} \n{exception}");
         }
     }
 }

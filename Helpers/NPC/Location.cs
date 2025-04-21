@@ -127,12 +127,12 @@ namespace LlamaLibrary.Helpers.NPC
             Coordinates = coordinates;
         }
 
-        public bool Equals(Location other)
+        public bool Equals(Location? other)
         {
-            return ZoneId == other.ZoneId && Coordinates.Equals(other.Coordinates);
+            return other != null && ZoneId == other.ZoneId && Coordinates.Equals(other.Coordinates);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {

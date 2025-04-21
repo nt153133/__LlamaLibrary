@@ -100,8 +100,7 @@ namespace LlamaLibrary.Helpers
 
         static Translator()
         {
-            Language = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
-                .First(i => i.FieldType == typeof(Language)).GetValue(null);
+            Language = DataManager.CurrentLanguage;
         }
 
         //Addon # 2378

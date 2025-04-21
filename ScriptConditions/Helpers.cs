@@ -206,7 +206,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int GilCount()
         {
-            return (int)InventoryManager.GetBagByInventoryBagId(InventoryBagId.Currency).Where(r => r.IsFilled).FirstOrDefault(item => item.RawItemId == DataManager.GetItem("Gil").Id).Count;
+            return (int)(InventoryManager.GetBagByInventoryBagId(InventoryBagId.Currency).Where(r => r.IsFilled).FirstOrDefault(item => item.RawItemId == DataManager.GetItem("Gil").Id)?.Count ?? 0);
         }
 
         public static bool MsLeftInDungeonGt(long time)

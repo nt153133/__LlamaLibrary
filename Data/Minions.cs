@@ -9,17 +9,17 @@ public static class Minions
 {
     public static List<MinionStore> Cards { get; } = MinionData.Minions;
 
-    public static MinionStore GetMinionById(uint id)
+    public static MinionStore? GetMinionById(uint id)
     {
         return Cards.Find(x => x.Id == id);
     }
 
-    public static MinionStore GetMinionByName(string name)
+    public static MinionStore? GetMinionByName(string name)
     {
         return Cards.Find(x => x.Name == name);
     }
 
-    public static MinionStore GetMinionByItemID(uint id)
+    public static MinionStore? GetMinionByItemID(uint id)
     {
         return Cards.Find(x => x.ItemId == id);
     }

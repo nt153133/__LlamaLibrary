@@ -79,7 +79,7 @@ namespace LlamaLibrary.Utilities
 
             if (doMnaago)
             {
-                var npc = DeliveryNpcs.Where(i => i.Name == "M'naago").FirstOrDefault();
+                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "M'naago");
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -93,7 +93,7 @@ namespace LlamaLibrary.Utilities
 
             if (doKurenai)
             {
-                var npc = DeliveryNpcs.Where(i => i.Name == "Kurenai").FirstOrDefault();
+                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "Kurenai");
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -163,7 +163,7 @@ namespace LlamaLibrary.Utilities
 
             if (doAmeliance)
             {
-                var npc = DeliveryNpcs.Where(i => i.Name == "Ameliance").FirstOrDefault();
+                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "Ameliance");
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -177,7 +177,7 @@ namespace LlamaLibrary.Utilities
 
             if (doAnden)
             {
-                var npc = DeliveryNpcs.Where(i => i.Name == "Anden").FirstOrDefault();
+                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "Anden");
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -191,7 +191,7 @@ namespace LlamaLibrary.Utilities
 
             if (doMargrat)
             {
-                var npc = DeliveryNpcs.Where(i => i.Name == "Margrat").FirstOrDefault();
+                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "Margrat");
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -205,7 +205,7 @@ namespace LlamaLibrary.Utilities
 
             if (doNitowikwe)
             {
-                var npc = DeliveryNpcs.Where(i => i.Name == "Nitowikwe").FirstOrDefault();
+                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "Nitowikwe");
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -223,7 +223,7 @@ namespace LlamaLibrary.Utilities
 
         public static async Task NotUnlocked(CustomDeliveryNpc deliveryNpc)
         {
-            string message = $"{DataManager.GetLocalizedNPCName((int)deliveryNpc.npcId)} not unlocked.\nPlease complete the quest '{DataManager.GetLocalizedQuestName(deliveryNpc.RequiredQuest)}' or run the unlock profile.";
+            var message = $"{DataManager.GetLocalizedNPCName((int)deliveryNpc.npcId)} not unlocked.\nPlease complete the quest '{DataManager.GetLocalizedQuestName(deliveryNpc.RequiredQuest)}' or run the unlock profile.";
 
             Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(29, 226, 213), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
             Log.Error($"{message}");
@@ -251,8 +251,14 @@ namespace LlamaLibrary.Utilities
             return (AgentSatisfactionSupply.Instance.DoHItemId, AgentSatisfactionSupply.Instance.DeliveriesRemaining);
         }
 
-        public static async Task CraftThenHandinNpc(CustomDeliveryNpc deliveryNpc, DohClasses dohClass = DohClasses.Carpenter, bool stopAtFiveHearts = true)
+        public static async Task CraftThenHandinNpc(CustomDeliveryNpc? deliveryNpc, DohClasses dohClass = DohClasses.Carpenter, bool stopAtFiveHearts = true)
         {
+            if (deliveryNpc == null)
+            {
+                Log.Error("Delivery NPC is null");
+                return;
+            }
+
             await AgentSatisfactionSupply.Instance.LoadWindow(deliveryNpc.Index);
             var items = new List<uint>();
             /*

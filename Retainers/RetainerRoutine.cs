@@ -458,8 +458,12 @@ namespace LlamaLibrary.Retainers
 
         private class BagSlotComparer : IEqualityComparer<BagSlot>
         {
-            public bool Equals(BagSlot x, BagSlot y)
+            public bool Equals(BagSlot? x, BagSlot? y)
             {
+                if (x == null || y == null)
+                {
+                    return false;
+                }
                 return x.RawItemId == y.RawItemId && x.Count + y.Count < x.Item.StackSize;
             }
 

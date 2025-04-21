@@ -572,7 +572,7 @@ namespace LlamaLibrary.Helpers
             return NpcID == other.NpcID && OrderTypeIndex == other.OrderTypeIndex;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {

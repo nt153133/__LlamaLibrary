@@ -78,12 +78,13 @@ namespace LlamaLibrary.Helpers
         {
             get
             {
-                if (!GameObjectManager.GetObjectsByNPCIds<GameObject>(HousingCompanyChest).Any()) //(!HousingHelper.IsInsideHouse && !HousingHelper.IsInsideWorkshop) ||
+                if (GameObjectManager.GetObjectsByNPCIds<GameObject>(HousingCompanyChest).Length == 0) //(!HousingHelper.IsInsideHouse && !HousingHelper.IsInsideWorkshop) ||
                 {
                     return NpcHelper.GetClosestNpc(ChestLocations);
                 }
 
-                return new Npc(GameObjectManager.GetObjectsByNPCIds<GameObject>(HousingCompanyChest).FirstOrDefault());
+                var firstOrDefault = GameObjectManager.GetObjectsByNPCIds<GameObject>(HousingCompanyChest).FirstOrDefault();
+                return firstOrDefault == null ? null : new Npc(firstOrDefault);
             }
         }
 
@@ -780,7 +781,7 @@ namespace LlamaLibrary.Helpers
 
         private sealed class BagSlotComparer : IEqualityComparer<BagSlot>
         {
-            public bool Equals(BagSlot x, BagSlot y)
+            public bool Equals(BagSlot? x, BagSlot? y)
             {
                 return y != null && x != null && x.RawItemId == y.RawItemId && x.Count + y.Count <= x.Item.StackSize;
             }
@@ -793,7 +794,7 @@ namespace LlamaLibrary.Helpers
 
         private sealed class BagSlotComparerDeposit : IEqualityComparer<BagSlot>
         {
-            public bool Equals(BagSlot x, BagSlot y)
+            public bool Equals(BagSlot? x, BagSlot? y)
             {
                 return y != null && x != null && x.TrueItemId == y.TrueItemId && x.Count + y.Count <= x.Item.StackSize;
             }

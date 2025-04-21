@@ -85,6 +85,12 @@ public static class HouseTravelHelper
 
         var recorded = HousingTraveler.GetRecordedPlot(previousHouseLocation.HousingZone, previousHouseLocation.Plot);
 
+        if (recorded == null)
+        {
+            Log.Error("Failed to get recorded plot");
+            return false;
+        }
+
         await Navigation.GroundMove(recorded.EntranceLocation, 1f);
 
         if (!HousingHelper.IsWithinPlot)
@@ -96,7 +102,7 @@ public static class HouseTravelHelper
             MovementManager.MoveStop();
         }
 
-        return HousingHelper.IsWithinPlot && CurrentHouseLocation.Equals(previousHouseLocation);
+        return HousingHelper.IsWithinPlot && CurrentHouseLocation != null && CurrentHouseLocation.Equals(previousHouseLocation);
     }
 
     internal static async Task<bool> GoBackToHousingLocation(HousingAreaLocation? previousHouseLocation)
@@ -106,7 +112,7 @@ public static class HouseTravelHelper
             return false;
         }
 
-        if (HousingHelper.IsInHousingArea && CurrentHousingAreaLocation.Equals(previousHouseLocation))
+        if (HousingHelper.IsInHousingArea && CurrentHousingAreaLocation != null && CurrentHousingAreaLocation.Equals(previousHouseLocation))
         {
             return true;
         }

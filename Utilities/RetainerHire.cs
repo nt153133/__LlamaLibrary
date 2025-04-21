@@ -109,7 +109,7 @@ namespace LlamaLibrary.Utilities
 
             foreach (var pair in counts)
             {
-                Log.Information($"Going to hire {pair.Value} retainers from {pair.Key.Location.ClosestAetherytePrimaryResult.CurrentLocaleAethernetName}");
+                Log.Information($"Going to hire {pair.Value} retainers from {pair.Key.Location.ClosestAetherytePrimaryResult?.CurrentLocaleAethernetName}");
 
                 for (var i = 0; i < pair.Value; i++)
                 {

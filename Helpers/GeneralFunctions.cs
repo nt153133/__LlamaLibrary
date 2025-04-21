@@ -1778,7 +1778,7 @@ namespace LlamaLibrary.Helpers
         }
 
         [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
-        public static string SourceFileName()
+        public static string? SourceFileName()
         {
             var frame = new StackFrame(1, true);
             return frame.GetFileName();
@@ -1800,14 +1800,12 @@ namespace LlamaLibrary.Helpers
 
         public static string CurrentLocalizedZoneNameById(int zoneId)
         {
-            ZoneNameResult zoneNameResult;
-            return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out zoneNameResult) ? (string)null : zoneNameResult.CurrentLocaleName;
+            return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out var zoneNameResult) ? string.Empty : zoneNameResult.CurrentLocaleName;
         }
 
         public static string CurrentEnglishZoneNameById(int zoneId)
         {
-            ZoneNameResult zoneNameResult;
-            return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out zoneNameResult) ? (string)null : zoneNameResult.EnglishName;
+            return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out var zoneNameResult) ? string.Empty : zoneNameResult.EnglishName;
         }
     }
 }

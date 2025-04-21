@@ -15,7 +15,7 @@ namespace LlamaLibrary.JsonObjects
         {
         }
 
-        public bool Equals(GCShopItemStored other)
+        public bool Equals(GCShopItemStored? other)
         {
             if (other is null)
             {
@@ -30,7 +30,7 @@ namespace LlamaLibrary.JsonObjects
             return ItemId == other.ItemId && Cost == other.Cost && RequiredRank == other.RequiredRank && GCRankGroup == other.GCRankGroup && Category == other.Category;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {

@@ -37,9 +37,9 @@ namespace LlamaLibrary.ScriptConditions
             return GameObjectManager.GetObjectsByNPCIds<BattleCharacter>(ids).Count(i => i.CanAttack && i.IsTargetable);
         }
 
-        public static int SphereCompletion(int itemID)
+        public static int SphereCompletion(int itemId)
         {
-            return (int)InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint)itemID).SpiritBond;
+            return (int)(InventoryManager.FilledInventoryAndArmory.FirstOrDefault(i => i.RawItemId == (uint)itemId)?.SpiritBond ?? 0);
         }
 
         public static int HighestILvl(ClassJobType job)
@@ -79,16 +79,8 @@ namespace LlamaLibrary.ScriptConditions
         public static bool IsLeveComplete(int leveId)
         {
             var leve = LeveManager.Leves.FirstOrDefault(i => i.GlobalId == leveId);
-            if (leve != default)
-            {
-                var step = leve.Step;
-                if (step == 255)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            var step = leve?.Step;
+            return step == 255;
         }
 
         public static bool HasLeve(int leveId)
@@ -96,14 +88,14 @@ namespace LlamaLibrary.ScriptConditions
             return LlamaLibrary.RemoteWindows.GuildLeve.HasLeve((uint)leveId);
         }
 
-        public static bool HasLearnedMount(int mountID)
+        public static bool HasLearnedMount(int mountId)
         {
-            return ActionManager.AvailableMounts.Any(i => i.Id == (uint)mountID);
+            return ActionManager.AvailableMounts.Any(i => i.Id == (uint)mountId);
         }
 
-        public static int BeastTribeRank(int tribeID)
+        public static int BeastTribeRank(int tribeId)
         {
-            return BeastTribeHelper.GetBeastTribeRank(tribeID);
+            return BeastTribeHelper.GetBeastTribeRank(tribeId);
         }
 
         public static int DailyQuestAllowance()
@@ -119,14 +111,14 @@ namespace LlamaLibrary.ScriptConditions
             return isLisbethPresentCache.Value;
         }
 
-        public static bool IsTargetableNPC(int npcID)
+        public static bool IsTargetableNPC(int npcId)
         {
-            return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint)npcID && i.IsVisible && i.IsTargetable);
+            return GameObjectManager.GameObjects.Any(i => i.NpcId == (uint)npcId && i.IsVisible && i.IsTargetable);
         }
 
-        public static bool AchievementComplete(int achID)
+        public static bool AchievementComplete(int achId)
         {
-            return Achievements.HasAchievement(achID);
+            return Achievements.HasAchievement(achId);
         }
 
         public static bool IsDutyEnded()
@@ -140,9 +132,9 @@ namespace LlamaLibrary.ScriptConditions
             return instanceDirector.InstanceEnded;
         }
 
-        public static int SharedFateRank(int zoneID)
+        public static int SharedFateRank(int zoneId)
         {
-            return SharedFateHelper.CachedProgress.FirstOrDefault(i => i.Zone == (uint)zoneID).Rank;
+            return SharedFateHelper.CachedProgress.FirstOrDefault(i => i.Zone == (uint)zoneId).Rank;
         }
 
         public static async Task UpdateSharedFates()
@@ -155,14 +147,14 @@ namespace LlamaLibrary.ScriptConditions
             await FishGuideHelper.CachedRead();
         }
 
-        public static bool HasCaughtFish(int fishID)
+        public static bool HasCaughtFish(int fishId)
         {
-            return FishGuideHelper.GetFishSync(fishID).HasCaught;
+            return FishGuideHelper.GetFishSync(fishId).HasCaught;
         }
 
-        public static int LLItemCollectableCount(int itemID)
+        public static int LLItemCollectableCount(int itemId)
         {
-            return InventoryManager.FilledSlots.Count(i => i.RawItemId == itemID && i.IsCollectable);
+            return InventoryManager.FilledSlots.Count(i => i.RawItemId == itemId && i.IsCollectable);
         }
 
         public static int CurrentGCRank()
@@ -288,9 +280,9 @@ namespace LlamaLibrary.ScriptConditions
             };
         }
 
-        public static bool IsNearShortcut(int npcID)
+        public static bool IsNearShortcut(int npcId)
         {
-            var npc = GameObjectManager.GetObjectByNPCId((uint)npcID);
+            var npc = GameObjectManager.GetObjectByNPCId((uint)npcId);
             if (npc != null)
             {
                 return npc.Distance(Core.Me.Location) <= 40 && npc.IsTargetable;
@@ -336,7 +328,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool AnyChestsToOpen()
         {
-            return GameObjectManager.GetObjectsOfType<Treasure>().Where(i => i.State == 0).Any();
+            return GameObjectManager.GetObjectsOfType<Treasure>().Any(i => i.State == 0);
         }
 
         public static bool BossHasAura(int npcId, int auraId)
@@ -352,12 +344,12 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsCardUnlocked(string name)
         {
-            return TripleTriadCards.GetCardByName(name).IsUnlocked;
+            return TripleTriadCards.GetCardByName(name) is { IsUnlocked: true };
         }
 
         public static bool HasItemThatUnlocksCard(string name)
         {
-            return TripleTriadCards.GetCardByName(name).HaveItem;
+            return TripleTriadCards.GetCardByName(name) is { HaveItem: true };
         }
 
         public static bool MinionUnlocked(int Id)

@@ -142,7 +142,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
             if (!hooks.Contains(craftCycleHook))
             {
                 Log.Information($"Adding {craftCycleHook} Hook");
-                Lisbeth.AddCraftCycleHook(craftCycleHook, lisbethHook);
+                Lisbeth.AddCraftHook(craftCycleHook, lisbethHook);
             }
         }
     }
@@ -183,7 +183,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
             if (!hooks.Contains(craftCycleHook))
             {
                 Log.Information($"Removing {craftCycleHook} Hook");
-                Lisbeth.RemoveCraftCycleHook(craftCycleHook);
+                Lisbeth.RemoveCraftHook(craftCycleHook);
             }
         }
     }

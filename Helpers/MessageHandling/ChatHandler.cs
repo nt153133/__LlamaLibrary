@@ -35,7 +35,7 @@ namespace LlamaLibrary.Helpers.MessageHandling
             }
         }
 
-        private static void GamelogManager_MessageReceived(object sender, ChatEventArgs e)
+        private static void GamelogManager_MessageReceived(object? sender, ChatEventArgs e)
         {
             foreach (var receiver in Receivers.Where(receiver => receiver.TypesToReceive.Contains(e.ChatLogEntry.MessageType)))
             {

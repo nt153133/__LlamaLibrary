@@ -31,13 +31,13 @@ public class BankaCraftworksSupply : RemoteWindow<BankaCraftworksSupply>
         },
     };
 
-    public int TurnInItemId => Elements[Properties["TurnInItemId"]].TrimmedData;
+    public int TurnInItemId => Elements[Properties["TurnInItemId"]].Int;
 
-    public uint TurnInItemRawItemId => (uint)Elements[Properties["TurnInItemId"]].TrimmedData % 500_000;
+    public uint TurnInItemRawItemId => (uint)Elements[Properties["TurnInItemId"]].UInt % 500_000;
 
-    public int EsteemLevel => Elements[Properties["EsteemLevel"]].TrimmedData;
+    public int EsteemLevel => Elements[Properties["EsteemLevel"]].Int;
 
-    public int Esteem => Elements[Properties["Esteem"]].TrimmedData;
+    public int Esteem => Elements[Properties["Esteem"]].Int;
 
     public void Deliver()
     {

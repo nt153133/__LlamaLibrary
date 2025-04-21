@@ -93,7 +93,7 @@ namespace LlamaLibrary.Helpers.Classes
             Start();
         }
 
-        protected void _timer_Elapsed(object sender, ElapsedEventArgs e)
+        protected void _timer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             Completed = true;
             Timer.Stop();

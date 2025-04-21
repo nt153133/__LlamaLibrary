@@ -85,8 +85,13 @@ public class ResidenceInfo
     public bool IsFcRoom => _internalWard > 30 && !IsApartment;
     private int WardTemp => (ushort)((_internalWard & 0x3F) + 1); //((InternalWard & wardMask) >> maskSize) + 1;
 
-    public static implicit operator HouseLocation?(ResidenceInfo info)
+    public static implicit operator HouseLocation?(ResidenceInfo? info)
     {
+        if (info == null)
+        {
+            return null;
+        }
+
         if (info.Zone == 255 || info.IsApartment || info.IsFcRoom)
         {
             return null;

@@ -7,6 +7,7 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory.Attributes;
+// ReSharper disable InconsistentNaming
 using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Managers
@@ -27,8 +28,7 @@ namespace LlamaLibrary.Managers
 
         static RelicBookManager()
         {
-            Language = (Language)typeof(DataManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
-                .First(i => i.FieldType == typeof(Language)).GetValue(null);
+            Language = DataManager.CurrentLanguage;
         }
 
         //CmnDefRelicWeapon025GetNote_00167_9
@@ -182,9 +182,14 @@ namespace LlamaLibrary.Managers
         public static string ProgressString(uint relicId, RelicBookType relicBookType)
         {
             if (relicId == 7833 && relicBookType == RelicBookType.Fire)
+            {
                 return string.Format(CmnDefRelicWeapon025GetNote_00167_13[Translator.Language], NumOfFireCompleted(relicId), MaxCountByType(relicId, relicBookType));
+            }
+
             if (relicId == 7833 && relicBookType == RelicBookType.Fall)
+            {
                 return string.Format(CmnDefRelicWeapon025GetNote_00167_14[Translator.Language], NumOfFallCompleted(relicId), MaxCountByType(relicId, relicBookType));
+            }
 
             return relicBookType switch
             {

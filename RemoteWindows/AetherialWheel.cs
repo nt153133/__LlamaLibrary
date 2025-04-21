@@ -19,7 +19,7 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public int MaxSlots => Elements[Properties["MaxSlots"]].TrimmedData;
+        public int MaxSlots => Elements[Properties["MaxSlots"]].Int;
 
         public void RemoveWheel(uint slotIndex)
         {

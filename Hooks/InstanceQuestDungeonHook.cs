@@ -20,15 +20,15 @@ public class InstanceQuestDungeonHook : AsmFunctionHook
 
         [Offset("Search 40 55 53 57 48 8d ? ? c9 48 81 ec ? ? ? ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 45 ? 8b c2 41 8b f9 48 8b d9 2d ? ? ? ? Add C Read32")]
         public static IntPtr SubAmt;
-
     }
+
     public override IntPtr? Hook => Offsets.PatchLocation + 9;
 
     public static IntPtr StatePtr = Core.Memory.AllocateMemory(8);
 
     public static uint State => Core.Memory.Read<uint>(StatePtr);
 
-    public IntPtr SubAmt => Offsets.SubAmt;
+    public static IntPtr SubAmt => Offsets.SubAmt;
 
     public override bool ShouldEnable => Initialized;
 

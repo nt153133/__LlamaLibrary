@@ -9,17 +9,17 @@ public static class TripleTriadCards
 {
     public static List<TripleTriadCardStore> Cards { get; } = CardData.Cards;
 
-    public static TripleTriadCardStore GetCardById(uint id)
+    public static TripleTriadCardStore? GetCardById(uint id)
     {
         return Cards.Find(x => x.Id == id);
     }
 
-    public static TripleTriadCardStore GetCardByName(string name)
+    public static TripleTriadCardStore? GetCardByName(string name)
     {
         return Cards.Find(x => x.Name == name);
     }
 
-    public static TripleTriadCardStore GetCardByItemID(uint id)
+    public static TripleTriadCardStore? GetCardByItemID(uint id)
     {
         return Cards.Find(x => x.ItemId == id);
     }

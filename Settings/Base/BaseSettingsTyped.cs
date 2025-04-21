@@ -18,11 +18,11 @@ public class BaseSettings<T> : BaseSettings
     {
     }
 
-    public BaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"{typeof(T).Name}.json"), dispatcher)
+    public BaseSettings(Dispatcher? dispatcher) : base(GetSettingsFilePath($"{typeof(T).Name}.json"), dispatcher)
     {
     }
 
-    public BaseSettings(string settingsFilePath, Dispatcher dispatcher) : base(settingsFilePath, dispatcher)
+    public BaseSettings(string settingsFilePath, Dispatcher? dispatcher) : base(settingsFilePath, dispatcher)
     {
     }
 
@@ -56,12 +56,12 @@ public class CharacterBaseSettings<T> : BaseSettings<T>
         LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 
-    public CharacterBaseSettings(string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId():X16}", fileName), dispatcher)
+    public CharacterBaseSettings(string fileName, Dispatcher? dispatcher) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId():X16}", fileName), dispatcher)
     {
         LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 
-    public CharacterBaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId():X16}", $"{typeof(T).Name}.json"), dispatcher)
+    public CharacterBaseSettings(Dispatcher? dispatcher) : base(GetSettingsFilePath($"{Core.Me.Name}_{Core.Me.PlayerId():X16}", $"{typeof(T).Name}.json"), dispatcher)
     {
         LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
@@ -74,7 +74,7 @@ public class AccountBaseSettings<T> : BaseSettings<T>
     {
     }
 
-    public AccountBaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{LoginEvents.AccountId}", $"{typeof(T).Name}.json"), dispatcher)
+    public AccountBaseSettings(Dispatcher? dispatcher) : base(GetSettingsFilePath($"Account_{LoginEvents.AccountId}", $"{typeof(T).Name}.json"), dispatcher)
     {
     }
 
@@ -82,7 +82,7 @@ public class AccountBaseSettings<T> : BaseSettings<T>
     {
     }
 
-    public AccountBaseSettings(string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{LoginEvents.AccountId}", fileName), dispatcher)
+    public AccountBaseSettings(string fileName, Dispatcher? dispatcher) : base(GetSettingsFilePath($"Account_{LoginEvents.AccountId}", fileName), dispatcher)
     {
     }
 
@@ -90,7 +90,7 @@ public class AccountBaseSettings<T> : BaseSettings<T>
     {
     }
 
-    public AccountBaseSettings(int accountId, Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{accountId}", $"{typeof(T).Name}.json"), dispatcher)
+    public AccountBaseSettings(int accountId, Dispatcher? dispatcher) : base(GetSettingsFilePath($"Account_{accountId}", $"{typeof(T).Name}.json"), dispatcher)
     {
     }
 
@@ -98,7 +98,7 @@ public class AccountBaseSettings<T> : BaseSettings<T>
     {
     }
 
-    public AccountBaseSettings(int accountId, string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"Account_{accountId}", fileName), dispatcher)
+    public AccountBaseSettings(int accountId, string fileName, Dispatcher? dispatcher) : base(GetSettingsFilePath($"Account_{accountId}", fileName), dispatcher)
     {
     }
 }
@@ -111,7 +111,7 @@ public class HomeWorldBaseSettings<T> : BaseSettings<T>
         LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 
-    public HomeWorldBaseSettings(Dispatcher dispatcher) : base(GetSettingsFilePath($"HomeWorld_{Core.Me.HomeWorld()}", $"{typeof(T).Name}.json"), dispatcher)
+    public HomeWorldBaseSettings(Dispatcher? dispatcher) : base(GetSettingsFilePath($"HomeWorld_{Core.Me.HomeWorld()}", $"{typeof(T).Name}.json"), dispatcher)
     {
         LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
@@ -121,7 +121,7 @@ public class HomeWorldBaseSettings<T> : BaseSettings<T>
         LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }
 
-    public HomeWorldBaseSettings(string fileName, Dispatcher dispatcher) : base(GetSettingsFilePath($"HomeWorld_{Core.Me.HomeWorld()}", fileName), dispatcher)
+    public HomeWorldBaseSettings(string fileName, Dispatcher? dispatcher) : base(GetSettingsFilePath($"HomeWorld_{Core.Me.HomeWorld()}", fileName), dispatcher)
     {
         LoginEvents.OnCharacterSwitched += (_, _) => { ClearInstance(); };
     }

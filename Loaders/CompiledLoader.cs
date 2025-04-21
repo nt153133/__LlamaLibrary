@@ -193,7 +193,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
         try
         {
             Clean(LocalFolderName);
-            CompiledAssembly.Directory.Create();
+            CompiledAssembly.Directory?.Create();
 
             switch (downloadInfo.ContentType)
             {

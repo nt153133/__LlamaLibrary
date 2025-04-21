@@ -24,6 +24,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public LeveWindow Window => (LeveWindow) Elements[6].TrimmedData;
 
+        /*
         private static readonly Type LeveManagerType =
             Assembly.GetEntryAssembly()
                 .GetTypes()
@@ -33,16 +34,11 @@ namespace LlamaLibrary.RemoteWindows
         private static readonly PropertyInfo LevesPropertyInfo =
             LeveManagerType.GetProperties(BindingFlags.Static | BindingFlags.Public)
                 .FirstOrDefault(f => f.PropertyType == typeof(LeveWork[]));
+                */
 
-        public static LeveWork[] ActiveLeves
-        {
-            get { return LevesPropertyInfo.GetValue(null) as LeveWork[]; }
-        }
+        public static LeveWork[] ActiveLeves => LeveManager.Leves; // LevesPropertyInfo.GetValue(null) as LeveWork[] ?? Array.Empty<LeveWork>();
 
-        public static int Allowances
-        {
-            get { return Core.Memory.NoCacheRead<int>(Offsets.AllowancesPtr); }
-        }
+        public static int Allowances => Core.Memory.NoCacheRead<int>(Offsets.AllowancesPtr);
 
         public void AcceptLeve(uint guildLeveId)
         {
@@ -56,7 +52,7 @@ namespace LlamaLibrary.RemoteWindows
             return activeLeves.Any(leve => leve.GlobalId == leveId);
         }
 
-        public static bool HasLeves(uint[] leveIds)
+        public static bool HasLeves(uint[]? leveIds)
         {
             if (leveIds == null)
             {
@@ -105,12 +101,12 @@ namespace LlamaLibrary.RemoteWindows
 
         public void SwitchType(int index)
         {
-            SendAction(3, 3, 9, 3, (ulong) index, 3, 0);
+            SendAction(3, 3, 9, 3, (ulong)index, 3, 0);
         }
 
         public void SwitchClass(int index)
         {
-            SendAction(2, 3, 0xB, 3, (ulong) index);
+            SendAction(2, 3, 0xB, 3, (ulong)index);
         }
     }
 

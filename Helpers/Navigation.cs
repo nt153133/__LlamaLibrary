@@ -11,6 +11,7 @@ using Clio.Utilities.Helpers;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Enums;
+using ff14bot.Helpers;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Objects;
@@ -151,9 +152,7 @@ namespace LlamaLibrary.Helpers
 
                     Log.Verbose("Can teleport to AE");
                     await Coroutine.Sleep(1000);
-                    //WorldManager.TeleportById(AE.Item1);
                     await TeleportHelper.TeleportByIdTicket(AE.Item1);
-                    // await Coroutine.Wait(20000, () => WorldManager.ZoneId == AE.Item1);
                     await Coroutine.Sleep(1000);
                     return await GetTo(ZoneId, XYZ);
                 }
@@ -456,13 +455,13 @@ namespace LlamaLibrary.Helpers
                 AE = GameObjectManager.GetObjectsOfType<Aetheryte>().FirstOrDefault(i => i.NpcId == id);
             }
 
-            if (!AE.IsWithinInteractRange)
+            if (AE != null && !AE.IsWithinInteractRange)
             {
                 Log.Information("Using flightor to get closer");
                 await Navigation.FlightorMove(AE.Location, 6);
             }
 
-            if (!AE.IsWithinInteractRange)
+            if (AE != null && !AE.IsWithinInteractRange)
             {
                 Log.Information("Using offmesh to get closer");
                 await Navigation.OffMeshMoveInteract(AE);
@@ -574,8 +573,12 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
-        public static async Task<bool> GetToInteractNpc(Npc npc, RemoteWindow window)
+        public static async Task<bool> GetToInteractNpc(Npc? npc, RemoteWindow window)
         {
+            if (npc == null)
+            {
+                return false;
+            }
             return await GetToInteractNpc(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, window);
         }
 
@@ -764,14 +767,129 @@ namespace LlamaLibrary.Helpers
         {
             var path = await NavGraph.GetPathAsync(zoneId, location);
 
-            if (path == null || path.Count == 0)
+            if (path != null && path.Count != 0)
             {
-                Log.Error("Path is null");
+                var object0 = new object();
+                var composite = NavGraph.NavGraphConsumer(j => path);
+                bool stop = false;
+                while (path.Count > 0)
+                {
+                    composite.Start(object0);
+                    await Coroutine.Yield();
+                    while (composite.Tick(object0) == RunStatus.Running)
+                    {
+                        await Coroutine.Yield();
+                        if (stop)
+                        {
+                            break;
+                        }
+                    }
+
+                    composite.Stop(object0);
+                    await Coroutine.Yield();
+
+                    if (stop)
+                    {
+                        break;
+                    }
+
+                    if (GameObjectManager.GetObjectByNPCId(npcId) != null && (path.Count > 0 && path.Peek().Location.Distance3D(location) < distance * 2))
+                    {
+                        //Navigator.Stop();
+                        //MovementManager.MoveStop();
+                        Log.Information($"Found NPC {path.Count} {path.Peek().DynamicString()}");
+                        stop = true;
+                        //break;
+                    }
+                }
+
+                Navigator.Stop();
+            }
+            else
+            {
+                if (WorldManager.ZoneId != zoneId && WorldManager.AetheryteIdsForZone(zoneId).Length >= 1)
+                {
+                    var AE = WorldManager.AetheryteIdsForZone(zoneId).OrderBy(i => i.Item2.DistanceSqr(location)).First();
+                    Log.Verbose("Can teleport to AE");
+                    await Coroutine.Sleep(1000);
+                    await TeleportHelper.TeleportByIdTicket(AE.Item1);
+                    await Coroutine.Sleep(1000);
+                }
+                else
+                {
+                    return false;
+                }
+
+                await GroundMove(location, 20f);
+            }
+
+            if (GameObjectManager.GetObjectByNPCId(npcId) == null)
+            {
+                Log.Error("Failed to find NPC");
                 return false;
+            }
+
+            await Coroutine.Sleep(1000);
+
+            var newLocation = GetRandomPoint(range, distance, GameObjectManager.GetObjectByNPCId(npcId));
+
+            Log.Information($"Moving to spot in front of NPC {newLocation}");
+
+            if (await NavGraphOrGround(newLocation.Coordinates))
+            {
+                Log.Information("Moved to spot in front of NPC");
+            }
+            else
+            {
+                Log.Error("Failed to move to spot in front of NPC");
+            }
+
+            var npc = GameObjectManager.GetObjectByNPCId(npcId);
+
+            if (npc != null && !npc.IsWithinInteractRange)
+            {
+                await OffMeshMoveInteract(npc);
+            }
+
+            if (Core.Me.IsMounted)
+            {
+                await CommonTasks.StopAndDismount();
+                await Coroutine.Wait(5000, () => !GeneralFunctions.IsJumping);
+            }
+
+            return npc != null && npc.IsWithinInteractRange;
+        }
+
+        public static async Task<bool> GetToSpotInFrontOf(Npc npc, float distance = 4f, int range = 6)
+        {
+            return await GetToSpotInFrontOf(npc.Location.ZoneId, npc.Location.Coordinates, npc.NpcId, distance, range);
+        }
+
+        public static async Task<bool> GetToSpotInFrontOf(Location location, uint npcId, float distance = 4f, int range = 6)
+        {
+            return await GetToSpotInFrontOf(location.ZoneId, location.Coordinates, npcId, distance, range);
+        }
+
+        public static async Task<bool> NavGraphOrGround(Vector3 location)
+        {
+            var path = await NavGraph.GetPathAsync(WorldManager.ZoneId, location);
+
+            if (path == null || path.Count < 2)
+            {
+                Log.Information("No path found, using ground move");
+                return await GroundMove(location, 1f);
             }
 
             var object0 = new object();
             var composite = NavGraph.NavGraphConsumer(j => path);
+
+            if (path.Count > 1)
+            {
+                if (path.Peek().Location.Distance3D(Core.Me.Location) < 1)
+                {
+                    path.Dequeue();
+                }
+            }
 
             while (path.Count > 0)
             {
@@ -784,43 +902,11 @@ namespace LlamaLibrary.Helpers
 
                 composite.Stop(object0);
                 await Coroutine.Yield();
-
-                if (GameObjectManager.GetObjectByNPCId(npcId) != null)
-                {
-                    Log.Information("Found NPC");
-                    break;
-                }
             }
 
             Navigator.Stop();
 
-            var newLocation = GetRandomPoint(range, distance, GameObjectManager.GetObjectByNPCId(npcId));
-
-            await GetTo(newLocation);
-
-            var npc = GameObjectManager.GetObjectByNPCId(npcId);
-
-            if (npc != null && !npc.IsWithinInteractRange)
-            {
-                await OffMeshMoveInteract(npc);
-            }
-
-            if (Core.Me.IsMounted)
-            {
-                await CommonTasks.StopAndDismount();
-            }
-
-            return npc != null && !npc.IsWithinInteractRange;
-        }
-
-        public static async Task<bool> GetToSpotInFrontOf(Npc npc, float distance = 4f, int range = 6)
-        {
-            return await GetToSpotInFrontOf(npc.Location.ZoneId, npc.Location.Coordinates, npc.NpcId, distance, range);
-        }
-
-        public static async Task<bool> GetToSpotInFrontOf(Location location, uint npcId, float distance = 4f, int range = 6)
-        {
-            return await GetToSpotInFrontOf(location.ZoneId, location.Coordinates, npcId, distance, range);
+            return Navigator.InPosition(Core.Me.Location, location, 3);
         }
     }
 }

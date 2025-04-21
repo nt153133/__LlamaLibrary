@@ -14,14 +14,14 @@ namespace LlamaLibrary.Memory;
 /// </summary>
 public class DebounceDispatcher
 {
-    private DispatcherTimer timer;
-    private DateTime timerStarted { get; set; } = DateTime.UtcNow.AddYears(-1);
+    private DispatcherTimer? _timer;
+    private DateTime TimerStarted { get; set; } = DateTime.UtcNow.AddYears(-1);
 
-    private Action<object> action;
+    private readonly Action<object?>? _action;
 
-    public DebounceDispatcher(Action<object> action)
+    public DebounceDispatcher(Action<object?> action)
     {
-        this.action = action;
+        _action = action;
     }
 
     /// <summary>
@@ -34,45 +34,41 @@ public class DebounceDispatcher
     ///     the  Action you pass to this method to debounce the event.
     ///     Example: https://gist.github.com/RickStrahl/0519b678f3294e27891f4d4f0608519a
     /// </summary>
-    /// <param name="interval">Timeout in Milliseconds</param>
-    /// <param name="action">Action<object> to fire when debounced event fires</object></param>
-    /// <param name="param">optional parameter</param>
-    /// <param name="priority">optional priorty for the dispatcher</param>
+    /// <param name="interval">Timeout in Milliseconds.</param>
+    /// <param name="param">optional parameter.</param>
+    /// <param name="priority">optional priority for the dispatcher.</param>
     /// <param name="disp">optional dispatcher. If not passed or null CurrentDispatcher is used.</param>
     public void Debounce(
         int interval,
-        object param = null,
+        object? param = null,
         DispatcherPriority priority = DispatcherPriority.ApplicationIdle,
-        Dispatcher disp = null)
+        Dispatcher? disp = null)
     {
         // kill pending timer and pending ticks
-        timer?.Stop();
-        timer = null;
+        _timer?.Stop();
+        _timer = null;
 
-        if (disp == null)
-        {
-            disp = Dispatcher.CurrentDispatcher;
-        }
+        disp ??= Dispatcher.CurrentDispatcher;
 
         // timer is recreated for each event and effectively
         // resets the timeout. Action only fires after timeout has fully
         // elapsed without other events firing in between
-        timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval),
+        _timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval),
                                     priority,
                                     (s, e) =>
                                     {
-                                        if (timer == null)
+                                        if (_timer == null)
                                         {
                                             return;
                                         }
 
-                                        timer?.Stop();
-                                        timer = null;
-                                        action.Invoke(param);
+                                        _timer?.Stop();
+                                        _timer = null;
+                                        _action?.Invoke(param);
                                     },
                                     disp);
 
-        timer.Start();
+        _timer.Start();
     }
 
     /// <summary>
@@ -82,50 +78,46 @@ public class DebounceDispatcher
     ///     Use Throttle where you need to ensure that events fire at given intervals.
     /// </summary>
     /// <param name="interval">Timeout in Milliseconds</param>
-    /// <param name="action">Action<object> to fire when debounced event fires</object></param>
-    /// <param name="param">optional parameter</param>
-    /// <param name="priority">optional priorty for the dispatcher</param>
+    /// <param name="param">optional parameter.</param>
+    /// <param name="priority">optional priority for the dispatcher.</param>
     /// <param name="disp">optional dispatcher. If not passed or null CurrentDispatcher is used.</param>
     public void Throttle(
         int interval,
-        object param = null,
+        object? param = null,
         DispatcherPriority priority = DispatcherPriority.ApplicationIdle,
-        Dispatcher disp = null)
+        Dispatcher? disp = null)
     {
         // kill pending timer and pending ticks
-        timer?.Stop();
-        timer = null;
+        _timer?.Stop();
+        _timer = null;
 
-        if (disp == null)
-        {
-            disp = Dispatcher.CurrentDispatcher;
-        }
+        disp ??= Dispatcher.CurrentDispatcher;
 
         var curTime = DateTime.UtcNow;
 
         // if timeout is not up yet - adjust timeout to fire
         // with potentially new Action parameters
-        if (curTime.Subtract(timerStarted).TotalMilliseconds < interval)
+        if (curTime.Subtract(TimerStarted).TotalMilliseconds < interval)
         {
-            interval -= (int)curTime.Subtract(timerStarted).TotalMilliseconds;
+            interval -= (int)curTime.Subtract(TimerStarted).TotalMilliseconds;
         }
 
-        timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval),
+        _timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval),
                                     priority,
                                     (s, e) =>
                                     {
-                                        if (timer == null)
+                                        if (_timer == null)
                                         {
                                             return;
                                         }
 
-                                        timer?.Stop();
-                                        timer = null;
-                                        action.Invoke(param);
+                                        _timer?.Stop();
+                                        _timer = null;
+                                        _action?.Invoke(param);
                                     },
                                     disp);
 
-        timer.Start();
-        timerStarted = curTime;
+        _timer.Start();
+        TimerStarted = curTime;
     }
 }

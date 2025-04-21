@@ -66,9 +66,9 @@ namespace LlamaLibrary
             Assemblies.TryAdd(name, assembly);
         }
 
-        private static Assembly? OnAssemblyResolve(object sender, ResolveEventArgs args)
+        private static Assembly? OnAssemblyResolve(object? sender, ResolveEventArgs args)
         {
-            if (Assemblies.TryGetValue(new AssemblyName(args.Name).Name, out var resolve))
+            if (Assemblies.TryGetValue(new AssemblyName(args.Name).Name ?? string.Empty, out var resolve))
             {
                 return resolve;
             }

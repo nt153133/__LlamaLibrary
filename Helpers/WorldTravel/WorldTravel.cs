@@ -65,21 +65,13 @@ namespace LlamaLibrary.Helpers.WorldTravel
                     }
                 }
 
-                var ae = 8;
-                switch (travelCity)
+                var ae = travelCity switch
                 {
-                    case TravelCity.Limsa:
-                        ae = 8;
-                        break;
-                    case TravelCity.Uldah:
-                        ae = 9;
-                        break;
-                    case TravelCity.Gridania:
-                        ae = 2;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(travelCity), travelCity, null);
-                }
+                    TravelCity.Limsa    => 8,
+                    TravelCity.Uldah    => 9,
+                    TravelCity.Gridania => 2,
+                    _                   => throw new ArgumentOutOfRangeException(nameof(travelCity), travelCity, null)
+                };
 
                 Log.Information($"Traveling to {travelCity}. Calling Teleport {ae}");
                 //var result = await CommonTasks.Teleport((uint)ae);
