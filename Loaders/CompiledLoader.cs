@@ -10,6 +10,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -200,8 +201,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
                 case "application/zip":
                 {
                     var sw = Stopwatch.StartNew();
-                    using var zipArchive = new ZipArchive(downloadInfo.Stream, ZipArchiveMode.Read);
-                    zipArchive.ExtractToDirectory(LocalFolderName, true);
+                    downloadInfo.Stream.ExtractFromStream(new DirectoryInfo(LocalFolderName));
                     sw.Stop();
                     Log.Information($"Decompressed(zip) in {sw.ElapsedMilliseconds}ms");
                     break;
@@ -409,4 +409,18 @@ public static class UnblockHelper
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool DeleteFile(string name);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ExtractFromStream(this Stream zipStreamIn, DirectoryInfo outFolderIn)
+    {
+        using ZipArchive archive = new(zipStreamIn, ZipArchiveMode.Read);
+        archive.ExtractToDirectory(outFolderIn.FullName, true);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ExtractZip(this FileInfo zipFileIn, DirectoryInfo outFolderIn)
+    {
+        using ZipArchive archive = new(zipFileIn.OpenRead(), ZipArchiveMode.Read);
+        archive.ExtractToDirectory(outFolderIn.FullName, true);
+    }
 }
