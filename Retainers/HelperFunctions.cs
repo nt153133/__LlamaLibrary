@@ -228,7 +228,8 @@ namespace LlamaLibrary.Retainers
             if (SummoningBells.Any(i => i.ZoneId == WorldManager.ZoneId))
             {
                 Log.Information("Found a bell in our zone");
-                bellLocation = SummoningBells.Where(i => i.ZoneId == WorldManager.ZoneId).OrderBy(r => Core.Me.Location.DistanceSqr(r.Location)).First();
+                var meLocation = Core.Me.Location;
+                bellLocation = SummoningBells.Where(i => i.ZoneId == WorldManager.ZoneId).OrderBy(r => meLocation.DistanceSqr(r.Location)).First();
             }
             else
             {

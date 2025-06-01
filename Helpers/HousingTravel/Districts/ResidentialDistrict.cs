@@ -205,17 +205,18 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             }
             else
             {
-                var closestTransistion = TransitionStartLocations.OrderBy(i => i.Distance2DSqr(Core.Me.Location)).First();
+                var meLocation = Core.Me.Location;
+                var closestTransition = TransitionStartLocations.OrderBy(i => i.Distance2DSqr(meLocation)).First();
 
-                if (!await TravelWithinZone(closestTransistion))
+                if (!await TravelWithinZone(closestTransition))
                 {
-                    Log.Error($"Could not get to transition location {closestTransistion}");
+                    Log.Error($"Could not get to transition location {closestTransition}");
                     return false;
                 }
 
                 while (!Conversation.IsOpen)
                 {
-                    Navigator.PlayerMover.MoveTowards(TransitionEndLocations.OrderBy(i => i.Distance2DSqr(closestTransistion)).First());
+                    Navigator.PlayerMover.MoveTowards(TransitionEndLocations.OrderBy(i => i.Distance2DSqr(closestTransition)).First());
                     await Coroutine.Sleep(50);
 
                     //Navigator.PlayerMover.MoveStop();

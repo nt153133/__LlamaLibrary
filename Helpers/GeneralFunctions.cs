@@ -1556,7 +1556,8 @@ namespace LlamaLibrary.Helpers
 
         public static IEnumerable<Treasure> GetTreasureChests()
         {
-            return GameObjectManager.GetObjectsOfType<Treasure>().Where(i => i.Location.Distance2D(Core.Me.Location) <= 30 && i.InLineOfSight() && i.State == 0);
+            var meLocation = Core.Me.Location;
+            return GameObjectManager.GetObjectsOfType<Treasure>().Where(i => i.Location.Distance2D(meLocation) <= 30 && i.InLineOfSight() && i.State == 0);
         }
 
         public static async Task InteractWithDenys(int selectString)

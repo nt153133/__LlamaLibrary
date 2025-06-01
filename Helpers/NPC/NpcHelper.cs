@@ -25,7 +25,8 @@ namespace LlamaLibrary.Helpers.NPC
         {
             if (npcs.Any(i => i.IsInCurrentZone))
             {
-                return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(Core.Me.Location)).FirstOrDefault();
+                var meLocation = Core.Me.Location;
+                return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(meLocation)).FirstOrDefault();
             }
 
             return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(i.Location.ClosestAetheryteResult.Position)).FirstOrDefault();
@@ -35,7 +36,8 @@ namespace LlamaLibrary.Helpers.NPC
         {
             if (npcs.Any(i => i.IsInCurrentZone))
             {
-                return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(Core.Me.Location)).ToList();
+                var meLocation = Core.Me.Location;
+                return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(meLocation)).ToList();
             }
 
             return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(i.Location.ClosestAetheryteResult.Position)).ToList();

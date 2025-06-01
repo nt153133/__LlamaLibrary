@@ -172,9 +172,10 @@ namespace LlamaLibrary.Helpers.NPC
 
         public static Location? GetClosestLocation(IEnumerable<Location> locations)
         {
+            var meLocation = Core.Me.Location;
             if (locations.Any(i => i.IsInCurrentZone))
             {
-                return locations.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Coordinates.Distance2DSqr(Core.Me.Location)).FirstOrDefault();
+                return locations.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Coordinates.Distance2DSqr(meLocation)).FirstOrDefault();
             }
 
             var temp = locations.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost);
