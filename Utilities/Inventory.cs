@@ -175,7 +175,7 @@ namespace LlamaLibrary.Utilities
 
         public static async Task<bool> ReduceAll()
         {
-            await GeneralFunctions.StopBusy(false, true, true);
+            await GeneralFunctions.StopBusy(false);
 
             while (InventoryManager.FilledSlots.Any(x => InventoryBagIds.Contains(x.BagId) && x.IsReducable))
             {

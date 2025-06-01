@@ -115,7 +115,7 @@ namespace LlamaLibrary.Utilities
                 {
                     if (!await HireRetainer(pair.Key))
                     {
-                        Log.Error($"Issue hiring retainer");
+                        Log.Error("Issue hiring retainer");
                         break;
                     }
                 }

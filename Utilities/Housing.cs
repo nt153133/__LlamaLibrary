@@ -134,7 +134,7 @@ namespace LlamaLibrary.Utilities
 
             if (!output.Any())
             {
-                Log.Warning($"No Housing Plots For Sale");
+                Log.Warning("No Housing Plots For Sale");
             }
 
             foreach (var line in output)

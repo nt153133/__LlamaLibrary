@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using ff14bot;
 using ff14bot.Managers;
@@ -47,7 +46,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public static bool HasLeve(uint leveId)
         {
-            var activeLeves = GuildLeve.ActiveLeves;
+            var activeLeves = ActiveLeves;
 
             return activeLeves.Any(leve => leve.GlobalId == leveId);
         }
@@ -59,7 +58,7 @@ namespace LlamaLibrary.RemoteWindows
                 return false;
             }
 
-            var activeLeves = GuildLeve.ActiveLeves;
+            var activeLeves = ActiveLeves;
 
             return leveIds.All(leveId => activeLeves.Any(leve => leve.GlobalId == leveId));
         }

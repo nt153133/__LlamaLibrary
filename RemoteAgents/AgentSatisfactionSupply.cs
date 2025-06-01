@@ -90,9 +90,9 @@ namespace LlamaLibrary.RemoteAgents
         public uint CurrentRep => Core.Memory.Read<ushort>(Pointer + Offsets.CurrentRep);
         public uint MaxRep => Core.Memory.Read<ushort>(Pointer + Offsets.MaxRep);
 
-        public bool HasDoHTurnin => InventoryManager.FilledSlots.Any(i => i.RawItemId == AgentSatisfactionSupply.Instance.DoHItemId);
-        public bool HasDoLTurnin => InventoryManager.FilledSlots.Any(i => i.RawItemId == AgentSatisfactionSupply.Instance.DoLItemId);
-        public bool HasFshTurnin => InventoryManager.FilledSlots.Any(i => i.RawItemId == AgentSatisfactionSupply.Instance.FshItemId);
+        public bool HasDoHTurnin => InventoryManager.FilledSlots.Any(i => i.RawItemId == Instance.DoHItemId);
+        public bool HasDoLTurnin => InventoryManager.FilledSlots.Any(i => i.RawItemId == Instance.DoLItemId);
+        public bool HasFshTurnin => InventoryManager.FilledSlots.Any(i => i.RawItemId == Instance.FshItemId);
 
         public bool HasAnyTurnin => HasDoHTurnin || HasDoLTurnin || HasFshTurnin;
 

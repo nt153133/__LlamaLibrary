@@ -10,10 +10,11 @@
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
         <TargetFramework>net8.0-windows</TargetFramework>
         <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-        <Configurations>Debug;Release;Release2</Configurations>
+        <Configurations>Debug;Release;Release2;China</Configurations>
         <EnableWindowsTargetingPack>true</EnableWindowsTargetingPack>
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
         <ImplicitUsings>disable</ImplicitUsings>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>LlamaLibrary</PackageId>
@@ -33,12 +34,17 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <DefineConstants>TRACE, RB_DT</DefineConstants>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2|AnyCPU'">
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <DefineConstants>TRACE, RB_DT</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'China' ">
+      <DefineConstants>TRACE, RB_CN, RB_DT</DefineConstants>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows|AnyCPU'">
       <WarningLevel>2</WarningLevel>
@@ -66,15 +72,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="RebornBuddy.ReferenceAssemblies" Version="1.0.713" />
-        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="RebornBuddy.ReferenceAssemblies" Version="1.0.732" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
         <PackageReference Include="System.Resources.Extensions" Version="9.0.0-preview.4.24266.19" />
     </ItemGroup>

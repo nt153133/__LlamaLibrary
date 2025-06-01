@@ -122,7 +122,7 @@ namespace LlamaLibrary.RemoteWindows
             }
 
             Agent.Toggle();
-            return await WaitTillWindowOpen(5000);
+            return await WaitTillWindowOpen();
 
             //return SyncRoutines.WaitUntil(() => IsOpen, 50, 5000, true);
         }

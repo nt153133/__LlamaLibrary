@@ -189,7 +189,7 @@ namespace LlamaLibrary.Utilities
         {
             if (!ContentsInfoDetail.Instance.IsOpen)
             {
-                Log.Verbose($"Trying to open GC Supply window");
+                Log.Verbose("Trying to open GC Supply window");
 
                 if (!ContentsInfo.Instance.IsOpen)
                 {
@@ -204,7 +204,7 @@ namespace LlamaLibrary.Utilities
 
             if (!ContentsInfoDetail.Instance.IsOpen)
             {
-                Log.Error($"Nope failed opening GC Supply window");
+                Log.Error("Nope failed opening GC Supply window");
                 return string.Empty;
             }
 
@@ -253,7 +253,7 @@ namespace LlamaLibrary.Utilities
         {
             if (!ContentsInfoDetail.Instance.IsOpen)
             {
-                Log.Verbose($"Trying to open GC Supply window");
+                Log.Verbose("Trying to open GC Supply window");
 
                 if (!ContentsInfo.Instance.IsOpen)
                 {
@@ -268,7 +268,7 @@ namespace LlamaLibrary.Utilities
 
             if (!ContentsInfoDetail.Instance.IsOpen)
             {
-                Log.Error($"Nope failed opening GC Supply window");
+                Log.Error("Nope failed opening GC Supply window");
                 return false;
             }
 

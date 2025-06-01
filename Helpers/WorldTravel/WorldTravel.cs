@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
-using Clio.Utilities;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Managers;
@@ -26,7 +25,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
 
         private const TravelCity DefaultStart = TravelCity.Cheapest;
 
-        private readonly static ushort[] ValidZones = new ushort[] { 129, 130, 132 };
+        private readonly static ushort[] ValidZones = { 129, 130, 132 };
 
         private static bool InValidZone => ValidZones.Contains(WorldManager.ZoneId);
 

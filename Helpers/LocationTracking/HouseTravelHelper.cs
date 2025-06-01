@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
@@ -7,7 +6,6 @@ using Clio.Utilities;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Managers;
-using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
@@ -24,8 +22,8 @@ public static class HouseTravelHelper
     private static readonly LLogger Log = new LLogger("HouseTravelHelper", Colors.IndianRed);
     private const uint HouseEntranceId = 2002737;
     private const uint AptEntranceId = 2007402;
-    private static readonly uint[] AdditionalChambers = new uint[] { 2004353, 2004624, 2004625, 2004626, 2008126, 2011571 };
-    private static readonly uint[] HouseExits = new uint[] { 2002738, 2004361, 2007444 };
+    private static readonly uint[] AdditionalChambers = { 2004353, 2004624, 2004625, 2004626, 2008126, 2011571 };
+    private static readonly uint[] HouseExits = { 2002738, 2004361, 2007444 };
     private const uint WorkShopExit = 2005124;
     public static readonly ushort[] WorkshopZones = { 423, 424, 425, 653, 984 };
 
@@ -280,7 +278,7 @@ public static class HouseTravelHelper
                 return null;
             }
 
-            return new HousingAreaLocation()
+            return new HousingAreaLocation
             {
                 HousingZone = WorldManager.ZoneId,
                 Ward = HousingHelper.HousingPositionInfo.Ward,

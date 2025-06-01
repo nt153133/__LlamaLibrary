@@ -16,7 +16,6 @@ using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
-using static LlamaLibrary.Helpers.GeneralFunctions;
 
 // ReSharper disable InconsistentNaming
 
@@ -101,8 +100,7 @@ namespace LlamaLibrary.Helpers
 
         public static Npc? BarracksNpc => Barracks[Core.Me.GrandCompany];
 
-        public static readonly ushort[] BarrackRoomZones = new ushort[]
-        {
+        public static readonly ushort[] BarrackRoomZones = {
             534, 535, 536
         };
 

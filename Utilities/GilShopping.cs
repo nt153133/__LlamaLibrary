@@ -46,7 +46,7 @@ public class GilShopping
     public static Npc MargratVendor = new Npc(1046406, 956, new Vector3(-54.89797f, -29.49739f, -53.02695f));
     public static Npc NitowikweVendor = new Npc(1048606, 1190, new Vector3(-360.06714f, 19.493467f, -109.056274f));
 
-    public static List<Npc> Vendors = new List<Npc>() { AndenVendor, MargratVendor, NitowikweVendor };
+    public static List<Npc> Vendors = new List<Npc> { AndenVendor, MargratVendor, NitowikweVendor };
 
     public static async Task<bool> GetRequiredItems(StoredRecipe recipe, int amount = 1)
     {

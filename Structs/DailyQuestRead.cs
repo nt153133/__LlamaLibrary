@@ -21,10 +21,8 @@ namespace LlamaLibrary.Structs
                 {
                     return IDRaw + 0x10000;
                 }
-                else
-                {
-                    return 0;
-                }
+
+                return 0;
             }
         }
 

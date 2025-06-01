@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +25,7 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
         public static readonly IReadOnlyList<ushort> HousingZoneIds;
 
-        public static readonly IReadOnlyList<HousingZone> HousingZonesEnums = new List<HousingZone>() { HousingZone.Mist, HousingZone.LavenderBeds, HousingZone.Empyreum, HousingZone.Goblet, HousingZone.Shirogane };
+        public static readonly IReadOnlyList<HousingZone> HousingZonesEnums = new List<HousingZone> { HousingZone.Mist, HousingZone.LavenderBeds, HousingZone.Empyreum, HousingZone.Goblet, HousingZone.Shirogane };
 
         public static ResidentialDistrict? CurrentResidentialDistrict => !HousingHelper.IsInHousingArea ? null : GetResidentialDistrictByZone(WorldManager.ZoneId);
 
@@ -359,9 +358,9 @@ namespace LlamaLibrary.Helpers.HousingTravel
 
             var availableHouses = HousingHelper.Residences.Where(i => i.Zone != 255).ToDictionary(i => i.HouseLocationIndex, i => i);
             int ward = 1;
-            if (availableHouses.Values.Any(i => i != null && (ushort)(ushort)HousingTraveler.TranslateZone((HousingZone)i.Zone) == targetLocation.ZoneId))
+            if (availableHouses.Values.Any(i => i != null && (ushort)TranslateZone((HousingZone)i.Zone) == targetLocation.ZoneId))
             {
-                var place1 = availableHouses.FirstOrDefault(i => i.Value != null && (ushort)HousingTraveler.TranslateZone((HousingZone)i.Value.Zone) == targetLocation.ZoneId);
+                var place1 = availableHouses.FirstOrDefault(i => i.Value != null && (ushort)TranslateZone((HousingZone)i.Value.Zone) == targetLocation.ZoneId);
                 var place = place1.Key;
                 var house = place1.Value;
                 Log.Information($"Found a house in {place} {house}");
@@ -392,7 +391,7 @@ namespace LlamaLibrary.Helpers.HousingTravel
                         break;
                     case HouseLocationIndex.SharedEstate1:
                     case HouseLocationIndex.SharedEstate2:
-                        if (!await TeleportHelper.TeleportToSharedEstate((ushort)HousingTraveler.TranslateZone(((HousingZone)house.Zone)), house.Ward, house.Plot))
+                        if (!await TeleportHelper.TeleportToSharedEstate((ushort)TranslateZone(((HousingZone)house.Zone)), house.Ward, house.Plot))
                         {
                             ward = 1;
                         }
@@ -407,15 +406,12 @@ namespace LlamaLibrary.Helpers.HousingTravel
                     ward = HousingHelper.HousingPositionInfo.Ward;
                 }
             }
-            else
-            {
-                /*Log.Information($"No house found in {targetLocation.ZoneId}");
+
+            /*Log.Information($"No house found in {targetLocation.ZoneId}");
                 foreach (var keyValuePair in availableHouses)
                 {
                     Log.Information($"{keyValuePair.Key} {keyValuePair.Value}");
                 }*/
-            }
-
             return ward;
         }
     }

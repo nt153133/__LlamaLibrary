@@ -144,7 +144,7 @@ namespace LlamaLibrary.Extensions
             return Core.Memory.Read<ulong>(Offsets.PlayerId);
         }
 
-        private static ulong _accountId = 0;
+        private static ulong _accountId;
 
         public static ulong AccountId(this LocalPlayer player)
         {

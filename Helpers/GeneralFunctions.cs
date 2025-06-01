@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -33,7 +34,7 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new(nameof(GeneralFunctions), Colors.Aquamarine);
 
-        private static FrameCachedObject<QuestLayout[]>? _questLayouts = null;
+        private static FrameCachedObject<QuestLayout[]>? _questLayouts;
 
         public static FrameCachedObject<QuestLayout[]>? QuestLayouts
         {
@@ -41,7 +42,7 @@ namespace LlamaLibrary.Helpers
             {
                 if (_questLayouts == null)
                 {
-                    var field = typeof(QuestLogManager).GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).FirstOrDefault(i => i.FieldType == typeof(FrameCachedObject<QuestLayout[]>));
+                    var field = typeof(QuestLogManager).GetFields(BindingFlags.NonPublic | BindingFlags.Static).FirstOrDefault(i => i.FieldType == typeof(FrameCachedObject<QuestLayout[]>));
                     _questLayouts = field?.GetValue(null) as FrameCachedObject<QuestLayout[]>;
                 }
 
@@ -148,7 +149,7 @@ namespace LlamaLibrary.Helpers
                     var quit = ActionManager.CurrentActions.Values.FirstOrDefault(i => i.Id == 299);
                     if (quit != default(SpellData))
                     {
-                        Log.Information($"Exiting Fishing.");
+                        Log.Information("Exiting Fishing.");
                         if (ActionManager.CanCast(quit, Core.Me))
                         {
                             ActionManager.DoAction(quit, Core.Me);
@@ -164,7 +165,7 @@ namespace LlamaLibrary.Helpers
 
                 if (CraftingLog.IsOpen || CraftingManager.IsCrafting || Synthesis.IsOpen)
                 {
-                    Log.Information($"Closing Crafting Window.");
+                    Log.Information("Closing Crafting Window.");
                     await Lisbeth.ExitCrafting();
                     Synthesis.Close();
                     await Coroutine.Wait(6000, () => !Synthesis.IsOpen);
@@ -176,7 +177,7 @@ namespace LlamaLibrary.Helpers
 
                 if (leaveDuty && DutyManager.InInstance)
                 {
-                    Log.Information($"Leaving Diadem.");
+                    Log.Information("Leaving Diadem.");
                     DutyManager.LeaveActiveDuty();
 
                     if (await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
@@ -222,13 +223,13 @@ namespace LlamaLibrary.Helpers
 
                 if (GuildLeve.Instance.IsOpen)
                 {
-                    Log.Information($"Closing Leve Window.");
+                    Log.Information("Closing Leve Window.");
                     GuildLeve.Instance.Close();
                 }
 
                 if (Conversation.IsOpen)
                 {
-                    Log.Information($"Closing Conversation");
+                    Log.Information("Closing Conversation");
                     Conversation.SelectQuit();
                 }
 
@@ -795,7 +796,7 @@ namespace LlamaLibrary.Helpers
             uint houseEntranceId = 2002737;
             uint aptEntranceId = 2007402;
 
-            var entranceIds = new uint[] { houseEntranceId, aptEntranceId };
+            var entranceIds = new[] { houseEntranceId, aptEntranceId };
 
             var entrance = GameObjectManager.GetObjectsByNPCIds<GameObject>(entranceIds).OrderBy(x => x.Distance2D()).FirstOrDefault();
             if (entrance != null)
@@ -843,10 +844,8 @@ namespace LlamaLibrary.Helpers
                         await HelperFunctions.GoToSummoningBell();
                         return true;
                     }
-                    else
-                    {
-                        Log.Error("Couldn't find any summoning bells");
-                    }
+
+                    Log.Error("Couldn't find any summoning bells");
                 }
             }
             else
@@ -1679,21 +1678,21 @@ namespace LlamaLibrary.Helpers
             if (turninItems.Any())
             {
                 await InteractWithDenys(3);
-                await Coroutine.Wait(10000, () => LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.IsOpen);
-                if (LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.IsOpen)
+                await Coroutine.Wait(10000, () => ShopExchangeItem.Instance.IsOpen);
+                if (ShopExchangeItem.Instance.IsOpen)
                 {
-                    Log.Information($"Window Open");
+                    Log.Information("Window Open");
                     foreach (var turnin in turninItems)
                     {
                         var reward = GatheringItems[turnin.RawItemId].Reward;
                         var amt = turnin.Count / GatheringItems[turnin.RawItemId].Cost;
                         Log.Information($"Buying {amt}x{DataManager.GetItem(reward).CurrentLocaleName}");
-                        await LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.Purchase(reward, amt);
+                        await ShopExchangeItem.Instance.Purchase(reward, amt);
                         await Coroutine.Sleep(500);
                     }
 
-                    LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.Close();
-                    await Coroutine.Wait(10000, () => !LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.IsOpen);
+                    ShopExchangeItem.Instance.Close();
+                    await Coroutine.Wait(10000, () => !ShopExchangeItem.Instance.IsOpen);
                 }
             }
         }
@@ -1710,9 +1709,9 @@ namespace LlamaLibrary.Helpers
 
         public static async Task PassOnAllLoot()
         {
-            if (!LlamaLibrary.RemoteWindows.NotificationLoot.Instance.IsOpen)
+            if (!NotificationLoot.Instance.IsOpen)
             {
-                Log.Information($"Loot window not present, exiting");
+                Log.Information("Loot window not present, exiting");
                 return;
             }
 
@@ -1760,12 +1759,12 @@ namespace LlamaLibrary.Helpers
 
         public static uint GetDawnContentRowCount()
         {
-            return Core.Memory.CallInjectedWraper<uint>(Offsets.GetDawnContentRowCount, new object[] { IntPtr.Zero });
+            return Core.Memory.CallInjectedWraper<uint>(Offsets.GetDawnContentRowCount, IntPtr.Zero);
         }
 
         public static IntPtr GetDawnContentRow(uint index)
         {
-            return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetDawnContentRow, new object[] { index });
+            return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetDawnContentRow, index);
         }
 
         public static bool IsInstanceContentCompleted(uint instantContentId)
@@ -1778,14 +1777,14 @@ namespace LlamaLibrary.Helpers
             return Core.Memory.Process.Modules.Cast<ProcessModule>().Any(processModule => processModule.ModuleName == "Dalamud.dll");
         }
 
-        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static string? SourceFileName()
         {
             var frame = new StackFrame(1, true);
             return frame.GetFileName();
         }
 
-        [System.Runtime.CompilerServices.MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static DirectoryInfo? SourceDirectory()
         {
             var frame = new StackFrame(1, true);

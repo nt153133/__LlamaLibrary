@@ -40,17 +40,15 @@ namespace LlamaLibrary.Helpers
         public static bool UseAction(ff14bot.Enums.ActionType actionType, uint actionID, long targetID = 0xE000_0000, uint a4 = 0, uint a5 = 0, uint a6 = 0, uint a7 = 0)
         {
             Core.Memory.ClearCallCache();
-            var result = Core.Memory.CallInjectedWraper<byte>(Offsets.DoAction, new object[8]
-            {
-                Offsets.ActionManagerParam, //rcx
-                (uint)actionType, //rdx
-                actionID, //r8
-                targetID, //r9
-                a4,
-                a5,
-                a6,
-                a7
-            }) == 1;
+            var result = Core.Memory.CallInjectedWraper<byte>(Offsets.DoAction,
+            Offsets.ActionManagerParam,
+            (uint)actionType,
+            actionID,
+            targetID,
+            a4,
+            a5,
+            a6,
+            a7) == 1;
 
             Core.Memory.ClearCallCache();
 
@@ -65,17 +63,15 @@ namespace LlamaLibrary.Helpers
             }
 
             Core.Memory.ClearCallCache();
-            var result = Core.Memory.CallInjectedWraper<byte>(Offsets.DoAction, new object[8]
-            {
-                Offsets.ActionManagerParam, //rcx
-                (uint)ff14bot.Enums.ActionType.Spell, //rdx
-                (uint)Offsets.DecipherSpell, //r8
-                (long)Core.Player.ObjectId, //r9
-                slot.Slot | ((int)slot.BagId << 16), //a5 +0x28
-                0, //a6 + 0x30
-                0, //a7
-                0 //a
-            }) == 1;
+            var result = Core.Memory.CallInjectedWraper<byte>(Offsets.DoAction,
+            Offsets.ActionManagerParam,
+            (uint)ff14bot.Enums.ActionType.Spell,
+            (uint)Offsets.DecipherSpell,
+            (long)Core.Player.ObjectId,
+            slot.Slot | ((int)slot.BagId << 16),
+            0,
+            0,
+            0) == 1;
 
             Core.Memory.ClearCallCache();
 

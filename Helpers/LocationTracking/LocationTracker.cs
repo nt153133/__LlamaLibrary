@@ -6,7 +6,6 @@ using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Behavior;
 using ff14bot.Managers;
-using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers.Housing;
@@ -84,14 +83,14 @@ public class LocationTracker
                         {
                             SelectYesno.Yes();
                             await Coroutine.Wait(10000, () => CommonBehaviors.IsLoading);
-                            Log.Information($"Waiting for loading to finish...");
+                            Log.Information("Waiting for loading to finish...");
                             await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
                         }
                     }
                 }
                 else
                 {
-                    Log.Error($"Couldn't find the exit");
+                    Log.Error("Couldn't find the exit");
                     //return;
                 }
             }
@@ -121,7 +120,7 @@ public class LocationTracker
                 Log.Information("Going back to house");
                 if (!await HouseTravelHelper.GoBackToHouse(_previousHouseLocation))
                 {
-                    Log.Error($"Failed to get back to house");
+                    Log.Error("Failed to get back to house");
                     return false;
                 }
 

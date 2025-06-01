@@ -9,7 +9,7 @@
         public bool Enabled = true;
         public string Type;
 
-        public bool Hq = false;
+        public bool Hq;
         public LisbethOrder(int id, int group, int item, int amount, string type)
         {
             Id = id;

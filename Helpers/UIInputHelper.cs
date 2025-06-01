@@ -49,7 +49,7 @@ namespace LlamaLibrary.Helpers
         {
             get
             {
-                var one = Core.Memory.Read<IntPtr>(LlamaLibrary.Memory.Offsets.AtkStage);
+                var one = Core.Memory.Read<IntPtr>(Memory.Offsets.AtkStage);
                 var two = Core.Memory.Read<IntPtr>(one + Offsets.off1);
                 var twoHalf = Core.Memory.Read<IntPtr>(two);
                 var three = Core.Memory.Read<IntPtr>(twoHalf + Offsets.off2);
@@ -62,7 +62,7 @@ namespace LlamaLibrary.Helpers
         {
             get
             {
-                var one = Core.Memory.Read<IntPtr>(LlamaLibrary.Memory.Offsets.AtkStage);
+                var one = Core.Memory.Read<IntPtr>(Memory.Offsets.AtkStage);
                 var two = Core.Memory.Read<IntPtr>(one + Offsets.off1);
                 var twoHalf = Core.Memory.Read<IntPtr>(two);
                 var three = Core.Memory.Read<IntPtr>(twoHalf + Offsets.CurrentTextControl);
@@ -70,7 +70,7 @@ namespace LlamaLibrary.Helpers
             }
             set
             {
-                var one = Core.Memory.Read<IntPtr>(LlamaLibrary.Memory.Offsets.AtkStage);
+                var one = Core.Memory.Read<IntPtr>(Memory.Offsets.AtkStage);
                 var two = Core.Memory.Read<IntPtr>(one + Offsets.off1);
                 var twoHalf = Core.Memory.Read<IntPtr>(two);
                 Core.Memory.Write(twoHalf + Offsets.CurrentTextControl, value);

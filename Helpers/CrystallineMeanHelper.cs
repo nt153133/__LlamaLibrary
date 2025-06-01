@@ -13,7 +13,10 @@ using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.Logging;
+using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.Structs;
 using LlamaLibrary.Utilities;
+using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers
 {
@@ -41,7 +44,7 @@ namespace LlamaLibrary.Helpers
         //Fisher
         private static readonly Npc Frithrik = new(1027237, 819, new Vector3(-8.957031f, 20.186f, -119.1882f));
 
-        public static readonly Dictionary<ClassJobType, Npc> FacetNPCs = FacetNPCs = new Dictionary<ClassJobType, Npc>()
+        public static readonly Dictionary<ClassJobType, Npc> FacetNPCs = FacetNPCs = new Dictionary<ClassJobType, Npc>
         {
             { ClassJobType.Blacksmith, Iola },
             { ClassJobType.Armorer, Iola },
@@ -80,7 +83,7 @@ namespace LlamaLibrary.Helpers
             // Interact with NPCID based on the class from the above chart
             facetNpc.Target();
             facetNpc.Interact();
-            await Buddy.Coroutines.Coroutine.Wait(10000, () => LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen || Talk.DialogOpen || QuestLogManager.InCutscene);
+            await Coroutine.Wait(10000, () => HugeCraftworksSupply.Instance.IsOpen || Talk.DialogOpen || QuestLogManager.InCutscene);
 
             if (QuestLogManager.InCutscene)
             {
@@ -132,9 +135,9 @@ namespace LlamaLibrary.Helpers
                 await Coroutine.Sleep(1000);
             }
 
-            if (LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen)
+            if (HugeCraftworksSupply.Instance.IsOpen)
             {
-                Log.Information($"Generating Lisbeth order");
+                Log.Information("Generating Lisbeth order");
                 if (!await GenerateLisbethOrder())
                 {
                     Log.Error("Something went wrong calling lisbeth");
@@ -155,7 +158,7 @@ namespace LlamaLibrary.Helpers
             // Interact with NPCID based on the class from the above chart
             facetNpc.Interact();
 
-            if (!await Buddy.Coroutines.Coroutine.Wait(10000, () => LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen || Talk.DialogOpen || QuestLogManager.InCutscene))
+            if (!await Coroutine.Wait(10000, () => HugeCraftworksSupply.Instance.IsOpen || Talk.DialogOpen || QuestLogManager.InCutscene))
             {
                 Log.Error("Something went wrong waiting on window or dialogs");
                 return false;
@@ -173,15 +176,15 @@ namespace LlamaLibrary.Helpers
                 await SkipCutscene();
             }
 
-            if (await Buddy.Coroutines.Coroutine.Wait(5000, () => LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen) && LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen)
+            if (await Coroutine.Wait(5000, () => HugeCraftworksSupply.Instance.IsOpen) && HugeCraftworksSupply.Instance.IsOpen)
             {
                 Log.Information("Item Hand over");
-                await LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.HandOverItems();
+                await HugeCraftworksSupply.Instance.HandOverItems();
             }
 
             var timer = Stopwatch.StartNew();
             Log.Information("Before while #1");
-            while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && timer.ElapsedMilliseconds < 10_000)
+            while (!HugeCraftworksSupplyResul.Instance.IsOpen && timer.ElapsedMilliseconds < 10_000)
             {
                 if (QuestLogManager.InCutscene)
                 {
@@ -199,7 +202,7 @@ namespace LlamaLibrary.Helpers
 
             //await Coroutine.Wait(-1, () => LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen || );
             //timer = Stopwatch.StartNew();
-            while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && !QuestLogManager.InCutscene && timer.ElapsedMilliseconds < 10_000)
+            while (!HugeCraftworksSupplyResul.Instance.IsOpen && !QuestLogManager.InCutscene && timer.ElapsedMilliseconds < 10_000)
             {
                 await DealWithTalk();
                 await Coroutine.Sleep(200);
@@ -208,9 +211,9 @@ namespace LlamaLibrary.Helpers
             Log.Information("Past while #2");
             await DealWithTalk();
 
-            if (QuestLogManager.InCutscene || LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen)
+            if (QuestLogManager.InCutscene || HugeCraftworksSupplyResul.Instance.IsOpen)
             {
-                while (!LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && QuestLogManager.InCutscene)
+                while (!HugeCraftworksSupplyResul.Instance.IsOpen && QuestLogManager.InCutscene)
                 {
                     Log.Information("Dealing with cutscene.");
                     if (QuestLogManager.InCutscene && AgentCutScene.Instance.CanSkip)
@@ -228,11 +231,11 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Sleep(500);
                 }
 
-                if (LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen)
+                if (HugeCraftworksSupplyResul.Instance.IsOpen)
                 {
                     Log.Information("Closing result window");
-                    LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.Close();
-                    await Coroutine.Wait(5000, () => !LlamaLibrary.RemoteWindows.HugeCraftworksSupplyResul.Instance.IsOpen && (!QuestLogManager.InCutscene || Talk.DialogOpen));
+                    HugeCraftworksSupplyResul.Instance.Close();
+                    await Coroutine.Wait(5000, () => !HugeCraftworksSupplyResul.Instance.IsOpen && (!QuestLogManager.InCutscene || Talk.DialogOpen));
 
                     //await Coroutine.Sleep(1000);
                 }
@@ -256,18 +259,18 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> GenerateLisbethOrder()
         {
-            if (!LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.IsOpen)
+            if (!HugeCraftworksSupply.Instance.IsOpen)
             {
                 return false;
             }
 
-            var outList = new List<LlamaLibrary.Structs.LisbethOrder>();
-            var requestedID = LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.TurnInItemId;
+            var outList = new List<LisbethOrder>();
+            var requestedID = HugeCraftworksSupply.Instance.TurnInItemId;
             var qty = 0;
             var orderType = "Class";
             var needHQ = true;
 
-            LlamaLibrary.RemoteWindows.HugeCraftworksSupply.Instance.Close();
+            HugeCraftworksSupply.Instance.Close();
 
             if (Core.Me.CurrentJob is ClassJobType.Alchemist or ClassJobType.Culinarian or
                 ClassJobType.Miner or ClassJobType.Botanist)
@@ -281,11 +284,11 @@ namespace LlamaLibrary.Helpers
 
             if (Core.Me.CurrentJob is ClassJobType.Miner or ClassJobType.Botanist)
             {
-                orderType = $"Gather";
+                orderType = "Gather";
             }
             else if (Core.Me.CurrentJob == ClassJobType.Fisher)
             {
-                orderType = $"Fisher";
+                orderType = "Fisher";
             }
             else
             {
@@ -301,10 +304,10 @@ namespace LlamaLibrary.Helpers
                 needHQ = true;
             }
 
-            var order = new LlamaLibrary.Structs.LisbethOrder(1, 1, requestedID, qty - ConditionParser.HqItemCount((uint)requestedID), orderType, needHQ);
+            var order = new LisbethOrder(1, 1, requestedID, qty - ConditionParser.HqItemCount((uint)requestedID), orderType, needHQ);
             outList.Add(order);
             Log.Information($"Sending order of {qty - ConditionParser.HqItemCount((uint)requestedID)} x {DataManager.GetItem((uint)requestedID).CurrentLocaleName} to Lisbeth");
-            return await LlamaLibrary.Helpers.Lisbeth.ExecuteOrders(Newtonsoft.Json.JsonConvert.SerializeObject(outList, Newtonsoft.Json.Formatting.None));
+            return await Lisbeth.ExecuteOrders(JsonConvert.SerializeObject(outList, Formatting.None));
         }
 
         public static async Task<bool> SkipCutscene()

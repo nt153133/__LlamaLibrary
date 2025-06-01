@@ -137,10 +137,8 @@ namespace LlamaLibrary.Helpers
                 {
                     return (int)status.Quality;
                 }
-                else
-                {
-                    return CraftingManager.Quality;
-                }
+
+                return CraftingManager.Quality;
             }
         }
 
@@ -153,10 +151,8 @@ namespace LlamaLibrary.Helpers
                 {
                     return (int)status.Step;
                 }
-                else
-                {
-                    return CraftingManager.Step;
-                }
+
+                return CraftingManager.Step;
             }
         }
 
@@ -169,10 +165,8 @@ namespace LlamaLibrary.Helpers
                 {
                     return (int)status.HQ;
                 }
-                else
-                {
-                    return CraftingManager.HQPercent;
-                }
+
+                return CraftingManager.HQPercent;
             }
         }
 
@@ -185,10 +179,8 @@ namespace LlamaLibrary.Helpers
                 {
                     return (int)status.Durability;
                 }
-                else
-                {
-                    return CraftingManager.Durability;
-                }
+
+                return CraftingManager.Durability;
             }
         }
 
@@ -201,10 +193,8 @@ namespace LlamaLibrary.Helpers
                 {
                     return (int)status.Progress;
                 }
-                else
-                {
-                    return CraftingManager.Progress;
-                }
+
+                return CraftingManager.Progress;
             }
         }
 
@@ -217,10 +207,8 @@ namespace LlamaLibrary.Helpers
                 {
                     return status.LastAction;
                 }
-                else
-                {
-                    return CraftingManager.LastActionId;
-                }
+
+                return CraftingManager.LastActionId;
             }
         }
 

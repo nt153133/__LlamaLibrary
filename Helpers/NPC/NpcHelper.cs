@@ -10,7 +10,7 @@ namespace LlamaLibrary.Helpers.NPC
 {
     public static class NpcHelper
     {
-        private static Dictionary<uint, string>? EventObjectNames = null;
+        private static Dictionary<uint, string>? EventObjectNames;
         private static Dictionary<uint, (string Name, string Plural, string Title)> _ENpcResident = new();
 
         private static class Offsets

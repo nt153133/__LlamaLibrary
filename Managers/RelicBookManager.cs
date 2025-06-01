@@ -1,13 +1,11 @@
-﻿using System;
+﻿// ReSharper disable InconsistentNaming
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory.Attributes;
-// ReSharper disable InconsistentNaming
 using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Managers

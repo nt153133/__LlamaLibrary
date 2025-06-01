@@ -19,10 +19,8 @@ namespace LlamaLibrary.RemoteWindows
             {
                 return Elements[29].TrimmedData;
             }
-            else
-            {
-                return Elements[62].TrimmedData;
-            }
+
+            return Elements[62].TrimmedData;
         }
 
         public int GetAccumulatedScore()
@@ -36,11 +34,9 @@ namespace LlamaLibrary.RemoteWindows
             {
                 return 0;
             }
-            else
-            {
-                var data = Core.Memory.ReadString((IntPtr)Elements[3].Data, Encoding.UTF8).Split('/');
-                return data.Length < 2 ? 0 : int.Parse(data[0].Trim());
-            }
+
+            var data = Core.Memory.ReadString((IntPtr)Elements[3].Data, Encoding.UTF8).Split('/');
+            return data.Length < 2 ? 0 : int.Parse(data[0].Trim());
         }
 
         public int ClassSelected

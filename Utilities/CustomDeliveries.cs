@@ -14,7 +14,6 @@ using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
-using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
@@ -225,7 +224,7 @@ namespace LlamaLibrary.Utilities
         {
             var message = $"{DataManager.GetLocalizedNPCName((int)deliveryNpc.npcId)} not unlocked.\nPlease complete the quest '{DataManager.GetLocalizedQuestName(deliveryNpc.RequiredQuest)}' or run the unlock profile.";
 
-            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(29, 226, 213), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(29, 226, 213), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
             Log.Error($"{message}");
             TreeRoot.Stop($"{message}");
         }

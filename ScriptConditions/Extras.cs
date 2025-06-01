@@ -65,7 +65,7 @@ namespace LlamaLibrary.ScriptConditions
                 return false;
             }
 
-            if (DirectorManager.ActiveDirector is ff14bot.Directors.LeveDirector activeAsLeve)
+            if (DirectorManager.ActiveDirector is LeveDirector activeAsLeve)
             {
                 if (activeAsLeve.LeveId == leveId)
                 {
@@ -85,7 +85,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool HasLeve(int leveId)
         {
-            return LlamaLibrary.RemoteWindows.GuildLeve.HasLeve((uint)leveId);
+            return GuildLeve.HasLeve((uint)leveId);
         }
 
         public static bool HasLearnedMount(int mountId)
@@ -339,7 +339,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool EmoteUnlocked(int Id)
         {
-            return LlamaLibrary.Helpers.UIState.EmoteUnlocked(Id);
+            return UIState.EmoteUnlocked(Id);
         }
 
         public static bool IsCardUnlocked(string name)
@@ -354,7 +354,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool MinionUnlocked(int Id)
         {
-            return LlamaLibrary.Helpers.UIState.MinionUnlocked(Id);
+            return UIState.MinionUnlocked(Id);
         }
 
         public static bool IsMVPVoteReady()

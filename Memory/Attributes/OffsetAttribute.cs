@@ -14,7 +14,6 @@ using System.Linq;
 using System.Reflection;
 using ff14bot;
 using ff14bot.Enums;
-using GreyMagic;
 using LlamaLibrary.Memory.PatternFinders;
 
 // ReSharper disable InvertIf
@@ -29,7 +28,7 @@ public class OffsetAttribute : Attribute
     public readonly string PatternCN;
     public readonly string PatternDawntrail;
     public bool IgnoreCache;
-    public int ExpectedValue = 0;
+    public int ExpectedValue;
     public virtual int Priority => 0;
     public virtual bool IsValid(ForceClientMode clientMode) => true;
     protected static readonly Language Language
@@ -167,7 +166,7 @@ public static class OffsetAttributeExtensions
 
         try
         {
-            return finder.FindSingle(pattern, true);
+            return finder.FindSingle(pattern);
         }
         catch (Exception e)
         {

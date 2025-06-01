@@ -124,12 +124,12 @@ namespace LlamaLibrary.Managers
             }
 
             Log.Information($"Snipe {obj.GameObject?.Name ?? "Unknown Object"}");
-            Core.Memory.Write<byte>(addr + Offsets.ShootData, index); //0x5000 - this should be object Index (0x4c) (0x4e)
+            Core.Memory.Write(addr + Offsets.ShootData, index); //0x5000 - this should be object Index (0x4c) (0x4e)
             //ox4c - should be the object index
             //ox4e - should be the array index (0 or 1)
             // these get set during state 4
-            Core.Memory.Write<byte>(addr + Offsets.ShootData + 1, shoot_1); //0x5001
-            Core.Memory.Write<byte>(addr + Offsets.ShootData + 2, shoot_1 == 0 ? obj.x22 : obj.x3e); //0x5002
+            Core.Memory.Write(addr + Offsets.ShootData + 1, shoot_1); //0x5001
+            Core.Memory.Write(addr + Offsets.ShootData + 2, shoot_1 == 0 ? obj.x22 : obj.x3e); //0x5002
             Core.Memory.Write<byte>(addr + Offsets.ShootData + 4, 1); //0x5004
             State = (byte)(State + 1);
 

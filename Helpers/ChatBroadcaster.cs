@@ -132,7 +132,7 @@ namespace LlamaLibrary.Helpers
 
             if (character != null && character.Type == GameObjectType.Pc)
             {
-                var target = GameObjectManager.GetObjectById<Character>(character.ObjectId, true) as Character;
+                var target = GameObjectManager.GetObjectById<Character>(character.ObjectId, true);
                 await SendTell(target, message);
             }
         }
@@ -168,7 +168,7 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            return await SendTell(GameObjectManager.GetObjectById<Character>(GameObjectManager.Target.ObjectId, true) as Character, message);
+            return await SendTell(GameObjectManager.GetObjectById<Character>(GameObjectManager.Target.ObjectId, true), message);
         }
 
         public void SetDelay(int ms)

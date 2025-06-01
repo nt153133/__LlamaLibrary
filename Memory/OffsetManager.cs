@@ -25,7 +25,6 @@ using Clio.Utilities;
 using ff14bot;
 using ff14bot.Helpers;
 using ff14bot.Managers;
-using GreyMagic;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Hooks;
 using LlamaLibrary.Logging;
@@ -34,7 +33,6 @@ using LlamaLibrary.Memory.PatternFinders;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.Settings;
 using Newtonsoft.Json;
-using LogLevel = LlamaLibrary.Logging.LogLevel;
 using PatchManager = LlamaLibrary.Hooks.PatchManager;
 
 // ReSharper disable InconsistentNaming
@@ -87,7 +85,7 @@ public static class OffsetManager
 
     private static string OffsetFile { get; } = Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{GameVersion}.json");
 
-    public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown, LogLevel.Information);
+    public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown);
 
 #if RB_CN
     public static float CurrentGameVersion = 7.1f;
@@ -110,7 +108,7 @@ public static class OffsetManager
 #endif
 
     private static bool _isNewGameBuild;
-    private static int GameVersion1 = 0;
+    private static int GameVersion1;
 
     [Obsolete]
     public static void Init()
@@ -683,5 +681,94 @@ public static class OffsetManager
         {
             Thread.Sleep(100);
         }
+    }
+
+    public static Dictionary<string, string> LLDict()
+    {
+        var results = new Dictionary<string, string>();
+
+        // var asm = Assembly.Load("LlamaLibrary.dll");
+        var q1 = (from t in typeof(OffsetAttribute).Assembly.GetTypes()
+                  where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+
+        if (!q1.Contains(typeof(Offsets)))
+        {
+            //q1.Add(typeof(Offsets));
+        }
+
+        var types = MemberInfos(q1);
+
+        Logger.Information($"{types.Count()}");
+
+        foreach (var field in types)
+        {
+            if (field.DeclaringType != null && field.DeclaringType.IsNested)
+            {
+                try
+                {
+                    if (field.DeclaringType.DeclaringType != null)
+                    {
+                        Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.Global)}");
+                        results.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", field.GetPattern(ForceClientMode.Global));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Information($"\t{field.DeclaringType.Name}_{field.Name} Issue");
+                    Console.WriteLine(e);
+                    //throw;
+                }
+            }
+            else
+            {
+                Logger.Information($"{field.DeclaringType.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.Global)}");
+                try
+                {
+                    results.Add($"{field.DeclaringType.Name}_{field.Name}", field.GetPattern(ForceClientMode.Global));
+                }
+                catch (Exception e)
+                {
+                    Logger.Information($"\t{field.DeclaringType.Name}_{field.Name} DUPE");
+                    Console.WriteLine(e);
+                    //throw;
+                }
+            }
+        }
+
+        return results;
+    }
+
+    public static Dictionary<string, string> LLDictCN()
+    {
+        var results = new Dictionary<string, string>();
+
+        // var asm = Assembly.Load("LlamaLibrary.dll");
+        var q1 = GetTypes();
+
+        if (!q1.Contains(typeof(Offsets)))
+        {
+            q1.Add(typeof(Offsets));
+        }
+
+        var types = MemberInfos(q1);
+
+        Logger.Information($"{types.Count()}");
+
+        foreach (var field in types)
+        {
+            if (field.DeclaringType != null && field.DeclaringType.IsNested)
+            {
+                Logger.Information($"CN{field.DeclaringType.DeclaringType.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.CN)}");
+                results.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", field.GetPattern(ForceClientMode.CN));
+            }
+            else
+            {
+                Logger.Information($"CN{field.DeclaringType.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.CN)}");
+                results.Add($"{field.DeclaringType.Name}_{field.Name}", field.GetPattern(ForceClientMode.CN));
+            }
+        }
+
+        return results;
     }
 }

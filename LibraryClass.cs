@@ -9,7 +9,6 @@ using LlamaLibrary.Events;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Memory;
 
-
 // ReSharper disable InconsistentNaming
 
 namespace LlamaLibrary;
@@ -64,11 +63,25 @@ public class LibraryClass : ILibrary
                 LoginEvents.InvokeOnCharacterSwitched(true);
             }
         };
+
+
+        /*
+        var server = new List<ProductPatterns>();
+
+        server.Add(new ProductPatterns() { ProductName = "LlamaLibrary", Patterns = OffsetManager.LLDict(), ClientRegion = ClientRegion.Global });
+        server.Add(new ProductPatterns() { ProductName = "LlamaLibraryCN", Patterns = OffsetManager.LLDictCN(), ClientRegion = ClientRegion.China });
+        foreach (var productPatterns in server)
+        {
+            var productFile = Path.Combine(productPatterns.ProductName + ".json");
+            File.WriteAllText(productFile, JsonConvert.SerializeObject(productPatterns, Formatting.Indented));
+        }
+        */
+
         return true;
     }
 }
 
-public enum VirtualKeyStates : int
+public enum VirtualKeyStates
 {
     VK_LBUTTON = 0x01,
     VK_RBUTTON = 0x02,

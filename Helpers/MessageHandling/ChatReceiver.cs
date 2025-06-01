@@ -10,12 +10,12 @@ namespace LlamaLibrary.Helpers.MessageHandling
 
         public virtual T ParseMessage(string message, DateTime timeStamp)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public virtual void ProcessMessage(T message)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void ProcessMessage(string message, DateTime timeStamp)

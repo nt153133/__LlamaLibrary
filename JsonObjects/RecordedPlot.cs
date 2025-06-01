@@ -45,13 +45,13 @@ public class RecordedPlot : IEquatable<RecordedPlot>
     public bool IsApartment => Plot > 60;
 
     [JsonIgnore]
-    public BoundingCircle BoundingCircle => new BoundingCircle() { Center = CenterLocation, Radius = Radius };
+    public BoundingCircle BoundingCircle => new BoundingCircle { Center = CenterLocation, Radius = Radius };
 
     [JsonIgnore]
     public Npc Npc => new(2002736, (ushort)HousingZone, PlacardLocation);
 
     [JsonIgnore]
-    public GameObject? EntranceObj => GameObjectManager.GetObjectsByNPCIds<EventObject>(new uint[] { HouseEntranceNpcId, ApartmentEntranceNpcId }).FirstOrDefault(i => BoundingCircle.ContainsIgnoreZ(i.Location));
+    public GameObject? EntranceObj => GameObjectManager.GetObjectsByNPCIds<EventObject>(new[] { HouseEntranceNpcId, ApartmentEntranceNpcId }).FirstOrDefault(i => BoundingCircle.ContainsIgnoreZ(i.Location));
 
     public RecordedPlot(HousingZone housingZone, int plot, bool isInSubdivision)
     {

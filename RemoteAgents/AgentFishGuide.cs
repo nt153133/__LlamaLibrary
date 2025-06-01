@@ -1,8 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using ff14bot;
-using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
+﻿
 //#if RB_CN
 /*
 namespace LlamaLibrary.RemoteAgents

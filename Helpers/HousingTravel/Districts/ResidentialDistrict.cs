@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
 using ff14bot.Behavior;
-using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
+using ff14bot.Objects;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers.Housing;
@@ -27,7 +26,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         private static T _instance;
         public static T Instance => _instance ??= new T();
 
-        protected ResidentialDistrict() : base()
+        protected ResidentialDistrict()
         {
         }
     }
@@ -35,13 +34,13 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
     public abstract class ResidentialDistrict
     {
         private static readonly LLogger Log = new(nameof(ResidentialDistrict), Colors.Pink);
-        private Npc? _aetheryteNpc = null;
+        private Npc? _aetheryteNpc;
         public virtual string Name { get; } = "";
         public virtual ushort ZoneId => 0;
         public virtual uint TownAetheryteId { get; }
         public virtual int RequiredQuest { get; }
 
-        public NPC.Npc AetheryteNpc
+        public Npc AetheryteNpc
         {
             get => _aetheryteNpc ?? new Npc(TownAetheryteId, ZoneId, TownAetheryteLocation, RequiredQuest);
             set => _aetheryteNpc = value;
@@ -225,7 +224,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 Navigator.PlayerMover.MoveStop();
                 if (!await Coroutine.Wait(5000, () => Conversation.IsOpen))
                 {
-                    Log.Error($"Could not get to select string");
+                    Log.Error("Could not get to select string");
                     return false;
                 }
             }
@@ -242,7 +241,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
             var unit = await Navigation.GetToAE(TownAetheryteId);
 
-            if (unit is null or default(ff14bot.Objects.GameObject))
+            if (unit is null or default(GameObject))
             {
                 return false;
             }
@@ -253,7 +252,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             if (!await Coroutine.Wait(5000, () => SelectString.IsOpen))
             {
                 unit = await Navigation.GetToAE(TownAetheryteId);
-                if (unit is null or default(ff14bot.Objects.GameObject))
+                if (unit is null or default(GameObject))
                 {
                     return false;
                 }

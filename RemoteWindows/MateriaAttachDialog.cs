@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using Buddy.Coroutines;
-using LlamaLibrary.RemoteAgents;
-
-namespace LlamaLibrary.RemoteWindows;
+﻿namespace LlamaLibrary.RemoteWindows;
 
 public class MateriaAttachDialog : RemoteWindow<MateriaAttachDialog>
 {

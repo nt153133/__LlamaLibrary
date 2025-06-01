@@ -115,10 +115,10 @@ public class AtkValue : IDisposable
     {
         return value.type switch
         {
-            ValueType.Int    => new AtkValue((int)value.value),
-            ValueType.UInt   => new AtkValue((uint)value.value),
-            ValueType.Float  => new AtkValue((float) value.value),
-            _                => new AtkValue(0)
+            ValueType.Int   => new AtkValue(value.value),
+            ValueType.UInt  => new AtkValue((uint)value.value),
+            ValueType.Float => new AtkValue((float) value.value),
+            _               => new AtkValue(0)
         };
     }
 

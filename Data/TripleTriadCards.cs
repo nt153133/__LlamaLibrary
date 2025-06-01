@@ -55,7 +55,7 @@ public record TripleTriadCardStore
 
 public static class CardData
 {
-    internal static readonly List<TripleTriadCardStore> Cards = new List<TripleTriadCardStore>()
+    internal static readonly List<TripleTriadCardStore> Cards = new List<TripleTriadCardStore>
     {
         new(1, "Dodo", 9772),
         new(2, "Tonberry", 9773),

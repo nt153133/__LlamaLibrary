@@ -4,8 +4,6 @@ using Clio.Utilities;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
 using ff14bot.Objects;
-using LlamaLibrary.Helpers.Housing;
-using LlamaLibrary.Helpers.HousingTravel;
 using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers.NPC
@@ -20,7 +18,7 @@ namespace LlamaLibrary.Helpers.NPC
         public Location Location { get; set; }
 
         [JsonProperty]
-        public int QuestRequiredId { get; set; } = 0;
+        public int QuestRequiredId { get; set; }
 
         public bool IsQuestRequired => QuestRequiredId != 0;
 

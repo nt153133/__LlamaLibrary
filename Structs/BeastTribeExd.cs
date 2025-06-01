@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace LlamaLibrary.Structs;
+﻿namespace LlamaLibrary.Structs;
 
 public class BeastTribeExd
 {

@@ -22,7 +22,7 @@ public class ResidentialHousingManager
         internal static IntPtr CheckValid;
     }
 
-    private static readonly int[] ResidentialIndexes = new int[] { 0, 1, 2, 3, 5, 6 };
+    private static readonly int[] ResidentialIndexes = { 0, 1, 2, 3, 5, 6 };
 
     public static long GetResidentialObject(int index, uint subIndex = 0xFFFFFFFF)
     {

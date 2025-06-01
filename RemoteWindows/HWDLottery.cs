@@ -36,11 +36,9 @@ namespace LlamaLibrary.RemoteWindows
 
                 if (agent != null)
                 {
-                    Core.Memory.CallInjectedWraper<uint>(Offsets.KupoFunction, new object[2]
-                    {
-                        agent.Pointer,
-                        1U
-                    });
+                    Core.Memory.CallInjectedWraper<uint>(Offsets.KupoFunction,
+                    agent.Pointer,
+                    1U);
 
                     await Coroutine.Sleep(2000);
                 }

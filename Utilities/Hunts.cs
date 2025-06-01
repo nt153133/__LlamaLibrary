@@ -12,6 +12,7 @@ using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.Objects;
 using ff14bot.Pathing.Service_Navigation;
+using ff14bot.Settings;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
 using TreeSharp;
@@ -42,7 +43,7 @@ namespace LlamaLibrary.Utilities
                 Navigator.NavigationProvider = new ServiceNavigationProvider();
             }
 
-            ff14bot.Settings.CharacterSettings.Instance.UseMount = true;
+            CharacterSettings.Instance.UseMount = true;
 
             var hadOld = await GetHuntBills(huntTypes);
             await CompleteHunts(huntTypes);
@@ -351,10 +352,8 @@ namespace LlamaLibrary.Utilities
                 Log.Error($"Couldn't find mob with NPCID {npcId}");
                 return false;
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
         public static async Task<bool> FindAndKillMob(uint npcId)
@@ -381,22 +380,20 @@ namespace LlamaLibrary.Utilities
                 Log.Error($"Couldn't find mob with NPCID {npcId}");
                 return false;
             }
-            else
-            {
-                Log.Information($"Found mob {mob}");
-                if ((Core.Me.Distance(mob) + 1 >= RoutineManager.Current.PullRange) && await Navigation.GenerateNodes(WorldManager.ZoneId, mob.Location) == null)
-                {
-                    Log.Warning("Can't get to, blacklisting mob");
-                    Blacklist.Add(mob.ObjectId);
-                    return false;
-                }
 
-                //await KillMob(mob);
-                await Lisbeth.Kill(mob);
-                Log.Debug($"Did we kill it? {!(mob.IsValid && mob.IsAlive)}");
-                Navigator.PlayerMover.MoveStop();
-                return !(mob.IsValid && mob.IsAlive);
+            Log.Information($"Found mob {mob}");
+            if ((Core.Me.Distance(mob) + 1 >= RoutineManager.Current.PullRange) && await Navigation.GenerateNodes(WorldManager.ZoneId, mob.Location) == null)
+            {
+                Log.Warning("Can't get to, blacklisting mob");
+                Blacklist.Add(mob.ObjectId);
+                return false;
             }
+
+            //await KillMob(mob);
+            await Lisbeth.Kill(mob);
+            Log.Debug($"Did we kill it? {!(mob.IsValid && mob.IsAlive)}");
+            Navigator.PlayerMover.MoveStop();
+            return !(mob.IsValid && mob.IsAlive);
         }
 
         public static async Task KillMob2(BattleCharacter mob)

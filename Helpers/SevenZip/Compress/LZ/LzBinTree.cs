@@ -1,13 +1,14 @@
 // LzBinTree.cs
 
 using System;
+using System.IO;
 
 namespace SevenZip.Compression.LZ
 {
 	public class BinTree : InWindow, IMatchFinder
 	{
 		UInt32 _cyclicBufferPos;
-		UInt32 _cyclicBufferSize = 0;
+		UInt32 _cyclicBufferSize;
 		UInt32 _matchMaxLen;
 
 		UInt32[] _son;
@@ -15,7 +16,7 @@ namespace SevenZip.Compression.LZ
 
 		UInt32 _cutValue = 0xFF;
 		UInt32 _hashMask;
-		UInt32 _hashSizeSum = 0;
+		UInt32 _hashSizeSum;
 
 		bool HASH_ARRAY = true;
 
@@ -27,7 +28,7 @@ namespace SevenZip.Compression.LZ
 		const UInt32 kEmptyHashValue = 0;
 		const UInt32 kMaxValForNormalize = ((UInt32)1 << 31) - 1;
 	
-		UInt32 kNumHashDirectBytes = 0;
+		UInt32 kNumHashDirectBytes;
 		UInt32 kMinMatchCheck = 4;
 		UInt32 kFixHashSize = kHash2Size + kHash3Size;
 		
@@ -48,7 +49,7 @@ namespace SevenZip.Compression.LZ
 			}
 		}
 
-		public new void SetStream(System.IO.Stream stream) { base.SetStream(stream); }
+		public new void SetStream(Stream stream) { base.SetStream(stream); }
 		public new void ReleaseStream() { base.ReleaseStream(); }
 		
 		public new void Init()

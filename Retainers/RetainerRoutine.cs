@@ -27,7 +27,7 @@ namespace LlamaLibrary.Retainers
             (InventoryBagId)0xFA0, (InventoryBagId)0xFA1//, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005
         };
 
-        private static byte _OccupiedSummoningBellCondition = 0;
+        private static byte _OccupiedSummoningBellCondition;
 
         public static async Task<bool> ReadRetainers(Task retainerTask)
         {

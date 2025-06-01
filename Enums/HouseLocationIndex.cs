@@ -1,6 +1,6 @@
 ﻿namespace LlamaLibrary.Enums
 {
-    public enum HouseLocationIndex : int
+    public enum HouseLocationIndex
     {
         FreeCompanyEstate = 0,
         FreeCompanyRoom = 1,

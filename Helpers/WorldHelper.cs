@@ -62,23 +62,23 @@ namespace LlamaLibrary.Helpers
 
         public static readonly Dictionary<WorldDCGroupType, World[]> WorldMap = new()
         {
-            { WorldDCGroupType.Materia, new World[] { World.Ravana, World.Bismarck, World.Sephirot, World.Sophia, World.Zurvan } },
-            { WorldDCGroupType.Mana, new World[] { World.Asura, World.Pandaemonium, World.Anima, World.Hades, World.Ixion, World.Titan, World.Chocobo, World.Masamune } },
-            { WorldDCGroupType.Meteor, new World[] { World.Belias, World.Shinryu, World.Unicorn, World.Yojimbo, World.Zeromus, World.Valefor, World.Ramuh, World.Mandragora } },
-            { WorldDCGroupType.Light, new World[] { World.Twintania, World.Lich, World.Zodiark, World.Phoenix, World.Odin, World.Shiva, World.Alpha, World.Raiden } },
-            { WorldDCGroupType.Crystal, new World[] { World.Brynhildr, World.Mateus, World.Zalera, World.Diabolos, World.Coeurl, World.Malboro, World.Goblin, World.Balmung } },
-            { WorldDCGroupType.Primal, new World[] { World.Famfrit, World.Exodus, World.Lamia, World.Leviathan, World.Ultros, World.Behemoth, World.Excalibur, World.Hyperion } },
-            { WorldDCGroupType.Chaos, new World[] { World.Omega, World.Moogle, World.Cerberus, World.Louisoix, World.Spriggan, World.Ragnarok, World.Sagittarius, World.Phantom } },
-            { WorldDCGroupType.Aether, new World[] { World.Jenova, World.Faerie, World.Siren, World.Gilgamesh, World.Midgardsormr, World.Adamantoise, World.Cactuar, World.Sargatanas } },
-            { WorldDCGroupType.Gaia, new World[] { World.Alexander, World.Fenrir, World.Ultima, World.Ifrit, World.Bahamut, World.Tiamat, World.Durandal, World.Ridill } },
-            { WorldDCGroupType.Elemental, new World[] { World.Carbuncle, World.Kujata, World.Typhon, World.Garuda, World.Atomos, World.Tonberry, World.Aegis, World.Gungnir } },
-            { WorldDCGroupType.Dynamis, new World[] { World.Marilith, World.Seraph, World.Halicarnassus, World.Maduin, World.Cuchulainn, World.Golem, World.Kraken, World.Rafflesia } },
+            { WorldDCGroupType.Materia, new[] { World.Ravana, World.Bismarck, World.Sephirot, World.Sophia, World.Zurvan } },
+            { WorldDCGroupType.Mana, new[] { World.Asura, World.Pandaemonium, World.Anima, World.Hades, World.Ixion, World.Titan, World.Chocobo, World.Masamune } },
+            { WorldDCGroupType.Meteor, new[] { World.Belias, World.Shinryu, World.Unicorn, World.Yojimbo, World.Zeromus, World.Valefor, World.Ramuh, World.Mandragora } },
+            { WorldDCGroupType.Light, new[] { World.Twintania, World.Lich, World.Zodiark, World.Phoenix, World.Odin, World.Shiva, World.Alpha, World.Raiden } },
+            { WorldDCGroupType.Crystal, new[] { World.Brynhildr, World.Mateus, World.Zalera, World.Diabolos, World.Coeurl, World.Malboro, World.Goblin, World.Balmung } },
+            { WorldDCGroupType.Primal, new[] { World.Famfrit, World.Exodus, World.Lamia, World.Leviathan, World.Ultros, World.Behemoth, World.Excalibur, World.Hyperion } },
+            { WorldDCGroupType.Chaos, new[] { World.Omega, World.Moogle, World.Cerberus, World.Louisoix, World.Spriggan, World.Ragnarok, World.Sagittarius, World.Phantom } },
+            { WorldDCGroupType.Aether, new[] { World.Jenova, World.Faerie, World.Siren, World.Gilgamesh, World.Midgardsormr, World.Adamantoise, World.Cactuar, World.Sargatanas } },
+            { WorldDCGroupType.Gaia, new[] { World.Alexander, World.Fenrir, World.Ultima, World.Ifrit, World.Bahamut, World.Tiamat, World.Durandal, World.Ridill } },
+            { WorldDCGroupType.Elemental, new[] { World.Carbuncle, World.Kujata, World.Typhon, World.Garuda, World.Atomos, World.Tonberry, World.Aegis, World.Gungnir } },
+            { WorldDCGroupType.Dynamis, new[] { World.Marilith, World.Seraph, World.Halicarnassus, World.Maduin, World.Cuchulainn, World.Golem, World.Kraken, World.Rafflesia } },
 
             //Chinese
-            { WorldDCGroupType.Chocobo, new World[] { World.LaNuoXiYa, World.HuanYingQunDao, World.MengYaChi, World.ShenYiZhiDi, World.HongYuHai, World.YuZhouHeYin, World.WoXianXiRan, World.ChenXiWangZuo } },
-            { WorldDCGroupType.FatCat, new World[] { World.ZiShuiZhanQiao, World.MoDuNa, World.JingYuZhuangYuan, World.YanXia, World.HaiMaoChaWu, World.RouFengHaiWan, World.HuPoYuan } },
-            { WorldDCGroupType.Mameshiba, new World[] { World.TaiYangHaiAn2, World.YinLeiHu2, World.YiXiuJiaDe2, World.ShuiJingTa2, World.HongChaChuan2 } },
-            { WorldDCGroupType.Moogle, new World[] { World.BaiJinHuanXiang, World.LvRenZhanQiao, World.FuXiaoZhiJian, World.Longchaoshendian, World.ChaoFengTing, World.ShenQuanHen, World.BaiYinXiang, World.MengYuBaoJing } },
+            { WorldDCGroupType.Chocobo, new[] { World.LaNuoXiYa, World.HuanYingQunDao, World.MengYaChi, World.ShenYiZhiDi, World.HongYuHai, World.YuZhouHeYin, World.WoXianXiRan, World.ChenXiWangZuo } },
+            { WorldDCGroupType.FatCat, new[] { World.ZiShuiZhanQiao, World.MoDuNa, World.JingYuZhuangYuan, World.YanXia, World.HaiMaoChaWu, World.RouFengHaiWan, World.HuPoYuan } },
+            { WorldDCGroupType.Mameshiba, new[] { World.TaiYangHaiAn2, World.YinLeiHu2, World.YiXiuJiaDe2, World.ShuiJingTa2, World.HongChaChuan2 } },
+            { WorldDCGroupType.Moogle, new[] { World.BaiJinHuanXiang, World.LvRenZhanQiao, World.FuXiaoZhiJian, World.Longchaoshendian, World.ChaoFengTing, World.ShenQuanHen, World.BaiYinXiang, World.MengYuBaoJing } },
         };
 
         public static World[] CurrentWorldList

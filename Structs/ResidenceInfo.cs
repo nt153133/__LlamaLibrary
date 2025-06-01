@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using ff14bot.Managers;
+﻿using ff14bot.Managers;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.JsonObjects;

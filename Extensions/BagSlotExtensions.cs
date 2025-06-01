@@ -8,7 +8,6 @@ using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
-using LlamaLibrary.Helpers;
 using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.Helpers.Ping;
 using LlamaLibrary.JsonObjects;
@@ -435,7 +434,6 @@ namespace LlamaLibrary.Extensions
                     }
                     catch (Exception)
                     {
-                        continue;
                     }
                 }
             }
@@ -798,9 +796,9 @@ namespace LlamaLibrary.Extensions
                 return false;
             }
 
-            if (await Coroutine.Wait(10000, () => Core.Memory.Read<uint>(LlamaLibrary.Memory.Offsets.Conditions + LlamaLibrary.Memory.Offsets.DesynthLock) != 0))
+            if (await Coroutine.Wait(10000, () => Core.Memory.Read<uint>(Memory.Offsets.Conditions + Memory.Offsets.DesynthLock) != 0))
             {
-                return await Coroutine.Wait(10000, () => Core.Memory.Read<uint>(LlamaLibrary.Memory.Offsets.Conditions + LlamaLibrary.Memory.Offsets.DesynthLock) == 0);
+                return await Coroutine.Wait(10000, () => Core.Memory.Read<uint>(Memory.Offsets.Conditions + Memory.Offsets.DesynthLock) == 0);
             }
 
             return false;

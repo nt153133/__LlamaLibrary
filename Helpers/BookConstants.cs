@@ -5,7 +5,7 @@ namespace LlamaLibrary.Helpers
     public static class BookConstants
     {
         //The ID of the book to check for. Can be retrieved from the SecretRecipeBook sheet.
-        public static IReadOnlyDictionary<uint, uint> SecretRecipeBooks = new Dictionary<uint, uint>()
+        public static IReadOnlyDictionary<uint, uint> SecretRecipeBooks = new Dictionary<uint, uint>
         {
             { 7778, 1 }, //Master Carpenter I
             { 7779, 2 }, //Master Blacksmith I
@@ -103,7 +103,7 @@ namespace LlamaLibrary.Helpers
             { 37741, 95 }, //Master Culinarian X
         };
 
-        public static IReadOnlyDictionary<uint, uint> FolkloreBooks = new Dictionary<uint, uint>()
+        public static IReadOnlyDictionary<uint, uint> FolkloreBooks = new Dictionary<uint, uint>
         {
             { 12238, 2000 }, //Tome of Geological Folklore - Coerthas
             { 12698, 2002 }, //Tome of Botanical Folklore - Coerthas

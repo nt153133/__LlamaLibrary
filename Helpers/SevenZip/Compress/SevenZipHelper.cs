@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Decoder = SevenZip.Compression.LZMA.Decoder;
+using Encoder = SevenZip.Compression.LZMA.Encoder;
 
 namespace SevenZip;
 
@@ -42,12 +44,12 @@ namespace SevenZip;
 
         static object[] properties =
 		{
-			(Int32)(dictionary),
-			(Int32)(posStateBits),
-			(Int32)(litContextBits),
-			(Int32)(litPosBits),
-			(Int32)(algorithm),
-			(Int32)(numFastBytes),
+			dictionary,
+			posStateBits,
+			litContextBits,
+			litPosBits,
+			algorithm,
+			numFastBytes,
 			"bt4",
 			eos
 		};
@@ -64,7 +66,7 @@ namespace SevenZip;
         /// <param name="outStream">Output stream</param>
         public static void Compress(Stream inStream, Stream outStream)
         {
-            Compression.LZMA.Encoder encoder = new Compression.LZMA.Encoder();
+            Encoder encoder = new Encoder();
 
             encoder.SetCoderProperties(propIDs, properties);
             encoder.WriteCoderProperties(outStream);
@@ -86,7 +88,7 @@ namespace SevenZip;
             outStream.Position = positionForCompressedSize;
 
             // Write size after compression.
-            writer.Write((Int64)(positionAfterCompression - positionForCompressedDataStart));
+            writer.Write(positionAfterCompression - positionForCompressedDataStart);
 
             // Restore position.
             outStream.Position = positionAfterCompression;
@@ -105,7 +107,7 @@ namespace SevenZip;
             if (inStream.Read(properties, 0, 5) != 5)
                 throw (new Exception("Input stream is too short."));
 
-            Compression.LZMA.Decoder decoder = new Compression.LZMA.Decoder();
+            Decoder decoder = new Decoder();
             decoder.SetDecoderProperties(properties);
 
             var br = new BinaryReader(inStream, Encoding.UTF8);

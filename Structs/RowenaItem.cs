@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using ff14bot.Enums;
+using ff14bot.Helpers;
 using ff14bot.Managers;
 
 namespace LlamaLibrary.Structs
@@ -126,7 +127,7 @@ namespace LlamaLibrary.Structs
         //''
         public string ToString1()
         {
-            return ff14bot.Helpers.Utils.DynamicString(this);
+            return Utils.DynamicString(this);
         }
 
         public override string ToString()

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using ff14bot;
 using LlamaLibrary.Settings.Base;
 
 namespace LlamaLibrary.Settings;

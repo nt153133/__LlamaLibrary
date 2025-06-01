@@ -1,5 +1,4 @@
-﻿using System;
-using ff14bot.Interfaces;
+﻿using ff14bot.Interfaces;
 
 namespace LlamaLibrary;
 

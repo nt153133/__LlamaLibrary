@@ -15,6 +15,7 @@ using ff14bot.Objects;
 using ff14bot.Pathing.Service_Navigation;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
+using GreyMagic;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
@@ -36,7 +37,7 @@ namespace LlamaLibrary.Helpers
         }
 
         public static HousingPlantSelectedItemStruct SoilStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + Offsets.StructOffset);
-        public static HousingPlantSelectedItemStruct SeedStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + Offsets.StructOffset + GreyMagic.MarshalCache<HousingPlantSelectedItemStruct>.Size);
+        public static HousingPlantSelectedItemStruct SeedStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + Offsets.StructOffset + MarshalCache<HousingPlantSelectedItemStruct>.Size);
 
         /*
         public static async Task GoGarden(uint AE, Vector3 gardenLoc)
@@ -152,7 +153,7 @@ namespace LlamaLibrary.Helpers
             Log.Information($"Found {slots.Count()} slots filled with fish meal.");
             if (slots.Count() < 1)
             {
-                Log.Information($"No fertilizer in bag, skipping fertilize.");
+                Log.Information("No fertilizer in bag, skipping fertilize.");
                 return true;
             }
             var plants = GardenManager.Plants.Where(r => r.Distance2D(gardenLoc) < 10).ToArray();
@@ -214,18 +215,14 @@ namespace LlamaLibrary.Helpers
 
         public static async Task Plant(BagSlot seeds, BagSlot soil)
         {
-            var result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction, new object[3]
-            {
-                AgentHousingPlant.Instance.Pointer,
-                (uint)soil.BagId,
-                soil.Slot
-            });
-            result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction, new object[3]
-            {
-                AgentHousingPlant.Instance.Pointer,
-                (uint)seeds.BagId,
-                seeds.Slot
-            });
+            var result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction,
+            AgentHousingPlant.Instance.Pointer,
+            (uint)soil.BagId,
+            soil.Slot);
+            result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction,
+            AgentHousingPlant.Instance.Pointer,
+            (uint)seeds.BagId,
+            seeds.Slot);
 
             await Coroutine.Wait(5000, () => SeedStruct.ItemId == seeds.RawItemId && SoilStruct.ItemId == soil.RawItemId);
             HousingGardening.Confirm();

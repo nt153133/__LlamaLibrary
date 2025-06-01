@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
-using ff14bot.Behavior;
 using ff14bot.Directors;
 using ff14bot.Enums;
 using ff14bot.Managers;
@@ -51,8 +50,8 @@ namespace LlamaLibrary.ScriptConditions
 			44185, 44186, 44187, 44188, 44189, 44190, 44191, 44192, 44193, 44194, 44195, 44196, 44197, 44198, 44199, 44200, 44201, 44202, 44203, 44204, 44205, 44206, 44207, 44208, 44209, 44210, 44211, 44212, 44213, 44214, 44215, 44216, 44217, 44218, 44219, 44220, 44221, 44222, 44223, 44224, 44225, 44226, 44227, 44228, 44229, 44230, 44231, 44232
 		};
 
-        private static bool hasLisbeth = false;
-        private static bool checkedLisbeth = false;
+        private static bool hasLisbeth;
+        private static bool checkedLisbeth;
 
         public static int HasIshgardItem()
         {
@@ -156,14 +155,12 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsVersionGreater(float version)
         {
-            if (LlamaLibrary.Memory.OffsetManager.CurrentGameVersion >= version)
+            if (OffsetManager.CurrentGameVersion >= version)
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public static int GetInstanceTodo(int objective)
@@ -406,22 +403,22 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsMinionSummoned()
         {
-            return LlamaLibrary.Helpers.MinionHelper.IsMinionSummoned;
+            return MinionHelper.IsMinionSummoned;
         }
 
         public static bool IsMinionUnlocked(int itemId)
         {
-            return LlamaLibrary.Helpers.UIState.MinionUnlocked(itemId);
+            return UIState.MinionUnlocked(itemId);
         }
 
         public static int MinionId()
         {
-            if (!LlamaLibrary.Helpers.MinionHelper.IsMinionSummoned)
+            if (!MinionHelper.IsMinionSummoned)
             {
                 return 0;
             }
 
-            return LlamaLibrary.Helpers.MinionHelper.MinionId;
+            return MinionHelper.MinionId;
         }
     }
 }

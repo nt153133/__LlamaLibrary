@@ -16,10 +16,6 @@ namespace LlamaLibrary.Structs
         public ushort ZoneId;
         public Vector3[] Locations;
 
-        public GatheringNodeData()
-        {
-        }
-
         public override string ToString()
         {
             var times = TimeSlots.Select(slot => $"{slot.Key:D2}:00-{slot.Value:D2}:00").ToList();

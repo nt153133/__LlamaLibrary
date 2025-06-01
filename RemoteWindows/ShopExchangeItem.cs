@@ -12,7 +12,7 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class ShopExchangeItem : RemoteWindow<ShopExchangeItem>
     {
-        private static readonly LLogger Log = new(nameof(ShopExchangeItem), Colors.Fuchsia, LogLevel.Information);
+        private static readonly LLogger Log = new(nameof(ShopExchangeItem), Colors.Fuchsia);
 
         public ShopExchangeItem() : base("ShopExchangeItem")
         {
@@ -69,13 +69,13 @@ namespace LlamaLibrary.RemoteWindows
             obj[5] = itemCount;
 
             SendAction(4, obj);
-            Log.Verbose($"Sent Action for purchase");
+            Log.Verbose("Sent Action for purchase");
 
             await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog") != null);
 
             if (RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog") != null)
             {
-                Log.Verbose($"ShopExchangeItemDialog Open");
+                Log.Verbose("ShopExchangeItemDialog Open");
                 RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog").SendAction(1, 3, 0);
                 await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("ShopExchangeItemDialog") == null);
 
@@ -83,7 +83,7 @@ namespace LlamaLibrary.RemoteWindows
 
                 if (SelectYesno.IsOpen)
                 {
-                    Log.Verbose($"SelectYesno open");
+                    Log.Verbose("SelectYesno open");
                     SelectYesno.Yes();
                     await Coroutine.Wait(2000, () => !SelectYesno.IsOpen);
 
@@ -94,7 +94,7 @@ namespace LlamaLibrary.RemoteWindows
                 {
                     Log.Verbose("Purchase request");
 
-                    await CommonTasks.HandOverRequestedItems(true);
+                    await CommonTasks.HandOverRequestedItems();
 
                     /*
                     for (var i = 0; i < 3; i++)
@@ -127,7 +127,7 @@ namespace LlamaLibrary.RemoteWindows
                 }
                 else
                 {
-                    Log.Debug($"[Purchase] Request Not open");
+                    Log.Debug("[Purchase] Request Not open");
                 }
 
                 if (QuestLogManager.InCutscene && AgentInterface<AgentCutScene>.Instance.CanSkip && !SelectString.IsOpen)

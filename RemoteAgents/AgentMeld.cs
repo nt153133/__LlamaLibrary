@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using ff14bot;
@@ -53,7 +52,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public bool CanMeld => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.CanMeld) == 1;
 
-        public bool Ready => Core.Memory.NoCacheRead<byte>(LlamaLibrary.Memory.Offsets.Conditions + 7) == 0;
+        public bool Ready => Core.Memory.NoCacheRead<byte>(Memory.Offsets.Conditions + 7) == 0;
 
         public byte ItemsToMeldCount => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.ItemsToMeldCount);
 

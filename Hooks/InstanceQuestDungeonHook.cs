@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Windows.Media;
 using ff14bot;
-using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 
 namespace LlamaLibrary.Hooks;

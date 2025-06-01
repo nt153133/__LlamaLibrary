@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot.AClasses;
+using ff14bot.Helpers;
 using ff14bot.Managers;
 using LlamaLibrary.Logging;
 
@@ -38,7 +39,7 @@ namespace LlamaLibrary.Helpers
         public static Version Version => _version.Invoke();
         public static string VersionString => _versionString.Invoke();
 
-        private static string PlatypusPath => Path.Combine(ff14bot.Helpers.Utils.AssemblyDirectory, "BotBases", "Platypus");
+        private static string PlatypusPath => Path.Combine(Utils.AssemblyDirectory, "BotBases", "Platypus");
 
         private static readonly BotBase? PlatypusBotBase = BotManager.Bots.FirstOrDefault(c => c.EnglishName == "Platypus");
 

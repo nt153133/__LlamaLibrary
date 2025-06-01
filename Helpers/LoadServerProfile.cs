@@ -10,13 +10,16 @@ using System.Xml.Linq;
 using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Behavior;
+using ff14bot.Directors;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
+using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.ScriptConditions;
 using LlamaLibrary.Structs;
 using Newtonsoft.Json;
 
@@ -129,8 +132,7 @@ public class LoadServerProfile
         Yuweyawata
     };
 
-    private static readonly string[] Greetings = new string[]
-    {
+    private static readonly string[] Greetings = {
         "Hola",
         "Bonjour",
         "Hallo",
@@ -271,18 +273,15 @@ public class LoadServerProfile
             if (DutyManager.QueueState == QueueState.InDungeon)
             {
                 Log.Information("Already in dungeon");
-                Log.Information($"Loading {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} profile.");
+                Log.Information($"Loading {DataManager.InstanceContentResults[dungeonDutyId].CurrentLocaleName} profile.");
                 ConditionParser.Initialize();
                 NeoProfileManager.Load(profileUrl, false);
             }
             else
             {
                 await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, sayHello, sayHelloCustom, sayHelloMessages, trustId);
-                return;
             }
         }
-
-        return;
     }
 
     public static async Task LoadProfileByZone(int ZoneId)
@@ -326,39 +325,36 @@ public class LoadServerProfile
         {
             {
                 await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, 1, unlockQuest, false, false, false, "hi/welcome", trustId);
-                return;
             }
         }
-
-        return;
     }
 
     public static async Task LoadTrust()
     {
-        if (LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen)
+        if (Dawn.Instance.IsOpen)
         {
             ff14bot.Helpers.Logging.WriteDiagnostic("Closing Dawn window");
-            LlamaLibrary.RemoteAgents.AgentDawn.Instance.Toggle();
+            AgentDawn.Instance.Toggle();
         }
 
-        LlamaLibrary.RemoteAgents.AgentDawn.Instance.TrustId = 27;
+        AgentDawn.Instance.TrustId = 27;
 
-        if (!LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen)
+        if (!Dawn.Instance.IsOpen)
         {
             ff14bot.Helpers.Logging.WriteDiagnostic("Openning Dawn window");
-            LlamaLibrary.RemoteAgents.AgentDawn.Instance.Toggle();
-            await Coroutine.Wait(8000, () => LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen);
+            AgentDawn.Instance.Toggle();
+            await Coroutine.Wait(8000, () => Dawn.Instance.IsOpen);
         }
 
         ff14bot.Helpers.Logging.WriteDiagnostic("Clicking Register");
-        LlamaLibrary.RemoteWindows.Dawn.Instance.Register();
+        Dawn.Instance.Register();
     }
 
     private static async Task<List<ServerProfile>> GetProfileList(string uri)
     {
         var profileUri = new Uri(uri);
 
-        using (var client = new HttpClient() { Timeout = new TimeSpan(0, 0, 10) })
+        using (var client = new HttpClient { Timeout = new TimeSpan(0, 0, 10) })
         {
             var response = (await Coroutine.ExternalTask(client.GetAsync(uri), 10_000)).Result;
             if (response.IsSuccessStatusCode)
@@ -375,7 +371,7 @@ public class LoadServerProfile
     public static string CurrentLocalizedZoneNameById(int zoneId)
     {
         ZoneNameResult zoneNameResult;
-        return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out zoneNameResult) ? (string)null : zoneNameResult.CurrentLocaleName;
+        return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out zoneNameResult) ? null : zoneNameResult.CurrentLocaleName;
     }
 
     internal static async Task LoadQuestProfile(string profileName, string profileUrl)
@@ -418,10 +414,7 @@ public class LoadServerProfile
         {
             Log.Error("Failed to download profile from server attempt 2");
             Log.Error(ex.ToString());
-            return;
         }
-
-        return;
     }
 
     internal static bool TryLoad(string profile)
@@ -460,7 +453,7 @@ public class LoadServerProfile
             {
                 if (GoToBarracks && (WorldManager.ZoneId != 534 && WorldManager.ZoneId != 535 && WorldManager.ZoneId != 536))
                 {
-                    await LlamaLibrary.Helpers.GrandCompanyHelper.GetToGCBarracks();
+                    await GrandCompanyHelper.GetToGCBarracks();
                 }
 
                 while (DutyManager.QueueState == QueueState.None)
@@ -475,7 +468,7 @@ public class LoadServerProfile
                             string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Trust dungeon.\nPlease select a different Queue Type or dungeon.";
 
 #endif
-                            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
                             Log.Error($"{message}");
                             TreeRoot.Stop($"{message}");
                             break;
@@ -483,7 +476,7 @@ public class LoadServerProfile
 
                         Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Trust");
 
-                        if (LlamaLibrary.RemoteWindows.Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId != trustId)
+                        if (Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId != trustId)
                         {
                             Log.Information("Closing Trust window");
                             AgentDawn.Instance.Toggle();
@@ -492,7 +485,7 @@ public class LoadServerProfile
                         if (AgentDawn.Instance.TrustId != trustId)
                         {
                             Log.Information($"Setting Trust dungeon to {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName}");
-                            LlamaLibrary.RemoteAgents.AgentDawn.Instance.TrustId = trustId;
+                            AgentDawn.Instance.TrustId = trustId;
                             await Coroutine.Wait(5000, () => AgentDawn.Instance.TrustId == trustId);
                             if (AgentDawn.Instance.TrustId != trustId)
                             {
@@ -502,7 +495,7 @@ public class LoadServerProfile
                                 string message = $"Something went wrong when attempting to select {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as Trust dungeon.";
 
 #endif
-                                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
                                 Log.Error($"{message}");
                                 TreeRoot.Stop($"{message}");
                                 break;
@@ -652,9 +645,9 @@ public class LoadServerProfile
             if (QuestLogManager.InCutscene)
             {
                 TreeRoot.StatusText = "InCutscene";
-                if (ff14bot.RemoteAgents.AgentCutScene.Instance != null)
+                if (AgentCutScene.Instance != null)
                 {
-                    ff14bot.RemoteAgents.AgentCutScene.Instance.PromptSkip();
+                    AgentCutScene.Instance.PromptSkip();
                     await Coroutine.Wait(2000, () => SelectString.IsOpen || SelectYesno.IsOpen);
 
                     if (SelectString.IsOpen)
@@ -671,7 +664,7 @@ public class LoadServerProfile
 
             Log.Information("Should be in duty");
 
-            if (DirectorManager.ActiveDirector is ff14bot.Directors.InstanceContentDirector director)
+            if (DirectorManager.ActiveDirector is InstanceContentDirector director)
             {
                 var time = new TimeSpan(1, 29, 59);
                 if (dutyType == DutyType.Raid)
@@ -729,12 +722,9 @@ public class LoadServerProfile
         }
         else
         {
-            Log.Error($"Something went wrong, we're in a duty but the Zone Id isn't the expected ID.");
+            Log.Error("Something went wrong, we're in a duty but the Zone Id isn't the expected ID.");
             TreeRoot.Stop("Something went wrong, we're in a duty but the Zone Id isn't the expected ID");
-            return;
         }
-
-        return;
     }
 
     internal static bool CanQueue(int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest)
@@ -750,15 +740,15 @@ public class LoadServerProfile
         }
         */
 
-        if (!LlamaLibrary.ScriptConditions.Extras.IsDiscipleofWarClass() && !LlamaLibrary.ScriptConditions.Extras.IsDiscipleofMagicClass())
+        if (!Extras.IsDiscipleofWarClass() && !Extras.IsDiscipleofMagicClass())
         {
 #if RB_CN
             string message = $"执行任务需要您使用战斗职业 (DoW) 或魔法职业 (DoM)";
 #else
-            string message = $"You must be on a DoW or DoM class to do a duty..";
+            string message = "You must be on a DoW or DoM class to do a duty..";
 
 #endif
-            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
             Log.Error($"{message}");
             TreeRoot.Stop($"{message}");
             return false;
@@ -775,7 +765,7 @@ public class LoadServerProfile
 
 #endif
 
-                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
                 Log.Error($"{message}");
                 TreeRoot.Stop($"{message}");
                 return false;
@@ -784,16 +774,16 @@ public class LoadServerProfile
 
         if (DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel != 0)
         {
-            if (LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel() < DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel)
+            if (ScriptConditions.Helpers.CurrentItemLevel() < DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel)
             {
 #if RB_CN
                 string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 需要最低物品等级 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}。您的装备等级为 {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}。请升级您的装备品级。";
 #else
-                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} requires minimum Item Level of {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}. Your Item Level is {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}. Please upgrade your gear.";
+                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} requires minimum Item Level of {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}. Your Item Level is {ScriptConditions.Helpers.CurrentItemLevel()}. Please upgrade your gear.";
 #endif
-                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
                 Log.Error($"{message}.");
-                TreeRoot.Stop($"Please upgrade your gear");
+                TreeRoot.Stop("Please upgrade your gear");
                 return false;
             }
         }
@@ -805,7 +795,7 @@ public class LoadServerProfile
 #else
             string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Duty Support dungeon.";
 #endif
-            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
+            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
             Log.Error($"{message}");
             TreeRoot.Stop($"{message}");
             return false;

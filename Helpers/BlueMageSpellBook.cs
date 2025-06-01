@@ -40,12 +40,10 @@ namespace LlamaLibrary.Helpers
 
         public static void SetSpell(int index, uint spellId)
         {
-            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.SetSpell, new object[3]
-            {
-                Offsets.ActionManager,
-                index,
-                spellId
-            });
+            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.SetSpell,
+            Offsets.ActionManager,
+            index,
+            spellId);
         }
 
         public static async Task SetAllSpells(uint[] spells)

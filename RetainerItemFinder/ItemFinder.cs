@@ -35,7 +35,7 @@ namespace LlamaLibrary.RetainerItemFinder
 
         public static IntPtr Framework;
 
-        private static bool _hasGoneToDresser = false;
+        private static bool _hasGoneToDresser;
 
         static ItemFinder()
         {
@@ -52,7 +52,7 @@ namespace LlamaLibrary.RetainerItemFinder
 
             if (retData.Length == 0)
             {
-                Log.Error($"You don't have any retainers");
+                Log.Error("You don't have any retainers");
                 return new Dictionary<ulong, StoredRetainerInventory>();
             }
 
@@ -222,11 +222,9 @@ namespace LlamaLibrary.RetainerItemFinder
             {
                 return;
             }
-            else
-            {
-                Log.Verbose($"Adding node");
-                RetainerInventoryPointers.Add(node.RetainerId, new StoredRetainerInventory(node.RetainerInventory));
-            }
+
+            Log.Verbose("Adding node");
+            RetainerInventoryPointers.Add(node.RetainerId, new StoredRetainerInventory(node.RetainerInventory));
 
             if (!VisitedNodes.Contains(node.Left))
             {

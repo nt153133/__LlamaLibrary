@@ -53,7 +53,6 @@ namespace LlamaLibrary.Helpers.Housing
                 Zone = InternalHousingZone.Unknown;
                 Plot = 0;
                 HousingFloor = HousingFloor.Unknown;
-                return;
             }
         }
 

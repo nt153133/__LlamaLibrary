@@ -55,7 +55,7 @@ public record MinionStore
 
 public static class MinionData
 {
-    internal static readonly List<MinionStore> Minions = new List<MinionStore>()
+    internal static readonly List<MinionStore> Minions = new List<MinionStore>
     {
         new(1, "Cherry Bomb", 6003),
         new(2, "Mammet #001", 6004),

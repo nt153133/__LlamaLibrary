@@ -33,7 +33,7 @@ public class BankaCraftworksSupply : RemoteWindow<BankaCraftworksSupply>
 
     public int TurnInItemId => Elements[Properties["TurnInItemId"]].Int;
 
-    public uint TurnInItemRawItemId => (uint)Elements[Properties["TurnInItemId"]].UInt % 500_000;
+    public uint TurnInItemRawItemId => Elements[Properties["TurnInItemId"]].UInt % 500_000;
 
     public int EsteemLevel => Elements[Properties["EsteemLevel"]].Int;
 

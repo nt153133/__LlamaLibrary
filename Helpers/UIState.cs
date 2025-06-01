@@ -84,7 +84,7 @@ public static class UIState
 
             using (var newStruct = Core.Memory.CreateAllocatedMemory(0x98))
             {
-                newStruct.Write(Offsets.ItemActionOffset, (ushort)item.ItemAction);
+                newStruct.Write(Offsets.ItemActionOffset, item.ItemAction);
                 return Core.Memory.CallInjectedWraper<int>(Offsets.IsItemActionUnlocked, Offsets.Instance, newStruct.Address) == 1;
             }
         }

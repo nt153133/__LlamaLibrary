@@ -27,10 +27,8 @@ namespace LlamaLibrary.Retainers
                 {
                     return NameRaw;
                 }
-                else
-                {
-                    return DataManager.GetItem((uint)ItemId).CurrentLocaleName;
-                }
+
+                return DataManager.GetItem((uint)ItemId).CurrentLocaleName;
             }
         }
 

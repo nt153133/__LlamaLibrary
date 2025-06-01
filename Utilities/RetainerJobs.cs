@@ -9,7 +9,6 @@ using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
 using ff14bot.RemoteWindows;
-using LlamaLibrary;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Helpers.WorldTravel;
@@ -25,7 +24,7 @@ namespace LlamaLibrary.Utilities
         private static readonly LLogger Log = new("They Took Our Jobs", Colors.Khaki);
 
         // List of the very first weapon available for each class
-        public static List<KeyValuePair<ClassJobType, int>> StarterWeapons = new List<KeyValuePair<ClassJobType, int>>()
+        public static List<KeyValuePair<ClassJobType, int>> StarterWeapons = new List<KeyValuePair<ClassJobType, int>>
         {
             new KeyValuePair<ClassJobType, int>(ClassJobType.Alchemist, 2467),
             new KeyValuePair<ClassJobType, int>(ClassJobType.Arcanist, 2142),
@@ -110,7 +109,7 @@ namespace LlamaLibrary.Utilities
                     return true;
                 }
 
-                var order = new Order()
+                var order = new Order
                 {
                     Amount = (uint)count,
                     AmountMode = AmountMode.Restock,
@@ -118,7 +117,7 @@ namespace LlamaLibrary.Utilities
                     Type = SourceType.Purchase
                 };
 
-                if (!await Lisbeth.ExecuteOrders(new List<Order>() { order }.GetOrderJson()))
+                if (!await Lisbeth.ExecuteOrders(new List<Order> { order }.GetOrderJson()))
                 {
                     Log.Error("Could not purchase pickaxes");
                     TreeRoot.Stop("Could not purchase pickaxes");
@@ -272,7 +271,7 @@ namespace LlamaLibrary.Utilities
 
                 Log.Information($"Equipping pickaxe for {retainer.Name}");
                 item.Move(InventoryManager.GetBagByInventoryBagId(InventoryBagId.Retainer_EquippedItems)[EquipmentSlot.MainHand]);
-                await LlamaLibrary.Extensions.BagSlotExtensions.BagSlotNotFilledWait(item, 600);
+                await BagSlotExtensions.BagSlotNotFilledWait(item);
 
                 Log.Information("DeSelecting Retainer");
 

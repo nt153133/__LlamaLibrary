@@ -8,8 +8,8 @@ namespace LlamaLibrary.Structs
     [StructLayout(LayoutKind.Explicit, Size = 0x20)]
     public struct TeleportInfo
     {
-        private static readonly uint[] PrivateHousing = new uint[] { 59, 60, 61, 97, 165 };
-        private static readonly uint[] FcHousing = new uint[] { 56, 57, 58, 96, 164 };
+        private static readonly uint[] PrivateHousing = { 59, 60, 61, 97, 165 };
+        private static readonly uint[] FcHousing = { 56, 57, 58, 96, 164 };
 
         [FieldOffset(0x00)]
         public uint AetheryteId;

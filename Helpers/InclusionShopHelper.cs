@@ -18,7 +18,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<int> BuyItem(uint itemId, int qty)
         {
-            if (!LlamaLibrary.RemoteWindows.InclusionShop.Instance.IsOpen)
+            if (!InclusionShop.Instance.IsOpen)
             {
                 Log.Information("InclusionShop window not open");
                 return 0;
@@ -58,7 +58,7 @@ namespace LlamaLibrary.Helpers
                 return 0;
             }
 
-            LlamaLibrary.RemoteWindows.InclusionShop.Instance.SetCategory(shopItem.Category);
+            InclusionShop.Instance.SetCategory(shopItem.Category);
 
             await Coroutine.Wait(10000, () => AgentInclusionShop.Instance.SelectedCategory == shopItem.Category);
 
@@ -69,11 +69,11 @@ namespace LlamaLibrary.Helpers
             }
 
             //7.1 Used to be +1
-            LlamaLibrary.RemoteWindows.InclusionShop.Instance.SetSubCategory(shopItem.SubCategory + 1);
+            InclusionShop.Instance.SetSubCategory(shopItem.SubCategory + 1);
 
             if (!await Coroutine.Wait(2000, () => AgentInclusionShop.Instance.SelectedSubCategory == shopItem.SubCategory))
             {
-                LlamaLibrary.RemoteWindows.InclusionShop.Instance.SetSubCategory(shopItem.SubCategory);
+                InclusionShop.Instance.SetSubCategory(shopItem.SubCategory);
                 await Coroutine.Wait(5000, () => AgentInclusionShop.Instance.SelectedSubCategory == shopItem.SubCategory);
             }
 
@@ -85,7 +85,7 @@ namespace LlamaLibrary.Helpers
 
             await Coroutine.Wait(10000, () => AgentInclusionShop.Instance.ItemCount >= shopItem.Index);
 
-            LlamaLibrary.RemoteWindows.InclusionShop.Instance.BuyItem(shopItem.Index, amtToBuy);
+            InclusionShop.Instance.BuyItem(shopItem.Index, amtToBuy);
 
             await Coroutine.Wait(10000, () => ShopExchangeItemDialog.Instance.IsOpen);
 
@@ -159,7 +159,7 @@ namespace LlamaLibrary.Helpers
 
             if (!InclusionShop.Instance.IsOpen)
             {
-                await Navigation.GetToInteractNpcSelectString(npcToGoTo.NpcId, npcToGoTo.ZoneId, npcToGoTo.Location, 0, LlamaLibrary.RemoteWindows.InclusionShop.Instance);
+                await Navigation.GetToInteractNpcSelectString(npcToGoTo.NpcId, npcToGoTo.ZoneId, npcToGoTo.Location, 0, InclusionShop.Instance);
             }
 
             return await BuyItem(itemId, qty);

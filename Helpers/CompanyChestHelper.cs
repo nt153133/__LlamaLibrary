@@ -11,7 +11,6 @@ using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Extensions;
-using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.Helpers.Ping;
 using LlamaLibrary.Logging;
@@ -25,7 +24,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class CompanyChestHelper
     {
-        public static readonly uint[] HousingCompanyChest = new uint[] { 196627, 2000470 };
+        public static readonly uint[] HousingCompanyChest = { 196627, 2000470 };
 
         private static readonly LLogger Log = new(nameof(CompanyChestHelper), Colors.BurlyWood);
 
@@ -322,7 +321,7 @@ namespace LlamaLibrary.Helpers
             {
                 if (slots.First().Count > amount)
                 {
-                    return await WithdrawItems(new List<BagSlot>() { slots.First() }, amount);
+                    return await WithdrawItems(new List<BagSlot> { slots.First() }, amount);
                 }
 
                 return await WithdrawItems(slots, amount);
@@ -598,7 +597,7 @@ namespace LlamaLibrary.Helpers
                 case TransactionType.Deposit:
                     if (DepositBagIds.Contains(bagId))
                     {
-                        bagList = new List<InventoryBagId>() { bagId };
+                        bagList = new List<InventoryBagId> { bagId };
                     }
                     else
                     {

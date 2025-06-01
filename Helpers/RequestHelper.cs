@@ -37,7 +37,7 @@ namespace LlamaLibrary.Helpers
         public static ushort ItemCount => Core.Memory.Read<ushort>(Offsets.RequestInfo + Offsets.ItemCount);
         public static ushort ItemCount2 => Core.Memory.Read<ushort>(Offsets.RequestInfo + Offsets.ItemCount2);
 
-        public static IntPtr ItemListStart => new((long)(Offsets.RequestInfo + Offsets.ItemListStart));
+        public static IntPtr ItemListStart => new(Offsets.RequestInfo + Offsets.ItemListStart);
 
         public static RequestItem[] GetItems()
         {

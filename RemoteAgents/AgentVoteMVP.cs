@@ -12,7 +12,6 @@ using ff14bot.Managers;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
-using LlamaLibrary.Extensions;
 
 namespace LlamaLibrary.RemoteAgents
 {
@@ -150,7 +149,7 @@ Log.Information($"点赞开始 {option.Name} ({index})");
 Log.Information($"点赞结束");
 
 #else
-                            Log.Information($"Voted");
+                            Log.Information("Voted");
 #endif
                             return option.Name;
                         }

@@ -86,9 +86,9 @@ namespace SevenZip.Compression.RangeCoder
 
 		public void Init() { Prob = kBitModelTotal >> 1; }
 
-		public uint Decode(RangeCoder.Decoder rangeDecoder)
+		public uint Decode(Decoder rangeDecoder)
 		{
-			uint newBound = (uint)(rangeDecoder.Range >> kNumBitModelTotalBits) * (uint)Prob;
+			uint newBound = (rangeDecoder.Range >> kNumBitModelTotalBits) * Prob;
 			if (rangeDecoder.Code < newBound)
 			{
 				rangeDecoder.Range = newBound;
@@ -100,18 +100,16 @@ namespace SevenZip.Compression.RangeCoder
 				}
 				return 0;
 			}
-			else
-			{
-				rangeDecoder.Range -= newBound;
-				rangeDecoder.Code -= newBound;
-				Prob -= (Prob) >> kNumMoveBits;
-				if (rangeDecoder.Range < Decoder.kTopValue)
-				{
-					rangeDecoder.Code = (rangeDecoder.Code << 8) | (byte)rangeDecoder.Stream.ReadByte();
-					rangeDecoder.Range <<= 8;
-				}
-				return 1;
-			}
-		}
+
+            rangeDecoder.Range -= newBound;
+            rangeDecoder.Code -= newBound;
+            Prob -= (Prob) >> kNumMoveBits;
+            if (rangeDecoder.Range < Decoder.kTopValue)
+            {
+                rangeDecoder.Code = (rangeDecoder.Code << 8) | (byte)rangeDecoder.Stream.ReadByte();
+                rangeDecoder.Range <<= 8;
+            }
+            return 1;
+        }
 	}
 }

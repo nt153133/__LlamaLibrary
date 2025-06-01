@@ -46,7 +46,7 @@ namespace LlamaLibrary.RemoteWindows
         public bool[] GetCardInDeck()
         {
             var currentElements = Elements;
-            var costElements = new ArraySegment<TwoInt>(currentElements, Properties["ElementInDeck"], GetNumberOfItems).Select(i => (int)i.TrimmedData == 1 ? true : false).ToArray();
+            var costElements = new ArraySegment<TwoInt>(currentElements, Properties["ElementInDeck"], GetNumberOfItems).Select(i => i.TrimmedData == 1 ? true : false).ToArray();
             return costElements;
         }
 

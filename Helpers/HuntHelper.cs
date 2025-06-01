@@ -45,12 +45,12 @@ namespace LlamaLibrary.Helpers
 
         };
 
-        public static readonly int[] ARRHunts = new[] { 0 };
-        public static readonly int[] ClanHunts = new[] { 1, 2, 3 };
-        public static readonly int[] VerteranClanHunts = new[] { 6, 7, 8 };
-        public static readonly int[] NutClanHunts = new[] { 10, 11, 12 };
-        public static readonly int[] EwHunts = new[] { 14, 15, 16 };
-        public static readonly int[] DtHunts = new[] { 18, 19, 20 };
+        public static readonly int[] ARRHunts = { 0 };
+        public static readonly int[] ClanHunts = { 1, 2, 3 };
+        public static readonly int[] VerteranClanHunts = { 6, 7, 8 };
+        public static readonly int[] NutClanHunts = { 10, 11, 12 };
+        public static readonly int[] EwHunts = { 14, 15, 16 };
+        public static readonly int[] DtHunts = { 18, 19, 20 };
 
         private static class Offsets
         {
@@ -194,7 +194,7 @@ namespace LlamaLibrary.Helpers
             //|| !accepted[orderTypeIndex]
             if (!unlocked || orderType.Type == MobHuntType.Weekly)
             {
-                Log.Information($"Weekly or not unlocked");
+                Log.Information("Weekly or not unlocked");
                 return result;
             }
 
@@ -239,7 +239,7 @@ namespace LlamaLibrary.Helpers
             //|| !accepted[orderTypeIndex]
             if (!unlocked || orderType.Type == MobHuntType.Weekly)
             {
-                Log.Verbose($"Hunt is Weekly or not unlocked.");
+                Log.Verbose("Hunt is Weekly or not unlocked.");
                 return result;
             }
 
@@ -409,11 +409,8 @@ namespace LlamaLibrary.Helpers
         public static bool OrderTypeUnlocked(int typeKey)
         {
             var unlockState = Core.Memory.CallInjectedWraper<byte>(Offsets.CheckMobBoardUnlocked,
-                                                               new object[2]
-                                                               {
-                                                                   Offsets.HuntData,
-                                                                   (uint)typeKey
-                                                               });
+                                                               Offsets.HuntData,
+                                                               (uint)typeKey);
 
             return unlockState > 0;
         }
@@ -441,12 +438,12 @@ namespace LlamaLibrary.Helpers
         public static List<(uint OrderType, HuntOrderStatus HuntOrderStatus)> GetDailyStatus(int[] dailyOrderTypes)
         {
             var result = new List<(uint, HuntOrderStatus)>();
-            foreach (var orderType in dailyOrderTypes.Where(HuntHelper.OrderTypeUnlocked))
+            foreach (var orderType in dailyOrderTypes.Where(OrderTypeUnlocked))
             {
-                var accepted = HuntHelper.GetAcceptedHunts()[orderType];
-                var orderTypeObj = HuntHelper.GetMobHuntOrderType(orderType);
-                var dailies = HuntHelper.GetCurrentDailyHunts(orderType);
-                var serverDailies = HuntHelper.GetServerDailyHunts(orderType);
+                var accepted = GetAcceptedHunts()[orderType];
+                var orderTypeObj = GetMobHuntOrderType(orderType);
+                var dailies = GetCurrentDailyHunts(orderType);
+                var serverDailies = GetServerDailyHunts(orderType);
 
                 var oldDailies = dailies.Where((t, i) => t.NpcID != serverDailies[i].NpcID).Any();
 
@@ -698,7 +695,7 @@ namespace LlamaLibrary.Helpers
             Log.Debug($"Mobhunt Window IsOpen == {Mobhunt.Instance.IsOpen}");
 
             Mobhunt.Instance.Accept();
-            Log.Verbose($"Hunt accepted");
+            Log.Verbose("Hunt accepted");
             await Coroutine.Sleep(1000);
 
             return HuntHelper.GetAcceptedHunts()[orderType];

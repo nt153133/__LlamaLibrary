@@ -113,7 +113,7 @@ namespace LlamaLibrary.Helpers
                             _travelTo = (Func<uint, uint, Vector3, Func<bool>, bool, Task<bool>>)Delegate.CreateDelegate(typeof(Func<uint, uint, Vector3, Func<bool>, bool, Task<bool>>), apiObject, "TravelTo");
 
                             //_travelToWithArea = (Func<string, Vector3, Func<bool>, bool, Task<bool>>)Delegate.CreateDelegate(typeof(Func<string, Vector3, Func<bool>, bool, Task<bool>>), apiObject, "TravelToWithArea");
-                            _openWindow = (System.Action)Delegate.CreateDelegate(typeof(System.Action), apiObject, "OpenWindow");
+                            _openWindow = (Action)Delegate.CreateDelegate(typeof(Action), apiObject, "OpenWindow");
                             _getOrderExpansionAsJson = (Func<string, Task<string>>)Delegate.CreateDelegate(typeof(Func<string, Task<string>>), apiObject, "GetOrderExpansionAsJson");
                             _isProductKeyValid = (Func<Task<bool>>)Delegate.CreateDelegate(typeof(Func<Task<bool>>), apiObject, "IsProductKeyValid");
 
@@ -156,7 +156,7 @@ namespace LlamaLibrary.Helpers
                 }
 
                 //return await Lisbeth.GetOrderExpansionAsJson("[{\"Group\":1,\"Item\":1,\"Amount\":1,\"Enabled\":true,\"Type\":\"None\"}]") != null;
-                return await Lisbeth.IsProductKeyValid();
+                return await IsProductKeyValid();
             }
             catch
             {
@@ -170,7 +170,7 @@ namespace LlamaLibrary.Helpers
         {
             if (Core.Me.Distance(mob) + 1 >= RoutineManager.Current.PullRange)
             {
-                Log.Information($"Outside of pull range so getting closer");
+                Log.Information("Outside of pull range so getting closer");
                 await Navigation.FlightorMove(mob.Location, () => Core.Me.Distance(mob) < (RoutineManager.Current.PullRange / 2));
                 if (Core.Me.IsMounted)
                 {

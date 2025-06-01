@@ -1,20 +1,22 @@
-﻿namespace LlamaLibrary.Helpers
-{
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Windows.Media;
-    using LlamaLibrary.Logging;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Windows.Media;
+using ff14bot;
+using ff14bot.Helpers;
+using LlamaLibrary.Logging;
 
+namespace LlamaLibrary.Helpers
+{
     public static class RestartRbHelper
     {
         private static readonly string TempFolderLocation = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-        private static readonly string RebornbuddyExecutable = Path.Combine(ff14bot.Helpers.Utils.AssemblyDirectory, "RebornBuddy.exe");
+        private static readonly string RebornbuddyExecutable = Path.Combine(Utils.AssemblyDirectory, "RebornBuddy.exe");
 
         private static readonly string BatchFileName = "restart_rebornbuddy.bat";
 
-        private static readonly string BatchFileContent = @$"@echo off
+        private static readonly string BatchFileContent = @"@echo off
 set RB_PID=%1
 set FFXIV_PID=%2
 set RB_EXECUTABLE=%3
@@ -48,7 +50,7 @@ exit";
                 Log.Information("RestartRbHelper - Restarting Rebornbuddy");
                 Log.Information($"RBExecutable location {RebornbuddyExecutable}");
                 Process RBprocess = Process.GetCurrentProcess();
-                Process.Start(Path.Combine(TempFolderLocation, BatchFileName), $"{RBprocess.Id} {ff14bot.Core.Memory.Process.Id} \"{RebornbuddyExecutable}\"");
+                Process.Start(Path.Combine(TempFolderLocation, BatchFileName), $"{RBprocess.Id} {Core.Memory.Process.Id} \"{RebornbuddyExecutable}\"");
 
                 if (!RBprocess.CloseMainWindow())
                 {

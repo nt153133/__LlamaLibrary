@@ -66,7 +66,7 @@ namespace LlamaLibrary.RemoteAgents
         {
             if (!FishGuide2.Instance.IsOpen)
             {
-                this.Toggle();
+                Toggle();
                 if (!await Coroutine.Wait(10000, () => FishGuide2.Instance.IsOpen))
                 {
                     return Array.Empty<FishGuide2Item>();

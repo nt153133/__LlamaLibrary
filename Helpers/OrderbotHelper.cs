@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -7,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using ff14bot;
 using ff14bot.AClasses;
+using ff14bot.Forms.ugh;
 using ff14bot.Managers;
 using ff14bot.NeoProfile;
 using ff14bot.NeoProfiles;
@@ -20,8 +22,8 @@ namespace LlamaLibrary.Helpers
 
         public static bool loaded;
         public static bool tempbool;
-        public static bool StopBot = false;
-        public static Button? RbStartButton => typeof(ff14bot.Forms.ugh.MainWpf).GetField("btnStart", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(ff14bot.Forms.ugh.MainWpf.current) as Button;
+        public static bool StopBot;
+        public static Button? RbStartButton => typeof(MainWpf).GetField("btnStart", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(MainWpf.current) as Button;
 
         public static Task<bool> CallOrderbot(string profile)
         {
@@ -72,11 +74,11 @@ namespace LlamaLibrary.Helpers
 
                 //await WaitUntil(() => loaded, timeout: 20000);
                 loaded = false;
-                Log.Information($"Botbase set to orderbot");
+                Log.Information("Botbase set to orderbot");
                 BotManager.Current.Initialize();
-                Log.Information($"Initialize");
+                Log.Information("Initialize");
                 NeoProfileManager.Load(profile);
-                Log.Information($"Profile loaded");
+                Log.Information("Profile loaded");
 
                 //NeoProfileManager.UpdateCurrentProfileBehavior();
 
@@ -85,13 +87,13 @@ namespace LlamaLibrary.Helpers
             }
             else
             {
-                Log.Information($"Failed Stopping bot");
+                Log.Information("Failed Stopping bot");
             }
 
             await WaitUntil(() => TreeRoot.IsRunning, timeout: 20000);
             if (TreeRoot.IsRunning)
             {
-                Log.Information($"Orderbot Started");
+                Log.Information("Orderbot Started");
 
                 await WaitWhile(() => TreeRoot.IsRunning, 500);
 
@@ -130,20 +132,17 @@ namespace LlamaLibrary.Helpers
 
                         TreeRoot.OnStart -= OnBotStart;
                     }
-                    else
-                    {
-                        //Log.Information($"LastBot Null: Starting Orderbot");
-                        //BotManager.SetCurrent(new OrderBot());
-                        //BotManager.Current.Start();
-                    }
+                    //Log.Information($"LastBot Null: Starting Orderbot");
+                    //BotManager.SetCurrent(new OrderBot());
+                    //BotManager.Current.Start();
                 }
             }
             else
             {
-                Log.Information($"Failed To Start Orderbot");
+                Log.Information("Failed To Start Orderbot");
             }
 
-            Log.Information($"Thread Stopped");
+            Log.Information("Thread Stopped");
 
             //_isDone = true;
         }
@@ -155,7 +154,7 @@ namespace LlamaLibrary.Helpers
 
         private static void OnClick(object sender, RoutedEventArgs e)
         {
-            Log.Information($"Someone hit the stop button, catching so we don't restart");
+            Log.Information("Someone hit the stop button, catching so we don't restart");
             StopBot = true;
             if (RbStartButton != null)
             {

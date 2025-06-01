@@ -47,7 +47,7 @@ namespace LlamaLibrary.Helpers
             }
             catch (Exception ex)
             {
-                Log.Error($"NavGraph.GetPathAsync failed with an exception");
+                Log.Error("NavGraph.GetPathAsync failed with an exception");
                 return null;
             }
         }
@@ -156,10 +156,8 @@ namespace LlamaLibrary.Helpers
                     await Coroutine.Sleep(1000);
                     return await GetTo(ZoneId, XYZ);
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
 
             if (path == null)
@@ -458,13 +456,13 @@ namespace LlamaLibrary.Helpers
             if (AE != null && !AE.IsWithinInteractRange)
             {
                 Log.Information("Using flightor to get closer");
-                await Navigation.FlightorMove(AE.Location, 6);
+                await FlightorMove(AE.Location, 6);
             }
 
             if (AE != null && !AE.IsWithinInteractRange)
             {
                 Log.Information("Using offmesh to get closer");
-                await Navigation.OffMeshMoveInteract(AE);
+                await OffMeshMoveInteract(AE);
             }
 
             return AE;
@@ -568,7 +566,7 @@ namespace LlamaLibrary.Helpers
                 }
             }
 
-            await Navigation.FlightorMove(XYZ);
+            await FlightorMove(XYZ);
 
             return false;
         }
@@ -612,19 +610,19 @@ namespace LlamaLibrary.Helpers
 
                 await Coroutine.Wait(5000, () => window.IsOpen || DialogOpen);
 
-                if (window.IsOpen && !Talk.DialogOpen)
+                if (window.IsOpen && !DialogOpen)
                 {
                     return true;
                 }
 
-                await Coroutine.Wait(20000, () => Talk.DialogOpen);
-                if (Talk.DialogOpen)
+                await Coroutine.Wait(20000, () => DialogOpen);
+                if (DialogOpen)
                 {
-                    while (Talk.DialogOpen)
+                    while (DialogOpen)
                     {
-                        Talk.Next();
-                        await Coroutine.Wait(500, () => !Talk.DialogOpen);
-                        await Coroutine.Wait(500, () => Talk.DialogOpen);
+                        Next();
+                        await Coroutine.Wait(500, () => !DialogOpen);
+                        await Coroutine.Wait(500, () => DialogOpen);
                         await Coroutine.Yield();
                     }
 
@@ -665,11 +663,11 @@ namespace LlamaLibrary.Helpers
 
                     if (DialogOpen)
                     {
-                        while (Talk.DialogOpen)
+                        while (DialogOpen)
                         {
-                            Talk.Next();
-                            await Coroutine.Wait(100, () => !Talk.DialogOpen);
-                            await Coroutine.Wait(100, () => Talk.DialogOpen);
+                            Next();
+                            await Coroutine.Wait(100, () => !DialogOpen);
+                            await Coroutine.Wait(100, () => DialogOpen);
                             await Coroutine.Yield();
                         }
 
@@ -690,11 +688,11 @@ namespace LlamaLibrary.Helpers
                         await Coroutine.Wait(5000, () => nextWindow.IsOpen || DialogOpen);
                         if (DialogOpen)
                         {
-                            while (Talk.DialogOpen)
+                            while (DialogOpen)
                             {
-                                Talk.Next();
-                                await Coroutine.Wait(100, () => !Talk.DialogOpen);
-                                await Coroutine.Wait(100, () => Talk.DialogOpen);
+                                Next();
+                                await Coroutine.Wait(100, () => !DialogOpen);
+                                await Coroutine.Wait(100, () => DialogOpen);
                                 await Coroutine.Yield();
                             }
 

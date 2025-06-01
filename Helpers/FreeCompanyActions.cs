@@ -97,7 +97,7 @@ namespace LlamaLibrary.Helpers
 
             if (curActions.Length == 0)
             {
-                Log.Verbose($"No Buffs: Activating");
+                Log.Verbose("No Buffs: Activating");
                 if (!FreeCompanyAction.Instance.IsOpen)
                 {
                     FreeCompany.Instance.SelectActions();

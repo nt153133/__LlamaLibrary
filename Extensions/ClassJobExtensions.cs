@@ -129,7 +129,7 @@ public static class ClassJobExtensions
     internal static readonly Dictionary<int, List<int>> JobsForAffinity = new()
     {
 #if !RB_DT
-        { 0, new List<int> { } },
+        { 0, new List<int>() },
         { 1, new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, } },
         { 2, new List<int> { 1, } },
         { 3, new List<int> { 2, } },
@@ -325,8 +325,8 @@ public static class ClassJobExtensions
         { 193, new List<int> { 2, 4, 5, 6, 7, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 38, 39, 40, } },
         { 194, new List<int> { 1, 3, 6, 19, 21, 24, 28, 32, 33, 37, 40, } },
         { 195, new List<int> { 1, 2, 3, 4, 5, 7, 19, 20, 21, 22, 23, 25, 26, 27, 29, 30, 31, 32, 34, 35, 37, 38, 39, } },
-        { 196, new List<int> { } },
-        { 197, new List<int> { } },
+        { 196, new List<int>() },
+        { 197, new List<int>() },
 #else
         { 0, new List<int> { } },
         { 1, new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, } },

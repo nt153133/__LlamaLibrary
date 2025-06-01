@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Clio.Utilities;
 using ff14bot.Managers;
 
 namespace LlamaLibrary.Structs;

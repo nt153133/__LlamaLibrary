@@ -97,7 +97,7 @@ namespace LlamaLibrary.Helpers
             if (SelectYesno.IsOpen)
             {
                 SelectYesno.Yes();
-                Log.Information($"Clicked Yes");
+                Log.Information("Clicked Yes");
                 await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
             }
 
@@ -171,7 +171,7 @@ namespace LlamaLibrary.Helpers
                 if (SelectYesno.IsOpen)
                 {
                     SelectYesno.Yes();
-                    Log.Information($"Clicked Yes");
+                    Log.Information("Clicked Yes");
                     await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
                 }
 

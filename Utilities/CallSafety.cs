@@ -1,8 +1,6 @@
 //#define LogCall
 
 using System;
-using System.Diagnostics;
-using ff14bot;
 using GreyMagic;
 
 namespace LlamaLibrary.Utilities;

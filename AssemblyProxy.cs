@@ -15,7 +15,7 @@ namespace LlamaLibrary
     public static class AssemblyProxy
     {
         private static readonly ConcurrentDictionary<string, Assembly> Assemblies = new ConcurrentDictionary<string, Assembly>();
-        private static readonly LLogger Log = new LLogger("AssemblyProxy", Colors.Bisque, LogLevel.Information);
+        private static readonly LLogger Log = new LLogger("AssemblyProxy", Colors.Bisque);
         private static bool _initialized;
         private static object _lock = new object();
 

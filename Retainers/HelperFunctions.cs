@@ -354,8 +354,8 @@ namespace LlamaLibrary.Retainers
                 }
                 else
                 {
-                    Log.Information($"Finished Venture");
-                    Log.Information($"Reassigning Venture");
+                    Log.Information("Finished Venture");
+                    Log.Information("Reassigning Venture");
                 }
 
                 RetainerTaskResult.Reassign();

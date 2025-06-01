@@ -5,7 +5,6 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
-using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Objects;
 using ff14bot.RemoteWindows;
@@ -353,11 +352,9 @@ namespace LlamaLibrary.Helpers
 
                         return false;
                     }
-                    else
-                    {
-                        Log.Warning($"Have {ScriptConditions.Helpers.GetSkybuilderScrips():N}/{SkybuildersScripMax:N} Skybuilders' Scrips and will overcap, but force-inspecting anyway.");
-                        SelectYesno.Yes();
-                    }
+
+                    Log.Warning($"Have {ScriptConditions.Helpers.GetSkybuilderScrips():N}/{SkybuildersScripMax:N} Skybuilders' Scrips and will overcap, but force-inspecting anyway.");
+                    SelectYesno.Yes();
 
                     await Coroutine.Sleep(1000);
 
@@ -504,7 +501,7 @@ namespace LlamaLibrary.Helpers
             quantity = Math.Min(quantity, specialShopItem.Value.Item0.StackSize);
             quantity = Math.Min(quantity, MaxAffordableViaScrips(specialShopItem.Value));
 
-            var args = new ulong[]
+            var args = new[]
             {
                 3uL,
                 0uL,
