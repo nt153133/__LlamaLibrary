@@ -92,7 +92,9 @@ namespace LlamaLibrary.Helpers.Ping
             finally
             {
                 if (pTcpTable != IntPtr.Zero)
+                {
                     Marshal.FreeHGlobal(pTcpTable);
+                }
             }
 
             if (verbose && !Equals(address, IPAddress.Loopback) && !Equals(address, Address))

@@ -55,7 +55,7 @@ public class DebounceDispatcher
         // elapsed without other events firing in between
         _timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval),
                                     priority,
-                                    (s, e) =>
+                                    (_, _) =>
                                     {
                                         if (_timer == null)
                                         {
@@ -104,7 +104,7 @@ public class DebounceDispatcher
 
         _timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval),
                                     priority,
-                                    (s, e) =>
+                                    (_, _) =>
                                     {
                                         if (_timer == null)
                                         {

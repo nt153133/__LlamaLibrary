@@ -87,7 +87,8 @@ namespace LlamaLibrary.Structs
         public int CanAffordQty()
         {
             return Costs.Select(cost =>
-                Convert.ToInt32(Math.Floor((decimal)(CurrencyHelper.GetAmountOfCurrency(cost.ItemId) / cost.Qty)))).Min();
+                                    // ReSharper disable once PossibleLossOfFraction
+                                    Convert.ToInt32(Math.Floor((decimal)(CurrencyHelper.GetAmountOfCurrency(cost.ItemId) / cost.Qty)))).Min();
         }
 
         public override string ToString()

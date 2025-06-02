@@ -12,7 +12,7 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new(nameof(TimersSettings), Colors.Tomato);
 
-        private static TimersSettings _settings;
+        private static TimersSettings? _settings;
 
         private readonly bool _debug;
 

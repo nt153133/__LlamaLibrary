@@ -30,8 +30,7 @@ namespace LlamaLibrary.Helpers
 
         private static readonly Dictionary<uint, uint> TomeCache = new();
 
-        internal static InventoryBagId[] CurrencyBags = new InventoryBagId[5]
-        {
+        internal static InventoryBagId[] CurrencyBags = {
             InventoryBagId.Bag1,
             InventoryBagId.Bag2,
             InventoryBagId.Bag3,

@@ -17,13 +17,14 @@ using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.Helpers.NPC;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
+// ReSharper disable MemberCanBeProtected.Global
 
 namespace LlamaLibrary.Helpers.HousingTravel.Districts
 {
     public class ResidentialDistrict<T> : ResidentialDistrict
         where T : ResidentialDistrict<T>, new()
     {
-        private static T _instance;
+        private static T? _instance;
         public static T Instance => _instance ??= new T();
 
         protected ResidentialDistrict()
@@ -161,7 +162,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
         public virtual async Task<bool> GetToWardTransition()
         {
-            if (TransitionNpcs.Any())
+            if (TransitionNpcs.Count != 0)
             {
                 var npc = NpcHelper.GetClosestNpc(TransitionNpcs);
 
@@ -179,7 +180,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
                 var gameObject = npc.GameObject;
 
-                if (gameObject == default)
+                if (gameObject == null)
                 {
                     Log.Error($"Could not find transition npc {npc}");
                     return false;
@@ -241,7 +242,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
             var unit = await Navigation.GetToAE(TownAetheryteId);
 
-            if (unit is null or default(GameObject))
+            if (unit is null)
             {
                 return false;
             }
@@ -252,7 +253,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
             if (!await Coroutine.Wait(5000, () => SelectString.IsOpen))
             {
                 unit = await Navigation.GetToAE(TownAetheryteId);
-                if (unit is null or default(GameObject))
+                if (unit is null)
                 {
                     return false;
                 }
@@ -418,7 +419,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
                 var ae = GameObjectManager.GetObjectByNPCId(closestAe.NpcId);
 
-                if (ae == default)
+                if (ae == null)
                 {
                     Log.Error($"Couldn't find ae {closestAe}");
                     return false;
@@ -501,7 +502,7 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
         private static string GetNumbers(string input)
         {
-            return new string(input.Where(c => char.IsDigit(c)).ToArray());
+            return new string(input.Where(char.IsDigit).ToArray());
         }
 
         public static async Task DealWithTalk()

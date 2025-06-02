@@ -111,7 +111,8 @@ namespace LlamaLibrary.RemoteAgents
 
         public async Task<string> HandleMvpVote(IEnumerable<string> possibleNames)
         {
-            Log.Information("Handling MVP Vote with possible names: " + string.Join(", ", possibleNames));
+            var enumerable = possibleNames.ToList();
+            Log.Information("Handling MVP Vote with possible names: " + string.Join(", ", enumerable));
             if (Instance.CanToggle)
             {
                 await Instance.MakeSureVoteOpen();
@@ -124,7 +125,7 @@ namespace LlamaLibrary.RemoteAgents
 
                 var options = Instance.VoteOptions;
 
-                if (!possibleNames.Any())
+                if (enumerable.Count == 0)
                 {
                     await Instance.OpenAndVote();
                     return options[0].Name;
@@ -134,7 +135,7 @@ namespace LlamaLibrary.RemoteAgents
                 {
                     var option = options[index];
                     //Log.Information(option.ToString());
-                    if (possibleNames.Any(i => option.Name.Contains(i, StringComparison.InvariantCultureIgnoreCase)))
+                    if (enumerable.Any(i => option.Name.Contains(i, StringComparison.InvariantCultureIgnoreCase)))
                     {
 #if RB_CN
 Log.Information($"点赞开始 {option.Name} ({index})");

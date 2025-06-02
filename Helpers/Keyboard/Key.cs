@@ -81,7 +81,9 @@ public class Key : UITypeEditor
                     await PressForeground();
                 }
 
-                return true;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         return true;

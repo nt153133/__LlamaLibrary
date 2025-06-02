@@ -426,15 +426,18 @@ namespace LlamaLibrary.Extensions
 
             for (var i = 0; i < 5; i++)
             {
-                if (materiaType[i] > 0)
+                if (materiaType[i] <= 0)
                 {
-                    try
-                    {
-                        materia.Add(ResourceManager.MateriaList.Value[materiaType[i]].First(j => j.Tier == materiaLevel[i]));
-                    }
-                    catch (Exception)
-                    {
-                    }
+                    continue;
+                }
+
+                try
+                {
+                    materia.Add(ResourceManager.MateriaList.Value[materiaType[i]].First(j => j.Tier == materiaLevel[i]));
+                }
+                catch (Exception)
+                {
+                    // ignored
                 }
             }
 

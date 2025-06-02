@@ -23,40 +23,40 @@ namespace LlamaLibrary.Helpers.NPC
 
         public static Npc? GetClosestNpc(IEnumerable<Npc> npcs)
         {
-            if (npcs.Any(i => i.IsInCurrentZone))
+            var enumerable = npcs.ToList();
+            if (enumerable.Any(i => i.IsInCurrentZone))
             {
                 var meLocation = Core.Me.Location;
-                return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(meLocation)).FirstOrDefault();
+                return enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(meLocation)).FirstOrDefault();
             }
 
-            return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(i.Location.ClosestAetheryteResult.Position)).FirstOrDefault();
+            return enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(i.Location.ClosestAetheryteResult.Position)).FirstOrDefault();
         }
 
         public static List<Npc> OrderByDistance(IEnumerable<Npc> npcs)
         {
-            if (npcs.Any(i => i.IsInCurrentZone))
+            var enumerable = npcs.ToList();
+            if (enumerable.Any(i => i.IsInCurrentZone))
             {
                 var meLocation = Core.Me.Location;
-                return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(meLocation)).ToList();
+                return enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(meLocation)).ToList();
             }
 
-            return npcs.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(i.Location.ClosestAetheryteResult.Position)).ToList();
+            return enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(i.Location.ClosestAetheryteResult.Position)).ToList();
         }
 
         public static string GetNpcName(uint npcId, bool includeTitle = true)
         {
-            if (npcId > 2_000_000)
+            switch (npcId)
             {
-                return GetEventObjectName(npcId);
+                case > 2_000_000:
+                    return GetEventObjectName(npcId);
+                case <= 1_000_000:
+                    return "";
+                default:
+                    (var name, _, var title) = CallGetENpcResident(npcId);
+                    return (includeTitle && title != "") ? $"{name} ({title})" : name;
             }
-
-            if (npcId <= 1_000_000)
-            {
-                return "";
-            }
-
-            (var name, _, var title) = CallGetENpcResident(npcId);
-            return (includeTitle && title != "") ? $"{name} ({title})" : name;
         }
 
         public static string GetEventObjectName(uint npcId)
@@ -66,12 +66,9 @@ namespace LlamaLibrary.Helpers.NPC
                 using var Database = new Database("db.s3db");
                 var results = Database.AllAsDictionary<EventObjectResult>();
                 EventObjectNames = new Dictionary<uint, string>(results.Count);
-                foreach (var objectResult in results)
+                foreach (var objectResult in results.Where(objectResult => objectResult.Value.CurrentLocaleName != ""))
                 {
-                    if (objectResult.Value.CurrentLocaleName != "")
-                    {
-                        EventObjectNames.Add(objectResult.Key, objectResult.Value.CurrentLocaleName);
-                    }
+                    EventObjectNames.Add(objectResult.Key, objectResult.Value.CurrentLocaleName);
                 }
 
                 results.Clear();

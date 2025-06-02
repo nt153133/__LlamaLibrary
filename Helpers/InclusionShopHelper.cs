@@ -42,14 +42,10 @@ namespace LlamaLibrary.Helpers
                 return 0;
             }
 
-            int amtToBuy;
-
-            amtToBuy = qty == 0 ? shopItem.CanAffordQty() : Math.Min(qty, shopItem.CanAffordQty());
+            var amtToBuy = qty == 0 ? shopItem.CanAffordQty() : Math.Min(qty, shopItem.CanAffordQty());
 
             Log.Information($"qty: {qty} amtToBuy: {amtToBuy} CanAfford: {shopItem.CanAffordQty()}");
-            /*
-             return 0;
- */
+
             if (amtToBuy == 0)
             {
                 var costs = shopItem.Costs.Select(cost =>
@@ -131,19 +127,19 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<int> BuyItemGoToNpc(uint itemId, int qty)
         {
-            var shopIds = InclusionShopConstants.KnownItems.Where(i => i.Value.Contains(itemId)).Select(i => i.Key);
+            var shopIds = InclusionShopConstants.KnownItems.Where(i => i.Value.Contains(itemId)).Select(i => i.Key).ToList();
 
-            var npcs = InclusionShopConstants.ShopNpcs.Where(i => shopIds.Contains(i.ShopKey)).Where(i => i.RequiredQuest == 0 || QuestLogManager.IsQuestCompleted(i.RequiredQuest));
+            var npcs = InclusionShopConstants.ShopNpcs.Where(i => shopIds.Contains(i.ShopKey)).Where(i => i.RequiredQuest == 0 || QuestLogManager.IsQuestCompleted(i.RequiredQuest)).ToList();
 
-            if (!npcs.Any())
+            if (npcs.Count == 0)
             {
-                Log.Information($"Found {npcs.Count()} vendors with {DataManager.GetItem(itemId)}");
+                Log.Information($"Found {npcs.Count} vendors with {DataManager.GetItem(itemId)}");
                 return 0;
             }
 
-            if (npcs.Any())
+            if (npcs.Count != 0)
             {
-                Log.Information($"Found {npcs.Count()} vendors with {InclusionShopConstants.ShopNpcs.Count(i => shopIds.Contains(i.ShopKey))}");
+                Log.Information($"Found {npcs.Count} vendors with {InclusionShopConstants.ShopNpcs.Count(i => shopIds.Contains(i.ShopKey))}");
             }
 
             (uint ShopKey, uint NpcId, ushort ZoneId, uint RequiredQuest, Vector3 Location) npcToGoTo;

@@ -61,6 +61,7 @@ namespace LlamaLibrary.Helpers
             }
             catch
             {
+                // ignored
             }
 
             if (!TreeRoot.IsRunning)
@@ -128,6 +129,7 @@ namespace LlamaLibrary.Helpers
                         }
                         catch
                         {
+                            // ignored
                         }
 
                         TreeRoot.OnStart -= OnBotStart;

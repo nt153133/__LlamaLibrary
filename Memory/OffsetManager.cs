@@ -215,11 +215,12 @@ public static class OffsetManager
 
         if (File.Exists(OffsetFile) && GameVersion != 0)
         {
-            OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(File.ReadAllText(OffsetFile)) ?? new ConcurrentDictionary<string, long>();
-            if (!OffsetCache.ContainsKey("Version") || OffsetCache["Version"] != _version)
+            OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(await File.ReadAllTextAsync(OffsetFile)) ?? new ConcurrentDictionary<string, long>();
+            if (!OffsetCache.TryGetValue("Version", out var value) || value != _version)
             {
                 OffsetCache.Clear();
-                OffsetCache["Version"] = _version;
+                value = _version;
+                OffsetCache["Version"] = value;
                 _isNewGameBuild = true;
             }
         }
@@ -434,7 +435,7 @@ public static class OffsetManager
     [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
     public static async Task SetOffsetObjectsAsync(IEnumerable<Type> q1)
     {
-        var types = MemberInfos(q1);
+        var types = MemberInfos(q1).ToList();
 
         List<MemberInfo> fields = new();
         var foundAll = true;
@@ -514,13 +515,13 @@ public static class OffsetManager
                     if (field.DeclaringType != null && field.DeclaringType.IsNested)
                     {
                         Logger.Error($"[{field.DeclaringType?.DeclaringType?.Name}:{field.Name:,27}] Not Found");
-                        Logger.Error($"{field.GetPattern()}");
                     }
                     else
                     {
                         Logger.Error($"[{field.DeclaringType?.Name}:{field.Name:,27}] Not Found");
-                        Logger.Error($"{field.GetPattern()}");
                     }
+
+                    Logger.Error($"{field.GetPattern()}");
 
                     continue;
                 }
@@ -541,13 +542,13 @@ public static class OffsetManager
                 if (info.DeclaringType != null && info.DeclaringType.IsNested)
                 {
                     Logger.Error($"[{info.DeclaringType?.DeclaringType?.Name}:{info.Name:,27}] Not Found");
-                    Logger.Error($"{info.GetPattern()}");
                 }
                 else
                 {
                     Logger.Error($"[{info.DeclaringType?.Name}:{info.Name:,27}] Not Found");
-                    Logger.Error($"{info.GetPattern()}");
                 }
+
+                Logger.Error($"{info.GetPattern()}");
             }
 
             try
@@ -697,9 +698,9 @@ public static class OffsetManager
             //q1.Add(typeof(Offsets));
         }
 
-        var types = MemberInfos(q1);
+        var types = MemberInfos(q1).ToList();
 
-        Logger.Information($"{types.Count()}");
+        Logger.Information($"{types.Count}");
 
         foreach (var field in types)
         {
@@ -722,14 +723,14 @@ public static class OffsetManager
             }
             else
             {
-                Logger.Information($"{field.DeclaringType.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.Global)}");
+                Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.Global)}");
                 try
                 {
-                    results.Add($"{field.DeclaringType.Name}_{field.Name}", field.GetPattern(ForceClientMode.Global));
+                    results.Add($"{field.DeclaringType?.Name}_{field.Name}", field.GetPattern(ForceClientMode.Global));
                 }
                 catch (Exception e)
                 {
-                    Logger.Information($"\t{field.DeclaringType.Name}_{field.Name} DUPE");
+                    Logger.Information($"\t{field.DeclaringType?.Name}_{field.Name} DUPE");
                     Console.WriteLine(e);
                     //throw;
                 }
@@ -751,21 +752,21 @@ public static class OffsetManager
             q1.Add(typeof(Offsets));
         }
 
-        var types = MemberInfos(q1);
+        var types = MemberInfos(q1).ToList();
 
-        Logger.Information($"{types.Count()}");
+        Logger.Information($"{types.Count}");
 
         foreach (var field in types)
         {
             if (field.DeclaringType != null && field.DeclaringType.IsNested)
             {
-                Logger.Information($"CN{field.DeclaringType.DeclaringType.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.CN)}");
-                results.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", field.GetPattern(ForceClientMode.CN));
+                Logger.Information($"CN{field.DeclaringType.DeclaringType?.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.CN)}");
+                results.Add($"{field.DeclaringType.DeclaringType?.Name}_{field.Name}", field.GetPattern(ForceClientMode.CN));
             }
             else
             {
-                Logger.Information($"CN{field.DeclaringType.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.CN)}");
-                results.Add($"{field.DeclaringType.Name}_{field.Name}", field.GetPattern(ForceClientMode.CN));
+                Logger.Information($"CN{field.DeclaringType?.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.CN)}");
+                results.Add($"{field.DeclaringType?.Name}_{field.Name}", field.GetPattern(ForceClientMode.CN));
             }
         }
 

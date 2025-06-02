@@ -29,7 +29,7 @@ namespace LlamaLibrary.Helpers
         public static byte[] UIForegroundPayload(ushort colorKey)
         {
             var collection = MakeInteger(colorKey);
-            var byteList = new List<byte>(new byte[3]
+            var byteList = new List<byte>(new byte[]
             {
                 2,
                 72,
@@ -44,7 +44,7 @@ namespace LlamaLibrary.Helpers
         {
             if (value < 207U)
             {
-                return new byte[1] { (byte)(value + 1U) };
+                return new[] { (byte)(value + 1U) };
             }
 
             var bytes = BitConverter.GetBytes(value);
@@ -87,7 +87,7 @@ namespace LlamaLibrary.Helpers
                 3
             };
             byteList.AddRange(collection);
-            byteList.AddRange(new byte[2]
+            byteList.AddRange(new byte[]
             {
                 2,
                 1
@@ -100,7 +100,7 @@ namespace LlamaLibrary.Helpers
                     num2 += 4;
                 }
 
-                byteList.AddRange(new byte[2]
+                byteList.AddRange(new[]
                 {
                     byte.MaxValue,
                     (byte)num2
@@ -108,7 +108,7 @@ namespace LlamaLibrary.Helpers
                 byteList.AddRange(Encoding.UTF8.GetBytes(slot.CurrentLocaleName));
                 if (slot.IsHighQuality)
                 {
-                    byteList.AddRange(new byte[4]
+                    byteList.AddRange(new byte[]
                     {
                         32,
                         238,
@@ -125,7 +125,7 @@ namespace LlamaLibrary.Helpers
         public static byte[] UIGlowPayload(ushort colorKey)
         {
             var collection = MakeInteger(colorKey);
-            var byteList = new List<byte>(new byte[3]
+            var byteList = new List<byte>(new byte[]
             {
                 2,
                 73,

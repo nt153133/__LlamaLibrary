@@ -385,7 +385,7 @@ namespace LlamaLibrary.Helpers
                         continue;
                     }
 
-                    if (bagSlot.Slot == 0 && !bagSlot.IsFilled)
+                    if (bagSlot is {Slot: 0, IsFilled: false })
                     {
                         Log.Error("MainHand slot isn't filled. How?");
                         continue;
@@ -584,7 +584,7 @@ namespace LlamaLibrary.Helpers
             }
 
             var bagSlots = items.ToList();
-            if (!bagSlots.Any())
+            if (bagSlots.Count == 0)
             {
                 Log.Information("No items found to sell.");
                 return;
@@ -748,7 +748,7 @@ namespace LlamaLibrary.Helpers
         public static int GetGearSetiLvl(GearSet gs)
         {
             var gear = gs.Gear.Select(i => i.Item.ItemLevel).Where(x => x > 0).ToList();
-            if (!gear.Any())
+            if (gear.Count == 0)
             {
                 return 0;
             }
@@ -763,11 +763,11 @@ namespace LlamaLibrary.Helpers
 
             var ae = WorldManager.AvailableLocations;
 
-            var privateHouses = ae.Where(x => privateHousing.Contains(x.AetheryteId)).OrderBy(x => x.SubIndex);
-            var fcHouses = ae.Where(x => fcHousing.Contains(x.AetheryteId)).OrderBy(x => x.SubIndex);
+            var privateHouses = ae.Where(x => privateHousing.Contains(x.AetheryteId)).OrderBy(x => x.SubIndex).ToList();
+            var fcHouses = ae.Where(x => fcHousing.Contains(x.AetheryteId)).OrderBy(x => x.SubIndex).ToList();
 
-            var havePrivateHousing = privateHouses.Any();
-            var haveFcHousing = fcHouses.Any();
+            var havePrivateHousing = privateHouses.Count != 0;
+            var haveFcHousing = fcHouses.Count != 0;
 
             Log.Information($"Private House Access: {havePrivateHousing} FC House Access: {haveFcHousing}");
 
@@ -786,7 +786,6 @@ namespace LlamaLibrary.Helpers
         private static async Task<bool> GoToHousingBell(WorldManager.TeleportLocation house)
         {
             Log.Information($"Teleporting to housing: (ZID: {house.ZoneId}, AID: {house.AetheryteId}) {house.Name}");
-            //await CommonTasks.Teleport(house.AetheryteId);
             await TeleportHelper.TeleportByIdTicket(house.AetheryteId);
 
             Log.Information("Waiting for zone to change");
@@ -1645,11 +1644,9 @@ namespace LlamaLibrary.Helpers
                         //  Log.Information($"Pressing position {turnin.Position}");
                         CollectablesShop.Instance.SelectItem(turnin.Position);
                         await Coroutine.Sleep(1000);
-                        var i = 0;
                         while (CollectablesShop.Instance.TurninCount > 0)
                         {
                             // Log.Information($"Pressing trade {i}");
-                            i++;
                             CollectablesShop.Instance.Trade();
                             await Coroutine.Sleep(100);
                         }
@@ -1673,9 +1670,9 @@ namespace LlamaLibrary.Helpers
                 { 31134, (30340, 10) }
             };
 
-            var turninItems = InventoryManager.FilledSlots.Where(i => i.IsHighQuality && GatheringItems.Keys.Contains(i.RawItemId));
+            var turninItems = InventoryManager.FilledSlots.Where(i => i.IsHighQuality && GatheringItems.Keys.Contains(i.RawItemId)).ToList();
 
-            if (turninItems.Any())
+            if (turninItems.Count != 0)
             {
                 await InteractWithDenys(3);
                 await Coroutine.Wait(10000, () => ShopExchangeItem.Instance.IsOpen);

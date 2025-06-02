@@ -62,9 +62,9 @@ namespace LlamaLibrary.RemoteAgents
 
             var items = Instance.ExchangeItems;
 
-            var category = items.Where(i => i.RequiredItems.Any(i => i.ItemId == itemToSpend)).ToList();
+            var category = items.Where(i => i.RequiredItems.Any(animaExchangeRequiredItem => animaExchangeRequiredItem.ItemId == itemToSpend)).ToList();
 
-            if (!category.Any())
+            if (category.Count == 0)
             {
                 Log.Error($"No exchanges found that use {DataManager.GetItem(itemToSpend)?.CurrentLocaleName}");
                 await AWGrowthFragTrade.CloseExchangeWindow();

@@ -122,7 +122,7 @@ namespace LlamaLibrary.Structs
         public bool Starred => _Starred > 0;
 
         public bool Enabled => Qty > 0;
-        public string Name => DataManager.GetItem(ItemId).CurrentLocaleName;
+        public string Name => DataManager.GetItem(ItemId)?.CurrentLocaleName ?? $"Item{ItemId}";
 
         //''
         public string ToString1()
@@ -140,12 +140,12 @@ namespace LlamaLibrary.Structs
             foreach (var fieldInfo in array)
             {
                 var value = fieldInfo.GetValue(this);
-                stringBuilder.AppendFormat(" {0}, ", value ?? "null");
+                stringBuilder.Append($" {value ?? "null"}, ");
             }
 
-            stringBuilder.AppendFormat(" {0}, ", Name ?? "null");
-            stringBuilder.AppendFormat(" {0}, ", Starred);
-            stringBuilder.AppendFormat(" {0}, ", Enabled);
+            stringBuilder.Append($" {Name}, ");
+            stringBuilder.Append($" {Starred}, ");
+            stringBuilder.Append($" {Enabled}, ");
             return stringBuilder.ToString();
         }
     }

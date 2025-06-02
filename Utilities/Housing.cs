@@ -18,6 +18,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using static ff14bot.RemoteWindows.Talk;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace LlamaLibrary.Utilities
 {
@@ -132,7 +133,7 @@ namespace LlamaLibrary.Utilities
                 output.AddRange(await GetEmpyreumPlots());
             }
 
-            if (!output.Any())
+            if (output.Count == 0)
             {
                 Log.Warning("No Housing Plots For Sale");
             }
@@ -410,14 +411,7 @@ namespace LlamaLibrary.Utilities
             await Coroutine.Wait(5000, () => SelectString.IsOpen);
             if (SelectString.IsOpen)
             {
-                if (Translator.Language == Language.Chn)
-                {
-                    SelectString.ClickLineContains("冒险者住宅区传送");
-                }
-                else
-                {
-                    SelectString.ClickLineContains("Residential");
-                }
+                SelectString.ClickLineContains(Translator.Language == Language.Chn ? "冒险者住宅区传送" : "Residential");
             }
 
             await Coroutine.Sleep(500);
@@ -452,14 +446,7 @@ namespace LlamaLibrary.Utilities
 
             if (SelectIconString.IsOpen)
             {
-                if (Translator.Language == Language.Chn)
-                {
-                    SelectIconString.ClickLineContains("薰衣草苗圃");
-                }
-                else
-                {
-                    SelectIconString.ClickLineContains("Lavender Beds");
-                }
+                SelectIconString.ClickLineContains(Translator.Language == Language.Chn ? "薰衣草苗圃" : "Lavender Beds");
 
                 await Coroutine.Wait(5000, () => DialogOpen || SelectString.IsOpen);
             }
@@ -476,14 +463,7 @@ namespace LlamaLibrary.Utilities
         {
             if (SelectString.IsOpen)
             {
-                if (Translator.Language == Language.Chn)
-                {
-                    SelectString.ClickLineContains("移动到指定小区");
-                }
-                else
-                {
-                    SelectString.ClickLineContains("Go to specified");
-                }
+                SelectString.ClickLineContains(Translator.Language == Language.Chn ? "移动到指定小区" : "Go to specified");
 
                 await Coroutine.Wait(5000, () => HousingSelectBlock.Instance.IsOpen);
             }

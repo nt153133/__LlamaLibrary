@@ -385,7 +385,7 @@ namespace LlamaLibrary.Helpers
             var accepted = new bool[MaxOrderTypes];
 
             var bit = Core.Memory.Read<int>(Offsets.HuntData + Offsets.AcceptedHuntBitfieldOffset);
-            var myInts = new int[1] { bit };
+            var myInts = new[] { bit };
             var myBa5 = new BitArray(myInts);
 
             for (var j = 0; j < MaxOrderTypes; j++)

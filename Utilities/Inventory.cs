@@ -133,7 +133,7 @@ namespace LlamaLibrary.Utilities
 
             var toDesynthList = itemsToDesynth.ToList();
 
-            if (!toDesynthList.Any())
+            if (toDesynthList.Count == 0)
             {
                 Log.Warning("No items to desynth.");
                 return false;

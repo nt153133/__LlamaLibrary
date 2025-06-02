@@ -108,7 +108,7 @@ namespace LlamaLibrary.Helpers.NPC
         {
             unchecked
             {
-                return ((int)NpcId * 397) ^ (Location != null ? Location.GetHashCode() : 0);
+                return ((int)NpcId * 397) ^ (Location.GetHashCode());
             }
         }
     }

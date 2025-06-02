@@ -50,9 +50,9 @@ namespace LlamaLibrary.Helpers.WorldTravel
 
                 if (travelCity == TravelCity.Cheapest)
                 {
-                    var cheapest = WorldManager.AvailableLocations.Where(i => ValidZones.Contains(i.ZoneId)).OrderBy(i => i.GilCost);
+                    var cheapest = WorldManager.AvailableLocations.Where(i => ValidZones.Contains(i.ZoneId)).OrderBy(i => i.GilCost).ToList();
 
-                    if (cheapest.Any())
+                    if (cheapest.Count != 0)
                     {
                         travelCity = (TravelCity)cheapest.First().ZoneId;
                         Log.Information($"Cheapest Zone Found: {travelCity}");
@@ -264,7 +264,7 @@ namespace LlamaLibrary.Helpers.WorldTravel
 
         public static async Task<GameObject?> GetAE(TravelCity travelCity = DefaultStart)
         {
-            uint id = 0;
+            uint id;
             id = travelCity switch
             {
                 TravelCity.Limsa    => 8,
@@ -277,24 +277,16 @@ namespace LlamaLibrary.Helpers.WorldTravel
 
         public static bool SelectWorldVisit()
         {
-            var test = 0;
-            foreach (var line in Conversation.GetConversationList)
-            {
-                if (line.Contains(Translator.VisitAnotherWorldServer))
-                {
-                    break;
-                }
+            var test = Conversation.GetConversationList.TakeWhile(line => !line.Contains(Translator.VisitAnotherWorldServer)).Count();
 
-                test++;
+            if (test == Conversation.GetConversationList.Count)
+            {
+                return false;
             }
 
-            if (test != Conversation.GetConversationList.Count)
-            {
-                Conversation.SelectLine((uint)test);
-                return true;
-            }
+            Conversation.SelectLine((uint)test);
+            return true;
 
-            return false;
         }
     }
 }

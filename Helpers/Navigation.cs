@@ -352,7 +352,7 @@ namespace LlamaLibrary.Helpers
             return Core.Me.Distance(loc) <= distance;
         }
 
-        public static async Task<bool> FlightorMove(FateData fate)
+        public static async Task<bool> FlightorMove(FateData? fate)
         {
             if (fate == null)
             {
@@ -713,7 +713,7 @@ namespace LlamaLibrary.Helpers
         {
             var aeList = DataManager.AetheryteCache.Values.Where(i => i.ZoneId == zoneId).ToList();
 
-            if (!aeList.Any())
+            if (aeList.Count == 0)
             {
                 return 0;
             }
@@ -734,7 +734,7 @@ namespace LlamaLibrary.Helpers
         {
             var aeList = DataManager.AetheryteCache.Values.Where(i => i.ZoneId == zoneId).ToList();
 
-            if (!aeList.Any())
+            if (aeList.Count == 0)
             {
                 return 0;
             }

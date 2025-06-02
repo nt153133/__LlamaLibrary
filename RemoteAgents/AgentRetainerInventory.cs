@@ -8,6 +8,7 @@ namespace LlamaLibrary.RemoteAgents
     public class AgentRetainerInventory : AgentInterface<AgentRetainerInventory>, IAgent
     {
         public IntPtr RegisteredVtable => Offsets.VTable;
+        // ReSharper disable once PartialTypeWithSinglePart
         private static partial class Offsets
         {
             //7.2

@@ -48,9 +48,9 @@ namespace LlamaLibrary.Structs
         [FieldOffset(0x48)]
         public bool ResultItemHQ;
 
-        public Item Item => DataManager.GetItem(ItemId, ResultItemHQ);
+        public Item? Item => DataManager.GetItem(ItemId, ResultItemHQ);
 
-        public Item Item2 => DataManager.GetItem(ItemId2, ResultItemHQ);
+        public Item? Item2 => DataManager.GetItem(ItemId2, ResultItemHQ);
 
         public string Name => Item != null ? Item.CurrentLocaleName : "";
 

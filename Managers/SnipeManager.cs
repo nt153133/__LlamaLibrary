@@ -108,7 +108,7 @@ namespace LlamaLibrary.Managers
 
             var obj = SnipeObjects[index];
 
-            byte shoot_1 = 0;
+            byte shoot_1;
             if (obj.x18 != 0 && obj.x22 != 0)
             {
                 shoot_1 = 0;

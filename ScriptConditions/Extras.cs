@@ -44,8 +44,8 @@ namespace LlamaLibrary.ScriptConditions
 
         public static int HighestILvl(ClassJobType job)
         {
-            var sets = GearsetManager.GearSets.Where(g => g.InUse && g.Class == job && g.Gear.Any());
-            return sets.Any() ? sets.Max(GeneralFunctions.GetGearSetiLvl) : 0;
+            var sets = GearsetManager.GearSets.Where(g => g.InUse && g.Class == job && g.Gear.Length != 0).ToList();
+            return sets.Count != 0 ? sets.Max(GeneralFunctions.GetGearSetiLvl) : 0;
         }
 
         public static bool IsFateActive(int fateID)

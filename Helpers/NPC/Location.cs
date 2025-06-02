@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Clio.Utilities;
 using ff14bot;
@@ -170,18 +171,20 @@ namespace LlamaLibrary.Helpers.NPC
             return new Location(WorldManager.ZoneId, Core.Me.Location);
         }
 
+        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public static Location? GetClosestLocation(IEnumerable<Location> locations)
         {
             var meLocation = Core.Me.Location;
-            if (locations.Any(i => i.IsInCurrentZone))
+            var enumerable = locations.ToList();
+            if (enumerable.Any(i => i.IsInCurrentZone))
             {
-                return locations.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Coordinates.Distance2DSqr(meLocation)).FirstOrDefault();
+                return enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Coordinates.Distance2DSqr(meLocation)).FirstOrDefault();
             }
 
-            var temp = locations.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost);
+            var temp = enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost);
             if (temp.All(i => i.ClosestAetheryteResult != null))
             {
-                return temp.ThenBy(i => i.Coordinates.Distance2DSqr(i.ClosestAetheryteResult.Position)).FirstOrDefault();
+                return temp.ThenBy(i => i.Coordinates.Distance2DSqr(i.ClosestAetheryteResult!.Position)).FirstOrDefault();
             }
 
             return temp.FirstOrDefault();

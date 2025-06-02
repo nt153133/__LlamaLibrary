@@ -55,7 +55,7 @@ public static class HouseTravelHelper
             return false;
         }
 
-        return await GetIntoHouse() && CurrentHouseLocation.Equals(previousHouseLocation);
+        return await GetIntoHouse() && CurrentHouseLocation != null && CurrentHouseLocation.Equals(previousHouseLocation);
     }
 
     internal static async Task<bool> GoBackToPlot(HouseLocation? previousHouseLocation)

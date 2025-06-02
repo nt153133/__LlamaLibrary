@@ -6,8 +6,8 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class CollectablesShop : RemoteWindow<CollectablesShop>
     {
-        public int RowCount => Elements[20].TrimmedData - 1;
-        public int TurninCount => Elements[4843].TrimmedData;
+        public int RowCount => Elements[20].Int - 1;
+        public int TurninCount => Elements[4843].Int;
         public CollectablesShop() : base("CollectablesShop")
         {
         }
@@ -29,17 +29,17 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<string> ListItems()
         {
-            var count = Elements[20].TrimmedData - 1;
+            var count = Elements[20].Int - 1;
             var currentElements = Elements;
             var result = new List<string>();
             for (var j = 0; j < count; j++)
             {
-                if (currentElements[32 + (j * 11)].TrimmedData == Elements[21].TrimmedData)
+                if (currentElements[32 + (j * 11)].Int == Elements[21].Int)
                 {
                     continue; //IconID
                 }
 
-                var itemID = currentElements[34 + (j * 11)].TrimmedData;
+                var itemID = currentElements[34 + (j * 11)].Int;
                 if (itemID is 0 or > 1500000 or < 500000)
                 {
                     continue;
@@ -55,7 +55,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public List<(uint ItemId, int Line)> GetItems()
         {
-            var count = Elements[20].TrimmedData - 1;
+            var count = Elements[20].Int - 1;
             var currentElements = Elements;
             var result = new List<(uint ItemId, int Line)>();
             var index = 0;
@@ -66,7 +66,7 @@ namespace LlamaLibrary.RemoteWindows
                     continue;
                 }
 
-                if (currentElements[32 + (j * 11)].TrimmedData == Elements[21].TrimmedData)
+                if (currentElements[32 + (j * 11)].Int == Elements[21].Int)
                 {
                     continue; //IconID
                 }

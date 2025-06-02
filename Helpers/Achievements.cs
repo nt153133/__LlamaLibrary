@@ -4,6 +4,7 @@ using Buddy.Coroutines;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
+// ReSharper disable UnassignedReadonlyField
 
 namespace LlamaLibrary.Helpers
 {

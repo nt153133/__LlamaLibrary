@@ -108,7 +108,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
 
     private void AddHooks()
     {
-        if (_orderBotHooksCoroutines.Any())
+        if (_orderBotHooksCoroutines.Count != 0)
         {
             foreach (var orderBotHook in _orderBotHooksCoroutines)
             {
@@ -123,7 +123,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
             return;
         }
 
-        if (!_lisbethHooks.Any())
+        if (_lisbethHooks.Count == 0)
         {
             return;
         }
@@ -149,7 +149,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
 
     private void RemoveHooks()
     {
-        if (_orderBotHooksCoroutines.Any())
+        if (_orderBotHooksCoroutines.Count != 0)
         {
             foreach (var orderBotHook in _orderBotHooksCoroutines)
             {
@@ -164,7 +164,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
             return;
         }
 
-        if (!_lisbethHooks.Any())
+        if (_lisbethHooks.Count == 0)
         {
             return;
         }
@@ -370,7 +370,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
         _orderBotHooks = GetOrderBotHooks();
         _lisbethHooks = GetLisbethHooks();
 
-        if (_orderBotHooks.Any())
+        if (_orderBotHooks.Count != 0)
         {
             foreach (var orderBotHook in _orderBotHooks)
             {

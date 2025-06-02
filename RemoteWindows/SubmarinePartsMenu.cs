@@ -4,6 +4,7 @@ using System.Linq;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Structs;
+#pragma warning disable CS0618 // Type or member is obsolete
 
 namespace LlamaLibrary.RemoteWindows
 {

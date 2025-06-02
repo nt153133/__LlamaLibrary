@@ -36,8 +36,8 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<DeliveryStatus> DeliverItems(IEnumerable<uint> itemIds)
         {
-            var slots = InventoryManager.FilledSlots.Where(i => itemIds.Contains(i.RawItemId));
-            if (!slots.Any())
+            var slots = InventoryManager.FilledSlots.Where(i => itemIds.Contains(i.RawItemId)).ToList();
+            if (slots.Count == 0)
             {
                 return DeliveryStatus.Success;
             }

@@ -149,9 +149,9 @@ namespace LlamaLibrary.Helpers
                 }
             }
 
-            var slots = GeneralFunctions.MainBagsFilledSlots().Where(x => x.RawItemId == 7767);
-            Log.Information($"Found {slots.Count()} slots filled with fish meal.");
-            if (slots.Count() < 1)
+            var slots = GeneralFunctions.MainBagsFilledSlots().Where(x => x.RawItemId == 7767).ToList();
+            Log.Information($"Found {slots.Count} slots filled with fish meal.");
+            if (slots.Count < 1)
             {
                 Log.Information("No fertilizer in bag, skipping fertilize.");
                 return true;
@@ -215,14 +215,14 @@ namespace LlamaLibrary.Helpers
 
         public static async Task Plant(BagSlot seeds, BagSlot soil)
         {
-            var result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction,
-            AgentHousingPlant.Instance.Pointer,
-            (uint)soil.BagId,
-            soil.Slot);
-            result = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction,
-            AgentHousingPlant.Instance.Pointer,
-            (uint)seeds.BagId,
-            seeds.Slot);
+            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction,
+                                                   AgentHousingPlant.Instance.Pointer,
+                                                   (uint)soil.BagId,
+                                                   soil.Slot);
+            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction,
+                                                   AgentHousingPlant.Instance.Pointer,
+                                                   (uint)seeds.BagId,
+                                                   seeds.Slot);
 
             await Coroutine.Wait(5000, () => SeedStruct.ItemId == seeds.RawItemId && SoilStruct.ItemId == soil.RawItemId);
             HousingGardening.Confirm();
@@ -267,7 +267,7 @@ namespace LlamaLibrary.Helpers
             }
         }
 
-        public static async Task Plant(EventObject plant, BagSlot seeds, BagSlot soil)
+        public static async Task Plant(EventObject? plant, BagSlot seeds, BagSlot soil)
         {
             if (plant != null)
             {

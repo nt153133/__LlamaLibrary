@@ -11,8 +11,9 @@ namespace LlamaLibrary.Structs
 
         public ShuffleCircularQueue(IEnumerable<T> inputList)
         {
-            _inputList = inputList;
-            _queue = new Queue<T>(inputList.Count());
+            var enumerable = inputList.ToList();
+            _inputList = enumerable;
+            _queue = new Queue<T>(enumerable.Count);
             RefillQueue();
         }
 

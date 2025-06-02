@@ -27,29 +27,29 @@ namespace LlamaLibrary.Helpers
         private static object? _lisbeth;
         private static MethodInfo? _orderMethod;
         private static readonly MethodInfo _travelMethod;
-        public static Func<string> _getCurrentAreaName;
-        private static readonly Func<Task> _stopGentlyAndWait;
-        private static Func<Task> _equipOptimalGear;
-        private static Func<Task> _extractMateria;
-        private static Func<Task> _selfRepair;
-        private static Func<Task> _selfRepairWithMenderFallback;
-        private static Func<Task> _stopGently;
-        private static Action<string, Func<Task>> _addHook;
-        private static Action<string, Func<Task>> _addCraftHook;
-        private static Action<string, Func<Task>> _addCompletionHook;
-        private static Action<string, Func<Task>> _addGrindHook;
-        private static Action<string, Func<Task>> _addGatherHook;
-        private static Action<string> _removeHook;
-        private static Action<string> _removeCraftHook;
-        private static Action<string> _removeCompletionHook;
-        private static Action<string> _removeGrindHook;
-        private static Action<string> _removeGatherHook;
-        private static Func<List<string>> _getHookList;
-        private static Func<Task<bool>> _exitCrafting;
-        private static Func<HashSet<uint>> _getAllOrderItems;
-        private static Action<HashSet<uint>> _setTrashExclusionItems;
+        public static Func<string>? _getCurrentAreaName;
+        private static readonly Func<Task>? _stopGentlyAndWait;
+        private static Func<Task>? _equipOptimalGear;
+        private static Func<Task>? _extractMateria;
+        private static Func<Task>? _selfRepair;
+        private static Func<Task>? _selfRepairWithMenderFallback;
+        private static Func<Task>? _stopGently;
+        private static Action<string, Func<Task>>? _addHook;
+        private static Action<string, Func<Task>>? _addCraftHook;
+        private static Action<string, Func<Task>>? _addCompletionHook;
+        private static Action<string, Func<Task>>? _addGrindHook;
+        private static Action<string, Func<Task>>? _addGatherHook;
+        private static Action<string>? _removeHook;
+        private static Action<string>? _removeCraftHook;
+        private static Action<string>? _removeCompletionHook;
+        private static Action<string>? _removeGrindHook;
+        private static Action<string>? _removeGatherHook;
+        private static Func<List<string>>? _getHookList;
+        private static Func<Task<bool>>? _exitCrafting;
+        private static Func<HashSet<uint>>? _getAllOrderItems;
+        private static Action<HashSet<uint>>? _setTrashExclusionItems;
 
-        private static Func<Task<bool>> _isProductKeyValid;
+        private static Func<Task<bool>>? _isProductKeyValid;
 
         //private static Func<string, Vector3, Func<bool>, bool, Task<bool>>? _travelToWithArea;
         private static Func<uint, uint, Vector3, Func<bool>, bool, Task<bool>>? _travelTo;
@@ -150,7 +150,7 @@ namespace LlamaLibrary.Helpers
         {
             try
             {
-                if (BotManager.Bots.FirstOrDefault(c => c.EnglishName == "Lisbeth") == default)
+                if (BotManager.Bots.FirstOrDefault(c => c.EnglishName == "Lisbeth") == null)
                 {
                     return false;
                 }
@@ -188,7 +188,7 @@ namespace LlamaLibrary.Helpers
         {
             if (_orderMethod != null)
             {
-                return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false });
+                return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false })!;
             }
 
             FindLisbeth();
@@ -197,14 +197,14 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false });
+            return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, false })!;
         }
 
         public static async Task<bool> ExecuteOrdersIgnoreHome(string json)
         {
             if (_orderMethod != null)
             {
-                return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true });
+                return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true })!;
             }
 
             FindLisbeth();
@@ -213,13 +213,13 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true });
+            return await (Task<bool>)_orderMethod.Invoke(_lisbeth, new object[] { json, true })!;
         }
 
         [Obsolete("Use TravelToZones instead")]
-        public static async Task<bool> TravelTo(string area, Vector3 position, Func<bool>? condition = null, bool land = true)
+        public static Task<bool> TravelTo(string area, Vector3 position, Func<bool>? condition = null, bool land = true)
         {
-            return false;
+            return Task.FromResult(false);
             /*
             if (condition == null)
             {
@@ -359,7 +359,7 @@ namespace LlamaLibrary.Helpers
             return _getAllOrderItems?.Invoke();
         }
 
-        public static void SetTrashExclusionItems(HashSet<uint> items)
+        public static void SetTrashExclusionItems(HashSet<uint>? items)
         {
             if (items == null) { return; }
 

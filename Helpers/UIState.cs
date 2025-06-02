@@ -65,7 +65,7 @@ public static class UIState
         {
             Log.Information("Item not found in exd, trying again");
             Core.Memory.ClearCache();
-            using (var locks = Core.Memory.AcquireFrame())
+            using (Core.Memory.AcquireFrame())
             {
                 itemPtr = GetItemExdData(id);
             }
@@ -141,17 +141,14 @@ public static class UIState
 
         var saddlebagsItem = (await ItemFinder.SafelyGetCachedSaddlebagInventoryComplete()).Inventory.Any(i => i.Key % 1000000 == itemId);
 
-        var glamourDresserItem = false;
-
         if (!QuestLogManager.IsQuestCompleted(68554))
         {
             return inventoryItem || retainerItem || saddlebagsItem;
         }
 
-        glamourDresserItem = forceGlamour ? (await ItemFinder.GetGlamourDressedUpdated()).Any(i => i % 1000000 == itemId) : ItemFinder.GetCachedGlamourDresserInventory().Any(i => i % 1000000 == itemId);
+        var glamourDresserItem = forceGlamour ? (await ItemFinder.GetGlamourDressedUpdated()).Any(i => i % 1000000 == itemId) : ItemFinder.GetCachedGlamourDresserInventory().Any(i => i % 1000000 == itemId);
 
         //Log.Information($"Item {itemId} found in inventory: {inventoryItem}, retainer: {retainerItem}, saddlebags: {saddlebagsItem}, glamour dresser: {glamourDresserItem}");
-
         return inventoryItem || retainerItem || saddlebagsItem || glamourDresserItem;
     }
 
@@ -175,17 +172,14 @@ public static class UIState
 
         var saddlebagsItem = ItemFinder.GetCachedSaddlebagInventoryComplete().Inventory.Any(i => i.Key % 1000000 == itemId);
 
-        var glamourDresserItem = false;
-
         if (!QuestLogManager.IsQuestCompleted(68554))
         {
             return inventoryItem || retainerItem || saddlebagsItem;
         }
 
-        glamourDresserItem = ItemFinder.GetCachedGlamourDresserInventory().Any(i => i % 1000000 == itemId);
+        var glamourDresserItem = ItemFinder.GetCachedGlamourDresserInventory().Any(i => i % 1000000 == itemId);
 
         //Log.Information($"Item {itemId} found in inventory: {inventoryItem}, retainer: {retainerItem}, saddlebags: {saddlebagsItem}, glamour dresser: {glamourDresserItem}");
-
         return inventoryItem || retainerItem || saddlebagsItem || glamourDresserItem;
     }
 }

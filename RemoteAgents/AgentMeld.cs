@@ -127,7 +127,7 @@ public struct MeldItem
     [FieldOffset(0x36)]
     public byte MateriaGrade5;
 
-    public Item Item => DataManager.GetItem(ItemId);
+    public Item? Item => DataManager.GetItem(ItemId);
 
     public int MateriaCount => new[] { MateriaType1, MateriaType2, MateriaType3, MateriaType4, MateriaType5 }.Count(i => i != 0);
 
@@ -138,8 +138,8 @@ public struct MeldItem
             var materia = new MateriaItem[MateriaCount];
             for (int i = 0; i < MateriaCount; i++)
             {
-                var Type = (ushort)GetType().GetField($"MateriaType{i + 1}")?.GetValue(this);
-                var Grade = (byte)GetType().GetField($"MateriaGrade{i + 1}")?.GetValue(this);
+                var Type = (ushort)(GetType().GetField($"MateriaType{i + 1}")?.GetValue(this) ?? 0);
+                var Grade = (byte)(GetType().GetField($"MateriaGrade{i + 1}")?.GetValue(this) ?? 0);
                 materia[i] = ResourceManager.MateriaList.Value[Type].First(j => j.Tier == Grade);
             }
 
@@ -147,7 +147,7 @@ public struct MeldItem
         }
     }
 
-    public bool CanMeld => CanOvermeld ? Item.MateriaSlots > MateriaCount : MateriaCount < 5;
+    public bool CanMeld => CanOvermeld ? Item?.MateriaSlots > MateriaCount : MateriaCount < 5;
 
     //ToString() method
     public override string ToString()

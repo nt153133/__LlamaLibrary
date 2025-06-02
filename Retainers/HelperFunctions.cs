@@ -31,8 +31,7 @@ namespace LlamaLibrary.Retainers
 
         public const InventoryBagId PlayerGilId = InventoryBagId.Currency;
 
-        public static readonly InventoryBagId[] PlayerInventoryBagIds = new InventoryBagId[6]
-        {
+        public static readonly InventoryBagId[] PlayerInventoryBagIds = {
             InventoryBagId.Bag1,
             InventoryBagId.Bag2,
             InventoryBagId.Bag3,
@@ -236,21 +235,16 @@ namespace LlamaLibrary.Retainers
                 var zoneList = new List<uint>();
                 var zoneMap = new List<(uint Bellzone, uint Truezone)>();
 
-                foreach (var (ZoneId, Location) in SummoningBells)
+                foreach ((var ZoneId, _) in SummoningBells)
                 {
                     var zone = ZoneId;
-                    switch (zone)
+                    zone = zone switch
                     {
-                        case 131:
-                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 9)!.ZoneId;
-                            break;
-                        case 133:
-                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 2)!.ZoneId;
-                            break;
-                        case 419:
-                            zone = DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 70)!.ZoneId;
-                            break;
-                    }
+                        131 => DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 9)!.ZoneId,
+                        133 => DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 2)!.ZoneId,
+                        419 => DataManager.AetheryteCache.Values.FirstOrDefault(i => i.Id == 70)!.ZoneId,
+                        _   => zone
+                    };
 
                     if (DataManager.AetheryteCache.Values.Any(i => i.ZoneId == zone && i.IsAetheryte))
                     {
@@ -284,8 +278,9 @@ namespace LlamaLibrary.Retainers
 
         public static uint FindCheapestZone(IEnumerable<uint> zones)
         {
-            Log.Information($"Zones: {string.Join(",", zones)}");
-            return zones.Where(j => WorldManager.AvailableLocations.Any(i => i.ZoneId == j)).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j).GilCost)
+            var enumerable = zones.ToList();
+            Log.Information($"Zones: {string.Join(",", enumerable)}");
+            return enumerable.Where(j => WorldManager.AvailableLocations.Any(i => i.ZoneId == j)).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j).GilCost)
                 .First();
         }
 
@@ -555,6 +550,7 @@ namespace LlamaLibrary.Retainers
             }
         }
 
+        // ReSharper disable once UnusedMethodReturnValue.Local
         private static bool WaitUntil(Func<bool> condition, int frequency = 25, int timeout = -1, bool checkWindows = false)
         {
             var t = Task.Run(async () =>

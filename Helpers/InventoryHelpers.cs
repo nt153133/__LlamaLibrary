@@ -20,17 +20,17 @@ namespace LlamaLibrary.Helpers
         public static bool IsFCItemBusy => Core.Memory.NoCacheRead<bool>(Offsets.g_InventoryManager + Offsets.InventoryManagerFCTransfering);
         public static async Task LowerQualityAndCombine(int itemId)
         {
-            var HQslots = InventoryManager.FilledSlots.Where(slot => slot.RawItemId == itemId && slot.IsHighQuality);
+            var HQslots = InventoryManager.FilledSlots.Where(slot => slot.RawItemId == itemId && slot.IsHighQuality).ToList();
 
-            if (HQslots.Any())
+            if (HQslots.Count != 0)
             {
                 HQslots.First().LowerQuality();
                 await Coroutine.Sleep(1000);
             }
 
-            var NQslots = InventoryManager.FilledSlots.Where(slot => slot.RawItemId == itemId && !slot.IsHighQuality);
+            var NQslots = InventoryManager.FilledSlots.Where(slot => slot.RawItemId == itemId && !slot.IsHighQuality).ToList();
 
-            if (NQslots.Count() > 1)
+            if (NQslots.Count > 1)
             {
                 var firstSlot = NQslots.First();
                 foreach (var slot in NQslots.Skip(1))
@@ -99,7 +99,7 @@ namespace LlamaLibrary.Helpers
                 for (var i = bagSlotArray.Length - 1; i > moveToIndex; i--)
                 {
                     var moveFromSlot = bagSlotArray[i];
-                    if (moveFromSlot == null || !moveFromSlot.IsValid || !moveFromSlot.IsFilled)
+                    if (!moveFromSlot.IsValid || !moveFromSlot.IsFilled)
                     {
                         continue;
                     }

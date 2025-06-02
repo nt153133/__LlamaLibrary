@@ -17,6 +17,7 @@ using LlamaLibrary.Helpers;
 using LlamaLibrary.Logging;
 using TreeSharp;
 using Action = TreeSharp.Action;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace LlamaLibrary.Utilities
 {
@@ -30,7 +31,7 @@ namespace LlamaLibrary.Utilities
 
         internal static bool Bool0;
 
-        internal static bool InFight => GameObjectManager.Attackers.Any();
+        internal static bool InFight => GameObjectManager.Attackers.Count != 0;
         internal static BattleCharacter? FirstAttacker => GameObjectManager.Attackers.FirstOrDefault();
 
         private static readonly int[] DailyOrderTypes = { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
@@ -134,7 +135,7 @@ namespace LlamaLibrary.Utilities
                 while (Core.Me.InCombat)
                 {
                     var target = GameObjectManager.Attackers.FirstOrDefault(i => i.InCombat && i.IsAlive);
-                    if (target != default(BattleCharacter) && target.IsValid && target.IsAlive)
+                    if (target != null && target is {IsValid: true, IsAlive: true })
                     {
                         await Lisbeth.Kill(target);
 
@@ -329,7 +330,7 @@ namespace LlamaLibrary.Utilities
             while (Core.Me.InCombat)
             {
                 var target = GameObjectManager.Attackers.FirstOrDefault(i => i.InCombat);
-                if (target != default(BattleCharacter) && target.IsValid && target.IsAlive)
+                if (target != null && target is {IsValid: true, IsAlive: true })
                 {
                     //await Navigation.GetTo(WorldManager.ZoneId, target.Location);
                     await Lisbeth.Kill(target);
@@ -340,14 +341,14 @@ namespace LlamaLibrary.Utilities
         public static bool FindMob(uint npcId)
         {
             uint[] fateExmpt = { 252, 339, 375 };
-            var mob = GameObjectManager.GetObjectsOfType<BattleCharacter>(true).Where(i => i.NpcId == npcId && i.IsValid && i.IsAlive && !(i.IsFate && !fateExmpt.Contains(npcId)) && !Blacklist.Contains(i.ObjectId))
+            var mob = GameObjectManager.GetObjectsOfType<BattleCharacter>(true).Where(i => i.NpcId == npcId && i is {IsValid: true, IsAlive: true } && !(i.IsFate && !fateExmpt.Contains(npcId)) && !Blacklist.Contains(i.ObjectId))
                 .OrderBy(r => r.Distance()).FirstOrDefault();
             if (FirstAttacker != null && (Core.Me.InCombat && GameObjectManager.Attackers.FirstOrDefault() != null && FirstAttacker.IsAlive))
             {
                 return true;
             }
 
-            if (mob == default(BattleCharacter))
+            if (mob == null)
             {
                 Log.Error($"Couldn't find mob with NPCID {npcId}");
                 return false;
@@ -362,7 +363,7 @@ namespace LlamaLibrary.Utilities
             while (FirstAttacker != null && (Core.Me.InCombat && GameObjectManager.Attackers.FirstOrDefault() != null && FirstAttacker.IsAlive))
             {
                 var target = GameObjectManager.Attackers.FirstOrDefault();
-                if (target != default(BattleCharacter) && target.IsValid && target.IsAlive)
+                if (target != null && target is {IsValid: true, IsAlive: true })
                 {
                     //await Navigation.GetTo(WorldManager.ZoneId, target.Location);
                     Bool0 = false;
@@ -372,10 +373,10 @@ namespace LlamaLibrary.Utilities
                 }
             }
 
-            var mob = GameObjectManager.GetObjectsOfType<BattleCharacter>(true).Where(i => i.NpcId == npcId && i.IsValid && i.IsAlive && !(i.IsFate && !fateExmpt.Contains(npcId)) && !Blacklist.Contains(i.ObjectId))
+            var mob = GameObjectManager.GetObjectsOfType<BattleCharacter>(true).Where(i => i.NpcId == npcId && i is {IsValid: true, IsAlive: true } && !(i.IsFate && !fateExmpt.Contains(npcId)) && !Blacklist.Contains(i.ObjectId))
                 .OrderBy(r => r.Distance()).FirstOrDefault();
 
-            if (mob == default(BattleCharacter))
+            if (mob == null)
             {
                 Log.Error($"Couldn't find mob with NPCID {npcId}");
                 return false;
@@ -391,9 +392,9 @@ namespace LlamaLibrary.Utilities
 
             //await KillMob(mob);
             await Lisbeth.Kill(mob);
-            Log.Debug($"Did we kill it? {!(mob.IsValid && mob.IsAlive)}");
+            Log.Debug($"Did we kill it? {!(mob is {IsValid: true, IsAlive: true })}");
             Navigator.PlayerMover.MoveStop();
-            return !(mob.IsValid && mob.IsAlive);
+            return !(mob is {IsValid: true, IsAlive: true });
         }
 
         public static async Task KillMob2(BattleCharacter mob)
@@ -405,7 +406,7 @@ namespace LlamaLibrary.Utilities
 
             var test = new Poi(mob, PoiType.Kill);
             Poi.Current = test;
-            while (mob.IsValid && mob.IsAlive && Poi.Current != null && Poi.Current.Unit != null)
+            while (mob is {IsValid: true, IsAlive: true } && Poi.Current != null && Poi.Current.Unit != null)
             {
                 //("Looping combat");
                 if (!await CombatCoroutine().ExecuteCoroutine())
@@ -416,11 +417,11 @@ namespace LlamaLibrary.Utilities
 
                 GameObjectManager.Update();
                 await Coroutine.Yield();
-                if (mob.IsValid && mob.IsAlive && Poi.Current != null && Poi.Current.Unit != null)
+                if (mob is {IsValid: true, IsAlive: true } && Poi.Current != null && Poi.Current.Unit != null)
                 {
-                    Log.Debug($"Looping combat {mob} {Poi.Current} {mob.IsValid && mob.IsAlive && Poi.Current != null && Poi.Current.Unit != null} ");
+                    Log.Debug($"Looping combat {mob} {Poi.Current} {mob is {IsValid: true, IsAlive: true } && Poi.Current != null && Poi.Current.Unit != null} ");
                     await Coroutine.Sleep(500);
-                    Log.Debug($"Looping combat {mob.IsValid && mob.IsAlive && Poi.Current != null && Poi.Current.Unit != null} ");
+                    Log.Debug($"Looping combat {mob is {IsValid: true, IsAlive: true } && Poi.Current != null && Poi.Current.Unit != null} ");
                 }
                 else
                 {
@@ -436,74 +437,74 @@ namespace LlamaLibrary.Utilities
         {
             return new PrioritySelector(
                 new Decorator(
-                    object0 => !InFight && !Core.Me.IsDead,
+                    _ => !InFight && !Core.Me.IsDead,
                     new PrioritySelector(
                         new HookExecutor("Rest", "", new ActionAlwaysFail()),
                         new HookExecutor("PreCombatBuff", "", new ActionAlwaysFail()))),
                 new Decorator(
-                    object0 => Core.Me.IsDead || Poi.Current == null || Poi.Current.BattleCharacter == null,
-                    new Action(context =>
+                    _ => Core.Me.IsDead || Poi.Current == null || Poi.Current.BattleCharacter == null,
+                    new Action(_ =>
                     {
                         Poi.Clear("Invalid Combat Poi");
                     })),
                 new Decorator(
-                    object0 => !Poi.Current.Unit.IsValid || Poi.Current.BattleCharacter.IsDead || Poi.Current.Unit.IsFateGone,
-                    new Action(context =>
+                    _ => !Poi.Current.Unit.IsValid || Poi.Current.BattleCharacter.IsDead || Poi.Current.Unit.IsFateGone,
+                    new Action(_ =>
                     {
                         Poi.Clear("Targeted unit is dead, clearing Poi and carrying on!");
                         return RunStatus.Failure;
                     })),
                 new Decorator(
-                    object0 => Poi.Current != null && Poi.Current.Unit != null && Poi.Current.Unit.IsValid && Poi.Current.Unit.Pointer != Core.Me.PrimaryTargetPtr && Poi.Current.Unit.Distance() < 30f,
-                    new Action(context =>
+                    _ => Poi.Current != null && Poi.Current.Unit != null && Poi.Current.Unit.IsValid && Poi.Current.Unit.Pointer != Core.Me.PrimaryTargetPtr && Poi.Current.Unit.Distance() < 30f,
+                    new Action(_ =>
                     {
                         Poi.Current.Unit.Target();
                     })),
                 new Decorator(
-                    object0 => Core.Me.PrimaryTargetPtr == IntPtr.Zero,
-                    new Action(context =>
+                    _ => Core.Me.PrimaryTargetPtr == IntPtr.Zero,
+                    new Action(_ =>
                     {
                         Poi.Clear("Targeted unit is zero, clearing Poi and carrying on!");
                         return RunStatus.Failure;
                     })),
                 new HookExecutor("PreCombatLogic"),
                 new Decorator(
-                    object0 => Core.Me.PrimaryTargetPtr != IntPtr.Zero,
+                    _ => Core.Me.PrimaryTargetPtr != IntPtr.Zero,
                     new PrioritySelector(
                         new Decorator(
-                            object0 => Core.Player.IsMounted && Core.Target.Location.Distance2D(Core.Player.Location) < Core.Me.CombatReach + RoutineManager.Current.PullRange,
-                            new Action(context =>
+                            _ => Core.Player.IsMounted && Core.Target.Location.Distance2D(Core.Player.Location) < Core.Me.CombatReach + RoutineManager.Current.PullRange,
+                            new Action(_ =>
                             {
                                 ActionManager.Dismount();
                                 Navigator.Stop();
                             })),
                         new Decorator(
-                            object0 => !Core.Me.InCombat || (!Core.Me.InCombat && !Poi.Current.BattleCharacter.InCombat),
+                            _ => !Core.Me.InCombat || (!Core.Me.InCombat && !Poi.Current.BattleCharacter.InCombat),
                             new HookExecutor("Pull", "Run when pulling a mob to kill.", RoutineManager.Current.PullBehavior)),
                         new Decorator(
-                            object0 => Core.Me.InCombat,
+                            _ => Core.Me.InCombat,
                             new PrioritySelector(
                                 new Decorator(
-                                    object0 => PostCombatDelay > 0f && !Bool0,
-                                    new Action(context =>
+                                    _ => PostCombatDelay > 0f && !Bool0,
+                                    new Action(_ =>
                                     {
                                         Bool0 = true;
                                         return RunStatus.Failure;
                                     })),
                                 new Decorator(
-                                    object0 => !Poi.Current.BattleCharacter.InCombat && Poi.Current.TimeSet + TimeSpan.FromSeconds(10.0) < DateTime.Now,
-                                    new Action(context =>
+                                    _ => !Poi.Current.BattleCharacter.InCombat && Poi.Current.TimeSet + TimeSpan.FromSeconds(10.0) < DateTime.Now,
+                                    new Action(_ =>
                                     {
                                         Poi.Clear("I'm in combat, but POI isn't and it has been at least 10 seconds. Clearing POI and picking up a new target.");
                                     })),
                                 new Decorator(
-                                    object0 => Poi.Current.BattleCharacter.IsDead,
-                                    new Action(context =>
+                                    _ => Poi.Current.BattleCharacter.IsDead,
+                                    new Action(_ =>
                                     {
                                         Poi.Clear("I'm in combat, but POI is dead. Clearing POI and picking up a new target.");
                                     })),
                                 new HookExecutor("RoutineCombat", "Executes the current routine's Combat behavior", BrainBehavior.CombatLogic))))),
-                new Action(object0 => RunStatus.Success));
+                new Action(_ => RunStatus.Success));
         }
     }
 }

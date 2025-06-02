@@ -8,6 +8,7 @@ using ff14bot.Navigation;
 using ff14bot.Pathing.Service_Navigation;
 using LlamaLibrary.Logging;
 using TreeSharp;
+// ReSharper disable VirtualMemberCallInConstructor
 
 namespace LlamaLibrary
 {

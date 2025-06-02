@@ -238,7 +238,7 @@ public class LoadServerProfile
             return;
         }
 
-        if (!profileList.Any())
+        if (profileList.Count == 0)
         {
             Log.Error("Profile List is empty");
             return;
@@ -246,7 +246,7 @@ public class LoadServerProfile
 
         var shortList = profileList.Where(i => i != null && i.Name != null && i.Name.Equals(profileName, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        if (shortList == null || !shortList.Any())
+        if (shortList == null || shortList.Count == 0)
         {
             Log.Error($"Profile {profileName} not found on server.");
             TreeRoot.Stop($"Profile {profileName} not found on server.");
@@ -297,7 +297,7 @@ public class LoadServerProfile
             return;
         }
 
-        if (!profileList.Any())
+        if (profileList.Count == 0)
         {
             Log.Error("Profile List is empty");
             return;
@@ -305,7 +305,7 @@ public class LoadServerProfile
 
         var shortList = profileList.Where(i => i != null && i.ZoneId != null && i.ZoneId == ZoneId).ToList();
 
-        if (shortList == null || !shortList.Any())
+        if (shortList == null || shortList.Count == 0)
         {
             Log.Error($"Profile with ID {ZoneId} not found on server.");
             TreeRoot.Stop($"Profile with ID {ZoneId} not found on server.");

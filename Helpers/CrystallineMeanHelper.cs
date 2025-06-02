@@ -17,6 +17,7 @@ using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Utilities;
 using Newtonsoft.Json;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace LlamaLibrary.Helpers
 {
@@ -272,37 +273,17 @@ namespace LlamaLibrary.Helpers
 
             HugeCraftworksSupply.Instance.Close();
 
-            if (Core.Me.CurrentJob is ClassJobType.Alchemist or ClassJobType.Culinarian or
-                ClassJobType.Miner or ClassJobType.Botanist)
-            {
-                qty = 18;
-            }
-            else
-            {
-                qty = 6;
-            }
+            qty = Core.Me.CurrentJob is ClassJobType.Alchemist or ClassJobType.Culinarian or
+                ClassJobType.Miner or ClassJobType.Botanist ? 18 : 6;
 
-            if (Core.Me.CurrentJob is ClassJobType.Miner or ClassJobType.Botanist)
+            orderType = Core.Me.CurrentJob switch
             {
-                orderType = "Gather";
-            }
-            else if (Core.Me.CurrentJob == ClassJobType.Fisher)
-            {
-                orderType = "Fisher";
-            }
-            else
-            {
-                orderType = $"{Core.Me.CurrentJob}";
-            }
+                ClassJobType.Miner or ClassJobType.Botanist => "Gather",
+                ClassJobType.Fisher                         => "Fisher",
+                _                                           => $"{Core.Me.CurrentJob}"
+            };
 
-            if (Core.Me.CurrentJob is ClassJobType.Miner or ClassJobType.Botanist or ClassJobType.Fisher)
-            {
-                needHQ = false;
-            }
-            else
-            {
-                needHQ = true;
-            }
+            needHQ = Core.Me.CurrentJob is not (ClassJobType.Miner or ClassJobType.Botanist or ClassJobType.Fisher);
 
             var order = new LisbethOrder(1, 1, requestedID, qty - ConditionParser.HqItemCount((uint)requestedID), orderType, needHQ);
             outList.Add(order);
@@ -348,7 +329,7 @@ namespace LlamaLibrary.Helpers
         {
             var facetNpc = npc.GameObject;
 
-            if (facetNpc == default)
+            if (facetNpc == null)
             {
                 await Navigation.GetTo(npc.Location);
                 facetNpc = npc.GameObject;

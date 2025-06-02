@@ -7,7 +7,7 @@ namespace LlamaLibrary.Memory;
 
 public class PatternFinderProxy
 {
-    private static readonly DebounceDispatcher DebounceDispatcher = new DebounceDispatcher(e => Dispose());
+    private static readonly DebounceDispatcher DebounceDispatcher = new DebounceDispatcher(_ => Dispose());
     private static readonly LLogger Log = new LLogger("PatternFinderProxy", Colors.Blue);
     private static readonly object Lock = new object();
     private static GreyMagicPf? _patternFinder;

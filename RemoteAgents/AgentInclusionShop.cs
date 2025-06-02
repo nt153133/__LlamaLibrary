@@ -163,7 +163,7 @@ namespace LlamaLibrary.RemoteAgents
                     for (byte i = 0; i < subCount; i++)
                     {
                         var subCategory = Instance.SubCategoryPtrByIndex(category, i);
-                        var enabledByte = Core.Memory.Read<byte>(subCategory + Offsets.SubCategoryEnabled);
+                        //var enabledByte = Core.Memory.Read<byte>(subCategory + Offsets.SubCategoryEnabled);
                         var itemNum = 0;
                         InclusionShopItemStruct shopItemStruct;
                         do
