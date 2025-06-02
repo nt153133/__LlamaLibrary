@@ -11,7 +11,7 @@ namespace LlamaLibrary.Helpers;
 
 public static class RbButtonHelper
 {
-    public static readonly ConcurrentDictionary<string, Button> Buttons = new ConcurrentDictionary<string, Button>();
+    public static readonly ConcurrentDictionary<string, Button> Buttons = new ConcurrentDictionary<string, Button>(StringComparer.Ordinal);
     private static StackPanel? _stackPanel;
 
     public static void AddButton(string name, string content, Action handler)

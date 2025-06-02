@@ -67,7 +67,7 @@ namespace LlamaLibrary.Helpers
         internal static void FindLisbeth()
         {
             var loader = BotManager.Bots
-                .FirstOrDefault(c => c.Name == "Lisbeth");
+                .FirstOrDefault(c => string.Equals(c.Name, "Lisbeth", StringComparison.Ordinal));
 
             if (loader == null)
             {

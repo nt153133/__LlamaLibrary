@@ -18,7 +18,7 @@ namespace LlamaLibrary.RemoteWindows
             internal static int TextFieldPtr;
         }
 
-        private static readonly Dictionary<string, int> Properties = new()
+        private static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
         {
             {
                 "Comment",

@@ -41,7 +41,7 @@ public class OffsetAttribute : Attribute
     public OffsetAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0)
     {
         Pattern = pattern;
-        if (!Pattern.StartsWith("Search "))
+        if (!Pattern.StartsWith("Search ", StringComparison.Ordinal))
         {
             Pattern = "Search " + Pattern;
         }
@@ -55,7 +55,7 @@ public class OffsetAttribute : Attribute
     protected OffsetAttribute(string pattern, string cnPattern, bool ignoreCache = false, int expectedValue = 0)
     {
         PatternCN = cnPattern;
-        if (!PatternCN.StartsWith("Search "))
+        if (!PatternCN.StartsWith("Search ", StringComparison.Ordinal))
         {
             PatternCN = "Search " + PatternCN;
         }
@@ -76,13 +76,13 @@ public class OffsetAttribute : Attribute
     protected OffsetAttribute(string pattern, string cnPattern, string dawntrailPattern, bool ignoreCache = false, int expectedValue = 0)
     {
         PatternCN = cnPattern;
-        if (!string.IsNullOrEmpty(cnPattern) && !PatternCN.StartsWith("Search "))
+        if (!string.IsNullOrEmpty(cnPattern) && !PatternCN.StartsWith("Search ", StringComparison.Ordinal))
         {
             PatternCN = "Search " + PatternCN;
         }
 
         PatternDawntrail = dawntrailPattern;
-        if (!string.IsNullOrEmpty(dawntrailPattern) && !PatternDawntrail.StartsWith("Search "))
+        if (!string.IsNullOrEmpty(dawntrailPattern) && !PatternDawntrail.StartsWith("Search ", StringComparison.Ordinal))
         {
             PatternDawntrail = "Search " + PatternDawntrail;
         }
@@ -94,7 +94,7 @@ public class OffsetAttribute : Attribute
             Pattern = !string.IsNullOrEmpty(dawntrailPattern) ? PatternDawntrail : PatternCN;
         }
 
-        if (!string.IsNullOrEmpty(Pattern) && !Pattern.StartsWith("Search "))
+        if (!string.IsNullOrEmpty(Pattern) && !Pattern.StartsWith("Search ", StringComparison.Ordinal))
         {
             Pattern = "Search " + Pattern;
         }
@@ -125,7 +125,7 @@ public class OffsetAttribute : Attribute
 
 public static class OffsetAttributeExtensions
 {
-    public static readonly ConcurrentDictionary<string, OffsetAttribute> AttributeCache = new ConcurrentDictionary<string, OffsetAttribute>();
+    public static readonly ConcurrentDictionary<string, OffsetAttribute> AttributeCache = new ConcurrentDictionary<string, OffsetAttribute>(StringComparer.Ordinal);
 
     public static string GetPattern(this MemberInfo property, ForceClientMode forceClientMode = ForceClientMode.None)
     {

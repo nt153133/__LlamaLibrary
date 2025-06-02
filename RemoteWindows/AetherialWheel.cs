@@ -7,7 +7,7 @@ namespace LlamaLibrary.RemoteWindows
     /// </summary>
     public class AetherialWheel : RemoteWindow<AetherialWheel>
     {
-        public static readonly Dictionary<string, int> Properties = new()
+        public static readonly Dictionary<string, int> Properties = new(System.StringComparer.Ordinal)
         {
             {
                 "MaxSlots",

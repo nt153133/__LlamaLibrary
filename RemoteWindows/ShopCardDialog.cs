@@ -8,7 +8,7 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public static Dictionary<string, int> Properties = new()
+        public static Dictionary<string, int> Properties = new(System.StringComparer.Ordinal)
         {
 #if RB_DT
             { "CardId", 0 },

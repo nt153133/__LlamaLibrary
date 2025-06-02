@@ -7,7 +7,7 @@ public class FileCache<T> where T : class
 {
     private readonly IFileStorable<T> _store;
     private readonly ICacheable<T> _cacheable;
-    private readonly Dictionary<string, T> _cache = new();
+    private readonly Dictionary<string, T> _cache = new(System.StringComparer.Ordinal);
 
     public FileCache(IFileStorable<T> store, ICacheable<T> cache)
     {

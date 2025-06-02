@@ -11,7 +11,7 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public static readonly Dictionary<string, int> Properties = new()
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
         {
             {
                 "ItemId",

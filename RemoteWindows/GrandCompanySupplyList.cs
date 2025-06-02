@@ -15,7 +15,7 @@ namespace LlamaLibrary.RemoteWindows
     //TODO Move element numbers to dictionary
     public class GrandCompanySupplyList : RemoteWindow<GrandCompanySupplyList>
     {
-        public static Dictionary<string, int> Properties = new()
+        public static Dictionary<string, int> Properties = new(StringComparer.Ordinal)
         {
             { "NumberOfTurnins", 8 },
             { "ReqElements", 385 },
@@ -36,6 +36,7 @@ namespace LlamaLibrary.RemoteWindows
             if (Translator.Language == Language.Chn)
             {
                 Properties = new Dictionary<string, int>
+(StringComparer.Ordinal)
                 {
                     /*{ "NumberOfTurnins", 7 },
                     { "ReqElements", 386 },

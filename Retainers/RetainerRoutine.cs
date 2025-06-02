@@ -403,7 +403,7 @@ namespace LlamaLibrary.Retainers
                 return false;
             }
 
-            if (SelectString.Lines().Contains(Translator.VentureCompleteText))
+            if (SelectString.Lines().Contains(Translator.VentureCompleteText, StringComparer.Ordinal))
             {
                 Log.Verbose("Venture Done");
                 SelectString.ClickLineEquals(Translator.VentureCompleteText);

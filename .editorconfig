@@ -28,6 +28,13 @@ dotnet_diagnostic.CS8618.severity = none
 dotnet_diagnostic.SA1306.severity = None
 dotnet_diagnostic.CS0169.severity = None
 dotnet_diagnostic.CS0618.severity = suggestion
+dotnet_diagnostic.MA0026.severity = None
+dotnet_diagnostic.MA0048.severity = None
+dotnet_diagnostic.MA0016.severity = None
+dotnet_diagnostic.MA0069.severity = None
+dotnet_diagnostic.MA0017.severity = None
+dotnet_diagnostic.MA0004.severity = None
+
 # Using directive should appear within a namespace declaration
 dotnet_diagnostic.SA1200.severity = None
 

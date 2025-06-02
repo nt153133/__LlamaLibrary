@@ -54,7 +54,7 @@ public static class PatchManager
     {
         foreach (var hook in Hooks)
         {
-            if (hook.Name == name)
+            if (string.Equals(hook.Name, name, StringComparison.Ordinal))
             {
                 return hook;
             }

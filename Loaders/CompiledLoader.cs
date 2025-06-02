@@ -188,13 +188,13 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
 
     protected virtual async Task<bool> Update()
     {
-        if (!await NeedsUpdate())
+        if (!await NeedsUpdate().ConfigureAwait(false))
         {
             return false;
         }
 
         Log.Information($"Updating {ProjectName}...");
-        var downloadInfo = await Download();
+        var downloadInfo = await Download().ConfigureAwait(false);
         if (downloadInfo.Stream == null)
         {
             Log.Error($"Failed to download {ProjectName}");
@@ -226,7 +226,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
                     Log.Information($"Decompressed(LZMA) in {sw.ElapsedMilliseconds}ms");
                     outStream.Flush();
                     outStream.Position = 0;
-                    await TarFile.ExtractToDirectoryAsync(outStream, LocalFolderName, true);
+                    await TarFile.ExtractToDirectoryAsync(outStream, LocalFolderName, true).ConfigureAwait(false);
                     break;
                 }
 
@@ -243,7 +243,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
         }
         finally
         {
-            await downloadInfo.Stream.DisposeAsync();
+            await downloadInfo.Stream.DisposeAsync().ConfigureAwait(false);
         }
 
         Log.Information($"{ProjectName} updated");
@@ -263,12 +263,12 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
         try
         {
             var sw = Stopwatch.StartNew();
-            using var response = await GetHttpClient().GetAsync(DataUrl, HttpCompletionOption.ResponseContentRead);
+            using var response = await GetHttpClient().GetAsync(DataUrl, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
             Log.Verbose($"{DataUrl}");
             Log.Verbose($"Content Type: {response.Content.Headers.ContentType?.MediaType} Size: {response.Content.Headers.ContentLength:N0}");
             response.EnsureSuccessStatusCode();
             var stream = new MemoryStream();
-            await response.Content.CopyToAsync(stream);
+            await response.Content.CopyToAsync(stream).ConfigureAwait(false);
             sw.Stop();
             stream.Position = 0;
             Log.Information($"Downloaded {response.Content.Headers.ContentLength / 1024f:N0}kb in {sw.ElapsedMilliseconds:N0}ms. Estimated Speed: {(stream.Length / sw.Elapsed.TotalSeconds / 1024 / 1024):N2} MB/s");
@@ -285,7 +285,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
     protected virtual async Task<bool> NeedsUpdate()
     {
         var localVersion = GetLocalVersion();
-        var remoteVersion = await GetRemoteVersion();
+        var remoteVersion = await GetRemoteVersion().ConfigureAwait(false);
         Log.Verbose($"Local Version: {localVersion}");
         Log.Verbose($"Remote Version: {remoteVersion}");
         if (localVersion == null)
@@ -316,9 +316,9 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
     {
         try
         {
-            using var response = await GetHttpClient().SendAsync(new HttpRequestMessage(HttpMethod.Get, VersionUrl), HttpCompletionOption.ResponseHeadersRead);
+            using var response = await GetHttpClient().SendAsync(new HttpRequestMessage(HttpMethod.Get, VersionUrl), HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
-            var versionStr = (await response.Content.ReadAsStringAsync()).Trim();
+            var versionStr = (await response.Content.ReadAsStringAsync().ConfigureAwait(false)).Trim();
             if (Version.TryParse(versionStr, out var version))
             {
                 return version;
@@ -382,7 +382,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
 
         if (!Debug)
         {
-            await Update();
+            await Update().ConfigureAwait(false);
             _client?.Dispose();
         }
 

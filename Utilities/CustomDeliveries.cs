@@ -64,7 +64,7 @@ namespace LlamaLibrary.Utilities
 
             if (doZhloe)
             {
-                var npc = DeliveryNpcs.Where(i => i.Name == "Zhloe Aliapoh").FirstOrDefault();
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Zhloe Aliapoh", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -78,7 +78,7 @@ namespace LlamaLibrary.Utilities
 
             if (doMnaago)
             {
-                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "M'naago");
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "M'naago", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -92,7 +92,7 @@ namespace LlamaLibrary.Utilities
 
             if (doKurenai)
             {
-                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "Kurenai");
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Kurenai", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -106,7 +106,7 @@ namespace LlamaLibrary.Utilities
 
             if (doAdkiragh)
             {
-                var npc = DeliveryNpcs.Where(i => i.Name == "Adkiragh").FirstOrDefault();
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Adkiragh", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -120,7 +120,7 @@ namespace LlamaLibrary.Utilities
 
             if (doKaishirr)
             {
-                var npc = DeliveryNpcs.Where(i => i.Name == "Kai-Shirr").FirstOrDefault();
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Kai-Shirr", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -134,7 +134,7 @@ namespace LlamaLibrary.Utilities
 
             if (doEhlltou)
             {
-                var npc = DeliveryNpcs.Where(i => i.Name == "Ehll Tou").FirstOrDefault();
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Ehll Tou", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -148,7 +148,7 @@ namespace LlamaLibrary.Utilities
 
             if (doCharlemend)
             {
-                var npc = DeliveryNpcs.Where(i => i.Name == "Charlemend").FirstOrDefault();
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Charlemend", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -162,7 +162,7 @@ namespace LlamaLibrary.Utilities
 
             if (doAmeliance)
             {
-                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "Ameliance");
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Ameliance", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -176,7 +176,7 @@ namespace LlamaLibrary.Utilities
 
             if (doAnden)
             {
-                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "Anden");
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Anden", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -190,7 +190,7 @@ namespace LlamaLibrary.Utilities
 
             if (doMargrat)
             {
-                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "Margrat");
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Margrat", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -204,7 +204,7 @@ namespace LlamaLibrary.Utilities
 
             if (doNitowikwe)
             {
-                var npc = DeliveryNpcs.FirstOrDefault(i => i.Name == "Nitowikwe");
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Nitowikwe", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {
@@ -342,7 +342,7 @@ namespace LlamaLibrary.Utilities
                 return null;
             }
 
-            return recipe.FirstOrDefault(i => i.CraftingClass == (ClassJobType)dohClass);
+            return recipe.Find(i => i.CraftingClass == (ClassJobType)dohClass);
         }
 
         public static async Task<bool> HandInCustomNpc(CustomDeliveryNpc deliveryNpc)

@@ -34,7 +34,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
 
     private static readonly List<PulseFlags> PulseFlagOptions = Enum.GetValues(typeof(PulseFlags)).OfType<PulseFlags>().Where(i => i != PulseFlags.None && i != PulseFlags.All).ToList();
 
-    private static ConcurrentDictionary<string, ConcurrentBag<PulseFlags>> PulseFlagBreakdown = new();
+    private static ConcurrentDictionary<string, ConcurrentBag<PulseFlags>> PulseFlagBreakdown = new(StringComparer.Ordinal);
 
     private static readonly string TempListName = $"{nameof(TemplatePlugin)}{Core.Memory.Process.Id}";
     private readonly List<ActionRunCoroutine> _orderBotHooksCoroutines = new();
@@ -133,13 +133,13 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
             var hooks = Lisbeth.GetHookList();
             var baseHook = lisbethHook.Method.Name;
             var craftCycleHook = baseHook + "_Craft";
-            if (!hooks.Contains(baseHook))
+            if (!hooks.Contains(baseHook, StringComparer.Ordinal))
             {
                 Log.Information($"Adding Lisbeth {lisbethHook.Method.Name} Hook");
                 Lisbeth.AddHook(baseHook, lisbethHook);
             }
 
-            if (!hooks.Contains(craftCycleHook))
+            if (!hooks.Contains(craftCycleHook, StringComparer.Ordinal))
             {
                 Log.Information($"Adding {craftCycleHook} Hook");
                 Lisbeth.AddCraftHook(craftCycleHook, lisbethHook);
@@ -174,13 +174,13 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
             var hooks = Lisbeth.GetHookList();
             var baseHook = lisbethHook.Method.Name;
             var craftCycleHook = baseHook + "_Craft";
-            if (!hooks.Contains(baseHook))
+            if (!hooks.Contains(baseHook, StringComparer.Ordinal))
             {
                 Log.Information($"Removing Lisbeth {lisbethHook.Method.Name} Hook");
                 Lisbeth.RemoveHook(baseHook);
             }
 
-            if (!hooks.Contains(craftCycleHook))
+            if (!hooks.Contains(craftCycleHook, StringComparer.Ordinal))
             {
                 Log.Information($"Removing {craftCycleHook} Hook");
                 Lisbeth.RemoveCraftHook(craftCycleHook);

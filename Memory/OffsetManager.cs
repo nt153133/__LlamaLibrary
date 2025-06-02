@@ -52,10 +52,10 @@ public static class OffsetManager
     //private static bool initStarted;
     private static bool initDone;
 
-    public static readonly Dictionary<string, string> patterns = new();
-    public static readonly Dictionary<string, string> constants = new();
+    public static readonly Dictionary<string, string> patterns = new(StringComparer.Ordinal);
+    public static readonly Dictionary<string, string> constants = new(StringComparer.Ordinal);
 
-    public static ConcurrentDictionary<string, long> OffsetCache = new();
+    public static ConcurrentDictionary<string, long> OffsetCache = new(StringComparer.Ordinal);
 
     private const long _version = 34;
 
@@ -156,7 +156,7 @@ public static class OffsetManager
 
                 var newStopwatch = Stopwatch.StartNew();
 
-                await SearchAndSetLL();
+                await SearchAndSetLL().ConfigureAwait(false);
                 newStopwatch.Stop();
 
                 Logger.Debug($"OffsetManager SearchAndSetLL took {newStopwatch.ElapsedMilliseconds}ms");
@@ -215,7 +215,7 @@ public static class OffsetManager
 
         if (File.Exists(OffsetFile) && GameVersion != 0)
         {
-            OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(await File.ReadAllTextAsync(OffsetFile)) ?? new ConcurrentDictionary<string, long>();
+            OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(await File.ReadAllTextAsync(OffsetFile)) ?? new ConcurrentDictionary<string, long>(StringComparer.Ordinal);
             if (!OffsetCache.TryGetValue("Version", out var value) || value != _version)
             {
                 OffsetCache.Clear();
@@ -225,7 +225,7 @@ public static class OffsetManager
             }
         }
 
-        await SetOffsetObjectsAsync(llTypes);
+        await SetOffsetObjectsAsync(llTypes).ConfigureAwait(false);
     }
 
     internal static void ClearOffsetFromCache(MemberInfo? info)
@@ -252,7 +252,7 @@ public static class OffsetManager
     private static List<Type> GetTypes()
     {
         var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
-                  where t.Namespace != null && t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
+                  where t.Namespace != null && t.IsClass && t.Namespace.Contains("LlamaLibrary", StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal))
                   select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
         if (!q1.Contains(typeof(Offsets)))
@@ -408,7 +408,7 @@ public static class OffsetManager
 
             foreach (var ns in param)
             {
-                if (!list.Contains(ns))
+                if (!list.Contains(ns, StringComparer.Ordinal))
                 {
                     list.Add(ns);
                     Logger.Information($"Added namespace '{ns}' to ScriptManager");
@@ -477,7 +477,7 @@ public static class OffsetManager
         var tasks = fields.Select(type => Task.Run(() => SearchOffset(type, pf))).ToList();
 
         //Wait for all tasks to complete
-        await Task.WhenAll(tasks);
+        await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 
     public static void SetOffsetObjects(IEnumerable<Type> q1)
@@ -577,7 +577,7 @@ public static class OffsetManager
 
     public static string? GetRootNamespace(string? nameSpace)
     {
-        return nameSpace != null && nameSpace.IndexOf('.') > 0 ? nameSpace.Substring(0, nameSpace.IndexOf('.')) : nameSpace;
+        return nameSpace != null && nameSpace.IndexOf('.', StringComparison.Ordinal) > 0 ? nameSpace.Substring(0, nameSpace.IndexOf('.', StringComparison.Ordinal)) : nameSpace;
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
@@ -597,7 +597,7 @@ public static class OffsetManager
         var type = method?.DeclaringType;
 
         var q1 = (from t in method?.DeclaringType?.Assembly.GetTypes()
-                  where t.Namespace != null && t.IsClass && t.Namespace!.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
+                  where t.Namespace != null && t.IsClass && t.Namespace!.Contains(GetRootNamespace(type.Namespace), StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal))
                   select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
         return q1;
@@ -611,7 +611,7 @@ public static class OffsetManager
         var type = method?.DeclaringType;
 
         var q1 = (from t in method?.DeclaringType?.Assembly.GetTypes()
-                  where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
+                  where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace), StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal))
                   select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
         SetOffsetObjects(q1);
@@ -630,7 +630,7 @@ public static class OffsetManager
         var type = method?.DeclaringType;
 
         var q1 = (from t in method?.DeclaringType?.Assembly.GetTypes()
-                  where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
+                  where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace), StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal))
                   select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
         SetOffsetObjects(q1);
@@ -686,11 +686,11 @@ public static class OffsetManager
 
     public static Dictionary<string, string> LLDict()
     {
-        var results = new Dictionary<string, string>();
+        var results = new Dictionary<string, string>(StringComparer.Ordinal);
 
         // var asm = Assembly.Load("LlamaLibrary.dll");
         var q1 = (from t in typeof(OffsetAttribute).Assembly.GetTypes()
-                  where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary") && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets"))
+                  where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary", StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal)))
                   select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
         if (!q1.Contains(typeof(Offsets)))
@@ -742,7 +742,7 @@ public static class OffsetManager
 
     public static Dictionary<string, string> LLDictCN()
     {
-        var results = new Dictionary<string, string>();
+        var results = new Dictionary<string, string>(StringComparer.Ordinal);
 
         // var asm = Assembly.Load("LlamaLibrary.dll");
         var q1 = GetTypes();

@@ -325,7 +325,7 @@ namespace LlamaLibrary.Retainers
                 return false;
             }
 
-            if (SelectString.Lines().Contains(Translator.VentureCompleteText))
+            if (SelectString.Lines().Contains(Translator.VentureCompleteText, StringComparer.Ordinal))
             {
                 //Log.Information("Venture Done");
                 SelectString.ClickLineEquals(Translator.VentureCompleteText);
@@ -457,7 +457,7 @@ namespace LlamaLibrary.Retainers
                 return ReadRetainerArray();
             }
 
-            return new RetainerInfo[0];
+            return Array.Empty<RetainerInfo>();
         }
 
         public static async Task<RetainerInfo[]> GetRetainerArray(bool force = false)

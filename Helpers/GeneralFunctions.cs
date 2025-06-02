@@ -268,19 +268,19 @@ namespace LlamaLibrary.Helpers
                 {
                     if (!await WindowEscapeSpam("SelectString"))
                     {
-                        if (SelectString.Lines().Contains("Cancel"))
+                        if (SelectString.Lines().Contains("Cancel", StringComparer.Ordinal))
                         {
                             SelectString.ClickLineContains("Cancel");
                         }
-                        else if (SelectString.Lines().Contains("Quit"))
+                        else if (SelectString.Lines().Contains("Quit", StringComparer.Ordinal))
                         {
                             SelectString.ClickLineContains("Quit");
                         }
-                        else if (SelectString.Lines().Contains("Exit"))
+                        else if (SelectString.Lines().Contains("Exit", StringComparer.Ordinal))
                         {
                             SelectString.ClickLineContains("Exit");
                         }
-                        else if (SelectString.Lines().Contains("Nothing"))
+                        else if (SelectString.Lines().Contains("Nothing", StringComparer.Ordinal))
                         {
                             SelectString.ClickLineContains("Nothing");
                         }
@@ -295,21 +295,21 @@ namespace LlamaLibrary.Helpers
                 {
                     if (!await WindowEscapeSpam("SelectIconString"))
                     {
-                        if (SelectIconString.Lines().Contains("Cancel"))
+                        if (SelectIconString.Lines().Contains("Cancel", StringComparer.Ordinal))
                         {
-                            SelectString.ClickLineContains("Cancel");
+                            SelectIconString.ClickLineContains("Cancel");
                         }
-                        else if (SelectIconString.Lines().Contains("Quit"))
+                        else if (SelectIconString.Lines().Contains("Quit", StringComparer.Ordinal))
                         {
-                            SelectString.ClickLineContains("Quit");
+                            SelectIconString.ClickLineContains("Quit");
                         }
-                        else if (SelectIconString.Lines().Contains("Exit"))
+                        else if (SelectIconString.Lines().Contains("Exit", StringComparer.Ordinal))
                         {
-                            SelectString.ClickLineContains("Exit");
+                            SelectIconString.ClickLineContains("Exit");
                         }
-                        else if (SelectIconString.Lines().Contains("Nothing"))
+                        else if (SelectIconString.Lines().Contains("Nothing", StringComparer.Ordinal))
                         {
-                            SelectString.ClickLineContains("Nothing");
+                            SelectIconString.ClickLineContains("Nothing");
                         }
                         else
                         {
@@ -1771,7 +1771,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool DalamudDetected()
         {
-            return Core.Memory.Process.Modules.Cast<ProcessModule>().Any(processModule => processModule.ModuleName == "Dalamud.dll");
+            return Core.Memory.Process.Modules.Cast<ProcessModule>().Any(processModule => string.Equals(processModule.ModuleName, "Dalamud.dll", StringComparison.OrdinalIgnoreCase));
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

@@ -53,6 +53,7 @@ public abstract class BaseSettings : INotifyPropertyChanged
     protected Dispatcher? Dispatcher { get; }
 
     [JsonIgnore]
+    [Browsable(false)]
     public string FilePath { get; }
 
     public static string GetSettingsFilePath(params string[] subPathParts)
@@ -68,7 +69,7 @@ public abstract class BaseSettings : INotifyPropertyChanged
 
         foreach (var propertyInfo in properties)
         {
-            _debounceDispatchers ??= new Dictionary<string, DebounceDispatcher>();
+            _debounceDispatchers ??= new Dictionary<string, DebounceDispatcher>(StringComparer.Ordinal);
             _debounceDispatchers[propertyInfo.Name] = new DebounceDispatcher(OnPropertyChangedDebounce);
 
             var customAttributes = propertyInfo.GetCustomAttributes<DefaultValueAttribute>(true).ToList();

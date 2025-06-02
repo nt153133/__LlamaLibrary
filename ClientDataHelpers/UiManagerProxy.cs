@@ -10,7 +10,7 @@ public static class UiManagerProxy
 {
     //private static readonly PropertyInfo[] Properties = typeof(DataManager).Assembly.GetType("ff14bot.Managers.UiManager").GetProperties(BindingFlags.Static | BindingFlags.Public);
 
-    private static readonly Dictionary<string, int> VFunctionIds = new()
+    private static readonly Dictionary<string, int> VFunctionIds = new(StringComparer.Ordinal)
     {
         { "GetRaptureTextModule", 6 },
         { "GetRaptureAtkModule", 7 },

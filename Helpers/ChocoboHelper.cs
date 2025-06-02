@@ -71,7 +71,7 @@ public static class ChocoboHelper
                 {
                     foreach (var unit in GameObjectManager.GameObjects.OrderBy(r => r.Distance()))
                     {
-                        if (unit.EnglishName == "Chocobo Stable")
+                        if (string.Equals(unit.EnglishName, "Chocobo Stable", StringComparison.Ordinal))
                         {
                             unit.Interact();
                             break;
@@ -102,7 +102,7 @@ public static class ChocoboHelper
         {
             foreach (var unit in GameObjectManager.GameObjects.OrderBy(r => r.Distance()))
             {
-                if (unit.EnglishName == "Chocobo Stable")
+                if (string.Equals(unit.EnglishName, "Chocobo Stable", StringComparison.Ordinal))
                 {
                     unit.Interact();
                     break;
@@ -126,7 +126,7 @@ public static class ChocoboHelper
         await Coroutine.Sleep(3000);
         foreach (var unit in GameObjectManager.GameObjects.OrderBy(r => r.Distance()))
         {
-            if (unit.EnglishName == "Chocobo Stable")
+            if (string.Equals(unit.EnglishName, "Chocobo Stable", StringComparison.Ordinal))
             {
                 unit.Interact();
                 break;
@@ -406,7 +406,7 @@ public static class ChocoboHelper
         {
             foreach (var unit in GameObjectManager.GameObjects.OrderBy(r => r.Distance()))
             {
-                if (unit.EnglishName == "Chocobo Stable")
+                if (string.Equals(unit.EnglishName, "Chocobo Stable", StringComparison.Ordinal))
                 {
                     unit.Interact();
                     break;

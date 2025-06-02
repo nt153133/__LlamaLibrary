@@ -41,7 +41,7 @@ namespace LlamaLibrary.Helpers
 
         private static string PlatypusPath => Path.Combine(Utils.AssemblyDirectory, "BotBases", "Platypus");
 
-        private static readonly BotBase? PlatypusBotBase = BotManager.Bots.FirstOrDefault(c => c.EnglishName == "Platypus");
+        private static readonly BotBase? PlatypusBotBase = BotManager.Bots.FirstOrDefault(c => string.Equals(c.EnglishName, "Platypus", StringComparison.Ordinal));
 
         private static string PlatypusAssemblyFile => "Platypus.dll";
         private static string PlatypusLoaderFile => "PlatypusLoader.cs";

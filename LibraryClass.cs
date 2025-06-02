@@ -22,7 +22,7 @@ public class LibraryClass : ILibrary
 
     public async Task<bool> PreOffsetWarmup()
     {
-        if (Environment.GetCommandLineArgs().Contains("-safemode"))
+        if (Environment.GetCommandLineArgs().Contains("-safemode", StringComparer.Ordinal))
         {
             SafeMode = true;
         }

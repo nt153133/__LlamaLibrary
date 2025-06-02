@@ -16,7 +16,7 @@ public static class TripleTriadCards
 
     public static TripleTriadCardStore? GetCardByName(string name)
     {
-        return Cards.Find(x => x.Name == name);
+        return Cards.Find(x => string.Equals(x.Name, name, System.StringComparison.Ordinal));
     }
 
     public static TripleTriadCardStore? GetCardByItemID(uint id)

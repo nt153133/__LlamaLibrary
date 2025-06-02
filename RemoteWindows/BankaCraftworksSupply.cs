@@ -15,7 +15,7 @@ public class BankaCraftworksSupply : RemoteWindow<BankaCraftworksSupply>
     {
     }
 
-    public static readonly Dictionary<string, int> Properties = new()
+    public static readonly Dictionary<string, int> Properties = new(System.StringComparer.Ordinal)
     {
         {
             "TurnInItemId",

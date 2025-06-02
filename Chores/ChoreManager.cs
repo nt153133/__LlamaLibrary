@@ -15,7 +15,7 @@ namespace LlamaLibrary.Chores;
 public static class ChoreManager
 {
     private static LLogger Log { get; } = new("ChoreManager");
-    private static ConcurrentDictionary<string, Chore> Chores { get; } = new();
+    private static ConcurrentDictionary<string, Chore> Chores { get; } = new(StringComparer.Ordinal);
     public static List<Chore> ChoreList => Chores.Values.ToList();
 
     public static void AddChore(Chore chore)
