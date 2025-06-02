@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Security.Policy;
 using ff14bot;
-using ff14bot.Directors;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;

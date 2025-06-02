@@ -10,7 +10,6 @@ using ff14bot.Behavior;
 using ff14bot.Managers;
 using ff14bot.Navigation;
 using ff14bot.NeoProfiles;
-using ff14bot.Objects;
 using ff14bot.RemoteAgents;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers.Housing;

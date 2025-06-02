@@ -9,7 +9,7 @@ using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers.Housing;
 
-public class ResidentialHousingManager
+public static class ResidentialHousingManager
 {
     internal static class Offsets
     {

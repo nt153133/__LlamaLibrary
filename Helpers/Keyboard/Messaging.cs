@@ -9,7 +9,7 @@ namespace LlamaLibrary.Helpers.Keyboard;
 
 /// <summary>Class for messaging and key presses</summary>
 [Serializable]
-public class Messaging
+public static class Messaging
 {
     #region Unmanaged Items
 

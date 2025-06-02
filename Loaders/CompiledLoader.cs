@@ -20,6 +20,7 @@ using ff14bot.AClasses;
 using ff14bot.Interfaces;
 using LlamaLibrary.Logging;
 using SevenZip;
+// ReSharper disable VirtualMemberCallInConstructor
 
 namespace LlamaLibrary.Loaders;
 
@@ -49,16 +50,25 @@ public class IslandGathererLoader : BotBaseLoader
 public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
 {
     protected readonly LLogger Log;
+    private HttpClient? _client;
 
     protected CompiledLoader()
     {
         Log = new LLogger(ProjectName, LogColor);
     }
 
-    protected static HttpClient HttpClient { get; } = new()
+    protected HttpClient GetHttpClient()
     {
-        Timeout = new TimeSpan(0, 0, 30)
-    };
+        if (_client != null)
+        {
+            return _client;
+        }
+        _client = new()
+        {
+            Timeout = new TimeSpan(0, 0, 30)
+        };
+        return _client;
+    }
 
     protected string LocalFolderName { get; private set; }
     protected abstract string ProjectName { get; }
@@ -253,7 +263,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
         try
         {
             var sw = Stopwatch.StartNew();
-            using var response = await HttpClient.GetAsync(DataUrl, HttpCompletionOption.ResponseContentRead);
+            using var response = await GetHttpClient().GetAsync(DataUrl, HttpCompletionOption.ResponseContentRead);
             Log.Verbose($"{DataUrl}");
             Log.Verbose($"Content Type: {response.Content.Headers.ContentType?.MediaType} Size: {response.Content.Headers.ContentLength:N0}");
             response.EnsureSuccessStatusCode();
@@ -306,7 +316,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
     {
         try
         {
-            using var response = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, VersionUrl), HttpCompletionOption.ResponseHeadersRead);
+            using var response = await GetHttpClient().SendAsync(new HttpRequestMessage(HttpMethod.Get, VersionUrl), HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
             var versionStr = (await response.Content.ReadAsStringAsync()).Trim();
             if (Version.TryParse(versionStr, out var version))
@@ -373,6 +383,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
         if (!Debug)
         {
             await Update();
+            _client?.Dispose();
         }
 
         UnblockAll();

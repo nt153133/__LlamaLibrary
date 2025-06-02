@@ -27,7 +27,7 @@ dotnet_diagnostic.SA1206.severity = None
 dotnet_diagnostic.CS8618.severity = none
 dotnet_diagnostic.SA1306.severity = None
 dotnet_diagnostic.CS0169.severity = None
-
+dotnet_diagnostic.CS0618.severity = suggestion
 # Using directive should appear within a namespace declaration
 dotnet_diagnostic.SA1200.severity = None
 
@@ -205,4 +205,5 @@ csharp_space_after_keywords_in_control_flow_statements=true
 dotnet_diagnostic.CS0649.severity = silent
 
 dotnet_diagnostic.CA1416.severity = none
+
 

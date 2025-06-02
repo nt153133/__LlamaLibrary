@@ -597,7 +597,7 @@ public static class OffsetManager
         var type = method?.DeclaringType;
 
         var q1 = (from t in method?.DeclaringType?.Assembly.GetTypes()
-                  where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
+                  where t.Namespace != null && t.IsClass && t.Namespace!.Contains(GetRootNamespace(type.Namespace)) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => i.Name == "Offsets")
                   select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
         return q1;

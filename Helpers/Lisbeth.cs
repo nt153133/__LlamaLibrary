@@ -321,7 +321,7 @@ namespace LlamaLibrary.Helpers
 
         public static Task<bool> ExitCrafting()
         {
-            return _exitCrafting?.Invoke();
+            return _exitCrafting?.Invoke() ?? Task.FromResult(false);
         }
 
         public static async Task EquipOptimalGear()

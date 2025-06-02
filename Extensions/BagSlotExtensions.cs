@@ -435,8 +435,9 @@ namespace LlamaLibrary.Extensions
                 {
                     materia.Add(ResourceManager.MateriaList.Value[materiaType[i]].First(j => j.Tier == materiaLevel[i]));
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    ff14bot.Helpers.Logging.WriteDiagnostic(e.Message);
                     // ignored
                 }
             }

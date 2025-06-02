@@ -303,9 +303,9 @@ public class LoadServerProfile
             return;
         }
 
-        var shortList = profileList.Where(i => i != null && i.ZoneId != null && i.ZoneId == ZoneId).ToList();
+        List<ServerProfile> shortList = profileList.Where(i => i != null && i.ZoneId == ZoneId).ToList()!;
 
-        if (shortList == null || shortList.Count == 0)
+        if (shortList.Count == 0)
         {
             Log.Error($"Profile with ID {ZoneId} not found on server.");
             TreeRoot.Stop($"Profile with ID {ZoneId} not found on server.");
@@ -350,7 +350,7 @@ public class LoadServerProfile
         Dawn.Instance.Register();
     }
 
-    private static async Task<List<ServerProfile>> GetProfileList(string uri)
+    private static async Task<List<ServerProfile?>> GetProfileList(string uri)
     {
         var profileUri = new Uri(uri);
 
@@ -360,7 +360,7 @@ public class LoadServerProfile
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<ServerProfile>>(content);
+                return JsonConvert.DeserializeObject<List<ServerProfile?>>(content);
             }
         }
 
@@ -370,8 +370,8 @@ public class LoadServerProfile
 
     public static string CurrentLocalizedZoneNameById(int zoneId)
     {
-        ZoneNameResult zoneNameResult;
-        return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out zoneNameResult) ? null : zoneNameResult.CurrentLocaleName;
+        ZoneNameResult? zoneNameResult;
+        return (!DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out zoneNameResult) ? null : zoneNameResult.CurrentLocaleName) ?? $"Unknown Zone ID: {zoneId}";
     }
 
     internal static async Task LoadQuestProfile(string profileName, string profileUrl)
