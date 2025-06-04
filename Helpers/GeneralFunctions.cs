@@ -233,6 +233,11 @@ namespace LlamaLibrary.Helpers
                     Conversation.SelectQuit();
                 }
 
+                if (LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.IsOpen)
+                {
+                    LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.Close();
+                }
+
                 await Coroutine.Wait(2500, () => !CheckIfBusy(leaveDuty, stopFishing, dismount));
                 await Coroutine.Sleep(500);
             }
