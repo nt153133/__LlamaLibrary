@@ -132,7 +132,8 @@ public class LoadServerProfile
         Yuweyawata
     };
 
-    private static readonly string[] Greetings = {
+    private static readonly string[] Greetings =
+    {
         "Hola",
         "Bonjour",
         "Hallo",
@@ -427,7 +428,6 @@ public class LoadServerProfile
 
     internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, bool sayHello, bool sayHelloCustom, string SayHelloMessages, int trustId)
     {
-
         while (DutyManager.QueueState != QueueState.InDungeon)
         {
             await GeneralFunctions.StopBusy(false);
@@ -524,6 +524,10 @@ public class LoadServerProfile
                         else if (DutyManager.QueueState == QueueState.None)
                         {
                             Log.Error("Something went wrong attempting to queue for Trust, queueing again...");
+                            Log.Error($"Duty {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} unlocked: {LlamaLibrary.Helpers.GeneralFunctions.IsDutyUnlocked((uint)dungeonDutyId)}");
+                            Log.Error($"Job: {Core.Me.CurrentJob} Level: {Core.Me.ClassLevel}");
+                            Log.Error($"Queue status: {DutyManager.QueueState}");
+                            ;
                         }
                     }
 
@@ -552,6 +556,9 @@ public class LoadServerProfile
                         else if (DutyManager.QueueState == QueueState.None)
                         {
                             Log.Error("Something went wrong attempting to queue for Duty Support, queueing again...");
+                            Log.Error($"Duty {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} unlocked: {LlamaLibrary.Helpers.GeneralFunctions.IsDutyUnlocked((uint)dungeonDutyId)}");
+                            Log.Error($"Job: {Core.Me.CurrentJob} Level: {Core.Me.ClassLevel}");
+                            Log.Error($"Queue status: {DutyManager.QueueState}");
                         }
                     }
 
@@ -581,6 +588,9 @@ public class LoadServerProfile
                             else if (DutyManager.QueueState == QueueState.None)
                             {
                                 Log.Error("Something went wrong attempting to queue regular dungeon, queuing again...");
+                                Log.Error($"Duty {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} unlocked: {LlamaLibrary.Helpers.GeneralFunctions.IsDutyUnlocked((uint)dungeonDutyId)}");
+                                Log.Error($"Job: {Core.Me.CurrentJob} Level: {Core.Me.ClassLevel}");
+                                Log.Error($"Queue status: {DutyManager.QueueState}");
                             }
                         }
                         else
@@ -722,7 +732,8 @@ public class LoadServerProfile
         }
         else
         {
-            Log.Error("Something went wrong, we're in a duty but the Zone Id isn't the expected ID.");
+            Log.Error($"Something went wrong, we're in a duty but the Zone Id isn't the expected ID.");
+            Log.Error($"Expected Zone: {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} {dungeonZoneId}. Current Zone: {CurrentLocalizedZoneNameById(WorldManager.ZoneId)} {WorldManager.ZoneId}");
             TreeRoot.Stop("Something went wrong, we're in a duty but the Zone Id isn't the expected ID");
         }
     }
