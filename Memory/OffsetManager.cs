@@ -91,8 +91,8 @@ public static class OffsetManager
     public static float CurrentGameVersion = 7.2f;
     public static bool IsChinese = true;
     public static bool Is7_1 = true;
-    public static bool Is7_15 = false;
-    public static bool Is7_16 = false;
+    public static bool Is7_15 = true;
+    public static bool Is7_16 = true;
 #else
     public static float CurrentGameVersion = 7.2f;
     public static bool IsChinese = false;
