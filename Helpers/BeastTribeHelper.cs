@@ -27,7 +27,7 @@ namespace LlamaLibrary.Helpers
 
             //7.2
             [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? 73 ? TraceCall")]
-            [OffsetCN("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? TraceCall")]
+            //[OffsetCN("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? TraceCall")]
             internal static IntPtr GetBeastTribeExd;
 
             [Offset("Search E8 ? ? ? ? 4C 8B C8 EB ? 4C 8D 0D ? ? ? ? TraceCall")]
