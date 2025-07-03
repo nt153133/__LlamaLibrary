@@ -6,7 +6,7 @@ using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.RemoteWindows.Atk;
 
-internal static class AtkClientFunctions
+public static class AtkClientFunctions
 {
     public static void SendActionNew(this RemoteWindow window, bool updateState = true, params AtkValue[] parms)
     {
