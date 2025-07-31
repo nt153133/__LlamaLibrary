@@ -233,9 +233,27 @@ namespace LlamaLibrary.Helpers
                     Conversation.SelectQuit();
                 }
 
+                {
+                    Log.Information("Closing Conversation");
+                    Conversation.SelectQuit();
+                }
+
                 if (LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.IsOpen)
                 {
                     LlamaLibrary.RemoteWindows.ShopExchangeItem.Instance.Close();
+                }
+
+                //Close these windows to stop LM from getting stuck in Cosmic Exploration
+                if (WKSPouch.Instance.IsOpen)
+                {
+                    Log.Information("Closing WKSPouch");
+                    WKSPouch.Instance.Close();
+                }
+
+                if (LlamaLibrary.RemoteWindows.WKSRecipeNotebook.Instance.IsOpen)
+                {
+                    Log.Information("Closing WKSRecipeNotebook");
+                    LlamaLibrary.RemoteWindows.WKSRecipeNotebook.Instance.Close();
                 }
 
                 await Coroutine.Wait(2500, () => !CheckIfBusy(leaveDuty, stopFishing, dismount));
