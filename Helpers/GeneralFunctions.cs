@@ -244,10 +244,10 @@ namespace LlamaLibrary.Helpers
                 }
 
                 //Close these windows to stop LM from getting stuck in Cosmic Exploration
-                if (WKSPouch.Instance.IsOpen)
+                if (LlamaLibrary.RemoteWindows.WKSPouch.Instance.IsOpen)
                 {
                     Log.Information("Closing WKSPouch");
-                    WKSPouch.Instance.Close();
+                    LlamaLibrary.RemoteWindows.WKSPouch.Instance.Close();
                 }
 
                 if (LlamaLibrary.RemoteWindows.WKSRecipeNotebook.Instance.IsOpen)
