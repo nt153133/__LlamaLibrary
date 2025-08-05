@@ -37,12 +37,14 @@ namespace LlamaLibrary.RemoteAgents
             // pre6.3 [OffsetCN("Search 4C 8D 87 ? ? ? ? BA ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 8B 4F ? Add 3 Read32")]
             internal static int FshItemId;
 
-            //6.3
-            [Offset("Search 0F B7 73 ? BA ? ? ? ? E8 ? ? ? ? 89 B5 ? ? ? ? 48 8D 8D ? ? ? ? Add 3 Read8")]
-            // pre6.3 [OffsetCN("Search 0F B7 73 ? 48 8D 8D ? ? ? ? Add 3 Read8")]
+            //7.3
+            [Offset("Search 0F B7 7B ? BA ? ? ? ? E8 ? ? ? ? 41 89 BE ? ? ? ? 49 8D 8E ? ? ? ? Add 3 Read8")]
+            [OffsetCN("Search 0F B7 73 ? BA ? ? ? ? E8 ? ? ? ? 89 B5 ? ? ? ? 48 8D 8D ? ? ? ? Add 3 Read8")]
             internal static int CurrentRep;
 
-            [Offset("Search 0F B7 73 ? BA ? ? ? ? E8 ? ? ? ? Add 3 Read8")]
+            //7.3
+            [Offset("Search 0F B7 7B ? BA ? ? ? ? E8 ? ? ? ? 41 89 BE ? ? ? ? BA ? ? ? ? Add 3 Read8")]
+            [OffsetCN("Search 0F B7 73 ? BA ? ? ? ? E8 ? ? ? ? Add 3 Read8")]
             internal static int MaxRep;
 
             //6.3 broke but it's not using it
@@ -50,7 +52,9 @@ namespace LlamaLibrary.RemoteAgents
             //[OffsetCN("Search 8B 53 ? 4C 8D 43 ? 48 8B CB Add 2 Read8")]
             //internal static int Npc;
 
-            [Offset("Search 89 43 ? E8 ? ? ? ? 48 8B D0 48 8D 4D ? E8 ? ? ? ? Add 2 Read8")]
+            //7.3
+            [Offset("Search 89 43 ? E8 ? ? ? ? 48 8B D0 49 8D 4E ? Add 2 Read8")]
+            [OffsetCN("Search 89 43 ? E8 ? ? ? ? 48 8B D0 48 8D 4D ? E8 ? ? ? ? Add 2 Read8")]
             internal static int HeartLevel;
 
             [Offset("Search 44 0F B6 43 ? 89 43 ? Add 4 Read8")]

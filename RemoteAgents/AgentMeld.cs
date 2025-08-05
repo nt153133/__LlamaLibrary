@@ -28,7 +28,9 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 89 83 ? ? ? ? 48 89 83 ? ? ? ? 48 89 83 ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? Add 2 Read32")]
             internal static int ItemsToMeldCount;
 
-            [Offset("Search 66 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 Add 3 Read32")]
+            //7.3
+            [Offset("Search 66 41 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 Add 4 Read32")]
+            [OffsetCN("Search 66 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 Add 3 Read32")]
             internal static int IndexOfSelectedItem;
 
             [Offset("Search 0F BF B3 ? ? ? ? 49 8D 8F ? ? ? ? Add 3 Read32")]

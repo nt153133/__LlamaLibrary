@@ -69,10 +69,14 @@ namespace LlamaLibrary.Helpers
             [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B6 40 ? 3B E8 TraceCall")]
             internal static IntPtr Client__ExdData__getMobHuntOrder;
 
-            [Offset("Search E8 ?? ?? ?? ?? 48 85 C0 74 ?? 0F B7 40 ?? 66 85 C0 74 ?? 40 FE CF TraceCall")]
+            //7.3
+            [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 ? 66 85 C0 74 ? FE CB 0F B6 CB 03 C8 TraceCall")]
+            [OffsetCN("Search E8 ?? ?? ?? ?? 48 85 C0 74 ?? 0F B7 40 ?? 66 85 C0 74 ?? 40 FE CF TraceCall")]
             internal static IntPtr Client__ExdData__getMobHuntOrderType;
 
-            [Offset("Search E8 ? ? ? ? 4C 8B E8 48 85 C0 0F 84 ? ? ? ? 48 8D 4D ? TraceCall")]
+            //7.3
+            [Offset("Search E8 ? ? ? ? 48 89 45 ? 48 8B D8 48 85 C0 0F 84 ? ? ? ? 48 8D 4D ? TraceCall")]
+            [OffsetCN("Search E8 ? ? ? ? 4C 8B E8 48 85 C0 0F 84 ? ? ? ? 48 8D 4D ? TraceCall")]
             internal static IntPtr Client__ExdData__getMobHuntTarget;
 
             [Offset("Search 49 83 F8 ?? 73 ?? 41 8B C0 Add 3 Read8")]

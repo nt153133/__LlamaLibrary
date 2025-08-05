@@ -314,9 +314,9 @@ public static class TeleportHelper
 
     private static class Offsets
     {
-        //7.1
-        [Offset("Search E8 ? ? ? ? 49 89 44 24 ? 4C 8B F8 TraceCall")]
-        //[OffsetCN("Search E8 ? ? ? ? 49 89 47 68 TraceCall")]
+        //7.3
+        [Offset("Search E8 ? ? ? ? 49 89 47 ? BA ? ? ? ? TraceCall")]
+        [OffsetCN("Search E8 ? ? ? ? 49 89 44 24 ? 4C 8B F8 TraceCall")]
         internal static IntPtr UpdatePlayerAetheryteList;
 
         [Offset("Search E8 ? ? ? ? 48 8B 4B ? 84 C0 48 8B 01 74 ? Add 1 TraceRelative")]

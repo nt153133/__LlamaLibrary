@@ -13,7 +13,9 @@ namespace LlamaLibrary.Managers
         private static LLogger Log = new LLogger("PointMenu", Colors.Silver);
         internal static class Offsets
         {
-            [OffsetDawntrail("Search 48 8B 89 ? ? ? ? 49 8B E9 41 8B F0 Add 3 Read32")]
+            //7.3
+            [Offset("Search 48 8B 89 ? ? ? ? 4D 8B F1 48 8B 87 ? ? ? ? Add 3 Read32")]
+            [OffsetCN("Search 48 8B 89 ? ? ? ? 49 8B E9 41 8B F0 Add 3 Read32")]
             internal static int ObjectCount;
 
         }

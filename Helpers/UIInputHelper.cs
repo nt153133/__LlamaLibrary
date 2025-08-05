@@ -18,30 +18,38 @@ namespace LlamaLibrary.Helpers
             [OffsetDawntrail("Search 48 8B 48 ? 48 8B 01 48 8B 88 ? ? ? ? 48 89 4C 24 ? Add 3 Read8")]
             internal static int off1; //0x28
 
-            [Offset("Search 49 8B 46 ? 48 8D 95 ? ? ? ? 41 B0 ? Add 3 Read8")]
-            [OffsetDawntrail("Search 48 8B 43 ? 48 8D 95 ? ? ? ? 41 b0 ? Add 3 Read8")]
+            //7.3
+            [Offset("Search 48 8B 78 ? E8 ? ? ? ? 41 B0 ? Add 3 Read8")]
+            [OffsetCN("Search 48 8B 43 ? 48 8D 95 ? ? ? ? 41 b0 ? Add 3 Read8")]
             internal static int off2; //0x18
 
-            [Offset("Search 48 8B 48 ? 48 8B 01 FF 50 ? 48 8D 8D ? ? ? ? Add 3 Read8")]
+            //7.3
+            [Offset("Search 48 8B 70 ? 48 8B 06 48 8B 78 ? E8 ? ? ? ? 41 B0 ? Add 3 Read8")]
+            [OffsetCN("Search 48 8B 48 ? 48 8B 01 FF 50 ? 48 8D 8D ? ? ? ? Add 3 Read8")]
             internal static int off3; //0x8
 
-            [Offset("Search 48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F8")]
+            //7.3
+            [Offset("Search  48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F0")]
+            [OffsetCN("Search 48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F8")]
             internal static IntPtr SendStringToFocus;
 
-            //7.1
-            [Offset("Search E8 ? ? ? ? EB ? 33 DB 48 89 1F TraceCall")]
-            //[OffsetCN("Search E8 ? ? ? ? 44 2B F7 TraceCall")]
+            //7.3
+            [Offset("Search E8 ? ? ? ? EB ? 33 ED 48 89 2F TraceCall")]
+            [OffsetCN("Search E8 ? ? ? ? EB ? 33 DB 48 89 1F TraceCall")]
             internal static IntPtr Utf8StringCtor;
 
             [Offset("Search E8 ? ? ? ? B0 ? 66 89 9F ? ? ? ? TraceCall")]
             [OffsetDawntrail("Search E8 ? ? ? ? 49 8D 8F ? ? ? ? 49 8D 97 ? ? ? ? TraceCall")]
             internal static IntPtr Utf8SetString;
 
-            [Offset("Search E8 ? ? ? ? 48 8B 43 ? 48 8D 54 24 ? 41 B0 ? 48 8B 48 ? 48 8B 01 FF 50 ? 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? 48 33 CC E8 ? ? ? ? 48 8B 9C 24 ? ? ? ? TraceCall")]
+            //7.3
+            [Offset("Search E8 ? ? ? ? 4C 8B C7 48 8D 55 ? 49 8B CE E8 ? ? ? ? 48 8D 4D ? 48 89 45 ? TraceCall")]
+            [OffsetCN("Search E8 ? ? ? ? 48 8B 43 ? 48 8D 54 24 ? 41 B0 ? 48 8B 48 ? 48 8B 01 FF 50 ? 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? 48 33 CC E8 ? ? ? ? 48 8B 9C 24 ? ? ? ? TraceCall")]
             internal static IntPtr Utf8StringFromSequenceCtor;
 
-            [Offset("Search 48 8B 4B ? 48 8D 55 ? 66 89 75 ? 66 44 89 75 ? 4C 89 65 ? Add 3 Read8")]
-            [OffsetDawntrail("Search 48 8B 4B ? 48 8D ? ? 66 89 75 ? 66 89 7D ? 4C 89 7D ? 48 89 45 A7 48 8B 01 FF 50 08 Add 3 Read8")]
+            //7.3
+            [Offset("Search 48 8B 41 ? 48 8D 4D ? 75 ? Add 3 Read8")]
+            [OffsetCN("Search 48 8B 4B ? 48 8D ? ? 66 89 75 ? 66 89 7D ? 4C 89 7D ? 48 89 45 A7 48 8B 01 FF 50 08 Add 3 Read8")]
             internal static int CurrentTextControl; //0x8
         }
 

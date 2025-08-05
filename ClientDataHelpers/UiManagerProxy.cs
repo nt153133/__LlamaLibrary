@@ -20,10 +20,28 @@ public static class UiManagerProxy
         { "GetFieldMarkerModule", 49 },
         { "GetRecommendEquipModule", 32 },
         { "GetInfoModule", 34 },
+        { "GetUIInputData", 78 },
+        { "GetUIInputModule", 79 },
+        { "GetUIInputModule_Topic", 67 }
+    };
+
+    #if RB_CN
+    private static readonly Dictionary<string, int> VFunctionIds = new(StringComparer.Ordinal)
+    {
+        { "GetRaptureTextModule", 6 },
+        { "GetRaptureAtkModule", 7 },
+        { "GetRaptureShellModule", 9 },
+        { "AcquaintanceModule", 15 },
+        { "GoldSaucerModule", 29},
+        { "GetFieldMarkerModule", 49 },
+        { "GetRecommendEquipModule", 32 },
+        { "GetInfoModule", 34 },
         { "GetUIInputData", 65 },
         { "GetUIInputModule", 66 },
         { "GetUIInputModule_Topic", 67 }
     };
+    #endif
+
     private static IntPtr _uiModule;
 
     static UiManagerProxy()

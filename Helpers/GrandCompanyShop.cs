@@ -33,8 +33,9 @@ namespace LlamaLibrary.Helpers
             [Offset("Search 48 83 EC ? 48 8B 05 ? ? ? ? 44 8B C1 BA ? ? ? ? 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? C3 48 8B 00 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? 80 F9 ?")]
             internal static IntPtr GCGetMaxSealsByRank;
 
-            [Offset("Search 48 8D 9E ? ? ? ? 4C 89 B4 24 ? ? ? ? Add 3 Read32")]
-            [OffsetDawntrail("Search 48 8D 9E ? ? ? ? 4C 89 A4 24 ? ? ? ? Add 3 Read32")]
+            //7.3
+            [Offset("Search 48 8D 9E ? ? ? ? 4C 89 AC 24 ? ? ? ? 45 32 E4 Add 3 Read32")]
+            [OffsetCN("Search 48 8D 9E ? ? ? ? 4C 89 A4 24 ? ? ? ? Add 3 Read32")]
             internal static int GCArrayStart;
 
             [Offset("Search 41 83 FD ? 0F 82 ? ? ? ? 41 0F B6 97 ? ? ? ? Add 3 Read8")]

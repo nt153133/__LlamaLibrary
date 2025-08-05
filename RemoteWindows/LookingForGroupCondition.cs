@@ -10,8 +10,9 @@ namespace LlamaLibrary.RemoteWindows
     {
         private static class Offsets
         {
-            [Offset("Search 48 8B 8B ? ? ? ? E8 ? ? ? ? 49 8D 8E ? ? ? ? 8B 01 24 ? Add 3 Read32")]
-            [OffsetDawntrail("Search BA ? ? ? ? 48 8B 8B ? ? ? ? E8 ? ? ? ? 49 8D 8E ? ? ? ?  Add 8 Read32")]
+            //7.3
+            [Offset("Search BA ? ? ? ? 48 8B 8B ? ? ? ? E8 ? ? ? ? 41 8B 86 ? ? ? ? Add 8 Read32")]
+            [OffsetCN("Search BA ? ? ? ? 48 8B 8B ? ? ? ? E8 ? ? ? ? 49 8D 8E ? ? ? ? Add 8 Read32")]
             internal static int AtkComponentTextInputNodePtr;
 
             [Offset("Search 48 8D 97 ? ? ? ? 48 8B 05 ? ? ? ? 33 F6 Add 3 Read32")]

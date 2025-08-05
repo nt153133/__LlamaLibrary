@@ -20,9 +20,10 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 48 03 5D ? 0F B6 83 ? ? ? ? Add 3 Read8")]
             internal static int ItemArrayStart;
 
+            //7.3
             //0x78 int
-            [Offset("Search 44 3B 65 ? 0F 82 ? ? ? ? 85 FF Add 3 Read8")]
-            [OffsetDawntrail("Search 44 3B 65 ? 0F 82 ? ? ? ? 44 8B BC 24 ? ? ? ? Add 3 Read8")]
+            [Offset("Search 44 3B 65 ? 0F 82 ? ? ? ? 44 8B B4 24 ? ? ? ? Add 3 Read8")]
+            [OffsetCN("Search 44 3B 65 ? 0F 82 ? ? ? ? 44 8B BC 24 ? ? ? ? Add 3 Read8")]
             internal static int ArrayCount;
 
             //0x90 byte
@@ -34,8 +35,9 @@ namespace LlamaLibrary.RemoteAgents
             internal static int ExpertFilter;
 
             //0x70 ptr to int[]
-            [Offset("Search 49 8B 47 ? 48 8D 4D ? 48 8D 14 B8 Add 3 Read8")]
-            [OffsetDawntrail("Search 49 8B 46 ? 8B D3 Add 3 Read8")]
+            //7.3
+            [Offset("Search 49 8B 44 24 ? 8B D3 Add 4 Read8")]
+            [OffsetCN("Search 49 8B 46 ? 8B D3 Add 3 Read8")]
             internal static int SortArray;
         }
 

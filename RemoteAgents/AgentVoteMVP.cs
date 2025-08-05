@@ -28,12 +28,14 @@ namespace LlamaLibrary.RemoteAgents
             // pre 6.3 [OffsetCN("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 48 89 43 ? 89 43 ? 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
             internal static IntPtr VTable;
 
-            [Offset("Search 44 3B 73 ? 72 ? 48 8B B4 24 ? ? ? ? Add 3 Read8")]
-            [OffsetDawntrail("Search 8B 5E ? 44 3B F3 Add 2 Read8")]
+            //7.3
+            [Offset("Search 8B 7B ? 44 3B F7 Add 2 Read8")]
+            [OffsetCN("Search 8B 5E ? 44 3B F3 Add 2 Read8")]
             internal static int PlayerCount;
 
-            [Offset("Search 48 03 4B ? E8 ? ? ? ? 41 8D 56 ? Add 3 Read8")]
-            [OffsetDawntrail("Search 48 03 4E ? E8 ? ? ? ? 41 8D 56 ? Add 3 Read8")]
+            //7.3
+            [Offset("Search 48 03 4B ? E8 ? ? ? ? BA ? ? ? ? 48 8B CE 48 8B F8 E8 ? ? ? ? 48 89 7E ? 41 FF C6 Add 3 Read8")]
+            [OffsetCN("Search 48 03 4E ? E8 ? ? ? ? 41 8D 56 ? Add 3 Read8")]
             internal static int ArrayStart;
         }
 

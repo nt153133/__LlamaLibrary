@@ -36,8 +36,9 @@ namespace LlamaLibrary.RemoteWindows
             [OffsetDawntrail("Search BA ? ? ? ? 48 8B C8 4C 8B 00 41 FF 50 48 48 8B 4F 08 48 8B F0 Add 1 Read32")]
             internal static int NumberArrayIndex;
 
-            [Offset("Search BA ? ? ? ? 48 8B C8 4C 8B 00 41 FF 50 ? 48 8B E8 4D 85 E4 Add 1 Read32")]
-            [OffsetDawntrail("Search BA ? ? ? ? 48 8B C8 4C 8B 00 41 FF 50 50 4C 8B E0 48 85 F6 Add 1 Read32")]
+            //7.3
+            [Offset("Search BA ? ? ? ? 48 8B 08 4C 8B 41 ? 48 8B C8 41 FF D0 4C 8B E0 48 85 F6 Add 1 Read32")]
+            [OffsetCN("Search BA ? ? ? ? 48 8B C8 4C 8B 00 41 FF 50 50 4C 8B E0 48 85 F6 Add 1 Read32")]
             internal static int StringArrayIndex;
 
             [Offset("Search 48 8B 43 ? 48 63 CA 45 84 C9 Add 3 Read8")]

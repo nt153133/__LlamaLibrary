@@ -22,9 +22,9 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 48 8B 46 ? 0F B7 1C B8 Add 3 Read8")]
             [OffsetDawntrail("Search 48 8B 43 ? 0F B7 3C B0 Add 3 Read8")]
             internal static int ChoicesOffset;
-            //6.4
-            [Offset("Search 66 89 5E ? E8 ? ? ? ? 0F B7 D0 Add 3 Read8")]
-            [OffsetDawntrail("Search 66 89 7B ? E8 ? ? ? ? 0F B7 D0 Add 3 Read8")]
+            //7.3
+            [Offset("Search 66 89 7B ? E8 ? ? ? ? 44 0F B7 C7 Add 3 Read8")]
+            [OffsetCN("Search 66 89 7B ? E8 ? ? ? ? 0F B7 D0 Add 3 Read8")]
             internal static int CurrentWorldOffset;
             //6.4
             [Offset("Search 3B 46 ? 0F 8F ? ? ? ? Add 2 Read8")]

@@ -33,15 +33,33 @@ public class AgentBankaCraftworksSupply : AgentInterface<AgentBankaCraftworksSup
 
     public IntPtr RegisteredVtable => Offsets.Vtable;
 
+    public IntPtr InstancePointer
+    {
+        get
+        {
+            var temp1 = Core.Memory.Read<IntPtr>(Pointer ) ;
+            return temp1;
+        }
+    }
+
+    public IntPtr InstancePointerWithOffset
+    {
+        get
+        {
+            var temp1 = Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(Pointer) + Offsets.PointerOffset);
+            return temp1;
+        }
+    }
+
     public void HandIn(BagSlot slot)
     {
-        var instance = Pointer + Offsets.PointerOffset;
+        //var instance = Core.Memory.Read<IntPtr>(Pointer) + Offsets.PointerOffset;
         lock (Core.Memory.Executor.AssemblyLock)
         {
-            Core.Memory.CallInjectedWraper<uint>(Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(instance)),
-                                                                      instance,
-                                                                      slot.Slot,
-                                                                      (int)slot.BagId);
+            Core.Memory.CallInjectedWraper<uint>(InstancePointerWithOffset,
+                                                 Pointer,
+                                                 slot.Slot,
+                                                 (int)slot.BagId);
         }
     }
 }

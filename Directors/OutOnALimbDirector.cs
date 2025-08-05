@@ -12,24 +12,34 @@ namespace LlamaLibrary.Directors
             [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B D0 48 8D 0D ? ? ? ? B8 ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr ActiveDirectorPtr;
 
-            [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? 48 8B 01 48 8B F9 48 8B 18 E8 ? ? ? ?")]
+            //7.3
+            [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? 48 8B 39 48 8B 07")]
+            [OffsetCN("Search 48 89 5C 24 ? 57 48 83 EC ? 48 8B 01 48 8B F9 48 8B 18 E8 ? ? ? ?")]
             internal static IntPtr RemainingTimeFunction;
 
-            //[Offset("Search 89 87 ? ? ? ? 0F B6 46 ? 88 87 ? ? ? ? 8B 46 ? Add 2 Read32")]
-            [Offset("Search 89 87 ? ? ? ? 0F B6 46 ? 88 87 ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 8B 46 ? Add 2 Read32")] //7.2
+            //7.3
+            [Offset("Search 89 86 ? ? ? ? 0F B6 45 ? 88 86 ? ? ? ? 8B 45 ? Add 2 Read32")]
+            [OffsetCN("Search 89 87 ? ? ? ? 0F B6 46 ? 88 87 ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 8B 46 ? Add 2 Read32")]
             internal static int SwingResult;
 
-            [Offset("Search 89 87 ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 0F B6 87 ? ? ? ? Add 2 Read32")]
+            //7.3
+            [Offset("Search 89 86 ? ? ? ? 8B 45 ? 89 86 ? ? ? ? 0F B6 86 ? ? ? ? Add 2 Read32")]
+            [OffsetCN("Search 89 87 ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 0F B6 87 ? ? ? ? Add 2 Read32")]
             internal static int CurrentPayout;
 
-            [Offset("Search 89 87 ? ? ? ? 0F B6 87 ? ? ? ? 48 6B D0 ? Add 2 Read32")]
+            //7.3
+            [Offset("Search 89 86 ? ? ? ? 0F B6 86 ? ? ? ? 48 6B D0 ? Add 2 Read32")]
+            [OffsetCN("Search 89 87 ? ? ? ? 0F B6 87 ? ? ? ? 48 6B D0 ? Add 2 Read32")]
             internal static int DoubleDownPayout;
 
-            [Offset("Search 66 89 87 ? ? ? ? 8B 97 ? ? ? ? Add 3 Read32")]
+            //7.3
+            [Offset("Search 66 89 86 ? ? ? ? 8B 96 ? ? ? ? Add 3 Read32")]
+            [OffsetCN("Search 66 89 87 ? ? ? ? 8B 97 ? ? ? ? Add 3 Read32")]
             internal static int ProgressNeeded;
 
-            //[Offset("Search C6 87 ? ? ? ? ? 8B 46 ? Add 2 Read32")]
-            [Offset("Search C6 87 ? ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 83 7E ? ? Add 2 Read32")] //7.2
+            //7.3
+            [Offset("Search C6 86 ? ? ? ? ? 8B 45 ? Add 2 Read32")]
+            [OffsetCN("Search C6 87 ? ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 83 7E ? ? Add 2 Read32")] //7.2
             internal static int SwingsTaken;
 
             [Offset("Search 80 3D ? ? ? ? ? 0F 84 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? Add 2 TraceRelative")]

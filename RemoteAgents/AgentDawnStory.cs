@@ -15,11 +15,14 @@ namespace LlamaLibrary.RemoteAgents
             [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8B C3 48 C7 43 ? ? ? ? ? Add 3 TraceRelative")]
             internal static IntPtr Vtable;
 
-            [Offset("Search 48 89 05 ? ? ? ? 48 83 C4 ? C3 48 C7 05 ? ? ? ? ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 3 TraceRelative")]
-            [OffsetDawntrail("Search 48 89 05 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 3 TraceRelative")]
+            //7.3
+            [Offset("Search 48 89 35 ? ? ? ? 48 8B 74 24 ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 3 TraceRelative")]
+            [OffsetCN("Search 48 89 05 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 3 TraceRelative")]
             internal static IntPtr DutyListPtr;
 
-            [Offset("Search 48 8D 99 ? ? ? ? 48 8D 4C 24 ? Add 3 Read32")]
+            //7.3
+            [Offset("Search 49 8D 96 ? ? ? ? E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? Add 3 Read32")]
+            [OffsetCN("Search 48 8D 99 ? ? ? ? 48 8D 4C 24 ? Add 3 Read32")]
             internal static int DutyListStart;
 
             [Offset("Search BF ? ? ? ? 48 8B D3 48 8B CE Add 1 Read32")]

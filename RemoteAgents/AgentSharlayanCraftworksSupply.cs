@@ -22,10 +22,11 @@ public class AgentSharlayanCraftworksSupply : AgentInterface<AgentSharlayanCraft
         */
 
         //0x28
-        //7.2
-        [Offset("Search FF 50 30 84 C0 0F 84 80 00 00 00 48 8D 4F D8 E8 B8 1D 00 00 Add 2 Read8")]//V-- seems wild, likely to break every patch? so just use a small definite pattern that has the same chance to break?
+        //7.3
+        //[OffsetValueNA(0x30)]//V-- seems wild, likely to break every patch? so just use a small definite pattern that has the same chance to break?
+        //[OffsetValueCN(0x30)]//V-- seems wild, likely to break every patch? so just use a small definite pattern that has the same chance to break?
         //[OffsetCN("Search FF 50 ? 84 C0 0F 84 ? ? ? ? 48 8D 4F ? E8 ? ? ? ? 84 C0 74 ? 48 8B 47 ? 83 B8 ? ? ? ? ? 75 ? 44 8B C5 48 8D 0D ? ? ? ? 8B D6 E8 ? ? ? ? 48 8B D0 48 8D 4F ? 48 8B F0 E8 ? ? ? ? 84 C0 74 ? 48 8B 4F ? 33 D2 44 0F B6 41 ? 45 85 C0 74 ? 0F 1F 00 81 7C D1 ? ? ? ? ? 74 ? FF C2 41 3B D0 72 ? EB ? 4C 8B C6 48 8D 4F ? E8 ? ? ? ? 33 D2 45 33 C9 45 33 C0 8D 4A ? E8 ? ? ? ? 48 8B 5C 24 ? 48 8B 6C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? 57 48 83 EC ? 48 8B 01 48 8B DA 48 8B F9 FF 50 ? 84 C0 74 ? 48 85 DB 74 ? 48 8B 03 48 8B CB FF 50 ? 48 8B 4F ? 3B 41 ? 75 ? 48 8B 03 48 8B CB FF 90 ? ? ? ? A8 ? 74 ? 48 8B 03 48 8B CB FF 50 ? 0F B7 C8 EB ? 33 C9 48 8B 47 ? 66 3B 88 ? ? ? ? 72 ? 48 8B CB E8 ? ? ? ? 48 85 C0 75 ? B0 ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 48 8B 5C 24 ? 32 C0 Add 2 Read8")]
-        internal static int PointerOffset;
+//        internal static int PointerOffset = 0x30;
     }
 
     public IntPtr RegisteredVtable => Offsets.Vtable;
@@ -47,7 +48,7 @@ public class AgentSharlayanCraftworksSupply : AgentInterface<AgentSharlayanCraft
     }*/
     public void HandIn(BagSlot slot)
     {
-        var instance = Pointer + Offsets.PointerOffset;
+        var instance = Pointer + 0x30; //+ Offsets.PointerOffset;
         lock (Core.Memory.Executor.AssemblyLock)
         {
             Core.Memory.CallInjectedWraper<uint>(Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(instance)),

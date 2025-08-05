@@ -27,12 +27,14 @@ public class AgentTripleTriadCoinExchange : AgentInterface<AgentTripleTriadCoinE
         //[Offset("Search 41 54 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 8B 01")]
         //internal static IntPtr OpenSellWindow;
 
+        //7.3
         [Offset("Search 41 8B 96 ? ? ? ? 49 8B CE 49 8B 46 ? Add 3 Read8")]
-        [OffsetDawntrail("Search 8B 96 ? ? ? ? 48 8B CE 48 8B 46 ? Add 2 Read8")]
+        [OffsetCN("Search 8B 96 ? ? ? ? 48 8B CE 48 8B 46 ? Add 2 Read8")]
         internal static int SelectedCardIndex;
 
+        //7.3
         [Offset("Search 49 8B 46 ? 8B 14 90 48 69 D2 ? ? ? ? Add 3 Read8")]
-        [OffsetDawntrail("Search 48 8B 46 ? 8B 14 90 Add 3 Read8")]
+        [OffsetCN("Search 48 8B 46 ? 8B 14 90 Add 3 Read8")]
         internal static int CardIndexArray;
     }
 
