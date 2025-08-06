@@ -24,7 +24,8 @@ namespace LlamaLibrary.RemoteAgents
             internal static IntPtr Vtable;
 
             //(AgentPtr, index, qty)
-            [Offset("Search 4C 8B DC 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 83 B9 ? ? ? ? ? 41 8B E8 48 63 FA")]
+            [Offset("Search 4C 8B DC 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 83 B9 ? ? ? ? ?")]
+            [OffsetCN("Search 4C 8B DC 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 83 B9 ? ? ? ? ? 41 8B E8 48 63 FA")]
             internal static IntPtr BuyFunction;
 
             [Offset("Search 49 8D 4D ? 4C 8D 0D ? ? ? ? Add 3 Read8")]
