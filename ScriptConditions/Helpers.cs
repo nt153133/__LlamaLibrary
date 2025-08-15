@@ -230,6 +230,20 @@ namespace LlamaLibrary.ScriptConditions
 
             return (int)Core.Memory.Read<uint>(DirectorManager.ActiveDirector.Pointer + Offsets.CurrentMettle);
         }
+        public static bool IsAnyDynamicEventActive()
+        {
+            if (DynamicEventManager.Events == null)
+            {
+                return false;
+            }
+
+            if (DynamicEventManager.Events.Any(e => e.IsActive))
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         public static int NextResistanceRank()
         {
