@@ -1,4 +1,4 @@
-/*
+﻿/*
 DeepDungeon is licensed under a
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
 
@@ -239,14 +239,16 @@ public static class OffsetManager
         OffsetCache.TryRemove(info.MemberName(), out _);
         if (GameVersion != 0)
         {
-            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+            var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
+            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
         }
     }
 
     internal static void ClearOffsetFromCache(string name)
     {
         OffsetCache.TryRemove(name, out _);
-        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+        var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
+        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
     }
 
     private static List<Type> GetTypes()
@@ -355,7 +357,8 @@ public static class OffsetManager
         newStopwatch.Restart();
         if (GameVersion != 0)
         {
-            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+            var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
+            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
         }
 
         newStopwatch.Stop();
@@ -637,7 +640,8 @@ public static class OffsetManager
 
         if (GameVersion != 0)
         {
-            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+            var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
+            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
         }
 
         var vtables = new Dictionary<IntPtr, int>();
