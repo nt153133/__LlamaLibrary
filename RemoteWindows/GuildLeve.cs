@@ -4,6 +4,7 @@ using System.Text;
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteWindows
 {
@@ -14,12 +15,7 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        private static class Offsets
-        {
-            [Offset("Search 88 05 ? ? ? ? 0F B7 41 06 Add 2 TraceRelative")]
-            [OffsetDawntrail("Search 88 05 ? ? ? ? E8 ? ? ? ? 48 8B C8 48 83 C4 ? Add 2 TraceRelative")]
-            public static IntPtr AllowancesPtr;
-        }
+        
 
         public LeveWindow Window => (LeveWindow) Elements[6].TrimmedData;
 
@@ -37,7 +33,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public static LeveWork[] ActiveLeves => LeveManager.Leves; // LevesPropertyInfo.GetValue(null) as LeveWork[] ?? Array.Empty<LeveWork>();
 
-        public static int Allowances => Core.Memory.NoCacheRead<int>(Offsets.AllowancesPtr);
+        public static int Allowances => Core.Memory.NoCacheRead<int>(GuildLeveOffsets.AllowancesPtr);
 
         public void AcceptLeve(uint guildLeveId)
         {

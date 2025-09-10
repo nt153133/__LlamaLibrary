@@ -5,6 +5,7 @@ using ff14bot;
 using ff14bot.Helpers;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Managers;
 
@@ -12,18 +13,12 @@ public static class RaceChocoboManager
 {
     private static LLogger Log = new LLogger("RaceChocoboManager", Colors.Silver);
 
-    private static IntPtr InstanceRaw => Offsets.Instance;
+    private static IntPtr InstanceRaw => RaceChocoboManagerOffsets.Instance;
 
     private static  FrameCachedValue<RaceChocoboManagerStruct> _instance = new(() => Core.Memory.Read<RaceChocoboManagerStruct>(InstanceRaw));
 
     private static RaceChocoboManagerStruct Instance => _instance.Value;
-    internal static class Offsets
-    {
-        //7.3
-        [Offset("Search 48 8D 0D ? ? ? ? 8B DA E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? 5B C3 8B D3 48 8B C8 E8 ? ? ? ? B0 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
-        [OffsetCN("Search 48 8d 0d ?? ?? ?? ?? 0f b7 d8 e8 ?? ?? ?? ?? 0f b7 Add 3 TraceRelative")]
-        internal static IntPtr Instance;
-    }
+    
 
     //create public properties to access the data
     public static byte MaximumSpeed => Instance.MaximumSpeed;

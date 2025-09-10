@@ -7,33 +7,15 @@ using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
     //TODO This agent has way too many hardcoded memory offsets
     public class AgentFreeCompany : AgentInterface<AgentFreeCompany>, IAgent
     {
-        public IntPtr RegisteredVtable => Offsets.VTable;
-        private static class Offsets
-        {
-            [Offset("Search 48 8D 05 ? ? ? ? 48 8B F9 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? 48 8D 05 ? ? ? ? 48 89 41 ? 48 81 C1 ? ? ? ? Add 3 TraceRelative")]
-            internal static IntPtr VTable;
-            [Offset("Search 8B 93 ? ? ? ? 39 93 ? ? ? ? Add 2 Read32")]
-            internal static int HistoryCount;
-            [Offset("Search 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 Read8")]
-            internal static int off1;
-            [Offset("Search 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 Read8")]
-            internal static int off2;
-            [Offset("Search 4C 8B 80 ? ? ? ? 4D 85 C0 0F 84 ? ? ? ? 83 EB ? Add 3 Read32")]
-            internal static int off3;
-            [Offset("Search 49 8B 40 ? 48 63 D1 0F B7 1C 90 Add 3 Read8")]
-            internal static int off4;
-            [Offset("Search 8B 70 ? 85 F6 75 ? 8B 91 ? ? ? ? Add 2 Read8")]
-            internal static int CurrentCount;
-            [Offset("Search 8B 58 ? 85 DB 75 ? 8B 97 ? ? ? ? Add 2 Read8")]
-            //[OffsetCN("Search 8B 78 ? 85 FF 75 ? 8B 93 ? ? ? ? Add 2 Read8")]
-            internal static int ActionCount;
-        }
+        public IntPtr RegisteredVtable => AgentFreeCompanyOffsets.VTable;
+        
 
         protected AgentFreeCompany(IntPtr pointer) : base(pointer)
         {
@@ -69,17 +51,17 @@ namespace LlamaLibrary.RemoteAgents
             return result;
         }
 
-        public byte HistoryLineCount => Core.Memory.Read<byte>(Pointer + Offsets.HistoryCount);
+        public byte HistoryLineCount => Core.Memory.Read<byte>(Pointer + AgentFreeCompanyOffsets.HistoryCount);
 
         public IntPtr ActionAddress
         {
             get
             {
-                var one = Core.Memory.Read<IntPtr>(Memory.Offsets.AtkStage);
-                var two = Core.Memory.Read<IntPtr>(one + Offsets.off1);
-                var three = Core.Memory.Read<IntPtr>(two + Offsets.off2);
-                var four = Core.Memory.Read<IntPtr>(three + Offsets.off3);
-                var final = Core.Memory.Read<IntPtr>(four + Offsets.off4);
+                var one = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
+                var two = Core.Memory.Read<IntPtr>(one + AgentFreeCompanyOffsets.off1);
+                var three = Core.Memory.Read<IntPtr>(two + AgentFreeCompanyOffsets.off2);
+                var four = Core.Memory.Read<IntPtr>(three + AgentFreeCompanyOffsets.off3);
+                var final = Core.Memory.Read<IntPtr>(four + AgentFreeCompanyOffsets.off4);
                 return final;
             }
         }
@@ -99,7 +81,7 @@ namespace LlamaLibrary.RemoteAgents
                 await Coroutine.Wait(5000, () => FreeCompanyAction.Instance.IsOpen);
                 if (FreeCompanyAction.Instance.IsOpen)
                 {
-                    var numCurrentActions = Core.Memory.NoCacheRead<uint>(ActionAddress + Offsets.CurrentCount);
+                    var numCurrentActions = Core.Memory.NoCacheRead<uint>(ActionAddress + AgentFreeCompanyOffsets.CurrentCount);
                     var currentActions = Core.Memory.ReadArray<FcAction>(ActionAddress + 0x8, (int)numCurrentActions);
                     if (!wasopen)
                     {
@@ -128,7 +110,7 @@ namespace LlamaLibrary.RemoteAgents
                 await Coroutine.Wait(5000, () => FreeCompanyAction.Instance.IsOpen);
                 if (FreeCompanyAction.Instance.IsOpen)
                 {
-                    var actionCount = Core.Memory.NoCacheRead<uint>(ActionAddress + Offsets.ActionCount);
+                    var actionCount = Core.Memory.NoCacheRead<uint>(ActionAddress + AgentFreeCompanyOffsets.ActionCount);
                     var actions = Core.Memory.ReadArray<FcAction>(ActionAddress + 0x30, (int)actionCount);
                     if (!wasopen)
                     {

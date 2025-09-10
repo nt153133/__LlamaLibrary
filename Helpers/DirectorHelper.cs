@@ -4,6 +4,7 @@ using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 
 namespace LlamaLibrary.Helpers
@@ -11,19 +12,11 @@ namespace LlamaLibrary.Helpers
 #if RB_DT
     public class DirectorHelper
     {
-        internal static class Offsets
-        {
-            [OffsetDawntrail("Search E8 ? ? ? ? 89 6C 24 38 44 8B F5 TraceCall")]
-            public static IntPtr GetTodoArgs;
-
-            [OffsetDawntrail("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 89 6C 24 38 Add 3 TraceRelative")]
-            public static IntPtr ActiveDirector;
-        }
 
         private static IntPtr CurrentDirector;
         private static IntPtr CurrentDirectorTodoArgs;
 
-        public static IntPtr ActiveDirectorAddress => Core.Memory.Read<IntPtr>(Offsets.ActiveDirector);
+        public static IntPtr ActiveDirectorAddress => Core.Memory.Read<IntPtr>(DirectorHelperOffsets.ActiveDirector);
 
         public static TodoArgs[] GetTodoArgs()
         {
@@ -35,7 +28,7 @@ namespace LlamaLibrary.Helpers
             if (ActiveDirectorAddress != CurrentDirector)
             {
                 CurrentDirector = ActiveDirectorAddress;
-                CurrentDirectorTodoArgs = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetTodoArgs, Offsets.ActiveDirector);
+                CurrentDirectorTodoArgs = Core.Memory.CallInjectedWraper<IntPtr>(DirectorHelperOffsets.GetTodoArgs, DirectorHelperOffsets.ActiveDirector);
             }
 
             if (CurrentDirector == IntPtr.Zero)

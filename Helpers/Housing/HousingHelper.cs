@@ -9,44 +9,26 @@ using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers.Housing
 {
     public static class HousingHelper
     {
-        internal static class Offsets
-        {
-            [Offset("Search 48 39 1D ? ? ? ? 75 ? 45 33 C0 33 D2 B9 ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 48 8B C8 E8 ? ? ? ? 48 89 05 ? ? ? ? Add 3 TraceRelative")]
-            [OffsetDawntrail("Search 48 8B 0D ? ? ? ? E8 ? ? ? ? 0F B6 F8 84 C0 75 18 44 8B C5 Add 3 TraceRelative")]
-            internal static IntPtr PositionInfoAddress;
-
-            [Offset("Search 48 8B 05 ? ? ? ? 48 83 F8 ? 74 ? 48 C1 E8 ? 0F B7 C8 Add 3 TraceRelative")]
-            [OffsetDawntrail("Search 48 8B 1D ? ? ? ? 48 83 FB FF Add 3 TraceRelative")] // Needs to be tested
-            internal static IntPtr HouseLocationArray;
-
-            [Offset("Search E8 ?? ?? ?? ?? 83 CA FF 48 8B D8 8D 4A 02 TraceCall")]
-            [OffsetDawntrail("Search E8 ? ? ? ? BA ? ? ? ? 48 8B F8 8D 4A 02 TraceCall")]
-            internal static IntPtr GetCurrentHouseId;
-
-            [Offset("Search E8 ?? ?? ?? ?? 0F B6 D8 3C FF TraceCall")]
-            internal static IntPtr GetCurrentPlot;
-
-            [Offset("Search 48 8B 41 ? 48 85 C0 74 ? 8B 80 ? ? ? ? 48 C1 E8 ?")]
-            internal static IntPtr GetCurrentWard;
-        }
+        
 
         private static DateTime _lastHousingUpdate;
 
         public static World _lastUpdateWorld;
 
-        public static long CurrentHouseId => Core.Memory.CallInjectedWraper<long>(Offsets.GetCurrentHouseId, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
+        public static long CurrentHouseId => Core.Memory.CallInjectedWraper<long>(HousingHelperOffsets.GetCurrentHouseId, Core.Memory.Read<IntPtr>(HousingHelperOffsets.PositionInfoAddress));
 
-        public static byte CurrentPlot => Core.Memory.CallInjectedWraper<byte>(Offsets.GetCurrentPlot, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
+        public static byte CurrentPlot => Core.Memory.CallInjectedWraper<byte>(HousingHelperOffsets.GetCurrentPlot, Core.Memory.Read<IntPtr>(HousingHelperOffsets.PositionInfoAddress));
 
-        public static byte CurrentWard => Core.Memory.CallInjectedWraper<byte>(Offsets.GetCurrentWard, Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress));
+        public static byte CurrentWard => Core.Memory.CallInjectedWraper<byte>(HousingHelperOffsets.GetCurrentWard, Core.Memory.Read<IntPtr>(HousingHelperOffsets.PositionInfoAddress));
 
         private static ResidenceInfo[] _residences;
-        public static IntPtr HousingInstance => Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress);
+        public static IntPtr HousingInstance => Core.Memory.Read<IntPtr>(HousingHelperOffsets.PositionInfoAddress);
 
         public static ResidenceInfo[] Residences
         {
@@ -170,7 +152,7 @@ namespace LlamaLibrary.Helpers.Housing
             {
                 try
                 {
-                    var pointer = Core.Memory.Read<IntPtr>(Offsets.PositionInfoAddress);
+                    var pointer = Core.Memory.Read<IntPtr>(HousingHelperOffsets.PositionInfoAddress);
                     return pointer == IntPtr.Zero ? null : Core.Memory.Read<HousingManagerStruct>(pointer);
                 }
                 catch (Exception e)
@@ -201,7 +183,7 @@ namespace LlamaLibrary.Helpers.Housing
             try
             {
                 //ff14bot.Helpers.Logging.WriteDiagnostic("Updating Residence Array");
-                //_residences = Core.Memory.ReadArray<ResidenceInfo>(Offsets.HouseLocationArray, 6);
+                //_residences = Core.Memory.ReadArray<ResidenceInfo>(HousingHelperOffsets.HouseLocationArray, 6);
                 _residences = ResidentialHousingManager.GetResidences().ToArray();
 
                 //ff14bot.Helpers.Logging.WriteDiagnostic("Residence Array Updated");

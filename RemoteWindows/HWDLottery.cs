@@ -4,17 +4,13 @@ using Buddy.Coroutines;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteWindows
 {
     public class HWDLottery : RemoteWindow<HWDLottery>
     {
-        internal static class Offsets
-        {
-
-            [Offset("Search E8 ? ? ? ? 32 C0 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 48 8B CB E8 ? ? ? ? 32 C0 TraceCall")]
-            internal static IntPtr KupoFunction;
-        }
+        
 
         public override void Close()
         {
@@ -36,7 +32,7 @@ namespace LlamaLibrary.RemoteWindows
 
                 if (agent != null)
                 {
-                    Core.Memory.CallInjectedWraper<uint>(Offsets.KupoFunction,
+                    Core.Memory.CallInjectedWraper<uint>(HWDLotteryOffsets.KupoFunction,
                     agent.Pointer,
                     1U);
 

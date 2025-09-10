@@ -6,32 +6,24 @@ using LlamaLibrary.Enums;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers.Housing;
 
 public static class ResidentialHousingManager
 {
-    internal static class Offsets
-    {
-        //6.3
-        [Offset("Search E8 ? ? ? ? 48 8B C8 E8 ? ? ? ? 0F B6 C8 0F B6 E8 E8 ? ? ? ? 84 C0 74 ? Add 1 TraceRelative")]
-        [OffsetDawntrail("Search 33 C9 E8 ? ? ? ? 48 8B C8 E8 ? ? ? ?  Add 2 TraceCall")]
-        internal static IntPtr GetResidentObject;
-
-        [Offset("Search 40 53 48 83 EC ? 48 8B D9 48 83 F9 ? 74 ?")]
-        internal static IntPtr CheckValid;
-    }
+    
 
     private static readonly int[] ResidentialIndexes = { 0, 1, 2, 3, 5, 6 };
 
     public static long GetResidentialObject(int index, uint subIndex = 0xFFFFFFFF)
     {
-        return Core.Memory.CallInjectedWraper<long>(Offsets.GetResidentObject, index, subIndex);
+        return Core.Memory.CallInjectedWraper<long>(ResidentialHousingManagerOffsets.GetResidentObject, index, subIndex);
     }
 
     public static bool CheckValid(long index)
     {
-        return Core.Memory.CallInjectedWraper<bool>(Offsets.CheckValid, index);
+        return Core.Memory.CallInjectedWraper<bool>(ResidentialHousingManagerOffsets.CheckValid, index);
     }
 
     public static IEnumerable<ResidenceInfo> GetResidences()

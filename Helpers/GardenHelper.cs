@@ -20,6 +20,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
@@ -27,17 +28,10 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new("TheGardener", Colors.LawnGreen);
 
-        private static class Offsets
-        {
-            [Offset("Search 48 89 5C 24 ? 56 48 83 EC ? 48 8B F1 41 0F B7 D8 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ?")]
-            [OffsetDawntrail("Search E8 ? ? ? ? 48 8B CB C7 43 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? B0 01 TraceCall")]
-            internal static IntPtr PlantFunction;
-            [Offset("Search 41 8B 4E ? 8D 93 ? ? ? ? Add 3 Read8")]
-            internal static int StructOffset;
-        }
+        
 
-        public static HousingPlantSelectedItemStruct SoilStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + Offsets.StructOffset);
-        public static HousingPlantSelectedItemStruct SeedStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + Offsets.StructOffset + MarshalCache<HousingPlantSelectedItemStruct>.Size);
+        public static HousingPlantSelectedItemStruct SoilStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + GardenHelperOffsets.StructOffset);
+        public static HousingPlantSelectedItemStruct SeedStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + GardenHelperOffsets.StructOffset + MarshalCache<HousingPlantSelectedItemStruct>.Size);
 
         /*
         public static async Task GoGarden(uint AE, Vector3 gardenLoc)
@@ -215,11 +209,11 @@ namespace LlamaLibrary.Helpers
 
         public static async Task Plant(BagSlot seeds, BagSlot soil)
         {
-            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction,
+            Core.Memory.CallInjectedWraper<IntPtr>(GardenHelperOffsets.PlantFunction,
                                                    AgentHousingPlant.Instance.Pointer,
                                                    (uint)soil.BagId,
                                                    soil.Slot);
-            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlantFunction,
+            Core.Memory.CallInjectedWraper<IntPtr>(GardenHelperOffsets.PlantFunction,
                                                    AgentHousingPlant.Instance.Pointer,
                                                    (uint)seeds.BagId,
                                                    seeds.Slot);

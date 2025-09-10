@@ -11,7 +11,7 @@ using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.Helpers.Ping;
 using LlamaLibrary.JsonObjects;
-using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.Utilities;
 
@@ -26,129 +26,18 @@ namespace LlamaLibrary.Extensions
             InventoryBagId.Retainer_Page7
         };
 
-        public static class Offsets
+        private static IntPtr _eventHandler = IntPtr.Zero;
+
+        public static IntPtr EventHandler
         {
-            [Offset("Search E8 ? ? ? ? 48 8D 8B ? ? ? ? 48 8B 11 Add 1 TraceRelative")]
-            public static IntPtr ItemDiscardFunc;
-
-            //7.3
-            [Offset("Search E8 ? ? ? ? 45 33 F6 44 89 73 ? 41 C6 47 ? ? E9 ? ? ? ? 44 0F B7 83 ? ? ? ? 48 8D 0D ? ? ? ? 8B 93 ? ? ? ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? 85 C0 0F 8E ? ? ? ? 48 8B CF E8 ? ? ? ? 44 0F B7 83 ? ? ? ? 48 8D 0D ? ? ? ? 8B 93 ? ? ? ? 44 8B C8 E8 ? ? ? ? 45 33 F6 44 89 73 ? 41 C6 47 ? ? E9 ? ? ? ? 44 0F B7 83 ? ? ? ? Add 1 TraceRelative")]
-            [OffsetCN("Search E8 ? ? ? ? 45 33 ED 44 89 6B ? 41 C6 44 24 ? ? E9 ? ? ? ? 44 0F B7 83 ? ? ? ? 48 8D 0D ? ? ? ? 8B 93 ? ? ? ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? 85 C0 0F 8E ? ? ? ? 48 8B CF E8 ? ? ? ? 44 0F B7 83 ? ? ? ? 48 8D 0D ? ? ? ? 8B 93 ? ? ? ? 44 8B C8 E8 ? ? ? ? 45 33 ED 44 89 6B ? 41 C6 44 24 ? ? E9 ? ? ? ? 44 0F B7 83 ? ? ? ? Add 1 TraceRelative")]
-            public static IntPtr ItemLowerQualityFunc;
-
-            [Offset("Search 40 55 53 56 57 41 55 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 8D B2 ? ? ? ?")]
-            public static IntPtr ItemSplitFunc;
-
-            [Offset("Search 48 89 5C 24 ? 56 48 83 EC ? 80 3D ? ? ? ? ? 48 8B F2")]
-            public static IntPtr MeldWindowFunc;
-
-            [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8")]
-            public static IntPtr ExtractMateriaFunc;
-
-            [Offset("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 83 7E ? ? Add 3 TraceRelative")]
-            public static IntPtr ExtractMateriaParam;
-
-            //This client function does desynth, remove materia and reduce depending on the 2nd param
-            //7.3
-            [Offset("Search E8 ? ? ? ? 33 D2 48 8B CE E8 ? ? ? ? 48 8B BC 24 ? ? ? ? Add 1 TraceRelative")]
-            [OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 41 0F BF E9")]
-            public static IntPtr RemoveMateriaFunc;
-
-            //7.3
-            [Offset("Search BA ? ? ? ? 48 8B CF E8 ? ? ? ? 33 D2 48 8B CE E8 ? ? ? ? 48 8B BC 24 ? ? ? ? Add 1 Read32")]
-            [OffsetCN("Search BA ? ? ? ? E8 ? ? ? ? 33 D2 48 8B CE E8 ? ? ? ? 48 8D 55 F0 Add 1 Read32")]
-            public static int DesynthId;
-
-            //7.3
-            [Offset("Search BA ? ? ? ? 44 8B 07 48 8B C8 C7 44 24 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? Add 1 Read32")]
-            [OffsetCN("Search BA ? ? ? ? E8 ? ? ? ? 48 8B 7C 24 ? 48 8B 5C 24 ? 84 C0 Add 1 Read32")]
-            public static int ReduceId;
-
-            //7.3
-            [Offset("Search 0F B7 44 7B ? 66 85 C0 0F 84 ? ? ? ? 48 8B 74 24 ? Add 4 Read8")]
-            [OffsetCN("Search 0F B7 44 7B ? 66 85 C0 0F 84 ? ? ? ? 4C 8B 74 24 ? Add 4 Read8")]
-            public static int BagSlotMateriaType;
-
-            //7.3
-            [Offset("Search 0F B6 44 18 ? 0F B6 C0 0F BF 74 46 ? Add 4 Read8")]
-            [OffsetCN("Search 0F B6 44 18 ? 4D 8B 37 Add 4 Read8")]
-            public static int BagSlotMateriaLevel;
-
-            //7.3
-            [Offset("Search BA ? ? ? ? 48 8B CF E8 ? ? ? ? EB ? 48 8B 01 Add 1 Read32")]
-            [OffsetCN("Search BA ? ? ? ? E8 ? ? ? ? EB ? 48 8B 01 48 8B D9 Add 1 Read32")]
-            public static int RemoveMateriaId;
-
-            [Offset("Search 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 83 B9 ? ? ? ? ? 41 8B F0 8B EA 48 8B F9 0F 85 ? ? ? ?")]
-            public static IntPtr TradeBagSlot;
-
-            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 40 8B CA ")]
-            public static IntPtr BagSlotUseItem;
-
-            [Offset("Search 48 89 6C 24 ? 56 41 56 41 57 48 83 EC ? 45 8B F9 45 0F B7 F0")]
-            public static IntPtr RemoveFromSaddle;
-
-            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 45 33 DB 41 8B F9 45 8B D3 41 0F B7 F0 8B EA 48 8B D9 48 8B C1 0F 1F 80 ? ? ? ? 80 38 ? 75 ? 41 FF C3 49 FF C2 48 83 C0 ? 49 81 FA ? ? ? ? 7C ? EB ? 49 63 C3 48 6B D0 ? 48 03 D3 C6 02 ? 74 ? C7 42 ? ? ? ? ? 44 8B C7 89 6A ? 66 89 72 ? 89 7A ? 8B 81 ? ? ? ? 89 42 ? 0F B7 D6 44 8B 89 ? ? ? ? 8B CD E8 ? ? ? ? 8B 8B ? ? ? ? B8 ? ? ? ? FF C1 F7 E1 8B C1 2B C2 ? ? 03 C2 C1 E8 ? 69 C0 ? ? ? ? 2B C8 0F BA E9 ? 89 8B ? ? ? ? 48 8B 5C 24 ? 48 8B 6C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? 66 83 FA ?")]
-            public static IntPtr RetainerRetrieveQuantity;
-
-            //7.3
-            [Offset("Search E8 ? ? ? ? 33 D2 45 33 C9 45 33 C0 8D 4A ? E8 ? ? ? ? E9 ? ? ? ? 48 8D 4F ? Add 1 TraceRelative")]
-            [OffsetCN("Search E8 ? ? ? ? 33 D2 45 33 C9 45 33 C0 8D 4A ? E8 ? ? ? ? EB ? 48 8D 4B ? Add 1 TraceRelative")]
-            public static IntPtr EntrustRetainerFunc;
-
-            [Offset("Search 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 80 B9 ? ? ? ? ? 41 8B F0")]
-            public static IntPtr SellFunc;
-
-            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 41 56 48 83 EC ? 45 8B F1")]
-            public static IntPtr AddToSaddle;
-
-            //7.3
-            [Offset("Search E8 ? ? ? ? EB ? 89 AB ? ? ? ? Add 1 TraceRelative")]
-            [OffsetCN("Search E8 ? ? ? ? EB ? 44 89 B3 ? ? ? ? Add 1 TraceRelative")]
-            public static IntPtr FCChestMove;
-
-            [Offset("Search 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 63 F2 48 8B F9")]
-            public static IntPtr PlaceAetherWheel;
-
-            [Offset("Search 48 8B 05 ? ? ? ? 48 85 C0 74 ? 83 B8 ? ? ? ? ? 75 ? E8 ? ? ? ? Add 3 TraceRelative")]
-            public static IntPtr EventHandlerOff;
-
-            [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 8B E9 41 0F B7 D9 48 8B 0D ? ? ? ? 41 8B F8 0F B7 F2 E8 ? ? ? ? 48 8B C8 48 85 C0 74 4A ")]
-            internal static IntPtr MeldItem;
-
-            [Offset("Search E8 ? ? ? ? 84 C0 74 ? C6 87 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? 41 56 TraceCall")]
-            internal static IntPtr DyeItem;
-
-            [Offset("Search 66 89 43 ? 8B 47 ? 89 43 ? 0F B6 47 ? 88 43 ? E8 ? ? ? ? 85 C0 Add 3 Read8")]
-            public static int StainId;
-
-            //7.3
-            [Offset("Search 8B 68 ? 48 8B 07 FF 50 ? 48 8B 17 Add 3 Read8")]
-            [OffsetCN("Search 44 8B 42 ? 0F B7 D3 Add 3 Read8")]
-            internal static int PlayerMeldOffset;
-
-           [Offset("Search 40 55 41 55 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 83 B9 ? ? ? ? ?")]
-            public static IntPtr StoreroomToInventory;
-
-            [Offset("Search E8 ? ? ? ? 48 89 BB ? ? ? ? 83 BB ? ? ? ? ? TraceCall")]
-            public static IntPtr InventoryToStoreroom;
-
-            [Offset("Search E8 ? ? ? ? 89 83 ? ? ? ? C7 44 24 ? ? ? ? ? TraceCall")]
-            internal static IntPtr GetPostingPriceSlot;
-
-            private static IntPtr _eventHandler = IntPtr.Zero;
-
-            public static IntPtr EventHandler
+            get
             {
-                get
+                if (_eventHandler == IntPtr.Zero)
                 {
-                    if (_eventHandler == IntPtr.Zero)
-                    {
-                        _eventHandler = Core.Memory.Read<IntPtr>(EventHandlerOff);
-                    }
-
-                    return _eventHandler;
+                    _eventHandler = Core.Memory.Read<IntPtr>(BagSlotExtensionsOffsets.EventHandlerOff);
                 }
+
+                return _eventHandler;
             }
         }
 
@@ -160,11 +49,11 @@ namespace LlamaLibrary.Extensions
                 {
                     using (Core.Memory.TemporaryCacheState(false))
                     {
-                        return Core.Memory.CallInjectedWraper<uint>(Offsets.ItemSplitFunc,
-                                                                Memory.Offsets.g_InventoryManager,
-                                                                (uint)bagSlot.BagId,
-                                                                bagSlot.Slot,
-                                                                amount) == 0;
+                        return Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ItemSplitFunc,
+                                                                    Offsets.g_InventoryManager,
+                                                                    (uint)bagSlot.BagId,
+                                                                    bagSlot.Slot,
+                                                                    amount) == 0;
                     }
                 }
             }
@@ -176,10 +65,10 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjectedWraper<uint>(Offsets.ItemDiscardFunc,
-                                                 Memory.Offsets.g_InventoryManager,
-                                                 (uint)bagSlot.BagId,
-                                                 bagSlot.Slot);
+                Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ItemDiscardFunc,
+                                                     Offsets.g_InventoryManager,
+                                                     (uint)bagSlot.BagId,
+                                                     bagSlot.Slot);
             }
         }
 
@@ -187,12 +76,12 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjectedWraper<uint>(Offsets.RemoveMateriaFunc,
-                                                 Offsets.EventHandler,
-                                                 Offsets.DesynthId,
-                                                 (uint)bagSlot.BagId,
-                                                 bagSlot.Slot,
-                                                 2);
+                Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
+                                                     EventHandler,
+                                                     BagSlotExtensionsOffsets.DesynthId,
+                                                     (uint)bagSlot.BagId,
+                                                     bagSlot.Slot,
+                                                     2);
             }
         }
 
@@ -204,10 +93,10 @@ namespace LlamaLibrary.Extensions
                 {
                     using (Core.Memory.TemporaryCacheState(false))
                     {
-                        Core.Memory.CallInjectedWraper<uint>(Offsets.ItemLowerQualityFunc,
-                                                         Memory.Offsets.g_InventoryManager,
-                                                         (uint)bagSlot.BagId,
-                                                         bagSlot.Slot);
+                        Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ItemLowerQualityFunc,
+                                                             Offsets.g_InventoryManager,
+                                                             (uint)bagSlot.BagId,
+                                                             bagSlot.Slot);
                     }
                 }
 
@@ -221,12 +110,12 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjectedWraper<uint>(Offsets.RemoveMateriaFunc,
-                                                 Offsets.EventHandler,
-                                                 Offsets.ReduceId,
-                                                 (uint)bagSlot.BagId,
-                                                 bagSlot.Slot,
-                                                 0);
+                Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
+                                                     EventHandler,
+                                                     BagSlotExtensionsOffsets.ReduceId,
+                                                     (uint)bagSlot.BagId,
+                                                     bagSlot.Slot,
+                                                     0);
             }
         }
 
@@ -241,11 +130,11 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjectedWraper<uint>(Offsets.RetainerRetrieveQuantity,
-                                                     Memory.Offsets.g_InventoryManager,
-                                                     (uint)bagSlot.BagId,
-                                                     bagSlot.Slot,
-                                                     amount);
+                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RetainerRetrieveQuantity,
+                                                         Offsets.g_InventoryManager,
+                                                         (uint)bagSlot.BagId,
+                                                         bagSlot.Slot,
+                                                         amount);
                 }
             }
         }
@@ -256,12 +145,12 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjectedWraper<uint>(Offsets.EntrustRetainerFunc,
-                                                     AgentRetainerInventory.Instance.Pointer,
-                                                     0,
-                                                     (uint)bagSlot.BagId,
-                                                     bagSlot.Slot,
-                                                     amount);
+                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.EntrustRetainerFunc,
+                                                         AgentRetainerInventory.Instance.Pointer,
+                                                         0,
+                                                         (uint)bagSlot.BagId,
+                                                         bagSlot.Slot,
+                                                         amount);
                 }
             }
         }
@@ -272,11 +161,11 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjectedWraper<uint>(Offsets.SellFunc,
-                                                     AgentRetainerInventory.Instance.RetainerShopPointer,
-                                                     bagSlot.Slot,
-                                                     (uint)bagSlot.BagId,
-                                                     0);
+                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.SellFunc,
+                                                         AgentRetainerInventory.Instance.RetainerShopPointer,
+                                                         bagSlot.Slot,
+                                                         (uint)bagSlot.BagId,
+                                                         0);
                 }
             }
         }
@@ -287,11 +176,11 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjectedWraper<uint>(Offsets.SellFunc,
-                                                     Shop.ActiveShopPtr,
-                                                     bagSlot.Slot,
-                                                     (uint)bagSlot.BagId,
-                                                     0);
+                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.SellFunc,
+                                                         Shop.ActiveShopPtr,
+                                                         bagSlot.Slot,
+                                                         (uint)bagSlot.BagId,
+                                                         0);
                 }
             }
         }
@@ -300,12 +189,12 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                Core.Memory.CallInjectedWraper<uint>(Offsets.RemoveMateriaFunc,
-                                                 Offsets.EventHandler,
-                                                 Offsets.RemoveMateriaId,
-                                                 (uint)bagSlot.BagId,
-                                                 bagSlot.Slot,
-                                                 0);
+                Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
+                                                     EventHandler,
+                                                     BagSlotExtensionsOffsets.RemoveMateriaId,
+                                                     (uint)bagSlot.BagId,
+                                                     bagSlot.Slot,
+                                                     0);
             }
         }
 
@@ -320,28 +209,28 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjectedWraper<uint>(Offsets.ExtractMateriaFunc,
-                                                     Offsets.ExtractMateriaParam,
-                                                     (uint)bagSlot.BagId,
-                                                     bagSlot.Slot);
+                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ExtractMateriaFunc,
+                                                         BagSlotExtensionsOffsets.ExtractMateriaParam,
+                                                         (uint)bagSlot.BagId,
+                                                         bagSlot.Slot);
                 }
             }
         }
 
         public static void AffixMateria(this BagSlot Equipment, BagSlot Materia, bool BulkMeld)
         {
-            var offset = Core.Memory.Read<int>(Core.Me.Pointer + Offsets.PlayerMeldOffset);
+            var offset = Core.Memory.Read<int>(Core.Me.Pointer + BagSlotExtensionsOffsets.PlayerMeldOffset);
             lock (Core.Memory.Executor.AssemblyLock)
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjectedWraper<IntPtr>(Offsets.MeldItem,
-                                                       (int)Equipment.BagId,
-                                                       (short)Equipment.Slot,
-                                                       (int)Materia.BagId,
-                                                       (short)Materia.Slot,
-                                                       offset,
-                                                       (byte)(BulkMeld ? 1 : 0));
+                    Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.MeldItem,
+                                                           (int)Equipment.BagId,
+                                                           (short)Equipment.Slot,
+                                                           (int)Materia.BagId,
+                                                           (short)Materia.Slot,
+                                                           offset,
+                                                           (byte)(BulkMeld ? 1 : 0));
                 }
             }
         }
@@ -352,9 +241,9 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjectedWraper<uint>(Offsets.MeldWindowFunc,
-                                                     AgentMeld.Instance.Pointer,
-                                                     bagSlot.Pointer);
+                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.MeldWindowFunc,
+                                                         AgentMeld.Instance.Pointer,
+                                                         bagSlot.Pointer);
                 }
             }
         }
@@ -365,16 +254,16 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjectedWraper<uint>(Offsets.GetPostingPriceSlot,
-                                                            Memory.Offsets.g_InventoryManager,
-                                                            slot.Slot);
+                    return Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.GetPostingPriceSlot,
+                                                                Offsets.g_InventoryManager,
+                                                                slot.Slot);
                 }
             }
         }
 
         public static bool HasMateria(this BagSlot bagSlot)
         {
-            var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + Offsets.BagSlotMateriaType, 5);
+            var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + BagSlotExtensionsOffsets.BagSlotMateriaType, 5);
             for (var i = 0; i < 5; i++)
             {
                 if (materiaType[i] > 0)
@@ -388,7 +277,7 @@ namespace LlamaLibrary.Extensions
 
         public static int MateriaCount(this BagSlot bagSlot)
         {
-            var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + Offsets.BagSlotMateriaType, 5);
+            var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + BagSlotExtensionsOffsets.BagSlotMateriaType, 5);
             var count = 0;
             for (var i = 0; i < 5; i++)
             {
@@ -403,8 +292,8 @@ namespace LlamaLibrary.Extensions
 
         public static List<MateriaItem> Materia(this BagSlot bagSlot)
         {
-            var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + Offsets.BagSlotMateriaType, 5);
-            var materiaLevel = Core.Memory.ReadArray<byte>(bagSlot.Pointer + Offsets.BagSlotMateriaLevel, 5);
+            var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + BagSlotExtensionsOffsets.BagSlotMateriaType, 5);
+            var materiaLevel = Core.Memory.ReadArray<byte>(bagSlot.Pointer + BagSlotExtensionsOffsets.BagSlotMateriaLevel, 5);
             var materia = new List<MateriaItem>();
 
             for (var i = 0; i < 5; i++)
@@ -435,10 +324,10 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    result = Core.Memory.CallInjectedWraper<uint>(Offsets.TradeBagSlot,
-                                                              Memory.Offsets.g_InventoryManager,
-                                                              bagSlot.Slot,
-                                                              (uint)bagSlot.BagId);
+                    result = Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.TradeBagSlot,
+                                                                  Offsets.g_InventoryManager,
+                                                                  bagSlot.Slot,
+                                                                  (uint)bagSlot.BagId);
                 }
             }
 
@@ -446,10 +335,10 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjectedWraper<uint>(Offsets.TradeBagSlot,
-                                                     Memory.Offsets.g_InventoryManager,
-                                                     bagSlot.Slot,
-                                                     (uint)bagSlot.BagId);
+                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.TradeBagSlot,
+                                                         Offsets.g_InventoryManager,
+                                                         bagSlot.Slot,
+                                                         (uint)bagSlot.BagId);
                 }
             }
         }
@@ -466,17 +355,17 @@ namespace LlamaLibrary.Extensions
 
         public static bool AddToSaddlebagQuantity(this BagSlot bagSlot, uint amount)
         {
-            return AddToSaddleCall(Memory.Offsets.g_InventoryManager, (uint)bagSlot.BagId, bagSlot.Slot, amount) == IntPtr.Zero;
+            return AddToSaddleCall(Offsets.g_InventoryManager, (uint)bagSlot.BagId, bagSlot.Slot, amount) == IntPtr.Zero;
         }
 
         public static bool RemoveFromSaddlebagQuantity(this BagSlot bagSlot, uint amount)
         {
-            return RemoveFromSaddleCall(Memory.Offsets.g_InventoryManager, (uint)bagSlot.BagId, bagSlot.Slot, amount) == IntPtr.Zero;
+            return RemoveFromSaddleCall(Offsets.g_InventoryManager, (uint)bagSlot.BagId, bagSlot.Slot, amount) == IntPtr.Zero;
         }
 
         public static void UseItemRaw(this BagSlot bagSlot)
         {
-            BagSlotUseItemCall(Memory.Offsets.g_InventoryManager, bagSlot.TrueItemId, (uint)bagSlot.BagId, bagSlot.Slot);
+            BagSlotUseItemCall(Offsets.g_InventoryManager, bagSlot.TrueItemId, (uint)bagSlot.BagId, bagSlot.Slot);
         }
 
         internal static byte BagSlotUseItemCall(IntPtr InventoryManager, uint TrueItemId, uint inventoryContainer, int inventorySlot)
@@ -485,11 +374,11 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjectedWraper<byte>(Offsets.BagSlotUseItem,
-                                                            InventoryManager,
-                                                            TrueItemId,
-                                                            inventoryContainer,
-                                                            inventorySlot);
+                    return Core.Memory.CallInjectedWraper<byte>(BagSlotExtensionsOffsets.BagSlotUseItem,
+                                                                InventoryManager,
+                                                                TrueItemId,
+                                                                inventoryContainer,
+                                                                inventorySlot);
                 }
             }
         }
@@ -500,11 +389,11 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.RemoveFromSaddle,
-                                                              InventoryManager,
-                                                              inventoryContainer,
-                                                              inventorySlot,
-                                                              count);
+                    return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.RemoveFromSaddle,
+                                                                  InventoryManager,
+                                                                  inventoryContainer,
+                                                                  inventorySlot,
+                                                                  count);
                 }
             }
         }
@@ -515,11 +404,11 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.AddToSaddle,
-                                                              InventoryManager,
-                                                              inventoryContainer,
-                                                              inventorySlot,
-                                                              count);
+                    return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.AddToSaddle,
+                                                                  InventoryManager,
+                                                                  inventoryContainer,
+                                                                  inventorySlot,
+                                                                  count);
                 }
             }
         }
@@ -530,10 +419,10 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.PlaceAetherWheel,
-                                                              AgentBagSlot.Instance.PointerForAether,
-                                                              (int)inventorySlot,
-                                                              inventoryContainer);
+                    return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.PlaceAetherWheel,
+                                                                  AgentBagSlot.Instance.PointerForAether,
+                                                                  (int)inventorySlot,
+                                                                  inventoryContainer);
                 }
             }
         }
@@ -542,12 +431,12 @@ namespace LlamaLibrary.Extensions
         {
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.FCChestMove,
-                                                          AgentFreeCompanyChest.Instance.Pointer,
-                                                          sourceContainer,
-                                                          sourceSlot,
-                                                          destContainer,
-                                                          destSlot);
+                return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.FCChestMove,
+                                                              AgentFreeCompanyChest.Instance.Pointer,
+                                                              sourceContainer,
+                                                              sourceSlot,
+                                                              destContainer,
+                                                              destSlot);
             }
         }
 
@@ -567,9 +456,9 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjectedWraper<uint>(Offsets.StoreroomToInventory,
-                                                     HousingHelper.PositionPointer,
-                                                     bagSlot.Pointer);
+                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.StoreroomToInventory,
+                                                         HousingHelper.PositionPointer,
+                                                         bagSlot.Pointer);
                 }
             }
 
@@ -587,9 +476,9 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    Core.Memory.CallInjectedWraper<uint>(Offsets.InventoryToStoreroom,
-                                                     HousingHelper.PositionPointer,
-                                                     bagSlot.Pointer);
+                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.InventoryToStoreroom,
+                                                         HousingHelper.PositionPointer,
+                                                         bagSlot.Pointer);
                 }
             }
 
@@ -598,7 +487,7 @@ namespace LlamaLibrary.Extensions
 
         public static byte StainId(this BagSlot bagSlot)
         {
-            return Core.Memory.Read<byte>(bagSlot.Pointer + Offsets.StainId);
+            return Core.Memory.Read<byte>(bagSlot.Pointer + BagSlotExtensionsOffsets.StainId);
         }
 
         public static byte DyeItem(this BagSlot item, BagSlot dye)
@@ -617,12 +506,12 @@ namespace LlamaLibrary.Extensions
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
-                    return Core.Memory.CallInjectedWraper<byte>(Offsets.DyeItem,
-                                                            Memory.Offsets.g_InventoryManager,
-                                                            item.BagId,
-                                                            item.Slot,
-                                                            bagid.Address,
-                                                            bagslot.Address);
+                    return Core.Memory.CallInjectedWraper<byte>(BagSlotExtensionsOffsets.DyeItem,
+                                                                Offsets.g_InventoryManager,
+                                                                item.BagId,
+                                                                item.Slot,
+                                                                bagid.Address,
+                                                                bagslot.Address);
                 }
             }
         }
@@ -783,9 +672,9 @@ namespace LlamaLibrary.Extensions
                 return false;
             }
 
-            if (await Coroutine.Wait(10000, () => Core.Memory.Read<uint>(Memory.Offsets.Conditions + Memory.Offsets.DesynthLock) != 0))
+            if (await Coroutine.Wait(10000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) != 0))
             {
-                return await Coroutine.Wait(10000, () => Core.Memory.Read<uint>(Memory.Offsets.Conditions + Memory.Offsets.DesynthLock) == 0);
+                return await Coroutine.Wait(10000, () => Core.Memory.Read<uint>(Offsets.Conditions + Offsets.DesynthLock) == 0);
             }
 
             return false;

@@ -7,70 +7,39 @@ using ff14bot.Managers;
 using LlamaLibrary;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
     public class AgentMeld : AgentInterface<AgentMeld>, IAgent
     {
-        public IntPtr RegisteredVtable => Offsets.VTable;
+        public IntPtr RegisteredVtable => AgentMeldOffsets.VTable;
 
-        private static class Offsets
-        {
-            [Offset("Search 48 8D 05 ? ? ? ? 33 FF 48 89 03 48 8D 4B ? Add 3 TraceRelative")]
-
-            //[OffsetCN("Search 48 8D 05 ? ? ? ? 48 8D 4B ? 48 89 03 E8 ? ? ? ? 48 8D 4B ? E8 ? ? ? ? 33 C9 Add 3 TraceRelative")]
-            internal static IntPtr VTable;
-
-            [Offset("Search 38 9F ? ? ? ? 48 8D 8D ? ? ? ? Add 2 Read32")]
-            [OffsetDawntrail("Search 0F B6 9F ? ? ? ? 48 8D 8D ? ? ? ? BA ? ? ? ? 44 89 AD ? ? ? ? Add 3 Read32")]
-            internal static int CanMeld;
-
-            [Offset("Search 89 83 ? ? ? ? 48 89 83 ? ? ? ? 48 89 83 ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? Add 2 Read32")]
-            internal static int ItemsToMeldCount;
-
-            //7.3
-            [Offset("Search 66 41 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 Add 4 Read32")]
-            [OffsetCN("Search 66 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 Add 3 Read32")]
-            internal static int IndexOfSelectedItem;
-
-            [Offset("Search 0F BF B3 ? ? ? ? 49 8D 8F ? ? ? ? Add 3 Read32")]
-            [OffsetDawntrail("Search 0F BF BE ? ? ? ? 4D 8D 64 24 ? Add 3 Read32")]
-            internal static int MateriaCount;
-
-            [Offset("Search 48 8B 85 ? ? ? ? 48 0F BF 95 ? ? ? ? Add 3 Read32")]
-            //[OffsetCN("Search 48 8B 86 ? ? ? ? 48 0F BF 96 ? ? ? ? Add 3 Read32")]
-            internal static int StructStart;
-
-            [Offset("Search 48 8B 88 ? ? ? ? 4C 8B 04 D1 Add 3 Read32")]
-            internal static int ListPtr;
-
-            [Offset("Search 89 86 ? ? ? ? 48 8B CE E8 ? ? ? ? E9 ? ? ? ? Add 2 Read32")]
-            internal static int SelectedCategory;
-        }
+        
 
         protected AgentMeld(IntPtr pointer) : base(pointer)
         {
         }
 
-        public bool CanMeld => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.CanMeld) == 1;
+        public bool CanMeld => Core.Memory.NoCacheRead<byte>(Pointer + AgentMeldOffsets.CanMeld) == 1;
 
-        public bool Ready => Core.Memory.NoCacheRead<byte>(Memory.Offsets.Conditions + 7) == 0;
+        public bool Ready => Core.Memory.NoCacheRead<byte>(Offsets.Conditions + 7) == 0;
 
-        public byte ItemsToMeldCount => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.ItemsToMeldCount);
+        public byte ItemsToMeldCount => Core.Memory.NoCacheRead<byte>(Pointer + AgentMeldOffsets.ItemsToMeldCount);
 
-        public byte IndexOfSelectedItem => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.IndexOfSelectedItem);
+        public byte IndexOfSelectedItem => Core.Memory.NoCacheRead<byte>(Pointer + AgentMeldOffsets.IndexOfSelectedItem);
 
-        public byte MateriaCount => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.MateriaCount);
+        public byte MateriaCount => Core.Memory.NoCacheRead<byte>(Pointer + AgentMeldOffsets.MateriaCount);
 
-        public IntPtr StructStart => Core.Memory.Read<IntPtr>(Pointer + Offsets.StructStart);
+        public IntPtr StructStart => Core.Memory.Read<IntPtr>(Pointer + AgentMeldOffsets.StructStart);
 
-        public IntPtr ListPtr => Core.Memory.Read<IntPtr>(StructStart + Offsets.ListPtr);
+        public IntPtr ListPtr => Core.Memory.Read<IntPtr>(StructStart + AgentMeldOffsets.ListPtr);
 
         public IntPtr[] MeldList => Core.Memory.ReadArray<IntPtr>(ListPtr, ItemsToMeldCount).Select(i => Core.Memory.Read<IntPtr>(i)).ToArray();
 
         public MeldItem[] MeldItems => MeldList.Select(i => Core.Memory.Read<MeldItem>(i)).ToArray();
 
-        public byte SelectedCategory => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.SelectedCategory);
+        public byte SelectedCategory => Core.Memory.NoCacheRead<byte>(Pointer + AgentMeldOffsets.SelectedCategory);
 
         public int ItemIndex(BagSlot slot)
         {

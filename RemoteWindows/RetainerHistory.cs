@@ -12,6 +12,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Retainers;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteWindows
 {
@@ -19,54 +20,7 @@ namespace LlamaLibrary.RemoteWindows
     {
         private static readonly LLogger Log = new(nameof(RetainerHistory), Colors.OrangeRed);
 
-        private static class Offsets
-        {
-            [Offset("Search 48 8B 41 ? 48 63 D2 44 39 04 90 Add 3 Read8")]
-            internal static int NumberArrayData_IntArray;
-
-            [Offset("Search BA ? ? ? ? 49 8B CC E8 ? ? ? ? 4C 8B 7C 24 ? 48 8B 74 24 ? Add 1 Read32")]
-            [OffsetDawntrail("Search 44 8B C5 BA ? ? ? ? 48 8B CE E8 ? ? ? ? 48 8B 4F 08 Add 4 Read32")]
-            internal static int NumberArrayData_Count;
-
-            [Offset("Search BF ? ? ? ? 41 BE ? ? ? ? 90 Add 7 Read32")]
-            [OffsetDawntrail("Search 41 BD ? ? ? ? 4C 89 7C 24 ? 41 BF ? ? ? ? 89 6C 24 68 Add 13 Read32")]
-            internal static int NumberArrayData_Start;
-
-            [Offset("Search BA ? ? ? ? 48 8B C8 4C 8B 10 41 FF 52 ? 49 8B 4D ? 4C 8B E0 Add 1 Read32")]
-            [OffsetDawntrail("Search BA ? ? ? ? 48 8B C8 4C 8B 00 41 FF 50 48 48 8B 4F 08 48 8B F0 Add 1 Read32")]
-            internal static int NumberArrayIndex;
-
-            //7.3
-            [Offset("Search BA ? ? ? ? 48 8B 08 4C 8B 41 ? 48 8B C8 41 FF D0 4C 8B E0 48 85 F6 Add 1 Read32")]
-            [OffsetCN("Search BA ? ? ? ? 48 8B C8 4C 8B 00 41 FF 50 50 4C 8B E0 48 85 F6 Add 1 Read32")]
-            internal static int StringArrayIndex;
-
-            [Offset("Search 48 8B 43 ? 48 63 CA 45 84 C9 Add 3 Read8")]
-            [OffsetDawntrail("Search 48 8B 51 ? 0F 84 ? ? ? ? Add 3 Read8")]
-            internal static int StringArrayData_StrArray;
-
-            [Offset("Search BF ? ? ? ? 41 BE ? ? ? ? 90 Add 1 Read32")]
-            [OffsetDawntrail("Search 41 BD ? ? ? ? 4C 89 7C 24 ? 41 BF ? ? ? ? 89 6C 24 68 Add 2 Read32")]
-            internal static int StringArrayData_Start;
-
-            // GetSubModule
-            [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ? 5B 49 FF 60 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 TraceCall")]
-            internal static IntPtr GetSubModule;
-
-            // vfunc 33 of UIModule
-            [Offset("Search 41 FF 90 ? ? ? ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ? 5B 49 FF 60 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 Read32")]
-            internal static int GetSomethingModuleVtblFunction;
-
-            // Submodule number 9
-            [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ? 5B 49 FF 60 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 1 Read8")]
-            internal static int SubModule;
-
-            [Offset("Search 48 8B 8B ? ? ? ? 48 8D 54 24 ? 48 89 4C 24 ? 45 33 C9 48 8B C8 Add 3 Read32")]
-            internal static int RetainerId;
-
-            [Offset("Search 40 53 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 83 B9 ? ? ? ? ?")]
-            internal static IntPtr RequestSales;
-        }
+        
 
         public RetainerHistory() : base("RetainerHistory")
         {
@@ -76,9 +30,9 @@ namespace LlamaLibrary.RemoteWindows
         {
             get
             {
-                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(Offsets.NumberArrayIndex) + Offsets.NumberArrayData_IntArray);
+                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(RetainerHistoryOffsets.NumberArrayIndex) + RetainerHistoryOffsets.NumberArrayData_IntArray);
 
-                var start = arrayLocation + ((Offsets.NumberArrayData_Start - 2) * 4);
+                var start = arrayLocation + ((RetainerHistoryOffsets.NumberArrayData_Start - 2) * 4);
 
                 return start;
             }
@@ -88,9 +42,9 @@ namespace LlamaLibrary.RemoteWindows
         {
             get
             {
-                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(Offsets.NumberArrayIndex) + Offsets.NumberArrayData_IntArray);
+                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(RetainerHistoryOffsets.NumberArrayIndex) + RetainerHistoryOffsets.NumberArrayData_IntArray);
 
-                return arrayLocation + (Offsets.NumberArrayData_Count * 4);
+                return arrayLocation + (RetainerHistoryOffsets.NumberArrayData_Count * 4);
             }
         }
 
@@ -100,9 +54,9 @@ namespace LlamaLibrary.RemoteWindows
         {
             get
             {
-                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetStringArray(Offsets.StringArrayIndex) + Offsets.StringArrayData_StrArray);
+                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetStringArray(RetainerHistoryOffsets.StringArrayIndex) + RetainerHistoryOffsets.StringArrayData_StrArray);
 
-                var start = arrayLocation + ((Offsets.StringArrayData_Start - 1) * 8);
+                var start = arrayLocation + ((RetainerHistoryOffsets.StringArrayData_Start - 1) * 8);
 
                 return start;
             }
@@ -116,9 +70,9 @@ namespace LlamaLibrary.RemoteWindows
         {
             get
             {
-                var func = Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(UiManagerProxy.UIModule) + Offsets.GetSomethingModuleVtblFunction);
+                var func = Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(UiManagerProxy.UIModule) + RetainerHistoryOffsets.GetSomethingModuleVtblFunction);
                 var subModule = Core.Memory.CallInjectedWraper<IntPtr>(func, UiManagerProxy.UIModule);
-                var pointer = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetSubModule, subModule, Offsets.SubModule);
+                var pointer = Core.Memory.CallInjectedWraper<IntPtr>(RetainerHistoryOffsets.GetSubModule, subModule, RetainerHistoryOffsets.SubModule);
                 return pointer;
             }
         }
@@ -129,14 +83,14 @@ namespace LlamaLibrary.RemoteWindows
             var fullRets = await HelperFunctions.GetOrderedRetainerArray(true);
             var rets = fullRets.Where(i => i.Active).Select(i => i.Unique);
             var raptureStruct = RaptureStruct;
-            var retainerIdLocation = raptureStruct + Offsets.RetainerId;
+            var retainerIdLocation = raptureStruct + RetainerHistoryOffsets.RetainerId;
 
             foreach (var retainerId in rets)
             {
                 var name = fullRets.First(i => i.Unique == retainerId).Name;
                 Core.Memory.Write(HistoryCountLocation, 99);
                 Core.Memory.Write(retainerIdLocation, retainerId);
-                Core.Memory.CallInjectedWraper<IntPtr>(Offsets.RequestSales, raptureStruct);
+                Core.Memory.CallInjectedWraper<IntPtr>(RetainerHistoryOffsets.RequestSales, raptureStruct);
                 if (await Coroutine.Wait(5000, () => Core.Memory.NoCacheRead<int>(HistoryCountLocation) != 99))
                 {
                     result.Add(retainerId, Sales.ToList());

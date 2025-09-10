@@ -1,6 +1,7 @@
 ﻿using System;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Hooks;
 
@@ -8,21 +9,9 @@ public class InventoryUpdatePatch : AsmFunctionHook
 {
     public override string Name => "InventoryUpdatePatch";
 
-    internal static class Offsets
-    {
-        [Offset("Search E9 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 0D ? ? ? ?")]
-        internal static IntPtr PatchLocation;
+    
 
-        [Offset("Search E9 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 0D ? ? ? ? TraceCall", IgnoreCache = true)]
-        internal static IntPtr OriginalJump;
-
-        //7.1
-        [Offset("Search E8 ? ? ? ? 33 DB FF C6 48 8D 3D ? ? ? ? Add 1 TraceRelative")]
-        //[OffsetCN("Search E8 ? ? ? ? 48 83 C4 ? 41 5F 41 5D 5F 5E 5D 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? Add 1 TraceRelative")]
-        internal static IntPtr OrginalCall;
-    }
-
-    public override IntPtr? Hook => Offsets.PatchLocation;
+    public override IntPtr? Hook => InventoryUpdatePatchOffsets.PatchLocation;
 
     public static IntPtr TickPtr = Core.Memory.AllocateMemory(8);
 
@@ -30,18 +19,18 @@ public class InventoryUpdatePatch : AsmFunctionHook
 
     public override bool Initialize()
     {
-        var instructionTarget = Offsets.OriginalJump;
+        var instructionTarget = InventoryUpdatePatchOffsets.OriginalJump;
 
         if (Hook == null || Hook == IntPtr.Zero || instructionTarget == IntPtr.Zero)
         {
             return false;
         }
 
-        JumpTo = Core.Memory.Executor.AllocNear(Offsets.OriginalJump, 60, 64u);
+        JumpTo = Core.Memory.Executor.AllocNear(InventoryUpdatePatchOffsets.OriginalJump, 60, 64u);
 
         var asm = Core.Memory.Asm;
         asm.Clear();
-        asm.AddLine("[org 0x{0:X16}]", (ulong)Offsets.PatchLocation);
+        asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatchOffsets.PatchLocation);
         asm.AddLine("JMP {0}", JumpTo);
         var jzPatch = asm.Assemble();
 
@@ -56,7 +45,7 @@ public class InventoryUpdatePatch : AsmFunctionHook
         asm.AddLine("pop rcx");
         asm.AddLine("JMP [OriginalJmp]");
         asm.AddLine("[align 8]");
-        asm.AddLine("OriginalJmp: dq {0}", Offsets.OriginalJump.ToInt64());
+        asm.AddLine("OriginalJmp: dq {0}", InventoryUpdatePatchOffsets.OriginalJump.ToInt64());
         asm.AddLine("TickPtr: dq {0}", TickPtr.ToInt64());
         asm.AddLine("GetTickCount: dq {0}", procAddress);
 

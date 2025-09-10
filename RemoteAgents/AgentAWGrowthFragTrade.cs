@@ -11,6 +11,7 @@ using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
@@ -18,38 +19,23 @@ namespace LlamaLibrary.RemoteAgents
     {
         public static LLogger Log = new LLogger("AgentAWGrowthFragTrade", Colors.Lavender);
 
-        private static class Offsets
-        {
-            [Offset("Search 48 8D 05 ? ? ? ? 48 8D 4B ? 48 89 03 33 D2 Add 3 TraceRelative")]
-            internal static IntPtr Vtable;
-
-            //(AgentPtr, index, qty)
-            [Offset("Search 4C 8B DC 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 83 B9 ? ? ? ? ?")]
-            [OffsetCN("Search 4C 8B DC 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 83 B9 ? ? ? ? ? 41 8B E8 48 63 FA")]
-            internal static IntPtr BuyFunction;
-
-            [Offset("Search 49 8D 4D ? 4C 8D 0D ? ? ? ? Add 3 Read8")]
-            internal static int ArrayBase;
-
-            [Offset("Search 45 89 BD ? ? ? ? 49 8D 4D ? Add 3 Read32")]
-            internal static int ArrayCount;
-        }
+        
 
         protected AgentAWGrowthFragTrade(IntPtr pointer) : base(pointer)
         {
         }
 
-        public IntPtr RegisteredVtable => Offsets.Vtable;
+        public IntPtr RegisteredVtable => AgentAWGrowthFragTradeOffsets.Vtable;
 
-        public IntPtr ArrayPtr => Pointer + Offsets.ArrayBase;
+        public IntPtr ArrayPtr => Pointer + AgentAWGrowthFragTradeOffsets.ArrayBase;
 
-        public int ArrayCount => Core.Memory.Read<int>(Pointer + Offsets.ArrayCount);
+        public int ArrayCount => Core.Memory.Read<int>(Pointer + AgentAWGrowthFragTradeOffsets.ArrayCount);
 
         public AnimaExchangeItemInfo[] ExchangeItems => Core.Memory.ReadArray<AnimaExchangeItemInfo>(ArrayPtr, ArrayCount);
 
         public void Buy(int index, int qty)
         {
-            Core.Memory.CallInjectedWraper<int>(Offsets.BuyFunction, Pointer, index, qty);
+            Core.Memory.CallInjectedWraper<int>(AgentAWGrowthFragTradeOffsets.BuyFunction, Pointer, index, qty);
         }
 
         public static async Task<bool> BuyCrystalSand(uint itemToSpend, int qty, bool buyAnyAmount = false)
