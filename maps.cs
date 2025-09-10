@@ -5,20 +5,14 @@ using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary
 {
     //TODO This was ZZI's mess, maybe we can just move it to Helpers and leave the class name the same and just fix the file name. IDK where else it's used or where the values come from
     public static class TreasureMap
     {
-        internal static class Offsets
-        {
-            /// <summary>
-            ///     Pointer to where the game stores the map subkey.
-            /// </summary>
-            [Offset("Search 48 8d 0d ?? ?? ?? ?? e8 ?? ?? ?? ?? 48 8d 0d ?? ?? ?? ?? 0f b7 d8 e8 ?? ?? ?? ?? Add 3 TraceRelative")]
-            internal static IntPtr CurrentMap;
-        }
+        
 
         /// <summary>
         ///     Provides a KeyItem => TreasureHuntRank lookup because the client does the same thing.
@@ -71,6 +65,6 @@ namespace LlamaLibrary
             }
         }
 
-        public static short SecondaryKey => Core.Memory.Read<short>(Offsets.CurrentMap);
+        public static short SecondaryKey => Core.Memory.Read<short>(mapsOffsets.CurrentMap);
     }
 }

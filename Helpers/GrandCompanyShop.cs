@@ -17,6 +17,7 @@ using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
@@ -24,34 +25,13 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new(nameof(GrandCompanyShop), Colors.SeaGreen);
 
-        internal static class Offsets
-        {
-            [Offset("Search 0F B6 15 ? ? ? ? 8D 42 ? 3C ? 77 ? FE CA 48 8D 0D ? ? ? ? Add 3 TraceRelative")]
-            [OffsetDawntrail("Search 0F B6 0D ? ? ? ? FE C9  Add 3 TraceRelative")]
-            internal static IntPtr CurrentGC;
+        
 
-            [Offset("Search 48 83 EC ? 48 8B 05 ? ? ? ? 44 8B C1 BA ? ? ? ? 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? C3 48 8B 00 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? 80 F9 ?")]
-            internal static IntPtr GCGetMaxSealsByRank;
+        public static IntPtr ActiveShopPtr => Core.Memory.Read<IntPtr>(GrandCompanyShopOffsets.GCShopPtr);
 
-            //7.3
-            [Offset("Search 48 8D 9E ? ? ? ? 4C 89 AC 24 ? ? ? ? 45 32 E4 Add 3 Read32")]
-            [OffsetCN("Search 48 8D 9E ? ? ? ? 4C 89 A4 24 ? ? ? ? Add 3 Read32")]
-            internal static int GCArrayStart;
+        public static IntPtr ListStart => ActiveShopPtr + GrandCompanyShopOffsets.GCArrayStart;
 
-            [Offset("Search 41 83 FD ? 0F 82 ? ? ? ? 41 0F B6 97 ? ? ? ? Add 3 Read8")]
-            [OffsetDawntrail("Search 83 F8 ? 0F 82 ? ? ? ? 41 0F B6 97 ? ? ? ? Add 2 Read8")]
-            internal static int GCShopCount;
-
-            [Offset("Search 48 8B 05 ? ? ? ? 33 C9 40 84 FF Add 3 TraceRelative")]
-            [OffsetDawntrail("Search 48 8B 05 ? ? ? ? 33 C9 40 84 FF 48 0F 45 C1 48 89 05 ? ? ? ? Add 3 TraceRelative")]
-            internal static IntPtr GCShopPtr;
-        }
-
-        public static IntPtr ActiveShopPtr => Core.Memory.Read<IntPtr>(Offsets.GCShopPtr);
-
-        public static IntPtr ListStart => ActiveShopPtr + Offsets.GCArrayStart;
-
-        public static List<GCShopItem> Items => Core.Memory.ReadArray<GCShopItem>(ActiveShopPtr + Offsets.GCArrayStart, Offsets.GCShopCount).Where(i => i.ItemID != 0).ToList();
+        public static List<GCShopItem> Items => Core.Memory.ReadArray<GCShopItem>(ActiveShopPtr + GrandCompanyShopOffsets.GCArrayStart, GrandCompanyShopOffsets.GCShopCount).Where(i => i.ItemID != 0).ToList();
 
         public static int CanAfford(GCShopItem item)
         {
@@ -70,7 +50,7 @@ namespace LlamaLibrary.Helpers
 
             if (item.ItemID == 0)
             {
-                Log.Error($"Can't find item in Grand Company Shop 0x{(ActiveShopPtr + Offsets.GCArrayStart).ToString("X")}");
+                Log.Error($"Can't find item in Grand Company Shop 0x{(ActiveShopPtr + GrandCompanyShopOffsets.GCArrayStart).ToString("X")}");
                 foreach (var item1 in Items)
                 {
                     Log.Error($"{item1}");
@@ -147,7 +127,7 @@ namespace LlamaLibrary.Helpers
                 Log.Information($"Want to buy {DataManager.GetItem(item.ItemID).LocaleName()}");
                 if (item.ItemID == 0)
                 {
-                    Log.Error($"Can't find item {(ActiveShopPtr + Offsets.GCArrayStart).ToString("X")}");
+                    Log.Error($"Can't find item {(ActiveShopPtr + GrandCompanyShopOffsets.GCArrayStart).ToString("X")}");
                     foreach (var item1 in Items)
                     {
                         Log.Error($"{item1}");

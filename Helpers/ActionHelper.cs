@@ -9,6 +9,7 @@ using LlamaLibrary.Extensions;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
@@ -19,31 +20,13 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new(nameof(ActionHelper), Colors.Gold);
 
-        internal static class Offsets
-        {
-            [Offset("Search E8 ? ? ? ? E9 ? ? ? ? 48 8B 4E ? 48 8B 01 FF 90 ? ? ? ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? 8B 93 ? ? ? ? 45 33 D2 Add 1 TraceRelative")]
-            [OffsetDawntrail("Search E8 ? ? ? ? 41 89 9E ? ? ? ? EB 0B TraceCall")]
-            internal static IntPtr DoAction;
-
-
-            //7.3
-            [Offset("Search  48 8D 0D ? ? ? ? E8 ? ? ? ? 44 8B C0 4D 85 F6 Add 3 TraceRelative")]
-            [OffsetCN("Search 48 8D 0D ? ? ? ? 41 B9 ? ? ? ? 44 88 6C 24 ? Add 3 TraceRelative")]
-            internal static IntPtr ActionManagerParam;
-
-            //41 B8 ? ? ? ? 89 5C 24 ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 75 ?
-
-            //7.1
-            [Offset("Search 41 B8 ? ? ? ? 89 7C 24 ? E8 ? ? ? ? Add 2 Read32")]
-            //[OffsetCN("Search 41 B8 ? ? ? ? 89 5C 24 ? E8 ? ? ? ? 84 C0 75 ? Add 2 Read32")]
-            internal static int DecipherSpell;
-        }
+        
 
         public static bool UseAction(ff14bot.Enums.ActionType actionType, uint actionID, long targetID = 0xE000_0000, uint a4 = 0, uint a5 = 0, uint a6 = 0, uint a7 = 0)
         {
             Core.Memory.ClearCallCache();
-            var result = Core.Memory.CallInjectedWraper<byte>(Offsets.DoAction,
-            Offsets.ActionManagerParam,
+            var result = Core.Memory.CallInjectedWraper<byte>(ActionHelperOffsets.DoAction,
+            ActionHelperOffsets.ActionManagerParam,
             (uint)actionType,
             actionID,
             targetID,
@@ -65,10 +48,10 @@ namespace LlamaLibrary.Helpers
             }
 
             Core.Memory.ClearCallCache();
-            var result = Core.Memory.CallInjectedWraper<byte>(Offsets.DoAction,
-            Offsets.ActionManagerParam,
+            var result = Core.Memory.CallInjectedWraper<byte>(ActionHelperOffsets.DoAction,
+            ActionHelperOffsets.ActionManagerParam,
             (uint)ff14bot.Enums.ActionType.Spell,
-            (uint)Offsets.DecipherSpell,
+            (uint)ActionHelperOffsets.DecipherSpell,
             (long)Core.Player.ObjectId,
             slot.Slot | ((int)slot.BagId << 16),
             0,

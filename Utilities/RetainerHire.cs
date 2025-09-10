@@ -20,6 +20,7 @@ using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Retainers;
 using Newtonsoft.Json;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Utilities
 {
@@ -29,11 +30,7 @@ namespace LlamaLibrary.Utilities
 
         private static readonly Queue<string> Names = new();
 
-        private static class Offsets
-        {
-            [Offset("Search 0F B6 15 ? ? ? ? EB ? Add 3 TraceRelative")]
-            internal static IntPtr MaxRetainers;
-        }
+        
 
         public static List<Npc> Vocates = new()
         {
@@ -126,10 +123,10 @@ namespace LlamaLibrary.Utilities
 
         public static async Task<byte> GetMaxNumRetainerHires()
         {
-            Core.Memory.Write(Offsets.MaxRetainers, (byte)0);
+            Core.Memory.Write(RetainerHireOffsets.MaxRetainers, (byte)0);
             await HelperFunctions.ForceGetRetainerData();
-            await Coroutine.Wait(5000, () => Core.Memory.Read<byte>(Offsets.MaxRetainers) > 0);
-            return Core.Memory.Read<byte>(Offsets.MaxRetainers);
+            await Coroutine.Wait(5000, () => Core.Memory.Read<byte>(RetainerHireOffsets.MaxRetainers) > 0);
+            return Core.Memory.Read<byte>(RetainerHireOffsets.MaxRetainers);
         }
 
         public static async Task<int> GetNumRetainerHires()

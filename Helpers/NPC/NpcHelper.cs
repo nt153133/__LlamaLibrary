@@ -5,6 +5,7 @@ using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers.NPC
 {
@@ -13,13 +14,7 @@ namespace LlamaLibrary.Helpers.NPC
         private static Dictionary<uint, string>? EventObjectNames;
         private static Dictionary<uint, (string Name, string Plural, string Title)> _ENpcResident = new();
 
-        private static class Offsets
-        {
-            //7.1
-            [Offset("Search E8 ? ? ? ? 0F B6 48 ? 85 C9 0F 84 ? ? ? ? TraceCall")]
-            //[OffsetCN("Search E8 ? ? ? ? 48 89 45 AF 48 8B D8 TraceCall")]
-            internal static IntPtr GetENpcResident;
-        }
+        
 
         public static Npc? GetClosestNpc(IEnumerable<Npc> npcs)
         {
@@ -90,7 +85,7 @@ namespace LlamaLibrary.Helpers.NPC
                 return value;
             }
 
-            var ptr = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetENpcResident, npcId);
+            var ptr = Core.Memory.CallInjectedWraper<IntPtr>(NpcHelperOffsets.GetENpcResident, npcId);
 
             if (ptr == IntPtr.Zero)
             {

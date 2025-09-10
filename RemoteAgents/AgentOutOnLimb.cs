@@ -2,31 +2,15 @@
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
     //TODO This agent has stupid hardcoded memory offsets in Refresh()
     public class AgentOutOnLimb : AgentInterface<AgentOutOnLimb>, IAgent
     {
-        public IntPtr RegisteredVtable => Offsets.VTable;
-        private static class Offsets
-        {
-            [Offset("Search 48 8D 05 ? ? ? ? 48 8D 4F ? 48 89 07 E8 ? ? ? ? 33 C9 Add 3 TraceRelative")]
-            internal static IntPtr VTable;
-            [Offset("Search 41 80 BE ? ? ? ? ? 0F 84 ? ? ? ? BA ? ? ? ? Add 3 Read32")]
-            internal static int IsReady;
-            [Offset("Search 41 C6 86 ? ? ? ? ? EB ? 41 C6 86 ? ? ? ? ? Add 3 Read32")]
-            [OffsetDawntrail("Search 41 C6 86 ? ? ? ? ? EB ? 41 C6 86 ? ? ? ? ? 4C 8D 9C 24 ? ? ? ? Add 3 Read32")]
-            internal static int CursorLocked;
-            [Offset("Search 89 9F ? ? ? ? 48 8B 5C 24 ? 89 B7 ? ? ? ? 48 8B 74 24 ? 89 AF ? ? ? ? Add 2 Read32")]
-            internal static int DoubleDownRemaining;
-            [Offset("Search 48 8B AA ? ? ? ? 48 8B F9 48 85 ED Add 3 Read32")]
-            [OffsetDawntrail("Search 48 8B AA ? ? ? ? 48 8B D9 48 85 ED 0F 84 ? ? ? ? 48 8B 89 ? ? ? ? Add 3 Read32")]
-            internal static int LastOffset;
-
-            [Offset("Search 48 8B 40 ? 48 8B CF 4C 8B 0F Add 3 Read8")]
-            internal static int LastLastOffset;
-        }
+        public IntPtr RegisteredVtable => AgentOutOnLimbOffsets.VTable;
+        
 
         public IntPtr addressLocation = IntPtr.Zero;
         private readonly Random rnd = new();
@@ -35,12 +19,12 @@ namespace LlamaLibrary.RemoteAgents
         {
         }
 
-        public int DoubleDownRemaining => Core.Memory.Read<byte>(Pointer + Offsets.DoubleDownRemaining);
+        public int DoubleDownRemaining => Core.Memory.Read<byte>(Pointer + AgentOutOnLimbOffsets.DoubleDownRemaining);
 
         public bool CursorLocked
         {
-            get => Core.Memory.Read<byte>(Pointer + Offsets.CursorLocked) != 1;
-            set => Core.Memory.Write(Pointer + Offsets.CursorLocked, (byte)(value ? 0 : 1));
+            get => Core.Memory.Read<byte>(Pointer + AgentOutOnLimbOffsets.CursorLocked) != 1;
+            set => Core.Memory.Write(Pointer + AgentOutOnLimbOffsets.CursorLocked, (byte)(value ? 0 : 1));
         }
 
         public int CursorLocation
@@ -49,17 +33,17 @@ namespace LlamaLibrary.RemoteAgents
             set => Core.Memory.Write(addressLocation, LocationValue(value));
         }
 
-        public bool IsReadyBotanist => Core.Memory.Read<byte>(Pointer + Offsets.IsReady) == 3;
+        public bool IsReadyBotanist => Core.Memory.Read<byte>(Pointer + AgentOutOnLimbOffsets.IsReady) == 3;
 
-        public bool IsReadyAimg => Core.Memory.Read<byte>(Pointer + Offsets.IsReady) == 2;
+        public bool IsReadyAimg => Core.Memory.Read<byte>(Pointer + AgentOutOnLimbOffsets.IsReady) == 2;
 
         public void Refresh()
         {
-            var intptr_0 = Core.Memory.Read<IntPtr>(Memory.Offsets.AtkStage);
+            var intptr_0 = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
             var intptr_1 = Core.Memory.Read<IntPtr>(intptr_0 + 0x38);
             var intptr_2 = Core.Memory.Read<IntPtr>(intptr_1 + 0x18);
-            var intptr_3 = Core.Memory.Read<IntPtr>(intptr_2 + Offsets.LastOffset); //0x310
-            addressLocation = Core.Memory.Read<IntPtr>(intptr_3 + Offsets.LastLastOffset);
+            var intptr_3 = Core.Memory.Read<IntPtr>(intptr_2 + AgentOutOnLimbOffsets.LastOffset); //0x310
+            addressLocation = Core.Memory.Read<IntPtr>(intptr_3 + AgentOutOnLimbOffsets.LastLastOffset);
         }
 
         private ushort LocationValue(int percent)

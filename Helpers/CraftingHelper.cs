@@ -8,6 +8,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
@@ -15,44 +16,20 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new(nameof(CraftingHelper), Colors.Bisque);
 
-        private static class Offsets
-        {
-            [Offset("Search 4C 8D 0D ?? ?? ?? ?? 4D 8B 13 49 8B CB Add 3 TraceRelative")]
-            [OffsetDawntrail("Search 4C 8D 0D ? ? ? ? 4C 8B 11 44 0F B7 41 ?  Add 3 TraceRelative")]
-            internal static IntPtr DohLastAction;
+        
 
-            [Offset("Search 40 53 48 83 EC ? 8B D9 81 F9 ? ? ? ?")]
-            internal static IntPtr HasCraftedRecipe;
-
-            //7.1
-            [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 84 24 ? ? ? ? ? Add 3 TraceRelative")]
-            //[OffsetCN("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 44 24 ? ?  Add 3 TraceRelative")]
-            internal static IntPtr QuestPointer;
-
-            [Offset("Search 81 F9 ? ? ? ? 72 ? 32 C0 48 83 C4 ? Add 2 Read32")]
-            [OffsetDawntrail("Search 81 F9 ? ? ? ? 73 38 Add 2 Read32")]
-            internal static int NumberOfRecipes;
-
-            [Offset("Search 81 F9 ? ? ? ? 73 ? 44 0F B6 84 01 ? ? ? ?  Add 2 Read32")]
-            internal static int LengthOfArray;
-
-            [Offset("Search 44 0F B6 84 01 ? ? ? ? 0F B6 C3 Add 5 Read32")]
-            [OffsetDawntrail("Search 44 0F B6 84 01 ? ? ? ? 0F B6 CB  Add 5 Read32")]
-            internal static int OffsetRecipes;
-        }
-
-        public static CraftingStatus Status => Core.Memory.Read<CraftingStatus>(Offsets.DohLastAction);
+        public static CraftingStatus Status => Core.Memory.Read<CraftingStatus>(CraftingHelperOffsets.DohLastAction);
 
         public static bool AnimationLocked => CraftingManager.AnimationLocked;
 
-        public static byte[] CraftedRecipeByteArray => Core.Memory.ReadBytes(Offsets.QuestPointer + Offsets.OffsetRecipes, Offsets.LengthOfArray);
+        public static byte[] CraftedRecipeByteArray => Core.Memory.ReadBytes(CraftingHelperOffsets.QuestPointer + CraftingHelperOffsets.OffsetRecipes, CraftingHelperOffsets.LengthOfArray);
 
         public static bool HasCraftedRecipe(ushort recipeId)
         {
             using (Core.Memory.TemporaryCacheState(false))
             {
                 return Core.Memory.CallInjectedWraper<bool>(
-                    Offsets.HasCraftedRecipe,
+                    CraftingHelperOffsets.HasCraftedRecipe,
                     recipeId);
             }
         }
@@ -90,7 +67,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool IsSecretRecipeBookUnlocked(uint key)
         {
-            return Core.Memory.CallInjectedWraper<byte>(Memory.Offsets.IsSecretRecipeBookUnlocked, Memory.Offsets.PlayerState, key) == 1;
+            return Core.Memory.CallInjectedWraper<byte>(Offsets.IsSecretRecipeBookUnlocked, Offsets.PlayerState, key) == 1;
         }
 
         public static bool IsSecretRecipeBookUnlockedItem(uint key)
@@ -105,7 +82,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool IsFolkloreBookUnlocked(uint key)
         {
-            return Core.Memory.CallInjectedWraper<byte>(Memory.Offsets.IsFolkloreBookUnlocked, Memory.Offsets.PlayerState, key) == 1;
+            return Core.Memory.CallInjectedWraper<byte>(Offsets.IsFolkloreBookUnlocked, Offsets.PlayerState, key) == 1;
         }
 
         public static bool IsFolkloreBookUnlockedItem(uint key)

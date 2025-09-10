@@ -2,18 +2,15 @@
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
     //TODO This agent has hardcoded memory offsets and i'm not actually sure why it's here
     public class AgentRetainerCharacter : AgentInterface<AgentRetainerCharacter>, IAgent
     {
-        public IntPtr RegisteredVtable => Offsets.VTable;
-        private static class Offsets
-        {
-            [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 48 8D 4E ? 48 8D 05 ? ? ? ? 48 89 46 ? E8 ? ? ? ? 33 ED Add 3 TraceRelative")]
-            internal static IntPtr VTable;
-        }
+        public IntPtr RegisteredVtable => AgentRetainerCharacterOffsets.VTable;
+        
 
         protected AgentRetainerCharacter(IntPtr pointer) : base(pointer)
         {

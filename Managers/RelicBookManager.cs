@@ -7,6 +7,7 @@ using ff14bot.Managers;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Managers
 
@@ -119,7 +120,7 @@ namespace LlamaLibrary.Managers
 
         public static byte GetNumOfRelicNoteCompleted(uint relicId, RelicBookType relicBookType)
         {
-            return Core.Memory.CallInjectedWraper<byte>(Offsets.GetNumOfRelicNoteCompleted, Offsets.UIRelicNote, relicId, (byte)relicBookType);
+            return Core.Memory.CallInjectedWraper<byte>(RelicBookManagerOffsets.GetNumOfRelicNoteCompleted, RelicBookManagerOffsets.UIRelicNote, relicId, (byte)relicBookType);
         }
 
         public static byte NumOfFireCompleted(uint relicId)
@@ -199,15 +200,7 @@ namespace LlamaLibrary.Managers
             };
         }
 
-        internal static class Offsets
-        {
-            [Offset("Search 48 8D 0D ? ? ? ? 8B D3 E8 ? ? ? ? 48 8B 4C 24 ? Add 3 TraceRelative")]
-            internal static IntPtr UIRelicNote;
-
-            [Offset("Search 40 57 48 83 EC ? 41 8B F8 41 83 F8 ? 72 ? 33 C0 48 83 C4 ? 5F C3 48 89 5C 24 ?")]
-            [OffsetDawntrail("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 56 41 57 48 83 EC 20 45 8B F8 ")]
-            internal static IntPtr GetNumOfRelicNoteCompleted;
-        }
+        
     }
 
     public enum RelicBookType : byte

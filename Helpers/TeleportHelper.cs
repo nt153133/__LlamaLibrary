@@ -12,6 +12,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers;
 
@@ -48,12 +49,12 @@ public static class TeleportHelper
         CallUpdate();
         _lastUpdate = DateTime.Now;
         _lastUpdateWorld = WorldHelper.CurrentWorld;
-        _teleportList = Core.Memory.Read<Telepo>(Memory.Offsets.UIStateTelepo).TeleportInfos;
+        _teleportList = Core.Memory.Read<Telepo>(Offsets.UIStateTelepo).TeleportInfos;
     }
 
     public static void CallUpdate()
     {
-        Core.Memory.CallInjectedWraper<IntPtr>(Offsets.UpdatePlayerAetheryteList, Memory.Offsets.UIStateTelepo, 0);
+        Core.Memory.CallInjectedWraper<IntPtr>(TeleportHelperOffsets.UpdatePlayerAetheryteList, Offsets.UIStateTelepo, 0);
     }
 
     public static async Task<bool> TeleportToApartment()
@@ -219,7 +220,7 @@ public static class TeleportHelper
 
     public static bool TeleportUsingTicket(uint ae, byte subIndex = 0)
     {
-        return Core.Memory.CallInjectedWraper<byte>(Offsets.TeleportWithSettings, Offsets.Telepo, ae, subIndex) != 0;
+        return Core.Memory.CallInjectedWraper<byte>(TeleportHelperOffsets.TeleportWithSettings, TeleportHelperOffsets.Telepo, ae, subIndex) != 0;
     }
 
     public static async Task<bool> TeleportWithTicket(AetheryteResult aetheryte)
@@ -312,17 +313,5 @@ public static class TeleportHelper
         return false;
     }
 
-    private static class Offsets
-    {
-        //7.3
-        [Offset("Search E8 ? ? ? ? 49 89 47 ? BA ? ? ? ? TraceCall")]
-        [OffsetCN("Search E8 ? ? ? ? 49 89 44 24 ? 4C 8B F8 TraceCall")]
-        internal static IntPtr UpdatePlayerAetheryteList;
-
-        [Offset("Search E8 ? ? ? ? 48 8B 4B ? 84 C0 48 8B 01 74 ? Add 1 TraceRelative")]
-        internal static IntPtr TeleportWithSettings;
-
-        [Offset("Search 48 8D 0D ? ? ? ? 8B FA E8 ? ? ? ? 48 8B 4B ? Add 3 TraceRelative")]
-        internal static IntPtr Telepo;
-    }
+    
 }

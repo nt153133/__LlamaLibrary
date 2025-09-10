@@ -2,26 +2,13 @@
 using ff14bot;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteWindows
 {
     public class FreeCompanyChest : RemoteWindow<FreeCompanyChest>
     {
-        private static class Offsets
-        {
-            // For Dawntrail I assume these are in the same order.
-            [Offset("Search 8B 9E ? ? ? ? 8B CF D3 EB Add 2 Read32")]
-            [OffsetDawntrail("Search 89 91 ? ? ? ? 4C 8B F1 44 89 81 ? ? ? ? Add 2 Read32")]
-            internal static int ItemPermissions;
-
-            [Offset("Search 44 89 81 ? ? ? ? 4C 8D B1 ? ? ? ? Add 3 Read32")]
-            [OffsetDawntrail("Search 44 89 81 ? ? ? ? 44 89 89 ? ? ? ? 48 8D B1 ? ? ? ? Add 3 Read32")]
-            internal static int CrystalsPermission;
-
-            [Offset("Search 44 89 89 ? ? ? ? 33 FF Add 3 Read32")]
-            [OffsetDawntrail("Search 44 89 89 ? ? ? ? 48 8D B1 ? ? ? ? Add 3 Read32")]
-            internal static int GilPermission;
-        }
+        
 
         public Dictionary<int, CompanyChestPermission> ItemTabPermissions
         {
@@ -33,7 +20,7 @@ namespace LlamaLibrary.RemoteWindows
                 }
 
                 var permissions = new Dictionary<int, CompanyChestPermission>();
-                var value = Core.Memory.Read<uint>(WindowByName.Pointer + Offsets.ItemPermissions);
+                var value = Core.Memory.Read<uint>(WindowByName.Pointer + FreeCompanyChestOffsets.ItemPermissions);
                 for (var i = 0; i < ItemTabCount; i++)
                 {
                     permissions.Add(i, (CompanyChestPermission)((value >> (2 * i)) & 3));
@@ -43,9 +30,9 @@ namespace LlamaLibrary.RemoteWindows
             }
         }
 
-        public CompanyChestPermission CrystalsPermission => WindowByName != null ? Core.Memory.Read<CompanyChestPermission>(WindowByName.Pointer + Offsets.CrystalsPermission) : CompanyChestPermission.NoAccess;
+        public CompanyChestPermission CrystalsPermission => WindowByName != null ? Core.Memory.Read<CompanyChestPermission>(WindowByName.Pointer + FreeCompanyChestOffsets.CrystalsPermission) : CompanyChestPermission.NoAccess;
 
-        public CompanyChestPermission GilPermission => WindowByName != null ? Core.Memory.Read<CompanyChestPermission>(WindowByName.Pointer + Offsets.GilPermission) : CompanyChestPermission.NoAccess;
+        public CompanyChestPermission GilPermission => WindowByName != null ? Core.Memory.Read<CompanyChestPermission>(WindowByName.Pointer + FreeCompanyChestOffsets.GilPermission) : CompanyChestPermission.NoAccess;
 
         public int ItemTabCount => Elements[4].TrimmedData;
 

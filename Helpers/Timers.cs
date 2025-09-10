@@ -6,6 +6,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers;
 
@@ -13,18 +14,10 @@ public static class Timers
 {
     private static readonly LLogger Log = new("TimersHelper", Colors.Peru);
 
-    private static readonly FrameCachedValue<ulong> CurrentTimeCachedValue = new(() => Core.Memory.CallInjectedWraper<ulong>(Offsets.GetCurrentTime, 0));
+    private static readonly FrameCachedValue<ulong> CurrentTimeCachedValue = new(() => Core.Memory.CallInjectedWraper<ulong>(TimersOffsets.GetCurrentTime, 0));
 
     // ReSharper disable once MemberCanBePrivate.Global
-    internal static class Offsets
-    {
-        [Offset("Search 48 83 EC ? 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 48 8B C8 48 83 C4 ? E9 ? ? ? ? E8 ? ? ? ?")]
-        internal static IntPtr GetCurrentTime;
-
-        [Offset("Search E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 41 0F B7 14 5C TraceCall")]
-        [OffsetDawntrail("Search 48 83 EC 28 48 8B 05 ? ? ? ? 44 8B C1 BA 1e 01 00 00 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 05 48 83 C4 28")]
-        internal static IntPtr GetCycleExd;
-    }
+    
 
     private const int MaxRows = 6;
     private static readonly string[] Description = { "", "Duty/Beast Tribe Dailies", "Weekly Reset", "Unknown", "GC/Rowena", "Unknown" };
@@ -62,7 +55,7 @@ public static class Timers
 
     public static CycleTime GetCycleRow(int index)
     {
-        var cyclePtr = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetCycleExd, index);
+        var cyclePtr = Core.Memory.CallInjectedWraper<IntPtr>(TimersOffsets.GetCycleExd, index);
 
         return cyclePtr != IntPtr.Zero ? Core.Memory.Read<CycleTime>(cyclePtr) : default;
     }
