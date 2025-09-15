@@ -3,21 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteWindows
 {
     public class LookingForGroupCondition : RemoteWindow<LookingForGroupCondition>
     {
-        private static class Offsets
-        {
-            //7.3
-            [Offset("Search BA ? ? ? ? 48 8B 8B ? ? ? ? E8 ? ? ? ? 41 8B 86 ? ? ? ? Add 8 Read32")]
-            [OffsetCN("Search BA ? ? ? ? 48 8B 8B ? ? ? ? E8 ? ? ? ? 49 8D 8E ? ? ? ? Add 8 Read32")]
-            internal static int AtkComponentTextInputNodePtr;
-
-            [Offset("Search 48 8D 97 ? ? ? ? 48 8B 05 ? ? ? ? 33 F6 Add 3 Read32")]
-            internal static int TextFieldPtr;
-        }
+        
 
         private static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
         {
@@ -31,9 +23,9 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public IntPtr AtkComponentTextInputNode => WindowByName == null ? IntPtr.Zero : Core.Memory.Read<IntPtr>(WindowByName.Pointer + Offsets.AtkComponentTextInputNodePtr);
+        public IntPtr AtkComponentTextInputNode => WindowByName == null ? IntPtr.Zero : Core.Memory.Read<IntPtr>(WindowByName.Pointer + LookingForGroupConditionOffsets.AtkComponentTextInputNodePtr);
 
-        public IntPtr TextField => AtkComponentTextInputNode + Offsets.TextFieldPtr;
+        public IntPtr TextField => AtkComponentTextInputNode + LookingForGroupConditionOffsets.TextFieldPtr;
 
         public bool TextBool
         {

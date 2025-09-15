@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using ff14bot;
 using LlamaLibrary.Memory;

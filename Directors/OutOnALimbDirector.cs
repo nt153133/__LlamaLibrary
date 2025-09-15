@@ -2,49 +2,13 @@
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Directors
 {
     public static class OutOnALimbDirector
     {
-        internal static class Offsets
-        {
-            [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B D0 48 8D 0D ? ? ? ? B8 ? ? ? ? Add 3 TraceRelative")]
-            internal static IntPtr ActiveDirectorPtr;
-
-            //7.3
-            [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? 48 8B 39 48 8B 07")]
-            [OffsetCN("Search 48 89 5C 24 ? 57 48 83 EC ? 48 8B 01 48 8B F9 48 8B 18 E8 ? ? ? ?")]
-            internal static IntPtr RemainingTimeFunction;
-
-            //7.3
-            [Offset("Search 89 86 ? ? ? ? 0F B6 45 ? 88 86 ? ? ? ? 8B 45 ? Add 2 Read32")]
-            [OffsetCN("Search 89 87 ? ? ? ? 0F B6 46 ? 88 87 ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 8B 46 ? Add 2 Read32")]
-            internal static int SwingResult;
-
-            //7.3
-            [Offset("Search 89 86 ? ? ? ? 8B 45 ? 89 86 ? ? ? ? 0F B6 86 ? ? ? ? Add 2 Read32")]
-            [OffsetCN("Search 89 87 ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 0F B6 87 ? ? ? ? Add 2 Read32")]
-            internal static int CurrentPayout;
-
-            //7.3
-            [Offset("Search 89 86 ? ? ? ? 0F B6 86 ? ? ? ? 48 6B D0 ? Add 2 Read32")]
-            [OffsetCN("Search 89 87 ? ? ? ? 0F B6 87 ? ? ? ? 48 6B D0 ? Add 2 Read32")]
-            internal static int DoubleDownPayout;
-
-            //7.3
-            [Offset("Search 66 89 86 ? ? ? ? 8B 96 ? ? ? ? Add 3 Read32")]
-            [OffsetCN("Search 66 89 87 ? ? ? ? 8B 97 ? ? ? ? Add 3 Read32")]
-            internal static int ProgressNeeded;
-
-            //7.3
-            [Offset("Search C6 86 ? ? ? ? ? 8B 45 ? Add 2 Read32")]
-            [OffsetCN("Search C6 87 ? ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 83 7E ? ? Add 2 Read32")] //7.2
-            internal static int SwingsTaken;
-
-            [Offset("Search 80 3D ? ? ? ? ? 0F 84 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? Add 2 TraceRelative")]
-            internal static IntPtr IsActiveByte;
-        }
+        
 
         public static bool SetPointer()
         {
@@ -58,25 +22,25 @@ namespace LlamaLibrary.Directors
             return Pointer != IntPtr.Zero;
         }
 
-        public static IntPtr DirectorPointer => Core.Memory.Read<IntPtr>(Offsets.ActiveDirectorPtr);
+        public static IntPtr DirectorPointer => Core.Memory.Read<IntPtr>(OutOnALimbDirectorOffsets.ActiveDirectorPtr);
 
         public static IntPtr Pointer { get; private set; }
 
-        public static int CurrentPayout => Core.Memory.NoCacheRead<int>(Pointer + Offsets.CurrentPayout);
+        public static int CurrentPayout => Core.Memory.NoCacheRead<int>(Pointer + OutOnALimbDirectorOffsets.CurrentPayout);
 
-        public static int DoubleDownPayout => Core.Memory.NoCacheRead<int>(Pointer + Offsets.DoubleDownPayout);
+        public static int DoubleDownPayout => Core.Memory.NoCacheRead<int>(Pointer + OutOnALimbDirectorOffsets.DoubleDownPayout);
 
         public static SwingResultType SwingResult
         {
-            get => Core.Memory.NoCacheRead<SwingResultType>(Pointer + Offsets.SwingResult);
-            set => Core.Memory.Write(Pointer + Offsets.SwingResult, value);
+            get => Core.Memory.NoCacheRead<SwingResultType>(Pointer + OutOnALimbDirectorOffsets.SwingResult);
+            set => Core.Memory.Write(Pointer + OutOnALimbDirectorOffsets.SwingResult, value);
         }
 
-        public static int CurrentProgress => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.ProgressNeeded);
+        public static int CurrentProgress => Core.Memory.NoCacheRead<byte>(Pointer + OutOnALimbDirectorOffsets.ProgressNeeded);
 
-        public static int SwingsTaken => Core.Memory.NoCacheRead<byte>(Pointer + Offsets.SwingsTaken);
+        public static int SwingsTaken => Core.Memory.NoCacheRead<byte>(Pointer + OutOnALimbDirectorOffsets.SwingsTaken);
 
-        public static bool IsActive => Core.Memory.NoCacheRead<byte>(Offsets.IsActiveByte + 1) == 1;
+        public static bool IsActive => Core.Memory.NoCacheRead<byte>(OutOnALimbDirectorOffsets.IsActiveByte + 1) == 1;
 
         public static byte MaxProgress => 10;
 
@@ -93,13 +57,13 @@ namespace LlamaLibrary.Directors
                     return -1;
                 }
 
-                return Core.Memory.CallInjectedWraper<int>(Offsets.RemainingTimeFunction, Offsets.ActiveDirectorPtr);
+                return Core.Memory.CallInjectedWraper<int>(OutOnALimbDirectorOffsets.RemainingTimeFunction, OutOnALimbDirectorOffsets.ActiveDirectorPtr);
             }
         }
 
         public new static string ToString()
         {
-            return $"CurrentPayout: {CurrentPayout}, DoubleDownPayout: {DoubleDownPayout}, SwingResult: {SwingResult}, CurrentProgress: {CurrentProgress}/{MaxProgress}, SwingsTaken: {SwingsTaken}/{MaxNumberOfSwings}, IsActive: {IsActive}, SecondsRemaining: {SecondsRemaining} ProgressOff: {Offsets.ProgressNeeded}";
+            return $"CurrentPayout: {CurrentPayout}, DoubleDownPayout: {DoubleDownPayout}, SwingResult: {SwingResult}, CurrentProgress: {CurrentProgress}/{MaxProgress}, SwingsTaken: {SwingsTaken}/{MaxNumberOfSwings}, IsActive: {IsActive}, SecondsRemaining: {SecondsRemaining} ProgressOff: {OutOnALimbDirectorOffsets.ProgressNeeded}";
         }
     }
 

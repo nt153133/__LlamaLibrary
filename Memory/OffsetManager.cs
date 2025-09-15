@@ -1,4 +1,4 @@
-/*
+﻿/*
 DeepDungeon is licensed under a
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
 
@@ -57,7 +57,7 @@ public static class OffsetManager
 
     public static ConcurrentDictionary<string, long> OffsetCache = new(StringComparer.Ordinal);
 
-    private const long _version = 34;
+    private const long _version = 35;
 
     private const bool _debug = false;
 
@@ -239,21 +239,24 @@ public static class OffsetManager
         OffsetCache.TryRemove(info.MemberName(), out _);
         if (GameVersion != 0)
         {
-            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+            var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
+            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
         }
     }
 
     internal static void ClearOffsetFromCache(string name)
     {
         OffsetCache.TryRemove(name, out _);
-        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+        var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
+        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
     }
 
     private static List<Type> GetTypes()
     {
-        var q1 = (from t in Assembly.GetExecutingAssembly().GetTypes()
-                  where t.Namespace != null && t.IsClass && t.Namespace.Contains("LlamaLibrary", StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal))
-                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+
+        var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Namespace != null && t.IsClass && t.Namespace.Contains("LlamaLibrary.Memory", StringComparison.Ordinal));
+        var q1 = types.Where(t => t.Name.Contains("Offsets", StringComparison.Ordinal)).ToList();
+
 
         if (!q1.Contains(typeof(Offsets)))
         {
@@ -311,12 +314,12 @@ public static class OffsetManager
         newStopwatch.Stop();
         Logger.Debug($"OffsetManager AgentModule.TryAddAgent took {newStopwatch.ElapsedMilliseconds}ms");
 
-        if (LlamaLibrarySettings.Instance.TempDisableInventoryHook && InventoryUpdatePatch.Offsets.OrginalCall == InventoryUpdatePatch.Offsets.OriginalJump)
+        if (LlamaLibrarySettings.Instance.TempDisableInventoryHook && InventoryUpdatePatchOffsets.OrginalCall == InventoryUpdatePatchOffsets.OriginalJump)
         {
             LlamaLibrarySettings.Instance.TempDisableInventoryHook = false;
         }
 
-        if (GameVersion != LlamaLibrarySettings.Instance.LastRevision && InventoryUpdatePatch.Offsets.OrginalCall == InventoryUpdatePatch.Offsets.OriginalJump)
+        if (GameVersion != LlamaLibrarySettings.Instance.LastRevision && InventoryUpdatePatchOffsets.OrginalCall == InventoryUpdatePatchOffsets.OriginalJump)
         {
             LlamaLibrarySettings.Instance.LastRevision = GameVersion;
             Logger.Information($"Setting revision to {GameVersion} in {LlamaLibrarySettings.Instance.FilePath}");
@@ -328,23 +331,23 @@ public static class OffsetManager
 
         if (!skipInventoryPatch)
         {
-            if (InventoryUpdatePatch.Offsets.OrginalCall != InventoryUpdatePatch.Offsets.OriginalJump || InventoryUpdatePatch.Offsets.OrginalCall == IntPtr.Zero || InventoryUpdatePatch.Offsets.OriginalJump == IntPtr.Zero)
+            if (InventoryUpdatePatchOffsets.OrginalCall != InventoryUpdatePatchOffsets.OriginalJump || InventoryUpdatePatchOffsets.OrginalCall == IntPtr.Zero || InventoryUpdatePatchOffsets.OriginalJump == IntPtr.Zero)
             {
-                if (!_isNewGameBuild && InventoryUpdatePatch.Offsets.OrginalCall != IntPtr.Zero && InventoryUpdatePatch.Offsets.OriginalJump != IntPtr.Zero)
+                if (!_isNewGameBuild && InventoryUpdatePatchOffsets.OrginalCall != IntPtr.Zero && InventoryUpdatePatchOffsets.OriginalJump != IntPtr.Zero)
                 {
                     Logger.Information("Last patch not cleaned up, cleaning up now");
                     var asm = Core.Memory.Asm;
                     asm.Clear();
-                    asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatch.Offsets.PatchLocation);
-                    asm.AddLine("JMP {0}", InventoryUpdatePatch.Offsets.OrginalCall);
+                    asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatchOffsets.PatchLocation);
+                    asm.AddLine("JMP {0}", InventoryUpdatePatchOffsets.OrginalCall);
                     var jzPatch = asm.Assemble();
-                    Core.Memory.WriteBytes(InventoryUpdatePatch.Offsets.PatchLocation, jzPatch);
-                    InventoryUpdatePatch.Offsets.OriginalJump = InventoryUpdatePatch.Offsets.OrginalCall;
+                    Core.Memory.WriteBytes(InventoryUpdatePatchOffsets.PatchLocation, jzPatch);
+                    InventoryUpdatePatchOffsets.OriginalJump = InventoryUpdatePatchOffsets.OrginalCall;
                 }
                 else
                 {
                     Logger.Error("New game build and inventory patch offsets don't match");
-                    var memberInfo = typeof(InventoryUpdatePatch.Offsets).GetMember("OrginalCall", BindingFlags.NonPublic | BindingFlags.Static).FirstOrDefault();
+                    var memberInfo = typeof(InventoryUpdatePatchOffsets).GetMember("OrginalCall", BindingFlags.NonPublic | BindingFlags.Static).FirstOrDefault();
                     ClearOffsetFromCache(memberInfo);
                     LlamaLibrarySettings.Instance.TempDisableInventoryHook = true;
                     skipInventoryPatch = true;
@@ -355,7 +358,8 @@ public static class OffsetManager
         newStopwatch.Restart();
         if (GameVersion != 0)
         {
-            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+            var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
+            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
         }
 
         newStopwatch.Stop();
@@ -637,7 +641,8 @@ public static class OffsetManager
 
         if (GameVersion != 0)
         {
-            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(OffsetCache));
+            var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
+            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
         }
 
         var vtables = new Dictionary<IntPtr, int>();

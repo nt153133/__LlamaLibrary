@@ -2,18 +2,15 @@
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
     public static class SquadronStatus
     {
-        private static class Offsets
-        {
-            [Offset("Search 8B 3D ? ? ? ? 8B D8 3B F8 Add 2 TraceRelative")]
-            internal static IntPtr SquadronStatus;
-        }
+        
 
-        public static SquadronTimerData RawStruct => Core.Memory.Read<SquadronTimerData>(Offsets.SquadronStatus);
+        public static SquadronTimerData RawStruct => Core.Memory.Read<SquadronTimerData>(SquadronStatusOffsets.SquadronStatus);
 
         private static readonly TimeSpan CachePeriod = new(0, 1, 0);
 

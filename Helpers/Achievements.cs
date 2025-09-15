@@ -4,54 +4,34 @@ using Buddy.Coroutines;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 // ReSharper disable UnassignedReadonlyField
 
 namespace LlamaLibrary.Helpers
 {
     public static class Achievements
     {
-        private static class Offsets
-        {
-            [Offset("Search E8 ?? ?? ?? ?? 04 30 TraceCall")]
-            [OffsetDawntrail("Search E8 ?? ?? ?? ?? 04 30 FF C3 TraceCall")]
-            internal static IntPtr IsCompletePtr;
+        
 
-            [Offset("Search 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 04 30 Add 3 TraceRelative")]
-            [OffsetDawntrail("Search 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 04 30 FF C3 Add 3 TraceRelative")]
-            internal static IntPtr AchievementInstancePtr;
+        public static IntPtr AchievementInstancePtr => AchievementsOffsets.AchievementInstancePtr;
 
-            [Offset("Search C7 81 ? ? ? ? ? ? ? ? 45 33 C9 B9 ? ? ? ? Add 2 Read32")]
-            internal static int AchievementState;
-
-            [Offset("Search 48 83 EC ?? C7 81 ?? ?? ?? ?? ?? ?? ?? ?? 45 33 C9")]
-            internal static IntPtr RequestAchievementFunction;
-
-            [Offset("Search 44 89 81 ? ? ? ? 44 89 89 ? ? ? ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 8B 81 ? ? ? ? Add 3 Read32")]
-            internal static int AchievementCurrentProgress;
-
-            [Offset("Search C7 81 ? ? ? ? ? ? ? ? 45 33 C9 B9 ? ? ? ? Add 2 Read32")]
-            internal static int SingleAchievementState;
-        }
-
-        public static IntPtr AchievementInstancePtr => Offsets.AchievementInstancePtr;
-
-        public static AchievementStatus SingleAchievement => Core.Memory.Read<AchievementStatus>(AchievementInstancePtr + Offsets.SingleAchievementState);
+        public static AchievementStatus SingleAchievement => Core.Memory.Read<AchievementStatus>(AchievementInstancePtr + AchievementsOffsets.SingleAchievementState);
 
         public static AchievementState SingleAchievementState
         {
-            get => (AchievementState)Core.Memory.Read<int>(AchievementInstancePtr + Offsets.SingleAchievementState);
-            set => Core.Memory.Write(AchievementInstancePtr + Offsets.SingleAchievementState, (int)value);
+            get => (AchievementState)Core.Memory.Read<int>(AchievementInstancePtr + AchievementsOffsets.SingleAchievementState);
+            set => Core.Memory.Write(AchievementInstancePtr + AchievementsOffsets.SingleAchievementState, (int)value);
         }
 
         public static AchievementState State
         {
-            get => (AchievementState)Core.Memory.Read<int>(AchievementInstancePtr + Offsets.AchievementState);
-            set => Core.Memory.Write(AchievementInstancePtr + Offsets.AchievementState, (int)value);
+            get => (AchievementState)Core.Memory.Read<int>(AchievementInstancePtr + AchievementsOffsets.AchievementState);
+            set => Core.Memory.Write(AchievementInstancePtr + AchievementsOffsets.AchievementState, (int)value);
         }
 
         public static void RequestAchievement(int achievementId)
         {
-            Core.Memory.CallInjectedWraper<byte>(Offsets.RequestAchievementFunction, Offsets.AchievementInstancePtr, achievementId);
+            Core.Memory.CallInjectedWraper<byte>(AchievementsOffsets.RequestAchievementFunction, AchievementsOffsets.AchievementInstancePtr, achievementId);
         }
 
         public static bool HasAchievement(int achievementId)
@@ -60,7 +40,7 @@ namespace LlamaLibrary.Helpers
 
             lock (Core.Memory.Executor.AssemblyLock)
             {
-                done = Core.Memory.CallInjectedWraper<bool>(Offsets.IsCompletePtr, Offsets.AchievementInstancePtr, achievementId);
+                done = Core.Memory.CallInjectedWraper<bool>(AchievementsOffsets.IsCompletePtr, AchievementsOffsets.AchievementInstancePtr, achievementId);
             }
 
             return done;

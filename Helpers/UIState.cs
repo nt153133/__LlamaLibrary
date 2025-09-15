@@ -8,6 +8,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RetainerItemFinder;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers;
 
@@ -15,47 +16,25 @@ public static class UIState
 {
     private static readonly LLogger Log = new(nameof(UIState), Colors.Pink);
 
-    private static class Offsets
-    {
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 48 8B 01 Add 3 TraceRelative")]
-        internal static IntPtr Instance;
+    
 
-        [Offset("Search 40 53 48 83 EC ? 48 8B D9 66 85 D2 74 ?")]
-        internal static IntPtr CardUnlocked;
+    public static IntPtr Instance => UIStateOffsets.Instance;
 
-        [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 0F B7 CA E8 ? ? ? ? 48 85 C0")]
-        internal static IntPtr EmoteUnlocked;
+    public static IntPtr IsItemActionUnlockedPtr => UIStateOffsets.IsItemActionUnlocked;
 
-        [Offset("Search 48 8D 0D ? ? ? ? 0F B6 04 08 84 D0 75 ? B8 ? ? ? ? Add 3 TraceRelative")]
-        internal static IntPtr MinionArray;
+    public static IntPtr ExdGetItemPtr => UIStateOffsets.ExdGetItem;
 
-        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 66 83 B8 ? ? ? ? ? 0F 84 ? ? ? ? TraceCall")]
-        internal static IntPtr ExdGetItem;
+    public static int ItemActionOffset => UIStateOffsets.ItemActionOffset;
 
-        [Offset("Search E8 ?? ?? ?? ?? 83 F8 01 75 03 TraceCall")]
-        internal static IntPtr IsItemActionUnlocked;
+    public static bool CardUnlocked(int id) => Core.Memory.CallInjectedWraper<bool>(UIStateOffsets.CardUnlocked, UIStateOffsets.Instance, id);
 
-        [Offset("Search 0F B7 8A ? ? ? ? E8 ? ? ? ? 48 8B F8 Add 3 Read32")]
-        internal static int ItemActionOffset;
-    }
+    public static bool EmoteUnlocked(int id) => Core.Memory.CallInjectedWraper<bool>(UIStateOffsets.EmoteUnlocked, UIStateOffsets.Instance, id);
 
-    public static IntPtr Instance => Offsets.Instance;
-
-    public static IntPtr IsItemActionUnlockedPtr => Offsets.IsItemActionUnlocked;
-
-    public static IntPtr ExdGetItemPtr => Offsets.ExdGetItem;
-
-    public static int ItemActionOffset => Offsets.ItemActionOffset;
-
-    public static bool CardUnlocked(int id) => Core.Memory.CallInjectedWraper<bool>(Offsets.CardUnlocked, Offsets.Instance, id);
-
-    public static bool EmoteUnlocked(int id) => Core.Memory.CallInjectedWraper<bool>(Offsets.EmoteUnlocked, Offsets.Instance, id);
-
-    public static byte[] MinionArray => Core.Memory.ReadBytes(Offsets.MinionArray, 0x50);
+    public static byte[] MinionArray => Core.Memory.ReadBytes(UIStateOffsets.MinionArray, 0x50);
 
     public static bool MinionUnlocked(int id) => ((1 << (id & 7)) & MinionArray[id >> 3]) > 0;
 
-    public static IntPtr GetItemExdData(uint id) => Core.Memory.CallInjectedWraper<IntPtr>(Offsets.ExdGetItem, id);
+    public static IntPtr GetItemExdData(uint id) => Core.Memory.CallInjectedWraper<IntPtr>(UIStateOffsets.ExdGetItem, id);
 
     public static bool IsItemActionUnlocked(uint id)
     {
@@ -84,8 +63,8 @@ public static class UIState
 
             using (var newStruct = Core.Memory.CreateAllocatedMemory(0x98))
             {
-                newStruct.Write(Offsets.ItemActionOffset, item.ItemAction);
-                return Core.Memory.CallInjectedWraper<int>(Offsets.IsItemActionUnlocked, Offsets.Instance, newStruct.Address) == 1;
+                newStruct.Write(UIStateOffsets.ItemActionOffset, item.ItemAction);
+                return Core.Memory.CallInjectedWraper<int>(UIStateOffsets.IsItemActionUnlocked, UIStateOffsets.Instance, newStruct.Address) == 1;
             }
         }
 
@@ -94,7 +73,7 @@ public static class UIState
             throw new Exception("Item not found in exd");
         }
 
-        return Core.Memory.CallInjectedWraper<int>(Offsets.IsItemActionUnlocked, Offsets.Instance, itemPtr) == 1;
+        return Core.Memory.CallInjectedWraper<int>(UIStateOffsets.IsItemActionUnlocked, UIStateOffsets.Instance, itemPtr) == 1;
     }
 
     public static bool CanUnlockItem(uint itemId)

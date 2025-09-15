@@ -9,6 +9,7 @@ using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteWindows
 {
@@ -24,12 +25,7 @@ namespace LlamaLibrary.RemoteWindows
         };
 
         //E8 ? ? ? ? 49 8D 8F ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 8B F8
-        internal static class Offsets
-        {
-            //0x
-            [Offset("Search E8 ? ? ? ? 49 8D 8F ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 8B F8 TraceCall")]
-            internal static IntPtr SetFilter;
-        }
+        
 
         public GrandCompanySupplyList() : base("GrandCompanySupplyList")
         {
@@ -111,7 +107,7 @@ namespace LlamaLibrary.RemoteWindows
             SendAction(2, 3, 5, 3, filter);
             if (WindowByName != null)
             {
-                Core.Memory.CallInjectedWraper<IntPtr>(Offsets.SetFilter, WindowByName.Pointer, (int)filter);
+                Core.Memory.CallInjectedWraper<IntPtr>(GrandCompanySupplyListOffsets.SetFilter, WindowByName.Pointer, (int)filter);
             }
         }
 

@@ -3,76 +3,35 @@ using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
     public class AgentHousingSignboard : AgentInterface<AgentHousingSignboard>, IAgent
     {
-        public IntPtr RegisteredVtable => Offsets.VTable;
+        public IntPtr RegisteredVtable => AgentHousingSignBoardOffsets.VTable;
 
-        private static class Offsets
-        {
-            [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8D 4B ? 66 89 7B ? 89 7B ? Add 3 TraceRelative")]
-            [OffsetDawntrail("Search 48 8D 05 ? ? ? ? 48 89 7B ? 48 89 03 48 8D 4B ? 66 89 7B ? Add 3 TraceRelative")]
-            internal static IntPtr VTable;
-
-            //0x3A
-            //7.3
-            [Offset("Search 44 88 63 ? 40 88 7B ? Add 3 Read8")]
-            [OffsetCN("Search 44 88 73 ? 40 88 7B ? E8 ? ? ? ? Add 3 Read8")]
-            internal static int Ward;
-
-            //7.3
-            [Offset("Search 40 88 7B ? 66 44 89 43 ? Add 3 Read8")]
-            [OffsetCN("Search 40 88 7B ? E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 ? Add 3 Read8")]
-            internal static int Plot;
-
-            //7.3
-            [Offset("Search 66 44 89 7B ? 44 88 63 ? Add 4 Read8")]
-            [OffsetCN("Search 66 89 73 ? 44 88 73 ? Add 3 Read8")]
-            internal static int Zone;
-
-            [Offset("Search 40 88 7B ? 88 43 ? Add 3 Read8")]
-            internal static int ForSale;
-
-            [Offset("Search 88 43 ? E8 ? ? ? ? 48 8B 4B ? Add 2 Read8")]
-            internal static int Size;
-
-            //7.3
-            [Offset("Search 0F 11 4B ? F2 41 0F 10 46 ? Add 3 Read8")]
-            [OffsetCN("Search 0F 11 4B ? F2 41 0F 10 45 ? Add 3 Read8")]
-            internal static int WinningLotteryNumber;
-
-            //7.3
-            [Offset("Search 0F 11 43 ? 41 0F 10 4E ? 0F 11 4B ? F2 41 0F 10 46 ? Add 3 Read32")]
-            [OffsetCN("Search 0F 11 43 ? 41 0F 10 4D ? Add 3 Read8")]
-            internal static int LotteryEntryCount;
-
-            //7.3
-            [Offset("Search 48 89 86 ? ? ? ? 48 8B 01 FF 50 ? 4D 8D 86 ? ? ? ? Add 3 Read32")]
-            [OffsetCN("Search 49 89 87 ? ? ? ? 48 8B 01 Add 3 Read32")]
-            internal static int FcOwned;
-        }
+        
 
         protected AgentHousingSignboard(IntPtr pointer) : base(pointer)
         {
         }
 
-        public ushort Zone => Core.Memory.Read<ushort>(Pointer + Offsets.Zone);
+        public ushort Zone => Core.Memory.Read<ushort>(Pointer + AgentHousingSignBoardOffsets.Zone);
 
-        public byte Ward => (byte)(Core.Memory.Read<byte>(Pointer + Offsets.Ward) + 1);
+        public byte Ward => (byte)(Core.Memory.Read<byte>(Pointer + AgentHousingSignBoardOffsets.Ward) + 1);
 
-        public byte Plot => (byte)(Core.Memory.Read<byte>(Pointer + Offsets.Plot) + 1);
+        public byte Plot => (byte)(Core.Memory.Read<byte>(Pointer + AgentHousingSignBoardOffsets.Plot) + 1);
 
-        public bool ForSale => Core.Memory.Read<bool>(Pointer + Offsets.ForSale);
+        public bool ForSale => Core.Memory.Read<bool>(Pointer + AgentHousingSignBoardOffsets.ForSale);
 
-        public PlotSize Size => (PlotSize)Core.Memory.Read<byte>(Pointer + Offsets.Size);
+        public PlotSize Size => (PlotSize)Core.Memory.Read<byte>(Pointer + AgentHousingSignBoardOffsets.Size);
 
-        public ushort WinningLotteryNumber => Core.Memory.Read<ushort>(Pointer + Offsets.LotteryEntryCount + 0xC);
+        public ushort WinningLotteryNumber => Core.Memory.Read<ushort>(Pointer + AgentHousingSignBoardOffsets.LotteryEntryCount + 0xC);
 
-        public ushort LotteryEntryCount => Core.Memory.Read<ushort>(Pointer + Offsets.WinningLotteryNumber);
+        public ushort LotteryEntryCount => Core.Memory.Read<ushort>(Pointer + AgentHousingSignBoardOffsets.WinningLotteryNumber);
 
-        public bool FcOwned => Core.Memory.Read<int>(Pointer + Offsets.FcOwned) != 0;
+        public bool FcOwned => Core.Memory.Read<int>(Pointer + AgentHousingSignBoardOffsets.FcOwned) != 0;
 
         public override string ToString()
         {

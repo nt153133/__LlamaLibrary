@@ -12,39 +12,25 @@ using ff14bot.Managers;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
     public class AgentVoteMVP : AgentInterface<AgentVoteMVP>, IAgent
     {
         private static readonly LLogger Log = new(nameof(AgentVoteMVP), Colors.Gold);
-        public IntPtr RegisteredVtable => Offsets.VTable;
+        public IntPtr RegisteredVtable => AgentVoteMVPOffsets.VTable;
 
         public static AtkAddonControl? NotificationWindow => RaptureAtkUnitManager.GetWindowByName("_NotificationIcMvp", true);
 
-        private static class Offsets
-        {
-            [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 48 89 43 ? 48 89 43 ? 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
-            // pre 6.3 [OffsetCN("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 48 89 43 ? 89 43 ? 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
-            internal static IntPtr VTable;
-
-            //7.3
-            [Offset("Search 8B 7B ? 44 3B F7 Add 2 Read8")]
-            [OffsetCN("Search 8B 5E ? 44 3B F3 Add 2 Read8")]
-            internal static int PlayerCount;
-
-            //7.3
-            [Offset("Search 48 03 4B ? E8 ? ? ? ? BA ? ? ? ? 48 8B CE 48 8B F8 E8 ? ? ? ? 48 89 7E ? 41 FF C6 Add 3 Read8")]
-            [OffsetCN("Search 48 03 4E ? E8 ? ? ? ? 41 8D 56 ? Add 3 Read8")]
-            internal static int ArrayStart;
-        }
+        
 
         protected AgentVoteMVP(IntPtr pointer) : base(pointer)
         {
         }
 
-        public int PlayerCount => Core.Memory.NoCacheRead<int>(Pointer + Offsets.PlayerCount);
-        public IntPtr ArrayStart => Core.Memory.NoCacheRead<IntPtr>(Pointer + Offsets.ArrayStart);
+        public int PlayerCount => Core.Memory.NoCacheRead<int>(Pointer + AgentVoteMVPOffsets.PlayerCount);
+        public IntPtr ArrayStart => Core.Memory.NoCacheRead<IntPtr>(Pointer + AgentVoteMVPOffsets.ArrayStart);
 
         public VoteOption[] VoteOptions => Core.Memory.ReadArray<VoteOption>(ArrayStart, PlayerCount);
 

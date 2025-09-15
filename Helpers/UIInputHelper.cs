@@ -5,6 +5,7 @@ using ff14bot;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
@@ -12,56 +13,17 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new(nameof(UIInputHelper), Colors.Pink);
 
-        private static class Offsets
-        {
-            [Offset("Search 48 8B 51 ? 4C 8B 32 Add 3 Read8")]
-            [OffsetDawntrail("Search 48 8B 48 ? 48 8B 01 48 8B 88 ? ? ? ? 48 89 4C 24 ? Add 3 Read8")]
-            internal static int off1; //0x28
-
-            //7.3
-            [Offset("Search 48 8B 78 ? E8 ? ? ? ? 41 B0 ? Add 3 Read8")]
-            [OffsetCN("Search 48 8B 43 ? 48 8D 95 ? ? ? ? 41 b0 ? Add 3 Read8")]
-            internal static int off2; //0x18
-
-            //7.3
-            [Offset("Search 48 8B 70 ? 48 8B 06 48 8B 78 ? E8 ? ? ? ? 41 B0 ? Add 3 Read8")]
-            [OffsetCN("Search 48 8B 48 ? 48 8B 01 FF 50 ? 48 8D 8D ? ? ? ? Add 3 Read8")]
-            internal static int off3; //0x8
-
-            //7.3
-            [Offset("Search  48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F0")]
-            [OffsetCN("Search 48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F8")]
-            internal static IntPtr SendStringToFocus;
-
-            //7.3
-            [Offset("Search E8 ? ? ? ? EB ? 33 ED 48 89 2F TraceCall")]
-            [OffsetCN("Search E8 ? ? ? ? EB ? 33 DB 48 89 1F TraceCall")]
-            internal static IntPtr Utf8StringCtor;
-
-            [Offset("Search E8 ? ? ? ? B0 ? 66 89 9F ? ? ? ? TraceCall")]
-            [OffsetDawntrail("Search E8 ? ? ? ? 49 8D 8F ? ? ? ? 49 8D 97 ? ? ? ? TraceCall")]
-            internal static IntPtr Utf8SetString;
-
-            //7.3
-            [Offset("Search E8 ? ? ? ? 4C 8B C7 48 8D 55 ? 49 8B CE E8 ? ? ? ? 48 8D 4D ? 48 89 45 ? TraceCall")]
-            [OffsetCN("Search E8 ? ? ? ? 48 8B 43 ? 48 8D 54 24 ? 41 B0 ? 48 8B 48 ? 48 8B 01 FF 50 ? 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? 48 33 CC E8 ? ? ? ? 48 8B 9C 24 ? ? ? ? TraceCall")]
-            internal static IntPtr Utf8StringFromSequenceCtor;
-
-            //7.3
-            [Offset("Search 48 8B 41 ? 48 8D 4D ? 75 ? Add 3 Read8")]
-            [OffsetCN("Search 48 8B 4B ? 48 8D ? ? 66 89 75 ? 66 89 7D ? 4C 89 7D ? 48 89 45 A7 48 8B 01 FF 50 08 Add 3 Read8")]
-            internal static int CurrentTextControl; //0x8
-        }
+        
 
         public static IntPtr GetInputTextPtr
         {
             get
             {
-                var one = Core.Memory.Read<IntPtr>(Memory.Offsets.AtkStage);
-                var two = Core.Memory.Read<IntPtr>(one + Offsets.off1);
+                var one = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
+                var two = Core.Memory.Read<IntPtr>(one + UIInputHelperOffsets.off1);
                 var twoHalf = Core.Memory.Read<IntPtr>(two);
-                var three = Core.Memory.Read<IntPtr>(twoHalf + Offsets.off2);
-                var four = Core.Memory.Read<IntPtr>(three + Offsets.off3);
+                var three = Core.Memory.Read<IntPtr>(twoHalf + UIInputHelperOffsets.off2);
+                var four = Core.Memory.Read<IntPtr>(three + UIInputHelperOffsets.off3);
                 return four;
             }
         }
@@ -70,24 +32,24 @@ namespace LlamaLibrary.Helpers
         {
             get
             {
-                var one = Core.Memory.Read<IntPtr>(Memory.Offsets.AtkStage);
-                var two = Core.Memory.Read<IntPtr>(one + Offsets.off1);
+                var one = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
+                var two = Core.Memory.Read<IntPtr>(one + UIInputHelperOffsets.off1);
                 var twoHalf = Core.Memory.Read<IntPtr>(two);
-                var three = Core.Memory.Read<IntPtr>(twoHalf + Offsets.CurrentTextControl);
+                var three = Core.Memory.Read<IntPtr>(twoHalf + UIInputHelperOffsets.CurrentTextControl);
                 return three;
             }
             set
             {
-                var one = Core.Memory.Read<IntPtr>(Memory.Offsets.AtkStage);
-                var two = Core.Memory.Read<IntPtr>(one + Offsets.off1);
+                var one = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
+                var two = Core.Memory.Read<IntPtr>(one + UIInputHelperOffsets.off1);
                 var twoHalf = Core.Memory.Read<IntPtr>(two);
-                Core.Memory.Write(twoHalf + Offsets.CurrentTextControl, value);
+                Core.Memory.Write(twoHalf + UIInputHelperOffsets.CurrentTextControl, value);
             }
         }
 
         public static void StringCtor(IntPtr ptr)
         {
-            Core.Memory.CallInjectedWraper<int>(Offsets.Utf8StringCtor, ptr);
+            Core.Memory.CallInjectedWraper<int>(UIInputHelperOffsets.Utf8StringCtor, ptr);
         }
 
         public static void StringCtorFromSequence(IntPtr ptr, string input, uint length)
@@ -98,7 +60,7 @@ namespace LlamaLibrary.Helpers
                 Core.Memory.CreateAllocatedMemory(array.Length + 30);
             allocatedMemory.AllocateOfChunk("start", array.Length);
             allocatedMemory.WriteBytes("start", array);
-            Core.Memory.CallInjectedWraper<int>(Offsets.Utf8StringFromSequenceCtor, ptr, allocatedMemory.Address, length);
+            Core.Memory.CallInjectedWraper<int>(UIInputHelperOffsets.Utf8StringFromSequenceCtor, ptr, allocatedMemory.Address, length);
         }
 
         public static void SetString(IntPtr ptr, string input)
@@ -110,7 +72,7 @@ namespace LlamaLibrary.Helpers
             allocatedMemory.AllocateOfChunk("start", array.Length);
             allocatedMemory.WriteBytes("start", array);
 
-            Core.Memory.CallInjectedWraper<int>(Offsets.Utf8SetString, ptr, allocatedMemory.Address);
+            Core.Memory.CallInjectedWraper<int>(UIInputHelperOffsets.Utf8SetString, ptr, allocatedMemory.Address);
         }
 
         public static void SendInput(string input)
@@ -121,7 +83,7 @@ namespace LlamaLibrary.Helpers
             Log.Verbose($"Constructed string at {seStringAlloc.Address}");
             SetString(seStringAlloc.Address, input);
             Log.Verbose($"Set string at {seStringAlloc.Address}");
-            Core.Memory.CallInjectedWraper<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 0);
+            Core.Memory.CallInjectedWraper<int>(UIInputHelperOffsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 0);
             Log.Verbose($"Sent string to focus at {GetInputTextPtr}");
         }
 
@@ -129,7 +91,7 @@ namespace LlamaLibrary.Helpers
         {
             using var seStringAlloc = Core.Memory.CreateAllocatedMemory(0x68);
             StringCtorFromSequence(seStringAlloc.Address, "\0", 0xFFFFFFFF);
-            Core.Memory.CallInjectedWraper<int>(Offsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 1);
+            Core.Memory.CallInjectedWraper<int>(UIInputHelperOffsets.SendStringToFocus, GetInputTextPtr, seStringAlloc.Address, 1);
         }
     }
 }

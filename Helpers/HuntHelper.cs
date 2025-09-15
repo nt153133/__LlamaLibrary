@@ -18,6 +18,7 @@ using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Utilities;
 using Newtonsoft.Json;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
@@ -52,49 +53,7 @@ namespace LlamaLibrary.Helpers
         public static readonly int[] EwHunts = { 14, 15, 16 };
         public static readonly int[] DtHunts = { 18, 19, 20 };
 
-        private static class Offsets
-        {
-            [Offset("Search 89 84 2A ?? ?? ?? ?? 41 0F B6 D6 Add 3 Read32")]
-            [OffsetDawntrail("Search 48 8D 8B ? ? ? ? 48 83 FE 16 Add 3 Read32")]
-            internal static int AcceptedHuntBitfieldOffset;
-
-            [Offset("Search 48 89 5C 24 ?? 56 48 83 EC ?? 40 32 F6")]
-            [OffsetDawntrail("Search 48 89 5C 24 ? 56 48 83 EC 20 0F B6 DA 40 32 F6")]
-            internal static IntPtr CheckMobBoardUnlocked;
-
-            [Offset("Search E8 ?? ?? ?? ?? 8B 57 ?? 41 B9 ?? ?? ?? ?? 33 C9 TraceCall")]
-            [OffsetDawntrail("Search 48 83 EC 28 48 8B 05 ? ? ? ? 44 8B C1 BA 2f 00 00 00 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 05 48 83 C4 28 ")]
-            internal static IntPtr Client__ExdData__getBNpcName;
-
-            [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B6 40 ? 3B E8 TraceCall")]
-            internal static IntPtr Client__ExdData__getMobHuntOrder;
-
-            //7.3
-            [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 ? 66 85 C0 74 ? FE CB 0F B6 CB 03 C8 TraceCall")]
-            [OffsetCN("Search E8 ?? ?? ?? ?? 48 85 C0 74 ?? 0F B7 40 ?? 66 85 C0 74 ?? 40 FE CF TraceCall")]
-            internal static IntPtr Client__ExdData__getMobHuntOrderType;
-
-            //7.3
-            [Offset("Search E8 ? ? ? ? 48 89 45 ? 48 8B D8 48 85 C0 0F 84 ? ? ? ? 48 8D 4D ? TraceCall")]
-            [OffsetCN("Search E8 ? ? ? ? 4C 8B E8 48 85 C0 0F 84 ? ? ? ? 48 8D 4D ? TraceCall")]
-            internal static IntPtr Client__ExdData__getMobHuntTarget;
-
-            [Offset("Search 49 83 F8 ?? 73 ?? 41 8B C0 Add 3 Read8")]
-            [OffsetDawntrail("Search 41 80 FE ? 0F 83 ? ? ? ? 41 0F B6 44 0E ? 48 89 74 24 ? 41 8B F6 48 89 7C 24 ? 4C 89 64 24 ? Add 2 Read8")]
-            internal static IntPtr CountMobHuntOrderType;
-
-            [Offset("Search 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 8B CE E8 ?? ?? ?? ?? Add 3 TraceRelative")]
-            [OffsetDawntrail("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 8B CF E8 ? ? ? ? Add 3 TraceRelative")]
-            internal static IntPtr HuntData;
-
-            [Offset("Search 41 8B 44 91 ?? C3 Add 4 Read8")]
-            [OffsetDawntrail("Search 42 8B 44 89 ? C3 Add 4 Read8")]
-            internal static int KillCountOffset;
-
-            [Offset("Search 48 83 EC ?? 80 FA ?? 73 ?? 0F B6 C2 45 33 C9 0F B6 D2 C7 44 24 ?? ?? ?? ?? ?? 44 0F B6 44 08 ?? B9 ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 83 C4 ?? C3 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 48 89 54 24 ??")]
-            [OffsetDawntrail("Search E8 ? ? ? ? 8B CF E8 ? ? ? ? 0F B7 D0 TraceCall")]
-            internal static IntPtr YeetHuntOrderType;
-        }
+        
 
         static HuntHelper()
         {
@@ -117,7 +76,7 @@ namespace LlamaLibrary.Helpers
                 }
 
                 var listStart = orderType.OrderStart - 1;
-                var dailyNum = Core.Memory.Read<byte>(Offsets.HuntData + 8 + j);
+                var dailyNum = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + 8 + j);
 
                 Log.Information($"List Start {listStart} DailyNum {dailyNum}");
                 Log.Information($"{orderType.Item.CurrentLocaleName}");
@@ -164,10 +123,10 @@ namespace LlamaLibrary.Helpers
 
                 var listStart = orderType.OrderStart - 1;
 #if RB_DT
-                var v8 = Core.Memory.Read<byte>(Offsets.HuntData + j + 0x1E); //0x16
+                var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + j + 0x1E); //0x16
 
 #else
-                var v8 = Core.Memory.Read<byte>(Offsets.HuntData + j + 0x1A); //0x16
+                var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + j + 0x1A); //0x16
 #endif
                 Log.Information($"{orderType.Item.CurrentLocaleName}");
                 var max = 5;
@@ -203,7 +162,7 @@ namespace LlamaLibrary.Helpers
             }
 
             var listStart = orderType.OrderStart - 1;
-            var dailyNum = Core.Memory.Read<byte>(Offsets.HuntData + 8 + orderTypeIndex);
+            var dailyNum = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + 8 + orderTypeIndex);
 
             var max = 5;
 
@@ -249,9 +208,9 @@ namespace LlamaLibrary.Helpers
 
             var listStart = orderType.OrderStart - 1;
 #if RB_DT
-            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1E); //0x1A
+            var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + orderTypeIndex + 0x1E); //0x1A
 #else
-            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1A); //0x1A
+            var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + orderTypeIndex + 0x1A); //0x1A
 #endif
 
             if ((listStart + v8 > 620) && !accepted[orderTypeIndex])
@@ -321,12 +280,12 @@ namespace LlamaLibrary.Helpers
 
             var listStart = orderType.OrderStart - 1;
 
-            //Log.Information($"{(Offsets.HuntData + orderTypeIndex).ToString("X")}");
+            //Log.Information($"{(HuntHelperOffsets.HuntData + orderTypeIndex).ToString("X")}");
 #if RB_DT
-            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1E); //0x8
+            var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + orderTypeIndex + 0x1E); //0x8
 
 #else
-            var v8 = Core.Memory.Read<byte>(Offsets.HuntData + orderTypeIndex + 0x1A); //0x8
+            var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + orderTypeIndex + 0x1A); //0x8
 
 #endif
             var max = 5;
@@ -378,8 +337,8 @@ namespace LlamaLibrary.Helpers
                 for (var mobIndex = 0; mobIndex < max; mobIndex++)
                 {
                     var v1 = mobIndex + (orderType * 5);
-                    var v3 = (v1 * 4) + Offsets.KillCountOffset;
-                    Log.Information($"{mobIndex} - Killed: {Core.Memory.Read<byte>(Offsets.HuntData + v3)}");
+                    var v3 = (v1 * 4) + HuntHelperOffsets.KillCountOffset;
+                    Log.Information($"{mobIndex} - Killed: {Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + v3)}");
                 }
             }
         }
@@ -388,7 +347,7 @@ namespace LlamaLibrary.Helpers
         {
             var accepted = new bool[MaxOrderTypes];
 
-            var bit = Core.Memory.Read<int>(Offsets.HuntData + Offsets.AcceptedHuntBitfieldOffset);
+            var bit = Core.Memory.Read<int>(HuntHelperOffsets.HuntData + HuntHelperOffsets.AcceptedHuntBitfieldOffset);
             var myInts = new[] { bit };
             var myBa5 = new BitArray(myInts);
 
@@ -402,18 +361,18 @@ namespace LlamaLibrary.Helpers
 
         public static MobHuntTarget GetMobHuntTarget(int mob)
         {
-            return Core.Memory.Read<MobHuntTarget>(Core.Memory.CallInjectedWraper<IntPtr>(Offsets.Client__ExdData__getMobHuntTarget, (uint)mob));
+            return Core.Memory.Read<MobHuntTarget>(Core.Memory.CallInjectedWraper<IntPtr>(HuntHelperOffsets.Client__ExdData__getMobHuntTarget, (uint)mob));
         }
 
         public static MobHuntOrderType GetMobHuntOrderType(int typeKey)
         {
-            return Core.Memory.Read<MobHuntOrderType>(Core.Memory.CallInjectedWraper<IntPtr>(Offsets.Client__ExdData__getMobHuntOrderType, (uint)typeKey));
+            return Core.Memory.Read<MobHuntOrderType>(Core.Memory.CallInjectedWraper<IntPtr>(HuntHelperOffsets.Client__ExdData__getMobHuntOrderType, (uint)typeKey));
         }
 
         public static bool OrderTypeUnlocked(int typeKey)
         {
-            var unlockState = Core.Memory.CallInjectedWraper<byte>(Offsets.CheckMobBoardUnlocked,
-                                                               Offsets.HuntData,
+            var unlockState = Core.Memory.CallInjectedWraper<byte>(HuntHelperOffsets.CheckMobBoardUnlocked,
+                                                               HuntHelperOffsets.HuntData,
                                                                (uint)typeKey);
 
             return unlockState > 0;
@@ -422,20 +381,20 @@ namespace LlamaLibrary.Helpers
         public static byte GetKillCount(int huntOrderType, int mobIndex)
         {
             var v1 = mobIndex + (huntOrderType * 5);
-            var v3 = (v1 * 4) + Offsets.KillCountOffset;
-            return Core.Memory.NoCacheRead<byte>(Offsets.HuntData + v3);
+            var v3 = (v1 * 4) + HuntHelperOffsets.KillCountOffset;
+            return Core.Memory.NoCacheRead<byte>(HuntHelperOffsets.HuntData + v3);
         }
 
         public static MobHuntOrder GetMobHuntOrder(uint typeKey, uint mobIndex)
         {
             Core.Memory.ClearCallCache();
-            return Core.Memory.Read<MobHuntOrder>(Core.Memory.CallInjectedWraper<IntPtr>(Offsets.Client__ExdData__getMobHuntOrder, typeKey, mobIndex));
+            return Core.Memory.Read<MobHuntOrder>(Core.Memory.CallInjectedWraper<IntPtr>(HuntHelperOffsets.Client__ExdData__getMobHuntOrder, typeKey, mobIndex));
         }
 
         public static void DiscardMobHuntType(uint typekey)
         {
-            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.YeetHuntOrderType,
-                                               Offsets.HuntData,
+            Core.Memory.CallInjectedWraper<IntPtr>(HuntHelperOffsets.YeetHuntOrderType,
+                                               HuntHelperOffsets.HuntData,
                                                typekey);
         }
 

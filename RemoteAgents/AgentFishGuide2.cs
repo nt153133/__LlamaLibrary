@@ -6,47 +6,27 @@ using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
     public class AgentFishGuide2 : AgentInterface<AgentFishGuide2>, IAgent
     {
-        public IntPtr RegisteredVtable => Offsets.Vtable;
+        public IntPtr RegisteredVtable => AgentFishGuide2Offsets.Vtable;
 
         public const int TabCount = 37;
 
-        private static class Offsets
-        {
-            //7.3
-            [Offset("Search 48 8D 05 ? ? ? ? 33 F6 48 89 07 B9 ? ? ? ? Add 3 TraceRelative")]
-            [OffsetCN("Search 48 8D 05 ? ? ? ? 48 89 07 48 8D 4F ? 33 C0 48 89 77 ? Add 3 TraceRelative")]
-            internal static IntPtr Vtable;
-
-            //6.3 0x58
-            [Offset("Search 4C 8B 47 ? 0F B6 44 4F ? Add 3 Read8")]
-            [OffsetDawntrail("Search 48 8B 4B ? 44 8B C7 48 8B 41 ? Add 3 Read8")]
-            internal static int InfoOffset;
-
-            //0x28
-            [Offset("Search 49 8B 40 ? 49 8B C8 48 8B 1C D0 Add 3 Read8")]
-            [OffsetDawntrail("Search 48 8B 41 ? 48 8B 51 ? 48 2B D0 Add 3 Read8")]
-            internal static int StartingPointer;
-
-            //0x30
-            [Offset("Search 49 8B 40 ? 49 2B 40 ? 48 C1 F8 ? 8B DA Add 3 Read8")]
-            [OffsetDawntrail("Search 48 8B 51 ? 48 2B D0 48 C1 FA ? 4C 3B C2 Add 3 Read8")]
-            internal static int EndingPointer;
-        }
+        
 
         protected AgentFishGuide2(IntPtr pointer) : base(pointer)
         {
         }
 
-        public IntPtr InfoPointer => Core.Memory.Read<IntPtr>(Pointer + Offsets.InfoOffset);
+        public IntPtr InfoPointer => Core.Memory.Read<IntPtr>(Pointer + AgentFishGuide2Offsets.InfoOffset);
 
-        public IntPtr StartingPointer => Core.Memory.Read<IntPtr>(InfoPointer + Offsets.StartingPointer);
+        public IntPtr StartingPointer => Core.Memory.Read<IntPtr>(InfoPointer + AgentFishGuide2Offsets.StartingPointer);
 
-        public IntPtr EndingPointer => Core.Memory.Read<IntPtr>(InfoPointer + Offsets.EndingPointer);
+        public IntPtr EndingPointer => Core.Memory.Read<IntPtr>(InfoPointer + AgentFishGuide2Offsets.EndingPointer);
 
         public IntPtr FishListPointer(int start = 0) => Core.Memory.Read<IntPtr>(StartingPointer + (8 * start));
 

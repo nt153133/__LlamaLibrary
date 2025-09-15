@@ -7,55 +7,28 @@ using ff14bot.Managers;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
     public static class WorldHelper
     {
-        private static class Offsets
-        {
-            [Offset("Search 48 8D 4B ? 4C 8B 47 ? E8 ? ? ? ? Add 3 Read8")]
-            [OffsetDawntrail("Search 48 8d 4f ? 0f b7 10 e8 ? ? ? ? 48 ? ? 74 ? 48 8b ? Add 3 Read8")]
-            //[OffsetCN("Search 48 8D 4B ? E8 ? ? ? ? 84 C0 74 ? 48 8B 74 24 ? Add 3 Read8")]
-            internal static int Offset1;
-
-            [Offset("Search 41 89 9F ? ? ? ? 48 83 7D ? ? Add 3 Read32")]
-            [OffsetDawntrail("Search 41 8B CC 41 89 8F ? ? ? ? Add 6 Read32")]
-            internal static int DCOffset;
-
-/*
-#if !RB_CN
-            [Offset("Search 88 99 ? ? ? ? E8 ? ? ? ? 48 8B 08 Add 2 Read8")]
-            internal static int NewDcOffset;
-#endif
-*/
-
-
-            [Offset("Search 0F B7 98 ? ? ? ? 66 85 FF Add 3 Read32")]
-            internal static int CurrentWorld;
-
-            [Offset("Search 0F B7 81 ? ? ? ? 66 89 44 24 ? 48 8D 4C 24 ? Add 3 Read32")]
-            internal static int HomeWorld;
-
-            [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B7 70 14 EB ? BE ? ? ? ? 0F B7 CD E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 14 EB ? B8 ? ? ? ? 66 3B F0 72 ? 0F B7 0B Add 1 TraceRelative")]
-            [OffsetDawntrail("Search 0F B7 4A 02 E8 ? ? ? ? 48 85 C0 Add 4 TraceCall")]
-            internal static IntPtr GetPlaceName;
-        }
+        
 
         private static readonly IntPtr DcOffsetLocation;
 
         static WorldHelper()
         {
             var agentPointer = AgentModule.AgentPointers[0];
-            var offset1 = agentPointer + Offsets.Offset1;
-            DcOffsetLocation = offset1 + Offsets.DCOffset;
+            var offset1 = agentPointer + WorldHelperOffsets.Offset1;
+            DcOffsetLocation = offset1 + WorldHelperOffsets.DCOffset;
         }
 
         public static string CurrentPlaceName
         {
             get
             {
-                var ptr = Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetPlaceName, WorldManager.SubZoneId);
+                var ptr = Core.Memory.CallInjectedWraper<IntPtr>(WorldHelperOffsets.GetPlaceName, WorldManager.SubZoneId);
                 return Core.Memory.ReadStringUTF8(ptr + 24);
             }
         }
@@ -143,9 +116,9 @@ namespace LlamaLibrary.Helpers
             { 99, "Beta" },
         };
 
-        public static ushort CurrentWorldId => Core.Memory.NoCacheRead<ushort>(Core.Me.Pointer + Offsets.CurrentWorld);
+        public static ushort CurrentWorldId => Core.Memory.NoCacheRead<ushort>(Core.Me.Pointer + WorldHelperOffsets.CurrentWorld);
 
-        public static ushort HomeWorldId => Core.Memory.NoCacheRead<ushort>(Core.Me.Pointer + Offsets.HomeWorld);
+        public static ushort HomeWorldId => Core.Memory.NoCacheRead<ushort>(Core.Me.Pointer + WorldHelperOffsets.HomeWorld);
 
         public static World CurrentWorld => (World)CurrentWorldId;
 
