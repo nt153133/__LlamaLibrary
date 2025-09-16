@@ -88,7 +88,7 @@ public static class OffsetManager
     public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown);
 
 #if RB_CN
-    public static float CurrentGameVersion = 7.25f;
+    public static float CurrentGameVersion = 7.31f;
     public static bool IsChinese = true;
     public static bool Is7_1 = true;
     public static bool Is7_15 = true;
