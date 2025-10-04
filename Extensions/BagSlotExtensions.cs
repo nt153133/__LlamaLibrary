@@ -219,18 +219,22 @@ namespace LlamaLibrary.Extensions
 
         public static void AffixMateria(this BagSlot Equipment, BagSlot Materia, bool BulkMeld)
         {
-            var offset = Core.Memory.Read<int>(Core.Me.Pointer + BagSlotExtensionsOffsets.PlayerMeldOffset);
+
+            if (BulkMeld)
+            {
+                throw new ArgumentException("Bulk melding no longer supported", "BulkMeld");
+            }
+
             lock (Core.Memory.Executor.AssemblyLock)
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
                     Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.MeldItem,
+                                                           IntPtr.Zero,//Really should be the MateriaRequestManager, but it isn't used in the function
                                                            (int)Equipment.BagId,
                                                            (short)Equipment.Slot,
                                                            (int)Materia.BagId,
-                                                           (short)Materia.Slot,
-                                                           offset,
-                                                           (byte)(BulkMeld ? 1 : 0));
+                                                           (short)Materia.Slot);
                 }
             }
         }
