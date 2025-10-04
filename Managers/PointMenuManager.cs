@@ -4,7 +4,6 @@ using System.Windows.Media;
 using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Logging;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Managers
