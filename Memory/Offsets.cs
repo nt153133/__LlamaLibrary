@@ -1263,7 +1263,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8B 05 ? ? ? ? 48 85 C0 74 ? 83 B8 ? ? ? ? ? 75 ? E8 ? ? ? ? Add 3 TraceRelative")]
         public static IntPtr EventHandlerOff;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 8B E9 41 0F B7 D9 48 8B 0D ? ? ? ? 41 8B F8 0F B7 F2 E8 ? ? ? ? 48 8B C8 48 85 C0 74 4A ")]
+        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 8B CA 41 0F BF F0")]
         internal static IntPtr MeldItem;
 
         [Offset("Search E8 ? ? ? ? 84 C0 74 ? C6 87 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? 41 56 TraceCall")]
@@ -1271,11 +1271,6 @@ namespace LlamaLibrary.Memory
 
         [Offset("Search 66 89 43 ? 8B 47 ? 89 43 ? 0F B6 47 ? 88 43 ? E8 ? ? ? ? 85 C0 Add 3 Read8")]
         public static int StainId;
-
-        //7.3
-        [Offset("Search 8B 68 ? 48 8B 07 FF 50 ? 48 8B 17 Add 3 Read8")]
-        //[OffsetCN("Search 44 8B 42 ? 0F B7 D3 Add 3 Read8")]
-        internal static int PlayerMeldOffset;
 
         [Offset("Search 40 55 41 55 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 83 B9 ? ? ? ? ?")]
         public static IntPtr StoreroomToInventory;
