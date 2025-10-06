@@ -13,4 +13,6 @@ public enum ClientRegion
 {
     Global,
     China,
+    Korea,
+    TraditionalChinese
 }
