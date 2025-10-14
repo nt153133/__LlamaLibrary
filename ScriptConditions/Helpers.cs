@@ -155,7 +155,7 @@ namespace LlamaLibrary.ScriptConditions
 
         public static bool IsVersionGreater(float version)
         {
-            if (OffsetManager.CurrentGameVersion >= version)
+            if (OffsetManager.ActiveRecord.CurrentGameVersion >= version)
             {
                 return true;
             }
