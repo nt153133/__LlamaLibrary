@@ -8,6 +8,7 @@ using ff14bot.Objects;
 using LlamaLibrary.Data;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Helpers;
+using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 
@@ -289,6 +290,16 @@ namespace LlamaLibrary.ScriptConditions
             }
 
             return false;
+        }
+
+
+        public static bool IsGlobalClient()
+        {
+            return OffsetManager.ActiveRegion == ClientRegion.Global;
+        }
+        public static bool IsTCClient()
+        {
+            return OffsetManager.ActiveRegion == ClientRegion.TraditionalChinese;
         }
 
         public static bool IsEnglishClient()
