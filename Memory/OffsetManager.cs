@@ -94,6 +94,11 @@ public static class OffsetManager
     /// </summary>
     public static readonly GameRecord ActiveRecord;
 
+    /// <summary>
+    /// Gets the currently active client region.
+    /// </summary>
+    public static readonly ClientRegion ActiveRegion;
+
     static OffsetManager()
     {
         var langToRegion = new Dictionary<Language, ClientRegion>()
@@ -124,7 +129,7 @@ public static class OffsetManager
     }
 
 
-    public static readonly ClientRegion ActiveRegion;
+    
 
     [Obsolete("Use ActiveRegion instead")]
     public static readonly bool IsChinese;
