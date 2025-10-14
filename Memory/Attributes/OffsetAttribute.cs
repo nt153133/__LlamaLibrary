@@ -72,6 +72,13 @@ public class OffsetAttribute : Attribute
         Flags = flags;
         ExpectedValue = expectedValue;
     }
+
+    [Obsolete("Remove boolean property")]
+    public OffsetAttribute(string p,bool a,int exv) : this(p, exv)
+    {
+    }
+
+
 }
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
