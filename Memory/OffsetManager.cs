@@ -122,9 +122,22 @@ public static class OffsetManager
             { ClientRegion.TraditionalChinese, new GameRecord(7.3f,OffsetFlags.TraditionalChinese)},
         };
 
+        ActiveRegion = langToRegion[DataManager.CurrentLanguage];
+        ActiveRecord = Records[ActiveRegion];
 
-        ActiveRecord = Records[langToRegion[DataManager.CurrentLanguage]];
+        IsChinese = ActiveRegion == ClientRegion.China;
+        CurrentGameVersion = ActiveRecord.CurrentGameVersion;
     }
+
+
+    public static readonly ClientRegion ActiveRegion;
+
+    [Obsolete("Use ActiveRegion instead")]
+    public static readonly bool IsChinese;
+
+    [Obsolete("Use ActiveRecord instead")]
+    public static readonly float CurrentGameVersion;
+    
 
     private static bool _isNewGameBuild;
     private static int GameVersion1;
