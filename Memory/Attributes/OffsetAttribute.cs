@@ -89,6 +89,9 @@ public class IgnoreCacheAttribute : Attribute
     }
 }
 
+/// <summary>
+/// Attribute for offsets that are only valid on non-global servers (China, Korea, TC, etc.)
+/// </summary>
 public class OffsetNGAttribute : OffsetAttribute
 {
     public OffsetNGAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0) : base(pattern, expectedValue, OffsetFlags.NonGlobalServers)
@@ -96,6 +99,9 @@ public class OffsetNGAttribute : OffsetAttribute
     }
 }
 
+/// <summary>
+/// Attribute for offsets that are only valid on china servers
+/// </summary>
 public class OffsetCNAttribute : OffsetAttribute
 {
     public OffsetCNAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0) : base(pattern, expectedValue, OffsetFlags.China)
