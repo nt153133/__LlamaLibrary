@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Clio.Utilities;
 using ff14bot;
+using ff14bot.Enums;
 using ff14bot.Helpers;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers;
@@ -87,25 +88,55 @@ public static class OffsetManager
 
     public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown);
 
-#if RB_CN
-    public static float CurrentGameVersion = 7.35f;
-    public static bool IsChinese = true;
-    public static bool Is7_1 = true;
-    public static bool Is7_15 = true;
-    public static bool Is7_16 = true;
-#else
-    public static float CurrentGameVersion = 7.35f;
-    public static bool IsChinese = false;
-    public static bool Is7_1 = true;
-    public static bool Is7_15 = true;
-    public static bool Is7_16 = true;
-#endif
 
-#if RB_DT
-        public static bool IsDawntrail = true;
-#else
-    public static bool IsDawntrail = false;
-#endif
+    /// <summary>
+    /// Active record for the current game region.
+    /// </summary>
+    public static readonly GameRecord ActiveRecord;
+
+    /// <summary>
+    /// Gets the currently active client region.
+    /// </summary>
+    public static readonly ClientRegion ActiveRegion;
+
+    static OffsetManager()
+    {
+        var langToRegion = new Dictionary<Language, ClientRegion>()
+        {
+            { Language.Eng, ClientRegion.Global },
+            { Language.Ger, ClientRegion.Global },
+            { Language.Fre, ClientRegion.Global },
+            { Language.Jap, ClientRegion.Global },
+            { Language.Chn, ClientRegion.China },
+            { Language.MainlandTraditional, ClientRegion.China },
+            { Language.Korean, ClientRegion.Korea },
+            { Language.TraditionalChinese, ClientRegion.TraditionalChinese },
+        };
+
+        var Records = new Dictionary<ClientRegion, GameRecord>()
+        {
+            { ClientRegion.Global, new GameRecord(7.3f,OffsetFlags.Global) },
+            { ClientRegion.China, new GameRecord(7.3f,OffsetFlags.China)},
+            { ClientRegion.Korea, new GameRecord(7.3f,OffsetFlags.Korea)},
+            { ClientRegion.TraditionalChinese, new GameRecord(7.3f,OffsetFlags.TraditionalChinese)},
+        };
+
+        ActiveRegion = langToRegion[DataManager.CurrentLanguage];
+        ActiveRecord = Records[ActiveRegion];
+
+        IsChinese = ActiveRegion == ClientRegion.China;
+        CurrentGameVersion = ActiveRecord.CurrentGameVersion;
+    }
+
+
+    
+
+    [Obsolete("Use ActiveRegion instead")]
+    public static readonly bool IsChinese;
+
+    [Obsolete("Use ActiveRecord instead")]
+    public static readonly float CurrentGameVersion;
+    
 
     private static bool _isNewGameBuild;
     private static int GameVersion1;

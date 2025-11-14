@@ -11,6 +11,7 @@ Original work done by zzi, contibutions by Omninewb, Freiheit, and mastahg
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using ff14bot;
 using ff14bot.Enums;
@@ -21,131 +22,118 @@ using LlamaLibrary.Memory.PatternFinders;
 
 namespace LlamaLibrary.Memory.Attributes;
 
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+
+[Flags]
+public enum OffsetFlags
+{
+    Global = 1<<0,
+    China = 1<<1,
+    Korea = 1<<2,
+    TraditionalChinese = 1<<3,
+    ReservedRegion = 1 << 4,
+    ReservedRegion2 = 1 << 5,
+
+    /// <summary>
+    /// Expansion that is active on the global client
+    /// </summary>
+    CurrentExpansion = 1 << 6,
+    PreviousExpansion = 1 << 7,
+
+
+
+
+    AllServers = Global | China | Korea | TraditionalChinese | ReservedRegion | ReservedRegion2,
+    NonGlobalServers = China | Korea | TraditionalChinese | ReservedRegion | ReservedRegion2,
+
+
+
+}
+
+
+
+#region attributes
+
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property,AllowMultiple = true)]
 public class OffsetAttribute : Attribute
 {
     public readonly string Pattern;
-    public readonly string PatternCN;
-    public readonly string PatternDawntrail;
-    public bool IgnoreCache;
-    public int ExpectedValue;
-    public virtual int Priority => 0;
-    public virtual bool IsValid(ForceClientMode clientMode) => true;
-    protected static readonly Language Language
-#if RB_CN
-        = Language.Chn;
-#else
-        = Language.Eng;
-#endif
+    public readonly int ExpectedValue;
+    public readonly OffsetFlags Flags;
 
-    public OffsetAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0)
+    public OffsetAttribute(string pattern, int expectedValue = 0, OffsetFlags flags = OffsetFlags.AllServers)
     {
-        Pattern = pattern;
-        if (!Pattern.StartsWith("Search ", StringComparison.Ordinal))
+        if (!pattern.StartsWith("Search ", StringComparison.Ordinal))
         {
-            Pattern = "Search " + Pattern;
+            pattern = "Search " + pattern;
         }
 
-        PatternCN = Pattern;
-        PatternDawntrail = Pattern;
-        IgnoreCache = ignoreCache;
+
+        Pattern = pattern;
+        Flags = flags;
         ExpectedValue = expectedValue;
     }
 
-    protected OffsetAttribute(string pattern, string cnPattern, bool ignoreCache = false, int expectedValue = 0)
+    [Obsolete("Remove boolean property")]
+    public OffsetAttribute(string p,bool a,int exv) : this(p, exv)
     {
-        PatternCN = cnPattern;
-        if (!PatternCN.StartsWith("Search ", StringComparison.Ordinal))
-        {
-            PatternCN = "Search " + PatternCN;
-        }
-
-        Pattern = pattern;
-
-        if (string.IsNullOrEmpty(Pattern))
-        {
-            Pattern = cnPattern;
-        }
-
-        PatternDawntrail = Pattern;
-
-        IgnoreCache = ignoreCache;
-        ExpectedValue = expectedValue;
     }
 
-    protected OffsetAttribute(string pattern, string cnPattern, string dawntrailPattern, bool ignoreCache = false, int expectedValue = 0)
+
+}
+
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public class IgnoreCacheAttribute : Attribute
+{
+    public IgnoreCacheAttribute()
     {
-        PatternCN = cnPattern;
-        if (!string.IsNullOrEmpty(cnPattern) && !PatternCN.StartsWith("Search ", StringComparison.Ordinal))
-        {
-            PatternCN = "Search " + PatternCN;
-        }
-
-        PatternDawntrail = dawntrailPattern;
-        if (!string.IsNullOrEmpty(dawntrailPattern) && !PatternDawntrail.StartsWith("Search ", StringComparison.Ordinal))
-        {
-            PatternDawntrail = "Search " + PatternDawntrail;
-        }
-
-        Pattern = pattern;
-
-        if (string.IsNullOrEmpty(Pattern))
-        {
-            Pattern = !string.IsNullOrEmpty(dawntrailPattern) ? PatternDawntrail : PatternCN;
-        }
-
-        if (!string.IsNullOrEmpty(Pattern) && !Pattern.StartsWith("Search ", StringComparison.Ordinal))
-        {
-            Pattern = "Search " + Pattern;
-        }
-
-        if (string.IsNullOrEmpty(PatternCN))
-        {
-            PatternCN = Pattern;
-        }
-
-        IgnoreCache = ignoreCache;
-        ExpectedValue = expectedValue;
-    }
-
-    public string GetPattern(ForceClientMode forceClientMode = ForceClientMode.None)
-    {
-        return forceClientMode switch
-        {
-            ForceClientMode.CN        => PatternCN,
-            ForceClientMode.Dawntrail => PatternDawntrail,
-            _ => Language switch
-            {
-                Language.Chn => PatternCN,
-                _            => Pattern
-            }
-        };
     }
 }
 
+/// <summary>
+/// Attribute for offsets that are only valid on non-global servers (China, Korea, TC, etc.)
+/// </summary>
+public class OffsetNGAttribute : OffsetAttribute
+{
+    public OffsetNGAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0) : base(pattern, expectedValue, OffsetFlags.NonGlobalServers)
+    {
+    }
+}
+
+/// <summary>
+/// Attribute for offsets that are only valid on china servers
+/// </summary>
+public class OffsetCNAttribute : OffsetAttribute
+{
+    public OffsetCNAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0) : base(pattern, expectedValue, OffsetFlags.China)
+    {
+    }
+}
+
+#endregion
+
 public static class OffsetAttributeExtensions
 {
-    public static readonly ConcurrentDictionary<string, OffsetAttribute> AttributeCache = new ConcurrentDictionary<string, OffsetAttribute>(StringComparer.Ordinal);
+    public static readonly ConcurrentDictionary<string, OffsetAttribute[]> AttributeCache = new ConcurrentDictionary<string, OffsetAttribute[]>(StringComparer.Ordinal);
 
     public static string GetPattern(this MemberInfo property, ForceClientMode forceClientMode = ForceClientMode.None)
     {
-        return property.OffsetAttribute(forceClientMode)?.GetPattern(forceClientMode) ?? string.Empty;
+        //TODO: figure out the best string to return, or maybe just remove this logic?
+        return "";
     }
 
-    public static bool IgnoreCache(this MemberInfo property, ForceClientMode forceClientMode = ForceClientMode.None)
+    public static bool IgnoreCache(this MemberInfo property)
     {
-        return property.OffsetAttribute(forceClientMode)?.IgnoreCache ?? false;
+        return property.GetCustomAttributes<IgnoreCacheAttribute>().Any();
     }
 
-    public static OffsetAttribute? OffsetAttribute(this MemberInfo property, ForceClientMode forceClientMode)
+    public static OffsetAttribute[]? OffsetAttributes(this MemberInfo property, ForceClientMode forceClientMode)
     {
-        if (!AttributeCache.TryGetValue(property.MemberName(), out var attribute))
+        if (!AttributeCache.TryGetValue(property.MemberName(), out var attributes))
         {
-            attribute = property.GetCustomAttributes<OffsetAttribute>(true).Where(i => i.IsValid(forceClientMode)).OrderByDescending(x => x.Priority).FirstOrDefault();
-            if (attribute != null)
+            attributes = property.GetCustomAttributes<OffsetAttribute>(true).ToArray();
+            if (attributes.Length > 0)
             {
-                //ff14bot.Helpers.Logging.Write($"Found attribute {attribute.GetType().Name} for {property.MemberName()}");
-                AttributeCache.TryAdd(property.MemberName(), attribute);
+                AttributeCache.TryAdd(property.MemberName(), attributes);
             }
             else
             {
@@ -153,7 +141,7 @@ public static class OffsetAttributeExtensions
             }
         }
 
-        return attribute;
+        return attributes;
     }
 
     public static IntPtr SearchOffset(this ISearcher finder, string pattern)
@@ -170,14 +158,45 @@ public static class OffsetAttributeExtensions
         }
         catch (Exception e)
         {
-            ff14bot.Helpers.Logging.Write(e.ToString());
             return IntPtr.Zero;
         }
     }
 
+    /// <summary>
+    /// Counts the number of individual flag values set in the specified OffsetFlags enumeration.
+    /// </summary>
+    /// <param name="flags">The OffsetFlags value to evaluate. Each set bit is considered a flag.</param>
+    /// <returns>The number of flags that are set in the provided OffsetFlags value.</returns>
+    internal static int Count(this OffsetFlags flags)
+    {
+        return BitOperations.PopCount((uint)flags);
+    }
+
+    /// <summary>
+    /// Searches for an offset given a field and a searcher
+    /// Searches through all OffsetAttributes on the field sorted by most specific to least specific
+    /// </summary>
+    /// <param name="finder"></param>
+    /// <param name="field"></param>
+    /// <param name="forceClientMode"></param>
+    /// <returns>IntPtr.Zero if no offset could be found, otherwise the value of the offset</returns>
     public static IntPtr SearchOffset(this ISearcher finder, MemberInfo field, ForceClientMode forceClientMode = ForceClientMode.None)
     {
-        return finder.SearchOffset(field.GetPattern(forceClientMode));
+
+        var patterns = field.OffsetAttributes(forceClientMode)?.Where(r=>r.Flags.HasFlag(OffsetManager.ActiveRecord.RegionFlag)).OrderBy(r=>r.Flags.Count());
+
+        if (patterns != null)
+        {
+            foreach (var pattern in patterns)
+            {
+                var result =  finder.SearchOffset(pattern.Pattern);
+                if (result > IntPtr.Zero)
+                {
+                    return result;
+                }
+            }
+        }
+        return IntPtr.Zero;
     }
 
     public static void SetValue(this MemberInfo field, IntPtr offset)
@@ -332,42 +351,6 @@ public static class OffsetAttributeExtensions
             PropertyInfo propertyInfo => $"{propertyInfo.DeclaringType?.FullName}.{propertyInfo.Name}",
             _                         => string.Empty
         };
-    }
-}
-
-public class OffsetCNAttribute : OffsetAttribute
-{
-    private static bool _isValid { get; } = Language == Language.Chn;
-
-    public override bool IsValid(ForceClientMode clientMode)
-    {
-        return clientMode == ForceClientMode.CN || _isValid;
-    }
-
-    public override int Priority { get; } = 1;
-
-    public OffsetCNAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0) : base("", pattern, ignoreCache, expectedValue)
-    {
-    }
-}
-
-public class OffsetDawntrailAttribute : OffsetAttribute
-{
-#if !RB_DT
-    private static bool _isValid { get; } = false;
-#else
-    private static bool _isValid { get; } = true;
-#endif
-
-    public override bool IsValid(ForceClientMode clientMode)
-    {
-        return clientMode == ForceClientMode.Dawntrail || _isValid;
-    }
-
-    public override int Priority { get; } = 99;
-
-    public OffsetDawntrailAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0) : base("", "", pattern, ignoreCache, expectedValue)
-    {
     }
 }
 
