@@ -95,7 +95,7 @@ public class LocationTracker
                 }
             }
 
-            if (!await Navigation.GetTo(_previousLocation) || !await Navigation.GroundMove(_previousLocation.Location.Coordinates, 1f))
+            if (!await Navigation.GetTo(_previousLocation)) //|| !await Navigation.GroundMove(_previousLocation.Location.Coordinates, 1f))
             {
                 Log.Error("Failed to go back to previous location");
                 return false;
@@ -139,7 +139,8 @@ public class LocationTracker
         }
 
         Log.Information("Going back to previous location");
-        if (!await Navigation.GroundMove(_previousLocation.Location.Coordinates, 1f))
+        if (!await Navigation.GetTo(_previousLocation))
+        //if (!await Navigation.GroundMove(_previousLocation.Location.Coordinates, 1f))
         {
             Log.Error("Failed to go back to previous location");
             return false;
