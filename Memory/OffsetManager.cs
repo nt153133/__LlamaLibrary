@@ -129,14 +129,14 @@ public static class OffsetManager
     }
 
 
-    
+
 
     [Obsolete("Use ActiveRegion instead")]
     public static readonly bool IsChinese;
 
     [Obsolete("Use ActiveRecord instead")]
     public static readonly float CurrentGameVersion;
-    
+
 
     private static bool _isNewGameBuild;
     private static int GameVersion1;
@@ -720,14 +720,14 @@ public static class OffsetManager
         }
     }
 
-    public static Dictionary<string, string> LLDict()
+    public static Dictionary<string, string> LLDict(ForceClientMode mode = ForceClientMode.Global)
     {
         var results = new Dictionary<string, string>(StringComparer.Ordinal);
 
         // var asm = Assembly.Load("LlamaLibrary.dll");
-        var q1 = (from t in typeof(OffsetAttribute).Assembly.GetTypes()
-                  where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary", StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal)))
-                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+        var q1 =GetTypes();// (from t in typeof(OffsetAttribute).Assembly.GetTypes()
+                             //where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary", StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal)))
+                             //select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
         if (!q1.Contains(typeof(Offsets)))
         {
@@ -736,7 +736,7 @@ public static class OffsetManager
 
         var types = MemberInfos(q1).ToList();
 
-        Logger.Information($"{types.Count}");
+        Logger.Information($"Count: {types.Count}");
 
         foreach (var field in types)
         {
@@ -744,11 +744,22 @@ public static class OffsetManager
             {
                 try
                 {
-                    if (field.DeclaringType.DeclaringType != null)
+                    if (field.DeclaringType.DeclaringType == null)
                     {
-                        Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.Global)}");
-                        results.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", field.GetPattern(ForceClientMode.Global));
+                        continue;
                     }
+
+                    var offset = field.GetAttribute(mode);
+
+                    if (offset == null)
+                    {
+                        Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name} has no OffsetAttribute!");
+                        continue;
+                    }
+
+                    results.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", offset.Pattern);
+                    //Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name} has Offset for {offset.Flags.GetRegionString()}");
+                    //Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name:,27},{offset.Pattern}");
                 }
                 catch (Exception e)
                 {
@@ -759,10 +770,17 @@ public static class OffsetManager
             }
             else
             {
-                Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.Global)}");
+                var offset = field.GetAttribute(mode);
+                if (offset == null)
+                {
+                    Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27} has no OffsetAttribute!");
+                    continue;
+                }
+
+                Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27},{offset.Pattern} for {offset.Flags.GetRegionString()}");
                 try
                 {
-                    results.Add($"{field.DeclaringType?.Name}_{field.Name}", field.GetPattern(ForceClientMode.Global));
+                    results.Add($"{field.DeclaringType?.Name}_{field.Name}", offset.Pattern);
                 }
                 catch (Exception e)
                 {
