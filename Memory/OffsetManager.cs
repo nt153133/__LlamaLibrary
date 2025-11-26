@@ -720,7 +720,7 @@ public static class OffsetManager
         }
     }
 
-    public static Dictionary<string, string> LLDict(ForceClientMode mode = ForceClientMode.Global)
+    public static Dictionary<string, string> LLDict(ClientRegion mode = ClientRegion.Global)
     {
         var results = new Dictionary<string, string>(StringComparer.Ordinal);
 
@@ -788,39 +788,6 @@ public static class OffsetManager
                     Console.WriteLine(e);
                     //throw;
                 }
-            }
-        }
-
-        return results;
-    }
-
-    public static Dictionary<string, string> LLDictCN()
-    {
-        var results = new Dictionary<string, string>(StringComparer.Ordinal);
-
-        // var asm = Assembly.Load("LlamaLibrary.dll");
-        var q1 = GetTypes();
-
-        if (!q1.Contains(typeof(Offsets)))
-        {
-            q1.Add(typeof(Offsets));
-        }
-
-        var types = MemberInfos(q1).ToList();
-
-        Logger.Information($"{types.Count}");
-
-        foreach (var field in types)
-        {
-            if (field.DeclaringType != null && field.DeclaringType.IsNested)
-            {
-                Logger.Information($"CN{field.DeclaringType.DeclaringType?.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.CN)}");
-                results.Add($"{field.DeclaringType.DeclaringType?.Name}_{field.Name}", field.GetPattern(ForceClientMode.CN));
-            }
-            else
-            {
-                Logger.Information($"CN{field.DeclaringType?.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.CN)}");
-                results.Add($"{field.DeclaringType?.Name}_{field.Name}", field.GetPattern(ForceClientMode.CN));
             }
         }
 

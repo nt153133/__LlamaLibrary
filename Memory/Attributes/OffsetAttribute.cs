@@ -103,22 +103,22 @@ public static class OffsetAttributeExtensions
 {
     public static readonly ConcurrentDictionary<string, OffsetAttribute[]> AttributeCache = new ConcurrentDictionary<string, OffsetAttribute[]>(StringComparer.Ordinal);
 
-    public static string GetPattern(this MemberInfo property, ForceClientMode forceClientMode = ForceClientMode.None)
+    public static string GetPattern(this MemberInfo property, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
         var attribute = property.GetAttribute(forceClientMode);
         return attribute?.Pattern ?? string.Empty;
     }
 
-    public static OffsetAttribute? GetAttribute(this MemberInfo property, ForceClientMode forceClientMode = ForceClientMode.None)
+    public static OffsetAttribute? GetAttribute(this MemberInfo property, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
-        var attributes = forceClientMode != ForceClientMode.None ? property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count()) : property.OffsetAttributes(forceClientMode)?.Where(r => r.Flags.HasFlag(OffsetManager.ActiveRecord.RegionFlag)).OrderBy(r => r.Flags.Count());
+        var attributes = forceClientMode != ClientRegion.NotSpecified ? property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count()) : property.OffsetAttributes(forceClientMode)?.Where(r => r.Flags.HasFlag(OffsetManager.ActiveRecord.RegionFlag)).OrderBy(r => r.Flags.Count());
 
         if (attributes == null || !attributes.Any())
         {
             return null;
         }
 
-        if (forceClientMode == ForceClientMode.None)
+        if (forceClientMode == ClientRegion.NotSpecified)
         {
             ff14bot.Helpers.Logging.WriteDiagnostic("No forced client mode, returning first attribute for {0}", property.MemberName());
             return attributes.First();
@@ -133,16 +133,16 @@ public static class OffsetAttributeExtensions
         return null;
     }
 
-    public static OffsetAttribute? GetAttribute2(this MemberInfo property, ForceClientMode forceClientMode = ForceClientMode.None)
+    public static OffsetAttribute? GetAttribute2(this MemberInfo property, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
-        var attributes = forceClientMode != ForceClientMode.None ? property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count()) : property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count());
+        var attributes = forceClientMode != ClientRegion.NotSpecified ? property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count()) : property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count());
 
         if (attributes == null || !attributes.Any())
         {
             return null;
         }
 
-        if (forceClientMode == ForceClientMode.None)
+        if (forceClientMode == ClientRegion.NotSpecified)
         {
             return attributes.First();
         }
@@ -190,7 +190,7 @@ public static class OffsetAttributeExtensions
         return property.GetCustomAttributes<IgnoreCacheAttribute>().Any();
     }
 
-    public static OffsetAttribute[]? OffsetAttributes(this MemberInfo property, ForceClientMode forceClientMode)
+    public static OffsetAttribute[]? OffsetAttributes(this MemberInfo property, ClientRegion forceClientMode)
     {
         if (!AttributeCache.TryGetValue(property.MemberName(), out var attributes))
         {
@@ -244,7 +244,7 @@ public static class OffsetAttributeExtensions
     /// <param name="field"></param>
     /// <param name="forceClientMode"></param>
     /// <returns>IntPtr.Zero if no offset could be found, otherwise the value of the offset</returns>
-    public static IntPtr SearchOffset(this ISearcher finder, MemberInfo field, ForceClientMode forceClientMode = ForceClientMode.None)
+    public static IntPtr SearchOffset(this ISearcher finder, MemberInfo field, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
         var patterns = field.OffsetAttributes(forceClientMode)?.Where(r => r.Flags.HasFlag(OffsetManager.ActiveRecord.RegionFlag)).OrderBy(r => r.Flags.Count());
 
@@ -377,7 +377,7 @@ public static class OffsetAttributeExtensions
         }
     }
 
-    public static IntPtr GetOffset(this MemberInfo field, ISearcher finder, ForceClientMode forceClientMode = ForceClientMode.None)
+    public static IntPtr GetOffset(this MemberInfo field, ISearcher finder, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
         if (!field.IgnoreCache() && OffsetManager.OffsetCache.TryGetValue(field.MemberName(), out var offset))
         {
@@ -417,18 +417,20 @@ public static class OffsetAttributeExtensions
         };
     }
 
-    public static OffsetFlags ConvertClientMode(this ForceClientMode forceClientMode)
+    public static OffsetFlags ConvertClientMode(this ClientRegion clientRegion)
     {
-        return forceClientMode switch
+        return clientRegion switch
         {
-            ForceClientMode.None => OffsetFlags.AllServers,
-            ForceClientMode.CN   => OffsetFlags.China,
-            ForceClientMode.TC   => OffsetFlags.TraditionalChinese,
-            _                    => OffsetFlags.AllServers
+            ClientRegion.Global          => OffsetFlags.Global,
+            ClientRegion.China          => OffsetFlags.China,
+            ClientRegion.Korea          => OffsetFlags.Korea,
+            ClientRegion.TraditionalChinese => OffsetFlags.TraditionalChinese,
+            _                            => OffsetFlags.AllServers
         };
     }
 }
 
+/*
 public enum ForceClientMode
 {
     None,
@@ -437,4 +439,4 @@ public enum ForceClientMode
     Dawntrail,
     TC,
     KR
-}
+}*/
