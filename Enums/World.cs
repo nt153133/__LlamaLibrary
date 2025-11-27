@@ -207,6 +207,24 @@ namespace LlamaLibrary.Enums
 
         [Description("梦羽宝境")]
         MengYuBaoJing = 1176,
+
+        //Traditional Chinese Worlds
+        [Description("伊弗利特")]
+        TcIfrit = 4028,
+        [Description("迦樓羅")]
+        TcGaruda = 4029,
+        [Description("利維坦")]
+        TcLeviathan = 4030,
+        [Description("鳳凰")]
+        TcPhoenix = 4031,
+        [Description("奧汀")]
+        TcOdin = 4032,
+        [Description("巴哈姆特")]
+        TcBahamut = 4033,
+        [Description("拉姆")]
+        TcRamuh = 4034,
+        [Description("泰坦")]
+        TcTitan = 4035,
     }
 
     public static class Extensions
