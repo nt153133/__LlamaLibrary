@@ -6,7 +6,7 @@ using ff14bot.Managers;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
 
-namespace LlamaLibrary.Managers
+namespace LlamaLibrary.LlamaManagers
 {
     public class PointMenuManager
     {

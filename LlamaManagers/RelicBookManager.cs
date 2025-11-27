@@ -9,7 +9,7 @@ using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
 using LlamaLibrary.Memory;
 
-namespace LlamaLibrary.Managers
+namespace LlamaLibrary.LlamaManagers
 
 {
     public class RelicBookManager
