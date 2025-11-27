@@ -97,6 +97,16 @@ public class OffsetCNAttribute : OffsetAttribute
     }
 }
 
+/// <summary>
+/// Attribute for offsets that are only valid on traditional china servers
+/// </summary>
+public class OffsetTCAttribute : OffsetAttribute
+{
+    public OffsetTCAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0) : base(pattern, expectedValue, OffsetFlags.TraditionalChinese)
+    {
+    }
+}
+
 #endregion
 
 public static class OffsetAttributeExtensions
