@@ -130,13 +130,13 @@ public static class OffsetAttributeExtensions
 
         if (forceClientMode == ClientRegion.NotSpecified)
         {
-            ff14bot.Helpers.Logging.WriteDiagnostic("No forced client mode, returning first attribute for {0}", property.MemberName());
+            //ff14bot.Helpers.Logging.WriteDiagnostic("No forced client mode, returning first attribute for {0}", property.MemberName());
             return attributes.First();
         }
 
         if (attributes.Any(i => i.Flags.HasFlag(forceClientMode.ConvertClientMode())))
         {
-            ff14bot.Helpers.Logging.WriteDiagnostic("There are {2} attributes for {0}, returning one for forced client mode {1}", property.MemberName(), forceClientMode,attributes.Count());
+            //ff14bot.Helpers.Logging.WriteDiagnostic("There are {2} attributes for {0}, returning one for forced client mode {1}", property.MemberName(), forceClientMode,attributes.Count());
             return attributes.First(i => i.Flags.HasFlag(forceClientMode.ConvertClientMode()));
         }
 

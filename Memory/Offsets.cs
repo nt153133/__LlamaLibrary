@@ -18,7 +18,6 @@ namespace LlamaLibrary.Memory
     {
         //7.1
         [Offset("Search E8 ? ? ? ? 48 8B C7 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 48 8D 4B ? Add 1 TraceRelative")]
-        [OffsetTC("Search 40 55 53 57 41 54 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 3D ? ? ? ? ?")]
         public static IntPtr SalvageAgent;
 
         [Offset("Search 4C 8D 0D ? ? ? ? 45 33 C0 33 D2 Add 3 TraceRelative")]
@@ -81,12 +80,10 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search E8 ? ? ? ? 84 C0 74 ? 48 FF C3 48 83 FB ? 72 ? B0 ? 48 8B 4C 24 ? Add 1 TraceRelative")]
-        [OffsetTC("Search 48 89 5C 24 ? 57 48 83 EC ? 8B D9 E8 ? ? ? ? 48 8B F8")]
         public static IntPtr IsInstanceContentCompleted;
 
         //7.1
         [Offset("Search E8 ? ? ? ? 3C ? 75 ? 32 C0 48 8B 5C 24 ? 48 8B 74 24 ? Add 1 TraceRelative")]
-        [OffsetTC("Search E8 ? ? ? ? 84 C0 75 ? B0 ? 48 83 C4 ? 5B C3 8B CB Add 1 TraceRelative")]
         public static IntPtr IsInstanceContentUnlocked;
 
         //7.3
@@ -222,7 +219,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search 41 B8 ? ? ? ? 89 7C 24 ? E8 ? ? ? ? Add 2 Read32")]
-        [OffsetTC("Search 41 B8 ? ? ? ? 89 5C 24 ? E8 ? ? ? ? 84 C0 75 ? Add 2 Read32")]
         internal static int DecipherSpell;
 
     }
@@ -283,7 +279,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search 48 8B 89 ? ? ? ? 48 85 C9 74 ? E8 ? ? ? ? 48 C7 86 ? ? ? ? ? ? ? ? 48 8D 8E ? ? ? ? E8 ? ? ? ? 48 8D 8E ? ? ? ? E8 ? ? ? ? BF ? ? ? ? 48 8D 9E ? ? ? ? 48 83 EB ? Add 3 Read32")]
-        [OffsetTC("Search 48 8B 89 ? ? ? ? 48 85 C9 74 ? E8 ? ? ? ? 48 C7 86 ? ? ? ? ? ? ? ? BF ? ? ? ? 48 8D 9E ? ? ? ? 0F 1F 44 00 ? Add 3 Read32")]
         internal static int Offset;
 
         [Offset("Search 48 8B 48 ? 48 85 C9 0F 84 ? ? ? ? 8B 93 ? ? ? ? Add 3 Read8")]
@@ -296,17 +291,11 @@ namespace LlamaLibrary.Memory
 
         //7.2 hf
         [Offset("Search 48 8D 0D ? ? ? ? 83 7B ? ? 48 89 4C 24 ? 48 8D 0D ? ? ? ? 88 54 24 ? 41 0F 94 C0 83 3B ? 48 89 4C 24 ? 48 8D 4C 24 ? 48 8B 40 ? 0F 94 C2 48 89 44 24 ? E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? 48 83 C4 ? 5B C3 0F 1F 00 Add 3 TraceRelative")]
-        //7.2
-        //[Offset("Search 48 8D 0D ? ? ? ? 83 7B ? ? 48 89 4C 24 ? 48 8D 0D ? ? ? ? 88 54 24 ? 41 0F 94 C0 ? ? ? 48 89 4C 24 ? 48 8D 4C 24 ? 48 8B 40 ? 0F 94 C2 48 89 44 24 ? E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? 48 83 C4 ? 5B C3 ? ? ? CA Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 0D ? ? ? ? 48 89 4C 24 ? 48 8D 0D ? ? ? ? 48 89 4C 24 ? 48 8D 4C 24 ? 48 8B 40 ? 48 89 44 24 ? E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? 48 83 C4 ? 5B C3 0F 1F 00 Add 3 TraceRelative")]
         internal static IntPtr Vtable;
 
         //7.2 hf
         [Offset("Search FF 50 ? 84 C0 74 ? 48 85 DB 74 ? 48 8B 03 48 8B CB FF 50 ? 48 8B 4F ? 3B 41 ? 75 ? 48 8B 03 48 8B CB FF 90 ? ? ? ? 48 8B 4F ? 66 3B 81 ? ? ? ? 72 ? 48 8B CB E8 ? ? ? ? 48 85 C0 75 ? B0 ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 48 8B 5C 24 ? 32 C0 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 2 Read8")]
         //0x28
-        //7.2
-        //[Offset("Search FF 50 30 84 C0 74 4A 48 85 DB 74 45 48 8B 03 48 8B CB FF 50 30 48 8B 4F 30 3B 41 08 75 33 48 8B 03 48 8B CB FF 90 B8 00 00 00 48 8B 4F 30 66 3B 81 34 01 00 00 72 1A 48 8B CB E8 3A 99 AA FF Add 2 Read8")]
-        [OffsetTC("Search FF 50 ? 84 C0 74 ? 48 85 DB 74 ? 48 8B 03 48 8B CB FF 50 ? 48 8B 4F ? 3B 41 ? 75 ? 48 8B 03 48 8B CB FF 90 ? ? ? ? A8 ? 74 ? 48 8B 03 48 8B CB FF 50 ? 0F B7 C8 EB ? 33 C9 48 8B 47 ? 66 3B 88 ? ? ? ? 72 ? 48 8B CB E8 ? ? ? ? 48 85 C0 75 ? B0 ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 48 8B 5C 24 ? 32 C0 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? 48 89 5C 24 ? Add 2 Read8")]
         internal static int PointerOffset;
 
     }
@@ -316,7 +305,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 48 8D 8E ? ? ? ? 0F 57 C0 Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 05 ? ? ? ? 89 77 ? 48 8D 4F ? Add 3 TraceRelative")]
         internal static IntPtr Vtable;
 
     }
@@ -363,7 +351,6 @@ namespace LlamaLibrary.Memory
 
         //7.2
         [Offset("Search 8B 5F ? C7 47 ? ? ? ? ? ? ? ? FF 50 ? 8B D3 48 8B C8 ? ? ? 41 FF 90 ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? 83 79 Add 2 Read8")]
-        [OffsetTC("Search 8B 5F ? C7 47 ? ? ? ? ? 48 8B 01 FF 50 ? 8B D3 48 8B C8 4C 8B 00 41 FF 90 ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 83 79 ? ? Add 2 Read8")]
         internal static int Loaded;
 
     }
@@ -407,7 +394,6 @@ namespace LlamaLibrary.Memory
     {
 
         [Offset("Search 48 8D 05 ? ? ? ? ? ? ? 48 8D 59 ? 48 8D 05 ? ? ? ? 48 89 51 ? 48 89 41 ? 8D 75 Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 05 ? ? ? ? 48 89 51 ? 48 89 01 48 8D 59 ? 48 8D 05 ? ? ? ? 48 89 69 ? 48 89 41 ? 8D 75 ? Add 3 TraceRelative")]
         internal static IntPtr VTable;
 
         [Offset("Search E8 ? ? ? ? 8B 8B ? ? ? ? 84 C0 74 ? 83 C9 ? 89 8B ? ? ? ? 48 83 C4 ? 5B C3 F6 C1 ? 0F B6 C0 Add 1 TraceRelative")]
@@ -461,7 +447,6 @@ namespace LlamaLibrary.Memory
         internal static int CurrentCount;
 
         [Offset("Search 8B 58 ? 85 DB 75 ? 8B 97 ? ? ? ? Add 2 Read8")]
-        [OffsetTC("Search 8B 78 ? 85 FF 75 ? 8B 93 ? ? ? ? Add 2 Read8")]
         internal static int ActionCount;
 
     }
@@ -640,7 +625,6 @@ namespace LlamaLibrary.Memory
         //0x20
         //7.1
         [Offset("Search 41 8B 44 24 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 75 ? Add 4 Read8")]
-        [OffsetTC("Search 8B 45 ? 3D ? ? ? ? 74 ? 3D ? ? ? ? 75 ? B2 ? Add 2 Read8")]
         internal static int ShopKey;
 
         //0x38
@@ -654,7 +638,6 @@ namespace LlamaLibrary.Memory
         //0x1223
         //7.1
         [Offset("Search 40 38 B9 ? ? ? ? 0F 86 ? ? ? ? 4C 8B 6C 24 ? Add 3 Read32")]
-        [OffsetTC("Search 40 38 B9 ? ? ? ? 0F 86 ? ? ? ? 45 8B FE Add 3 Read32")]
         internal static int NumberOfSubCategories;
 
         //0x11D1
@@ -704,7 +687,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search 47 8B 64 B5 ? Add 4 Read8")]
-        [OffsetTC("Search 45 8B 64 B7 ? Add 4 Read8")]
         internal static int ItemStructAdjustment;
 
     }
@@ -737,7 +719,6 @@ namespace LlamaLibrary.Memory
         //0x18C9FC0
         //7.2
         [Offset("Search 48 8D 05 ? ? ? ? 48 8B F9 ? ? ? 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8D 8F ? ? ? ? E8 ? ? ? ? 48 8B 8F Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 05 ? ? ? ? 48 8B F9 48 89 01 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8B 8F ? ? ? ? 48 8D 05 ? ? ? ? Add 3 TraceRelative")]
         internal static IntPtr Vtable;
 
         //0x5
@@ -812,8 +793,6 @@ namespace LlamaLibrary.Memory
     {
 
         [Offset("Search 48 8D 05 ? ? ? ? 33 FF 48 89 03 48 8D 4B ? Add 3 TraceRelative")]
-
-        [OffsetTC("Search 48 8D 05 ? ? ? ? 48 8D 4B ? 48 89 03 E8 ? ? ? ? 48 8D 4B ? E8 ? ? ? ? 33 C9 Add 3 TraceRelative")]
         internal static IntPtr VTable;
 
         [Offset("Search 0F B6 9F ? ? ? ? 48 8D 8D ? ? ? ? BA ? ? ? ? 44 89 AD ? ? ? ? Add 3 Read32")]
@@ -824,14 +803,13 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search 66 41 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 Add 4 Read32")]
-        //OffsetCN("Search 66 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 Add 3 Read32")]
+        [OffsetTC("Search 66 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 Add 3 Read32")]
         internal static int IndexOfSelectedItem;
 
         [Offset("Search 0F BF BE ? ? ? ? 4D 8D 64 24 ? Add 3 Read32")]
         internal static int MateriaCount;
 
         [Offset("Search 48 8B 85 ? ? ? ? 48 0F BF 95 ? ? ? ? Add 3 Read32")]
-        [OffsetTC("Search 48 8B 86 ? ? ? ? 48 0F BF 96 ? ? ? ? Add 3 Read32")]
         internal static int StructStart;
 
         [Offset("Search 48 8B 88 ? ? ? ? 4C 8B 04 D1 Add 3 Read32")]
@@ -920,7 +898,6 @@ namespace LlamaLibrary.Memory
         internal static IntPtr VTable;
 
         [Offset("Search 48 8D 8E ? ? ? ? 33 D2 41 B8 ? ? ? ? E8 ? ? ? ? 48 8D 8E ? ? ? ? E8 ? ? ? ? Add 3 Read32")]
-        [OffsetTC("Search 48 8D 8E ? ? ? ? 33 D2 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C6 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? 48 89 5C 24 ? Add 3 Read32")]
         internal static int AgentRetainerOffset;
 
         [Offset("Search 83 FB ? 72 ? 33 D2 48 8D 4C 24 ? E8 ? ? ? ? 48 8D 15 ? ? ? ? Add 2 Read8")]
@@ -1005,7 +982,6 @@ namespace LlamaLibrary.Memory
 
         //7.2
         [Offset("Search 48 8D 0D ? ? ? ? 83 7F ? ? 48 89 4C 24 ? 48 8D 0D ? ? ? ? 88 54 24 ? 41 0F 94 C0 ? ? ? 48 89 4C 24 ? 48 8D 4C 24 ? 48 8B 40 ? 0F 94 C2 48 89 44 24 ? E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? E9 Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 0D ? ? ? ? 48 89 4C 24 ? 48 8D 0D ? ? ? ? 48 89 4C 24 ? 48 8D 4C 24 ? 48 8B 40 ? 48 89 44 24 ? E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? E9 ? ? ? ? Add 3 TraceRelative")]
         internal static IntPtr Vtable;
 
         /*
@@ -1238,7 +1214,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 84 24 ? ? ? ? ?  Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 44 24 ? ?  Add 3 TraceRelative")]
         internal static IntPtr QuestPointer;
 
         //6.4
@@ -1267,7 +1242,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 83 FA ? 77 ? 48 63 C2 8B 84 81 ? ? ? ? C3 33 C0 C3 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 6C 24 ? Add 2 Read8")]
         internal static int MaxActive;
 
-        [OffsetTC("Search 8B 94 B5 ? ? ? ? 48 8B CD Add 3 Read32")]
+        [OffsetTC("Search 83 FA ? 77 ? 48 63 C2 8B 84 81 Add 11 Read32")]
         [Offset("Search 8B 84 81 ? ? ? ? C3 33 C0 C3 ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 6C 24 ? Add 3 Read32")]
         internal static int BluSpellActiveOffset;
 
@@ -1284,7 +1259,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 84 24 ? ? ? ? ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 44 24 ? ?  Add 3 TraceRelative")]
         internal static IntPtr QuestPointer;
 
         [Offset("Search 81 F9 ? ? ? ? 73 38 Add 2 Read32")]
@@ -1505,7 +1479,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search E8 ? ? ? ? 33 DB FF C6 48 8D 3D ? ? ? ? Add 1 TraceRelative")]
-        [OffsetTC("Search E8 ? ? ? ? 48 83 C4 ? 41 5F 41 5D 5F 5E 5D 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? Add 1 TraceRelative")]
         internal static IntPtr OrginalCall;
 
     }
@@ -1525,7 +1498,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search 49 8B 86 ? ? ? ? 49 8D 8E ? ? ? ? 33 D2 FF 50 ? 41 0F B6 86 ? ? ? ? Add A Read32")]
-        [OffsetTC("Search 49 8B 86 ? ? ? ? 49 8D 8E ? ? ? ? 33 D2 FF 50 60 41 0F B6 86 ? ? ? ? Add A Read32")]
         internal static int RaptureItemFinder;
 
         [Offset("Search 49 8B 8F ? ? ? ? 48 89 B4 24 ? ? ? ? 48 8B D9 Add 3 Read32")]
@@ -1539,7 +1511,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search 49 8D 9D ? ? ? ? BF ? ? ? ? 0F 1F 40 ? Add 3 Read32")]
-        [OffsetTC("Search 4D 8D 85 ? ? ? ? 41 B9 ? ? ? ? 0F 1F 80 ? ? ? ? Add 3 Read32")]
         internal static int GlamourDresserItemIds;
 
         //7.3
@@ -1619,7 +1590,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search E8 ? ? ? ? 0F B6 48 ? 85 C9 0F 84 ? ? ? ? TraceCall")]
-        [OffsetTC("Search E8 ? ? ? ? 48 89 45 AF 48 8B D8 TraceCall")]
         internal static IntPtr GetENpcResident;
 
     }
@@ -1791,7 +1761,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search E8 ? ? ? ? 84 C0 75 ? C6 05 ? ? ? ? ? E8 ? ? ? ? 48 89 05 ? ? ? ? Add 1 TraceRelative")]
-        [OffsetTC("Search E8 ? ? ? ? 84 C0 75 19 F3 0F 10 05 ? ? ? ? Add 1 TraceRelative")]
         internal static IntPtr ScreenshotFunc;
 
         [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? BB ? ? ? ? 83 FA ?")]
@@ -1802,7 +1771,6 @@ namespace LlamaLibrary.Memory
 
         //7.1
         [Offset("Search C6 05 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? Add 2 TraceRelative")]
-        [OffsetTC("Search C6 05 ? ? ? ? ? 48 83 C4 ? 5F C3 48 8B 4F ? Add 2 TraceRelative")]
         internal static IntPtr ScreenshotState;
 
         [Offset("Search 48 8D 4B ? 48 8D 44 24 ? 48 3B C1 Add 3 Read8")]
@@ -1974,7 +1942,6 @@ namespace LlamaLibrary.Memory
     {
 
         [Offset("Search 48 8d 4f ? 0f b7 10 e8 ? ? ? ? 48 ? ? 74 ? 48 8b ? Add 3 Read8")]
-        [OffsetTC("Search 48 8D 4B ? E8 ? ? ? ? 84 C0 74 ? 48 8B 74 24 ? Add 3 Read8")]
         internal static int Offset1;
 
         [Offset("Search 41 8B CC 41 89 8F ? ? ? ? Add 6 Read32")]

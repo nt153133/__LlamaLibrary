@@ -777,7 +777,7 @@ public static class OffsetManager
                     continue;
                 }
 
-                Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27},{offset.Pattern} for {offset.Flags.GetRegionString()}");
+                //Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27},{offset.Pattern} for {offset.Flags.GetRegionString()}");
                 try
                 {
                     results.Add($"{field.DeclaringType?.Name}_{field.Name}", offset.Pattern);
