@@ -112,7 +112,8 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "リテイナーベル" },
             { Language.Fre, "Sonnette" },
             { Language.Ger, "Krämerklingel" },
-            { Language.Chn, "传唤铃" }
+            { Language.Chn, "传唤铃" },
+            { Language.TraditionalChinese, "傳喚鈴"}
         };
 
         //Addon2378
