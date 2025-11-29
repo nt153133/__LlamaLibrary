@@ -84,8 +84,6 @@ public class LibraryClass : ILibrary
         */
 
 
-
-        ff14bot.Helpers.Logging.WriteDiagnostic($"Blu offset {BlueMageSpellBookOffsets.BluSpellActiveOffset:X}");
         return true;
     }
 }

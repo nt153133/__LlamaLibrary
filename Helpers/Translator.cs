@@ -200,8 +200,8 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "区を指定して移動（ハウスアピール確認）" },
             { Language.Fre, "Spécifier le secteur où aller (Voir les attraits)" },
             { Language.Ger, "Zum angegebenen Bezirk (Zweck der Unterkunft einsehen)" },
-            { Language.Chn, "移动到指定小区（查看房屋宣传标签）" },
-            { Language.TraditionalChinese, "移動到指定社區（查看房屋宣傳標籤）" }
+            { Language.Chn, "移动到指定小区（查看房屋宣传标签" },
+            { Language.TraditionalChinese, "移動到指定社區（查看房屋宣傳標籤" }
         };
 
         //Addon9184

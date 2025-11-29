@@ -554,7 +554,7 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search 44 0F B6 45 ? 48 8B C8 0F B7 55 ? Add 4 Read8")]
         internal static int WardNumber;
 
-        [Offset("Search 49 8D 4C 24 ? 33 C0 Add 4 Read8")]
+        [Offset("Search 49 8D 44 24 ? 49 83 C7 ? Add 4 Read8")]
         internal static int PlotOffset;
 
     }
