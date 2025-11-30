@@ -16,19 +16,20 @@ namespace LlamaLibrary.Enums
         Materia = 9,
         Meteor = 10,
         Dynamis = 11,
+        Shadow = 12,
 
         //Values are filler for now
         [Description("陆行鸟")]
-        Chocobo = 108,
+        Chocobo = 101,
 
         [Description("猫小胖")]
-        FatCat = 101,
+        FatCat = 103,
 
         [Description("豆豆柴")]
-        Mameshiba = 103,
+        Mameshiba = 104,
 
         [Description("莫古力")]
-        Moogle = 104,
+        Moogle = 102,
     }
 
 }
