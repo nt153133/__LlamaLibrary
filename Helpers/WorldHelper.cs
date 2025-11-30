@@ -13,7 +13,7 @@ namespace LlamaLibrary.Helpers
 {
     public static class WorldHelper
     {
-        
+
 
         private static readonly IntPtr DcOffsetLocation;
 
@@ -89,6 +89,11 @@ namespace LlamaLibrary.Helpers
         public static bool CheckDC(World world)
         {
             if (Translator.Language == Language.Chn)
+            {
+                return true;
+            }
+
+            if (OffsetManager.ActiveRegion == ClientRegion.TraditionalChinese)
             {
                 return true;
             }
