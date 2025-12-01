@@ -22,14 +22,13 @@ using LlamaLibrary.Memory.PatternFinders;
 
 namespace LlamaLibrary.Memory.Attributes;
 
-
 [Flags]
 public enum OffsetFlags
 {
-    Global = 1<<0,
-    China = 1<<1,
-    Korea = 1<<2,
-    TraditionalChinese = 1<<3,
+    Global = 1 << 0,
+    China = 1 << 1,
+    Korea = 1 << 2,
+    TraditionalChinese = 1 << 3,
     ReservedRegion = 1 << 4,
     ReservedRegion2 = 1 << 5,
 
@@ -39,21 +38,13 @@ public enum OffsetFlags
     CurrentExpansion = 1 << 6,
     PreviousExpansion = 1 << 7,
 
-
-
-
     AllServers = Global | China | Korea | TraditionalChinese | ReservedRegion | ReservedRegion2,
     NonGlobalServers = China | Korea | TraditionalChinese | ReservedRegion | ReservedRegion2,
-
-
-
 }
-
-
 
 #region attributes
 
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property,AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
 public class OffsetAttribute : Attribute
 {
     public readonly string Pattern;
@@ -67,18 +58,15 @@ public class OffsetAttribute : Attribute
             pattern = "Search " + pattern;
         }
 
-
         Pattern = pattern;
         Flags = flags;
         ExpectedValue = expectedValue;
     }
 
     [Obsolete("Remove boolean property")]
-    public OffsetAttribute(string p,bool a,int exv) : this(p, exv)
+    public OffsetAttribute(string p, bool a, int exv) : this(p, exv)
     {
     }
-
-
 }
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
@@ -109,16 +97,102 @@ public class OffsetCNAttribute : OffsetAttribute
     }
 }
 
+/// <summary>
+/// Attribute for offsets that are only valid on traditional china servers
+/// </summary>
+public class OffsetTCAttribute : OffsetAttribute
+{
+    public OffsetTCAttribute(string pattern, bool ignoreCache = false, int expectedValue = 0) : base(pattern, expectedValue, OffsetFlags.TraditionalChinese)
+    {
+    }
+}
+
 #endregion
 
 public static class OffsetAttributeExtensions
 {
     public static readonly ConcurrentDictionary<string, OffsetAttribute[]> AttributeCache = new ConcurrentDictionary<string, OffsetAttribute[]>(StringComparer.Ordinal);
 
-    public static string GetPattern(this MemberInfo property, ForceClientMode forceClientMode = ForceClientMode.None)
+    public static string GetPattern(this MemberInfo property, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
-        //TODO: figure out the best string to return, or maybe just remove this logic?
-        return "";
+        var attribute = property.GetAttribute(forceClientMode);
+        return attribute?.Pattern ?? string.Empty;
+    }
+
+    public static OffsetAttribute? GetAttribute(this MemberInfo property, ClientRegion forceClientMode = ClientRegion.NotSpecified)
+    {
+        var attributes = forceClientMode != ClientRegion.NotSpecified ? property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count()) : property.OffsetAttributes(forceClientMode)?.Where(r => r.Flags.HasFlag(OffsetManager.ActiveRecord.RegionFlag)).OrderBy(r => r.Flags.Count());
+
+        if (attributes == null || !attributes.Any())
+        {
+            return null;
+        }
+
+        if (forceClientMode == ClientRegion.NotSpecified)
+        {
+            //ff14bot.Helpers.Logging.WriteDiagnostic("No forced client mode, returning first attribute for {0}", property.MemberName());
+            return attributes.First();
+        }
+
+        if (attributes.Any(i => i.Flags.HasFlag(forceClientMode.ConvertClientMode())))
+        {
+            //ff14bot.Helpers.Logging.WriteDiagnostic("There are {2} attributes for {0}, returning one for forced client mode {1}", property.MemberName(), forceClientMode,attributes.Count());
+            return attributes.First(i => i.Flags.HasFlag(forceClientMode.ConvertClientMode()));
+        }
+
+        return null;
+    }
+
+    public static OffsetAttribute? GetAttribute2(this MemberInfo property, ClientRegion forceClientMode = ClientRegion.NotSpecified)
+    {
+        var attributes = forceClientMode != ClientRegion.NotSpecified ? property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count()) : property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count());
+
+        if (attributes == null || !attributes.Any())
+        {
+            return null;
+        }
+
+        if (forceClientMode == ClientRegion.NotSpecified)
+        {
+            return attributes.First();
+        }
+
+        if (attributes.Any(i => i.Flags.HasFlag(forceClientMode.ConvertClientMode())))
+        {
+            return attributes.First(i => i.Flags.HasFlag(forceClientMode.ConvertClientMode()));
+        }
+
+        return null;
+    }
+
+    public static string GetRegionString(this OffsetFlags flags)
+    {
+        if (flags.HasFlag(OffsetFlags.Global) || flags == OffsetFlags.AllServers)
+        {
+            return "Global";
+        }
+
+        if (flags.HasFlag(OffsetFlags.NonGlobalServers))
+        {
+            return "NonGlobalServers";
+        }
+
+        if (flags.HasFlag(OffsetFlags.China))
+        {
+            return "China";
+        }
+
+        if (flags.HasFlag(OffsetFlags.Korea))
+        {
+            return "Korea";
+        }
+
+        if (flags.HasFlag(OffsetFlags.TraditionalChinese))
+        {
+            return "TraditionalChinese";
+        }
+
+        return "Unknown";
     }
 
     public static bool IgnoreCache(this MemberInfo property)
@@ -126,7 +200,7 @@ public static class OffsetAttributeExtensions
         return property.GetCustomAttributes<IgnoreCacheAttribute>().Any();
     }
 
-    public static OffsetAttribute[]? OffsetAttributes(this MemberInfo property, ForceClientMode forceClientMode)
+    public static OffsetAttribute[]? OffsetAttributes(this MemberInfo property, ClientRegion forceClientMode)
     {
         if (!AttributeCache.TryGetValue(property.MemberName(), out var attributes))
         {
@@ -180,22 +254,22 @@ public static class OffsetAttributeExtensions
     /// <param name="field"></param>
     /// <param name="forceClientMode"></param>
     /// <returns>IntPtr.Zero if no offset could be found, otherwise the value of the offset</returns>
-    public static IntPtr SearchOffset(this ISearcher finder, MemberInfo field, ForceClientMode forceClientMode = ForceClientMode.None)
+    public static IntPtr SearchOffset(this ISearcher finder, MemberInfo field, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
-
-        var patterns = field.OffsetAttributes(forceClientMode)?.Where(r=>r.Flags.HasFlag(OffsetManager.ActiveRecord.RegionFlag)).OrderBy(r=>r.Flags.Count());
+        var patterns = field.OffsetAttributes(forceClientMode)?.Where(r => r.Flags.HasFlag(OffsetManager.ActiveRecord.RegionFlag)).OrderBy(r => r.Flags.Count());
 
         if (patterns != null)
         {
             foreach (var pattern in patterns)
             {
-                var result =  finder.SearchOffset(pattern.Pattern);
+                var result = finder.SearchOffset(pattern.Pattern);
                 if (result > IntPtr.Zero)
                 {
                     return result;
                 }
             }
         }
+
         return IntPtr.Zero;
     }
 
@@ -313,7 +387,7 @@ public static class OffsetAttributeExtensions
         }
     }
 
-    public static IntPtr GetOffset(this MemberInfo field, ISearcher finder, ForceClientMode forceClientMode = ForceClientMode.None)
+    public static IntPtr GetOffset(this MemberInfo field, ISearcher finder, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
         if (!field.IgnoreCache() && OffsetManager.OffsetCache.TryGetValue(field.MemberName(), out var offset))
         {
@@ -352,12 +426,27 @@ public static class OffsetAttributeExtensions
             _                         => string.Empty
         };
     }
+
+    public static OffsetFlags ConvertClientMode(this ClientRegion clientRegion)
+    {
+        return clientRegion switch
+        {
+            ClientRegion.Global          => OffsetFlags.Global,
+            ClientRegion.China          => OffsetFlags.China,
+            ClientRegion.Korea          => OffsetFlags.Korea,
+            ClientRegion.TraditionalChinese => OffsetFlags.TraditionalChinese,
+            _                            => OffsetFlags.AllServers
+        };
+    }
 }
 
+/*
 public enum ForceClientMode
 {
     None,
     Global,
     CN,
-    Dawntrail
-}
+    Dawntrail,
+    TC,
+    KR
+}*/

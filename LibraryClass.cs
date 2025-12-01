@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -8,6 +10,8 @@ using ff14bot.AClasses;
 using LlamaLibrary.Events;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Memory;
+
+using Newtonsoft.Json;
 
 // ReSharper disable InconsistentNaming
 
@@ -65,17 +69,20 @@ public class LibraryClass : ILibrary
         };
 
 
+
         /*
         var server = new List<ProductPatterns>();
 
-        server.Add(new ProductPatterns() { ProductName = "LlamaLibrary", Patterns = OffsetManager.LLDict(), ClientRegion = ClientRegion.Global });
-        server.Add(new ProductPatterns() { ProductName = "LlamaLibraryCN", Patterns = OffsetManager.LLDictCN(), ClientRegion = ClientRegion.China });
+        //server.Add(new ProductPatterns() { ProductName = "LlamaLibrary", Patterns = OffsetManager.LLDict(ForceClientMode.Global) , ClientRegion = ClientRegion.Global});
+        //server.Add(new ProductPatterns() { ProductName = "LlamaLibraryCN", Patterns = OffsetManager.LLDict(ForceClientMode.CN), ClientRegion = ClientRegion.China });
+        server.Add(new ProductPatterns() { ProductName = "LlamaLibraryTC", Patterns = OffsetManager.LLDict(ClientRegion.TraditionalChinese), ClientRegion = ClientRegion.TraditionalChinese });
         foreach (var productPatterns in server)
         {
             var productFile = Path.Combine(productPatterns.ProductName + ".json");
             File.WriteAllText(productFile, JsonConvert.SerializeObject(productPatterns, Formatting.Indented));
         }
         */
+
 
         return true;
     }

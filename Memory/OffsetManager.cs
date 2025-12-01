@@ -58,7 +58,7 @@ public static class OffsetManager
 
     public static ConcurrentDictionary<string, long> OffsetCache = new(StringComparer.Ordinal);
 
-    private const long _version = 36;
+    private const long _version = 39;
 
     private const bool _debug = false;
 
@@ -88,7 +88,6 @@ public static class OffsetManager
 
     public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown);
 
-
     /// <summary>
     /// Active record for the current game region.
     /// </summary>
@@ -115,10 +114,10 @@ public static class OffsetManager
 
         var Records = new Dictionary<ClientRegion, GameRecord>()
         {
-            { ClientRegion.Global, new GameRecord(7.3f,OffsetFlags.Global) },
-            { ClientRegion.China, new GameRecord(7.3f,OffsetFlags.China)},
-            { ClientRegion.Korea, new GameRecord(7.3f,OffsetFlags.Korea)},
-            { ClientRegion.TraditionalChinese, new GameRecord(7.3f,OffsetFlags.TraditionalChinese)},
+            { ClientRegion.Global, new GameRecord(7.3f, OffsetFlags.Global) },
+            { ClientRegion.China, new GameRecord(7.3f, OffsetFlags.China) },
+            { ClientRegion.Korea, new GameRecord(7.3f, OffsetFlags.Korea) },
+            { ClientRegion.TraditionalChinese, new GameRecord(7.3f, OffsetFlags.TraditionalChinese) },
         };
 
         ActiveRegion = langToRegion[DataManager.CurrentLanguage];
@@ -128,15 +127,11 @@ public static class OffsetManager
         CurrentGameVersion = ActiveRecord.CurrentGameVersion;
     }
 
-
-    
-
     [Obsolete("Use ActiveRegion instead")]
     public static readonly bool IsChinese;
 
     [Obsolete("Use ActiveRecord instead")]
     public static readonly float CurrentGameVersion;
-    
 
     private static bool _isNewGameBuild;
     private static int GameVersion1;
@@ -284,10 +279,21 @@ public static class OffsetManager
 
     private static List<Type> GetTypes()
     {
-
         var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Namespace != null && t.IsClass && t.Namespace.Contains("LlamaLibrary.Memory", StringComparison.Ordinal));
         var q1 = types.Where(t => t.Name.Contains("Offsets", StringComparison.Ordinal)).ToList();
 
+        if (!q1.Contains(typeof(Offsets)))
+        {
+            q1.Add(typeof(Offsets));
+        }
+
+        return q1;
+    }
+
+    private static List<Type> GetTypes(Assembly assembly)
+    {
+        var types = assembly.GetTypes().Where(t => t.Namespace != null && t.IsClass);
+        var q1 = types.Where(t => t.Name.Contains("Offsets", StringComparison.Ordinal)).ToList();
 
         if (!q1.Contains(typeof(Offsets)))
         {
@@ -720,14 +726,14 @@ public static class OffsetManager
         }
     }
 
-    public static Dictionary<string, string> LLDict()
+    public static Dictionary<string, string> LLDict(ClientRegion mode = ClientRegion.Global)
     {
         var results = new Dictionary<string, string>(StringComparer.Ordinal);
 
         // var asm = Assembly.Load("LlamaLibrary.dll");
-        var q1 = (from t in typeof(OffsetAttribute).Assembly.GetTypes()
-                  where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary", StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal)))
-                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
+        var q1 = GetTypes(); // (from t in typeof(OffsetAttribute).Assembly.GetTypes()
+        //where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary", StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal)))
+        //select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
 
         if (!q1.Contains(typeof(Offsets)))
         {
@@ -736,7 +742,7 @@ public static class OffsetManager
 
         var types = MemberInfos(q1).ToList();
 
-        Logger.Information($"{types.Count}");
+        Logger.Information($"Count: {types.Count}");
 
         foreach (var field in types)
         {
@@ -744,11 +750,20 @@ public static class OffsetManager
             {
                 try
                 {
-                    if (field.DeclaringType.DeclaringType != null)
+                    if (field.DeclaringType.DeclaringType == null)
                     {
-                        Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.Global)}");
-                        results.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", field.GetPattern(ForceClientMode.Global));
+                        continue;
                     }
+
+                    var offset = field.GetAttribute(mode);
+
+                    if (offset == null)
+                    {
+                        Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name} has no OffsetAttribute!");
+                        continue;
+                    }
+
+                    results.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", offset.Pattern);
                 }
                 catch (Exception e)
                 {
@@ -759,10 +774,17 @@ public static class OffsetManager
             }
             else
             {
-                Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.Global)}");
+                var offset = field.GetAttribute(mode);
+                if (offset == null)
+                {
+                    Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27} has no OffsetAttribute!");
+                    continue;
+                }
+
+                //Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27},{offset.Pattern} for {offset.Flags.GetRegionString()}");
                 try
                 {
-                    results.Add($"{field.DeclaringType?.Name}_{field.Name}", field.GetPattern(ForceClientMode.Global));
+                    results.Add($"{field.DeclaringType?.Name}_{field.Name}", offset.Pattern);
                 }
                 catch (Exception e)
                 {
@@ -776,33 +798,64 @@ public static class OffsetManager
         return results;
     }
 
-    public static Dictionary<string, string> LLDictCN()
+    public static Dictionary<string, string> LLDict(Assembly assembly, ClientRegion mode = ClientRegion.Global)
     {
         var results = new Dictionary<string, string>(StringComparer.Ordinal);
-
-        // var asm = Assembly.Load("LlamaLibrary.dll");
-        var q1 = GetTypes();
-
-        if (!q1.Contains(typeof(Offsets)))
-        {
-            q1.Add(typeof(Offsets));
-        }
-
+        var q1 = GetTypes(assembly);
         var types = MemberInfos(q1).ToList();
 
-        Logger.Information($"{types.Count}");
+        Logger.Information($"Count: {types.Count}");
 
         foreach (var field in types)
         {
             if (field.DeclaringType != null && field.DeclaringType.IsNested)
             {
-                Logger.Information($"CN{field.DeclaringType.DeclaringType?.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.CN)}");
-                results.Add($"{field.DeclaringType.DeclaringType?.Name}_{field.Name}", field.GetPattern(ForceClientMode.CN));
+                try
+                {
+                    if (field.DeclaringType.DeclaringType == null)
+                    {
+                        continue;
+                    }
+
+                    var offset = field.GetAttribute(mode);
+
+                    if (offset == null)
+                    {
+                        Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name} has no OffsetAttribute!");
+                        continue;
+                    }
+
+                    results.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", offset.Pattern);
+                    //Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name} has Offset for {offset.Flags.GetRegionString()}");
+                    //Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name:,27},{offset.Pattern}");
+                }
+                catch (Exception e)
+                {
+                    Logger.Information($"\t{field.DeclaringType.Name}_{field.Name} Issue");
+                    Console.WriteLine(e);
+                    //throw;
+                }
             }
             else
             {
-                Logger.Information($"CN{field.DeclaringType?.Name}_{field.Name:,27},{field.GetPattern(ForceClientMode.CN)}");
-                results.Add($"{field.DeclaringType?.Name}_{field.Name}", field.GetPattern(ForceClientMode.CN));
+                var offset = field.GetAttribute(mode);
+                if (offset == null)
+                {
+                    Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27} has no OffsetAttribute!");
+                    continue;
+                }
+
+                //Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27},{offset.Pattern} for {offset.Flags.GetRegionString()}");
+                try
+                {
+                    results.Add($"{field.DeclaringType?.Name}_{field.Name}", offset.Pattern);
+                }
+                catch (Exception e)
+                {
+                    Logger.Information($"\t{field.DeclaringType?.Name}_{field.Name} DUPE");
+                    Console.WriteLine(e);
+                    //throw;
+                }
             }
         }
 

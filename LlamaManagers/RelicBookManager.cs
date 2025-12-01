@@ -9,7 +9,7 @@ using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
 using LlamaLibrary.Memory;
 
-namespace LlamaLibrary.Managers
+namespace LlamaLibrary.LlamaManagers
 
 {
     public class RelicBookManager
@@ -37,7 +37,8 @@ namespace LlamaLibrary.Managers
             { Language.Jap, "炎の書" },
             { Language.Fre, "Livre du feu" },
             { Language.Ger, "Tafel des Himmelsfeuers" },
-            { Language.Chn, "火天文书" }
+            { Language.Chn, "火天文书" },
+            { Language.TraditionalChinese, "火天文書" }
         };
 
         //CmnDefRelicWeapon025GetNote_00167_10
@@ -47,47 +48,55 @@ namespace LlamaLibrary.Managers
             { Language.Jap, "水の書" },
             { Language.Fre, "Livre de l'eau" },
             { Language.Ger, "Tafel des Himmelsfalles" },
-            { Language.Chn, "水天文书" }
+            { Language.Chn, "水天文书" },
+            { Language.TraditionalChinese, "水天文書" }
         };
 
         //CmnDefRelicWeapon025GetNote_00167_11
         private static readonly Dictionary<Language, string> CmnDefRelicWeapon025GetNote_00167_11 = new()
         {
             { Language.Eng, "The Books of Wind" },
-            { Language.Jap, "風の書" },
-            { Language.Fre, "Livre du vent" },
+            { Language.Jap, "風天の書" },
+            { Language.Fre, "Livre du vent céleste" },
             { Language.Ger, "Tafel des Himmelswindes" },
-            { Language.Chn, "风天文书" }
+            { Language.Chn, "风天文书" },
+            { Language.TraditionalChinese, "風天文書" }
         };
+
 
         //CmnDefRelicWeapon025GetNote_00167_12
         private static readonly Dictionary<Language, string> CmnDefRelicWeapon025GetNote_00167_12 = new()
         {
             { Language.Eng, "The Books of Earth" },
-            { Language.Jap, "土の書" },
-            { Language.Fre, "Livre de la terre" },
+            { Language.Jap, "土天の書" },
+            { Language.Fre, "Livre de la terre céleste" },
             { Language.Ger, "Tafel der Himmelserde" },
-            { Language.Chn, "土天文书" }
+            { Language.Chn, "土天文书(提升" },
+            { Language.TraditionalChinese, "土天文書" }
         };
+
 
         //CmnDefRelicWeapon025GetNote_00167_13
         private static readonly Dictionary<Language, string> CmnDefRelicWeapon025GetNote_00167_13 = new()
         {
             { Language.Eng, "The Book of Netherfire" },
             { Language.Jap, "炎獄の書" },
-            { Language.Fre, "Livre du feu" },
+            { Language.Fre, "Livre du feu infernal" },
             { Language.Ger, "Tafel des Jenseitsfeuers" },
-            { Language.Chn, "火狱文书" }
+            { Language.Chn, "火狱文书" },
+            { Language.TraditionalChinese, "火獄文書(提升" }
         };
+
 
         //CmnDefRelicWeapon025GetNote_00167_14
         private static readonly Dictionary<Language, string> CmnDefRelicWeapon025GetNote_00167_14 = new()
         {
             { Language.Eng, "The Book of Netherfall" },
             { Language.Jap, "水獄の書" },
-            { Language.Fre, "Livre de l'eau" },
+            { Language.Fre, "Livre de l'eau infernale" },
             { Language.Ger, "Tafel des Jenseitsfalles" },
-            { Language.Chn, "水狱文书" }
+            { Language.Chn, "水狱文书(提升" },
+            { Language.TraditionalChinese, "水獄文書(提升" }
         };
 
         //CmnDefRelicWeapon025GetNote_00167_7
@@ -97,8 +106,10 @@ namespace LlamaLibrary.Managers
             { Language.Jap, "剣の「黄道十二文書」を選ぶ" },
             { Language.Fre, "Livres sur Curtana" },
             { Language.Ger, "Tafel des Schwerts" },
-            { Language.Chn, "选择剑之“黄道文书”" }
+            { Language.Chn, "选择剑之“黄道文书”" },
+            { Language.TraditionalChinese, "選擇劍之「黃道文書」" }
         };
+
 
         //CmnDefRelicWeapon025GetNote_00167_8
         private static readonly Dictionary<Language, string> CmnDefRelicWeapon025GetNote_00167_8 = new()
@@ -107,7 +118,8 @@ namespace LlamaLibrary.Managers
             { Language.Jap, "盾の「黄道十二文書」を選ぶ" },
             { Language.Fre, "Livres sur le Bouclier saint" },
             { Language.Ger, "Tafel des Schilds" },
-            { Language.Chn, "选择盾之“黄道文书”" }
+            { Language.Chn, "选择盾之“黄道文书”" },
+            { Language.TraditionalChinese, "選擇盾之「黃道文書」" }
         };
 
         public static Dictionary<RelicBookType, byte> MaxCount = new()
@@ -200,7 +212,7 @@ namespace LlamaLibrary.Managers
             };
         }
 
-        
+
     }
 
     public enum RelicBookType : byte

@@ -7,7 +7,7 @@ using LlamaLibrary.Logging;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Memory;
 
-namespace LlamaLibrary.Managers;
+namespace LlamaLibrary.LlamaManagers;
 
 public static class RaceChocoboManager
 {
