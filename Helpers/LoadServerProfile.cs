@@ -63,6 +63,8 @@ public class LoadServerProfile
     private static int Origenics = 825;
     private static int Alexandria = 827;
     private static int Yuweyawata = 1008;
+    private static int Underkeep = 1027;
+    private static int MesoTerminal = 1028;
 
     private static int WorqorLarDor = 832;
     private static int Everkeep = 995;
@@ -129,7 +131,9 @@ public class LoadServerProfile
         Alexandria,
         WorqorLarDor,
         Everkeep,
-        Yuweyawata
+        Yuweyawata,
+        Underkeep,
+        MesoTerminal,
     };
 
     private static readonly string[] Greetings =
@@ -462,7 +466,7 @@ public class LoadServerProfile
                     {
                         if (!TrustDungeons.Contains(dungeonDutyId))
                         {
-#if RB_CN
+#if RB_CN || RB_TC
                                 string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 不是亲信副本。\\n请选择其他队列类型或副本";
 #else
                             string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Trust dungeon.\nPlease select a different Queue Type or dungeon.";
@@ -489,7 +493,7 @@ public class LoadServerProfile
                             await Coroutine.Wait(5000, () => AgentDawn.Instance.TrustId == trustId);
                             if (AgentDawn.Instance.TrustId != trustId)
                             {
-#if RB_CN
+#if RB_CN || RB_TC
                                 string message = $"无法将 {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 选择为亲信副本。";
 #else
                                 string message = $"Something went wrong when attempting to select {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as Trust dungeon.";
@@ -753,7 +757,7 @@ public class LoadServerProfile
 
         if (!Extras.IsDiscipleofWarClass() && !Extras.IsDiscipleofMagicClass())
         {
-#if RB_CN
+#if RB_CN || RB_TC
             string message = $"执行任务需要您使用战斗职业 (DoW) 或魔法职业 (DoM)";
 #else
             string message = "You must be on a DoW or DoM class to do a duty..";
@@ -769,7 +773,7 @@ public class LoadServerProfile
         {
             if (Core.Me.ClassLevel < DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel)
             {
-#if RB_CN
+#if RB_CN || RB_TC
                 string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 需要 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel} 级。您的等级为 {Core.Me.ClassLevel} 级。请切换到至少 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel} 级的职业.";
 #else
                 string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} requires level {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel}. Your level is {Core.Me.ClassLevel}. Please swap to a job that is at least level {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel}.";
@@ -787,7 +791,7 @@ public class LoadServerProfile
         {
             if (ScriptConditions.Helpers.CurrentItemLevel() < DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel)
             {
-#if RB_CN
+#if RB_CN || RB_TC
                 string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 需要最低物品等级 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}。您的装备等级为 {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}。请升级您的装备品级。";
 #else
                 string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} requires minimum Item Level of {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}. Your Item Level is {ScriptConditions.Helpers.CurrentItemLevel()}. Please upgrade your gear.";
@@ -801,7 +805,7 @@ public class LoadServerProfile
 
         if (QueueType == 2 && !DutySupportDuties.Contains((uint)dungeonDutyId))
         {
-#if RB_CN
+#if RB_CN || RB_TC
             string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 不是亲信支持副本";
 #else
             string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Duty Support dungeon.";
