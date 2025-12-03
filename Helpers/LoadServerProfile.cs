@@ -475,7 +475,7 @@ public class LoadServerProfile
                             Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
                             Log.Error($"{message}");
                             TreeRoot.Stop($"{message}");
-                            break;
+                            return;
                         }
 
                         Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Trust");
