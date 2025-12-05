@@ -631,7 +631,8 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "自分の個室に移動する" },
             { Language.Fre, "Aller dans votre chambre" },
             { Language.Ger, "Das eigene Zimmer betreten" },
-            { Language.Chn, "移动到自己的房间" }
+            { Language.Chn, "移动到自己的房间" },
+            { Language.TraditionalChinese, "移動到自己的房間" }
         };
 
         //CmnDefHousingPersonalRoomEntrance_00178_2
@@ -641,7 +642,8 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "個室番号を指定して移動（ハウスアピール確認）" },
             { Language.Fre, "Spécifier la chambre où aller (Voir les attraits)" },
             { Language.Ger, "Ein bestimmtes Zimmer betreten (Zweck der Unterkunft einsehen)" },
-            { Language.Chn, "移动到指定号码房间（查看房屋宣传标签）" }
+            { Language.Chn, "移动到指定号码房间（查看房屋宣传标签）" },
+            { Language.TraditionalChinese, "移動到指定號碼房間（查看房屋宣傳標籤）" }
         };
 
         //CmnDefHousingPersonalRoomEntrance_00178_11
@@ -651,7 +653,8 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "地下工房に移動する" },
             { Language.Fre, "Aller dans l'atelier de compagnie" },
             { Language.Ger, "schaftswerkstätte betreten" },
-            { Language.Chn, "移动到部队工房" }
+            { Language.Chn, "移动到部队工房" },
+            { Language.TraditionalChinese, "移動到公會工坊" }
         };
 
         public static string Hard => HardText[Language];
@@ -662,7 +665,8 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "Hard" },
             { Language.Fre, "Hard" },
             { Language.Ger, "Hard" },
-            { Language.Chn, "高难本" }
+            { Language.Chn, "高难本" },
+            { Language.TraditionalChinese , "高难本"}
         };
 
         public static string Extreme => ExtremeText[Language];
@@ -673,7 +677,8 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "Extreme" },
             { Language.Fre, "Extreme" },
             { Language.Ger, "Extreme" },
-            { Language.Chn, "极难本" }
+            { Language.Chn, "极难本" },
+            { Language.TraditionalChinese , "极难本"}
         };
 
         public static string Savage => SavageText[Language];
@@ -684,7 +689,8 @@ namespace LlamaLibrary.Helpers
             { Language.Jap, "Savage" },
             { Language.Fre, "Savage" },
             { Language.Ger, "Savage" },
-            { Language.Chn, "绝难本" }
+            { Language.Chn, "绝难本" },
+            { Language.TraditionalChinese , "绝难本"}
         };
     }
 }
