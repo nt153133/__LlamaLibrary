@@ -1,4 +1,6 @@
-﻿using ff14bot.Managers;
+﻿using ff14bot;
+using ff14bot.Enums;
+using ff14bot.Managers;
 
 namespace LlamaLibrary.Helpers;
 
@@ -34,6 +36,18 @@ public class ServerProfile
 
     public string Display
     {
-        get => $"[{Level}] {DataManager.InstanceContentResults[DutyId].CurrentLocaleName} {Quality}";
+
+        get
+        {
+            if (Core.EnglishOverride)
+            {
+                return $"[{Level}] {DataManager.InstanceContentResults[DutyId].EnglishName} {Quality}";
+            }
+            else
+            {
+                return $"[{Level}] {DataManager.InstanceContentResults[DutyId].CurrentLocaleName} {Quality}";
+            }
+        }
+
     }
 }
