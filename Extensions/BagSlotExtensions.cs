@@ -79,7 +79,7 @@ namespace LlamaLibrary.Extensions
                 Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
                                                      EventHandler,
                                                      BagSlotExtensionsOffsets.DesynthId,
-                                                     (uint)bagSlot.BagId,
+                                                     bagSlot.BagId,
                                                      bagSlot.Slot,
                                                      2);
             }
