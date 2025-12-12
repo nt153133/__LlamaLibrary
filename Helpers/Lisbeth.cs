@@ -48,6 +48,7 @@ namespace LlamaLibrary.Helpers
         private static Func<Task<bool>>? _exitCrafting;
         private static Func<HashSet<uint>>? _getAllOrderItems;
         private static Action<HashSet<uint>>? _setTrashExclusionItems;
+        private static Func<Task> _makeEquipment;
 
         private static Func<Task<bool>>? _isProductKeyValid;
 
@@ -122,13 +123,13 @@ namespace LlamaLibrary.Helpers
                             _setTrashExclusionItems = (Action<HashSet<uint>>)Delegate.CreateDelegate(typeof(Action<HashSet<uint>>), apiObject, "SetTrashExclusions");
 
                             // 7.01
-#if !RB_CN
-                            // Moving these to the bottom as CN doesn't have 6.51 yet
                             _addGrindHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddGrindCycleHook");
                             _addGatherHook = (Action<string, Func<Task>>)Delegate.CreateDelegate(typeof(Action<string, Func<Task>>), apiObject, "AddGatherCycleHook");
                             _removeGatherHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveGatherCycleHook");
                             _removeGrindHook = (Action<string>)Delegate.CreateDelegate(typeof(Action<string>), apiObject, "RemoveGrindCycleHook");
-#endif
+
+                            // 7.3
+                            _makeEquipment = (Func<Task>)Delegate.CreateDelegate(typeof(Func<Task>), apiObject, "OptimizeEquipment");
                         }
                         catch (Exception e)
                         {
@@ -384,6 +385,11 @@ namespace LlamaLibrary.Helpers
         public static void RemoveGatherHook(string name)
         {
             _removeGatherHook?.Invoke(name);
+        }
+
+        public static async Task MakeEquipment()
+        {
+            if (_makeEquipment != null) { await _makeEquipment(); }
         }
     }
 }
