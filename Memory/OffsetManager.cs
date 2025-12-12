@@ -117,7 +117,7 @@ public static class OffsetManager
             { ClientRegion.Global, new GameRecord(7.3f, OffsetFlags.Global) },
             { ClientRegion.China, new GameRecord(7.3f, OffsetFlags.China) },
             { ClientRegion.Korea, new GameRecord(7.3f, OffsetFlags.Korea) },
-            { ClientRegion.TraditionalChinese, new GameRecord(7.3f, OffsetFlags.TraditionalChinese) },
+            { ClientRegion.TraditionalChinese, new GameRecord(7.0f, OffsetFlags.TraditionalChinese) },
         };
 
         ActiveRegion = langToRegion[DataManager.CurrentLanguage];
