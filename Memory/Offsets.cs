@@ -55,8 +55,9 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8D 0D ?? ?? ?? ?? BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 80 8B ?? ?? ?? ?? ?? 45 33 C9 44 8B C7 89 BB ?? ?? ?? ?? Add 3 TraceRelative")]
         public static IntPtr Conditions;
 
+        //7.4
         //7.3
-        [Offset("Search 41 8D 51 ? E8 ? ? ? ? 84 C0 75 ? 45 33 C0 48 8D 0D ? ? ? ? 41 8D 50 ? E8 ? ? ? ? 33 D2 Add 3 Read8")]
+        [Offset("Search 41 8D 51 ? E8 ? ? ? ? 84 C0 75 ? 45 33 C0 48 8D 0D ? ? ? ? 41 8D 50 ? E8 ? ? ? ? E9 ? ? ? ? 80 3D ? ? ? ? ? Add 3 Read8")]
         [OffsetTC("Search 41 8D 51 ? E8 ? ? ? ? 84 C0 75 ? 45 33 C0 48 8D 0D ? ? ? ? 41 8D 50 ? E8 ? ? ? ? EB ? 48 8B 0D ? ? ? ? Add 3 Read8")]
         public static int DesynthLock;
 
@@ -1088,8 +1089,8 @@ namespace LlamaLibrary.Memory
         [Offset("Search E8 ? ? ? ? 48 8D 8B ? ? ? ? 48 8B 11 Add 1 TraceRelative")]
         public static IntPtr ItemDiscardFunc;
 
-        //7.3
-        [Offset("Search E8 ? ? ? ? 45 33 F6 44 89 73 ? 41 C6 47 ? ? E9 ? ? ? ? 44 0F B7 83 ? ? ? ? 48 8D 0D ? ? ? ? 8B 93 ? ? ? ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? 85 C0 0F 8E ? ? ? ? 48 8B CF E8 ? ? ? ? 44 0F B7 83 ? ? ? ? 48 8D 0D ? ? ? ? 8B 93 ? ? ? ? 44 8B C8 E8 ? ? ? ? 45 33 F6 44 89 73 ? 41 C6 47 ? ? E9 ? ? ? ? 44 0F B7 83 ? ? ? ? Add 1 TraceRelative")]
+        //7.4
+        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 0F BF D8")]
         [OffsetTC("Search E8 ? ? ? ? 45 33 ED 44 89 6B ? 41 C6 44 24 ? ? E9 ? ? ? ? 44 0F B7 83 ? ? ? ? 48 8D 0D ? ? ? ? 8B 93 ? ? ? ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? 85 C0 0F 8E ? ? ? ? 48 8B CF E8 ? ? ? ? 44 0F B7 83 ? ? ? ? 48 8D 0D ? ? ? ? 8B 93 ? ? ? ? 44 8B C8 E8 ? ? ? ? 45 33 ED 44 89 6B ? 41 C6 44 24 ? ? E9 ? ? ? ? 44 0F B7 83 ? ? ? ? Add 1 TraceRelative")]
         public static IntPtr ItemLowerQualityFunc;
 
@@ -1102,22 +1103,24 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8")]
         public static IntPtr ExtractMateriaFunc;
 
-        [Offset("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 83 7E ? ? Add 3 TraceRelative")]
+        //7.4
+        [Offset("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 48 C7 46 ? ? ? ? ? Add 3 TraceRelative")]
+        [OffsetTC("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 83 7E ? ? Add 3 TraceRelative")]
         public static IntPtr ExtractMateriaParam;
 
         //This client function does desynth, remove materia and reduce depending on the 2nd param
-        //7.3
-        [Offset("Search E8 ? ? ? ? 33 D2 48 8B CE E8 ? ? ? ? 48 8B BC 24 ? ? ? ? Add 1 TraceRelative")]
+        //7.4
+        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8 8B DA 48 8B F1 45 33 C0")]
         [OffsetTC("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 41 0F BF E9")]
         public static IntPtr RemoveMateriaFunc;
 
-        //7.3
-        [Offset("Search BA ? ? ? ? 48 8B CF E8 ? ? ? ? 33 D2 48 8B CE E8 ? ? ? ? 48 8B BC 24 ? ? ? ? Add 1 Read32")]
+        //7.4
+        [Offset("Search BA ? ? ? ? 49 8B CE E8 ? ? ? ? 33 D2 49 8B CF E8 ? ? ? ? 4C 8B B4 24 ? ? ? ? Add 1 Read32")]
         [OffsetTC("Search BA ? ? ? ? E8 ? ? ? ? 33 D2 48 8B CE E8 ? ? ? ? 48 8D 55 F0 Add 1 Read32")]
         public static int DesynthId;
 
-        //7.3
-        [Offset("Search BA ? ? ? ? 44 8B 07 48 8B C8 C7 44 24 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? Add 1 Read32")]
+        //7.4
+        [Offset("Search BA ? ? ? ? 44 8B 07 48 8B C8 C6 44 24 ? ? C7 44 24 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? Add 1 Read32")]
         [OffsetTC("Search BA ? ? ? ? E8 ? ? ? ? 48 8B 7C 24 ? 48 8B 5C 24 ? 84 C0 Add 1 Read32")]
         public static int ReduceId;
 
@@ -1131,8 +1134,8 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search 0F B6 44 18 ? 4D 8B 37 Add 4 Read8")]
         public static int BagSlotMateriaLevel;
 
-        //7.3
-        [Offset("Search BA ? ? ? ? 48 8B CF E8 ? ? ? ? EB ? 48 8B 01 Add 1 Read32")]
+        //7.4
+        [Offset("Search BA ? ? ? ? 48 8B CF E8 ? ? ? ? 83 7E ? ? Add 1 Read32")]
         [OffsetTC("Search BA ? ? ? ? E8 ? ? ? ? EB ? 48 8B 01 48 8B D9 Add 1 Read32")]
         public static int RemoveMateriaId;
 
@@ -1410,7 +1413,9 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 89 5C 24 ? 56 48 83 EC 20 0F B6 DA 40 32 F6")]
         internal static IntPtr CheckMobBoardUnlocked;
 
-        [Offset("Search 48 83 EC 28 48 8B 05 ? ? ? ? 44 8B C1 BA 2f 00 00 00 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 05 48 83 C4 28 ")]
+        //7.4
+        [Offset("Search E8 ? ? ? ? 8B 53 ? 41 B9 ? ? ? ? 33 C9 TraceCall")]
+        [OffsetTC("Search 48 83 EC 28 48 8B 05 ? ? ? ? 44 8B C1 BA 2f 00 00 00 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 05 48 83 C4 28 ")]
         internal static IntPtr Client__ExdData__getBNpcName;
 
         [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B6 40 ? 3B E8 TraceCall")]
@@ -1509,8 +1514,9 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8D 8B ? ? ? ? 48 89 7C 24 ? 4C 89 64 24 ? Add 3 Read32")]
         internal static int SaddleBagItemQtys;
 
-        //7.1
-        [Offset("Search 49 8D 9D ? ? ? ? BF ? ? ? ? 0F 1F 40 ? Add 3 Read32")]
+        //7.4
+        [Offset("Search 49 8D BD ? ? ? ? BD ? ? ? ? Add 3 Read32")]
+        [OffsetTC("Search 49 8D 9D ? ? ? ? BF ? ? ? ? 0F 1F 40 ? Add 3 Read32")]
         internal static int GlamourDresserItemIds;
 
         //7.3
@@ -1927,7 +1933,8 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8D 0D ? ? ? ? 0F B6 04 08 84 D0 75 ? B8 ? ? ? ? Add 3 TraceRelative")]
         internal static IntPtr MinionArray;
 
-        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 66 83 B8 ? ? ? ? ? 0F 84 ? ? ? ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 66 39 B0 ? ? ? ? 0F 84 ? ? ? ? TraceCall")]
+        [OffsetTC("Search E8 ? ? ? ? 48 85 C0 74 ? 66 83 B8 ? ? ? ? ? 0F 84 ? ? ? ? TraceCall")]
         internal static IntPtr ExdGetItem;
 
         [Offset("Search E8 ?? ?? ?? ?? 83 F8 01 75 03 TraceCall")]

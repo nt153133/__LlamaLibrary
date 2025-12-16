@@ -72,7 +72,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="RebornBuddy.ReferenceAssemblies" Version="1.0.783" />
+        <PackageReference Include="RebornBuddy.ReferenceAssemblies" Version="1.0.786.1" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
         <PackageReference Include="System.Resources.Extensions" Version="9.0.0-preview.4.24266.19" />
     </ItemGroup>
