@@ -1426,8 +1426,8 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search E8 ?? ?? ?? ?? 48 85 C0 74 ?? 0F B7 40 ?? 66 85 C0 74 ?? 40 FE CF TraceCall")]
         internal static IntPtr Client__ExdData__getMobHuntOrderType;
 
-        //7.3
-        [Offset("Search E8 ? ? ? ? 48 89 45 ? 48 8B D8 48 85 C0 0F 84 ? ? ? ? 48 8D 4D ? TraceCall")]
+        //7.4
+        [Offset("Search E8 ? ? ? ? 4C 8B E0 48 85 C0 0F 84 ? ? ? ? BA ? ? ? ? TraceCall")]
         [OffsetTC("Search E8 ? ? ? ? 4C 8B E8 48 85 C0 0F 84 ? ? ? ? 48 8D 4D ? TraceCall")]
         internal static IntPtr Client__ExdData__getMobHuntTarget;
 
