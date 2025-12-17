@@ -211,7 +211,7 @@ namespace LlamaLibrary.Extensions
                 {
                     Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ExtractMateriaFunc,
                                                          BagSlotExtensionsOffsets.ExtractMateriaParam,
-                                                         (uint)bagSlot.BagId,
+                                                         bagSlot.BagId,
                                                          bagSlot.Slot);
                 }
             }
@@ -219,21 +219,18 @@ namespace LlamaLibrary.Extensions
 
         public static void AffixMateria(this BagSlot Equipment, BagSlot Materia, bool BulkMeld)
         {
-            //var offset = Core.Memory.Read<int>(Core.Me.Pointer + BagSlotExtensionsOffsets.PlayerMeldOffset);
-
+            var offset = Core.Memory.Read<int>(Core.Me.Pointer + BagSlotExtensionsOffsets.PlayerMeldOffset);
             lock (Core.Memory.Executor.AssemblyLock)
             {
                 using (Core.Memory.TemporaryCacheState(false))
                 {
                     Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.MeldItem,
-                                                           IntPtr.Zero,//Really should be the MateriaRequestManager, but it isn't used in the function
                                                            (int)Equipment.BagId,
                                                            (short)Equipment.Slot,
                                                            (int)Materia.BagId,
-                                                           (short)Materia.Slot
-                                                           );
-                                                           //offset,
-                                                           //BulkMeld ? 1 : 0);
+                                                           (short)Materia.Slot,
+                                                           offset,
+                                                           BulkMeld ? 1 : 0);
                 }
             }
         }
@@ -332,7 +329,6 @@ namespace LlamaLibrary.Extensions
                                                                   bagSlot.Slot,
                                                                   (uint)bagSlot.BagId);
                 }
-
             }
 
             if (result != 0)
@@ -498,9 +494,9 @@ namespace LlamaLibrary.Extensions
         {
             using var bagid = Core.Memory.CreateAllocatedMemory(8);
             using var bagslot = Core.Memory.CreateAllocatedMemory(4);
-            bagid.AllocateOfChunk("bagid",8);
-            bagid.Write("bagid",0x270F00000000+ (long)dye.BagId);
-            bagslot.AllocateOfChunk("bagslot",4);
+            bagid.AllocateOfChunk("bagid", 8);
+            bagid.Write("bagid", 0x270F00000000 + (long)dye.BagId);
+            bagslot.AllocateOfChunk("bagslot", 4);
             int test = -1 << 16;
             int test2 = test + dye.Slot;
 

@@ -1100,17 +1100,17 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 89 5C 24 ? 56 48 83 EC ? 80 3D ? ? ? ? ? 48 8B F2")]
         public static IntPtr MeldWindowFunc;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8")]
+        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8 8B DA 48 8B F1 E8 ? ? ? ?")]
         public static IntPtr ExtractMateriaFunc;
 
         //7.4
-        [Offset("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 48 C7 46 ? ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 83 7F 20 ? Add 3 TraceRelative")]
         [OffsetTC("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 83 7E ? ? Add 3 TraceRelative")]
         public static IntPtr ExtractMateriaParam;
 
         //This client function does desynth, remove materia and reduce depending on the 2nd param
         //7.4
-        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8 8B DA 48 8B F1 45 33 C0")]
+        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 8B F8")]
         [OffsetTC("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 41 0F BF E9")]
         public static IntPtr RemoveMateriaFunc;
 
@@ -1173,7 +1173,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8B 05 ? ? ? ? 48 85 C0 74 ? 83 B8 ? ? ? ? ? 75 ? E8 ? ? ? ? Add 3 TraceRelative")]
         public static IntPtr EventHandlerOff;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 8B CA 41 0F BF F0")]
+        [Offset("Search E8 ? ? ? ? 48 8B 74 24 ? B0 ? 48 8B 6C 24 ? 48 8B 5C 24 ? 48 83 C4 ? Add 1 TraceRelative")]
         internal static IntPtr MeldItem;
 
         [Offset("Search E8 ? ? ? ? 84 C0 74 ? C6 87 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? 41 56 TraceCall")]
@@ -1192,7 +1192,7 @@ namespace LlamaLibrary.Memory
         internal static IntPtr GetPostingPriceSlot;
 
 
-        [Offset("Search 8B 68 ? 48 8B 07 FF 50 ? 48 8B 17 Add 3 Read8")]
+        [Offset("Search 8B 68 ? 48 8B 07 FF 50 ? 48 8B 17 Add 2 Read8")]
         //[OffsetCN("Search 44 8B 42 ? 0F B7 D3 Add 3 Read8")]
         internal static int PlayerMeldOffset;
     }

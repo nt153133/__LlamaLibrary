@@ -15,7 +15,7 @@ namespace LlamaLibrary.RemoteAgents
     {
         public IntPtr RegisteredVtable => AgentMeldOffsets.VTable;
 
-        
+
 
         protected AgentMeld(IntPtr pointer) : base(pointer)
         {
@@ -58,7 +58,7 @@ public struct MeldItem
     public InventoryBagId BagId;
 
     [FieldOffset(0xC)]
-    public int BagSlot;
+    public ushort BagSlot;
 
     [FieldOffset(0x10)]
     public uint ItemId;
@@ -118,7 +118,7 @@ public struct MeldItem
         }
     }
 
-    public bool CanMeld => CanOvermeld ? Item?.MateriaSlots > MateriaCount : MateriaCount < 5;
+    public bool CanMeld => CanOvermeld ?  MateriaCount < 5 : Item?.MateriaSlots > MateriaCount;
 
     //ToString() method
     public override string ToString()
