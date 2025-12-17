@@ -1100,7 +1100,9 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 89 5C 24 ? 56 48 83 EC ? 80 3D ? ? ? ? ? 48 8B F2")]
         public static IntPtr MeldWindowFunc;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8 8B DA 48 8B F1 E8 ? ? ? ?")]
+        //7.4
+        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8 8B DA 48 8B F1 45 33 C0")]
+        [OffsetTC("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8")]
         public static IntPtr ExtractMateriaFunc;
 
         //7.4
