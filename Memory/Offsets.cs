@@ -866,7 +866,8 @@ namespace LlamaLibrary.Memory
     public static class AgentRecommendEquipOffsets
     {
 
-        [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8B C3 C7 43 ? ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8B C3 C7 43 ? ? ? ? ? 48 83 C4 ? Add 3 TraceRelative")]
+        [OffsetTC("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8B C3 C7 43 ? ? ? ? ? Add 3 TraceRelative")]
         internal static IntPtr VTable;
 
     }
