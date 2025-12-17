@@ -192,7 +192,7 @@ namespace LlamaLibrary.Extensions
                 Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
                                                      EventHandler,
                                                      BagSlotExtensionsOffsets.RemoveMateriaId,
-                                                     (uint)bagSlot.BagId,
+                                                     bagSlot.BagId,
                                                      bagSlot.Slot,
                                                      0);
             }
