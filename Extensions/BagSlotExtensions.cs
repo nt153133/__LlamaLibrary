@@ -219,7 +219,7 @@ namespace LlamaLibrary.Extensions
 
         public static void AffixMateria(this BagSlot Equipment, BagSlot Materia, bool BulkMeld)
         {
-            var offset = Core.Memory.Read<int>(Core.Me.Pointer + BagSlotExtensionsOffsets.PlayerMeldOffset);
+            //var offset = Core.Memory.Read<int>(Core.Me.Pointer + BagSlotExtensionsOffsets.PlayerMeldOffset);
 
             lock (Core.Memory.Executor.AssemblyLock)
             {
@@ -230,9 +230,10 @@ namespace LlamaLibrary.Extensions
                                                            (int)Equipment.BagId,
                                                            (short)Equipment.Slot,
                                                            (int)Materia.BagId,
-                                                           (short)Materia.Slot,
-                                                           offset,
-                                                           BulkMeld ? 1 : 0);
+                                                           (short)Materia.Slot
+                                                           );
+                                                           //offset,
+                                                           //BulkMeld ? 1 : 0);
                 }
             }
         }
@@ -331,7 +332,7 @@ namespace LlamaLibrary.Extensions
                                                                   bagSlot.Slot,
                                                                   (uint)bagSlot.BagId);
                 }
-                Core.Memory.ClearCallCache();
+
             }
 
             if (result != 0)
