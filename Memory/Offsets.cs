@@ -1196,7 +1196,7 @@ namespace LlamaLibrary.Memory
 
 
         [Offset("Search 8B 68 ? 48 8B 07 FF 50 ? 48 8B 17 Add 2 Read8")]
-        //[OffsetCN("Search 44 8B 42 ? 0F B7 D3 Add 3 Read8")]
+        [OffsetTC("Search 44 8B 42 ? 0F B7 D3 Add 3 Read8")]
         internal static int PlayerMeldOffset;
     }
 
