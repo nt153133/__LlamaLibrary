@@ -5,6 +5,7 @@ using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory;
+
 namespace LlamaLibrary.Structs;
 
 public enum LootMode : uint
@@ -36,6 +37,7 @@ public enum RollState : uint
 [StructLayout(LayoutKind.Explicit, Size = 0x40)]
 #else
 [StructLayout(LayoutKind.Explicit, Size = 0x44)]
+#endif
 public struct LootItem
 {
     [FieldOffset(0x0)]
@@ -131,4 +133,3 @@ public struct LootItem
         return Item?.EnglishName;
     }
 }
-#endif
