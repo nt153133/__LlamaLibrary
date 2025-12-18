@@ -172,6 +172,12 @@ namespace LlamaLibrary.Memory
 
         [Offset("Search 66 83 FA ? 75 ? 53 48 83 EC ? 48 8B D9 BA ? ? ? ? 48 8D 4C 24 ?")]
         internal static IntPtr DialogueOkay;
+
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 89 44 24 60 Add 3 TraceRelative")]
+        internal static IntPtr LootsAddr;
+
+        [Offset("Search E8 ? ? ? ? EB 4A 48 8D 4F 10 Add 1 TraceRelative")]
+        internal static IntPtr LootFunc;
     }
 
     public static partial class Offsets
