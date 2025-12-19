@@ -736,9 +736,42 @@ public class LoadServerProfile
         }
         else
         {
-            Log.Error($"Something went wrong, we're in a duty but the Zone Id isn't the expected ID.");
-            Log.Error($"Expected Zone: {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} {dungeonZoneId}. Current Zone: {CurrentLocalizedZoneNameById(WorldManager.ZoneId)} {WorldManager.ZoneId}");
-            TreeRoot.Stop("Something went wrong, we're in a duty but the Zone Id isn't the expected ID");
+            Log.Information("Attempting to find profile by current Zone ID");
+
+            var profileList = await GetProfileList("https://sts.llamamagic.net/profiles.json");
+            if (profileList == null)
+            {
+                Log.Error("Profile List is null");
+                return;
+            }
+
+            if (profileList.Count == 0)
+            {
+                Log.Error("Profile List is empty");
+                return;
+            }
+
+            List<ServerProfile> shortList = profileList.Where(i => i != null && i.ZoneId == WorldManager.ZoneId).ToList()!;
+
+            if (shortList.Count == 0)
+            {
+                Log.Error($"Profile with ID {WorldManager.ZoneId} not found on server.");
+                Log.Error($"Something went wrong, we're in a duty but the Zone Id isn't the expected ID.");
+                Log.Error($"Expected Zone: {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} {dungeonZoneId}. Current Zone: {CurrentLocalizedZoneNameById(WorldManager.ZoneId)} {WorldManager.ZoneId}");
+                TreeRoot.Stop($"Profile with ID {WorldManager.ZoneId} not found on server.");
+                return;
+            }
+
+            var profile = shortList.First();
+            var zoneIdUrl = profile.URL;
+            var profileType = profile.Type;
+
+            if (profileType == ProfileType.Duty)
+            {
+                {
+                    NeoProfileManager.Load(zoneIdUrl, false);
+                }
+            }
         }
     }
 
