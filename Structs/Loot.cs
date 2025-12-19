@@ -5,6 +5,7 @@ using ff14bot;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Structs;
 
@@ -115,10 +116,7 @@ public struct LootItem
         var thisLootItem = this;
         var findIndex = Array.FindIndex(LootHelper.RawLootItems, item => item.Equals(thisLootItem));
 
-        using (Core.Memory.TemporaryCacheState(false))
-        {
-            result = Core.Memory.CallInjected64<byte>(Offsets.LootFunc, Offsets.LootsAddr, (ulong)option, findIndex) == 1;
-        }
+        result = Core.Memory.CallInjectedWraper<byte>(Offsets.LootFunc, Offsets.LootsAddr, (ulong)option, findIndex) == 1;
 
         if (!result)
         {
