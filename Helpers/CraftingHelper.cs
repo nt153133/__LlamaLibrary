@@ -26,12 +26,9 @@ namespace LlamaLibrary.Helpers
 
         public static bool HasCraftedRecipe(ushort recipeId)
         {
-            using (Core.Memory.TemporaryCacheState(false))
-            {
-                return Core.Memory.CallInjectedWraper<bool>(
-                    CraftingHelperOffsets.HasCraftedRecipe,
-                    recipeId);
-            }
+            return Core.Memory.CallInjectedWraper<bool>(
+                CraftingHelperOffsets.HasCraftedRecipe,
+                recipeId);
         }
 
         public static ushort[] CraftedRecipes()

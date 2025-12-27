@@ -86,12 +86,8 @@ namespace LlamaLibrary.Extensions
         {
             var gcRank = player.GCRank();
 
-            IntPtr rankRow;
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                rankRow = Core.Memory.CallInjectedWraper<IntPtr>(LocalPlayerExtensionsOffsets.GCGetMaxSealsByRank,
-                                                             gcRank);
-            }
+            IntPtr rankRow = Core.Memory.CallInjectedWraper<IntPtr>(LocalPlayerExtensionsOffsets.GCGetMaxSealsByRank,
+                                                                    gcRank);
 
             return Core.Memory.Read<int>(rankRow);
         }

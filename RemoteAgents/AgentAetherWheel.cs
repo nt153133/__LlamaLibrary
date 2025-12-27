@@ -26,10 +26,7 @@ namespace LlamaLibrary.RemoteAgents
                 count = AetherialWheel.Instance.MaxSlots;
             }
 
-            using (Core.Memory.TemporaryCacheState(enabledTemporarily: false))
-            {
-                return Core.Memory.ReadArray<AetherWheelSlot>(Pointer + AgentAetherWheelOffsets.ArrayOffset, count);
-            }
+            return Core.Memory.ReadArray<AetherWheelSlot>(Pointer + AgentAetherWheelOffsets.ArrayOffset, count);
         }
     }
 }

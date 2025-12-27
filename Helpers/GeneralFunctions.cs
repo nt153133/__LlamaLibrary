@@ -744,14 +744,11 @@ namespace LlamaLibrary.Helpers
                     var repairAgent = AgentModule.FindAgentIdByVtable(repairVTable);
                     var AgentId = repairAgent;
                     Log.Information($"OPEN: AgentId {AgentId} Offset {repairVendor.ToInt64():X} Func {repairWindow.ToInt64():X}");
-                    lock (Core.Memory.Executor.AssemblyLock)
-                    {
-                        Core.Memory.CallInjectedWraper<IntPtr>(repairWindow,
-                                                           ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
-                                                           0,
-                                                           0,
-                                                           repairVendor);
-                    }
+                    Core.Memory.CallInjectedWraper<IntPtr>(repairWindow,
+                                                       ff14bot.Managers.AgentModule.GetAgentInterfaceById(AgentId).Pointer,
+                                                       0,
+                                                       0,
+                                                       repairVendor);
 
                     await Coroutine.Wait(1500, () => Repair.IsOpen);
                 }
@@ -1432,6 +1429,7 @@ namespace LlamaLibrary.Helpers
                 { 38763, new CraftingRelicTurnin(38763, 7, 1, 540, 38779) },
                 { 38790, new CraftingRelicTurnin(38790, 8, 1, 570, 38801) },
                 { 38788, new CraftingRelicTurnin(38788, 9, 1, 570, 38804) },
+
                 { 38799, new CraftingRelicTurnin(38799, 10, 1, 425, 38807) },
 
                 { 38792, new CraftingRelicTurnin(38792, 10, 2, 47, 38802) },

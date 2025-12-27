@@ -35,14 +35,10 @@ namespace LlamaLibrary.Helpers
                 return CurrencyCache[index];
             }
 
-            uint result;
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                result = Core.Memory.CallInjectedWraper<uint>(
+            uint result = Core.Memory.CallInjectedWraper<uint>(
                                                               CurrencyHelperOffsets.GetSpecialCurrencyItemId,
                                                               SpecialCurrencyStorage,
                                                               (byte)index);
-            }
 
             CurrencyCache.Add(index, result);
 
@@ -56,13 +52,9 @@ namespace LlamaLibrary.Helpers
                 return TomeCache[index];
             }
 
-            uint result;
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                result = Core.Memory.CallInjectedWraper<uint>(
+            uint result = Core.Memory.CallInjectedWraper<uint>(
                                                               CurrencyHelperOffsets.GetTomeItemId,
                                                               (int)index);
-            }
 
             TomeCache.Add(index, result);
 

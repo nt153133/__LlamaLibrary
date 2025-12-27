@@ -18,14 +18,11 @@ namespace LlamaLibrary.RemoteAgents
 
         public void HandIn(BagSlot slot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                Core.Memory.CallInjectedWraper<uint>(
-                                                     Offsets.HandInFunc,
-                                                     Pointer + AgentHandInOffsets.HandinParmOffset,
-                                                     slot.Slot,
-                                                     (int)slot.BagId);
-            }
+            Core.Memory.CallInjectedWraper<uint>(
+                                                 Offsets.HandInFunc,
+                                                 Pointer + AgentHandInOffsets.HandinParmOffset,
+                                                 slot.Slot,
+                                                 (int)slot.BagId);
         }
     }
 }

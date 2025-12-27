@@ -36,10 +36,7 @@ namespace LlamaLibrary.RemoteAgents
 
         public byte LoadBagCall(InventoryBagId bagId)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                return Core.Memory.CallInjectedWraper<byte>(AgentFreeCompanyChestOffsets.BagRequestCall, Offsets.g_InventoryManager, bagId);
-            }
+            return Core.Memory.CallInjectedWraper<byte>(AgentFreeCompanyChestOffsets.BagRequestCall, Offsets.g_InventoryManager, bagId);
         }
 
         public async Task LoadBag(InventoryBagId bagId)
