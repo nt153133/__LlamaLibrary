@@ -131,25 +131,25 @@ namespace LlamaLibrary.Extensions
 
         public static bool IsTank(this ClassJobType currentJob)
         {
-            return currentJob == ClassJobType.Gladiator || currentJob == ClassJobType.Marauder || currentJob == ClassJobType.Paladin || currentJob == ClassJobType.Warrior || currentJob == ClassJobType.DarkKnight || currentJob == ClassJobType.Gunbreaker;
+            return currentJob is ClassJobType.Gladiator or ClassJobType.Marauder or ClassJobType.Paladin or ClassJobType.Warrior or ClassJobType.DarkKnight or ClassJobType.Gunbreaker;
         }
 
         //IsHealer
         public static bool IsHealer(this ClassJobType currentJob)
         {
-            return currentJob == ClassJobType.Conjurer || currentJob == ClassJobType.WhiteMage || currentJob == ClassJobType.Scholar || currentJob == ClassJobType.Astrologian;
+            return currentJob is ClassJobType.Conjurer or ClassJobType.WhiteMage or ClassJobType.Scholar or ClassJobType.Astrologian;
         }
 
         //IsMeleeDps
         public static bool IsMeleeDps(this ClassJobType currentJob)
         {
-            return currentJob == ClassJobType.Pugilist || currentJob == ClassJobType.Lancer || currentJob == ClassJobType.Rogue || currentJob == ClassJobType.Samurai || currentJob == ClassJobType.Monk || currentJob == ClassJobType.Dragoon || currentJob == ClassJobType.Ninja;
+            return currentJob is ClassJobType.Pugilist or ClassJobType.Lancer or ClassJobType.Rogue or ClassJobType.Samurai or ClassJobType.Monk or ClassJobType.Dragoon or ClassJobType.Ninja or ClassJobType.Viper;
         }
 
         //IsRangedDps
         public static bool IsRangedDps(this ClassJobType currentJob)
         {
-            return currentJob == ClassJobType.Archer || currentJob == ClassJobType.Machinist || currentJob == ClassJobType.Dancer || currentJob == ClassJobType.Bard;
+            return currentJob is ClassJobType.Archer or ClassJobType.Machinist or ClassJobType.Dancer or ClassJobType.Bard;
         }
 
         public static GearSet[] SortedGearSets(this LocalPlayer player)
