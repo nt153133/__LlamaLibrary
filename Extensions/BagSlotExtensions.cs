@@ -45,17 +45,11 @@ namespace LlamaLibrary.Extensions
         {
             if (bagSlot.Count > amount)
             {
-                lock (Core.Memory.Executor.AssemblyLock)
-                {
-                    using (Core.Memory.TemporaryCacheState(false))
-                    {
-                        return Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ItemSplitFunc,
-                                                                    Offsets.g_InventoryManager,
-                                                                    (uint)bagSlot.BagId,
-                                                                    bagSlot.Slot,
-                                                                    amount) == 0;
-                    }
-                }
+                return Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ItemSplitFunc,
+                                                            Offsets.g_InventoryManager,
+                                                            (uint)bagSlot.BagId,
+                                                            bagSlot.Slot,
+                                                            amount) == 0;
             }
 
             return false;
@@ -63,42 +57,30 @@ namespace LlamaLibrary.Extensions
 
         public static void Discard(this BagSlot bagSlot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ItemDiscardFunc,
-                                                     Offsets.g_InventoryManager,
-                                                     (uint)bagSlot.BagId,
-                                                     bagSlot.Slot);
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ItemDiscardFunc,
+                                                 Offsets.g_InventoryManager,
+                                                 (uint)bagSlot.BagId,
+                                                 bagSlot.Slot);
         }
 
         public static void Desynth(this BagSlot bagSlot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
-                                                     EventHandler,
-                                                     BagSlotExtensionsOffsets.DesynthId,
-                                                     bagSlot.BagId,
-                                                     bagSlot.Slot,
-                                                     2);
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
+                                                 EventHandler,
+                                                 BagSlotExtensionsOffsets.DesynthId,
+                                                 bagSlot.BagId,
+                                                 bagSlot.Slot,
+                                                 2);
         }
 
         public static bool LowerQuality(this BagSlot bagSlot)
         {
             if (bagSlot.IsHighQuality || bagSlot.IsCollectable)
             {
-                lock (Core.Memory.Executor.AssemblyLock)
-                {
-                    using (Core.Memory.TemporaryCacheState(false))
-                    {
-                        Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ItemLowerQualityFunc,
-                                                             Offsets.g_InventoryManager,
-                                                             (uint)bagSlot.BagId,
-                                                             bagSlot.Slot);
-                    }
-                }
+                Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ItemLowerQualityFunc,
+                                                     Offsets.g_InventoryManager,
+                                                     (uint)bagSlot.BagId,
+                                                     bagSlot.Slot);
 
                 return !bagSlot.IsHighQuality;
             }
@@ -108,15 +90,12 @@ namespace LlamaLibrary.Extensions
 
         public static void Reduce(this BagSlot bagSlot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
-                                                     EventHandler,
-                                                     BagSlotExtensionsOffsets.ReduceId,
-                                                     bagSlot.BagId,
-                                                     bagSlot.Slot,
-                                                     0);
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
+                                                 EventHandler,
+                                                 BagSlotExtensionsOffsets.ReduceId,
+                                                 bagSlot.BagId,
+                                                 bagSlot.Slot,
+                                                 0);
         }
 
         public static void RetainerRetrieveQuantity(this BagSlot bagSlot, int amount)
@@ -126,76 +105,49 @@ namespace LlamaLibrary.Extensions
                 amount = (int)bagSlot.Count;
             }
 
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RetainerRetrieveQuantity,
-                                                         Offsets.g_InventoryManager,
-                                                         (uint)bagSlot.BagId,
-                                                         bagSlot.Slot,
-                                                         amount);
-                }
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RetainerRetrieveQuantity,
+                                                 Offsets.g_InventoryManager,
+                                                 (uint)bagSlot.BagId,
+                                                 bagSlot.Slot,
+                                                 amount);
         }
 
         public static void RetainerEntrustQuantity(this BagSlot bagSlot, int amount)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.EntrustRetainerFunc,
-                                                         AgentRetainerInventory.Instance.Pointer,
-                                                         0,
-                                                         (uint)bagSlot.BagId,
-                                                         bagSlot.Slot,
-                                                         amount);
-                }
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.EntrustRetainerFunc,
+                                                 AgentRetainerInventory.Instance.Pointer,
+                                                 0,
+                                                 (uint)bagSlot.BagId,
+                                                 bagSlot.Slot,
+                                                 amount);
         }
 
         public static void RetainerSellItem(this BagSlot bagSlot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.SellFunc,
-                                                         AgentRetainerInventory.Instance.RetainerShopPointer,
-                                                         bagSlot.Slot,
-                                                         (uint)bagSlot.BagId,
-                                                         0);
-                }
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.SellFunc,
+                                                 AgentRetainerInventory.Instance.RetainerShopPointer,
+                                                 bagSlot.Slot,
+                                                 (uint)bagSlot.BagId,
+                                                 0);
         }
 
         public static void NpcSellItem(this BagSlot bagSlot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.SellFunc,
-                                                         Shop.ActiveShopPtr,
-                                                         bagSlot.Slot,
-                                                         (uint)bagSlot.BagId,
-                                                         0);
-                }
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.SellFunc,
+                                                 Shop.ActiveShopPtr,
+                                                 bagSlot.Slot,
+                                                 (uint)bagSlot.BagId,
+                                                 0);
         }
 
         public static void RemoveMateria(this BagSlot bagSlot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
-                                                     EventHandler,
-                                                     BagSlotExtensionsOffsets.RemoveMateriaId,
-                                                     bagSlot.BagId,
-                                                     bagSlot.Slot,
-                                                     0);
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
+                                                 EventHandler,
+                                                 BagSlotExtensionsOffsets.RemoveMateriaId,
+                                                 bagSlot.BagId,
+                                                 bagSlot.Slot,
+                                                 0);
         }
 
         public static void ExtractMateria(this BagSlot bagSlot)
@@ -205,60 +157,36 @@ namespace LlamaLibrary.Extensions
                 return;
             }
 
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ExtractMateriaFunc,
-                                                         BagSlotExtensionsOffsets.ExtractMateriaParam,
-                                                         bagSlot.BagId,
-                                                         bagSlot.Slot);
-                }
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ExtractMateriaFunc,
+                                                 BagSlotExtensionsOffsets.ExtractMateriaParam,
+                                                 bagSlot.BagId,
+                                                 bagSlot.Slot);
         }
 
         public static void AffixMateria(this BagSlot Equipment, BagSlot Materia, bool BulkMeld)
         {
             var offset = Core.Memory.Read<int>(Core.Me.Pointer + BagSlotExtensionsOffsets.PlayerMeldOffset);
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.MeldItem,
-                                                           (int)Equipment.BagId,
-                                                           (short)Equipment.Slot,
-                                                           (int)Materia.BagId,
-                                                           (short)Materia.Slot,
-                                                           offset,
-                                                           BulkMeld ? 1 : 0);
-                }
-            }
+            Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.MeldItem,
+                                                   (int)Equipment.BagId,
+                                                   (short)Equipment.Slot,
+                                                   (int)Materia.BagId,
+                                                   (short)Materia.Slot,
+                                                   offset,
+                                                   BulkMeld ? 1 : 0);
         }
 
         public static void OpenMeldInterface(this BagSlot bagSlot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.MeldWindowFunc,
-                                                         AgentMeld.Instance.Pointer,
-                                                         bagSlot.Pointer);
-                }
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.MeldWindowFunc,
+                                                 AgentMeld.Instance.Pointer,
+                                                 bagSlot.Pointer);
         }
 
         public static uint PostingPrice(this BagSlot slot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    return Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.GetPostingPriceSlot,
-                                                                Offsets.g_InventoryManager,
-                                                                slot.Slot);
-                }
-            }
+            return Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.GetPostingPriceSlot,
+                                                        Offsets.g_InventoryManager,
+                                                        slot.Slot);
         }
 
         public static bool HasMateria(this BagSlot bagSlot)
@@ -320,26 +248,17 @@ namespace LlamaLibrary.Extensions
         public static void TradeItem(this BagSlot bagSlot)
         {
             uint result;
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    result = Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.TradeBagSlot,
-                                                                  Offsets.g_InventoryManager,
-                                                                  bagSlot.Slot,
-                                                                  (uint)bagSlot.BagId);
-                }
-            }
+            result = Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.TradeBagSlot,
+                                                          Offsets.g_InventoryManager,
+                                                          bagSlot.Slot,
+                                                          (uint)bagSlot.BagId);
 
             if (result != 0)
             {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.TradeBagSlot,
-                                                         Offsets.g_InventoryManager,
-                                                         bagSlot.Slot,
-                                                         (uint)bagSlot.BagId);
-                }
+                Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.TradeBagSlot,
+                                                     Offsets.g_InventoryManager,
+                                                     bagSlot.Slot,
+                                                     (uint)bagSlot.BagId);
             }
         }
 
@@ -370,74 +289,47 @@ namespace LlamaLibrary.Extensions
 
         internal static byte BagSlotUseItemCall(IntPtr InventoryManager, uint TrueItemId, uint inventoryContainer, int inventorySlot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    return Core.Memory.CallInjectedWraper<byte>(BagSlotExtensionsOffsets.BagSlotUseItem,
-                                                                InventoryManager,
-                                                                TrueItemId,
-                                                                inventoryContainer,
-                                                                inventorySlot);
-                }
-            }
+            return Core.Memory.CallInjectedWraper<byte>(BagSlotExtensionsOffsets.BagSlotUseItem,
+                                                        InventoryManager,
+                                                        TrueItemId,
+                                                        inventoryContainer,
+                                                        inventorySlot);
         }
 
         internal static IntPtr RemoveFromSaddleCall(IntPtr InventoryManager, uint inventoryContainer, ushort inventorySlot, uint count)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.RemoveFromSaddle,
-                                                                  InventoryManager,
-                                                                  inventoryContainer,
-                                                                  inventorySlot,
-                                                                  count);
-                }
-            }
+            return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.RemoveFromSaddle,
+                                                          InventoryManager,
+                                                          inventoryContainer,
+                                                          inventorySlot,
+                                                          count);
         }
 
         internal static IntPtr AddToSaddleCall(IntPtr InventoryManager, uint inventoryContainer, ushort inventorySlot, uint count)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.AddToSaddle,
-                                                                  InventoryManager,
-                                                                  inventoryContainer,
-                                                                  inventorySlot,
-                                                                  count);
-                }
-            }
+            return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.AddToSaddle,
+                                                          InventoryManager,
+                                                          inventoryContainer,
+                                                          inventorySlot,
+                                                          count);
         }
 
         internal static IntPtr PlaceAetherWheel(uint inventoryContainer, ushort inventorySlot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.PlaceAetherWheel,
-                                                                  AgentBagSlot.Instance.PointerForAether,
-                                                                  (int)inventorySlot,
-                                                                  inventoryContainer);
-                }
-            }
+            return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.PlaceAetherWheel,
+                                                          AgentBagSlot.Instance.PointerForAether,
+                                                          (int)inventorySlot,
+                                                          inventoryContainer);
         }
 
         internal static IntPtr FcChestCall(uint sourceContainer, uint sourceSlot, uint destContainer, uint destSlot)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.FCChestMove,
-                                                              AgentFreeCompanyChest.Instance.Pointer,
-                                                              sourceContainer,
-                                                              sourceSlot,
-                                                              destContainer,
-                                                              destSlot);
-            }
+            return Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.FCChestMove,
+                                                          AgentFreeCompanyChest.Instance.Pointer,
+                                                          sourceContainer,
+                                                          sourceSlot,
+                                                          destContainer,
+                                                          destSlot);
         }
 
         public static void FcChestMove(this BagSlot sourceBagSlot, BagSlot destBagSlot)
@@ -452,15 +344,9 @@ namespace LlamaLibrary.Extensions
                 return false;
             }
 
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.StoreroomToInventory,
-                                                         HousingHelper.PositionPointer,
-                                                         bagSlot.Pointer);
-                }
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.StoreroomToInventory,
+                                                 HousingHelper.PositionPointer,
+                                                 bagSlot.Pointer);
 
             return true;
         }
@@ -472,15 +358,9 @@ namespace LlamaLibrary.Extensions
                 return false;
             }
 
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.InventoryToStoreroom,
-                                                         HousingHelper.PositionPointer,
-                                                         bagSlot.Pointer);
-                }
-            }
+            Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.InventoryToStoreroom,
+                                                 HousingHelper.PositionPointer,
+                                                 bagSlot.Pointer);
 
             return true;
         }
@@ -502,18 +382,12 @@ namespace LlamaLibrary.Extensions
 
             bagslot.Write("bagslot", test2);
 
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using (Core.Memory.TemporaryCacheState(false))
-                {
-                    return Core.Memory.CallInjectedWraper<byte>(BagSlotExtensionsOffsets.DyeItem,
-                                                                Offsets.g_InventoryManager,
-                                                                item.BagId,
-                                                                item.Slot,
-                                                                bagid.Address,
-                                                                bagslot.Address);
-                }
-            }
+            return Core.Memory.CallInjectedWraper<byte>(BagSlotExtensionsOffsets.DyeItem,
+                                                        Offsets.g_InventoryManager,
+                                                        item.BagId,
+                                                        item.Slot,
+                                                        bagid.Address,
+                                                        bagslot.Address);
         }
 
         public static void RetainerEntrustQuantity(this BagSlot bagSlot, uint amount)

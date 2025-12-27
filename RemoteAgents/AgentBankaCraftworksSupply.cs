@@ -38,12 +38,9 @@ public class AgentBankaCraftworksSupply : AgentInterface<AgentBankaCraftworksSup
     public void HandIn(BagSlot slot)
     {
         //var instance = Core.Memory.Read<IntPtr>(Pointer) + Offsets.PointerOffset;
-        lock (Core.Memory.Executor.AssemblyLock)
-        {
-            Core.Memory.CallInjectedWraper<uint>(InstancePointerWithOffset,
-                                                 Pointer,
-                                                 slot.Slot,
-                                                 (int)slot.BagId);
-        }
+        Core.Memory.CallInjectedWraper<uint>(InstancePointerWithOffset,
+                                             Pointer,
+                                             slot.Slot,
+                                             (int)slot.BagId);
     }
 }

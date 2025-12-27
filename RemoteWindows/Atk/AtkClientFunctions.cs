@@ -72,10 +72,7 @@ public static class AtkClientFunctions
             allocated.Write(i * 8, param[i]);
         }
 
-        lock (Core.Memory.GetLock())
-        {
-            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.SendAction, windowPtr, param.Length / 2, allocated.Address, (byte)(updateState ? 1 : 0));
-        }
+        Core.Memory.CallInjectedWraper<IntPtr>(Offsets.SendAction, windowPtr, param.Length / 2, allocated.Address, (byte)(updateState ? 1 : 0));
     }
 
     internal static void ClickDialogueOkay()

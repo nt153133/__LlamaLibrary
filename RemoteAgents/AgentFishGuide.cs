@@ -1,5 +1,4 @@
-﻿
-//#if RB_CN
+﻿//#if RB_CN
 /*
 namespace LlamaLibrary.RemoteAgents
 {
@@ -34,11 +33,8 @@ namespace LlamaLibrary.RemoteAgents
 
         public FishGuideItem[] GetTabList()
         {
-            using (Core.Memory.TemporaryCacheState(enabledTemporarily: false))
-            {
-                //Log.Information($"{Pointer + Offsets.TabStart - 0x6} {Offsets.TabSlotCount}");
-                return Core.Memory.ReadArray<FishGuideItem>(Pointer + Offsets.TabStart - 0x6, Offsets.TabSlotCount); //.Select(x => x.FishItem) as List<uint>;
-            }
+            //Log.Information($"{Pointer + Offsets.TabStart - 0x6} {Offsets.TabSlotCount}");
+            return Core.Memory.ReadArray<FishGuideItem>(Pointer + Offsets.TabStart - 0x6, Offsets.TabSlotCount); //.Select(x => x.FishItem) as List<uint>;
         }
     }
 

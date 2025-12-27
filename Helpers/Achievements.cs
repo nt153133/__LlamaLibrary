@@ -36,14 +36,7 @@ namespace LlamaLibrary.Helpers
 
         public static bool HasAchievement(int achievementId)
         {
-            bool done;
-
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                done = Core.Memory.CallInjectedWraper<bool>(AchievementsOffsets.IsCompletePtr, AchievementsOffsets.AchievementInstancePtr, achievementId);
-            }
-
-            return done;
+            return Core.Memory.CallInjectedWraper<bool>(AchievementsOffsets.IsCompletePtr, AchievementsOffsets.AchievementInstancePtr, achievementId);
         }
 
         public static async Task<AchievementStatus> GetSingleAchievement(int achievementId)

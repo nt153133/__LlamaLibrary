@@ -519,11 +519,8 @@ namespace LlamaLibrary.Retainers
 
         public static int FuncNumberOfRetainers()
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                return Core.Memory.CallInjectedWraper<int>(Offsets.GetNumberOfRetainers,
+            return Core.Memory.CallInjectedWraper<int>(Offsets.GetNumberOfRetainers,
                                                        Offsets.RetainerData);
-            }
         }
 
         public static async Task<int> GetNumberOfRetainers()
@@ -539,15 +536,12 @@ namespace LlamaLibrary.Retainers
 
         public static void RequestRetainerData()
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                Core.Memory.CallInjectedWraper<IntPtr>(Offsets.ExecuteCommand,
+            Core.Memory.CallInjectedWraper<IntPtr>(Offsets.ExecuteCommand,
                                                    (uint)Offsets.RetainerNetworkPacket,
                                                    0U,
                                                    0U,
                                                    0U,
                                                    0U);
-            }
         }
 
         // ReSharper disable once UnusedMethodReturnValue.Local

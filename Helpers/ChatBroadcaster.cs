@@ -196,25 +196,22 @@ namespace LlamaLibrary.Helpers
 
         public static void SendChat(byte[] array)
         {
-            lock (Core.Memory.Executor.AssemblyLock)
-            {
-                using var allocatedMemory2 = Core.Memory.CreateAllocatedMemory(400);
-                using var allocatedMemory = Core.Memory.CreateAllocatedMemory(array.Length + 30);
-                allocatedMemory.AllocateOfChunk("start", array.Length);
-                allocatedMemory.WriteBytes("start", array);
-                allocatedMemory2.AllocateOfChunk<IntPtr>("dword0");
-                allocatedMemory2.AllocateOfChunk<long>("dword4");
-                allocatedMemory2.AllocateOfChunk<long>("dword8");
-                allocatedMemory2.AllocateOfChunk<long>("dwordC");
-                allocatedMemory2.Write("dword0", allocatedMemory.Address);
-                allocatedMemory2.Write("dword4", 64);
-                allocatedMemory2.Write("dword8", array.Length + 1);
-                allocatedMemory2.Write("dwordC", 0);
-                Core.Memory.CallInjectedWraper<int>(Offsets.ExecuteCommandInner,
-                                                    UiManagerProxy.RaptureShellModule,
-                                                    allocatedMemory2.Address,
-                                                    UiManagerProxy.UIModule);
-            }
+            using var allocatedMemory2 = Core.Memory.CreateAllocatedMemory(400);
+            using var allocatedMemory = Core.Memory.CreateAllocatedMemory(array.Length + 30);
+            allocatedMemory.AllocateOfChunk("start", array.Length);
+            allocatedMemory.WriteBytes("start", array);
+            allocatedMemory2.AllocateOfChunk<IntPtr>("dword0");
+            allocatedMemory2.AllocateOfChunk<long>("dword4");
+            allocatedMemory2.AllocateOfChunk<long>("dword8");
+            allocatedMemory2.AllocateOfChunk<long>("dwordC");
+            allocatedMemory2.Write("dword0", allocatedMemory.Address);
+            allocatedMemory2.Write("dword4", 64);
+            allocatedMemory2.Write("dword8", array.Length + 1);
+            allocatedMemory2.Write("dwordC", 0);
+            Core.Memory.CallInjectedWraper<int>(Offsets.ExecuteCommandInner,
+                                                UiManagerProxy.RaptureShellModule,
+                                                allocatedMemory2.Address,
+                                                UiManagerProxy.UIModule);
         }
     }
 }
