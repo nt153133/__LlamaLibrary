@@ -76,8 +76,7 @@ namespace LlamaLibrary.Helpers
                 //await WaitUntil(() => loaded, timeout: 20000);
                 loaded = false;
                 Log.Information("Botbase set to orderbot");
-                BotManager.Current.Initialize();
-                Log.Information("Initialize");
+
                 NeoProfileManager.Load(profile);
                 Log.Information("Profile loaded");
 
@@ -110,7 +109,6 @@ namespace LlamaLibrary.Helpers
                         tempbool = false;
 
                         TreeRoot.OnStart += OnBotStart;
-                        BotManager.Current.Initialize();
 
                         if (StopBot)
                         {
@@ -118,7 +116,6 @@ namespace LlamaLibrary.Helpers
                             return;
                         }
 
-                        BotManager.Current.Start();
 
                         //NeoProfileManager.Load(profile);
 
