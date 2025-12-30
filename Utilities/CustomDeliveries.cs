@@ -305,7 +305,7 @@ namespace LlamaLibrary.Utilities
                 if (order != "" && !InventoryManager.FilledSlots.Any(i => items.Contains(i.RawItemId)))
                 {
                     await GeneralFunctions.StopBusy();
-                    Log.Information($"Calling Lisbeth with {order}");
+                    Log.Information($"Calling Lisbeth for {DataManager.GetItem(AgentSatisfactionSupply.Instance.DoHItemId).CurrentLocaleName} {order}");
                     try
                     {
                         var recipe = LookUpRecipe(AgentSatisfactionSupply.Instance.DoHItemId, dohClass);
