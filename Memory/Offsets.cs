@@ -136,7 +136,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B F0 48 85 C0 74 ? 48 83 38 ? Add 3 TraceRelative")]
         public static IntPtr RetainerData;
 
-        [Offset("Search 41 C6 87 ? ? ? ? ? 48 83 C4 ? 41 5F 41 5D 41 5C Add 3 Read32")]
+        [Offset("Search 41 C6 87 ? ? ? ? ? 48 83 C4 ? 41 5F 41 5D 41 5C 5D Add 3 Read32")]
         public static int RetainerDataLoaded;
 
         [Offset("Search 41 88 87 ? ? ? ? 40 0F 97 C5 Add 3 Read32")]

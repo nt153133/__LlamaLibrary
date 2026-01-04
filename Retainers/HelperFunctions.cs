@@ -427,8 +427,14 @@ namespace LlamaLibrary.Retainers
         public static async Task ForceGetRetainerData()
         {
             RequestRetainerData();
-            await Coroutine.Wait(3000, () => Core.Memory.Read<uint>(Offsets.RetainerData) != 0);
-            await Coroutine.Wait(3000, () => Core.Memory.Read<byte>(Offsets.RetainerData + Offsets.RetainerDataLoaded) != 0);
+            if (!await Coroutine.Wait(3000, () => Core.Memory.Read<uint>(Offsets.RetainerData) != 0))
+            {
+                Log.Warning("Retainer Data not loaded yet...");
+            }
+            if (!await Coroutine.Wait(3000, () => Core.Memory.Read<byte>(Offsets.RetainerData + Offsets.RetainerDataLoaded) != 0))
+            {
+                Log.Warning("Retainer Data not finished loading yet...");
+            }
         }
 
         public static void ForceGetRetainerDataSync()

@@ -116,9 +116,11 @@ public abstract class OrderbotHook : Decorator
     {
         var timer = Stopwatch.StartNew();
         Log.Information($"{HookName} started");
+        TreeRoot.StatusText = $"Running Hook: {HookName}";
         var result = await Run();
         timer.Stop();
         Log.Information($"{HookName} took {timer.Elapsed} to complete");
+        TreeRoot.StatusText = "";
         return result;
     }
 
