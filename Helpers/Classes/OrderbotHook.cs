@@ -118,7 +118,7 @@ public abstract class OrderbotHook : Decorator
         Log.Information($"{HookName} started");
         var result = await Run();
         timer.Stop();
-        Log.Information($"{HookName} took {timer.ElapsedMilliseconds:N0}ms to complete");
+        Log.Information($"{HookName} took {timer.Elapsed} to complete");
         return result;
     }
 
@@ -127,13 +127,19 @@ public abstract class OrderbotHook : Decorator
     /// </summary>
     public virtual void AddHook()
     {
-        if (_added || TreeHooks.Instance.Hooks.TryGetValue(Location, out var list) && list.Any(Equals))
+        if (_added)
+        {
+            return;
+        }
+
+        if (TreeHooks.Instance.Hooks.TryGetValue(Location, out var list) && list.Any(Equals))
         {
             return;
         }
 
         TreeHooks.Instance.AddHook(Location, this);
         Log.Information($"{Location} hook added ({Guid})");
+        TreeHooks.Instance.OnHooksCleared -= OnHooksCleared;
         TreeHooks.Instance.OnHooksCleared += OnHooksCleared;
         _added = true;
     }
@@ -167,7 +173,7 @@ public abstract class OrderbotHook : Decorator
     /// Handler called when <see cref="TreeHooks.Instance"/> raises <c>OnHooksCleared</c>.
     /// The hook will attempt to re-add itself after hooks are cleared.
     /// </summary>
-    private void OnHooksCleared(object sender, EventArgs args)
+    private void OnHooksCleared(object? sender, EventArgs args)
     {
         _added = false;
         Log.Information($"{Location} hook Removed ({Guid}) on HooksCleared");
