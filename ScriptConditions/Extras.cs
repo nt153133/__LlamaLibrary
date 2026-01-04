@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ff14bot;
 using ff14bot.Directors;
@@ -376,6 +377,50 @@ namespace LlamaLibrary.ScriptConditions
         public static bool IsInNPCParty()
         {
             return PartyManager.VisibleMembers.Any(i => i.GetType() == typeof(TrustPartyMember));
+        }
+
+        private static readonly Dictionary<ClassJobType, uint> PenumbraeWeaponIds =
+            new Dictionary<ClassJobType, uint>
+            {
+                { ClassJobType.Paladin, 47869 },
+                { ClassJobType.Monk, 47870 },
+                { ClassJobType.Warrior, 47871 },
+                { ClassJobType.Dragoon, 47872 },
+                { ClassJobType.Bard, 47873 },
+                { ClassJobType.WhiteMage, 47874 },
+                { ClassJobType.BlackMage, 47875 },
+                { ClassJobType.Summoner, 47876 },
+                { ClassJobType.Scholar, 47877 },
+                { ClassJobType.Ninja, 47878 },
+                { ClassJobType.DarkKnight, 47879 },
+                { ClassJobType.Machinist, 47880 },
+                { ClassJobType.Astrologian, 47881 },
+                { ClassJobType.Samurai, 47882 },
+                { ClassJobType.RedMage, 47883 },
+                { ClassJobType.Gunbreaker, 47884 },
+                { ClassJobType.Dancer, 47885 },
+                { ClassJobType.Reaper, 47886 },
+                { ClassJobType.Sage, 47887 },
+                { ClassJobType.Viper, 47888 },
+                { ClassJobType.Pictomancer, 47889 },
+            };
+
+        public static bool IsPenumbraeWeaponEquipped()
+        {
+            ClassJobType currentJob = Core.Me.CurrentJob;
+
+            if (!PenumbraeWeaponIds.TryGetValue(currentJob, out uint expectedItemId))
+                return false;
+
+            var mainHand =
+                InventoryManager
+                    .GetBagByInventoryBagId(InventoryBagId.EquippedItems)
+                    [EquipmentSlot.MainHand];
+
+            if (mainHand == null)
+                return false;
+
+            return mainHand.RawItemId == expectedItemId;
         }
     }
 }
