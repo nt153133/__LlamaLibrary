@@ -47,7 +47,8 @@ namespace LlamaLibrary.Helpers
             }
             catch (Exception ex)
             {
-                Log.Error("NavGraph.GetPathAsync failed with an exception");
+                Log.Error($"NavGraph.GetPathAsync failed with an exception");
+                Log.Error(ex.ToString());
                 return null;
             }
         }

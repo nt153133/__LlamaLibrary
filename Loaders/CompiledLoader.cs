@@ -298,7 +298,13 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
             return false;
         }
 
-        return localVersion != remoteVersion;
+        var result = localVersion != remoteVersion;
+        if (result)
+        {
+            Log.Information($"Update needed: Local Version {localVersion} != Remote Version {remoteVersion}");
+        }
+
+        return result;
     }
 
     protected virtual Version? GetLocalVersion()
@@ -377,28 +383,42 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
 
     public async Task<T> Load(string directory)
     {
-        Log.Information($"Loading {ProjectName}...");
-        LocalFolderName = directory;
-
-        if (!Debug)
+        var timer = Stopwatch.StartNew();
+        try
         {
-            await Update().ConfigureAwait(false);
-            _client?.Dispose();
+            Log.Information($"Loading {ProjectName}...");
+            LocalFolderName = directory;
+
+            if (!Debug)
+            {
+                await Update().ConfigureAwait(false);
+                _client?.Dispose();
+            }
+
+            UnblockAll();
+
+            if (LibraryClass.SafeMode)
+            {
+                Log.Information($"Safe mode enabled, skipping load of {ProjectName}");
+                return null;
+            }
+
+            CompiledAssembly.Refresh();
+
+            if (CompiledAssembly.Exists)
+            {
+                return Load();
+            }
         }
-
-        UnblockAll();
-
-        if (LibraryClass.SafeMode)
+        catch (Exception e)
         {
-            Log.Information($"Safe mode enabled, skipping load of {ProjectName}");
-            return null;
+            Log.Error($"Failed to load {ProjectName}");
+            Log.Exception(e);
         }
-
-        CompiledAssembly.Refresh();
-
-        if (CompiledAssembly.Exists)
+        finally
         {
-            return Load();
+            timer.Stop();
+            Log.Information($"Load finished in {timer.ElapsedMilliseconds:N0}ms");
         }
 
         return null;

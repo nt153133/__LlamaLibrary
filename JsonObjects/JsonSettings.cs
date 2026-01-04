@@ -19,9 +19,9 @@ namespace LlamaLibrary.JsonObjects
 
         public static T Instance => _instance ??= new T();
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public new event PropertyChangedEventHandler? PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        protected new void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             Save();
             var handler = PropertyChanged;
