@@ -26,7 +26,7 @@ public class AgentSharlayanCraftworksSupply : AgentInterface<AgentSharlayanCraft
     }*/
     public void HandIn(BagSlot slot)
     {
-        var instance = Pointer + 0x30; //+ Offsets.PointerOffset;
+        var instance = Pointer + 0x28; //+ Offsets.PointerOffset;
         Core.Memory.CallInjectedWraper<uint>(Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(instance)),
                                              instance,
                                              slot.Slot,
