@@ -20,7 +20,7 @@ public class SharlayanCraftworksSupply : RemoteWindow<SharlayanCraftworksSupply>
 #if RB_DT
             {
                 "TurnInItemId",
-                10
+                8
             },
 #else
         {
