@@ -17,7 +17,7 @@ public class SharlayanCraftworksSupply : RemoteWindow<SharlayanCraftworksSupply>
 
     public static readonly Dictionary<string, int> Properties = new(System.StringComparer.Ordinal)
     {
-#if RB_DT
+#if RB_TC
             {
                 "TurnInItemId",
                 10

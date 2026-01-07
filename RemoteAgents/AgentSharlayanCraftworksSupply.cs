@@ -8,8 +8,6 @@ namespace LlamaLibrary.RemoteAgents;
 
 public class AgentSharlayanCraftworksSupply : AgentInterface<AgentSharlayanCraftworksSupply>, IAgent
 {
-
-
     public IntPtr RegisteredVtable => AgentSharlayanCraftworksSupplyOffsets.Vtable;
 
     protected AgentSharlayanCraftworksSupply(IntPtr pointer) : base(pointer)
@@ -26,7 +24,11 @@ public class AgentSharlayanCraftworksSupply : AgentInterface<AgentSharlayanCraft
     }*/
     public void HandIn(BagSlot slot)
     {
+#if RB_TC
         var instance = Pointer + 0x30; //+ Offsets.PointerOffset;
+#else
+        var instance = Pointer + 0x28; //+ Offsets.PointerOffset;
+#endif
         Core.Memory.CallInjectedWraper<uint>(Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(instance)),
                                              instance,
                                              slot.Slot,
