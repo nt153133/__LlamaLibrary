@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Linq;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Memory;
 
@@ -11,7 +11,7 @@ namespace LlamaLibrary.RemoteAgents
     //TODO This agent might be completely useless given the current way I get the retainers
     public class AgentRetainerList : AgentInterface<AgentRetainerList>, IAgent
     {
-        public IntPtr RegisteredVtable => AgentRetainerListOffsets.VTable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentRetainerList;
         
 
         protected AgentRetainerList(IntPtr pointer) : base(pointer)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary.Logging;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Memory;
 
@@ -19,7 +19,7 @@ namespace LlamaLibrary.RemoteAgents
     public class AgentVoteMVP : AgentInterface<AgentVoteMVP>, IAgent
     {
         private static readonly LLogger Log = new(nameof(AgentVoteMVP), Colors.Gold);
-        public IntPtr RegisteredVtable => AgentVoteMVPOffsets.VTable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentVoteMVP;
 
         public static AtkAddonControl? NotificationWindow => RaptureAtkUnitManager.GetWindowByName("_NotificationIcMvp", true);
 

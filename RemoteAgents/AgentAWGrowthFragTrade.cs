@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
 using ff14bot.NeoProfiles;
 using LlamaLibrary.Logging;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Utilities;
@@ -25,7 +25,7 @@ namespace LlamaLibrary.RemoteAgents
         {
         }
 
-        public IntPtr RegisteredVtable => AgentAWGrowthFragTradeOffsets.Vtable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentAWGrowthFragTrade;
 
         public IntPtr ArrayPtr => Pointer + AgentAWGrowthFragTradeOffsets.ArrayBase;
 

@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
 using LlamaLibrary.Enums;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
     public class AgentHousingSignboard : AgentInterface<AgentHousingSignboard>, IAgent
     {
-        public IntPtr RegisteredVtable => AgentHousingSignBoardOffsets.VTable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentHousingSignBoard;
 
         
 

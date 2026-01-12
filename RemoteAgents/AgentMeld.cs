@@ -1,19 +1,19 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using LlamaLibrary;
 using LlamaLibrary.JsonObjects;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
     public class AgentMeld : AgentInterface<AgentMeld>, IAgent
     {
-        public IntPtr RegisteredVtable => AgentMeldOffsets.VTable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentMeld;
 
 
 

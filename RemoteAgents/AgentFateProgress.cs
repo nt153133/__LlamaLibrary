@@ -1,6 +1,6 @@
 ﻿using System;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Memory;
 
@@ -8,7 +8,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentFateProgress : AgentInterface<AgentFateProgress>, IAgent
     {
-        public IntPtr RegisteredVtable => AgentFateProgressOffsets.VTable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentFateProgress;
         
 
         public int NumberOfLoadedZones => 0; //Core.Memory.NoCacheRead<byte>(Pointer + Offsets.LoadedZones);

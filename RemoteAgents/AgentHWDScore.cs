@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
@@ -9,7 +9,7 @@ namespace LlamaLibrary.RemoteAgents
     //TODO This agent has hardcoded memory offsets
     public class AgentHWDScore : AgentInterface<AgentHWDScore>, IAgent
     {
-        public IntPtr RegisteredVtable => AgentHWDScoreOffsets.VTable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentHWDScore;
 
         
 

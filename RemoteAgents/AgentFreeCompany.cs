@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Memory;
 
@@ -14,7 +14,7 @@ namespace LlamaLibrary.RemoteAgents
     //TODO This agent has way too many hardcoded memory offsets
     public class AgentFreeCompany : AgentInterface<AgentFreeCompany>, IAgent
     {
-        public IntPtr RegisteredVtable => AgentFreeCompanyOffsets.VTable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentFreeCompany;
         
 
         protected AgentFreeCompany(IntPtr pointer) : base(pointer)

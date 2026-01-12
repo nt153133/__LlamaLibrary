@@ -1,6 +1,6 @@
 ﻿using System;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
@@ -13,6 +13,6 @@ namespace LlamaLibrary.RemoteAgents
         {
         }
 
-        public IntPtr RegisteredVtable => AgentCharacterOffsets.Vtable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentCharacter;
     }
 }

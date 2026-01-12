@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
@@ -14,7 +14,7 @@ namespace LlamaLibrary.RemoteAgents
         {
         }
 
-        public IntPtr RegisteredVtable => AgentItemDetailOffsets.Vtable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentItemDetail;
 
         public uint HoverOverItemID => Core.Memory.Read<uint>(Pointer + AgentItemDetailOffsets.ItemID);
     }

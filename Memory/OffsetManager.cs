@@ -8,6 +8,19 @@ work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 Orginal work done by zzi, contibutions by Omninewb, Freiheit, and mastahg
                                                                                  */
 
+using Clio.Utilities;
+using ff14bot;
+using ff14bot.Enums;
+using ff14bot.Helpers;
+using ff14bot.Managers;
+using LlamaLibrary.Helpers;
+using LlamaLibrary.Hooks;
+using LlamaLibrary.Logging;
+using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Memory.PatternFinders;
+using LlamaLibrary.RemoteAgents;
+using LlamaLibrary.Settings;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,19 +36,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
-using Clio.Utilities;
-using ff14bot;
-using ff14bot.Enums;
-using ff14bot.Helpers;
-using ff14bot.Managers;
-using LlamaLibrary.Helpers;
-using LlamaLibrary.Hooks;
-using LlamaLibrary.Logging;
-using LlamaLibrary.Memory.Attributes;
-using LlamaLibrary.Memory.PatternFinders;
-using LlamaLibrary.RemoteAgents;
-using LlamaLibrary.Settings;
-using Newtonsoft.Json;
+using static System.Net.Mime.MediaTypeNames;
 using LogLevel = LlamaLibrary.Logging.LogLevel;
 using MessageBox = System.Windows.MessageBox;
 using PatchManager = LlamaLibrary.Hooks.PatchManager;
@@ -734,48 +735,17 @@ public static class OffsetManager
             File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
         }
 
-        var vtables = new Dictionary<IntPtr, int>();
-        var pointers = AgentModule.AgentVtables;
-
-        for (var index = 0; index < pointers.Count; index++)
-        {
-            if (vtables.ContainsKey(pointers[index]))
-            {
-                continue;
-            }
-
-            vtables.Add(pointers[index], index);
-        }
-
-        var q = from t in method?.DeclaringType?.Assembly.GetTypes()
-                where t.IsClass && typeof(IAgent).IsAssignableFrom(t)
-                select t;
+        var q = from t in method?.DeclaringType?.Assembly.GetTypes() where t.IsClass && typeof(IAgent).IsAssignableFrom(t) select t;
 
         foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
         {
-            var test = ((IAgent)Activator.CreateInstance(MyType,
-                                                         BindingFlags.Instance | BindingFlags.NonPublic,
-                                                         null,
-                                                         new object[]
-                                                         {
-                                                             IntPtr.Zero
-                                                         },
-                                                         null)!).RegisteredVtable;
-
-            if (vtables.TryGetValue(test, out var value))
+            var agent = ((IAgent)Activator.CreateInstance(MyType, BindingFlags.Instance | BindingFlags.NonPublic, null, [IntPtr.Zero], null)!);
+            if (agent.RegisteredVtable > 0)
             {
-                Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(value, MyType)}");
+                Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent((int)(agent.RegisteredVtable), MyType)}");
+                continue;
             }
-            else
-            {
-                var relative = Core.Memory.GetRelative(test);
-                if (VtableMap.TryGetValue(relative, out var id))
-                {
-                    Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(id, MyType)}");
-                    continue;
-                }
-                Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {test:X} but no agent");
-            }
+            Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {agent.RegisteredVtable:X} but no agent");
         }
 
         while (!initDone)

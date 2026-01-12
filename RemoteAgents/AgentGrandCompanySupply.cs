@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Memory;
 
@@ -13,7 +13,7 @@ namespace LlamaLibrary.RemoteAgents
     {
         
 
-        public IntPtr RegisteredVtable => AgentGrandCompanySupplyOffsets.Vtable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentGrandCompanySupply;
         public IntPtr SupplyItemPtr => Core.Memory.Read<IntPtr>(Pointer + AgentGrandCompanySupplyOffsets.ItemArrayStart);
         public int SupplyItemCount => Core.Memory.Read<int>(Pointer + AgentGrandCompanySupplyOffsets.ArrayCount);
 

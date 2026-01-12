@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Memory;
 
@@ -9,7 +9,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentDawnStory : AgentInterface<AgentDawnStory>, IAgent
     {
-        public IntPtr RegisteredVtable => AgentDawnStoryOffsets.Vtable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentDawnStory;
 
         
 

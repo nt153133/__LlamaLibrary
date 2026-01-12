@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Linq;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Memory;
 
@@ -10,7 +10,7 @@ namespace LlamaLibrary.RemoteAgents;
 
 public class AgentTripleTriadCoinExchange : AgentInterface<AgentTripleTriadCoinExchange>, IAgent
 {
-    public IntPtr RegisteredVtable => AgentTripleTriadCoinExchangeOffsets.VTable;
+    public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentTripleTriadCoinExchange;
 
     
 

@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Text;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
     public class AgentLookingForGroup : AgentInterface<AgentLookingForGroup>, IAgent
     {
-        public IntPtr RegisteredVtable => AgentLookingForGroupOffsets.VTable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentLookingForGroup;
 
         
 

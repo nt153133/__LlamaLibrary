@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
 using LlamaLibrary.Helpers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
 using LlamaLibrary.Memory;
 
@@ -12,7 +12,7 @@ namespace LlamaLibrary.RemoteAgents
     {
         
 
-        public IntPtr RegisteredVtable => AgentGrandCompanyExchangeOffsets.Vtable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentGrandCompanyExchange;
 
         public byte Category => Core.Memory.Read<byte>(Pointer + AgentGrandCompanyExchangeOffsets.Category);
         public byte Rank => Core.Memory.Read<byte>(Pointer + AgentGrandCompanyExchangeOffsets.Rank);

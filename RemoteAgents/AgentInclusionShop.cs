@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Memory;
 
@@ -12,7 +12,7 @@ namespace LlamaLibrary.RemoteAgents
     {
         
 
-        public IntPtr RegisteredVtable => AgentInclusionShopOffsets.Vtable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentInclusionShop;
 
         public uint ShopKey => Core.Memory.Read<uint>(Core.Memory.Read<IntPtr>(Core.Memory.Read<IntPtr>(Pointer + AgentInclusionShopOffsets.FirstPointer) + AgentInclusionShopOffsets.SecondPointer) + AgentInclusionShopOffsets.ShopKey);
 

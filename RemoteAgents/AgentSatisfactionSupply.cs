@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Utilities;
 using LlamaLibrary.Memory;
@@ -13,7 +13,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentSatisfactionSupply : AgentInterface<AgentSatisfactionSupply>, IAgent
     {
-        public IntPtr RegisteredVtable => AgentSatisfactionSupplyOffsets.VTable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentSatisfactionSupply;
 
         
 

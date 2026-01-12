@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
+using ff14bot.Buddy.Offsets;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Memory;
 
@@ -12,7 +12,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentFishGuide2 : AgentInterface<AgentFishGuide2>, IAgent
     {
-        public IntPtr RegisteredVtable => AgentFishGuide2Offsets.Vtable;
+        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentFishGuide2;
 
         public const int TabCount = 37;
 

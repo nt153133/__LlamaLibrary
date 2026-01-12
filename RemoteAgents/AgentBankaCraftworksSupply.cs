@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using ff14bot;
+using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
 using LlamaLibrary.Memory;
 using LlamaLibrary.Utilities;
@@ -15,7 +16,7 @@ public class AgentBankaCraftworksSupply : AgentInterface<AgentBankaCraftworksSup
     {
     }
 
-    public IntPtr RegisteredVtable => AgentBankaCraftworksSupplyOffsets.Vtable;
+    public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentBankaCraftworksSupply;
 
     public IntPtr InstancePointer
     {
