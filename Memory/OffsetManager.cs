@@ -20,6 +20,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
 using Clio.Utilities;
 using ff14bot;
@@ -34,6 +36,8 @@ using LlamaLibrary.Memory.PatternFinders;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.Settings;
 using Newtonsoft.Json;
+using LogLevel = LlamaLibrary.Logging.LogLevel;
+using MessageBox = System.Windows.MessageBox;
 using PatchManager = LlamaLibrary.Hooks.PatchManager;
 
 // ReSharper disable InconsistentNaming
@@ -86,7 +90,13 @@ public static class OffsetManager
 
     private static string OffsetFile { get; } = Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{GameVersion}.json");
 
-    public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown);
+    private static string VtableFile = Path.Combine(JsonSettings.SettingsPath, $"Vtables_{ActiveRegion}_{Core.CurrentGameVer}.json");
+
+    private static bool VtableFileExists => File.Exists(VtableFile);
+
+    private static Dictionary<IntPtr, int> VtableMap = new Dictionary<IntPtr, int>();
+
+    public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown, LogLevel.Debug);
 
     /// <summary>
     /// Active record for the current game region.
@@ -305,6 +315,31 @@ public static class OffsetManager
 
     internal static void SetPostOffsets()
     {
+        if (!VtableFileExists)
+        {
+            if (GeneralFunctions.DalamudDetected())
+            {
+                Logger.Error("Dalamud detected, Run RB once per patch without Dalamud enabled to generate vtable file.");
+                if (DataManager.CurrentLanguage == Language.Chn)
+                {
+                    MessageBox.Show("检测到Dalamud，请在没有Dalamud的情况下运行RB一次以生成vtable文件。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Dalamud detected, Run RB once per patch without Dalamud to generate vtable file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                Logger.Information("Generating vtable file...");
+                GenerateVtableFile();
+                Logger.Information("Done generating vtable file.");
+            }
+        }
+
+        LoadVtableFile();
+
+
         var newStopwatch = Stopwatch.StartNew();
         var vtables = new Dictionary<IntPtr, int>();
         var pointers = AgentModule.AgentVtables;
@@ -343,7 +378,16 @@ public static class OffsetManager
             }
             else
             {
-                Logger.Error($"\tFound one {myType.Name} {test:X} but no agent");
+                var relative = Core.Memory.GetRelative(test);
+                if (VtableMap.TryGetValue(relative, out var id))
+                {
+                    names.Add(myType.Name);
+                    Logger.Debug($"\tTrying to add {myType.Name} {AgentModule.TryAddAgent(id, myType)}");
+                    continue;
+                }
+
+
+                Logger.Error($"\tFound one {myType.Name} {test:X} ({Core.Memory.GetRelative(test):X}) but no agent");
             }
         }
 
@@ -425,7 +469,15 @@ public static class OffsetManager
         }
         else
         {
-            Logger.Error($"\tFound one {iagent.RegisteredVtable:X} but no agent");
+            var relative = Core.Memory.GetRelative(iagent.RegisteredVtable);
+            if (VtableMap.TryGetValue(relative, out var id))
+            {
+                Logger.Information($"\tTrying to add {iagent.GetType()} {AgentModule.TryAddAgent(id, iagent.GetType())}");
+                return;
+            }
+
+
+            Logger.Error($"\tFound one {iagent.GetType().Name} {iagent.RegisteredVtable:X} ({Core.Memory.GetRelative(iagent.RegisteredVtable):X}) but no agent");
         }
     }
 
@@ -716,6 +768,12 @@ public static class OffsetManager
             }
             else
             {
+                var relative = Core.Memory.GetRelative(test);
+                if (VtableMap.TryGetValue(relative, out var id))
+                {
+                    Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(id, MyType)}");
+                    continue;
+                }
                 Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {test:X} but no agent");
             }
         }
@@ -860,5 +918,59 @@ public static class OffsetManager
         }
 
         return results;
+    }
+
+    //Generate vtable file
+    public static void GenerateVtableFile()
+    {
+        if (GeneralFunctions.DalamudDetected())
+        {
+            Logger.Error("Dalamud detected, Run RB once without Dalamud to generate vtable file.");
+            if (DataManager.CurrentLanguage == Language.Chn)
+            {
+                MessageBox.Show("检测到Dalamud，请在没有Dalamud的情况下运行RB一次以生成vtable文件。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                MessageBox.Show("Dalamud detected, Run RB once without Dalamud to generate vtable file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return;
+        }
+
+        Dictionary<long, int> vtableDict = new();
+        foreach (var agentVtable in ff14bot.Managers.AgentModule.AgentVtables)
+        {
+            var id = ff14bot.Managers.AgentModule.FindAgentIdByVtable(agentVtable);
+            var offset = Core.Memory.GetRelative(agentVtable);
+            vtableDict.TryAdd(offset.ToInt64(), id);
+        }
+
+        System.IO.File.WriteAllText(VtableFile, Newtonsoft.Json.JsonConvert.SerializeObject(vtableDict));
+    }
+
+    //Load vtable file
+    public static void LoadVtableFile()
+    {
+        if (!VtableFileExists)
+        {
+            Logger.Error("Vtable file does not exist, please generate it first.");
+            return;
+        }
+
+        if (VtableMap.Count != 0)
+        {
+
+            return;
+        }
+
+        var fileContent = System.IO.File.ReadAllText(VtableFile);
+        var mapTemp = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<long, int>>(fileContent) ?? new Dictionary<long, int>();
+        foreach (var kvp in mapTemp)
+        {
+            VtableMap.Add(new IntPtr(kvp.Key), kvp.Value);
+        }
+
+        Logger.Information($"Loaded {VtableMap.Count} vtables from file.");
     }
 }
