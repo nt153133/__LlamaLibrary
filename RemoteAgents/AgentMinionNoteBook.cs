@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using ff14bot;
@@ -11,7 +11,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentMinionNoteBook : AgentInterface<AgentMinionNoteBook>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentMinionNoteBook;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentMinionNoteBook;
 
         public IntPtr MinionListAddress => Pointer + AgentMinionNoteBookOffsets.AgentOffset;
         

@@ -7,7 +7,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentItemAppraisal : AgentInterface<AgentItemAppraisal>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentItemAppraisal;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentItemAppraisal;
 
         
 

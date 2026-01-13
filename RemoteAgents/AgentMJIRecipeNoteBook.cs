@@ -7,7 +7,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentMJIRecipeNoteBook : AgentInterface<AgentMJIRecipeNoteBook>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentMJIRecipeNoteBook;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentMJIRecipeNoteBook;
 
         
 

@@ -1,4 +1,4 @@
-using ff14bot;
+﻿using ff14bot;
 using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
 using LlamaLibrary.Memory;
@@ -8,7 +8,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentRetainerInventory : AgentInterface<AgentRetainerInventory>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentRetainerInventory;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentRetainerInventory;
         // ReSharper disable once PartialTypeWithSinglePart
 
 

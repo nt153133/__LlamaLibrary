@@ -4,6 +4,6 @@ namespace LlamaLibrary.RemoteAgents
 {
     public interface IAgent
     {
-        IntPtr RegisteredVtable { get; }
+        int RegisteredAgentId { get; }
     }
 }

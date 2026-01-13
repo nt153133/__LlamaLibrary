@@ -7,7 +7,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentGoldSaucerInfo : AgentInterface<AgentGoldSaucerInfo>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentGoldSaucerInfo;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentGoldSaucerInfo;
         
 
         protected AgentGoldSaucerInfo(IntPtr pointer) : base(pointer)

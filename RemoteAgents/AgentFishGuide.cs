@@ -5,7 +5,7 @@ namespace LlamaLibrary.RemoteAgents
 
     public class AgentFishGuide : AgentInterface<AgentFishGuide>, IAgent
     {
-        public IntPtr RegisteredVtable => Offsets.Vtable;
+        public int RegisteredAgentId => Offsets.Vtable;
 
         public const int TabCount = 37;
 

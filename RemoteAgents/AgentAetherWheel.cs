@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using ff14bot;
 using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
@@ -10,7 +10,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentAetherWheel : AgentInterface<AgentAetherWheel>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentAetherWheel;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentAetherWheel;
         
 
         protected AgentAetherWheel(IntPtr pointer) : base(pointer)

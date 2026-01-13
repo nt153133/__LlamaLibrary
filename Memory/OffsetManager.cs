@@ -36,7 +36,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
-using static System.Net.Mime.MediaTypeNames;
 using LogLevel = LlamaLibrary.Logging.LogLevel;
 using MessageBox = System.Windows.MessageBox;
 using PatchManager = LlamaLibrary.Hooks.PatchManager;
@@ -316,43 +315,9 @@ public static class OffsetManager
 
     internal static void SetPostOffsets()
     {
-        if (!VtableFileExists)
-        {
-            if (GeneralFunctions.DalamudDetected())
-            {
-                Logger.Error("Dalamud detected, Run RB once per patch without Dalamud enabled to generate vtable file.");
-                if (DataManager.CurrentLanguage == Language.Chn)
-                {
-                    MessageBox.Show("检测到Dalamud，请在没有Dalamud的情况下运行RB一次以生成vtable文件。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                else
-                {
-                    MessageBox.Show("Dalamud detected, Run RB once per patch without Dalamud to generate vtable file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                Logger.Information("Generating vtable file...");
-                GenerateVtableFile();
-                Logger.Information("Done generating vtable file.");
-            }
-        }
-
-        LoadVtableFile();
-
 
         var newStopwatch = Stopwatch.StartNew();
-        var vtables = new Dictionary<IntPtr, int>();
-        var pointers = AgentModule.AgentVtables;
-        for (var index = 0; index < pointers.Count; index++)
-        {
-            if (vtables.ContainsKey(pointers[index]))
-            {
-                continue;
-            }
 
-            vtables.Add(pointers[index], index);
-        }
 
         Logger.Debug($"OffsetManager AgentModule.AgentVtables took {newStopwatch.ElapsedMilliseconds}ms");
         var q = Assembly.GetExecutingAssembly().GetTypes().Where(t => t is { Namespace: "LlamaLibrary.RemoteAgents", IsClass: true } && typeof(IAgent).IsAssignableFrom(t)).ToList();
@@ -363,32 +328,16 @@ public static class OffsetManager
         var names = new List<string>();
         foreach (var myType in q)
         {
-            var test = ((IAgent)Activator.CreateInstance(myType,
-                                                         BindingFlags.Instance | BindingFlags.NonPublic,
-                                                         null,
-                                                         new object[]
-                                                         {
-                                                             IntPtr.Zero
-                                                         },
-                                                         null)!).RegisteredVtable;
-
-            if (vtables.TryGetValue(test, out var vtable))
+            var test = ((IAgent)Activator.CreateInstance(myType, BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { IntPtr.Zero }, null)!).RegisteredAgentId;
+            foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
             {
-                names.Add(myType.Name);
-                Logger.Debug($"\tTrying to add {myType.Name} {AgentModule.TryAddAgent(vtable, myType)}");
-            }
-            else
-            {
-                var relative = Core.Memory.GetRelative(test);
-                if (VtableMap.TryGetValue(relative, out var id))
+                var agent = ((IAgent)Activator.CreateInstance(MyType, BindingFlags.Instance | BindingFlags.NonPublic, null, [IntPtr.Zero], null)!);
+                if (agent.RegisteredAgentId > 0)
                 {
-                    names.Add(myType.Name);
-                    Logger.Debug($"\tTrying to add {myType.Name} {AgentModule.TryAddAgent(id, myType)}");
+                    Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent((agent.RegisteredAgentId), MyType)}");
                     continue;
                 }
-
-
-                Logger.Error($"\tFound one {myType.Name} {test:X} ({Core.Memory.GetRelative(test):X}) but no agent");
+                Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {agent.RegisteredAgentId} but no agent");
             }
         }
 
@@ -450,36 +399,14 @@ public static class OffsetManager
         PatchManager.Initialize(skipInventoryPatch);
     }
 
-    public static void RegisterAgent(IAgent iagent)
+    public static void RegisterAgent(IAgent agent)
     {
-        var vtables = new Dictionary<IntPtr, int>();
-        var pointers = AgentModule.AgentVtables;
-        for (var index = 0; index < pointers.Count; index++)
+        if (agent.RegisteredAgentId > 0)
         {
-            if (vtables.ContainsKey(pointers[index]))
-            {
-                continue;
-            }
-
-            vtables.Add(pointers[index], index);
+            Logger.Information($"\tTrying to add {agent.GetType()} {AgentModule.TryAddAgent(agent.RegisteredAgentId, agent.GetType())}");
+            return;
         }
-
-        if (vtables.TryGetValue(iagent.RegisteredVtable, out var vtable))
-        {
-            Logger.Information($"\tTrying to add {iagent.GetType()} {AgentModule.TryAddAgent(vtable, iagent.GetType())}");
-        }
-        else
-        {
-            var relative = Core.Memory.GetRelative(iagent.RegisteredVtable);
-            if (VtableMap.TryGetValue(relative, out var id))
-            {
-                Logger.Information($"\tTrying to add {iagent.GetType()} {AgentModule.TryAddAgent(id, iagent.GetType())}");
-                return;
-            }
-
-
-            Logger.Error($"\tFound one {iagent.GetType().Name} {iagent.RegisteredVtable:X} ({Core.Memory.GetRelative(iagent.RegisteredVtable):X}) but no agent");
-        }
+        Logger.Error($"\tFound one {agent.GetType().Name} {agent.RegisteredAgentId} but no agent");
     }
 
     internal static void AddNamespacesToScriptManager(params string[] param)
@@ -740,12 +667,12 @@ public static class OffsetManager
         foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
         {
             var agent = ((IAgent)Activator.CreateInstance(MyType, BindingFlags.Instance | BindingFlags.NonPublic, null, [IntPtr.Zero], null)!);
-            if (agent.RegisteredVtable > 0)
+            if (agent.RegisteredAgentId > 0)
             {
-                Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent((int)(agent.RegisteredVtable), MyType)}");
+                Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent((agent.RegisteredAgentId), MyType)}");
                 continue;
             }
-            Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {agent.RegisteredVtable:X} but no agent");
+            Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {agent.RegisteredAgentId} but no agent");
         }
 
         while (!initDone)
@@ -888,59 +815,5 @@ public static class OffsetManager
         }
 
         return results;
-    }
-
-    //Generate vtable file
-    public static void GenerateVtableFile()
-    {
-        if (GeneralFunctions.DalamudDetected())
-        {
-            Logger.Error("Dalamud detected, Run RB once without Dalamud to generate vtable file.");
-            if (DataManager.CurrentLanguage == Language.Chn)
-            {
-                MessageBox.Show("检测到Dalamud，请在没有Dalamud的情况下运行RB一次以生成vtable文件。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            else
-            {
-                MessageBox.Show("Dalamud detected, Run RB once without Dalamud to generate vtable file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            return;
-        }
-
-        Dictionary<long, int> vtableDict = new();
-        foreach (var agentVtable in ff14bot.Managers.AgentModule.AgentVtables)
-        {
-            var id = ff14bot.Managers.AgentModule.FindAgentIdByVtable(agentVtable);
-            var offset = Core.Memory.GetRelative(agentVtable);
-            vtableDict.TryAdd(offset.ToInt64(), id);
-        }
-
-        System.IO.File.WriteAllText(VtableFile, Newtonsoft.Json.JsonConvert.SerializeObject(vtableDict));
-    }
-
-    //Load vtable file
-    public static void LoadVtableFile()
-    {
-        if (!VtableFileExists)
-        {
-            Logger.Error("Vtable file does not exist, please generate it first.");
-            return;
-        }
-
-        if (VtableMap.Count != 0)
-        {
-
-            return;
-        }
-
-        var fileContent = System.IO.File.ReadAllText(VtableFile);
-        var mapTemp = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<long, int>>(fileContent) ?? new Dictionary<long, int>();
-        foreach (var kvp in mapTemp)
-        {
-            VtableMap.Add(new IntPtr(kvp.Key), kvp.Value);
-        }
-
-        Logger.Information($"Loaded {VtableMap.Count} vtables from file.");
     }
 }

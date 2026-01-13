@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
@@ -12,7 +12,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentFreeCompanyChest : AgentInterface<AgentFreeCompanyChest>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentFreeCompanyChest;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentFreeCompanyChest;
 
         
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using ff14bot;
 using ff14bot.Buddy.Offsets;
@@ -9,7 +9,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentWorldTravelSelect : AgentInterface<AgentWorldTravelSelect>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentWorldTravelSelect;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentWorldTravelSelect;
         
 
         protected AgentWorldTravelSelect(IntPtr pointer) : base(pointer)

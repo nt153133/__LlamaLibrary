@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using ff14bot;
 using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
@@ -8,7 +8,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentAchievement : AgentInterface<AgentAchievement>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentAchievement;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentAchievement;
         
 
         protected AgentAchievement(IntPtr pointer) : base(pointer)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using ff14bot;
 using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
@@ -8,7 +8,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentBagSlot : AgentInterface<AgentBagSlot>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentBagSlot;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentBagSlot;
         
 
         protected AgentBagSlot(IntPtr pointer) : base(pointer)

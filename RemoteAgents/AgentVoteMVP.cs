@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -19,7 +19,7 @@ namespace LlamaLibrary.RemoteAgents
     public class AgentVoteMVP : AgentInterface<AgentVoteMVP>, IAgent
     {
         private static readonly LLogger Log = new(nameof(AgentVoteMVP), Colors.Gold);
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentVoteMVP;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentVoteMVP;
 
         public static AtkAddonControl? NotificationWindow => RaptureAtkUnitManager.GetWindowByName("_NotificationIcMvp", true);
 

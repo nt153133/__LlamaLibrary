@@ -7,7 +7,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentJournalDetail : AgentInterface<AgentJournalDetail>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentJournalDetail;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentJournalDetail;
 
         
 

@@ -7,7 +7,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentInventoryBuddy : AgentInterface<AgentInventoryBuddy>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentInventoryBuddy;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentInventoryBuddy;
 
         
 

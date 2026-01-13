@@ -8,7 +8,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentFateProgress : AgentInterface<AgentFateProgress>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentFateProgress;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentFateProgress;
         
 
         public int NumberOfLoadedZones => 0; //Core.Memory.NoCacheRead<byte>(Pointer + Offsets.LoadedZones);

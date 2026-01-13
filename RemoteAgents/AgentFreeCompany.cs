@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -14,7 +14,7 @@ namespace LlamaLibrary.RemoteAgents
     //TODO This agent has way too many hardcoded memory offsets
     public class AgentFreeCompany : AgentInterface<AgentFreeCompany>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentFreeCompany;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentFreeCompany;
         
 
         protected AgentFreeCompany(IntPtr pointer) : base(pointer)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -25,7 +25,7 @@ namespace LlamaLibrary.RemoteAgents
         {
         }
 
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentAWGrowthFragTrade;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentAWGrowthFragTrade;
 
         public IntPtr ArrayPtr => Pointer + AgentAWGrowthFragTradeOffsets.ArrayBase;
 

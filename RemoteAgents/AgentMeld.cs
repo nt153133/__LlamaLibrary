@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using ff14bot;
@@ -13,7 +13,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentMeld : AgentInterface<AgentMeld>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentMeld;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentMeld;
 
 
 

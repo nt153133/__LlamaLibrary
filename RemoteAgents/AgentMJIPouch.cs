@@ -7,7 +7,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentMJIPouch : AgentInterface<AgentMJIPouch>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentMJIPouch;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentMJIPouch;
 
         
 

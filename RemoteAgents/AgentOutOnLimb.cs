@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using ff14bot;
 using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
@@ -9,7 +9,7 @@ namespace LlamaLibrary.RemoteAgents
     //TODO This agent has stupid hardcoded memory offsets in Refresh()
     public class AgentOutOnLimb : AgentInterface<AgentOutOnLimb>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentOutOnLimb;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentOutOnLimb;
         
 
         public IntPtr addressLocation = IntPtr.Zero;

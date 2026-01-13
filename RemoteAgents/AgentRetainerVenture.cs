@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using ff14bot;
 using ff14bot.Buddy.Offsets;
 using ff14bot.Managers;
@@ -9,7 +9,7 @@ namespace LlamaLibrary.RemoteAgents
     //TODO This agent has hardcoded memory offsets
     public class AgentRetainerVenture : AgentInterface<AgentRetainerVenture>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentRetainerVenture;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentRetainerVenture;
         
 
         protected AgentRetainerVenture(IntPtr pointer) : base(pointer)

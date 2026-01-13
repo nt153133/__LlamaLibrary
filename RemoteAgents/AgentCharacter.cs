@@ -13,6 +13,6 @@ namespace LlamaLibrary.RemoteAgents
         {
         }
 
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentCharacter;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentCharacter;
     }
 }

@@ -7,7 +7,7 @@ namespace LlamaLibrary.RemoteAgents
 {
     public class AgentRecommendEquip : AgentInterface<AgentRecommendEquip>, IAgent
     {
-        public IntPtr RegisteredVtable => PublicOffsets.LLamaAgentIds.AgentRecommendEquip;
+        public int RegisteredAgentId => PublicOffsets.LLamaAgentIds.AgentRecommendEquip;
         
 
         protected AgentRecommendEquip(IntPtr pointer) : base(pointer)
