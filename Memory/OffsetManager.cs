@@ -394,7 +394,7 @@ public static class OffsetManager
             Logger.Information($"\tTrying to add {agent.GetType()} {AgentModule.TryAddAgent(agent.RegisteredAgentId, agent.GetType())}");
             return;
         }
-        Logger.Error($"\tFound one {agent.GetType().Name} {agent.RegisteredAgentId} but no agent");
+        Logger.Error($"\tFound {agent.GetType().Name} but it's agent id is invalid: {agent.RegisteredAgentId}");
     }
 
     internal static void AddNamespacesToScriptManager(params string[] param)
