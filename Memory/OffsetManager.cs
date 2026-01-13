@@ -317,13 +317,8 @@ public static class OffsetManager
     {
 
         var newStopwatch = Stopwatch.StartNew();
-
-
-        Logger.Debug($"OffsetManager AgentModule.AgentVtables took {newStopwatch.ElapsedMilliseconds}ms");
         var q = Assembly.GetExecutingAssembly().GetTypes().Where(t => t is { Namespace: "LlamaLibrary.RemoteAgents", IsClass: true } && typeof(IAgent).IsAssignableFrom(t)).ToList();
-        newStopwatch.Stop();
-        Logger.Debug($"OffsetManager GetTypesAgents took {newStopwatch.ElapsedMilliseconds}ms");
-
+        Logger.Debug($"OffsetManager GetTypesAgents took {newStopwatch.Elapsed}");
         newStopwatch.Restart();
         foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
         {
