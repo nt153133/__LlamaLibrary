@@ -325,23 +325,11 @@ public static class OffsetManager
         Logger.Debug($"OffsetManager GetTypesAgents took {newStopwatch.ElapsedMilliseconds}ms");
 
         newStopwatch.Restart();
-        var names = new List<string>();
-        foreach (var myType in q)
+        foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
         {
-            var test = ((IAgent)Activator.CreateInstance(myType, BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { IntPtr.Zero }, null)!).RegisteredAgentId;
-            foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
-            {
-                var agent = ((IAgent)Activator.CreateInstance(MyType, BindingFlags.Instance | BindingFlags.NonPublic, null, [IntPtr.Zero], null)!);
-                if (agent.RegisteredAgentId > 0)
-                {
-                    Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent((agent.RegisteredAgentId), MyType)}");
-                    continue;
-                }
-                Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {agent.RegisteredAgentId} but no agent");
-            }
+            var agent = ((IAgent)Activator.CreateInstance(MyType, BindingFlags.Instance | BindingFlags.NonPublic, null, [IntPtr.Zero], null)!);
+            RegisterAgent(agent);
         }
-
-        Logger.Information($"Added {names.Count} agents");
         newStopwatch.Stop();
         Logger.Debug($"OffsetManager AgentModule.TryAddAgent took {newStopwatch.ElapsedMilliseconds}ms");
 
@@ -667,12 +655,7 @@ public static class OffsetManager
         foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
         {
             var agent = ((IAgent)Activator.CreateInstance(MyType, BindingFlags.Instance | BindingFlags.NonPublic, null, [IntPtr.Zero], null)!);
-            if (agent.RegisteredAgentId > 0)
-            {
-                Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent((agent.RegisteredAgentId), MyType)}");
-                continue;
-            }
-            Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {agent.RegisteredAgentId} but no agent");
+            RegisterAgent(agent);
         }
 
         while (!initDone)
