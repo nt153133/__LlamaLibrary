@@ -1961,7 +1961,8 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8d 4f ? 0f b7 10 e8 ? ? ? ? 48 ? ? 74 ? 48 8b ? Add 3 Read8")]
         internal static int Offset1;
 
-        [Offset("Search 41 8B CC 41 89 8F ? ? ? ? Add 6 Read32")]
+        [Offset("Search 41 89 8E ? ? ? ? 4C 39 7E ? Add 3 Read32")]
+        [OffsetTC("Search 41 8B CC 41 89 8F ? ? ? ? Add 6 Read32")]
         internal static int DCOffset;
 
         /*
