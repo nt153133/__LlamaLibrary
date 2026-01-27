@@ -118,8 +118,8 @@ public static class OffsetManager
 
         var Records = new Dictionary<ClientRegion, GameRecord>()
         {
-            { ClientRegion.Global, new GameRecord(7.4f, OffsetFlags.Global) },
-            { ClientRegion.China, new GameRecord(7.4f, OffsetFlags.China) },
+            { ClientRegion.Global, new GameRecord(7.41f, OffsetFlags.Global) },
+            { ClientRegion.China, new GameRecord(7.41f, OffsetFlags.China) },
             { ClientRegion.Korea, new GameRecord(7.3f, OffsetFlags.Korea) },
             { ClientRegion.TraditionalChinese, new GameRecord(7.0f, OffsetFlags.TraditionalChinese) },
         };
