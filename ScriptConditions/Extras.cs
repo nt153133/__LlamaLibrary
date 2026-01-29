@@ -197,7 +197,7 @@ namespace LlamaLibrary.ScriptConditions
             return Core.Me.CurrentJob switch
             {
                 ClassJobType.Archer or ClassJobType.Bard or ClassJobType.Dancer or ClassJobType.Machinist => true,
-                _                                                                                                               => false
+                _                                                                                         => false
             };
         }
 
@@ -244,7 +244,7 @@ namespace LlamaLibrary.ScriptConditions
             {
                 ClassJobType.Pugilist or ClassJobType.Monk or ClassJobType.Lancer or ClassJobType.Dragoon or ClassJobType.Samurai or ClassJobType.Rogue or ClassJobType.Ninja or ClassJobType.Archer or ClassJobType.Bard or ClassJobType.Dancer or ClassJobType.Machinist or ClassJobType.Marauder or ClassJobType.Warrior or ClassJobType.Gladiator or ClassJobType.Paladin or ClassJobType.Gunbreaker or ClassJobType.DarkKnight or ClassJobType.Reaper
 #if RB_DT
-    or ClassJobType.Viper
+                    or ClassJobType.Viper
 #endif
                     => true,
                 _ => false
@@ -257,7 +257,7 @@ namespace LlamaLibrary.ScriptConditions
             {
                 ClassJobType.Arcanist or ClassJobType.Summoner or ClassJobType.Thaumaturge or ClassJobType.BlackMage or ClassJobType.RedMage or ClassJobType.BlueMage or ClassJobType.Scholar or ClassJobType.Conjurer or ClassJobType.WhiteMage or ClassJobType.Astrologian or ClassJobType.Sage
 #if RB_DT
-    or ClassJobType.Pictomancer
+                    or ClassJobType.Pictomancer
 #endif
                     => true,
                 _ => false
@@ -293,11 +293,11 @@ namespace LlamaLibrary.ScriptConditions
             return false;
         }
 
-
         public static bool IsGlobalClient()
         {
             return OffsetManager.ActiveRegion == ClientRegion.Global;
         }
+
         public static bool IsTCClient()
         {
             return OffsetManager.ActiveRegion == ClientRegion.TraditionalChinese;
@@ -405,11 +405,99 @@ namespace LlamaLibrary.ScriptConditions
                 { ClassJobType.Pictomancer, 47889 },
             };
 
+        private static readonly Dictionary<ClassJobType, uint> UmbreaWeaponIds =
+            new Dictionary<ClassJobType, uint>
+            {
+                { ClassJobType.Paladin, 47006 },
+                { ClassJobType.Monk, 47007 },
+                { ClassJobType.Warrior, 47008 },
+                { ClassJobType.Dragoon, 47009 },
+                { ClassJobType.Bard, 47010 },
+                { ClassJobType.WhiteMage, 47011 },
+                { ClassJobType.BlackMage, 47012 },
+                { ClassJobType.Summoner, 47013 },
+                { ClassJobType.Scholar, 47014 },
+                { ClassJobType.Ninja, 47015 },
+                { ClassJobType.DarkKnight, 47016 },
+                { ClassJobType.Machinist, 47017 },
+                { ClassJobType.Astrologian, 47018 },
+                { ClassJobType.Samurai, 47019 },
+                { ClassJobType.RedMage, 47020 },
+                { ClassJobType.Gunbreaker, 47021 },
+                { ClassJobType.Dancer, 47022 },
+                { ClassJobType.Reaper, 47023 },
+                { ClassJobType.Sage, 47024 },
+                { ClassJobType.Viper, 47025 },
+                { ClassJobType.Pictomancer, 47026 },
+            };
+
+        private static readonly Dictionary<ClassJobType, uint> ObscurumWeaponIds =
+            new Dictionary<ClassJobType, uint>
+            {
+                { ClassJobType.Paladin, 50032 },
+                { ClassJobType.Monk, 50033 },
+                { ClassJobType.Warrior, 50034 },
+                { ClassJobType.Dragoon, 50035 },
+                { ClassJobType.Bard, 50036 },
+                { ClassJobType.WhiteMage, 50037 },
+                { ClassJobType.BlackMage, 50038 },
+                { ClassJobType.Summoner, 50039 },
+                { ClassJobType.Scholar, 50040 },
+                { ClassJobType.Ninja, 50041 },
+                { ClassJobType.DarkKnight, 50042 },
+                { ClassJobType.Machinist, 50043 },
+                { ClassJobType.Astrologian, 50044 },
+                { ClassJobType.Samurai, 50045 },
+                { ClassJobType.RedMage, 50046 },
+                { ClassJobType.Gunbreaker, 50047 },
+                { ClassJobType.Dancer, 50048 },
+                { ClassJobType.Reaper, 50049 },
+                { ClassJobType.Sage, 50050 },
+                { ClassJobType.Viper, 50051 },
+                { ClassJobType.Pictomancer, 50052 },
+            };
+
         public static bool IsPenumbraeWeaponEquipped()
         {
             ClassJobType currentJob = Core.Me.CurrentJob;
 
             if (!PenumbraeWeaponIds.TryGetValue(currentJob, out uint expectedItemId))
+                return false;
+
+            var mainHand =
+                InventoryManager
+                    .GetBagByInventoryBagId(InventoryBagId.EquippedItems)
+                    [EquipmentSlot.MainHand];
+
+            if (mainHand == null)
+                return false;
+
+            return mainHand.RawItemId == expectedItemId;
+        }
+
+        public static bool IsUmbraeWeaponEquipped()
+        {
+            ClassJobType currentJob = Core.Me.CurrentJob;
+
+            if (!UmbreaWeaponIds.TryGetValue(currentJob, out uint expectedItemId))
+                return false;
+
+            var mainHand =
+                InventoryManager
+                    .GetBagByInventoryBagId(InventoryBagId.EquippedItems)
+                    [EquipmentSlot.MainHand];
+
+            if (mainHand == null)
+                return false;
+
+            return mainHand.RawItemId == expectedItemId;
+        }
+
+        public static bool IsObscurumWeaponEquipped()
+        {
+            ClassJobType currentJob = Core.Me.CurrentJob;
+
+            if (!ObscurumWeaponIds.TryGetValue(currentJob, out uint expectedItemId))
                 return false;
 
             var mainHand =
