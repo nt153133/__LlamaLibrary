@@ -871,11 +871,7 @@ public class LoadServerProfile
 
             if (row == IntPtr.Zero)
             {
-#if RB_DT
-                row = GeneralFunctions.GetDawnContentRow(i + 200 - 36);
-#else
-                row = GeneralFunctions.GetDawnContentRow(i + 200 - 23);
-#endif
+                row = GeneralFunctions.GetDawnContentRow(i + 200 - 38);
             }
 
             if (row == IntPtr.Zero)
