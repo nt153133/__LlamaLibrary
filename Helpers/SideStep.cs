@@ -11,7 +11,7 @@ using LlamaLibrary.Logging;
 namespace LlamaLibrary.Helpers;
 
 [SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1214:Readonly fields should appear before non-readonly fields")]
-public class SideStep
+public static class SideStep
 {
 
     private static readonly LLogger Log = new("SideStepHelper", Color.FromRgb(255, 177, 109));
@@ -59,7 +59,7 @@ public class SideStep
         Log.Information("SideStep found.");
     }
 
-    public void LoadAvoidanceObjects()
+    public static void LoadAvoidanceObjects()
     {
         if (_loadAvoidanceFunction == null)
         {
@@ -70,7 +70,7 @@ public class SideStep
         _loadAvoidanceFunction.Invoke();
     }
 
-    public bool RemoveHandler(ulong type, uint key)
+    public static bool RemoveHandler(ulong type, uint key)
     {
         if (_removeHandlerFunction == null)
         {
@@ -80,7 +80,7 @@ public class SideStep
         return _removeHandlerFunction.Invoke(type, key);
     }
 
-    public void AddHandler(ulong type, uint key, Func<BattleCharacter, float, IEnumerable<AvoidInfo>> handler, float range = float.NaN)
+    public static void AddHandler(ulong type, uint key, Func<BattleCharacter, float, IEnumerable<AvoidInfo>> handler, float range = float.NaN)
     {
         if (_addHandlerFunction == null)
         {
@@ -89,4 +89,5 @@ public class SideStep
         }
         _addHandlerFunction?.Invoke(type, key, handler, range);
     }
+
 }
