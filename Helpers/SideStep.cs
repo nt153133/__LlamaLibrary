@@ -66,7 +66,7 @@ public static class SideStep
 
                 _loadAvoidanceFunction = (Action)Delegate.CreateDelegate(typeof(Action), _sideStep, "LoadAvoidanceObjects");
                 _addHandlerFunction = (Action<ulong, uint, Func<BattleCharacter, float, IEnumerable<AvoidInfo>>, float>)Delegate.CreateDelegate(typeof(Action<ulong, uint, Func<BattleCharacter, float, IEnumerable<AvoidInfo>>, float>), _sideStep, "AddHandler");
-                _removeHandlerFunction = (Func<ulong, uint,bool>)Delegate.CreateDelegate(typeof(Action<ulong, uint,bool>), _sideStep, GetRemoveHandler2Params(_sideStep));
+                _removeHandlerFunction = (Func<ulong, uint,bool>)Delegate.CreateDelegate(typeof(Func<ulong, uint,bool>), _sideStep, GetRemoveHandler2Params(_sideStep));
             }
             catch (Exception e)
             {
@@ -109,6 +109,7 @@ public static class SideStep
     }
 
 }
+
 
 
 
