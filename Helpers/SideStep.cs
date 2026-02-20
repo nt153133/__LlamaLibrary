@@ -27,6 +27,23 @@ public static class SideStep
         FindSideStep();
     }
 
+    private static MethodInfo GetRemoveHandler2Params(object pluginInstance)
+    {
+        var t = pluginInstance.GetType();
+    
+        var mi = t.GetMethod(
+            "RemoveHandler",
+            BindingFlags.Instance | BindingFlags.Public,
+            binder: null,
+            types: new[] { typeof(ulong), typeof(uint) },
+            modifiers: null);
+    
+        if (mi == null)
+            throw new MissingMethodException(t.FullName, "RemoveHandler(ulong, uint)");
+    
+        return mi;
+    }
+    
     private static void FindSideStep()
     {
         var loader = PluginManager.Plugins
@@ -48,7 +65,7 @@ public static class SideStep
 
                 _loadAvoidanceFunction = (Action)Delegate.CreateDelegate(typeof(Action), _sideStep, "LoadAvoidanceObjects");
                 _addHandlerFunction = (Action<ulong, uint, Func<BattleCharacter, float, IEnumerable<AvoidInfo>>, float>)Delegate.CreateDelegate(typeof(Action<ulong, uint, Func<BattleCharacter, float, IEnumerable<AvoidInfo>>, float>), _sideStep, "AddHandler");
-                _removeHandlerFunction = (Func<ulong, uint,bool>)Delegate.CreateDelegate(typeof(Action<ulong, uint,bool>), _sideStep, "RemoveHandler");
+                _removeHandlerFunction = (Func<ulong, uint,bool>)Delegate.CreateDelegate(typeof(Action<ulong, uint,bool>), _sideStep, GetRemoveHandler2Params(_sideStep));
             }
             catch (Exception e)
             {
@@ -91,5 +108,6 @@ public static class SideStep
     }
 
 }
+
 
 
