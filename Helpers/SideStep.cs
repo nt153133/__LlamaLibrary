@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Media;
+using System.Reflection;
 using ff14bot.Managers;
 using ff14bot.Objects;
 using ff14bot.Pathing.Avoidance;
@@ -108,6 +109,7 @@ public static class SideStep
     }
 
 }
+
 
 
 
