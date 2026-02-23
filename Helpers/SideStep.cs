@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -20,27 +20,27 @@ public static class SideStep
     private static object? _sideStep;
 
     private static Action? _loadAvoidanceFunction;
-    private static Action<ulong, uint, Func<BattleCharacter, float, IEnumerable<AvoidInfo>>, float>? _addHandlerFunction;
-    private static Func<ulong, uint, bool>? _removeHandlerFunction;
+    private static Func<uint, bool>? _override;
+    private static Func<uint, bool>? _removeOverride;
 
     static SideStep()
     {
         FindSideStep();
     }
 
-    private static MethodInfo GetRemoveHandler2Params(object pluginInstance)
+    private static MethodInfo GetRemoveHandler(object pluginInstance)
     {
         var t = pluginInstance.GetType();
     
         var mi = t.GetMethod(
-            "RemoveHandler",
+            "RemoveOverride",
             BindingFlags.Instance | BindingFlags.Public,
             binder: null,
-            types: new[] { typeof(ulong), typeof(uint) },
+            types: new[] { typeof(uint) },
             modifiers: null);
     
         if (mi == null)
-            throw new MissingMethodException(t.FullName, "RemoveHandler(ulong, uint)");
+            throw new MissingMethodException(t.FullName, "RemoveOverride(uint)");
     
         return mi;
     }
@@ -65,8 +65,8 @@ public static class SideStep
             {
 
                 _loadAvoidanceFunction = (Action)Delegate.CreateDelegate(typeof(Action), _sideStep, "LoadAvoidanceObjects");
-                _addHandlerFunction = (Action<ulong, uint, Func<BattleCharacter, float, IEnumerable<AvoidInfo>>, float>)Delegate.CreateDelegate(typeof(Action<ulong, uint, Func<BattleCharacter, float, IEnumerable<AvoidInfo>>, float>), _sideStep, "AddHandler");
-                _removeHandlerFunction = (Func<ulong, uint,bool>)Delegate.CreateDelegate(typeof(Func<ulong, uint,bool>), _sideStep, GetRemoveHandler2Params(_sideStep));
+                _override = (Func<uint,bool>)Delegate.CreateDelegate(typeof(Func<uint, bool>), _sideStep, "Override");
+                _removeOverride = (Func<uint,bool>)Delegate.CreateDelegate(typeof(Func<uint,bool>), _sideStep, "RemoveOverride");
             }
             catch (Exception e)
             {
@@ -88,24 +88,24 @@ public static class SideStep
         _loadAvoidanceFunction.Invoke();
     }
 
-    public static bool RemoveHandler(ulong type, uint key)
+    public static bool RemoveHandler(uint key)
     {
-        if (_removeHandlerFunction == null)
+        if (_removeOverride == null)
         {
             Log.Information("SideStepHelper: no RemoveHandler found.");
             return false;
         }
-        return _removeHandlerFunction.Invoke(type, key);
+        return _removeOverride.Invoke(key);
     }
 
-    public static void AddHandler(ulong type, uint key, Func<BattleCharacter, float, IEnumerable<AvoidInfo>> handler, float range = float.NaN)
+    public static bool Override(uint key)
     {
-        if (_addHandlerFunction == null)
+        if (_override == null)
         {
             Log.Information("SideStepHelper: no AddHandler found.");
-            return;
+            return false;
         }
-        _addHandlerFunction?.Invoke(type, key, handler, range);
+        return _override.Invoke(key);
     }
 
 }
