@@ -388,6 +388,8 @@ PublishScripts/
 # NuGet v3's project.json files produces more ignorable files
 *.nuget.props
 *.nuget.targets
+# NuGet bootstrapper
+.nuget/nuget.exe
 
 # Nuget personal access tokens and Credentials
 nuget.config

@@ -117,18 +117,16 @@ namespace LlamaLibrary.Retainers
 
         public static GameObject? NearestSummoningBell()
         {
-            var list = GameObjectManager.GameObjects
+            var bell = GameObjectManager.GameObjects
                 .Where(r => r.Name == Translator.SummoningBell)
                 .OrderBy(j => j.DistanceSqr())
-                .ToList();
+                .FirstOrDefault();
 
-            if (list.Count <= 0)
+            if (bell == null)
             {
                 Log.Error("No Summoning Bell Found");
                 return null;
             }
-
-            var bell = list[0];
 
             Log.Information($"Found nearest bell: {bell} Distance: {bell.Distance2D(Core.Me.Location)}");
 
@@ -280,7 +278,12 @@ namespace LlamaLibrary.Retainers
         {
             var enumerable = zones.ToList();
             Log.Information($"Zones: {string.Join(",", enumerable)}");
-            return enumerable.Where(j => WorldManager.AvailableLocations.Any(i => i.ZoneId == j)).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j).GilCost)
+            var locationCostByZone = WorldManager.AvailableLocations
+                .DistinctBy(i => i.ZoneId)
+                .ToDictionary(i => i.ZoneId, i => i.GilCost);
+            return enumerable
+                .Where(j => locationCostByZone.ContainsKey(j))
+                .OrderBy(j => locationCostByZone[j])
                 .First();
         }
 
