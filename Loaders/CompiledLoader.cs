@@ -20,6 +20,7 @@ using ff14bot.AClasses;
 using ff14bot.Interfaces;
 using LlamaLibrary.Logging;
 using SevenZip;
+
 // ReSharper disable VirtualMemberCallInConstructor
 
 namespace LlamaLibrary.Loaders;
@@ -47,7 +48,7 @@ public class IslandGathererLoader : BotBaseLoader
 }
 */
 
-public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
+public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : class
 {
     protected readonly LLogger Log;
     private HttpClient? _client;
@@ -63,6 +64,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
         {
             return _client;
         }
+
         _client = new()
         {
             Timeout = new TimeSpan(0, 0, 30)
@@ -114,23 +116,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
         }
         catch (ReflectionTypeLoadException ex)
         {
-            var sb = new StringBuilder();
-            foreach (var exSub in ex.LoaderExceptions)
-            {
-                sb.AppendLine(exSub?.Message);
-                if (exSub is FileNotFoundException exFileNotFound)
-                {
-                    if (!string.IsNullOrEmpty(exFileNotFound.FusionLog))
-                    {
-                        sb.AppendLine("Fusion Log:");
-                        sb.AppendLine(exFileNotFound.FusionLog);
-                    }
-                }
-
-                sb.AppendLine();
-            }
-
-            var errorMessage = sb.ToString();
+            var errorMessage = FormatLoaderExceptions(ex);
             Log.Error(errorMessage);
             return null;
             //Display or log the error based on your application.
@@ -155,23 +141,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
         }
         catch (ReflectionTypeLoadException ex)
         {
-            var sb = new StringBuilder();
-            foreach (var exSub in ex.LoaderExceptions)
-            {
-                sb.AppendLine(exSub?.Message);
-                if (exSub is FileNotFoundException exFileNotFound)
-                {
-                    if (!string.IsNullOrEmpty(exFileNotFound.FusionLog))
-                    {
-                        sb.AppendLine("Fusion Log:");
-                        sb.AppendLine(exFileNotFound.FusionLog);
-                    }
-                }
-
-                sb.AppendLine();
-            }
-
-            var errorMessage = sb.ToString();
+            var errorMessage = FormatLoaderExceptions(ex);
             Log.Error(errorMessage);
             return null;
             //Display or log the error based on your application.
@@ -252,7 +222,7 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
 
     protected void UnblockAll()
     {
-        foreach (var file in new DirectoryInfo(LocalFolderName).GetFiles("*.dll"))
+        foreach (var file in new DirectoryInfo(LocalFolderName).EnumerateFiles("*.dll"))
         {
             file.Unblock();
         }
@@ -370,14 +340,16 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
 
     private static void Clean(string directory)
     {
-        foreach (var file in new DirectoryInfo(directory).GetFiles())
+        foreach (var entry in new DirectoryInfo(directory).EnumerateFileSystemInfos())
         {
-            file.Delete();
-        }
-
-        foreach (var dir in new DirectoryInfo(directory).GetDirectories())
-        {
-            dir.Delete(true);
+            if (entry is DirectoryInfo dir)
+            {
+                dir.Delete(true);
+            }
+            else
+            {
+                entry.Delete();
+            }
         }
     }
 
@@ -419,9 +391,32 @@ public abstract class CompiledLoader<T> : IAddonProxy<T> where T : class
         {
             timer.Stop();
             Log.Information($"Load finished in {timer.ElapsedMilliseconds:N0}ms");
+            _client?.Dispose();
         }
 
         return null;
+    }
+
+    public void Dispose()
+    {
+        _client?.Dispose();
+        _client = null;
+    }
+
+    private static string FormatLoaderExceptions(ReflectionTypeLoadException ex)
+    {
+        var sb = new StringBuilder();
+        foreach (var exSub in ex.LoaderExceptions)
+        {
+            sb.AppendLine(exSub?.Message);
+            if (exSub is FileNotFoundException { FusionLog: { Length: > 0 } fusionLog })
+            {
+                sb.AppendLine("Fusion Log:");
+                sb.AppendLine(fusionLog);
+            }
+            sb.AppendLine();
+        }
+        return sb.ToString();
     }
 }
 
