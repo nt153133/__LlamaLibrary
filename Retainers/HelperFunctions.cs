@@ -282,8 +282,8 @@ namespace LlamaLibrary.Retainers
                 .DistinctBy(i => i.ZoneId)
                 .ToDictionary(i => i.ZoneId, i => i.GilCost);
             return enumerable
-                .Where(j => locationCostByZone.ContainsKey(j))
-                .OrderBy(j => locationCostByZone[j])
+                .Where(j => locationCostByZone.ContainsKey((ushort)j))
+                .OrderBy(j => locationCostByZone[(ushort)j])
                 .First();
         }
 
