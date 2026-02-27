@@ -28,13 +28,12 @@ namespace LlamaLibrary.Helpers
 
             var shopItems = AgentInclusionShop.Instance.ShopItems;
 
-            if (!shopItems.Any(i => i.RawItemIds.Contains(itemId)))
+            var shopItem = shopItems.FirstOrDefault(i => i.RawItemIds.Contains(itemId));
+            if (shopItem == null)
             {
                 Log.Information($"Item {itemId} not found");
                 return 0;
             }
-
-            var shopItem = shopItems.First(i => i.RawItemIds.Contains(itemId));
 
             if (shopItem.Hidden)
             {
@@ -129,7 +128,7 @@ namespace LlamaLibrary.Helpers
         {
             var shopIds = InclusionShopConstants.KnownItems.Where(i => i.Value.Contains(itemId)).Select(i => i.Key).ToList();
 
-            var npcs = InclusionShopConstants.ShopNpcs.Where(i => shopIds.Contains(i.ShopKey)).Where(i => i.RequiredQuest == 0 || QuestLogManager.IsQuestCompleted(i.RequiredQuest)).ToList();
+            var npcs = InclusionShopConstants.ShopNpcs.Where(i => shopIds.Contains(i.ShopKey) && (i.RequiredQuest == 0 || QuestLogManager.IsQuestCompleted(i.RequiredQuest))).ToList();
 
             if (npcs.Count == 0)
             {
@@ -149,7 +148,12 @@ namespace LlamaLibrary.Helpers
             }
             else
             {
-                npcToGoTo = npcs.Where(j => WorldManager.AvailableLocations.Any(i => i.ZoneId == j.ZoneId)).OrderBy(j => WorldManager.AvailableLocations.First(i => i.ZoneId == j.ZoneId).GilCost)
+                var locationCostByZone = WorldManager.AvailableLocations
+                    .DistinctBy(i => i.ZoneId)
+                    .ToDictionary(i => i.ZoneId, i => i.GilCost);
+                npcToGoTo = npcs
+                    .Where(j => locationCostByZone.ContainsKey(j.ZoneId))
+                    .OrderBy(j => locationCostByZone[j.ZoneId])
                     .First();
             }
 

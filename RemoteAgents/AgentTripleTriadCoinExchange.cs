@@ -34,7 +34,7 @@ public class AgentTripleTriadCoinExchange : AgentInterface<AgentTripleTriadCoinE
         {
             var cards =  Core.Memory.ReadArray<TripleTriadCoinExchangeCard>(ListPtr, CardCount);
             var cardIndexes = CardIndexArray;
-            for (var index = 0; index < cardIndexes.ToList().Count; index++)
+            for (var index = 0; index < cardIndexes.Length; index++)
             {
                 cards[cardIndexes[index]].SendAction = (uint)index;
             }
