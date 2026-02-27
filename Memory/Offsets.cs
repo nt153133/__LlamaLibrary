@@ -1904,7 +1904,7 @@ namespace LlamaLibrary.Memory
         internal static int off3; //0x8
 
         //7.3
-        [Offset("Search  48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F0")]
+        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F0")]
         [OffsetTC("Search 48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F8")]
         internal static IntPtr SendStringToFocus;
 

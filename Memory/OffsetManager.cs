@@ -64,28 +64,17 @@ public static class OffsetManager
 
     private const long _version = 47;
 
+    private static readonly TaskCompletionSource<bool> InitTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
     private const bool _debug = false;
 
-    private static int GameVersion
+    private static int GameVersion =>
+        GameVersion1 != 0 ? GameVersion1 : (GameVersion1 = GetGameVersion());
+
+    private static int GetGameVersion()
     {
-        get
-        {
-            if (GameVersion1 != 0)
-            {
-                return GameVersion1;
-            }
-
-            try
-            {
-                GameVersion1 = Core.CurrentGameVer;
-            }
-            catch
-            {
-                GameVersion1 = 0;
-            }
-
-            return GameVersion1;
-        }
+        try { return Core.CurrentGameVer; }
+        catch { return 0; }
     }
 
     private static string OffsetFile { get; } = Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{GameVersion}.json");
@@ -202,7 +191,7 @@ public static class OffsetManager
             finally
             {
                 initDone = true;
-                //initStarted = false;
+                InitTcs.TrySetResult(true);
             }
         }
         catch (Exception e)
@@ -212,6 +201,7 @@ public static class OffsetManager
         finally
         {
             initDone = true;
+            InitTcs.TrySetResult(true);
             stopwatch.Stop();
             Logger.Debug($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms");
         }
@@ -269,21 +259,29 @@ public static class OffsetManager
         OffsetCache.TryRemove(info.MemberName(), out _);
         if (GameVersion != 0)
         {
-            var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
-            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
+            ScheduleCacheWrite();
         }
     }
 
     internal static void ClearOffsetFromCache(string name)
     {
         OffsetCache.TryRemove(name, out _);
-        var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
-        File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
+        if (GameVersion != 0)
+        {
+            ScheduleCacheWrite();
+        }
     }
+
+    private static List<Type>? _cachedTypes;
 
     private static List<Type> GetTypes()
     {
-        var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Namespace != null && t.IsClass && t.Namespace.Contains("LlamaLibrary.Memory", StringComparison.Ordinal));
+        if (_cachedTypes != null) return _cachedTypes;
+
+        var types = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(t => t.Namespace != null && t.IsClass
+                                            && t.Namespace.StartsWith("LlamaLibrary.Memory", StringComparison.Ordinal));
+
         var q1 = types.Where(t => t.Name.Contains("Offsets", StringComparison.Ordinal)).ToList();
 
         if (!q1.Contains(typeof(Offsets)))
@@ -291,7 +289,8 @@ public static class OffsetManager
             q1.Add(typeof(Offsets));
         }
 
-        return q1;
+        _cachedTypes = q1;
+        return _cachedTypes;
     }
 
     private static List<Type> GetTypes(Assembly assembly)
@@ -329,15 +328,16 @@ public static class OffsetManager
 
         newStopwatch.Restart();
         var names = new List<string>();
+        var objects = new object[]
+        {
+            IntPtr.Zero
+        };
         foreach (var myType in q)
         {
             var test = ((IAgent)Activator.CreateInstance(myType,
                                                          BindingFlags.Instance | BindingFlags.NonPublic,
                                                          null,
-                                                         new object[]
-                                                         {
-                                                             IntPtr.Zero
-                                                         },
+                                                         objects,
                                                          null)!).RegisteredVtable;
 
             if (vtables.TryGetValue(test, out var vtable))
@@ -399,8 +399,7 @@ public static class OffsetManager
         newStopwatch.Restart();
         if (GameVersion != 0)
         {
-            var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
-            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
+            ScheduleCacheWrite();
         }
 
         newStopwatch.Stop();
@@ -518,11 +517,11 @@ public static class OffsetManager
 
         var pf = PatternFinderProxy.PatternFinder;
 
-        //Take the list of types and search for the offsets using multiple tasks
-        var tasks = fields.Select(type => Task.Run(() => SearchOffset(type, pf))).ToList();
-
-        //Wait for all tasks to complete
-        await Task.WhenAll(tasks).ConfigureAwait(false);
+        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
+        await Parallel.ForEachAsync(fields, parallelOptions, async (type, ct) =>
+        {
+            await Task.Run(() => SearchOffset(type, pf), ct);
+        });
     }
 
     public static void SetOffsetObjects(IEnumerable<Type> q1)
@@ -661,10 +660,7 @@ public static class OffsetManager
 
         SetOffsetObjects(q1);
 
-        while (!initDone)
-        {
-            Thread.Sleep(100);
-        }
+        InitTcs.Task.GetAwaiter().GetResult();
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
@@ -682,8 +678,7 @@ public static class OffsetManager
 
         if (GameVersion != 0)
         {
-            var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
-            File.WriteAllText(OffsetFile, JsonConvert.SerializeObject(sorted));
+            ScheduleCacheWrite();
         }
 
         var vtables = new Dictionary<IntPtr, int>();
@@ -703,15 +698,18 @@ public static class OffsetManager
                 where t.IsClass && typeof(IAgent).IsAssignableFrom(t)
                 select t;
 
+        var objects = new object[]
+        {
+            IntPtr.Zero
+        };
+
         foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
         {
+
             var test = ((IAgent)Activator.CreateInstance(MyType,
                                                          BindingFlags.Instance | BindingFlags.NonPublic,
                                                          null,
-                                                         new object[]
-                                                         {
-                                                             IntPtr.Zero
-                                                         },
+                                                         objects,
                                                          null)!).RegisteredVtable;
 
             if (vtables.TryGetValue(test, out var value))
@@ -724,10 +722,7 @@ public static class OffsetManager
             }
         }
 
-        while (!initDone)
-        {
-            Thread.Sleep(100);
-        }
+        InitTcs.Task.GetAwaiter().GetResult();
     }
 
     public static Dictionary<string, string> LLDict(ClientRegion mode = ClientRegion.Global)
@@ -866,4 +861,47 @@ public static class OffsetManager
         return results;
     }
 
+    private static CancellationTokenSource? _writeCts;
+    private static readonly SemaphoreSlim WriteLock = new(1, 1);
+
+    private static void ScheduleCacheWrite()
+    {
+        // Cancel any pending write
+        var oldCts = Interlocked.Exchange(ref _writeCts, new CancellationTokenSource());
+        oldCts?.Cancel();
+        oldCts?.Dispose();
+
+        var cts = _writeCts;
+        if (cts == null) return;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                // Debounce: wait 500ms, if cancelled another write is coming
+                await Task.Delay(500, cts.Token).ConfigureAwait(false);
+
+                await WriteLock.WaitAsync(cts.Token).ConfigureAwait(false);
+                try
+                {
+                    var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
+                    var json = JsonConvert.SerializeObject(sorted);
+                    await File.WriteAllTextAsync(OffsetFile, json).ConfigureAwait(false);
+                    Logger.Debug("OffsetCache written to disk");
+                }
+                finally
+                {
+                    WriteLock.Release();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // A newer write was scheduled, this one is intentionally suppressed
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Failed to write offset cache: {e.Message}");
+            }
+        }, CancellationToken.None);
+    }
 }
