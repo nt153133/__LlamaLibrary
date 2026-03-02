@@ -33,6 +33,10 @@ namespace LlamaLibrary.Logging
         /// <param name="logLevel"><see cref="LogLevel"/> for this logging category.</param>
         public LLogger(string name, Color color, LogLevel logLevel = LogLevel.Information)
         {
+            if (logLevel == LogLevel.Information)
+            {
+                logLevel = RbCurrentLogLevel;
+            }
             _name = name;
             Color = color;
             LogLevel = logLevel;
@@ -40,6 +44,10 @@ namespace LlamaLibrary.Logging
 
         public LLogger(string name, LogLevel logLevel = LogLevel.Information)
         {
+            if (logLevel == LogLevel.Information)
+            {
+                logLevel = RbCurrentLogLevel;
+            }
             _name = name;
             Color = Colors.Gainsboro;
             LogLevel = logLevel;
@@ -60,10 +68,10 @@ namespace LlamaLibrary.Logging
         /// </summary>
         /// <param name="color">Log line <see cref="System.Windows.Media.Color"/>.</param>
         /// <param name="message">Text to write to log.</param>
-        public virtual void WriteLog(Color color, string message)
+        public virtual void WriteLog(Color color, string message, ff14bot.Helpers.LogLevel rbLogLevel = ff14bot.Helpers.LogLevel.Normal)
         {
             var logLine = $"[{_name}] {message}";
-            ff14bot.Helpers.Logging.Write(ff14bot.Helpers.LogLevel.Quiet, color, logLine); //ff14bot.Helpers.LogLevel.Normal
+            ff14bot.Helpers.Logging.Write(rbLogLevel, color, logLine); //ff14bot.Helpers.LogLevel.Normal
             Console.WriteLine(logLine); // Needed to appear in debugger, tests, etc
         }
 
@@ -77,7 +85,24 @@ namespace LlamaLibrary.Logging
         {
             if (IsEnabled(logLevel))
             {
-                WriteLog(color, message);
+                switch (logLevel)
+                {
+                    case LogLevel.Verbose:
+                        WriteLog(color, message, ff14bot.Helpers.LogLevel.Verbose);
+                        break;
+                    case LogLevel.Debug:
+                        WriteLog(color, message, ff14bot.Helpers.LogLevel.Diagnostic);
+                        break;
+                    case LogLevel.Information:
+                        WriteLog(color, message, ff14bot.Helpers.LogLevel.Normal);
+                        break;
+                    case LogLevel.Warning:
+                    case LogLevel.Error:
+                        WriteLog(color, message, ff14bot.Helpers.LogLevel.Quiet);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null);
+                }
             }
         }
 
@@ -132,5 +157,19 @@ namespace LlamaLibrary.Logging
             var method = frame.GetMethod();
             Error($"{method?.GetType().Name} {method?.Name} \n{exception}");
         }
+
+        public static LogLevel GetRbLogLevel(ff14bot.Helpers.LogLevel rbLogLevel)
+        {
+            return rbLogLevel switch
+            {
+                ff14bot.Helpers.LogLevel.Verbose    => LogLevel.Verbose,
+                ff14bot.Helpers.LogLevel.Diagnostic => LogLevel.Debug,
+                ff14bot.Helpers.LogLevel.Normal     => LogLevel.Information,
+                ff14bot.Helpers.LogLevel.Quiet      => LogLevel.Warning,
+                _                                   => throw new ArgumentOutOfRangeException(nameof(rbLogLevel), rbLogLevel, null)
+            };
+        }
+
+        public static LogLevel RbCurrentLogLevel => GetRbLogLevel(ff14bot.Helpers.Logging.LoggingLevel);
     }
 }
