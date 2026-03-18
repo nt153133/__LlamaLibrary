@@ -62,7 +62,7 @@ public static class OffsetManager
 
     public static ConcurrentDictionary<string, long> OffsetCache = new(StringComparer.Ordinal);
 
-    private const long _version = 47;
+    private const long _version = 48;
 
     private static readonly TaskCompletionSource<bool> InitTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 

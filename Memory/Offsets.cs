@@ -1913,7 +1913,8 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search E8 ? ? ? ? EB ? 33 DB 48 89 1F TraceCall")]
         internal static IntPtr Utf8StringCtor;
 
-        [Offset("Search E8 ? ? ? ? 49 8D 8F ? ? ? ? 49 8D 97 ? ? ? ? TraceCall")]
+        //[Offset("Search E8 ? ? ? ? 49 8D 8F ? ? ? ? 49 8D 97 ? ? ? ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 4C 8B 05 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 8D ? ? ? ? E8 ? ? ? ? 45 33 C0 TraceCall")]
         internal static IntPtr Utf8SetString;
 
         //7.3
