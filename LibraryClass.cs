@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -9,8 +11,8 @@ using ff14bot;
 using ff14bot.AClasses;
 using LlamaLibrary.Events;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
-
 using Newtonsoft.Json;
 
 // ReSharper disable InconsistentNaming
@@ -37,13 +39,14 @@ public class LibraryClass : ILibrary
             SafeMode = true;
         }
 
+        LLogger trace = new LLogger("Trace");
+        Trace.Listeners.Add(new LLoggerTraceListener(trace));
+
+
         if (SafeMode)
         {
             ff14bot.Helpers.Logging.WriteDiagnostic("Safe Mode Enabled");
-            Task.Run(() =>
-            {
-                MessageBox.Show("Safe Mode Enabled", "LlamaLibrary", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK, MessageBoxOptions.None);
-            });
+            Task.Run(() => { MessageBox.Show("Safe Mode Enabled", "LlamaLibrary", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK, MessageBoxOptions.None); });
         }
 
         return await OffsetManager.InitLib();
@@ -82,9 +85,6 @@ public class LibraryClass : ILibrary
             File.WriteAllText(productFile, JsonConvert.SerializeObject(productPatterns, Formatting.Indented));
         }
         */
-
-
-
 
         return true;
     }
