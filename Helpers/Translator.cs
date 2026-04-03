@@ -1,12 +1,173 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using ff14bot.Enums;
 using ff14bot.Managers;
 
 namespace LlamaLibrary.Helpers
 {
+    public enum TranslationKey
+    {
+        CharacterTaskUnavailable,
+        CharacterTaskGenericError
+    }
+
     public static class Translator
     {
         public static readonly Language Language;
+
+        /// <summary>
+        /// Gets the localized text for a built-in translation key.
+        /// </summary>
+        /// <param name="key">The built-in translation key to resolve.</param>
+        /// <returns>
+        /// The localized text for the current language, or the English fallback when the current language is unavailable.
+        /// Returns an empty string when the key is not registered.
+        /// </returns>
+        public static string GetText(TranslationKey key)
+        {
+            return TryGetText(key, out var text) ? text : string.Empty;
+        }
+
+        /// <summary>
+        /// Attempts to get the localized text for a built-in translation key.
+        /// </summary>
+        /// <param name="key">The built-in translation key to resolve.</param>
+        /// <param name="text">
+        /// When this method returns, contains the localized text for the current language, or the English fallback when found;
+        /// otherwise, an empty string.
+        /// </param>
+        /// <returns><see langword="true"/> when a translation was found; otherwise, <see langword="false"/>.</returns>
+        public static bool TryGetText(TranslationKey key, out string text)
+        {
+            text = string.Empty;
+
+            if (!GenericTranslations.TryGetValue(key, out var translations))
+            {
+                return false;
+            }
+
+            return TryResolveText(translations, out text);
+        }
+
+        /// <summary>
+        /// Gets the localized text for a registered string translation key.
+        /// </summary>
+        /// <param name="key">The string translation key to resolve.</param>
+        /// <returns>
+        /// The localized text for the current language, or the English fallback when the current language is unavailable.
+        /// Returns an empty string when the key is not registered.
+        /// </returns>
+        public static string GetText(string key)
+        {
+            return TryGetText(key, out var text) ? text : string.Empty;
+        }
+
+        /// <summary>
+        /// Attempts to get the localized text for a registered string translation key.
+        /// </summary>
+        /// <param name="key">The string translation key to resolve.</param>
+        /// <param name="text">
+        /// When this method returns, contains the localized text for the current language, or the English fallback when found;
+        /// otherwise, an empty string.
+        /// </param>
+        /// <returns><see langword="true"/> when a translation was found; otherwise, <see langword="false"/>.</returns>
+        public static bool TryGetText(string key, out string text)
+        {
+            text = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                return false;
+            }
+
+            if (!StringKeyTranslations.TryGetValue(key, out var translations))
+            {
+                return false;
+            }
+
+            return TryResolveText(translations, out text);
+        }
+
+        /// <summary>
+        /// Registers a string translation key that can be resolved through <see cref="GetText(string)"/> and <see cref="TryGetText(string, out string)"/>.
+        /// </summary>
+        /// <param name="key">The string translation key to register.</param>
+        /// <param name="translations">The translations to associate with the key.</param>
+        /// <param name="overwrite">
+        /// <see langword="true"/> to replace an existing registration for the same key; otherwise, <see langword="false"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the key was registered or replaced; otherwise, <see langword="false"/> when the key already exists and overwrite is disabled.
+        /// </returns>
+        public static bool RegisterText(string key, IReadOnlyDictionary<Language, string> translations, bool overwrite = false)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException("Translation key cannot be null or whitespace.", nameof(key));
+            }
+
+            if (translations is null)
+            {
+                throw new ArgumentNullException(nameof(translations));
+            }
+
+            var copy = new Dictionary<Language, string>(translations);
+
+            if (overwrite)
+            {
+                StringKeyTranslations[key] = copy;
+                return true;
+            }
+
+            return StringKeyTranslations.TryAdd(key, copy);
+        }
+
+        /// <summary>
+        /// Registers multiple string translation keys.
+        /// </summary>
+        /// <param name="translationsByKey">A map of string keys to their translation dictionaries.</param>
+        /// <param name="overwrite">
+        /// <see langword="true"/> to replace existing registrations for matching keys; otherwise, <see langword="false"/>.
+        /// </param>
+        /// <returns>The number of keys that were successfully registered.</returns>
+        public static int RegisterTexts(IReadOnlyDictionary<string, IReadOnlyDictionary<Language, string>> translationsByKey, bool overwrite = false)
+        {
+            if (translationsByKey is null)
+            {
+                throw new ArgumentNullException(nameof(translationsByKey));
+            }
+
+            var registeredCount = 0;
+            foreach (var pair in translationsByKey)
+            {
+                if (RegisterText(pair.Key, pair.Value, overwrite))
+                {
+                    registeredCount++;
+                }
+            }
+
+            return registeredCount;
+        }
+
+        private static bool TryResolveText(IReadOnlyDictionary<Language, string> translations, out string text)
+        {
+            text = string.Empty;
+
+            if (translations.TryGetValue(Language, out var localizedText) && !string.IsNullOrWhiteSpace(localizedText))
+            {
+                text = localizedText;
+                return true;
+            }
+
+            if (translations.TryGetValue(ff14bot.Enums.Language.Eng, out var englishText) && !string.IsNullOrWhiteSpace(englishText))
+            {
+                text = englishText;
+                return true;
+            }
+
+            return false;
+        }
 
         public static string SummoningBell => Summoning_Bell[Language];
 
@@ -692,5 +853,51 @@ namespace LlamaLibrary.Helpers
             { Language.Chn, "绝难本" },
             { Language.TraditionalChinese , "绝难本"}
         };
+
+        private static readonly Dictionary<TranslationKey, Dictionary<Language, string>> GenericTranslations = new()
+        {
+            {
+                TranslationKey.CharacterTaskUnavailable,
+                new Dictionary<Language, string>
+                {
+                    { Language.Eng, "Unavailable" },
+                    { Language.Jap, "利用できません" },
+                    { Language.Fre, "Indisponible" },
+                    { Language.Ger, "Nicht verfugbar" },
+                    { Language.Chn, "不可用" },
+                    { Language.TraditionalChinese, "不可用" }
+                }
+            },
+            {
+                TranslationKey.CharacterTaskGenericError,
+                new Dictionary<Language, string>
+                {
+                    { Language.Eng, "An error has occurred" },
+                    { Language.Jap, "エラーが発生しました" },
+                    { Language.Fre, "Une erreur s'est produite" },
+                    { Language.Ger, "Ein Fehler ist aufgetreten" },
+                    { Language.Chn, "发生错误" },
+                    { Language.TraditionalChinese, "發生錯誤" }
+                }
+            }
+        };
+
+        // Example external registration:
+        // Translator.RegisterText(
+        //     "MyPlugin.CharacterTask.InventoryFull",
+        //     new Dictionary<Language, string>
+        //     {
+        //         { Language.Eng, "Inventory is full" },
+        //         { Language.Jap, "所持品がいっぱいです" },
+        //         { Language.Fre, "L'inventaire est plein" },
+        //         { Language.Ger, "Das Inventar ist voll" },
+        //         { Language.Chn, "背包已满" },
+        //         { Language.TraditionalChinese, "背包已滿" }
+        //     });
+        //
+        // var text = Translator.GetText("MyPlugin.CharacterTask.InventoryFull");
+
+        private static ConcurrentDictionary<string, IReadOnlyDictionary<Language, string>> StringKeyTranslations { get; } =
+            new(StringComparer.Ordinal);
     }
 }
