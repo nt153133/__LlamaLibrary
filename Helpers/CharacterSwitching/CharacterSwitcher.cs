@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace LlamaLibrary.Helpers.CharacterSwitching;
@@ -8,6 +9,11 @@ namespace LlamaLibrary.Helpers.CharacterSwitching;
 /// </summary>
 public static class CharacterSwitcher
 {
+    /// <summary>
+    /// Gets the observable collection of registered character tasks.
+    /// </summary>
+    public static ReadOnlyObservableCollection<CharacterTask> CharacterTasks => CharacterTaskManager.Tasks;
+
     /// <summary>
     /// Asynchronous delegate used to populate the character list.
     /// </summary>
@@ -83,5 +89,25 @@ public static class CharacterSwitcher
     public static bool IsCharacterSwitchingAvailable()
     {
         return FillCharacterListAsync != null && SwitchCharacterAsync != null;
+    }
+
+    /// <summary>
+    /// Registers a character task provided by an external library.
+    /// </summary>
+    /// <param name="task">The task to register.</param>
+    /// <returns><see langword="true"/> when the task is added; otherwise <see langword="false"/>.</returns>
+    public static bool AddCharacterTask(CharacterTask task)
+    {
+        return CharacterTaskManager.AddTask(task);
+    }
+
+    /// <summary>
+    /// Removes a previously registered character task.
+    /// </summary>
+    /// <param name="task">The task to remove.</param>
+    /// <returns><see langword="true"/> when the task is removed; otherwise <see langword="false"/>.</returns>
+    public static bool RemoveCharacterTask(CharacterTask task)
+    {
+        return CharacterTaskManager.RemoveTask(task);
     }
 }
