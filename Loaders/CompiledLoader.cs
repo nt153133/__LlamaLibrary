@@ -230,11 +230,25 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
 
     protected virtual async Task<(MemoryStream? Stream, string? ContentType)> Download()
     {
+        var result = await DownloadFromUrl(DataUrl).ConfigureAwait(false);
+
+        if (result.Stream == null && DataUrl != ChineseDataUrl)
+        {
+            ForceChineseDownload = true;
+            Log.Warning($"Primary download failed. Attempting alternate download url: {ChineseDataUrl}");
+            result = await DownloadFromUrl(ChineseDataUrl).ConfigureAwait(false);
+        }
+
+        return result;
+    }
+
+    private async Task<(MemoryStream? Stream, string? ContentType)> DownloadFromUrl(string url)
+    {
         try
         {
             var sw = Stopwatch.StartNew();
-            using var response = await GetHttpClient().GetAsync(DataUrl, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
-            Log.Verbose($"{DataUrl}");
+            using var response = await GetHttpClient().GetAsync(url, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
+            //Log.Verbose($"{url}");
             Log.Verbose($"Content Type: {response.Content.Headers.ContentType?.MediaType} Size: {response.Content.Headers.ContentLength:N0}");
             response.EnsureSuccessStatusCode();
             var stream = new MemoryStream();
@@ -246,7 +260,7 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
         }
         catch (Exception e)
         {
-            Log.Error("Failed to download");
+            Log.Error($"Failed to download from {url}");
             Log.Exception(e);
             return (null, null);
         }
