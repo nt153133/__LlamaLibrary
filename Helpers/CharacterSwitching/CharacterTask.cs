@@ -92,16 +92,17 @@ public abstract class CharacterTask
 	/// </returns>
 	public abstract Task<(bool canRun, string reason)> CheckAvailabilityAsync();
 
-	/// <summary>
-	/// Runs the task-specific implementation.
-	/// </summary>
-	protected abstract Task<CharacterTaskResult> ExecuteAsync();
+    /// <summary>
+    /// Runs the task-specific implementation.
+    /// </summary>
+    /// <param name="parameter"></param>
+    protected abstract Task<CharacterTaskResult> ExecuteAsync(string? parameter = null);
 
 	/// <summary>
 	/// Runs the full task flow: availability check, execution, and status tracking.
 	/// </summary>
 	/// <returns>The final run result.</returns>
-	public virtual async Task<CharacterTaskResult> RunAsync()
+	public virtual async Task<CharacterTaskResult> RunAsync(string? parameter =  null)
 	{
 		IsRunning = true;
 		var startTime = DateTime.Now;
@@ -122,7 +123,7 @@ public abstract class CharacterTask
 				return unavailableResult;
 			}
 
-			var result = await ExecuteAsync();
+			var result = await ExecuteAsync(parameter);
 			var endTime = DateTime.Now;
 
 			LastRun = endTime;
