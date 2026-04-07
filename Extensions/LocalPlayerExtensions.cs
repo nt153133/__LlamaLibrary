@@ -97,7 +97,7 @@ namespace LlamaLibrary.Extensions
             return Core.Memory.Read<byte>(Offsets.Conditions + condition) == 1;
         }
 
-        public static bool HasPermission(this LocalPlayer player, uint permissionId, int excludedCondition1 = 0, int excludedCondition2 = 0)
+        public static bool HasPermission(this LocalPlayer player, int permissionId, int excludedCondition1 = 0, int excludedCondition2 = 0)
         {
             return Core.Memory.CallInjectedWraper<byte>(LocalPlayerExtensionsOffsets.HasPermission,Offsets.Conditions, permissionId, excludedCondition1, excludedCondition2) == 1;
         }
