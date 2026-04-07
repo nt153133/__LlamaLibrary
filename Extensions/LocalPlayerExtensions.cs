@@ -17,7 +17,7 @@ namespace LlamaLibrary.Extensions
         public const uint TheEndeavor = 900;
         public const uint TheEndeaverRuby = 1163;
 
-        
+
 
         public static bool IsWalking => Core.Memory.Read<byte>(LocalPlayerExtensionsOffsets.RunWalk) == 1;
 
@@ -95,6 +95,11 @@ namespace LlamaLibrary.Extensions
         public static bool CheckCondition(this LocalPlayer player, byte condition)
         {
             return Core.Memory.Read<byte>(Offsets.Conditions + condition) == 1;
+        }
+
+        public static bool HasPermission(this LocalPlayer player, uint permissionId, int excludedCondition1 = 0, int excludedCondition2 = 0)
+        {
+            return Core.Memory.CallInjectedWraper<byte>(LocalPlayerExtensionsOffsets.HasPermission,Offsets.Conditions, permissionId, excludedCondition1, excludedCondition2) == 1;
         }
 
         public static ulong PlayerId(this LocalPlayer player)

@@ -1574,6 +1574,9 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8B DA 66 83 B9 ? ? ? ? ?  Add 6 Read32")]
         internal static int CurrentMount;
 
+        [Offset("Search E8 ? ? ? ? 84 C0 75 ? 8B FB TraceCall")]
+        internal static IntPtr HasPermission;
+
     }
 
     public static class LookingForGroupConditionOffsets
