@@ -9,7 +9,8 @@ namespace LlamaLibrary.Helpers
     public enum TranslationKey
     {
         CharacterTaskUnavailable,
-        CharacterTaskGenericError
+        CharacterTaskGenericError,
+        CharacterTaskParameterRequired
     }
 
     public static class Translator
@@ -274,7 +275,7 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Sonnette" },
             { Language.Ger, "Krämerklingel" },
             { Language.Chn, "传唤铃" },
-            { Language.TraditionalChinese, "傳喚鈴"}
+            { Language.TraditionalChinese, "傳喚鈴" }
         };
 
         //Addon2378
@@ -596,7 +597,6 @@ namespace LlamaLibrary.Helpers
             { Language.TraditionalChinese, "<Gui(67)/" }
         };
 
-
         //Aetheryte12
         private static readonly Dictionary<Language, string> Aetheryte12 = new()
         {
@@ -607,7 +607,6 @@ namespace LlamaLibrary.Helpers
             { Language.Chn, "切换副本区" },
             { Language.TraditionalChinese, "切換副本區" }
         };
-
 
         //Aetheryte13
         private static readonly Dictionary<Language, string> Aetheryte13 = new()
@@ -827,7 +826,7 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Hard" },
             { Language.Ger, "Hard" },
             { Language.Chn, "高难本" },
-            { Language.TraditionalChinese , "高难本"}
+            { Language.TraditionalChinese, "高难本" }
         };
 
         public static string Extreme => ExtremeText[Language];
@@ -839,7 +838,7 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Extreme" },
             { Language.Ger, "Extreme" },
             { Language.Chn, "极难本" },
-            { Language.TraditionalChinese , "极难本"}
+            { Language.TraditionalChinese, "极难本" }
         };
 
         public static string Savage => SavageText[Language];
@@ -851,7 +850,7 @@ namespace LlamaLibrary.Helpers
             { Language.Fre, "Savage" },
             { Language.Ger, "Savage" },
             { Language.Chn, "绝难本" },
-            { Language.TraditionalChinese , "绝难本"}
+            { Language.TraditionalChinese, "绝难本" }
         };
 
         private static readonly Dictionary<TranslationKey, Dictionary<Language, string>> GenericTranslations = new()
@@ -879,7 +878,19 @@ namespace LlamaLibrary.Helpers
                     { Language.Chn, "发生错误" },
                     { Language.TraditionalChinese, "發生錯誤" }
                 }
-            }
+            },
+            {
+                TranslationKey.CharacterTaskParameterRequired,
+                new Dictionary<Language, string>
+                {
+                    { Language.Eng, "Task requires a parameter" },
+                    { Language.Jap, "タスクにはパラメーターが必要です" },
+                    { Language.Fre, "La tâche nécessite un paramètre" },
+                    { Language.Ger, "Die Aufgabe erfordert einen Parameter" },
+                    { Language.Chn, "任务需要一个参数" },
+                    { Language.TraditionalChinese, "任務需要一個參數" }
+                }
+            },
         };
 
         // Example external registration:
