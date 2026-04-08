@@ -30,6 +30,16 @@ public abstract class CharacterTask
 	/// </summary>
 	public abstract string ProvidingBotbaseName { get; }
 
+    /// <summary>
+    /// Optional string parameter that can be used to provide additional context or instructions for the task.  This is not required for all tasks and can be left empty if not needed.
+    /// </summary>
+    public virtual string Parameter { get; set; } = "";
+
+    /// <summary>
+    /// Indicate if a parameter needs to be included
+    /// </summary>
+    public virtual bool RequiresParameter => false;
+
 	/// <summary>
 	/// Gets a value indicating whether this task is currently running.
 	/// </summary>
