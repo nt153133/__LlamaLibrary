@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using ff14bot;
 using ff14bot.Enums;
 using ff14bot.Managers;
 
@@ -39,7 +40,7 @@ namespace LlamaLibrary.Helpers
         /// otherwise, an empty string.
         /// </param>
         /// <returns><see langword="true"/> when a translation was found; otherwise, <see langword="false"/>.</returns>
-        public static bool TryGetText(TranslationKey key, out string text)
+        public static bool TryGetText(TranslationKey key, out string text,bool allowOverride = true)
         {
             text = string.Empty;
 
@@ -48,7 +49,7 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            return TryResolveText(translations, out text);
+            return TryResolveText(translations, out text,allowOverride);
         }
 
         /// <summary>
@@ -59,9 +60,9 @@ namespace LlamaLibrary.Helpers
         /// The localized text for the current language, or the English fallback when the current language is unavailable.
         /// Returns an empty string when the key is not registered.
         /// </returns>
-        public static string GetText(string key)
+        public static string GetText(string key, bool allowOverride = true)
         {
-            return TryGetText(key, out var text) ? text : string.Empty;
+            return TryGetText(key, out var text, allowOverride) ? text : string.Empty;
         }
 
         /// <summary>
@@ -73,7 +74,7 @@ namespace LlamaLibrary.Helpers
         /// otherwise, an empty string.
         /// </param>
         /// <returns><see langword="true"/> when a translation was found; otherwise, <see langword="false"/>.</returns>
-        public static bool TryGetText(string key, out string text)
+        public static bool TryGetText(string key, out string text,bool allowOverride = true)
         {
             text = string.Empty;
 
@@ -87,7 +88,7 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            return TryResolveText(translations, out text);
+            return TryResolveText(translations, out text, allowOverride);
         }
 
         /// <summary>
@@ -151,9 +152,18 @@ namespace LlamaLibrary.Helpers
             return registeredCount;
         }
 
-        private static bool TryResolveText(IReadOnlyDictionary<Language, string> translations, out string text)
+        private static bool TryResolveText(IReadOnlyDictionary<Language, string> translations, out string text,bool allowOverride = true)
         {
             text = string.Empty;
+
+            if (allowOverride && Core.EnglishOverride)
+            {
+                if (translations.TryGetValue(Language.Eng, out var englishOverride) && !string.IsNullOrWhiteSpace(englishOverride))
+                {
+                    text = englishOverride;
+                    return true;
+                }
+            }
 
             if (translations.TryGetValue(Language, out var localizedText) && !string.IsNullOrWhiteSpace(localizedText))
             {
@@ -907,6 +917,7 @@ namespace LlamaLibrary.Helpers
         //     });
         //
         // var text = Translator.GetText("MyPlugin.CharacterTask.InventoryFull");
+        // pass false as second parameter if it's a select string and you don't want english override to happen
 
         private static ConcurrentDictionary<string, IReadOnlyDictionary<Language, string>> StringKeyTranslations { get; } =
             new(StringComparer.Ordinal);
