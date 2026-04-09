@@ -36,6 +36,11 @@ public abstract class CharacterTask
     public virtual string Parameter { get; set; } = "";
 
     /// <summary>
+    /// Optional list of predefined parameter choices for users
+    /// </summary>
+    public virtual IEnumerable<string> ParameterOptions { get; } = Array.Empty<string>();
+
+    /// <summary>
     /// Indicate if a parameter needs to be included
     /// </summary>
     public virtual bool RequiresParameter => false;
