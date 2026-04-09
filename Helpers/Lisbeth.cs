@@ -165,6 +165,23 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        public static async Task<bool> HasLisbethNoCoroutine()
+        {
+            try
+            {
+                if (BotManager.Bots.FirstOrDefault(c => c.EnglishName == "Lisbeth") == null)
+                {
+                    return false;
+                }
+
+                return await IsProductKeyValidNoCoroutine();
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static string GetCurrentAreaName => _getCurrentAreaName.Invoke();
 
         public static async Task Kill(Character mob)
@@ -353,6 +370,11 @@ namespace LlamaLibrary.Helpers
         public static async Task<bool> IsProductKeyValid()
         {
             return await Coroutine.ExternalTask(_isProductKeyValid());
+        }
+
+        public static async Task<bool> IsProductKeyValidNoCoroutine()
+        {
+            return await _isProductKeyValid();
         }
 
         public static HashSet<uint> GetAllOrderItems()
