@@ -13,8 +13,6 @@ namespace LlamaLibrary.Helpers
 {
     public static class WorldHelper
     {
-
-
         private static readonly IntPtr DcOffsetLocation;
 
         static WorldHelper()
@@ -52,6 +50,9 @@ namespace LlamaLibrary.Helpers
             { WorldDCGroupType.FatCat, new[] { World.ZiShuiZhanQiao, World.MoDuNa, World.JingYuZhuangYuan, World.YanXia, World.HaiMaoChaWu, World.RouFengHaiWan, World.HuPoYuan } },
             { WorldDCGroupType.Mameshiba, new[] { World.TaiYangHaiAn2, World.YinLeiHu2, World.YiXiuJiaDe2, World.ShuiJingTa2, World.HongChaChuan2 } },
             { WorldDCGroupType.Moogle, new[] { World.BaiJinHuanXiang, World.LvRenZhanQiao, World.FuXiaoZhiJian, World.Longchaoshendian, World.ChaoFengTing, World.ShenQuanHen, World.BaiYinXiang, World.MengYuBaoJing } },
+
+            //Tc worlds
+            { WorldDCGroupType.TCRegion1, new[] { World.TcBahamut, World.TcGaruda, World.TcPhoenix, World.TcIfrit, World.TcTitan, World.TcRamuh, World.TcLeviathan, World.TcOdin } },
         };
 
         public static World[] CurrentWorldList
@@ -73,6 +74,11 @@ namespace LlamaLibrary.Helpers
         {
             get
             {
+
+                #if RB_TC
+                    return (byte)WorldDCGroupType.TCRegion1;
+                #endif
+
                 #if RB_CN
                 var dc = WorldMap.Where(x => x.Value.Any(y => y == CurrentWorld));
                 if (!dc.Any())
@@ -88,11 +94,6 @@ namespace LlamaLibrary.Helpers
 
         public static bool CheckDC(World world)
         {
-            if (Translator.Language == Language.Chn)
-            {
-                return true;
-            }
-
             if (OffsetManager.ActiveRegion == ClientRegion.TraditionalChinese)
             {
                 return true;

@@ -30,6 +30,9 @@ namespace LlamaLibrary.Enums
 
         [Description("莫古力")]
         Moogle = 102,
+
+        [Description("陸行鳥")]
+        TCRegion1 = 151
     }
 
 }
