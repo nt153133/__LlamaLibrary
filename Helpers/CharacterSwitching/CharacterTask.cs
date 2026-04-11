@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace LlamaLibrary.Helpers.CharacterSwitching;
 
@@ -39,6 +40,11 @@ public abstract class CharacterTask
     /// Optional list of predefined parameter choices for users
     /// </summary>
     public virtual IEnumerable<string> ParameterOptions { get; } = Array.Empty<string>();
+
+    /// <summary>
+    /// Validation Rule for parameters
+    /// </summary>
+    public virtual ValidationRule ParameterValidationRule { get; } = new DefaultValidationRule();
 
     /// <summary>
     /// Indicate if a parameter needs to be included
@@ -199,4 +205,12 @@ public abstract class CharacterTask
 		OnPropertyChanged(propertyName);
 		return true;
 	}
+
+    private class DefaultValidationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo)
+        {
+            return ValidationResult.ValidResult;
+        }
+    }
 }
