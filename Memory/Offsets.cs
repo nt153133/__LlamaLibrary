@@ -1871,5 +1871,8 @@ namespace LlamaLibrary.Memory
         [Offset("Search 41 8B 46 ? 41 3B C7 Add 3 Read8")]
         [OffsetTC("Search 41 8B 46 ? 3B C5 Add 3 Read8")]
         public static int AgentAchievementStatus;
+
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 28 E9 ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 18 48 89 74 24 20 Add 3 TraceRelative")]
+        public static IntPtr AgentTradeMultiple;
     }
 }
