@@ -25,115 +25,105 @@ using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers;
 
+/// <summary>
+/// Handles loading server profiles and managing duty queue operations.
+/// </summary>
 public class LoadServerProfile
 {
+    /// <summary>
+    /// Queue type enumeration for type-safe queue selection.
+    /// </summary>
+    public enum QueueType
+    {
+        Standard = 0,
+        Undersized = 1,
+        DutySupport = 2,
+        Trust = 3
+    }
+
     internal static readonly string NameValue = "DomesticHelper";
     private static readonly LLogger Log = new(NameValue, Colors.MediumPurple);
 
-    private static int HolminsterSwitch = 676;
-    private static int DohnMheg = 649;
-    private static int QitanaRavel = 651;
-    private static int MalikahsWell = 656;
-    private static int MtGulg = 659;
-    private static int Amaurot = 652;
-    private static int GrandCosmos = 692;
-    private static int AnamnesisAnyder = 714;
-    private static int HeroesGauntlet = 737;
-    private static int MatoyasRelict = 746;
-    private static int Paglthan = 777;
-    private static int TheTowerofZot = 783;
-    private static int TheTowerofBabil = 785;
-    private static int Vanaspati = 789;
-    private static int KtisisHyperboreia = 787;
-    private static int TheAitiascope = 786;
-    private static int TheDeadEnds = 792;
-    private static int AlzadaasLegacy = 844;
-    private static int Smileton = 794;
-    private static int TheFellCourofTroia = 869;
-    private static int LapisManalis = 896;
-    private static int Aetherfont = 822;
-    private static int LunarSubterrane = 823;
-
-    private static int TheStigmaDreamscape = 784;
-
-    private static int Ihuykatumu = 826;
-    private static int WorqorZormor = 824;
-    private static int SkydeepCenote = 829;
-    private static int Vanguard = 831;
-    private static int Origenics = 825;
-    private static int Alexandria = 827;
-    private static int Yuweyawata = 1008;
-    private static int Underkeep = 1027;
-    private static int MesoTerminal = 1028;
-
-    private static int WorqorLarDor = 832;
-    private static int Everkeep = 995;
-
-    private static List<int> EndwalkerDungeons = new()
+    // Dungeon IDs organized by expansion
+    private static class DungeonIds
     {
-        TheTowerofZot,
-        TheStigmaDreamscape,
-        TheTowerofBabil,
-        TheAitiascope,
-        KtisisHyperboreia,
-        Vanaspati,
-        TheDeadEnds,
-        Smileton,
-        Aetherfont,
-        LunarSubterrane,
-        AlzadaasLegacy,
-        TheFellCourofTroia,
-        LapisManalis
-    };
+        // Shadowbringers
+        public const int HolminsterSwitch = 676;
+        public const int DohnMheg = 649;
+        public const int QitanaRavel = 651;
+        public const int MalikahsWell = 656;
+        public const int MtGulg = 659;
+        public const int Amaurot = 652;
+        public const int GrandCosmos = 692;
+        public const int AnamnesisAnyder = 714;
+        public const int HeroesGauntlet = 737;
+        public const int MatoyasRelict = 746;
+        public const int Paglthan = 777;
 
-    private static List<int> DawntrailDungeons = new()
-    {
-        Ihuykatumu,
-        WorqorZormor,
-        SkydeepCenote,
-        Vanguard,
-        Origenics,
-        Alexandria,
-        WorqorLarDor,
-        Everkeep,
-        Yuweyawata
-    };
+        // Endwalker
+        public const int TheTowerofZot = 783;
+        public const int TheTowerofBabil = 785;
+        public const int Vanaspati = 789;
+        public const int KtisisHyperboreia = 787;
+        public const int TheAitiascope = 786;
+        public const int TheDeadEnds = 792;
+        public const int AlzadaasLegacy = 844;
+        public const int Smileton = 794;
+        public const int TheFellCourofTroia = 869;
+        public const int LapisManalis = 896;
+        public const int Aetherfont = 822;
+        public const int LunarSubterrane = 823;
+        public const int TheStigmaDreamscape = 784;
 
-    private static List<int> TrustDungeons = new()
+        // Dawntrail
+        public const int Ihuykatumu = 826;
+        public const int WorqorZormor = 824;
+        public const int SkydeepCenote = 829;
+        public const int Vanguard = 831;
+        public const int Origenics = 825;
+        public const int Alexandria = 827;
+        public const int Yuweyawata = 1008;
+        public const int Underkeep = 1027;
+        public const int MesoTerminal = 1028;
+        public const int WorqorLarDor = 832;
+        public const int Everkeep = 995;
+    }
+
+    private static readonly HashSet<int> TrustDungeons = new()
     {
-        HolminsterSwitch,
-        DohnMheg,
-        QitanaRavel,
-        MalikahsWell,
-        MtGulg,
-        Amaurot,
-        GrandCosmos,
-        AnamnesisAnyder,
-        HeroesGauntlet,
-        MatoyasRelict,
-        Paglthan,
-        TheTowerofZot,
-        TheTowerofBabil,
-        Vanaspati,
-        KtisisHyperboreia,
-        TheAitiascope,
-        TheDeadEnds,
-        AlzadaasLegacy,
-        TheFellCourofTroia,
-        LapisManalis,
-        Aetherfont,
-        LunarSubterrane,
-        Ihuykatumu,
-        WorqorZormor,
-        SkydeepCenote,
-        Vanguard,
-        Origenics,
-        Alexandria,
-        WorqorLarDor,
-        Everkeep,
-        Yuweyawata,
-        Underkeep,
-        MesoTerminal,
+        DungeonIds.HolminsterSwitch,
+        DungeonIds.DohnMheg,
+        DungeonIds.QitanaRavel,
+        DungeonIds.MalikahsWell,
+        DungeonIds.MtGulg,
+        DungeonIds.Amaurot,
+        DungeonIds.GrandCosmos,
+        DungeonIds.AnamnesisAnyder,
+        DungeonIds.HeroesGauntlet,
+        DungeonIds.MatoyasRelict,
+        DungeonIds.Paglthan,
+        DungeonIds.TheTowerofZot,
+        DungeonIds.TheTowerofBabil,
+        DungeonIds.Vanaspati,
+        DungeonIds.KtisisHyperboreia,
+        DungeonIds.TheAitiascope,
+        DungeonIds.TheDeadEnds,
+        DungeonIds.AlzadaasLegacy,
+        DungeonIds.TheFellCourofTroia,
+        DungeonIds.LapisManalis,
+        DungeonIds.Aetherfont,
+        DungeonIds.LunarSubterrane,
+        DungeonIds.Ihuykatumu,
+        DungeonIds.WorqorZormor,
+        DungeonIds.SkydeepCenote,
+        DungeonIds.Vanguard,
+        DungeonIds.Origenics,
+        DungeonIds.Alexandria,
+        DungeonIds.WorqorLarDor,
+        DungeonIds.Everkeep,
+        DungeonIds.Yuweyawata,
+        DungeonIds.Underkeep,
+        DungeonIds.MesoTerminal,
     };
 
     private static readonly string[] Greetings =
@@ -199,35 +189,32 @@ public class LoadServerProfile
         "Oh yeah, love fighting this guy"
     };
 
-    private static readonly ShuffleCircularQueue<string> _greetingQueue = new ShuffleCircularQueue<string>(Greetings);
+    private static readonly ShuffleCircularQueue<string> _greetingQueue = new(Greetings);
 
-    //private static ShuffleCircularQueue<string> _greetingQueueCustom;
+    public static ChatBroadcaster PartyBroadcaster = new(MessageType.Party);
+    public static ChatBroadcaster EmoteBroadcaster = new(MessageType.StandardEmotes);
 
-    public static ChatBroadcaster PartyBroadcaster = new ChatBroadcaster(MessageType.Party);
-    public static ChatBroadcaster EmoteBroadcaster = new ChatBroadcaster(MessageType.StandardEmotes);
+    private const string ProfileServerUrl = "https://sts.llamamagic.net/profiles.json";
+    private const int ToastDurationMs = 25000;
+    private const int HttpTimeoutSeconds = 10;
+    private const int QueueTimeout = 10000;
+    private const int TrustWindowTimeout = 8000;
+    private const int DutyRecommenceDelay = 5000;
+    private const int LoadContentTimeout = 1000;
 
-    // Queue Type - 0 for standard, 1 for Undersized, 2 for Duty Support, 3 for Trust
-    public static async Task LoadProfile(string profileName, int QueueType, bool GoToBarracks, bool sayHello = false, bool sayHelloCustom = false, string sayHelloMessages = "")
+    private static readonly Color ToastHeaderColor = Color.FromRgb(147, 112, 219);
+    private static readonly Color ToastTextColor = Color.FromRgb(13, 106, 175);
+    private static readonly FontFamily ToastFont = new("Gautami");
+
+    private static readonly TimeSpan BarrierCheckInterval = TimeSpan.FromMilliseconds(500);
+    private static readonly TimeSpan CutsceneCheckTimeout = TimeSpan.FromMilliseconds(2000);
+
+    // GrandCompany Barracks Zone IDs
+    private static readonly HashSet<uint> GcBarracksZones = new() { 534, 535, 536 };
+
+    public static async Task LoadProfile(string profileName, QueueType queueType, bool goToBarracks, bool sayHello = false, bool sayHelloCustom = false, string sayHelloMessages = "")
     {
-        var loadingMessage = "";
-
-        switch (QueueType)
-        {
-            case 0:
-                loadingMessage = $"Loading {profileName} with Standard Live Party";
-                break;
-            case 1:
-                loadingMessage = $"Loading {profileName} in unsynced party";
-                break;
-            case 2:
-                loadingMessage = $"Loading {profileName} with Duty Support";
-                break;
-            case 3:
-                loadingMessage = $"Loading {profileName} with Trust";
-                break;
-        }
-
-        Log.Information(loadingMessage);
+        Log.Information(GetLoadingMessage(profileName, queueType));
 
         if (DutyManager.QueueState == QueueState.InQueue)
         {
@@ -236,101 +223,50 @@ public class LoadServerProfile
 
         await GeneralFunctions.StopBusy(false);
 
-        var profileList = await GetProfileList("https://sts.llamamagic.net/profiles.json");
-        if (profileList == null)
+        var profile = await FindProfileByName(profileName);
+        if (profile == null)
         {
-            Log.Error("Profile List is null");
             return;
         }
 
-        if (profileList.Count == 0)
+        if (profile.Type == ProfileType.Quest)
         {
-            Log.Error("Profile List is empty");
+            await LoadQuestProfile(profileName, profile.URL);
             return;
         }
 
-        var shortList = profileList.Where(i => i != null && i.Name != null && i.Name.Equals(profileName, StringComparison.OrdinalIgnoreCase)).ToList();
-
-        if (shortList == null || shortList.Count == 0)
-        {
-            Log.Error($"Profile {profileName} not found on server.");
-            TreeRoot.Stop($"Profile {profileName} not found on server.");
-            return;
-        }
-
-        var profile = shortList.First();
-        var profileUrl = profile.URL;
-        var profileType = profile.Type;
-        var dungeonDutyId = profile.DutyId;
-        var dungeonZoneId = profile.ZoneId;
-        var dutyType = profile.DutyType;
-        var unlockQuest = profile.UnlockQuest;
-        var trustId = profile.TrustId;
-
-        if (profileType == ProfileType.Quest)
-        {
-            await LoadQuestProfile(profileName, profileUrl);
-            return;
-        }
-
-        if (profileType == ProfileType.Duty)
+        if (profile.Type == ProfileType.Duty)
         {
             if (DutyManager.QueueState == QueueState.InDungeon)
             {
                 Log.Information("Already in dungeon");
-                Log.Information($"Loading {DataManager.InstanceContentResults[dungeonDutyId].CurrentLocaleName} profile.");
-                ConditionParser.Initialize();
-                NeoProfileManager.Load(profileUrl, false);
+                LoadProfileDirect(profile.DutyId, profile.URL);
             }
             else
             {
-                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, QueueType, unlockQuest, GoToBarracks, sayHello, sayHelloCustom, sayHelloMessages, trustId);
+                await RunDutyTask(profile, goToBarracks, sayHello, sayHelloCustom, sayHelloMessages, (int)queueType);
             }
         }
     }
 
-    public static async Task LoadProfileByZone(int ZoneId)
+    /// <summary>
+    /// Overload for backward compatibility with int queue type parameter.
+    /// </summary>
+    public static async Task LoadProfile(string profileName, int queueType, bool goToBarracks, bool sayHello = false, bool sayHelloCustom = false, string sayHelloMessages = "")
+    {
+        await LoadProfile(profileName, (QueueType)queueType, goToBarracks, sayHello, sayHelloCustom, sayHelloMessages);
+    }
+
+    public static async Task LoadProfileByZone(int zoneId)
     {
         Log.Information("Loading Profile by Zone ID");
 
         await GeneralFunctions.StopBusy(false);
 
-        var profileList = await GetProfileList("https://sts.llamamagic.net/profiles.json");
-        if (profileList == null)
+        var profile = await FindProfileByZone(zoneId);
+        if (profile?.Type == ProfileType.Duty)
         {
-            Log.Error("Profile List is null");
-            return;
-        }
-
-        if (profileList.Count == 0)
-        {
-            Log.Error("Profile List is empty");
-            return;
-        }
-
-        List<ServerProfile> shortList = profileList.Where(i => i != null && i.ZoneId == ZoneId).ToList()!;
-
-        if (shortList.Count == 0)
-        {
-            Log.Error($"Profile with ID {ZoneId} not found on server.");
-            TreeRoot.Stop($"Profile with ID {ZoneId} not found on server.");
-            return;
-        }
-
-        var profile = shortList.First();
-        var profileUrl = profile.URL;
-        var profileType = profile.Type;
-        var dungeonDutyId = profile.DutyId;
-        var dungeonZoneId = profile.ZoneId;
-        var dutyType = profile.DutyType;
-        var unlockQuest = profile.UnlockQuest;
-        var trustId = profile.TrustId;
-
-        if (profileType == ProfileType.Duty)
-        {
-            {
-                await RunDutyTask(dutyType, profileUrl, dungeonDutyId, dungeonZoneId, 1, unlockQuest, false, false, false, "hi/welcome", trustId);
-            }
+            await RunDutyTask(profile, goToBarracks: false, sayHello: false, sayHelloCustom: false, sayHelloMessages: "hi/welcome", (int)QueueType.Undersized);
         }
     }
 
@@ -430,426 +366,49 @@ public class LoadServerProfile
         return NeoProfileManager.CurrentProfile != null && NeoProfileManager.CurrentProfile.Name != "Loading Profile";
     }
 
-    internal static async Task RunDutyTask(DutyType dutyType, string profileUrl, int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest, bool GoToBarracks, bool sayHello, bool sayHelloCustom, string SayHelloMessages, int trustId)
+    internal static async Task RunDutyTask(ServerProfile profile, bool goToBarracks, bool sayHello, bool sayHelloCustom, string sayHelloMessages, int queueType)
     {
         while (DutyManager.QueueState != QueueState.InDungeon)
         {
             await GeneralFunctions.StopBusy(false);
 
-            if (UnlockQuest != 0)
-            {
-                if (!QuestLogManager.IsQuestCompleted((uint)UnlockQuest))
-                {
-                    Log.Information($"Unlock quest {DataManager.GetLocalizedQuestName(UnlockQuest)} is not complete. Loading profile to complete quest.");
-                    ConditionParser.Initialize();
-                    NeoProfileManager.Load(profileUrl, false);
-                    NeoProfileManager.UpdateCurrentProfileBehavior();
-                    return;
-                }
-            }
-
-            if (!CanQueue(dungeonDutyId, dungeonZoneId, QueueType, UnlockQuest))
+            if (!await ValidateAndPrepareForQueue(profile, queueType))
             {
                 return;
             }
 
             while (DutyManager.QueueState == QueueState.None)
             {
-                if (GoToBarracks && (WorldManager.ZoneId != 534 && WorldManager.ZoneId != 535 && WorldManager.ZoneId != 536))
+                if (goToBarracks && !IsInGCBarracks())
                 {
                     await GrandCompanyHelper.GetToGCBarracks();
                 }
 
-                while (DutyManager.QueueState == QueueState.None)
+                if (DutyManager.QueueState == QueueState.None)
                 {
-                    if (QueueType == 3)
+                    if (!await QueueForDuty(profile, queueType))
                     {
-                        if (!TrustDungeons.Contains(dungeonDutyId))
-                        {
-#if RB_CN || RB_TC
-                                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 不是亲信副本。\\n请选择其他队列类型或副本";
-#else
-                            string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Trust dungeon.\nPlease select a different Queue Type or dungeon.";
-
-#endif
-                            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
-                            Log.Error($"{message}");
-                            TreeRoot.Stop($"{message}");
-                            return;
-                        }
-
-                        Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Trust");
-
-                        if (Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId != trustId)
-                        {
-                            Log.Information("Closing Trust window");
-                            AgentDawn.Instance.Toggle();
-                        }
-
-                        if (AgentDawn.Instance.TrustId != trustId)
-                        {
-                            Log.Information($"Setting Trust dungeon to {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName}");
-                            AgentDawn.Instance.TrustId = trustId;
-                            await Coroutine.Wait(5000, () => AgentDawn.Instance.TrustId == trustId);
-                            if (AgentDawn.Instance.TrustId != trustId)
-                            {
-#if RB_CN || RB_TC
-                                string message = $"无法将 {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 选择为亲信副本。";
-#else
-                                string message = $"Something went wrong when attempting to select {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as Trust dungeon.";
-
-#endif
-                                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
-                                Log.Error($"{message}");
-                                TreeRoot.Stop($"{message}");
-                                break;
-                            }
-                        }
-
-                        if (!Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId == trustId)
-                        {
-                            Log.Information("Opening Trust window");
-                            AgentDawn.Instance.Toggle();
-                            await Coroutine.Wait(8000, () => Dawn.Instance.IsOpen);
-                        }
-
-                        if (Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId == trustId)
-                        {
-                            Log.Information("Clicking Register");
-                            Dawn.Instance.Register();
-                            await Coroutine.Wait(8000, () => !Dawn.Instance.IsOpen);
-                        }
-
-                        await Coroutine.Wait(10000, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
-                        if (DutyManager.QueueState != QueueState.None)
-                        {
-                            Log.Information("Queued for Trust Dungeon");
-                        }
-                        else if (DutyManager.QueueState == QueueState.None)
-                        {
-                            Log.Error("Something went wrong attempting to queue for Trust, queueing again...");
-                            Log.Error($"Duty {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} unlocked: {LlamaLibrary.Helpers.GeneralFunctions.IsDutyUnlocked((uint)dungeonDutyId)}");
-                            Log.Error($"Job: {Core.Me.CurrentJob} Level: {Core.Me.ClassLevel}");
-                            Log.Error($"Queue status: {DutyManager.QueueState}");
-                            ;
-                        }
-                    }
-
-                    if (QueueType == 2)
-                    {
-                        Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} with Duty Support");
-
-                        if (!DawnStory.Instance.IsOpen)
-                        {
-                            AgentDawnStory.Instance.Toggle();
-                        }
-
-                        if (await Coroutine.Wait(8000, () => DawnStory.Instance.IsOpen))
-                        {
-                            if (await DawnStory.Instance.SelectDuty(dungeonDutyId))
-                            {
-                                DawnStory.Instance.Commence();
-                            }
-                        }
-
-                        await Coroutine.Wait(10000, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
-                        if (DutyManager.QueueState != QueueState.None)
-                        {
-                            Log.Information("Queued for Duty Support Dungeon");
-                        }
-                        else if (DutyManager.QueueState == QueueState.None)
-                        {
-                            Log.Error("Something went wrong attempting to queue for Duty Support, queueing again...");
-                            Log.Error($"Duty {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} unlocked: {LlamaLibrary.Helpers.GeneralFunctions.IsDutyUnlocked((uint)dungeonDutyId)}");
-                            Log.Error($"Job: {Core.Me.CurrentJob} Level: {Core.Me.ClassLevel}");
-                            Log.Error($"Queue status: {DutyManager.QueueState}");
-                        }
-                    }
-
-                    if (QueueType == 0 || QueueType == 1)
-                    {
-                        if (!PartyManager.IsInParty || (PartyManager.IsInParty && PartyManager.IsPartyLeader))
-                        {
-                            if (QueueType == 0)
-                            {
-                                Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as normal group.");
-                                GameSettingsManager.JoinWithUndersizedParty = false;
-                            }
-
-                            if (QueueType == 1)
-                            {
-                                Log.Information($"Queuing for {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} as undersized party.");
-                                GameSettingsManager.JoinWithUndersizedParty = true;
-                            }
-
-                            DutyManager.Queue(DataManager.InstanceContentResults[(uint)dungeonDutyId]);
-                            await Coroutine.Wait(10000, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
-
-                            if (DutyManager.QueueState != QueueState.None)
-                            {
-                                Log.Information("Queued for regular Dungeon");
-                            }
-                            else if (DutyManager.QueueState == QueueState.None)
-                            {
-                                Log.Error("Something went wrong attempting to queue regular dungeon, queuing again...");
-                                Log.Error($"Duty {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} unlocked: {LlamaLibrary.Helpers.GeneralFunctions.IsDutyUnlocked((uint)dungeonDutyId)}");
-                                Log.Error($"Job: {Core.Me.CurrentJob} Level: {Core.Me.ClassLevel}");
-                                Log.Error($"Queue status: {DutyManager.QueueState}");
-                            }
-                        }
-                        else
-                        {
-                            Log.Information("In a party, waiting for dungeon queue.");
-                            await Coroutine.Wait(-1, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
-                            Log.Information("Queued for Dungeon");
-                        }
+                        return;
                     }
                 }
             }
 
-            while (DutyManager.QueueState != QueueState.None || DutyManager.QueueState != QueueState.InDungeon || CommonBehaviors.IsLoading)
-            {
-                if (DutyManager.QueueState == QueueState.CommenceAvailable)
-                {
-                    Log.Information("Waiting for queue pop.");
-                    await Coroutine.Wait(-1,
-                                         () => DutyManager.QueueState == QueueState.JoiningInstance ||
-                                               DutyManager.QueueState == QueueState.None);
-                }
-
-                if (DutyManager.QueueState == QueueState.JoiningInstance)
-                {
-                    var rnd = new Random();
-                    var waitTime = rnd.Next(1000, 10000);
-
-                    Log.Information($"Dungeon popped, commencing in {waitTime / 1000} seconds.");
-                    await Coroutine.Sleep(waitTime);
-                    DutyManager.Commence();
-                    await Coroutine.Wait(-1,
-                                         () => DutyManager.QueueState == QueueState.LoadingContent ||
-                                               DutyManager.QueueState == QueueState.CommenceAvailable);
-                }
-
-                if (DutyManager.QueueState == QueueState.LoadingContent)
-                {
-                    Log.Information("Waiting for everyone to accept queue.");
-                    await Coroutine.Wait(-1, () => CommonBehaviors.IsLoading || DutyManager.QueueState == QueueState.CommenceAvailable);
-                    await Coroutine.Sleep(1000);
-                }
-
-                if (CommonBehaviors.IsLoading)
-                {
-                    break;
-                }
-
-                await Coroutine.Sleep(500);
-            }
-
-            if (DutyManager.QueueState == QueueState.None)
+            if (!await WaitForDutyPopAndCommence(profile))
             {
                 return;
             }
 
-            await Coroutine.Sleep(500);
-            if (CommonBehaviors.IsLoading)
+            await HandleCutscene();
+
+            if (!await WaitForBarrierAndSayHello(profile.DutyType, sayHello, sayHelloCustom, sayHelloMessages))
             {
-                await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
-            }
-
-            if (QuestLogManager.InCutscene)
-            {
-                TreeRoot.StatusText = "InCutscene";
-                if (AgentCutScene.Instance != null)
-                {
-                    AgentCutScene.Instance.PromptSkip();
-                    await Coroutine.Wait(2000, () => SelectString.IsOpen || SelectYesno.IsOpen);
-
-                    if (SelectString.IsOpen)
-                    {
-                        SelectString.ClickSlot(0);
-                    }
-
-                    if (SelectYesno.IsOpen)
-                    {
-                        SelectYesno.Yes();
-                    }
-                }
-            }
-
-            Log.Information("Should be in duty");
-
-            if (DirectorManager.ActiveDirector is InstanceContentDirector director)
-            {
-                var time = new TimeSpan(1, 29, 59);
-                if (dutyType == DutyType.Raid)
-                {
-                    time = new TimeSpan(1, 59, 59);
-                }
-
-                if (dutyType == DutyType.Trial)
-                {
-                    time = new TimeSpan(0, 59, 59);
-                }
-
-                if (dutyType == DutyType.Guildhest)
-                {
-                    time = new TimeSpan(0, 29, 59);
-                }
-
-                if (director.TimeLeftInDungeon >= time.Add(new TimeSpan(0, 0, 1)))
-                {
-                    Log.Information("Barrier up");
-                    if (sayHello && !sayHelloCustom)
-                    {
-                        var sentgreeting = _greetingQueue.Dequeue();
-                        Log.Information($"Saying '{sentgreeting}' the group");
-                        await PartyBroadcaster.Send(sentgreeting);
-                    }
-
-                    if (sayHelloCustom && sayHello)
-                    {
-                        ShuffleCircularQueue<string> greetingQueueCustomNew = new ShuffleCircularQueue<string>(SayHelloMessages.Split('/'));
-                        if (greetingQueueCustomNew.Any)
-                        {
-                            var sentcustomgreeting = greetingQueueCustomNew.Dequeue();
-                            Log.Information($"Saying '{sentcustomgreeting}' the group");
-                            await PartyBroadcaster.Send(sentcustomgreeting);
-                        }
-                    }
-
-                    await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < time);
-                }
-            }
-            else
-            {
-                Log.Error("Director is null");
+                return;
             }
 
             Log.Information("Should be ready");
         }
 
-        if (WorldManager.ZoneId == dungeonZoneId)
-        {
-            Log.Information($"Loading {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} profile.");
-            ConditionParser.Initialize();
-            NeoProfileManager.Load(profileUrl, false);
-        }
-        else
-        {
-            Log.Information("Attempting to find profile by current Zone ID");
-
-            var profileList = await GetProfileList("https://sts.llamamagic.net/profiles.json");
-            if (profileList == null)
-            {
-                Log.Error("Profile List is null");
-                return;
-            }
-
-            if (profileList.Count == 0)
-            {
-                Log.Error("Profile List is empty");
-                return;
-            }
-
-            List<ServerProfile> shortList = profileList.Where(i => i != null && i.ZoneId == WorldManager.ZoneId).ToList()!;
-
-            if (shortList.Count == 0)
-            {
-                Log.Error($"Profile with ID {WorldManager.ZoneId} not found on server.");
-                Log.Error($"Something went wrong, we're in a duty but the Zone Id isn't the expected ID.");
-                Log.Error($"Expected Zone: {DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} {dungeonZoneId}. Current Zone: {CurrentLocalizedZoneNameById(WorldManager.ZoneId)} {WorldManager.ZoneId}");
-                TreeRoot.Stop($"Profile with ID {WorldManager.ZoneId} not found on server.");
-                return;
-            }
-
-            var profile = shortList.First();
-            var zoneIdUrl = profile.URL;
-            var profileType = profile.Type;
-
-            if (profileType == ProfileType.Duty)
-            {
-                {
-                    NeoProfileManager.Load(zoneIdUrl, false);
-                }
-            }
-        }
-    }
-
-    internal static bool CanQueue(int dungeonDutyId, int dungeonZoneId, int QueueType, int UnlockQuest)
-    {
-        /*
-        if (!LlamaLibrary.Helpers.GeneralFunctions.IsDutyUnlocked((uint)dungeonDutyId))
-        {
-            string message = $"{CurrentLocalizedZoneNameById(dungeonZoneId)} is not unlocked. Have you done the unlock quest?";
-            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), System.Windows.Media.Color.FromRgb(147, 112, 219), System.Windows.Media.Color.FromRgb(13, 106, 175), new System.Windows.Media.FontFamily("Gautami"));
-            Log.Error($"{message}");
-            TreeRoot.Stop($"{message}");
-            return false;
-        }
-        */
-
-        if (!Extras.IsDiscipleofWarClass() && !Extras.IsDiscipleofMagicClass())
-        {
-#if RB_CN || RB_TC
-            string message = $"执行任务需要您使用战斗职业 (DoW) 或魔法职业 (DoM)";
-#else
-            string message = "You must be on a DoW or DoM class to do a duty..";
-
-#endif
-            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
-            Log.Error($"{message}");
-            TreeRoot.Stop($"{message}");
-            return false;
-        }
-
-        if (DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel != 0)
-        {
-            if (Core.Me.ClassLevel < DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel)
-            {
-#if RB_CN || RB_TC
-                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 需要 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel} 级。您的等级为 {Core.Me.ClassLevel} 级。请切换到至少 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel} 级的职业.";
-#else
-                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} requires level {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel}. Your level is {Core.Me.ClassLevel}. Please swap to a job that is at least level {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredClassJobLevel}.";
-
-#endif
-
-                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
-                Log.Error($"{message}");
-                TreeRoot.Stop($"{message}");
-                return false;
-            }
-        }
-
-        if (DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel != 0)
-        {
-            if (ScriptConditions.Helpers.CurrentItemLevel() < DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel)
-            {
-#if RB_CN || RB_TC
-                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 需要最低物品等级 {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}。您的装备等级为 {LlamaLibrary.ScriptConditions.Helpers.CurrentItemLevel()}。请升级您的装备品级。";
-#else
-                string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} requires minimum Item Level of {DataManager.InstanceContentResults[(uint)dungeonDutyId].RequiredItemLevel}. Your Item Level is {ScriptConditions.Helpers.CurrentItemLevel()}. Please upgrade your gear.";
-#endif
-                Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
-                Log.Error($"{message}.");
-                TreeRoot.Stop("Please upgrade your gear");
-                return false;
-            }
-        }
-
-        if (QueueType == 2 && !DutySupportDuties.Contains((uint)dungeonDutyId))
-        {
-#if RB_CN || RB_TC
-            string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} 不是亲信支持副本";
-#else
-            string message = $"{DataManager.InstanceContentResults[(uint)dungeonDutyId].CurrentLocaleName} is not a Duty Support dungeon.";
-#endif
-            Core.OverlayManager.AddToast(() => $"{message}", TimeSpan.FromMilliseconds(25000), Color.FromRgb(147, 112, 219), Color.FromRgb(13, 106, 175), new FontFamily("Gautami"));
-            Log.Error($"{message}");
-            TreeRoot.Stop($"{message}");
-            return false;
-        }
-
-        return true;
+        await LoadDutyProfile(profile);
     }
 
     private static List<uint>? _dutySupportDuties;
@@ -862,7 +421,6 @@ public class LoadServerProfile
     public static List<uint> GetDutySupportDuties()
     {
         var rowCount = GeneralFunctions.GetDawnContentRowCount();
-
         var list = new List<uint>();
 
         for (uint i = 0; i < rowCount; i++)
@@ -880,15 +438,415 @@ public class LoadServerProfile
             }
 
             var content = Core.Memory.Read<uint>(row);
-
-            if (content == 0)
+            if (content != 0)
             {
-                continue;
+                list.Add(content);
             }
-
-            list.Add(content);
         }
 
         return list;
     }
+
+    #region Private Helper Methods
+
+    private static string GetLoadingMessage(string profileName, QueueType queueType) => queueType switch
+    {
+        QueueType.Standard    => $"Loading {profileName} with Standard Live Party",
+        QueueType.Undersized  => $"Loading {profileName} in unsynced party",
+        QueueType.DutySupport => $"Loading {profileName} with Duty Support",
+        QueueType.Trust       => $"Loading {profileName} with Trust",
+        _                     => $"Loading {profileName}"
+    };
+
+    private static bool IsInGCBarracks() => GcBarracksZones.Contains(WorldManager.ZoneId);
+
+    private static void LoadProfileDirect(uint dungeonDutyId, string profileUrl)
+    {
+        Log.Information($"Loading {DataManager.InstanceContentResults[dungeonDutyId].CurrentLocaleName} profile.");
+        ConditionParser.Initialize();
+        NeoProfileManager.Load(profileUrl, false);
+    }
+
+    private static async Task<ServerProfile?> FindProfileByName(string profileName)
+    {
+        var profileList = await GetProfileList(ProfileServerUrl);
+        if (profileList == null || profileList.Count == 0)
+        {
+            Log.Error("Profile List is null or empty");
+            return null;
+        }
+
+        var profile = profileList.FirstOrDefault(p => p?.Name != null && p.Name.Equals(profileName, StringComparison.OrdinalIgnoreCase));
+        if (profile == null)
+        {
+            Log.Error($"Profile {profileName} not found on server.");
+            TreeRoot.Stop($"Profile {profileName} not found on server.");
+        }
+
+        return profile;
+    }
+
+    private static async Task<ServerProfile?> FindProfileByZone(int zoneId)
+    {
+        var profileList = await GetProfileList(ProfileServerUrl);
+        if (profileList == null || profileList.Count == 0)
+        {
+            Log.Error("Profile List is null or empty");
+            return null;
+        }
+
+        var profile = profileList.FirstOrDefault(p => p?.ZoneId == zoneId);
+        if (profile == null)
+        {
+            Log.Error($"Profile with ID {zoneId} not found on server.");
+            TreeRoot.Stop($"Profile with ID {zoneId} not found on server.");
+        }
+
+        return profile;
+    }
+
+    private static async Task<bool> ValidateAndPrepareForQueue(ServerProfile profile, int queueType)
+    {
+        // Check unlock quest
+        if (profile.UnlockQuest != 0 && !QuestLogManager.IsQuestCompleted((uint)profile.UnlockQuest))
+        {
+            Log.Information($"Unlock quest {DataManager.GetLocalizedQuestName(profile.UnlockQuest)} is not complete. Loading profile to complete quest.");
+            ConditionParser.Initialize();
+            NeoProfileManager.Load(profile.URL, false);
+            NeoProfileManager.UpdateCurrentProfileBehavior();
+            return false;
+        }
+
+        // Use DutyManager.CanQueue for validation
+        var instanceContent = DataManager.InstanceContentResults[(uint)profile.DutyId];
+        if (instanceContent == null)
+        {
+            ShowErrorToast($"Instance content data not found for duty ID {profile.DutyId}");
+            return false;
+        }
+
+        var canQueueResult = DutyManager.CanQueue(instanceContent);
+        return HandleCanQueueResult(canQueueResult, instanceContent);
+    }
+
+    private static bool HandleCanQueueResult(long result, InstanceContentResult instanceContent)
+    {
+        return result switch
+        {
+            0 => true, // Can queue
+            -1 => HandleAlreadyInQueue(instanceContent),
+            -2 => HandleInvalidInstanceCount(instanceContent),
+            -3 => HandleMixedRouletteSoloOnly(instanceContent),
+            -4 => HandleInstanceNotAvailable(instanceContent),
+            -5 => HandleNullInstance(instanceContent),
+            _ => HandleGameSpecificError(result, instanceContent)
+        };
+    }
+
+    private static bool HandleAlreadyInQueue(InstanceContentResult instanceContent)
+    {
+        Log.Warning($"Already in queue for {instanceContent.CurrentLocaleName}");
+        return false;
+    }
+
+    private static bool HandleInvalidInstanceCount(InstanceContentResult instanceContent)
+    {
+        Log.Error("Invalid number of instances provided to CanQueue (must be 1-5)");
+        ShowErrorToast("Internal error: Invalid instance count");
+        return false;
+    }
+
+    private static bool HandleMixedRouletteSoloOnly(InstanceContentResult instanceContent)
+    {
+        Log.Error($"Cannot queue for {instanceContent.CurrentLocaleName}: Mixing roulette or solo-only duties with other duties is not allowed");
+        ShowErrorToast($"{instanceContent.CurrentLocaleName} cannot be mixed with other duty types");
+        return false;
+    }
+
+    private static bool HandleInstanceNotAvailable(InstanceContentResult instanceContent)
+    {
+        Log.Error($"Instance {instanceContent.CurrentLocaleName} is not available in the duty finder");
+        ShowErrorToast($"{instanceContent.CurrentLocaleName} is not available in the duty finder");
+        return false;
+    }
+
+    private static bool HandleNullInstance(InstanceContentResult instanceContent)
+    {
+        Log.Error("Instance content is null");
+        ShowErrorToast("Instance content data is invalid");
+        return false;
+    }
+
+    private static bool HandleGameSpecificError(long result, InstanceContentResult instanceContent)
+    {
+        Log.Error($"Cannot queue for {instanceContent.CurrentLocaleName}: Game returned error code {result}");
+
+        var errorMessage = result switch
+        {
+            1 => $"{instanceContent.CurrentLocaleName} requires a higher item level",
+            2 => $"{instanceContent.CurrentLocaleName} requires a higher class level",
+            3 => $"You are not eligible to queue for {instanceContent.CurrentLocaleName}",
+            _ => $"Cannot queue for {instanceContent.CurrentLocaleName} (Error {result})"
+        };
+
+        ShowErrorToast(errorMessage);
+        return false;
+    }
+
+    private static async Task<bool> QueueForDuty(ServerProfile profile, int queueType)
+    {
+        var instanceName = DataManager.InstanceContentResults[(uint)profile.DutyId].CurrentLocaleName;
+
+        return queueType switch
+        {
+            (int)QueueType.Trust                                 => await QueueForTrust(profile, instanceName),
+            (int)QueueType.DutySupport                           => await QueueForDutySupport(profile, instanceName),
+            (int)QueueType.Standard or (int)QueueType.Undersized => await QueueForParty(profile, instanceName, queueType),
+            _                                                    => false
+        };
+    }
+
+    private static async Task<bool> QueueForTrust(ServerProfile profile, string instanceName)
+    {
+        if (!TrustDungeons.Contains(profile.DutyId))
+        {
+            ShowErrorToast($"{instanceName} is not a Trust dungeon.\nPlease select a different Queue Type or dungeon.");
+            return false;
+        }
+
+        Log.Information($"Queuing for {instanceName} with Trust");
+
+        // Handle Trust window setup
+        if (Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId != profile.TrustId)
+        {
+            AgentDawn.Instance.Toggle();
+            await Coroutine.Wait(TrustWindowTimeout, () => !Dawn.Instance.IsOpen);
+        }
+
+        if (AgentDawn.Instance.TrustId != profile.TrustId)
+        {
+            Log.Information($"Setting Trust dungeon to {instanceName}");
+            AgentDawn.Instance.TrustId = profile.TrustId;
+            if (!await Coroutine.Wait(5000, () => AgentDawn.Instance.TrustId == profile.TrustId))
+            {
+                ShowErrorToast($"Could not set {instanceName} as Trust dungeon.");
+                return false;
+            }
+        }
+
+        if (!Dawn.Instance.IsOpen)
+        {
+            AgentDawn.Instance.Toggle();
+            if (!await Coroutine.Wait(TrustWindowTimeout, () => Dawn.Instance.IsOpen))
+            {
+                Log.Error("Trust window failed to open");
+                return false;
+            }
+        }
+
+        Dawn.Instance.Register();
+        await Coroutine.Wait(TrustWindowTimeout, () => !Dawn.Instance.IsOpen);
+        await Coroutine.Wait(QueueTimeout, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
+
+        return DutyManager.QueueState != QueueState.None;
+    }
+
+    private static async Task<bool> QueueForDutySupport(ServerProfile profile, string instanceName)
+    {
+        Log.Information($"Queuing for {instanceName} with Duty Support");
+
+        if (!DawnStory.Instance.IsOpen)
+        {
+            AgentDawnStory.Instance.Toggle();
+        }
+
+        if (await Coroutine.Wait(TrustWindowTimeout, () => DawnStory.Instance.IsOpen))
+        {
+            if (await DawnStory.Instance.SelectDuty(profile.DutyId))
+            {
+                DawnStory.Instance.Commence();
+            }
+        }
+
+        await Coroutine.Wait(QueueTimeout, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
+        return DutyManager.QueueState != QueueState.None;
+    }
+
+    private static async Task<bool> QueueForParty(ServerProfile profile, string instanceName, int queueType)
+    {
+        if (PartyManager.IsInParty && !PartyManager.IsPartyLeader)
+        {
+            Log.Information("In a party but not leader, waiting for queue...");
+            await Coroutine.Wait(-1, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
+            return true;
+        }
+
+        bool isUndersized = queueType == (int)QueueType.Undersized;
+        Log.Information($"Queuing for {instanceName} as {(isUndersized ? "undersized" : "normal")} group.");
+
+        GameSettingsManager.JoinWithUndersizedParty = isUndersized;
+        DutyManager.Queue(DataManager.InstanceContentResults[(uint)profile.DutyId]);
+
+        await Coroutine.Wait(QueueTimeout, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
+        return DutyManager.QueueState != QueueState.None;
+    }
+
+    private static async Task<bool> WaitForDutyPopAndCommence(ServerProfile profile)
+    {
+        while (DutyManager.QueueState != QueueState.InDungeon && !CommonBehaviors.IsLoading)
+        {
+            switch (DutyManager.QueueState)
+            {
+                case QueueState.CommenceAvailable:
+                    Log.Information("Waiting for queue pop.");
+                    await Coroutine.Wait(-1, () => DutyManager.QueueState == QueueState.JoiningInstance || DutyManager.QueueState == QueueState.None);
+                    break;
+
+                case QueueState.JoiningInstance:
+                    var randomDelay = new Random().Next(1000, 10000);
+                    Log.Information($"Dungeon popped, commencing in {randomDelay / 1000} seconds.");
+                    await Coroutine.Sleep(randomDelay);
+                    DutyManager.Commence();
+                    await Coroutine.Wait(-1, () => DutyManager.QueueState == QueueState.LoadingContent || DutyManager.QueueState == QueueState.CommenceAvailable);
+                    break;
+
+                case QueueState.LoadingContent:
+                    Log.Information("Waiting for everyone to accept queue.");
+                    await Coroutine.Wait(-1, () => CommonBehaviors.IsLoading || DutyManager.QueueState == QueueState.CommenceAvailable);
+                    await Coroutine.Sleep(LoadContentTimeout);
+                    break;
+
+                case QueueState.None:
+                    return false;
+
+                default:
+                    await Coroutine.Sleep(500);
+                    break;
+            }
+        }
+
+        return DutyManager.QueueState != QueueState.None;
+    }
+
+    private static async Task HandleCutscene()
+    {
+        await Coroutine.Sleep(500);
+        if (CommonBehaviors.IsLoading)
+        {
+            await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+        }
+
+        if (!QuestLogManager.InCutscene || AgentCutScene.Instance == null)
+        {
+            return;
+        }
+
+        TreeRoot.StatusText = "InCutscene";
+        AgentCutScene.Instance.PromptSkip();
+        await Coroutine.Wait(CutsceneCheckTimeout, () => SelectString.IsOpen || SelectYesno.IsOpen);
+
+        if (SelectString.IsOpen)
+        {
+            SelectString.ClickSlot(0);
+        }
+        else if (SelectYesno.IsOpen)
+        {
+            SelectYesno.Yes();
+        }
+    }
+
+    private static async Task<bool> WaitForBarrierAndSayHello(DutyType dutyType, bool sayHello, bool sayHelloCustom, string sayHelloMessages)
+    {
+        Log.Information("Should be in duty");
+
+        if (DirectorManager.ActiveDirector is not InstanceContentDirector director)
+        {
+            Log.Error("Director is null");
+            return false;
+        }
+
+        var barrierTime = GetBarrierTime(dutyType);
+        if (director.TimeLeftInDungeon >= barrierTime.Add(TimeSpan.FromSeconds(1)))
+        {
+            Log.Information("Barrier up");
+            await SendGreeting(sayHello, sayHelloCustom, sayHelloMessages);
+            await Coroutine.Wait(-1, () => director.TimeLeftInDungeon < barrierTime);
+        }
+
+        return true;
+    }
+
+    private static async Task SendGreeting(bool sayHello, bool sayHelloCustom, string sayHelloMessages)
+    {
+        if (sayHello && !sayHelloCustom)
+        {
+            var greeting = _greetingQueue.Dequeue();
+            Log.Information($"Saying '{greeting}' to the group");
+            await PartyBroadcaster.Send(greeting);
+        }
+        else if (sayHelloCustom && sayHello)
+        {
+            var customGreetings = new ShuffleCircularQueue<string>(sayHelloMessages.Split('/'));
+            if (customGreetings.Any)
+            {
+                var greeting = customGreetings.Dequeue();
+                Log.Information($"Saying '{greeting}' to the group");
+                await PartyBroadcaster.Send(greeting);
+            }
+        }
+    }
+
+    private static TimeSpan GetBarrierTime(DutyType dutyType) => dutyType switch
+    {
+        DutyType.Raid      => new TimeSpan(1, 59, 59),
+        DutyType.Trial     => new TimeSpan(0, 59, 59),
+        DutyType.Guildhest => new TimeSpan(0, 29, 59),
+        _                  => new TimeSpan(1, 29, 59)
+    };
+
+    private static async Task LoadDutyProfile(ServerProfile profile)
+    {
+        if (WorldManager.ZoneId == profile.ZoneId)
+        {
+            Log.Information($"Loading {DataManager.InstanceContentResults[(uint)profile.DutyId].CurrentLocaleName} profile.");
+            ConditionParser.Initialize();
+            NeoProfileManager.Load(profile.URL, false);
+        }
+        else
+        {
+            Log.Information("Zone mismatch, attempting to find profile by current Zone ID");
+            await LoadProfileByZoneId(profile);
+        }
+    }
+
+    private static async Task LoadProfileByZoneId(ServerProfile expectedProfile)
+    {
+        var profileList = await GetProfileList(ProfileServerUrl);
+        if (profileList == null || profileList.Count == 0)
+        {
+            Log.Error("Profile List is null or empty");
+            return;
+        }
+
+        var zoneProfile = profileList.FirstOrDefault(p => p?.ZoneId == WorldManager.ZoneId);
+        if (zoneProfile?.Type != ProfileType.Duty)
+        {
+            Log.Error($"Profile with Zone ID {WorldManager.ZoneId} not found on server.");
+            Log.Error($"Expected: {DataManager.InstanceContentResults[(uint)expectedProfile.DutyId].CurrentLocaleName} (Zone {expectedProfile.ZoneId})");
+            Log.Error($"Current: {CurrentLocalizedZoneNameById(WorldManager.ZoneId)} (Zone {WorldManager.ZoneId})");
+            TreeRoot.Stop($"Profile with ID {WorldManager.ZoneId} not found on server.");
+            return;
+        }
+
+        NeoProfileManager.Load(zoneProfile.URL, false);
+    }
+
+    private static void ShowErrorToast(string message)
+    {
+        Core.OverlayManager.AddToast(() => message, TimeSpan.FromMilliseconds(ToastDurationMs), ToastHeaderColor, ToastTextColor, ToastFont);
+        Log.Error(message);
+        TreeRoot.Stop(message);
+    }
+
+    #endregion
 }
