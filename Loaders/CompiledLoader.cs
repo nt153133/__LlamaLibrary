@@ -19,6 +19,7 @@ using Clio.Utilities;
 using ff14bot.AClasses;
 using ff14bot.Interfaces;
 using LlamaLibrary.Logging;
+using LlamaLibrary.Memory;
 using SevenZip;
 
 // ReSharper disable VirtualMemberCallInConstructor
@@ -67,7 +68,7 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
 
         _client = new()
         {
-            Timeout = new TimeSpan(0, 0, 30)
+            Timeout = new TimeSpan(0, 0, 45)
         };
         return _client;
     }
@@ -80,6 +81,8 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
     protected virtual string GlobalDataUrl => $"http://update.ffxivbots.com:3000/Download?product={ProjectName}";
 
 #if RB_CN
+    protected virtual string DataUrl => ChineseDataUrl;
+#elseif RB_TC
     protected virtual string DataUrl => ChineseDataUrl;
 #else
     protected virtual string DataUrl => GlobalDataUrl;
@@ -230,6 +233,11 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
 
     protected virtual async Task<(MemoryStream? Stream, string? ContentType)> Download()
     {
+        if (OffsetManager.ActiveRegion == ClientRegion.China || OffsetManager.ActiveRegion == ClientRegion.TraditionalChinese)
+        {
+            ForceChineseDownload = true;
+        }
+
         var result = await DownloadFromUrl(DataUrl).ConfigureAwait(false);
 
         if (result.Stream == null && DataUrl != ChineseDataUrl)
