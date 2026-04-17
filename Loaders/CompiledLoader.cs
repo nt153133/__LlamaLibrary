@@ -80,9 +80,7 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
     protected virtual string ChineseDataUrl => $"http://update.ffxivbots.com:3000/Download/cn?product={ProjectName}&force={ForceChineseDownload.ToString().ToLower()}";
     protected virtual string GlobalDataUrl => $"http://update.ffxivbots.com:3000/Download?product={ProjectName}";
 
-#if RB_CN
-    protected virtual string DataUrl => ChineseDataUrl;
-#elseif RB_TC
+#if RB_CN || RB_TC
     protected virtual string DataUrl => ChineseDataUrl;
 #else
     protected virtual string DataUrl => GlobalDataUrl;
