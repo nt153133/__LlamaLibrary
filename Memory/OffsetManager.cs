@@ -17,11 +17,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Media;
 using Clio.Utilities;
 using ff14bot;
@@ -37,88 +34,52 @@ using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.Settings;
 using Newtonsoft.Json;
 using LogLevel = LlamaLibrary.Logging.LogLevel;
-using MessageBox = System.Windows.MessageBox;
 using PatchManager = LlamaLibrary.Hooks.PatchManager;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable AccessToDisposedClosure
-
 // ReSharper disable InterpolatedStringExpressionIsNotIFormattable
 
 namespace LlamaLibrary.Memory;
 
 public static class OffsetManager
 {
-    private static readonly StringBuilder Sb = new();
-
-    //private static readonly SemaphoreSlim InitLock = new SemaphoreSlim(1, 1);
-    //private static readonly SemaphoreSlim InitLock1 = new(1, 1);
-    //private static bool initStarted;
-    private static bool initDone;
-
-    public static readonly Dictionary<string, string> patterns = new(StringComparer.Ordinal);
-    public static readonly Dictionary<string, string> constants = new(StringComparer.Ordinal);
-
-    public static ConcurrentDictionary<string, long> OffsetCache = new(StringComparer.Ordinal);
-
     private const long _version = 48;
-
-    private static readonly TaskCompletionSource<bool> InitTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-
     private const bool _debug = false;
 
-    private static int GameVersion =>
-        GameVersion1 != 0 ? GameVersion1 : (GameVersion1 = GetGameVersion());
+    // --- Namespace / type filters ---------------------------------------------------------------
+    private const string MemoryNamespacePrefix = "LlamaLibrary.Memory";
+    private const string OffsetsClassToken = "Offsets";
+    private const string RemoteAgentsNamespace = "LlamaLibrary.RemoteAgents";
 
-    private static int GetGameVersion()
+    // --- State ----------------------------------------------------------------------------------
+    public static readonly Dictionary<string, string> patterns = new(StringComparer.Ordinal);
+    public static readonly Dictionary<string, string> constants = new(StringComparer.Ordinal);
+    public static ConcurrentDictionary<string, long> OffsetCache = new(StringComparer.Ordinal);
+
+    public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown, LogLevel.Debug);
+
+    private static readonly TaskCompletionSource<bool> InitTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private static bool initDone;
+    private static bool _isNewGameBuild;
+
+    private static int _gameVersionCache;
+    private static int GameVersion
     {
-        try { return Core.CurrentGameVer; }
-        catch { return 0; }
+        get
+        {
+            if (_gameVersionCache != 0) return _gameVersionCache;
+            try { return _gameVersionCache = Core.CurrentGameVer; }
+            catch { return 0; }
+        }
     }
 
     private static string OffsetFile { get; } = Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{GameVersion}.json");
 
-    public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown, LogLevel.Debug);
-
-    /// <summary>
-    /// Active record for the current game region.
-    /// </summary>
+    // --- Region / record ------------------------------------------------------------------------
     public static readonly GameRecord ActiveRecord;
-
-    /// <summary>
-    /// Gets the currently active client region.
-    /// </summary>
     public static readonly ClientRegion ActiveRegion;
-
-    static OffsetManager()
-    {
-        var langToRegion = new Dictionary<Language, ClientRegion>()
-        {
-            { Language.Eng, ClientRegion.Global },
-            { Language.Ger, ClientRegion.Global },
-            { Language.Fre, ClientRegion.Global },
-            { Language.Jap, ClientRegion.Global },
-            { Language.Chn, ClientRegion.China },
-            { Language.MainlandTraditional, ClientRegion.China },
-            { Language.Korean, ClientRegion.Korea },
-            { Language.TraditionalChinese, ClientRegion.TraditionalChinese },
-        };
-
-        var Records = new Dictionary<ClientRegion, GameRecord>()
-        {
-            { ClientRegion.Global, new GameRecord(7.45f, OffsetFlags.Global) },
-            { ClientRegion.China, new GameRecord(7.45f, OffsetFlags.China) },
-            { ClientRegion.Korea, new GameRecord(7.3f, OffsetFlags.Korea) },
-            { ClientRegion.TraditionalChinese, new GameRecord(7.0f, OffsetFlags.TraditionalChinese) },
-        };
-
-        ActiveRegion = langToRegion[DataManager.CurrentLanguage];
-        ActiveRecord = Records[ActiveRegion];
-
-        IsChinese = ActiveRegion == ClientRegion.China;
-        CurrentGameVersion = ActiveRecord.CurrentGameVersion;
-    }
 
     [Obsolete("Use ActiveRegion instead")]
     public static readonly bool IsChinese;
@@ -126,73 +87,46 @@ public static class OffsetManager
     [Obsolete("Use ActiveRecord instead")]
     public static readonly float CurrentGameVersion;
 
-    private static bool _isNewGameBuild;
-    private static int GameVersion1;
-
-    [Obsolete]
-    public static void Init()
+    static OffsetManager()
     {
-        //Logger.Information($"Is init done {initDone}");
+        ActiveRegion = DataManager.CurrentLanguage switch
+        {
+            Language.Chn                  => ClientRegion.China,
+            Language.MainlandTraditional  => ClientRegion.China,
+            Language.Korean               => ClientRegion.Korea,
+            Language.TraditionalChinese   => ClientRegion.TraditionalChinese,
+            _                             => ClientRegion.Global,
+        };
+
+        ActiveRecord = ActiveRegion switch
+        {
+            ClientRegion.China              => new GameRecord(7.45f, OffsetFlags.China),
+            ClientRegion.Korea              => new GameRecord(7.3f,  OffsetFlags.Korea),
+            ClientRegion.TraditionalChinese => new GameRecord(7.0f,  OffsetFlags.TraditionalChinese),
+            _                               => new GameRecord(7.45f, OffsetFlags.Global),
+        };
+
+        IsChinese = ActiveRegion == ClientRegion.China;
+        CurrentGameVersion = ActiveRecord.CurrentGameVersion;
     }
+
+    // --- Init -----------------------------------------------------------------------------------
+    [Obsolete]
+    public static void Init() { }
 
     public static async Task<bool> InitLib()
     {
-        var stopwatch = Stopwatch.StartNew();
+        var total = Stopwatch.StartNew();
         try
         {
-            try
-            {
-                stopwatch.Restart();
-                /*if (initDone)
-                {
-                    Logger.Debug($"OffsetManager done {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                    return true;
-                }
+            var sw = Stopwatch.StartNew();
+            await SearchAndSetLL().ConfigureAwait(false);
+            sw.Stop();
+            Logger.Debug($"OffsetManager SearchAndSetLL took {sw.ElapsedMilliseconds}ms");
 
-                if (initStarted)
-                {
-                    Logger.Information($"OffsetManager Init started but waiting {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                    while (!initDone)
-                    {
-                        await Task.Delay(100);
-                    }
-
-                    return true;
-                }*/
-
-                //initStarted = true;
-
-                stopwatch = Stopwatch.StartNew();
-                /*
-                if (initDone)
-                {
-                    Logger.Information($"OffsetManager Init started but done now {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                    return true;
-                }
-
-                Logger.Information($"OffsetManager Init started {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Name}");
-                */
-
-                var newStopwatch = Stopwatch.StartNew();
-
-                await SearchAndSetLL().ConfigureAwait(false);
-                newStopwatch.Stop();
-
-                Logger.Debug($"OffsetManager SearchAndSetLL took {newStopwatch.ElapsedMilliseconds}ms");
-
-                newStopwatch.Restart();
-
-                Logger.Information($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms {new StackTrace().GetFrame(1)?.GetMethod()?.DeclaringType?.Name}");
-
-                PrintLastCommit();
-
-                Logger.Information($"Dalamud Dectected: {GeneralFunctions.DalamudDetected()}");
-            }
-            finally
-            {
-                initDone = true;
-                InitTcs.TrySetResult(true);
-            }
+            Logger.Information($"OffsetManager Init took {total.ElapsedMilliseconds}ms {CallerName()}");
+            PrintLastCommit();
+            Logger.Information($"Dalamud Dectected: {GeneralFunctions.DalamudDetected()}");
         }
         catch (Exception e)
         {
@@ -202,52 +136,74 @@ public static class OffsetManager
         {
             initDone = true;
             InitTcs.TrySetResult(true);
-            stopwatch.Stop();
-            Logger.Debug($"OffsetManager Init took {stopwatch.ElapsedMilliseconds}ms");
+            total.Stop();
+            Logger.Debug($"OffsetManager Init took {total.ElapsedMilliseconds}ms");
         }
 
         return true;
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static string CallerName()
+    {
+        // Skip 2 frames: CallerName and its direct caller's caller.
+        var frame = new StackTrace().GetFrame(2);
+        return frame?.GetMethod()?.DeclaringType?.Name ?? "<unknown>";
+    }
+
     private static void PrintLastCommit()
     {
-        var lastCommitfile = Path.Combine(GeneralFunctions.SourceDirectory()?.Parent?.FullName ?? string.Empty, "LastCommit.txt");
-        if (!File.Exists(lastCommitfile))
-        {
-            return;
-        }
+        var path = Path.Combine(GeneralFunctions.SourceDirectory()?.Parent?.FullName ?? string.Empty, "LastCommit.txt");
+        if (!File.Exists(path)) return;
 
-        var lastCommit = File.ReadAllText(lastCommitfile).Trim();
-        if (DateTime.TryParse(lastCommit, out var result))
+        var raw = File.ReadAllText(path).Trim();
+        if (DateTime.TryParse(raw, out var parsed))
         {
-            Logger.Information($"Last Commit: {result.ToUniversalTime():ddd, dd MMM yyy HH:mm:ss ‘UTC’}");
-            Logger.Information($"Raw Last Commit: {lastCommit}");
+            Logger.Information($"Last Commit: {parsed.ToUniversalTime():ddd, dd MMM yyy HH:mm:ss ‘UTC’}");
+            Logger.Information($"Raw Last Commit: {raw}");
         }
         else
         {
-            Logger.Information($"Last Commit: '{lastCommit}'");
+            Logger.Information($"Last Commit: '{raw}'");
         }
     }
 
     private static async Task SearchAndSetLL()
     {
-        var llTypes = GetTypes();
-
         if (File.Exists(OffsetFile) && GameVersion != 0)
         {
-            OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(await File.ReadAllTextAsync(OffsetFile)) ?? new ConcurrentDictionary<string, long>(StringComparer.Ordinal);
-            if (!OffsetCache.TryGetValue("Version", out var value) || value != _version)
+            try
+            {
+                var json = await File.ReadAllTextAsync(OffsetFile).ConfigureAwait(false);
+                OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(json)
+                              ?? new ConcurrentDictionary<string, long>(StringComparer.Ordinal);
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Failed reading offset cache, starting fresh: {e.Message}");
+                OffsetCache = new ConcurrentDictionary<string, long>(StringComparer.Ordinal);
+            }
+
+            if (!OffsetCache.TryGetValue("Version", out var v) || v != _version)
             {
                 OffsetCache.Clear();
-                value = _version;
-                OffsetCache["Version"] = value;
+                OffsetCache["Version"] = _version;
                 _isNewGameBuild = true;
             }
         }
+        else
+        {
+            OffsetCache = new ConcurrentDictionary<string, long>(StringComparer.Ordinal)
+            {
+                ["Version"] = _version
+            };
+             _isNewGameBuild = true;
+        }
 
-        await SetOffsetObjectsAsync(llTypes).ConfigureAwait(false);
+        await SetOffsetObjectsAsync(GetOffsetTypes()).ConfigureAwait(false);
     }
 
+    // --- Cache management -----------------------------------------------------------------------
     internal static void ClearOffsetFromCache(MemberInfo? info)
     {
         if (info == null)
@@ -255,208 +211,199 @@ public static class OffsetManager
             Logger.Error("MemberInfo is null");
             return;
         }
-
-        OffsetCache.TryRemove(info.MemberName(), out _);
-        if (GameVersion != 0)
-        {
-            ScheduleCacheWrite();
-        }
+        ClearOffsetFromCache(info.MemberName());
     }
 
     internal static void ClearOffsetFromCache(string name)
     {
         OffsetCache.TryRemove(name, out _);
-        if (GameVersion != 0)
-        {
-            ScheduleCacheWrite();
-        }
+        if (GameVersion != 0) ScheduleCacheWrite();
     }
 
+    // --- Type discovery -------------------------------------------------------------------------
     private static List<Type>? _cachedTypes;
 
-    private static List<Type> GetTypes()
+    private static List<Type> GetOffsetTypes() =>
+        _cachedTypes ??= BuildOffsetTypes(Assembly.GetExecutingAssembly(), requireMemoryNamespace: true);
+
+    private static List<Type> GetTypes(Assembly assembly) =>
+        BuildOffsetTypes(assembly, requireMemoryNamespace: false);
+
+    private static List<Type> BuildOffsetTypes(Assembly assembly, bool requireMemoryNamespace)
     {
-        if (_cachedTypes != null) return _cachedTypes;
-
-        var types = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => t.Namespace != null && t.IsClass
-                                            && t.Namespace.StartsWith("LlamaLibrary.Memory", StringComparison.Ordinal));
-
-        var q1 = types.Where(t => t.Name.Contains("Offsets", StringComparison.Ordinal)).ToList();
-
-        if (!q1.Contains(typeof(Offsets)))
+        var result = new List<Type>();
+        foreach (var t in assembly.GetTypes())
         {
-            q1.Add(typeof(Offsets));
+            if (!t.IsClass || t.Namespace == null) continue;
+            if (requireMemoryNamespace && !t.Namespace.StartsWith(MemoryNamespacePrefix, StringComparison.Ordinal)) continue;
+            if (!t.Name.Contains(OffsetsClassToken, StringComparison.Ordinal)) continue;
+            result.Add(t);
         }
 
-        _cachedTypes = q1;
-        return _cachedTypes;
+        if (!result.Contains(typeof(Offsets)))
+            result.Add(typeof(Offsets));
+
+        return result;
     }
 
-    private static List<Type> GetTypes(Assembly assembly)
+    // Build a IntPtr -> index lookup for agent vtables.
+    private static Dictionary<IntPtr, int> BuildVTableLookup()
     {
-        var types = assembly.GetTypes().Where(t => t.Namespace != null && t.IsClass);
-        var q1 = types.Where(t => t.Name.Contains("Offsets", StringComparison.Ordinal)).ToList();
-
-        if (!q1.Contains(typeof(Offsets)))
+        var ptrs = AgentModule.AgentVtables;
+        var map = new Dictionary<IntPtr, int>(ptrs.Count);
+        for (var i = 0; i < ptrs.Count; i++)
         {
-            q1.Add(typeof(Offsets));
+            // TryAdd keeps the first index if duplicates exist (matches original behavior)
+            map.TryAdd(ptrs[i], i);
         }
-
-        return q1;
+        return map;
     }
 
+    // --- Post-offset agent wiring --------------------------------------------------------------
     internal static void SetPostOffsets()
     {
-        var newStopwatch = Stopwatch.StartNew();
-        var vtables = new Dictionary<IntPtr, int>();
-        var pointers = AgentModule.AgentVtables;
-        for (var index = 0; index < pointers.Count; index++)
-        {
-            if (vtables.ContainsKey(pointers[index]))
-            {
-                continue;
-            }
+        var sw = Stopwatch.StartNew();
+        var vtables = BuildVTableLookup();
+        Logger.Debug($"OffsetManager AgentModule.AgentVtables took {sw.ElapsedMilliseconds}ms");
 
-            vtables.Add(pointers[index], index);
-        }
+        sw.Restart();
+        var agentTypes = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(t => t is { IsClass: true, Namespace: RemoteAgentsNamespace } && typeof(IAgent).IsAssignableFrom(t))
+            .ToList();
+        Logger.Debug($"OffsetManager GetTypesAgents took {sw.ElapsedMilliseconds}ms");
 
-        Logger.Debug($"OffsetManager AgentModule.AgentVtables took {newStopwatch.ElapsedMilliseconds}ms");
-        var q = Assembly.GetExecutingAssembly().GetTypes().Where(t => t is { Namespace: "LlamaLibrary.RemoteAgents", IsClass: true } && typeof(IAgent).IsAssignableFrom(t)).ToList();
-        newStopwatch.Stop();
-        Logger.Debug($"OffsetManager GetTypesAgents took {newStopwatch.ElapsedMilliseconds}ms");
+        sw.Restart();
+        var added = RegisterAgentTypes(agentTypes, vtables);
+        Logger.Information($"Added {added} agents");
+        Logger.Debug($"OffsetManager AgentModule.TryAddAgent took {sw.ElapsedMilliseconds}ms");
 
-        newStopwatch.Restart();
-        var names = new List<string>();
-        var objects = new object[]
-        {
-            IntPtr.Zero
-        };
-        foreach (var myType in q)
-        {
-            var test = ((IAgent)Activator.CreateInstance(myType,
-                                                         BindingFlags.Instance | BindingFlags.NonPublic,
-                                                         null,
-                                                         objects,
-                                                         null)!).RegisteredVtable;
+        // Inventory patch bookkeeping
+        HandleInventoryPatchState(out var skipInventoryPatch);
 
-            if (vtables.TryGetValue(test, out var vtable))
-            {
-                names.Add(myType.Name);
-                Logger.Debug($"\tTrying to add {myType.Name} {AgentModule.TryAddAgent(vtable, myType)}");
-            }
-            else
-            {
-                Logger.Error($"\tFound one {myType.Name} {test:X} ({Core.Memory.GetRelative(test):X}) but no agent");
-            }
-        }
-
-        Logger.Information($"Added {names.Count} agents");
-        newStopwatch.Stop();
-        Logger.Debug($"OffsetManager AgentModule.TryAddAgent took {newStopwatch.ElapsedMilliseconds}ms");
-
-        if (LlamaLibrarySettings.Instance.TempDisableInventoryHook && InventoryUpdatePatchOffsets.OrginalCall == InventoryUpdatePatchOffsets.OriginalJump)
-        {
-            LlamaLibrarySettings.Instance.TempDisableInventoryHook = false;
-        }
-
-        if (GameVersion != LlamaLibrarySettings.Instance.LastRevision && InventoryUpdatePatchOffsets.OrginalCall == InventoryUpdatePatchOffsets.OriginalJump)
-        {
-            LlamaLibrarySettings.Instance.LastRevision = GameVersion;
-            Logger.Information($"Setting revision to {GameVersion} in {LlamaLibrarySettings.Instance.FilePath}");
-        }
-
-        var skipInventoryPatch = LlamaLibrarySettings.Instance.TempDisableInventoryHook || LlamaLibrarySettings.Instance.DisableInventoryHook || LibraryClass.SafeMode;
-
-        Logger.Information($"TempDisableInventoryHook: {LlamaLibrarySettings.Instance.TempDisableInventoryHook} DisableInventoryHook: {LlamaLibrarySettings.Instance.DisableInventoryHook}");
-
-        if (!skipInventoryPatch)
-        {
-            if (InventoryUpdatePatchOffsets.OrginalCall != InventoryUpdatePatchOffsets.OriginalJump || InventoryUpdatePatchOffsets.OrginalCall == IntPtr.Zero || InventoryUpdatePatchOffsets.OriginalJump == IntPtr.Zero)
-            {
-                if (!_isNewGameBuild && InventoryUpdatePatchOffsets.OrginalCall != IntPtr.Zero && InventoryUpdatePatchOffsets.OriginalJump != IntPtr.Zero)
-                {
-                    Logger.Information("Last patch not cleaned up, cleaning up now");
-                    var asm = Core.Memory.Asm;
-                    asm.Clear();
-                    asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatchOffsets.PatchLocation);
-                    asm.AddLine("JMP {0}", InventoryUpdatePatchOffsets.OrginalCall);
-                    var jzPatch = asm.Assemble();
-                    Core.Memory.WriteBytes(InventoryUpdatePatchOffsets.PatchLocation, jzPatch);
-                    InventoryUpdatePatchOffsets.OriginalJump = InventoryUpdatePatchOffsets.OrginalCall;
-                }
-                else
-                {
-                    Logger.Error("New game build and inventory patch offsets don't match");
-                    var memberInfo = typeof(InventoryUpdatePatchOffsets).GetMember("OrginalCall", BindingFlags.NonPublic | BindingFlags.Static).FirstOrDefault();
-                    ClearOffsetFromCache(memberInfo);
-                    LlamaLibrarySettings.Instance.TempDisableInventoryHook = true;
-                    skipInventoryPatch = true;
-                }
-            }
-        }
-
-        newStopwatch.Restart();
-        if (GameVersion != 0)
-        {
-            ScheduleCacheWrite();
-        }
-
-        newStopwatch.Stop();
-        Logger.Debug($"OffsetManager File.WriteAllText took {newStopwatch.ElapsedMilliseconds}ms");
+        if (GameVersion != 0) ScheduleCacheWrite();
 
         PatchManager.Initialize(skipInventoryPatch);
     }
 
-    public static void RegisterAgent(IAgent iagent)
+    private static int RegisterAgentTypes(IEnumerable<Type> agentTypes, IReadOnlyDictionary<IntPtr, int> vtables)
     {
-        var vtables = new Dictionary<IntPtr, int>();
-        var pointers = AgentModule.AgentVtables;
-        for (var index = 0; index < pointers.Count; index++)
+        var objects = new object[] { IntPtr.Zero };
+        var added = 0;
+        foreach (var t in agentTypes)
         {
-            if (vtables.ContainsKey(pointers[index]))
-            {
-                continue;
-            }
+            var agent = (IAgent)Activator.CreateInstance(
+                t,
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                null,
+                objects,
+                null)!;
 
-            vtables.Add(pointers[index], index);
+            if (vtables.TryGetValue(agent.RegisteredVtable, out var idx))
+            {
+                var found = AgentModule.TryAddAgent(idx, t);
+                if (found)
+                {
+                    added++;
+                }
+                else
+                {
+                    Logger.Error($"\tFailed to add Agent {t.Name}");
+                }
+
+            }
+            else
+            {
+                Logger.Error($"\tFound one {t.Name} {agent.RegisteredVtable:X} ({Core.Memory.GetRelative(agent.RegisteredVtable):X}) but no agent");
+            }
+        }
+        return added;
+    }
+
+    private static void HandleInventoryPatchState(out bool skipInventoryPatch)
+    {
+        var settings = LlamaLibrarySettings.Instance;
+
+        if (settings.TempDisableInventoryHook &&
+            InventoryUpdatePatchOffsets.OrginalCall == InventoryUpdatePatchOffsets.OriginalJump)
+        {
+            settings.TempDisableInventoryHook = false;
         }
 
-        if (vtables.TryGetValue(iagent.RegisteredVtable, out var vtable))
+        if (GameVersion != settings.LastRevision &&
+            InventoryUpdatePatchOffsets.OrginalCall == InventoryUpdatePatchOffsets.OriginalJump)
         {
-            Logger.Information($"\tTrying to add {iagent.GetType()} {AgentModule.TryAddAgent(vtable, iagent.GetType())}");
+            settings.LastRevision = GameVersion;
+            Logger.Information($"Setting revision to {GameVersion} in {settings.FilePath}");
+        }
+
+        skipInventoryPatch = settings.TempDisableInventoryHook || settings.DisableInventoryHook || LibraryClass.SafeMode;
+
+        Logger.Information($"TempDisableInventoryHook: {settings.TempDisableInventoryHook} DisableInventoryHook: {settings.DisableInventoryHook}");
+
+        if (skipInventoryPatch) return;
+
+        var origCall = InventoryUpdatePatchOffsets.OrginalCall;
+        var origJump = InventoryUpdatePatchOffsets.OriginalJump;
+
+        if (origCall == origJump && origCall != IntPtr.Zero && origJump != IntPtr.Zero)
+        {
+            return; // already consistent
+        }
+
+        if (!_isNewGameBuild && origCall != IntPtr.Zero && origJump != IntPtr.Zero)
+        {
+            Logger.Information("Last patch not cleaned up, cleaning up now");
+            var asm = Core.Memory.Asm;
+            asm.Clear();
+            asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatchOffsets.PatchLocation);
+            asm.AddLine("JMP {0}", origCall);
+            Core.Memory.WriteBytes(InventoryUpdatePatchOffsets.PatchLocation, asm.Assemble());
+            InventoryUpdatePatchOffsets.OriginalJump = origCall;
         }
         else
         {
-            Logger.Error($"\tFound one {iagent.GetType().Name} {iagent.RegisteredVtable:X} ({Core.Memory.GetRelative(iagent.RegisteredVtable):X}) but no agent");
+            Logger.Error("New game build and inventory patch offsets don't match");
+            var memberInfo = typeof(InventoryUpdatePatchOffsets)
+                .GetMember("OrginalCall", BindingFlags.NonPublic | BindingFlags.Static)
+                .FirstOrDefault();
+            ClearOffsetFromCache(memberInfo);
+            settings.TempDisableInventoryHook = true;
+            skipInventoryPatch = true;
         }
     }
 
+    public static void RegisterAgent(IAgent iagent)
+    {
+        var vtables = BuildVTableLookup();
+        var type = iagent.GetType();
+
+        if (vtables.TryGetValue(iagent.RegisteredVtable, out var idx))
+        {
+            Logger.Information($"\tTrying to add {type} {AgentModule.TryAddAgent(idx, type)}");
+        }
+        else
+        {
+            Logger.Error($"\tFound one {type.Name} {iagent.RegisteredVtable:X} ({Core.Memory.GetRelative(iagent.RegisteredVtable):X}) but no agent");
+        }
+    }
+
+    // --- Script manager helpers ----------------------------------------------------------------
     internal static void AddNamespacesToScriptManager(params string[] param)
     {
-        var field =
-            typeof(ScriptManager).GetFields(BindingFlags.Static | BindingFlags.NonPublic)
-                .FirstOrDefault(f => f.FieldType == typeof(List<string>));
-
-        if (field == null)
-        {
-            return;
-        }
+        var field = typeof(ScriptManager)
+            .GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+            .FirstOrDefault(f => f.FieldType == typeof(List<string>));
+        if (field == null) return;
 
         try
         {
-            if (field.GetValue(null) is not List<string> list)
-            {
-                return;
-            }
+            if (field.GetValue(null) is not List<string> list) return;
 
             foreach (var ns in param)
             {
-                if (!list.Contains(ns, StringComparer.Ordinal))
-                {
-                    list.Add(ns);
-                    Logger.Information($"Added namespace '{ns}' to ScriptManager");
-                }
+                if (list.Contains(ns, StringComparer.Ordinal)) continue;
+                list.Add(ns);
+                Logger.Information($"Added namespace '{ns}' to ScriptManager");
             }
         }
         catch
@@ -465,151 +412,158 @@ public static class OffsetManager
         }
     }
 
+    // --- Member discovery ----------------------------------------------------------------------
+    private const BindingFlags OffsetMemberFlags =
+        BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public;
+
     public static IEnumerable<MemberInfo> MemberInfos(Type j)
     {
-        IEnumerable<MemberInfo> infos = j.GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public).Where(i => !i.IsInitOnly && !i.IsPrivate);
-        return infos.Concat(j.GetProperties(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public).Where(i => i.CanWrite));
+        foreach (var f in j.GetFields(OffsetMemberFlags))
+            if (!f.IsInitOnly && !f.IsPrivate)
+                yield return f;
+
+        foreach (var p in j.GetProperties(OffsetMemberFlags))
+            if (p.CanWrite)
+                yield return p;
     }
 
-    public static IEnumerable<MemberInfo> MemberInfos(IEnumerable<Type> j)
-    {
-        return j.SelectMany(MemberInfos);
-    }
+    public static IEnumerable<MemberInfo> MemberInfos(IEnumerable<Type> j) => j.SelectMany(MemberInfos);
 
+    // --- Offset search --------------------------------------------------------------------------
     [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
     public static async Task SetOffsetObjectsAsync(IEnumerable<Type> q1)
     {
-        var types = MemberInfos(q1).ToList();
+        var allMembers = MemberInfos(q1).ToList();
+        var missing = ResolveFromCacheAndCollectMissing(allMembers);
 
-        List<MemberInfo> fields = new();
-        var foundAll = true;
-        foreach (var memberInfo in types)
-        {
-            var type = memberInfo.GetMemberType();
-            if (type == null)
-            {
-                Logger.Error($"Parsing class {memberInfo.Name}, this shouldn't happen");
-            }
-            else
-            {
-                //Logger.Information($"Parsing field {type.Name}");
-
-                if (!memberInfo.IgnoreCache() && OffsetCache.TryGetValue(memberInfo.MemberName(), out var offsetVal))
-                {
-                    memberInfo.SetValue(offsetVal);
-                    continue;
-                }
-
-                //Logger.Information($"{(offset.IgnoreCache ? "Skipping cache" : "Not found in cache" )} : {type.DeclaringType.FullName}.{type.Name}");
-                fields.Add(memberInfo);
-
-                foundAll = false;
-            }
-        }
-
-        if (foundAll)
+        if (missing.Count == 0)
         {
             Logger.Information("All offsets found in cache");
             return;
         }
 
-        Logger.Information($"Not all ({fields.Count}) offsets found in cache");
+        Logger.Information($"Not all ({missing.Count}) offsets found in cache");
 
         var pf = PatternFinderProxy.PatternFinder;
+        var options = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
 
-        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
-        await Parallel.ForEachAsync(fields, parallelOptions, async (type, ct) =>
+        await Parallel.ForEachAsync(missing, options, (member, _) =>
         {
-            await Task.Run(() => SearchOffset(type, pf), ct);
-        });
+            SearchOffset(member, pf);
+            return ValueTask.CompletedTask;
+        }).ConfigureAwait(false);
     }
 
     public static void SetOffsetObjects(IEnumerable<Type> q1)
     {
-        var types = MemberInfos(q1);
+        var allMembers = MemberInfos(q1).ToList();
+        var missing = ResolveFromCacheAndCollectMissing(allMembers);
+
+        if (missing.Count == 0)
+        {
+            Logger.Information("All offsets found in cache");
+            return;
+        }
 
         var pf = PatternFinderProxy.PatternFinder;
-        Parallel.ForEach(types, type => { SearchOffset(type, pf); });
+        Parallel.ForEach(missing, member => SearchOffset(member, pf));
+    }
+
+    /// <summary>
+    /// Applies cached offsets to fields where present and returns the list of members
+    /// still needing a pattern search.
+    /// </summary>
+    private static List<MemberInfo> ResolveFromCacheAndCollectMissing(List<MemberInfo> members)
+    {
+        var missing = new List<MemberInfo>(members.Count);
+        foreach (var member in members)
+        {
+            var type = member.GetMemberType();
+            if (type == null)
+            {
+                Logger.Error($"Parsing class {member.Name}, this shouldn't happen");
+                continue;
+            }
+
+            if (!member.IgnoreCache() && OffsetCache.TryGetValue(member.MemberName(), out var cached))
+            {
+                member.SetValue(cached);
+                continue;
+            }
+
+            missing.Add(member);
+        }
+        return missing;
     }
 
     private static void SearchOffset(MemberInfo info, ISearcher pf)
     {
         var type = info.GetMemberType();
 
-        //Logger.Information($"{info.Name} - {info.DeclaringType} - {info.ReflectedType}");
-
         if (type is { IsClass: true, IsAbstract: false })
         {
-            Logger.Information("Trying to set " + type.Name + " (Class)");
-            var instance = Activator.CreateInstance(type);
-
-            if (instance == null)
-            {
-                Logger.Error($"Failed to create instance of {type.Name}");
-                return;
-            }
-
-            foreach (var field in MemberInfos(type))
-            {
-                Logger.Information("Trying to set " + field.Name);
-                var result = field.GetOffset(pf);
-
-                if (result == IntPtr.Zero)
-                {
-                    if (field.DeclaringType != null && field.DeclaringType.IsNested)
-                    {
-                        Logger.Error($"[{field.DeclaringType?.DeclaringType?.Name}:{field.Name:,27}] Not Found");
-                    }
-                    else
-                    {
-                        Logger.Error($"[{field.DeclaringType?.Name}:{field.Name:,27}] Not Found");
-                    }
-
-                    Logger.Error($"{field.GetPattern()}");
-
-                    continue;
-                }
-
-                field.SetValue(instance, result);
-                Logger.Information($"Setting {result.ToString("X")} to {instance.DynamicString()}");
-            }
-
-            //set the value
-            info.SetValue(null, instance);
+            SearchOffsetForClass(info, type, pf);
+            return;
         }
-        else
+
+        var result = info.GetOffset(pf);
+        if (result == IntPtr.Zero)
         {
-            //Logger.Information("Trying to set " + type.Name);
-            var result = info.GetOffset(pf);
+            LogNotFound(info);
+            Logger.Error($"{info.GetPattern()}");
+        }
+
+        try
+        {
+            info.SetValue(result);
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Error on {info.GetMemberType()} {result.ToInt64():X}");
+            Logger.Exception(e);
+        }
+    }
+
+    private static void SearchOffsetForClass(MemberInfo info, Type type, ISearcher pf)
+    {
+        Logger.Information("Trying to set " + type.Name + " (Class)");
+        var instance = Activator.CreateInstance(type);
+        if (instance == null)
+        {
+            Logger.Error($"Failed to create instance of {type.Name}");
+            return;
+        }
+
+        foreach (var field in MemberInfos(type))
+        {
+            Logger.Information("Trying to set " + field.Name);
+            var result = field.GetOffset(pf);
+
             if (result == IntPtr.Zero)
             {
-                if (info.DeclaringType != null && info.DeclaringType.IsNested)
-                {
-                    Logger.Error($"[{info.DeclaringType?.DeclaringType?.Name}:{info.Name:,27}] Not Found");
-                }
-                else
-                {
-                    Logger.Error($"[{info.DeclaringType?.Name}:{info.Name:,27}] Not Found");
-                }
-
-                Logger.Error($"{info.GetPattern()}");
+                LogNotFound(field);
+                Logger.Error($"{field.GetPattern()}");
+                continue;
             }
 
-            try
-            {
-                info.SetValue(result);
-            }
-            catch (Exception e)
-            {
-                Logger.Error($"Error on {info.GetMemberType()} {result.ToInt64():X}");
-                Logger.Exception(e);
-            }
+            field.SetValue(instance, result);
+            Logger.Information($"Setting {result:X} to {instance.DynamicString()}");
         }
+
+        info.SetValue(null, instance);
+    }
+
+    private static void LogNotFound(MemberInfo field)
+    {
+        var declaring = field.DeclaringType;
+        var ownerName = declaring != null && declaring.IsNested
+            ? declaring.DeclaringType?.Name
+            : declaring?.Name;
+        Logger.Error($"[{ownerName}:{field.Name:,27}] Not Found");
     }
 
     internal static void SetScriptsThread()
     {
-        // AddNamespacesToScriptManager(new[] { "LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras" }); //
         Logger.Information("Setting ScriptManager");
         Task.Run(() =>
         {
@@ -619,274 +573,174 @@ public static class OffsetManager
         });
     }
 
+    // --- Namespace helpers ----------------------------------------------------------------------
     public static string? GetRootNamespace(string? nameSpace)
     {
-        return nameSpace != null && nameSpace.IndexOf('.', StringComparison.Ordinal) > 0 ? nameSpace.Substring(0, nameSpace.IndexOf('.', StringComparison.Ordinal)) : nameSpace;
+        if (nameSpace == null) return null;
+        var idx = nameSpace.IndexOf('.', StringComparison.Ordinal);
+        return idx > 0 ? nameSpace.Substring(0, idx) : nameSpace;
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static string? GetCurrentNamespace()
     {
-        var frame = new StackFrame(1);
-        var method = frame.GetMethod();
-        var type = method?.DeclaringType;
+        var type = new StackFrame(1).GetMethod()?.DeclaringType;
         return GetRootNamespace(type?.Namespace);
+    }
+
+    /// <summary>
+    /// Collects the nested "Offsets" classes from every class in the caller's root namespace.
+    /// </summary>
+    private static List<Type> CollectOffsetClassesFromCaller(MethodBase? callerMethod)
+    {
+        var declaringType = callerMethod?.DeclaringType;
+        var assembly = declaringType?.Assembly;
+        var root = GetRootNamespace(declaringType?.Namespace);
+        if (assembly == null || root == null) return new List<Type>();
+
+        var result = new List<Type>();
+        foreach (var t in assembly.GetTypes())
+        {
+            if (!t.IsClass || t.Namespace == null) continue;
+            if (!t.Namespace.Contains(root, StringComparison.Ordinal)) continue;
+
+            var nested = t.GetNestedType(OffsetsClassToken, BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public);
+            if (nested != null) result.Add(nested);
+        }
+        return result;
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static List<Type> GetOffsetClasses()
     {
-        var frame = new StackFrame(1);
-        var method = frame.GetMethod();
-        var type = method?.DeclaringType;
-
-        var q1 = (from t in method?.DeclaringType?.Assembly.GetTypes()
-                  where t.Namespace != null && t.IsClass && t.Namespace!.Contains(GetRootNamespace(type.Namespace), StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal))
-                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
-
-        return q1;
+        var caller = new StackFrame(1).GetMethod();
+        return CollectOffsetClassesFromCaller(caller);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void SetOffsetClasses()
     {
-        var frame = new StackFrame(1);
-        var method = frame.GetMethod();
-        var type = method?.DeclaringType;
-
-        var q1 = (from t in method?.DeclaringType?.Assembly.GetTypes()
-                  where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace), StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal))
-                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
-
+        var caller = new StackFrame(1).GetMethod();
+        var q1 = CollectOffsetClassesFromCaller(caller);
         SetOffsetObjects(q1);
-
         InitTcs.Task.GetAwaiter().GetResult();
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void SetOffsetClassesAndAgents()
     {
-        var frame = new StackFrame(1);
-        var method = frame.GetMethod();
-        var type = method?.DeclaringType;
-
-        var q1 = (from t in method?.DeclaringType?.Assembly.GetTypes()
-                  where t.Namespace != null && t.IsClass && t.Namespace.Contains(GetRootNamespace(type.Namespace), StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal))
-                  select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
-
+        var caller = new StackFrame(1).GetMethod();
+        var q1 = CollectOffsetClassesFromCaller(caller);
         SetOffsetObjects(q1);
 
-        if (GameVersion != 0)
+        if (GameVersion != 0) ScheduleCacheWrite();
+
+        var vtables = BuildVTableLookup();
+        var assembly = caller?.DeclaringType?.Assembly;
+        if (assembly == null)
         {
-            ScheduleCacheWrite();
+            InitTcs.Task.GetAwaiter().GetResult();
+            return;
         }
 
-        var vtables = new Dictionary<IntPtr, int>();
-        var pointers = AgentModule.AgentVtables;
+        var agentTypes = assembly.GetTypes().Where(t => t.IsClass && typeof(IAgent).IsAssignableFrom(t));
+        var objects = new object[] { IntPtr.Zero };
 
-        for (var index = 0; index < pointers.Count; index++)
+        foreach (var MyType in agentTypes)
         {
-            if (vtables.ContainsKey(pointers[index]))
-            {
-                continue;
-            }
+            var agent = (IAgent)Activator.CreateInstance(
+                MyType,
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                null,
+                objects,
+                null)!;
 
-            vtables.Add(pointers[index], index);
-        }
-
-        var q = from t in method?.DeclaringType?.Assembly.GetTypes()
-                where t.IsClass && typeof(IAgent).IsAssignableFrom(t)
-                select t;
-
-        var objects = new object[]
-        {
-            IntPtr.Zero
-        };
-
-        foreach (var MyType in q.Where(i => typeof(IAgent).IsAssignableFrom(i)))
-        {
-
-            var test = ((IAgent)Activator.CreateInstance(MyType,
-                                                         BindingFlags.Instance | BindingFlags.NonPublic,
-                                                         null,
-                                                         objects,
-                                                         null)!).RegisteredVtable;
-
-            if (vtables.TryGetValue(test, out var value))
-            {
-                Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(value, MyType)}");
-            }
+            if (vtables.TryGetValue(agent.RegisteredVtable, out var idx))
+                Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(idx, MyType)}");
             else
-            {
-                Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {test:X} but no agent");
-            }
+                Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {agent.RegisteredVtable:X} but no agent");
         }
 
         InitTcs.Task.GetAwaiter().GetResult();
     }
 
-    public static Dictionary<string, string> LLDict(ClientRegion mode = ClientRegion.Global)
+    // --- Pattern dictionary dump ----------------------------------------------------------------
+    public static Dictionary<string, string> LLDict(ClientRegion mode = ClientRegion.Global) =>
+        BuildPatternDictionary(GetOffsetTypes(), mode);
+
+    public static Dictionary<string, string> LLDict(Assembly assembly, ClientRegion mode = ClientRegion.Global) =>
+        BuildPatternDictionary(GetTypes(assembly), mode);
+
+    private static Dictionary<string, string> BuildPatternDictionary(List<Type> sourceTypes, ClientRegion mode)
     {
         var results = new Dictionary<string, string>(StringComparer.Ordinal);
-
-        // var asm = Assembly.Load("LlamaLibrary.dll");
-        var q1 = GetTypes(); // (from t in typeof(OffsetAttribute).Assembly.GetTypes()
-        //where t.Namespace != null && (t.IsClass && t.Namespace.Contains("LlamaLibrary", StringComparison.Ordinal) && t.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public).Any(i => string.Equals(i.Name, "Offsets", StringComparison.Ordinal)))
-        //select t.GetNestedType("Offsets", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public)).ToList();
-
-        if (!q1.Contains(typeof(Offsets)))
-        {
-            //q1.Add(typeof(Offsets));
-        }
-
-        var types = MemberInfos(q1).ToList();
-
+        var types = MemberInfos(sourceTypes).ToList();
         Logger.Information($"Count: {types.Count}");
 
         foreach (var field in types)
         {
-            if (field.DeclaringType != null && field.DeclaringType.IsNested)
+            var declaring = field.DeclaringType;
+            if (declaring == null) continue;
+
+            var ownerName = declaring.IsNested ? declaring.DeclaringType?.Name : declaring.Name;
+            if (declaring.IsNested && declaring.DeclaringType == null)
             {
-                try
-                {
-                    if (field.DeclaringType.DeclaringType == null)
-                    {
-                        continue;
-                    }
-
-                    var offset = field.GetAttribute(mode);
-
-                    if (offset == null)
-                    {
-                        Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name} has no OffsetAttribute!");
-                        continue;
-                    }
-
-                    results.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", offset.Pattern);
-                }
-                catch (Exception e)
-                {
-                    Logger.Information($"\t{field.DeclaringType.Name}_{field.Name} Issue");
-                    Console.WriteLine(e);
-                    //throw;
-                }
+                // mirror old "skip deeply-nested without enclosing declaring type" behavior
+                continue;
             }
-            else
-            {
-                var offset = field.GetAttribute(mode);
-                if (offset == null)
-                {
-                    Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27} has no OffsetAttribute!");
-                    continue;
-                }
 
-                //Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27},{offset.Pattern} for {offset.Flags.GetRegionString()}");
-                try
-                {
-                    results.Add($"{field.DeclaringType?.Name}_{field.Name}", offset.Pattern);
-                }
-                catch (Exception e)
-                {
-                    Logger.Information($"\t{field.DeclaringType?.Name}_{field.Name} DUPE");
-                    Console.WriteLine(e);
-                    //throw;
-                }
+            var offset = field.GetAttribute(mode);
+            if (offset == null)
+            {
+                Logger.Information($"{ownerName}_{field.Name} has no OffsetAttribute!");
+                continue;
+            }
+
+            var key = $"{ownerName}_{field.Name}";
+            try
+            {
+                results.Add(key, offset.Pattern);
+            }
+            catch (Exception e)
+            {
+                Logger.Information($"\t{key} DUPE/Issue");
+                Console.WriteLine(e);
             }
         }
 
         return results;
     }
 
-    public static Dictionary<string, string> LLDict(Assembly assembly, ClientRegion mode = ClientRegion.Global)
-    {
-        var results = new Dictionary<string, string>(StringComparer.Ordinal);
-        var q1 = GetTypes(assembly);
-        var types = MemberInfos(q1).ToList();
-
-        Logger.Information($"Count: {types.Count}");
-
-        foreach (var field in types)
-        {
-            if (field.DeclaringType != null && field.DeclaringType.IsNested)
-            {
-                try
-                {
-                    if (field.DeclaringType.DeclaringType == null)
-                    {
-                        continue;
-                    }
-
-                    var offset = field.GetAttribute(mode);
-
-                    if (offset == null)
-                    {
-                        Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name} has no OffsetAttribute!");
-                        continue;
-                    }
-
-                    results.Add($"{field.DeclaringType.DeclaringType.Name}_{field.Name}", offset.Pattern);
-                    //Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name} has Offset for {offset.Flags.GetRegionString()}");
-                    //Logger.Information($"{field.DeclaringType.DeclaringType.Name}_{field.Name:,27},{offset.Pattern}");
-                }
-                catch (Exception e)
-                {
-                    Logger.Information($"\t{field.DeclaringType.Name}_{field.Name} Issue");
-                    Console.WriteLine(e);
-                    //throw;
-                }
-            }
-            else
-            {
-                var offset = field.GetAttribute(mode);
-                if (offset == null)
-                {
-                    Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27} has no OffsetAttribute!");
-                    continue;
-                }
-
-                //Logger.Information($"{field.DeclaringType?.Name}_{field.Name:,27},{offset.Pattern} for {offset.Flags.GetRegionString()}");
-                try
-                {
-                    results.Add($"{field.DeclaringType?.Name}_{field.Name}", offset.Pattern);
-                }
-                catch (Exception e)
-                {
-                    Logger.Information($"\t{field.DeclaringType?.Name}_{field.Name} DUPE");
-                    Console.WriteLine(e);
-                    //throw;
-                }
-            }
-        }
-
-        return results;
-    }
-
+    // --- Cache debounce write -------------------------------------------------------------------
     private static CancellationTokenSource? _writeCts;
     private static readonly SemaphoreSlim WriteLock = new(1, 1);
 
     private static void ScheduleCacheWrite()
     {
-        // Cancel any pending write
-        var oldCts = Interlocked.Exchange(ref _writeCts, new CancellationTokenSource());
+        var newCts = new CancellationTokenSource();
+        var oldCts = Interlocked.Exchange(ref _writeCts, newCts);
         oldCts?.Cancel();
         oldCts?.Dispose();
 
-        var cts = _writeCts;
-        if (cts == null) return;
-
+        var token = newCts.Token;
         _ = Task.Run(async () =>
         {
             try
             {
-                // Debounce: wait 500ms, if cancelled another write is coming
-                await Task.Delay(500, cts.Token).ConfigureAwait(false);
+                await Task.Delay(500, token).ConfigureAwait(false);
 
-                await WriteLock.WaitAsync(cts.Token).ConfigureAwait(false);
+                await WriteLock.WaitAsync(token).ConfigureAwait(false);
                 try
                 {
-                    var sorted = OffsetCache.OrderBy(r => r.Key).ToDictionary();
+                    // Snapshot to a sorted list without materializing an intermediate dictionary.
+                    var snapshot = OffsetCache.ToArray();
+                    Array.Sort(snapshot, static (a, b) => string.CompareOrdinal(a.Key, b.Key));
+
+                    var sorted = new Dictionary<string, long>(snapshot.Length, StringComparer.Ordinal);
+                    foreach (var kv in snapshot) sorted[kv.Key] = kv.Value;
+
                     var json = JsonConvert.SerializeObject(sorted);
-                    await File.WriteAllTextAsync(OffsetFile, json).ConfigureAwait(false);
+                    await File.WriteAllTextAsync(OffsetFile, json, token).ConfigureAwait(false);
                     Logger.Debug("OffsetCache written to disk");
                 }
                 finally
@@ -896,7 +750,7 @@ public static class OffsetManager
             }
             catch (OperationCanceledException)
             {
-                // A newer write was scheduled, this one is intentionally suppressed
+                // A newer write was scheduled.
             }
             catch (Exception e)
             {
