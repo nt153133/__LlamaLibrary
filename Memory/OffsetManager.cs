@@ -102,7 +102,7 @@ public static class OffsetManager
         {
             ClientRegion.China              => new GameRecord(7.45f, OffsetFlags.China),
             ClientRegion.Korea              => new GameRecord(7.3f,  OffsetFlags.Korea),
-            ClientRegion.TraditionalChinese => new GameRecord(7.0f,  OffsetFlags.TraditionalChinese),
+            ClientRegion.TraditionalChinese => new GameRecord(7.1f,  OffsetFlags.TraditionalChinese),
             _                               => new GameRecord(7.45f, OffsetFlags.Global),
         };
 
