@@ -775,7 +775,7 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
         return sb.ToString();
     }
 
-    public static bool IsFileLocked(string filePath)
+    public bool IsFileLocked(string filePath)
     {
         if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
         {
@@ -792,10 +792,12 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
             const int ERROR_SHARING_VIOLATION = 0x20;
             const int ERROR_LOCK_VIOLATION = 0x21;
             var hResult = Marshal.GetHRForException(e) & 0xFFFF;
+            Log.Warning($"IOException when checking if file is locked: {e.Message} (HRESULT: 0x{hResult:X})");
             return hResult is ERROR_SHARING_VIOLATION or ERROR_LOCK_VIOLATION;
         }
         catch (UnauthorizedAccessException)
         {
+            Log.Warning("UnauthorizedAccessException when checking if file is locked. This may indicate the file is locked or ACLs are preventing access.");
             // Another user/process has exclusive access, or ACLs block us — treat as locked.
             return true;
         }
