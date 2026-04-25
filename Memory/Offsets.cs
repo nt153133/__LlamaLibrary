@@ -1743,9 +1743,7 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search 48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F8")]
         internal static IntPtr SendStringToFocus;
 
-        //7.3
-        [Offset("Search E8 ? ? ? ? EB ? 33 ED 48 89 2F TraceCall")]
-        [OffsetTC("Search E8 ? ? ? ? EB ? 33 DB 48 89 1F TraceCall")]
+        [Offset("Search E8 ?? ?? ?? ?? 4D 39 2E TraceCall")]
         internal static IntPtr Utf8StringCtor;
 
         //[Offset("Search E8 ? ? ? ? 49 8D 8F ? ? ? ? 49 8D 97 ? ? ? ? TraceCall")]
@@ -1794,7 +1792,6 @@ namespace LlamaLibrary.Memory
         internal static int Offset1;
 
         [Offset("Search 41 89 8E ? ? ? ? 4C 39 7E ? Add 3 Read32")]
-        [OffsetTC("Search 41 8B CC 41 89 8F ? ? ? ? Add 6 Read32")]
         internal static int DCOffset;
 
         /*
