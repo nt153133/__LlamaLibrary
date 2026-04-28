@@ -372,6 +372,9 @@ namespace LlamaLibrary.Extensions
 
         public static byte DyeItem(this BagSlot item, BagSlot dye)
         {
+            //TODO Function broke in 7.5
+
+            return 0;
             using var bagid = Core.Memory.CreateAllocatedMemory(8);
             using var bagslot = Core.Memory.CreateAllocatedMemory(4);
             bagid.AllocateOfChunk("bagid", 8);
