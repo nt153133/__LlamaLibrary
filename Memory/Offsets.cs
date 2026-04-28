@@ -329,7 +329,7 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search 48 8D 99 ? ? ? ? 48 8D 4C 24 ? Add 3 Read32")]
         internal static int DutyListStart;
 
-        [Offset("Search BF ? ? ? ? 48 8B D3 48 8B CE Add 1 Read32")]
+        [Offset("Search BF ? ? ? ? 48 8B D3 48 8B CE E8 ? ? ? ? 48 83 C3 Add 1 Read32")]
         internal static int DutyCount;
 
         //7.2
