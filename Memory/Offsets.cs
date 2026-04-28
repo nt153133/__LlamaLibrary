@@ -64,9 +64,11 @@ namespace LlamaLibrary.Memory
         [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 8B 83 ? ? ? ? 48 8B 88 ? ? ? ? Add 1 Read32")]
         public static int JumpingCondition;
 
+        //TODO 7.5
         [Offset("Search 89 91 ? ? ? ? 44 89 81 ? ? ? ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 85 D2 Add 2 Read32")]
         public static int CurrentMettle;
 
+        //TODO 7.5
         [Offset("Search 44 89 81 ? ? ? ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 85 D2 Add 3 Read32")]
         public static int NextReistanceRank;
 
@@ -865,6 +867,7 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search 0F B7 73 ? BA ? ? ? ? E8 ? ? ? ? 89 B5 ? ? ? ? 48 8D 8D ? ? ? ? Add 3 Read8")]
         internal static int CurrentRep;
 
+        //TODO 7.5
         //7.3
         [Offset("Search 0F B7 7B ? BA ? ? ? ? E8 ? ? ? ? 41 89 BE ? ? ? ? BA ? ? ? ? Add 3 Read8")]
         [OffsetTC("Search 0F B7 73 ? BA ? ? ? ? E8 ? ? ? ? Add 3 Read8")]
@@ -965,7 +968,7 @@ namespace LlamaLibrary.Memory
         [Obsolete]
         internal static IntPtr ExdData__getWorld;
 
-        //6.4
+        //TODO 7.5
         [Offset("Search 48 8B 43 ? 0F B7 3C B0 Add 3 Read8")]
         internal static int ChoicesOffset;
 
@@ -975,6 +978,7 @@ namespace LlamaLibrary.Memory
         internal static int CurrentWorldOffset;
 
         //6.4
+        //TODO 7.5
         [Offset("Search 3B 43 ? 0F 8F ? ? ? ? 48 8B 4B ? Add 2 Read8")]
         internal static int MaxWorldOffset;
     }
@@ -1084,6 +1088,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search E8 ? ? ? ? 48 8B 74 24 ? B0 ? 48 8B 6C 24 ? 48 8B 5C 24 ? 48 83 C4 ? Add 1 TraceRelative")]
         internal static IntPtr MeldItem;
 
+        //TODO 7.5
         [Offset("Search E8 ? ? ? ? 84 C0 74 ? C6 87 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? 41 56 TraceCall")]
         internal static IntPtr DyeItem;
 
@@ -1545,11 +1550,13 @@ namespace LlamaLibrary.Memory
         internal static IntPtr RequestInfo;
 
         //7.3
+        //TODO 7.5
         [Offset("Search 44 8B 44 CB ? 48 8B 8B ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 48 8B 93 ? ? ? ? 48 8B 01 48 8B 5C 24 ? 48 83 C4 ? 5F 48 FF A0 ? ? ? ? 48 8B 81 ? ? ? ? Add 4 Read8")]
         [OffsetTC("Search 44 8B 44 CF ? 48 8B 8F ? ? ? ? E8 ? ? ? ? 48 8B 8F ? ? ? ? 48 8B 97 ? ? ? ? 48 8B 01 48 8B 5C 24 ? 48 83 C4 30 5F 48 FF A0 98 00 00 00 48 8B 81 ? ? ? ? Add 4 Read8")]
         internal static int ItemListStart;
 
         //7.3
+        //TODO 7.5
         [Offset("Search 0F B6 81 ? ? ? ? 48 8B D9 0F B6 51 ? Add 3 Read32")]
         [OffsetTC("Search 0F B6 81 ? ? ? ? 48 8B F9 0F B6 51 08 Add 3 Read32")]
         internal static int ItemCount;
@@ -1686,6 +1693,7 @@ namespace LlamaLibrary.Memory
         internal static int ShootParam;
 
         // 44 89 A3 ? ? ? ? 66 C7 83 ? ? ? ? ? ? EB ? Add 3 Read32
+        // TODO 7.5
         [Offset("Search 44 89 A3 ? ? ? ? 66 C7 83 ? ? ? ? ? ? EB ? Add 3 Read32")]
         internal static int ShootData;
 
@@ -1762,6 +1770,7 @@ namespace LlamaLibrary.Memory
 
     public static class UIStateOffsets
     {
+        //TODO 7.5
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 48 8B 01 Add 3 TraceRelative")]
         internal static IntPtr Instance;
 
@@ -1844,6 +1853,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search E8 ? ? ? ? 44 0F B6 83 88 09 00 00 TraceCall")]
         public static IntPtr FreeCompanyMaxActiveActionsFunction;
 
+        //TODO 7.5
         [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8D 05 ? ? ? ? 48 89 43 ? E8 ? ? ? ? 4C 89 6B ? Add 3 TraceRelative")]
         [OffsetTC("Search 48 8D 05 ? ? ? ? ? ? ? 48 8D 05 ? ? ? ? 48 89 43 ? E8 ? ? ? ? 4C 89 63 Add 3 TraceRelative")]
         public static IntPtr AgentFreeCompanyCreditShopVTable;
