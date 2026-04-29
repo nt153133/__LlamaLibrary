@@ -8,7 +8,12 @@
 
         public void SelectWorld(int index)
         {
-            SendAction(1, 3, (ulong)(index + 2));
+            //7.5
+#if RB_TC
+                SendAction(1, 3, (ulong)(index + 2));
+#else
+            SendAction(2, 3, 0, 3, (ulong)(index + 2));
+#endif
         }
     }
 }
