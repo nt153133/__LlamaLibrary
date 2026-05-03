@@ -102,8 +102,9 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
                 return false;
             }
 
-            if (HousingHelper.IsInHousingArea && ZoneId == WorldManager.ZoneId && HousingHelper.HousingPositionInfo.Ward == ward)
+            if (HousingHelper.IsInHousingArea && ZoneId == WorldManager.ZoneId && (HousingHelper.CurrentWard + 1) == ward)
             {
+                Log.Information($"Already in correct ward {ward}");
                 return true;
             }
 

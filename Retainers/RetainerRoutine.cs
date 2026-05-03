@@ -323,7 +323,7 @@ namespace LlamaLibrary.Retainers
             catch
             {
                 Log.Error("Could not get occupied summoning bell condition, defaulting to 0x50");
-                _OccupiedSummoningBellCondition = 0x50;
+                _OccupiedSummoningBellCondition = 50;
             }
         }
 

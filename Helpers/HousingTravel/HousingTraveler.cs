@@ -173,6 +173,7 @@ namespace LlamaLibrary.Helpers.HousingTravel
                         case HouseLocationIndex.FreeCompanyEstate:
                             if (!await TeleportHelper.TeleportToFreeCompanyEstate())
                             {
+                                Log.Error("Failed to teleport to free company estate, maybe we don't have one? Check if you have a free company estate and try again");
                                 return false;
                             }
 
