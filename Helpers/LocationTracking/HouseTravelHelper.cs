@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Buddy.Coroutines;
@@ -14,6 +15,7 @@ using LlamaLibrary.Helpers.HousingTravel;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.Helpers.LocationTracking;
 
@@ -55,8 +57,10 @@ public static class HouseTravelHelper
             return false;
         }
 
-        return await GetIntoHouse() && CurrentHouseLocation != null && CurrentHouseLocation.Equals(previousHouseLocation);
+        return await GetIntoHouse(previousHouseLocation.HousingZone, previousHouseLocation.Plot) && CurrentHouseLocation != null && CurrentHouseLocation.Equals(previousHouseLocation);
     }
+
+
 
     internal static async Task<bool> GoBackToPlot(HouseLocation? previousHouseLocation)
     {
@@ -140,6 +144,20 @@ public static class HouseTravelHelper
         return HousingHelper.IsInHousingArea && current != null && current.Ward == previousHouseLocation.Ward && current.HousingZone == previousHouseLocation.HousingZone && current.World == previousHouseLocation.World && current.Location.DistanceSqr(previousHouseLocation.Location) < 10;
     }
 
+    public static async Task<bool> GetIntoHouse(HousingZone housingZone, int plot)
+    {
+        if (!ResourceManager.HousingPlots.TryGetValue(housingZone, out var plots))
+        {
+            Log.Error("Failed to get housing plot");
+            return false;
+        }
+
+        var plot1 = plots.Value.FirstOrDefault(i => i.Value.Plot == plot).Value;
+
+        return await plot1.Enter();
+    }
+
+    [Obsolete("Use GetIntoHouse with housing zone and plot parameters instead")]
     public static async Task<bool> GetIntoHouse()
     {
         if (!ResourceManager.HousingPlots.TryGetValue((HousingZone)WorldManager.ZoneId, out var plots))
@@ -169,7 +187,7 @@ public static class HouseTravelHelper
         {
             var estate = HousingHelper.Residences.First(i => i.HouseLocationIndex == HouseLocationIndex.FreeCompanyEstate);
             await HousingTraveler.GetToResidential(estate);
-            await GetIntoHouse();
+            await GetIntoHouse((HousingZone)estate.Zone, estate.Plot);
         }
 
         if (!HousingHelper.IsInsideHouse)
