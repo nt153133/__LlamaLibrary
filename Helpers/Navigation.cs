@@ -123,6 +123,7 @@ namespace LlamaLibrary.Helpers
 
             if (HousingTraveler.HousingZoneIds.Contains((ushort)ZoneId))
             {
+                Log.Information($"Using housing traveler to get to residential area {ZoneId}");
                 var ward = 1;
 
                 if (HousingHelper.IsInHousingArea && WorldManager.ZoneId == ZoneId)
@@ -193,6 +194,158 @@ namespace LlamaLibrary.Helpers
             Navigator.Stop();
 
             return Navigator.InPosition(Core.Me.Location, XYZ, 3);
+        }
+        public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ, float distance)
+        {
+            if (Navigator.NavigationProvider == null)
+            {
+                Navigator.PlayerMover = new SlideMover();
+                Navigator.NavigationProvider = new ServiceNavigationProvider();
+            }
+
+            /*if (ZoneId == 620)
+            {
+                var AE = WorldManager.AetheryteIdsForZone(ZoneId).OrderBy(i => i.Item2.DistanceSqr(XYZ)).First();
+                Log.Debug("Can teleport to AE");
+                WorldManager.TeleportById(AE.Item1);
+                await Coroutine.Wait(20000, () => WorldManager.ZoneId == AE.Item1);
+                await Coroutine.Sleep(2000);
+                return await FlightorMove(XYZ);
+            }*/
+
+            if (ZoneId is 534 or 535 or 536 && WorldManager.ZoneId != ZoneId && !await GrandCompanyHelper.GetToGCBarracks())
+            {
+                return false;
+            }
+
+            if (HousingTraveler.HousingZoneIds.Contains((ushort)ZoneId))
+            {
+                Log.Information($"Using housing traveler to get to residential area {ZoneId}");
+                var ward = 1;
+
+                if (HousingHelper.IsInHousingArea && WorldManager.ZoneId == ZoneId)
+                {
+                    ward = HousingHelper.HousingPositionInfo.Ward;
+                }
+
+                return await HousingTraveler.GetToResidential((ushort)ZoneId, XYZ, ward);
+            }
+
+            if (ZoneId == 401 && WorldManager.ZoneId == ZoneId)
+            {
+                return await FlightorMove(XYZ);
+            }
+
+            var path = await GenerateNodes(ZoneId, XYZ);
+
+            if (ZoneId == 399 && path == null && WorldManager.ZoneId != ZoneId)
+            {
+                await GetToMap399();
+            }
+
+            if (path == null && WorldManager.ZoneId != ZoneId)
+            {
+                if (WorldManager.AetheryteIdsForZone(ZoneId).Length >= 1)
+                {
+                    var AE = WorldManager.AetheryteIdsForZone(ZoneId).OrderBy(i => i.Item2.DistanceSqr(XYZ)).First();
+
+                    Log.Verbose("Can teleport to AE");
+                    await Coroutine.Sleep(1000);
+                    await TeleportHelper.TeleportByIdTicket(AE.Item1);
+                    await Coroutine.Sleep(1000);
+                    return await GetTo(ZoneId, XYZ);
+                }
+
+                return false;
+            }
+
+            if (path == null)
+            {
+                var result = await FlightorMove(XYZ);
+                Navigator.Stop();
+                return result;
+            }
+
+            if (path.Count < 1)
+            {
+                Log.Error($"Couldn't get a path to {XYZ} on {ZoneId}, Stopping.");
+                return false;
+            }
+
+            var object_0 = new object();
+
+            var newPath = path.ToList();
+
+            var lastNode = newPath.Last();
+            var lastNodeIndex = newPath.IndexOf(lastNode);
+            newPath.RemoveAt(lastNodeIndex);
+            newPath.Reverse();
+            var newQueue = new Queue<NavGraph.INode>();
+            newQueue.Enqueue(new TestNode(lastNode.Id, (ushort)ZoneId, XYZ, distance));
+            foreach (var node in newPath)
+                newQueue.Enqueue(node);
+
+            var composite = NavGraph.NavGraphConsumer(j => newQueue);
+
+            while (newQueue.Count > 0)
+            {
+                composite.Start(object_0);
+                await Coroutine.Yield();
+                while (composite.Tick(object_0) == RunStatus.Running)
+                {
+                    await Coroutine.Yield();
+                }
+
+                composite.Stop(object_0);
+                await Coroutine.Yield();
+            }
+
+            Navigator.Stop();
+
+            Log.Information($"Distance to {XYZ} on {ZoneId}: {Core.Me.Location.Distance(XYZ)}");
+
+            return Navigator.InPosition(Core.Me.Location, XYZ, 3);
+        }
+
+        internal class TestNode : NavGraph.CustomLogicNode
+        {
+            private readonly float distance;
+            private MoveToParameters moveToParameters;
+            private MoveResult lastMoveResult = MoveResult.GeneratingPath;
+
+            public TestNode(uint id, ushort zone, Vector3 loc, float distance)
+            {
+                Id = id;
+                ZoneId = zone;
+                EndZone = zone;
+                Location = loc;
+                EndLocation = loc;
+                this.distance = Math.Max(distance, 1f);
+                moveToParameters = new MoveToParameters(loc);
+                moveToParameters.DistanceTolerance = this.distance;
+                moveToParameters.MapId = zone;
+            }
+
+            public override bool ShouldPop =>
+                WorldManager.ZoneId == ZoneId &&
+                Core.Me.Location.Distance2D(Location) <= distance &&
+                !MovementManager.IsMoving;
+
+            public override async Task<bool> Logic()
+            {
+                if (WorldManager.ZoneId != ZoneId)
+                    return true;
+
+                if (Core.Me.Location.Distance2D(Location) <= distance)
+                {
+                    Navigator.Stop();
+                    await Coroutine.Wait(1000, () => !MovementManager.IsMoving);
+                    return true;
+                }
+
+                await CommonTasks.MoveTo(moveToParameters);
+                return true;
+            }
         }
 
         public static async Task OffMeshMove(Vector3 _target)
@@ -578,6 +731,7 @@ namespace LlamaLibrary.Helpers
             {
                 return false;
             }
+
             return await GetToInteractNpc(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, window);
         }
 

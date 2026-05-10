@@ -62,6 +62,8 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
     public static int FPS => (int)Core.Memory.NoCacheRead<float>(Core.Memory.Read<IntPtr>(Offsets.Framework) + Offsets.Framerate);
     private static int CriticalPulseDelay => Math.Max(25, 1000 / FPS) * 2;
 
+    private static System.Windows.Threading.DispatcherTimer _pulseTimer;
+
     public static ConcurrentBag<PulseFlags> BreakDownPulseFlags(PulseFlags flags)
     {
         if (flags == PulseFlags.All)
@@ -72,7 +74,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
         return new ConcurrentBag<PulseFlags>(PulseFlagOptions.Where(r => flags.HasFlag(r)).ToList());
     }
 
-    private static void StartPulseThread()
+    /*private static void StartPulseThread()
     {
         lock (PulseLock)
         {
@@ -98,6 +100,50 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
 
             _pulseThreadRunning = false;
             _pulseThread.Join();
+        }
+    }*/
+
+    private static void StartPulseTimer()
+    {
+        lock (PulseLock)
+        {
+            if (_pulseTimer != null && _pulseTimer.IsEnabled)
+            {
+                return;
+            }
+
+            // Run safely on the main RebornBuddy UI thread
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                _pulseTimer = new System.Windows.Threading.DispatcherTimer(System.Windows.Threading.DispatcherPriority.Background)
+                {
+                    Interval = TimeSpan.FromMilliseconds(_pulseDelay)
+                };
+                _pulseTimer.Tick += PulseTimer_Tick;
+                _pulseTimer.Start();
+            });
+
+            ff14bot.Helpers.Logging.Write(Colors.CornflowerBlue, $@"{nameof(TemplatePlugin)}: PulseTimer Started with flags {_pulseFlags}");
+        }
+    }
+
+    private static void StopPulseTimer()
+    {
+        lock (PulseLock)
+        {
+            if (_pulseTimer == null || !_pulseTimer.IsEnabled)
+            {
+                return;
+            }
+
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                _pulseTimer.Stop();
+                _pulseTimer.Tick -= PulseTimer_Tick;
+                _pulseTimer = null;
+            });
+
+            ff14bot.Helpers.Logging.Write(Colors.CornflowerBlue, $@"{nameof(TemplatePlugin)}: PulseTimer Stopped");
         }
     }
 
@@ -287,12 +333,12 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
 
     private static void BotEventsOnOnBotStopRequested(EventArgs eventArgs)
     {
-        StartPulseThread();
+        StartPulseTimer();
     }
 
     private static void BotEventsOnOnBotStartRequested(EventArgs eventArgs)
     {
-        StopPulseThread();
+        StopPulseTimer();
     }
 
     private static void UpdatePulseFlags()
@@ -398,7 +444,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
                 {
                     BotEvents.OnBotStarted += BotEventsOnOnBotStartRequested;
                     BotEvents.OnBotStopped += BotEventsOnOnBotStopRequested;
-                    StartPulseThread();
+                    StartPulseTimer();
                     Log.Information("Setting start/stop pulse hooks");
                 }
             }
@@ -426,7 +472,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
                 {
                     BotEvents.OnBotStarted -= BotEventsOnOnBotStartRequested;
                     BotEvents.OnBotStopped -= BotEventsOnOnBotStopRequested;
-                    StopPulseThread();
+                    StopPulseTimer();
                     Log.Information("Removing start/stop pulse hooks");
                 }
             }
@@ -463,6 +509,42 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
         catch (Exception ee)
         {
             Log.Error($"Exception: {ee.Message}");
+        }
+    }
+
+    private static void PulseTimer_Tick(object sender, EventArgs e)
+    {
+        try
+        {
+            // Update the interval dynamically in case EnterCriticalMode changed the _pulseDelay
+            if (_pulseTimer.Interval.TotalMilliseconds != _pulseDelay)
+            {
+                _pulseTimer.Interval = TimeSpan.FromMilliseconds(_pulseDelay);
+            }
+
+            if (!TreeRoot.IsRunning)
+            {
+                if (GameObjectManager.LocalPlayer != null)
+                {
+                    Pulsator.Pulse(_pulseFlags);
+                }
+
+                // Moved outside the if/else since these run regardless of LocalPlayer presence
+                if (_pulseFlags.HasFlag(PulseFlags.Windows))
+                {
+                    RaptureAtkUnitManager.Update();
+                }
+
+                if (_pulseFlags.HasFlag(PulseFlags.Plugins))
+                {
+                    PluginManager.PulseAllPlugins();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Safe to catch here now; it won't be a hard unmanaged deadlock anymore
+            // ff14bot.Helpers.Logging.WriteException(ex);
         }
     }
 }
