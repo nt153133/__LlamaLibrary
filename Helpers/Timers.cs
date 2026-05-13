@@ -17,10 +17,10 @@ public static class Timers
     private static readonly FrameCachedValue<ulong> CurrentTimeCachedValue = new(() => Core.Memory.CallInjectedWraper<ulong>(TimersOffsets.GetCurrentTime, 0));
 
     // ReSharper disable once MemberCanBePrivate.Global
-    
+
 
     private const int MaxRows = 6;
-    private static readonly string[] Description = { "", "Duty/Beast Tribe Dailies", "Weekly Reset", "Unknown", "GC/Rowena", "Unknown" };
+    private static readonly string[] Description = { "", "Duty/Beast Tribe Dailies", "Weekly Reset", "Golden Saucer", "GC/Rowena", "Unknown" };
 
     private static readonly CycleTime[] Cycles = new CycleTime[MaxRows];
 

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using ff14bot;
@@ -13,7 +10,6 @@ using LlamaLibrary.Events;
 using LlamaLibrary.Extensions;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Memory;
-using Newtonsoft.Json;
 
 // ReSharper disable InconsistentNaming
 
@@ -21,6 +17,11 @@ namespace LlamaLibrary;
 
 public class LibraryClass : ILibrary
 {
+    private const string SafeModeArgument = "-safemode";
+    private const string TraceListenerName = "LLoggerTraceListener";
+    private static int _traceListenerAdded;
+    private static int _treeRootStartHooked;
+
     [DllImport("USER32.dll")]
     static extern short GetKeyState(VirtualKeyStates nVirtKey);
 
@@ -28,48 +29,42 @@ public class LibraryClass : ILibrary
 
     public async Task<bool> PreOffsetWarmup()
     {
-        if (Environment.GetCommandLineArgs().Contains("-safemode", StringComparer.Ordinal))
+        foreach (var argument in Environment.GetCommandLineArgs())
         {
+            if (!string.Equals(argument, SafeModeArgument, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
             SafeMode = true;
+            break;
         }
 
-        //Check if the user is holding down the shift key and ctrl key on startup
+        // Check if the user is holding down the shift key and ctrl key on startup.
         if (GetKeyState(VirtualKeyStates.VK_SHIFT) < 0 && GetKeyState(VirtualKeyStates.VK_CONTROL) < 0)
         {
             SafeMode = true;
         }
 
-        LLogger trace = new LLogger("Trace");
-        Trace.Listeners.Add(new LLoggerTraceListener(trace));
+        EnsureTraceListener();
 
 
         if (SafeMode)
         {
             ff14bot.Helpers.Logging.WriteDiagnostic("Safe Mode Enabled");
-            Task.Run(() => { MessageBox.Show("Safe Mode Enabled", "LlamaLibrary", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK, MessageBoxOptions.None); });
+            _ = Task.Run(() => { MessageBox.Show("Safe Mode Enabled", "LlamaLibrary", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK, MessageBoxOptions.None); });
         }
 
-        return await OffsetManager.InitLib();
+        return await OffsetManager.InitLib().ConfigureAwait(false);
     }
 
-    public async Task<bool> PostOffsetWarmup()
+    public Task<bool> PostOffsetWarmup()
     {
         OffsetManager.SetPostOffsets();
         OffsetManager.SetScriptsThread();
         LoginEvents.SetAccountId();
         LoginEvents.UpdateInfo();
-        TreeRoot.OnStart += bot =>
-        {
-            if (!Core.IsInGame)
-            {
-                return;
-            }
-
-            if (LoginEvents.LastKnownCharacterId != Core.Me.PlayerId())
-            {
-                LoginEvents.InvokeOnCharacterSwitched(true);
-            }
-        };
+        EnsureTreeRootOnStartHook();
 
 
 
@@ -86,7 +81,49 @@ public class LibraryClass : ILibrary
         }
         */
 
-        return true;
+        return Task.FromResult(true);
+    }
+
+    private static void EnsureTraceListener()
+    {
+        if (Interlocked.Exchange(ref _traceListenerAdded, 1) == 1)
+        {
+            return;
+        }
+
+        foreach (TraceListener listener in Trace.Listeners)
+        {
+            if (string.Equals(listener.Name, TraceListenerName, StringComparison.Ordinal))
+            {
+                return;
+            }
+        }
+
+        var trace = new LLogger("Trace");
+        Trace.Listeners.Add(new LLoggerTraceListener(trace));
+    }
+
+    private static void EnsureTreeRootOnStartHook()
+    {
+        if (Interlocked.Exchange(ref _treeRootStartHooked, 1) == 1)
+        {
+            return;
+        }
+
+        TreeRoot.OnStart += OnTreeRootStart;
+    }
+
+    private static void OnTreeRootStart(BotBase bot)
+    {
+        if (!Core.IsInGame)
+        {
+            return;
+        }
+
+        if (LoginEvents.LastKnownCharacterId != Core.Me.PlayerId())
+        {
+            LoginEvents.InvokeOnCharacterSwitched(true);
+        }
     }
 }
 

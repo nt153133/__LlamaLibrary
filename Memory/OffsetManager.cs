@@ -63,6 +63,7 @@ public static class OffsetManager
     private static readonly TaskCompletionSource<bool> InitTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private static bool initDone;
     private static bool _isNewGameBuild;
+    private static int _scriptManagerStarted;
 
     private static int _gameVersionCache;
     private static int GameVersion
@@ -124,7 +125,7 @@ public static class OffsetManager
             sw.Stop();
             Logger.Debug($"OffsetManager SearchAndSetLL took {sw.ElapsedMilliseconds}ms");
 
-            Logger.Information($"OffsetManager Init took {total.ElapsedMilliseconds}ms {CallerName()}");
+            Logger.Information($"OffsetManager Init took {total.ElapsedMilliseconds}ms");
             PrintLastCommit();
             Logger.Information($"Dalamud Dectected: {GeneralFunctions.DalamudDetected()}");
         }
@@ -141,14 +142,6 @@ public static class OffsetManager
         }
 
         return true;
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    private static string CallerName()
-    {
-        // Skip 2 frames: CallerName and its direct caller's caller.
-        var frame = new StackTrace().GetFrame(2);
-        return frame?.GetMethod()?.DeclaringType?.Name ?? "<unknown>";
     }
 
     private static void PrintLastCommit()
@@ -222,12 +215,19 @@ public static class OffsetManager
 
     // --- Type discovery -------------------------------------------------------------------------
     private static List<Type>? _cachedTypes;
+    private static Type[]? _cachedAgentTypes;
 
     private static List<Type> GetOffsetTypes() =>
         _cachedTypes ??= BuildOffsetTypes(Assembly.GetExecutingAssembly(), requireMemoryNamespace: true);
 
     private static List<Type> GetTypes(Assembly assembly) =>
         BuildOffsetTypes(assembly, requireMemoryNamespace: false);
+
+    private static Type[] GetAgentTypes() =>
+        _cachedAgentTypes ??= Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(t => t is { IsClass: true, Namespace: RemoteAgentsNamespace } && typeof(IAgent).IsAssignableFrom(t))
+            .ToArray();
 
     private static List<Type> BuildOffsetTypes(Assembly assembly, bool requireMemoryNamespace)
     {
@@ -267,9 +267,7 @@ public static class OffsetManager
         Logger.Debug($"OffsetManager AgentModule.AgentVtables took {sw.ElapsedMilliseconds}ms");
 
         sw.Restart();
-        var agentTypes = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => t is { IsClass: true, Namespace: RemoteAgentsNamespace } && typeof(IAgent).IsAssignableFrom(t))
-            .ToList();
+        var agentTypes = GetAgentTypes();
         Logger.Debug($"OffsetManager GetTypesAgents took {sw.ElapsedMilliseconds}ms");
 
         sw.Restart();
@@ -323,6 +321,13 @@ public static class OffsetManager
     {
         var settings = LlamaLibrarySettings.Instance;
 
+        if (!TryRefreshInventoryPatchOriginalJump())
+        {
+            settings.TempDisableInventoryHook = true;
+            skipInventoryPatch = true;
+            return;
+        }
+
         if (settings.TempDisableInventoryHook &&
             InventoryUpdatePatchOffsets.OrginalCall == InventoryUpdatePatchOffsets.OriginalJump)
         {
@@ -369,6 +374,36 @@ public static class OffsetManager
             ClearOffsetFromCache(memberInfo);
             settings.TempDisableInventoryHook = true;
             skipInventoryPatch = true;
+        }
+    }
+
+    private static bool TryRefreshInventoryPatchOriginalJump()
+    {
+        var patchLocation = InventoryUpdatePatchOffsets.PatchLocation;
+        if (patchLocation == IntPtr.Zero)
+        {
+            Logger.Error("InventoryUpdatePatch PatchLocation is zero; skipping inventory patch verification.");
+            return false;
+        }
+
+        try
+        {
+            var opcode = Core.Memory.Read<byte>(patchLocation);
+            if (opcode != 0xE9)
+            {
+                Logger.Error($"InventoryUpdatePatch expected JMP opcode E9 at {patchLocation:X}, found {opcode:X2}; skipping inventory patch verification.");
+                return false;
+            }
+
+            var relative = Core.Memory.Read<int>(patchLocation + 1);
+            InventoryUpdatePatchOffsets.OriginalJump = patchLocation + 5 + relative;
+            return InventoryUpdatePatchOffsets.OriginalJump != IntPtr.Zero;
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Failed to read InventoryUpdatePatch original jump target; skipping inventory patch verification.");
+            Logger.Exception(e);
+            return false;
         }
     }
 
@@ -429,11 +464,22 @@ public static class OffsetManager
 
     public static IEnumerable<MemberInfo> MemberInfos(IEnumerable<Type> j) => j.SelectMany(MemberInfos);
 
+    private static List<MemberInfo> CollectMemberInfos(IEnumerable<Type> types)
+    {
+        var members = new List<MemberInfo>();
+        foreach (var type in types)
+        {
+            members.AddRange(MemberInfos(type));
+        }
+
+        return members;
+    }
+
     // --- Offset search --------------------------------------------------------------------------
     [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
     public static async Task SetOffsetObjectsAsync(IEnumerable<Type> q1)
     {
-        var allMembers = MemberInfos(q1).ToList();
+        var allMembers = CollectMemberInfos(q1);
         var missing = ResolveFromCacheAndCollectMissing(allMembers);
 
         if (missing.Count == 0)
@@ -456,7 +502,7 @@ public static class OffsetManager
 
     public static void SetOffsetObjects(IEnumerable<Type> q1)
     {
-        var allMembers = MemberInfos(q1).ToList();
+        var allMembers = CollectMemberInfos(q1);
         var missing = ResolveFromCacheAndCollectMissing(allMembers);
 
         if (missing.Count == 0)
@@ -564,6 +610,11 @@ public static class OffsetManager
 
     internal static void SetScriptsThread()
     {
+        if (Interlocked.Exchange(ref _scriptManagerStarted, 1) == 1)
+        {
+            return;
+        }
+
         Logger.Information("Setting ScriptManager");
         Task.Run(() =>
         {
@@ -674,7 +725,7 @@ public static class OffsetManager
     private static Dictionary<string, string> BuildPatternDictionary(List<Type> sourceTypes, ClientRegion mode)
     {
         var results = new Dictionary<string, string>(StringComparer.Ordinal);
-        var types = MemberInfos(sourceTypes).ToList();
+        var types = CollectMemberInfos(sourceTypes);
         Logger.Information($"Count: {types.Count}");
 
         foreach (var field in types)

@@ -10,7 +10,6 @@ Original work done by zzi, contibutions by Omninewb, Freiheit, and mastahg
 
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using ff14bot;
@@ -112,6 +111,7 @@ public class OffsetTCAttribute : OffsetAttribute
 public static class OffsetAttributeExtensions
 {
     public static readonly ConcurrentDictionary<string, OffsetAttribute[]> AttributeCache = new ConcurrentDictionary<string, OffsetAttribute[]>(StringComparer.Ordinal);
+    private static readonly ConcurrentDictionary<string, bool> IgnoreCacheCache = new ConcurrentDictionary<string, bool>(StringComparer.Ordinal);
 
     public static string GetPattern(this MemberInfo property, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
@@ -121,48 +121,68 @@ public static class OffsetAttributeExtensions
 
     public static OffsetAttribute? GetAttribute(this MemberInfo property, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
-        var attributes = forceClientMode != ClientRegion.NotSpecified ? property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count()) : property.OffsetAttributes(forceClientMode)?.Where(r => r.Flags.HasFlag(OffsetManager.ActiveRecord.RegionFlag)).OrderBy(r => r.Flags.Count());
-
-        if (attributes == null || !attributes.Any())
+        var attributes = property.OffsetAttributes(forceClientMode);
+        if (attributes == null || attributes.Length == 0)
         {
             return null;
         }
 
-        if (forceClientMode == ClientRegion.NotSpecified)
+        var regionFlag = forceClientMode == ClientRegion.NotSpecified
+            ? OffsetManager.ActiveRecord.RegionFlag
+            : forceClientMode.ConvertClientMode();
+        OffsetAttribute? best = null;
+        var bestSpecificity = int.MaxValue;
+
+        foreach (var attribute in attributes)
         {
-            //ff14bot.Helpers.Logging.WriteDiagnostic("No forced client mode, returning first attribute for {0}", property.MemberName());
-            return attributes.First();
+            if (!HasAnyFlag(attribute.Flags, regionFlag))
+            {
+                continue;
+            }
+
+            var specificity = attribute.Flags.Count();
+            if (specificity >= bestSpecificity)
+            {
+                continue;
+            }
+
+            best = attribute;
+            bestSpecificity = specificity;
         }
 
-        if (attributes.Any(i => i.Flags.HasFlag(forceClientMode.ConvertClientMode())))
-        {
-            //ff14bot.Helpers.Logging.WriteDiagnostic("There are {2} attributes for {0}, returning one for forced client mode {1}", property.MemberName(), forceClientMode,attributes.Count());
-            return attributes.First(i => i.Flags.HasFlag(forceClientMode.ConvertClientMode()));
-        }
-
-        return null;
+        return best;
     }
 
     public static OffsetAttribute? GetAttribute2(this MemberInfo property, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
-        var attributes = forceClientMode != ClientRegion.NotSpecified ? property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count()) : property.OffsetAttributes(forceClientMode)?.OrderBy(r => r.Flags.Count());
-
-        if (attributes == null || !attributes.Any())
+        var attributes = property.OffsetAttributes(forceClientMode);
+        if (attributes == null || attributes.Length == 0)
         {
             return null;
         }
 
-        if (forceClientMode == ClientRegion.NotSpecified)
+        var regionFlag = forceClientMode.ConvertClientMode();
+        OffsetAttribute? best = null;
+        var bestSpecificity = int.MaxValue;
+
+        foreach (var attribute in attributes)
         {
-            return attributes.First();
+            if (forceClientMode != ClientRegion.NotSpecified && !HasAnyFlag(attribute.Flags, regionFlag))
+            {
+                continue;
+            }
+
+            var specificity = attribute.Flags.Count();
+            if (specificity >= bestSpecificity)
+            {
+                continue;
+            }
+
+            best = attribute;
+            bestSpecificity = specificity;
         }
 
-        if (attributes.Any(i => i.Flags.HasFlag(forceClientMode.ConvertClientMode())))
-        {
-            return attributes.First(i => i.Flags.HasFlag(forceClientMode.ConvertClientMode()));
-        }
-
-        return null;
+        return best;
     }
 
     public static string GetRegionString(this OffsetFlags flags)
@@ -197,25 +217,31 @@ public static class OffsetAttributeExtensions
 
     public static bool IgnoreCache(this MemberInfo property)
     {
-        return property.GetCustomAttributes<IgnoreCacheAttribute>().Any();
+        return IgnoreCacheCache.GetOrAdd(
+            property.MemberName(),
+            _ => property.IsDefined(typeof(IgnoreCacheAttribute), true));
     }
 
     public static OffsetAttribute[]? OffsetAttributes(this MemberInfo property, ClientRegion forceClientMode)
     {
-        if (!AttributeCache.TryGetValue(property.MemberName(), out var attributes))
+        var memberName = property.MemberName();
+        return AttributeCache.GetOrAdd(memberName, _ =>
         {
-            attributes = property.GetCustomAttributes<OffsetAttribute>(true).ToArray();
+            var rawAttributes = property.GetCustomAttributes(typeof(OffsetAttribute), true);
+            var attributes = new OffsetAttribute[rawAttributes.Length];
+            for (var i = 0; i < rawAttributes.Length; i++)
+            {
+                attributes[i] = (OffsetAttribute)rawAttributes[i];
+            }
+
             if (attributes.Length > 0)
             {
-                AttributeCache.TryAdd(property.MemberName(), attributes);
+                return attributes;
             }
-            else
-            {
-                ff14bot.Helpers.Logging.Write($"No attribute found for {property.MemberName()}");
-            }
-        }
 
-        return attributes;
+            ff14bot.Helpers.Logging.Write($"No attribute found for {memberName}");
+            return attributes;
+        });
     }
 
     public static IntPtr SearchOffset(this ISearcher finder, string pattern)
@@ -256,12 +282,23 @@ public static class OffsetAttributeExtensions
     /// <returns>IntPtr.Zero if no offset could be found, otherwise the value of the offset</returns>
     public static IntPtr SearchOffset(this ISearcher finder, MemberInfo field, ClientRegion forceClientMode = ClientRegion.NotSpecified)
     {
-        var patterns = field.OffsetAttributes(forceClientMode)?.Where(r => r.Flags.HasFlag(OffsetManager.ActiveRecord.RegionFlag)).OrderBy(r => r.Flags.Count());
+        var patterns = field.OffsetAttributes(forceClientMode);
+        if (patterns == null || patterns.Length == 0)
+        {
+            return IntPtr.Zero;
+        }
 
-        if (patterns != null)
+        var regionFlag = OffsetManager.ActiveRecord.RegionFlag;
+
+        for (var specificity = 1; specificity <= 32; specificity++)
         {
             foreach (var pattern in patterns)
             {
+                if (pattern.Flags.Count() != specificity || !HasAnyFlag(pattern.Flags, regionFlag))
+                {
+                    continue;
+                }
+
                 var result = finder.SearchOffset(pattern.Pattern);
                 if (result > IntPtr.Zero)
                 {
@@ -271,6 +308,11 @@ public static class OffsetAttributeExtensions
         }
 
         return IntPtr.Zero;
+    }
+
+    private static bool HasAnyFlag(OffsetFlags flags, OffsetFlags flag)
+    {
+        return (flags & flag) != 0;
     }
 
     public static void SetValue(this MemberInfo field, IntPtr offset)

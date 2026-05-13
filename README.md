@@ -20,23 +20,17 @@ That installed `QuestBehaviors\__LlamaLibrary` copy is the runtime source of tru
 
 The [LlamaLibrary NuGet package](https://www.nuget.org/packages/LlamaLibrary) is for developers. It lets RB-based projects reference LL while coding and building, but the NuGet package is not shipped as the runtime copy with the consuming project.
 
-## Installation
+## Updates
 
-### Automatic Setup
+UpdateBuddy is now part of RebornBuddy and does not need to be installed separately. No separate UpdateBuddy plugin download or `Plugins` folder setup is required for LlamaLibrary.
 
-The easiest way to install LlamaLibrary is to install the [updateBuddy](https://loader.updatebuddy.net/UpdateBuddy.zip) plugin in your RebornBuddy `Plugins` folder:
+UpdateBuddy keeps LlamaLibrary current in RebornBuddy's `QuestBehaviors\__LlamaLibrary` folder:
 
 ```text
 RebornBuddy
-+-- Plugins
-    +-- updateBuddy
-        +-- git2-a2bde63.dll
-        +-- LibGit2Sharp.dll
-        +-- Loader.cs
-        +-- UpdateBuddy.dll
++-- QuestBehaviors
+    +-- __LlamaLibrary
 ```
-
-updateBuddy installs LlamaLibrary into the correct folder and keeps it up to date.
 
 ### Manual Setup
 
@@ -57,15 +51,6 @@ Optional:
 3. Place the contents of ExtraBotbases in that folder.
 
 After installation, your folder structure should look similar to:
-
-```text
-RebornBuddy
-+-- BotBases
-|   +-- LlamaUtilities
-|   +-- ExtraBotbases
-+-- QuestBehaviors
-    +-- __LlamaLibrary
-```
 
 ## Developer Reference
 

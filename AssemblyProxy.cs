@@ -17,11 +17,11 @@ public static class AssemblyProxy
     private static readonly ConcurrentDictionary<string, Assembly> Assemblies = new ConcurrentDictionary<string, Assembly>(StringComparer.Ordinal);
     private static readonly LLogger Log = new LLogger("AssemblyProxy", Colors.Bisque);
     private static bool _initialized;
-    private static object _lock = new object();
+    private static readonly object Lock = new object();
 
     public static void Init()
     {
-        lock (_lock)
+        lock (Lock)
         {
             if (_initialized)
             {
@@ -43,13 +43,14 @@ public static class AssemblyProxy
             Log.Error(e.ToString());
         }
 
-        try
+        var entryAssembly = Assembly.GetEntryAssembly();
+        if (entryAssembly != null)
         {
-            AddAssembly(Assembly.GetEntryAssembly()?.GetName().Name!, Assembly.GetEntryAssembly()!);
-        }
-        catch (Exception e)
-        {
-            Log.Error(e.ToString());
+            var entryAssemblyName = entryAssembly.GetName().Name;
+            if (!string.IsNullOrEmpty(entryAssemblyName))
+            {
+                AddAssembly(entryAssemblyName, entryAssembly);
+            }
         }
 
         AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
@@ -57,8 +58,7 @@ public static class AssemblyProxy
 
     public static void AddAssembly(string name, Assembly assembly)
     {
-        //Add to dictionary, make sure it's not already there
-        if (Assemblies.ContainsKey(name))
+        if (string.IsNullOrEmpty(name))
         {
             return;
         }

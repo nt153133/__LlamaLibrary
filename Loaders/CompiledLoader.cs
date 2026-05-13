@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Formats.Tar;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -83,7 +82,8 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
 
     protected virtual string VersionUrl => $"http://update.ffxivbots.com:3000/version?product={ProjectName}";
     protected virtual bool Debug => false;
-    protected FileInfo CompiledAssembly => new(Path.Combine(LocalFolderName, CompiledAssemblyName));
+    private FileInfo? _compiledAssembly;
+    protected FileInfo CompiledAssembly => _compiledAssembly ??= new FileInfo(Path.Combine(LocalFolderName, CompiledAssemblyName));
     protected virtual Color LogColor => Colors.Lime;
     protected virtual LogLevel LogLevel => LogLevel.Information;
     protected virtual List<(string Name, Assembly Assembly)> AddedAssemblies => new();
@@ -161,7 +161,15 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
         }
         catch (ReflectionTypeLoadException rtle)
         {
-            types = rtle.Types.Where(t => t != null).ToArray()!;
+            foreach (var t in rtle.Types)
+            {
+                if (t != null && typeof(T).IsAssignableFrom(t))
+                {
+                    return t;
+                }
+            }
+
+            return null;
         }
 
         foreach (var t in types)
@@ -516,7 +524,19 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
     }
 
     private static string? TryFirstHeader(HttpHeaders headers, string name)
-        => headers.TryGetValues(name, out var values) ? values.FirstOrDefault() : null;
+    {
+        if (!headers.TryGetValues(name, out var values))
+        {
+            return null;
+        }
+
+        foreach (var value in values)
+        {
+            return value;
+        }
+
+        return null;
+    }
 
     protected virtual async Task<(MemoryStream? Stream, string? ContentType)> Download()
     {
@@ -696,10 +716,8 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
         {
             Log.Information($"Loading {ProjectName}...");
             LocalFolderName = directory;
+            _compiledAssembly = null;
             Directory.CreateDirectory(LocalFolderName);
-
-            var locked = IsFileLocked(CompiledAssembly.FullName);
-            //Log.Information($"{ProjectName} assembly is {(locked ? "locked" : "not locked")} at start of Load.");
 
             if (!Debug)
             {
@@ -715,15 +733,6 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
             }
 
             CompiledAssembly.Refresh();
-
-            if (IsFileLocked(CompiledAssembly.FullName))
-            {
-                Log.Information($"{ProjectName} assembly is currently locked. Attempting to load anyway, but this may cause issues.");
-            }
-            else
-            {
-                Log.Information($"{ProjectName} assembly is not locked, proceeding with load.");
-            }
 
             if (CompiledAssembly.Exists)
             {
