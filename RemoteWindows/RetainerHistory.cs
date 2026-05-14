@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -20,11 +21,13 @@ namespace LlamaLibrary.RemoteWindows
     {
         private static readonly LLogger Log = new(nameof(RetainerHistory), Colors.OrangeRed);
 
-        
+
 
         public RetainerHistory() : base("RetainerHistory")
         {
         }
+
+        public IntPtr ArrayLocation => Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(RetainerHistoryOffsets.NumberArrayIndex) + RetainerHistoryOffsets.NumberArrayData_IntArray);
 
         public IntPtr NumberArrayStart
         {
@@ -32,7 +35,7 @@ namespace LlamaLibrary.RemoteWindows
             {
                 var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(RetainerHistoryOffsets.NumberArrayIndex) + RetainerHistoryOffsets.NumberArrayData_IntArray);
 
-                var start = arrayLocation + ((RetainerHistoryOffsets.NumberArrayData_Start - 2) * 4);
+                var start = arrayLocation + ((RetainerHistoryOffsets.NumberArrayData_Start - 3) * 4);
 
                 return start;
             }
@@ -50,13 +53,15 @@ namespace LlamaLibrary.RemoteWindows
 
         public int HistoryCount => Core.Memory.Read<int>(HistoryCountLocation);
 
+        public IntPtr StringArrayLocation => Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetStringArray(RetainerHistoryOffsets.StringArrayIndex) + RetainerHistoryOffsets.StringArrayData_StrArray);
+
         public IntPtr StringArrayStart
         {
             get
             {
                 var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetStringArray(RetainerHistoryOffsets.StringArrayIndex) + RetainerHistoryOffsets.StringArrayData_StrArray);
 
-                var start = arrayLocation + ((RetainerHistoryOffsets.StringArrayData_Start - 1) * 8);
+                var start = arrayLocation + ((RetainerHistoryOffsets.StringArrayData_Start - 2) * 8);
 
                 return start;
             }
@@ -155,6 +160,7 @@ namespace LlamaLibrary.RemoteWindows
         public IntPtr Buyer;
         public IntPtr Date;
         public IntPtr Item;
+
 
         public int Qty
         {

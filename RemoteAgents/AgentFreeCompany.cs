@@ -15,7 +15,7 @@ namespace LlamaLibrary.RemoteAgents
     public class AgentFreeCompany : AgentInterface<AgentFreeCompany>, IAgent
     {
         public IntPtr RegisteredVtable => AgentFreeCompanyOffsets.VTable;
-        
+
 
         protected AgentFreeCompany(IntPtr pointer) : base(pointer)
         {
@@ -51,6 +51,7 @@ namespace LlamaLibrary.RemoteAgents
             return result;
         }
 
+        [Obsolete("Not sure what's using this but pattern is returning multiple values")]
         public byte HistoryLineCount => Core.Memory.Read<byte>(Pointer + AgentFreeCompanyOffsets.HistoryCount);
 
         public IntPtr ActionAddress
