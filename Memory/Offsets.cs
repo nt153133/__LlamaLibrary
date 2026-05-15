@@ -1772,7 +1772,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 40 53 48 83 EC ? 48 8B D9 66 85 D2 74 ?")]
         internal static IntPtr CardUnlocked;
 
-        [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 0F B7 CA E8 ? ? ? ? 48 85 C0")]
+        [Offset("Search E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 48 8D 0D ? ? ? ? 48 89 5C 24 ? TraceCall")]
         internal static IntPtr EmoteUnlocked;
 
         [Offset("Search 48 8D 0D ? ? ? ? 0F B6 04 08 84 D0 75 ? B8 ? ? ? ? Add 3 TraceRelative")]
@@ -1782,7 +1782,7 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search E8 ? ? ? ? 48 85 C0 74 ? 66 83 B8 ? ? ? ? ? 0F 84 ? ? ? ? TraceCall")]
         internal static IntPtr ExdGetItem;
 
-        [Offset("Search E8 ?? ?? ?? ?? 83 F8 01 75 03 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 49 8B CE 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 TraceCall")]
         internal static IntPtr IsItemActionUnlocked;
 
         [Offset("Search 0F B7 8A ? ? ? ? E8 ? ? ? ? 48 8B F8 Add 3 Read32")]
