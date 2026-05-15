@@ -16,10 +16,20 @@ using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides helper methods for navigating to FFXIV inn rooms and interacting with in-game objects.
+    /// Centralizes inn keeper discovery, glamour dresser navigation, and NPC interaction logic.
+    /// </summary>
     public static class NavigationHelper
     {
         private static readonly LLogger Log = new("NavigationHelper", Colors.MediumPurple);
 
+        /// <summary>
+        /// The three base-game inn keepers gated behind Main Scenario Quest (MSQ) progression:
+        /// Antoinaut in New Gridania (The Roost), Mytesyn in Limsa Lominsa Upper Decks (Mizzenmast Inn),
+        /// and Otopa Pottopa in Ul'dah - Steps of Nald (The Hourglass).
+        /// At least one of these must have its quest completed before inn room access is available.
+        /// </summary>
         public static List<Npc> StartingInnKeepers = new()
         {
             new Npc(1000102, 132, new Vector3(26.2571f, -8.000001f, 100.4172f), 65665), //Antoinaut (Innkeep) New Gridania - The Roost
@@ -27,6 +37,12 @@ namespace LlamaLibrary.Helpers
             new Npc(1001976, 130, new Vector3(29.31324f, 6.999999f, -80.32259f), 65856) //Otopa Pottopa (Innkeep) Ul'dah - Steps of Nald - The Hourglass
         };
 
+        /// <summary>
+        /// Inn keepers added by FFXIV expansions, each requiring a specific quest completion:
+        /// Bamponcet in Foundation (Cloud Nine, Heavensward), Ushitora in Kugane (Bokairo Inn, Stormblood),
+        /// the Manager of Suites in The Crystarium (The Pendants, Shadowbringers), and
+        /// Ojika Tsunjika in Old Sharlayan (The Baldesion Annex, Endwalker).
+        /// </summary>
         public static List<Npc> InnKeepers = new()
         {
             new Npc(1011193, 418, new Vector3(84.43542f, 15.09468f, 33.54416f), 67116), //Bamponcet (Innkeep) Foundation - Cloud Nine
@@ -35,13 +51,42 @@ namespace LlamaLibrary.Helpers
             new Npc(1037293, 962, new Vector3(-100.3702f, 3.933468f, 2.429576f), 69915) //Ojika Tsunjika (Annex Administrator) Old Sharlayan - The Baldesion Annex
         };
 
+        /// <summary>
+        /// Zone IDs corresponding to inn room interiors across all expansions.
+        /// The player is considered to be "in an inn room" when <c>WorldManager.ZoneId</c> matches any of these values.
+        /// </summary>
+        /// <remarks>
+        /// Zone IDs: 177 (Gridania), 178 (Limsa Lominsa), 179 (Ul'dah), 429 (Foundation/Ishgard),
+        /// 629 (Kugane), 843 (The Crystarium), 990 (Old Sharlayan).
+        /// </remarks>
         public static ushort[] InnRoomZones =
         {
             177, 178, 179, 429, 629, 843, 990
         };
 
+        /// <summary>
+        /// Gets a value indicating whether the local player is currently inside any FFXIV inn room,
+        /// determined by checking <c>WorldManager.ZoneId</c> against <see cref="InnRoomZones"/>.
+        /// </summary>
+        /// <value><see langword="true"/> if the current zone is an inn room interior; otherwise <see langword="false"/>.</value>
         public static bool IsInInnRoom => InnRoomZones.Contains(WorldManager.ZoneId);
 
+        /// <summary>
+        /// Navigates to and opens the Glamour Dresser (NPC object ID 2009439) found inside inn rooms.
+        /// If the Glamour Dresser UI window is already open, returns <see langword="true"/> immediately.
+        /// If the dresser object is already nearby (e.g. already in an inn room), interacts with it directly.
+        /// Otherwise, navigates to the best available inn — preferring the Grand Company barracks dresser
+        /// if the player has an unlocked GC barracks — before interacting with the dresser.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the Glamour Dresser window was successfully opened; otherwise <see langword="false"/>.
+        /// </returns>
+        /// <example>
+        /// <code>
+        /// if (!await NavigationHelper.GoToGlamourDresser())
+        ///     Log.Error("Could not reach the Glamour Dresser.");
+        /// </code>
+        /// </example>
         public static async Task<bool> GoToGlamourDresser()
         {
             if (RaptureAtkUnitManager.GetWindowByName("MiragePrismPrismBox") != null)
@@ -109,6 +154,16 @@ namespace LlamaLibrary.Helpers
             return await Coroutine.Wait(10000, () => RaptureAtkUnitManager.GetWindowByName("MiragePrismPrismBox") != null);
         }
 
+        /// <summary>
+        /// Moves to and interacts with the specified in-game <see cref="GameObject"/>.
+        /// If the object is already within interact range, targets and interacts immediately.
+        /// Otherwise navigates via ground movement, falling back to off-mesh navigation if needed.
+        /// </summary>
+        /// <param name="obj">The game object to interact with, or <see langword="null"/> to return <see langword="false"/> immediately.</param>
+        /// <returns>
+        /// <see langword="true"/> if the interaction was attempted (does not guarantee a dialog opened);
+        /// <see langword="false"/> if <paramref name="obj"/> is <see langword="null"/>.
+        /// </returns>
         public static async Task<bool> InteractWithNpc(GameObject? obj)
         {
             if (obj == null)
@@ -136,6 +191,14 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Navigates to the best available FFXIV inn room, selecting from <see cref="StartingInnKeepers"/>
+        /// and unlocked expansion entries in <see cref="InnKeepers"/> via <see cref="NpcHelper.GetClosestNpc"/>.
+        /// Requires at least one entry in <see cref="StartingInnKeepers"/> to have its quest completed.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the player successfully enters an inn room; otherwise <see langword="false"/>.
+        /// </returns>
         public static async Task<bool> GoToInnRoom()
         {
             if (!StartingInnKeepers.Any(i => i.IsQuestCompleted))
@@ -158,6 +221,16 @@ namespace LlamaLibrary.Helpers
             return await GoToInnRoom(bestInn);
         }
 
+        /// <summary>
+        /// Navigates to the inn room associated with a specific inn keeper NPC.
+        /// Verifies quest completion requirements before attempting travel, interacts with the inn keeper
+        /// to trigger the room entry dialog, and waits for the loading screen to complete.
+        /// Returns immediately if the player is already in an inn room.
+        /// </summary>
+        /// <param name="npc">The inn keeper <see cref="Npc"/> whose inn room to enter.</param>
+        /// <returns>
+        /// <see langword="true"/> if the player is in an inn room after navigation; otherwise <see langword="false"/>.
+        /// </returns>
         public static async Task<bool> GoToInnRoom(Npc npc)
         {
             if (IsInInnRoom)
