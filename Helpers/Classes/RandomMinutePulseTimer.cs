@@ -3,6 +3,15 @@ using System.Timers;
 
 namespace LlamaLibrary.Helpers.Classes
 {
+    /// <summary>
+    /// A <see cref="PulseTimer"/> whose interval is re-randomised on every <see cref="Reset"/> within a
+    /// caller-specified minute range, making automation timing less predictable.
+    /// </summary>
+    /// <remarks>
+    /// Intervals are expressed in whole minutes. Each call to <see cref="Reset"/> (or <see cref="PulseTimer.Restart"/>)
+    /// picks a new random millisecond value uniformly distributed between
+    /// <c>minMinute * 60,000</c> ms and <c>(maxMinutes + 1) * 60,000 - 1</c> ms.
+    /// </remarks>
     public class RandomMinutePulseTimer : PulseTimer
     {
         private readonly int _maxMs;

@@ -7,6 +7,18 @@ using System.Windows.Controls;
 
 namespace LlamaLibrary.Helpers.CharacterSwitching;
 
+/// <summary>
+/// Abstract base class for a task that can be queued and executed on an FFXIV character via the
+/// character-switching subsystem.
+/// </summary>
+/// <remarks>
+/// Derive from this class to implement a specific in-game operation (e.g., retainer ventures,
+/// market-board checks) that should run on one or more characters in sequence.
+/// Implements <see cref="System.ComponentModel.INotifyPropertyChanged"/> so that status properties
+/// such as <see cref="IsRunning"/> and <see cref="LastRunStatus"/> can be bound to a WPF UI.
+/// Override <see cref="ExecuteAsync"/> to supply task-specific logic; the public <see cref="RunAsync"/>
+/// method orchestrates the availability check, execution, timing, and exception handling.
+/// </remarks>
 public abstract class CharacterTask
 {
 	private bool _isRunning;
@@ -116,7 +128,8 @@ public abstract class CharacterTask
     /// <summary>
     /// Runs the task-specific implementation.
     /// </summary>
-    /// <param name="parameter"></param>
+    /// <param name="parameter">An optional string parameter forwarded from <see cref="Parameter"/>; <c>null</c> when the task does not require one.</param>
+    /// <returns>A <see cref="CharacterTaskResult"/> describing the outcome of execution.</returns>
     protected abstract Task<CharacterTaskResult> ExecuteAsync(string? parameter = null);
 
 	/// <summary>
@@ -187,13 +200,31 @@ public abstract class CharacterTask
 		}
 	}
 
+	/// <summary>
+	/// Raised when the value of a property changes, enabling WPF data-binding to react to task state updates.
+	/// </summary>
 	public event PropertyChangedEventHandler? PropertyChanged;
 
+	/// <summary>
+	/// Raises the <see cref="PropertyChanged"/> event for the specified property.
+	/// </summary>
+	/// <param name="propertyName">
+	/// The name of the changed property. The compiler fills this in automatically via
+	/// <see cref="CallerMemberNameAttribute"/> when called from a property setter.
+	/// </param>
 	protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
 	{
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
+	/// <summary>
+	/// Sets a backing field to a new value and raises <see cref="PropertyChanged"/> if the value changed.
+	/// </summary>
+	/// <typeparam name="T">The type of the backing field.</typeparam>
+	/// <param name="field">A reference to the backing field to update.</param>
+	/// <param name="value">The new value to assign.</param>
+	/// <param name="propertyName">The property name; filled automatically by the compiler.</param>
+	/// <returns><c>true</c> if the value changed and <see cref="PropertyChanged"/> was raised; otherwise <c>false</c>.</returns>
 	protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
 	{
 		if (EqualityComparer<T>.Default.Equals(field, value))
