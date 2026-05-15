@@ -101,12 +101,6 @@ public static class Messaging
     [DllImport("user32.dll")]
     private static extern IntPtr GetForegroundWindow();
 
-    /// <summary>
-    /// Brings the window identified by <paramref name="hWnd"/> into the foreground and gives it focus.
-    /// Required before sending foreground key events to a specific window.
-    /// </summary>
-    /// <param name="hWnd">Handle to the window to bring to the foreground.</param>
-    /// <returns><see langword="true"/> if the window was successfully set to the foreground; otherwise <see langword="false"/>.</returns>
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -128,10 +122,6 @@ public static class Messaging
 
     #region Public
 
-    /// <summary>
-    /// Windows message identifiers (WM_* values) used when posting or sending messages to window handles
-    /// via <c>PostMessage</c> / <c>SendMessage</c> (user32.dll).
-    /// </summary>
     public enum WindowsMessages
     {
         WM_NULL = 0x00,
@@ -418,10 +408,6 @@ public static class Messaging
         public HARDWAREINPUT hi;
     }
 
-    /// <summary>
-    /// Specifies which modifier key (Shift, Ctrl, Alt) is held when a key is pressed.
-    /// Values can be combined with bitwise OR to represent multiple modifiers simultaneously.
-    /// </summary>
     [Serializable]
     public enum ShiftType
     {
@@ -435,11 +421,9 @@ public static class Messaging
         SHIFT_CTRL_ALT = SHIFT | CTRL | ALT
     }
 
-    /// <summary>
-    /// Abbreviated window message codes for common keyboard and mouse events used
-    /// when sending background key/click messages to a window handle.
-    /// </summary>
     public enum Message
+    {
+        NCHITTEST = 0x0084,
         KEY_DOWN = 0x0100, //Key down
         KEY_UP = 0x0101, //Key Up
         VM_CHAR = 0x0102, //The character being pressed
@@ -460,10 +444,6 @@ public static class Messaging
         MBUTTONUP = 0x208
     }
 
-    /// <summary>
-    /// Win32 virtual key codes (VK_* values) representing physical keyboard keys and mouse buttons.
-    /// Used as the <see cref="Key.Vk"/> and <see cref="Key.ShiftKey"/> on a <see cref="Key"/> instance.
-    /// </summary>
     [Serializable]
     public enum VKeys
     {
@@ -583,12 +563,6 @@ public static class Messaging
 
     #region Public
 
-    /// <summary>
-    /// Returns the Win32 virtual key code for the given character by calling <c>VkKeyScan</c>.
-    /// Only the low byte (the virtual key code itself) is returned; the shift state is discarded.
-    /// </summary>
-    /// <param name="c">The character to look up.</param>
-    /// <returns>The virtual key code corresponding to <paramref name="c"/>.</returns>
     public static uint GetVirtualKeyCode(char c)
     {
         var helper = new Helper { Value = VkKeyScan(c) };
@@ -599,13 +573,6 @@ public static class Messaging
         return virtualKeyCode;
     }
 
-    /// <summary>
-    /// Sends a foreground key-down followed by a key-up event for <paramref name="key"/>
-    /// using <c>SendInput</c>, without targeting a specific window handle.
-    /// </summary>
-    /// <param name="key">The key to press.</param>
-    /// <param name="delay">The delay in milliseconds between the key-down and key-up events.</param>
-    /// <returns><see langword="true"/> if both events were injected successfully.</returns>
     public static async Task<bool> ForegroundKeyPress(Key key, int delay = 50)
     {
         var temp = true;
@@ -618,14 +585,6 @@ public static class Messaging
         return temp;
     }
 
-    /// <summary>
-    /// Brings <paramref name="hWnd"/> to the foreground, then sends a key-down followed by a
-    /// key-up event for <paramref name="key"/> using <c>SendInput</c>.
-    /// </summary>
-    /// <param name="hWnd">Handle to the target window.</param>
-    /// <param name="key">The key to press.</param>
-    /// <param name="delay">Delay in milliseconds between key-down and key-up.</param>
-    /// <returns><see langword="true"/> if both events were injected successfully.</returns>
     public static async Task<bool> ForegroundKeyPress(IntPtr hWnd, Key key, int delay = 50)
     {
         var temp = true;
@@ -637,12 +596,6 @@ public static class Messaging
         return temp;
     }
 
-    /// <summary>
-    /// Injects a foreground key-down event for <paramref name="key"/> via <c>SendInput</c>
-    /// without targeting a specific window.
-    /// </summary>
-    /// <param name="key">The key to press down.</param>
-    /// <returns>Always returns <see langword="true"/>.</returns>
     public static bool ForegroundKeyDown(Key key)
     {
         uint intReturn;
@@ -664,13 +617,9 @@ public static class Messaging
         return true;
     }
 
-    /// <summary>
-    /// Injects a foreground key-up event for <paramref name="key"/> via <c>SendInput</c>
-    /// without targeting a specific window.
-    /// </summary>
-    /// <param name="key">The key to release.</param>
-    /// <returns>Always returns <see langword="true"/>.</returns>
     public static bool ForegroundKeyUp(Key key)
+    {
+        uint intReturn;
         INPUT structInput;
         structInput = new INPUT();
         structInput.type = INPUT_KEYBOARD;
@@ -688,16 +637,6 @@ public static class Messaging
         return true;
     }
 
-    /// <summary>
-    /// Brings <paramref name="hWnd"/> to the foreground, then injects a key-down event for
-    /// <paramref name="key"/> via <c>SendInput</c>.
-    /// </summary>
-    /// <param name="hWnd">Handle to the target window.</param>
-    /// <param name="key">The key to press down.</param>
-    /// <returns>
-    /// <see langword="false"/> if the window could not be brought to the foreground;
-    /// otherwise <see langword="true"/>.
-    /// </returns>
     public static bool ForegroundKeyDown(IntPtr hWnd, Key key)
     {
         if (GetForegroundWindow() != hWnd)
@@ -711,16 +650,6 @@ public static class Messaging
         return ForegroundKeyDown(key);
     }
 
-    /// <summary>
-    /// Brings <paramref name="hWnd"/> to the foreground, then injects a key-up event for
-    /// <paramref name="key"/> via <c>SendInput</c>.
-    /// </summary>
-    /// <param name="hWnd">Handle to the target window.</param>
-    /// <param name="key">The key to release.</param>
-    /// <returns>
-    /// <see langword="false"/> if the window could not be brought to the foreground;
-    /// otherwise <see langword="true"/>.
-    /// </returns>
     public static bool ForegroundKeyUp(IntPtr hWnd, Key key)
     {
         if (GetForegroundWindow() != hWnd)
@@ -734,20 +663,6 @@ public static class Messaging
         return ForegroundKeyUp(key);
     }
 
-    /// <summary>
-    /// Sends a complete key press sequence to <paramref name="hWnd"/> in the foreground,
-    /// optionally holding Alt, Ctrl, and/or Shift modifier keys around the main key press.
-    /// </summary>
-    /// <param name="hWnd">Handle to the target window.</param>
-    /// <param name="key">The main key to press.</param>
-    /// <param name="alt">When <see langword="true"/>, holds the Alt key during the press.</param>
-    /// <param name="ctrl">When <see langword="true"/>, holds the Ctrl key during the press.</param>
-    /// <param name="shift">When <see langword="true"/>, holds the Shift key during the press.</param>
-    /// <param name="delay">Delay in milliseconds between each injected input event.</param>
-    /// <returns>
-    /// <see langword="false"/> if the window could not be brought to the foreground;
-    /// otherwise <see langword="true"/>.
-    /// </returns>
     public static async Task<bool> ForegroundKeyPressAll(IntPtr hWnd, Key key, bool alt, bool ctrl, bool shift, int delay = 50)
     {
         if (GetForegroundWindow() != hWnd)
@@ -823,21 +738,6 @@ public static class Messaging
         return true;
     }
 
-    /// <summary>
-    /// Sends a background key press to <paramref name="hWnd"/> by posting WM_KEYDOWN,
-    /// WM_CHAR, and WM_KEYUP messages without requiring the window to be in the foreground.
-    /// </summary>
-    /// <param name="hWnd">Handle to the target window.</param>
-    /// <param name="key">The key to press.</param>
-    /// <param name="checkKeyboardState">
-    /// When <see langword="true"/>, waits for any currently held modifier keys (Alt, Ctrl, Shift)
-    /// to be released before sending the messages.
-    /// </param>
-    /// <param name="delay">Delay in milliseconds between each posted message.</param>
-    /// <returns>
-    /// <see langword="true"/> if all three messages were posted successfully;
-    /// <see langword="false"/> if any message failed.
-    /// </returns>
     public static async Task<bool> SendMessage(IntPtr hWnd, Key key, bool checkKeyboardState, int delay = 25)
     {
         if (checkKeyboardState)
@@ -872,18 +772,6 @@ public static class Messaging
         return true;
     }
 
-    /// <summary>
-    /// Sends a background key press sequence to <paramref name="hWnd"/> with optional Alt, Ctrl,
-    /// and Shift modifiers. Modifier keys are injected via <c>SendInput</c> while the main key
-    /// is posted as WM_KEYDOWN / WM_CHAR / WM_KEYUP messages.
-    /// </summary>
-    /// <param name="hWnd">Handle to the target window.</param>
-    /// <param name="key">The main key to press.</param>
-    /// <param name="alt">When <see langword="true"/>, injects an Alt key-down before the main key.</param>
-    /// <param name="ctrl">When <see langword="true"/>, injects a Ctrl key-down before the main key.</param>
-    /// <param name="shift">When <see langword="true"/>, injects a Shift key-down before the main key.</param>
-    /// <param name="delay">Delay in milliseconds between each injected or posted event.</param>
-    /// <returns><see langword="true"/> if the sequence completed without error.</returns>
     public static async Task<bool> SendMessageAll(IntPtr hWnd, Key key, bool alt, bool ctrl, bool shift, int delay = 50)
     {
         await CheckKeyShiftState();
@@ -957,10 +845,6 @@ public static class Messaging
         return true;
     }
 
-    /// <summary>
-    /// Waits asynchronously until none of the Alt, Ctrl, or Shift modifier keys are physically held.
-    /// This prevents accidental modifier injection when the user is already pressing those keys.
-    /// </summary>
     public static async Task CheckKeyShiftState()
     {
         while ((GetKeyState((int)VKeys.KEY_MENU) & KEY_PRESSED) == KEY_PRESSED ||

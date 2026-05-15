@@ -2,9 +2,18 @@
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides constant mappings between FFXIV item IDs and their corresponding
+    /// crafting recipe book sheet IDs (SecretRecipeBook) and folklore tome sheet IDs.
+    /// These mappings enable checking whether the player has unlocked specific master recipes or
+    /// gathering folklore through the game's <c>IsItemActionUnlocked</c> system.
+    /// </summary>
     public static class BookConstants
     {
-        //The ID of the book to check for. Can be retrieved from the SecretRecipeBook sheet.
+        /// <summary>
+        /// Maps inventory item IDs to their corresponding <c>SecretRecipeBook</c> sheet row IDs.
+        /// Each entry represents a Master Recipe Tome (e.g., "Master Carpenter I") for a crafting job.
+        /// </summary>
         public static IReadOnlyDictionary<uint, uint> SecretRecipeBooks = new Dictionary<uint, uint>
         {
             { 7778, 1 }, //Master Carpenter I
@@ -103,6 +112,10 @@ namespace LlamaLibrary.Helpers
             { 37741, 95 }, //Master Culinarian X
         };
 
+        /// <summary>
+        /// Maps inventory item IDs to their corresponding <c>GatheringSubCategory</c> (folklore) sheet row IDs.
+        /// Includes Geological, Botanical, and Ichthyological tomes unlocking rare gathering nodes by region.
+        /// </summary>
         public static IReadOnlyDictionary<uint, uint> FolkloreBooks = new Dictionary<uint, uint>
         {
             { 12238, 2000 }, //Tome of Geological Folklore - Coerthas

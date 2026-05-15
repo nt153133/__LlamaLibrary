@@ -14,6 +14,10 @@ using LlamaLibrary.Logging;
 namespace LlamaLibrary.Helpers
 {
     // ReSharper disable once UnusedType.Global
+    /// <summary>
+    /// Reflection-based bridge to the Platypus botbase plugin.
+    /// Provides access to Platypus inventory automation, materia transmutation, QoL hooks, and loot helpers.
+    /// </summary>
     public static class PlatypusHelper
     {
         private static readonly LLogger Log = new("PlatypusHelper", Colors.MediumPurple);
@@ -35,8 +39,13 @@ namespace LlamaLibrary.Helpers
         }
 
         // ReSharper disable once MemberCanBePrivate.Global
+        /// <summary>Gets whether the Platypus botbase is currently loaded and available.</summary>
         public static bool HasPlatypus => PlatypusBotBase != null;
+
+        /// <summary>Gets the current Platypus plugin version.</summary>
         public static Version Version => _version.Invoke();
+
+        /// <summary>Gets the current Platypus plugin version as a formatted string.</summary>
         public static string VersionString => _versionString.Invoke();
 
         private static string PlatypusPath => Path.Combine(Utils.AssemblyDirectory, "BotBases", "Platypus");
@@ -83,6 +92,10 @@ namespace LlamaLibrary.Helpers
             Log.Verbose("PlatypusHelper - Platypus found.");
         }
 
+        /// <summary>
+        /// Downloads and installs the Platypus loader script if Platypus is not already installed.
+        /// </summary>
+        /// <returns><see langword="true"/> if Platypus is already installed or was installed successfully.</returns>
         public static bool InstallPlatypus()
         {
             if (File.Exists(Path.Combine(PlatypusPath, PlatypusAssemblyFile)))
@@ -129,6 +142,7 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>Opens the Platypus settings/GUI window. Does nothing if Platypus is not loaded.</summary>
         public static void ShowGui()
         {
             if (HasPlatypus)
@@ -137,6 +151,11 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Entrusts the specified bag slots to the named retainers using Platypus's inventory entrust API.
+        /// </summary>
+        /// <param name="itemsToEntrust">List of bag slot/retainer name pairs to entrust.</param>
+        /// <returns><see langword="true"/> if entrustment completed successfully.</returns>
         public static async Task<bool> InventoryEntrust(List<(BagSlot BagSlot, string RetainerName)> itemsToEntrust)
         {
             if (!HasPlatypus)
@@ -147,6 +166,12 @@ namespace LlamaLibrary.Helpers
             return await _inventoryEntrust(itemsToEntrust);
         }
 
+        /// <summary>
+        /// Transmutes materia from the specified inventory slots via Platypus's materia transmutation API.
+        /// </summary>
+        /// <param name="materiasToTransmute">The bag slots containing materia to transmute.</param>
+        /// <param name="maxTransmutes">Optional cap on the number of transmutations to perform.</param>
+        /// <returns><see langword="true"/> if transmutation completed successfully.</returns>
         public static async Task<bool> InventoryMateriaTransmute(IEnumerable<BagSlot> materiasToTransmute, int? maxTransmutes = null)
         {
             if (!HasPlatypus)
@@ -157,6 +182,8 @@ namespace LlamaLibrary.Helpers
             return await _inventoryMateriaTransmute(materiasToTransmute, maxTransmutes);
         }
 
+        /// <summary>Runs all registered Platypus hook functions in sequence.</summary>
+        /// <returns><see langword="true"/> if hooks ran successfully.</returns>
         public static async Task<bool> PerformPlatypusHooks()
         {
             if (!HasPlatypus)
@@ -167,6 +194,8 @@ namespace LlamaLibrary.Helpers
             return await _performPlatypusHooks();
         }
 
+        /// <summary>Opens all treasure coffers in the current duty using Platypus's QoL routine.</summary>
+        /// <returns><see langword="true"/> if coffers were opened successfully.</returns>
         public static async Task<bool> QolOpenTreasureCoffersInDuty()
         {
             if (!HasPlatypus)
@@ -180,6 +209,8 @@ namespace LlamaLibrary.Helpers
             return await _qolOpenTreasureCoffersInDuty();
         }
 
+        /// <summary>Automatically loots all loot windows currently present using Platypus's auto-loot routine.</summary>
+        /// <returns><see langword="true"/> if looting completed successfully.</returns>
         public static async Task<bool> QolAutoLoot()
         {
             if (!HasPlatypus)
@@ -193,6 +224,8 @@ namespace LlamaLibrary.Helpers
             return await _qolAutoLoot();
         }
 
+        /// <summary>Waits until all pending loot windows have been cleared using Platypus's loot tracker.</summary>
+        /// <returns><see langword="true"/> if all loot was cleared.</returns>
         public static async Task<bool> QolWaitUntilAllLootIsGone()
         {
             if (!HasPlatypus)

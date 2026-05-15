@@ -31,6 +31,8 @@ namespace LlamaLibrary.Helpers.HousingTravel
         /// <summary>The singleton instances for each of the five residential districts.</summary>
         public static readonly ResidentialDistrict[] HousingZones;
 
+        private static readonly LLogger Log = new(nameof(HousingTraveler), Colors.Gold);
+
         /// <summary>The zone IDs for all five residential districts.</summary>
         public static readonly IReadOnlyList<ushort> HousingZoneIds;
 

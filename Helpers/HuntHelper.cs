@@ -22,6 +22,10 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Reads hunt board data from game memory to automate daily and clan bill hunts.
+    /// Supports all hunt tiers: ARR grand company hunts, Clan Hunts (HW/SB), Nuts (ShB), Endwalker, and Dawntrail.
+    /// </summary>
     public class HuntHelper
     {
         private static readonly LLogger Log = new(nameof(HuntHelper), Colors.Gold);
@@ -32,6 +36,10 @@ namespace LlamaLibrary.Helpers
         private const int MaxOrderTypes = 0x12;
 #endif
 
+        /// <summary>
+        /// All hunt board NPC locations, mapped to the order type indices they manage.
+        /// Includes boards for all cities from A Realm Reborn through Dawntrail.
+        /// </summary>
         public static readonly List<HuntBoardNpc> HuntBoards = new()
         {
             new HuntBoardNpc(2004438, 128, new Vector3(94.346436f, 40.238037f, 60.471436f), new uint[] { 0, 4 }), //Hunt Board  Limsa Lominsa Upper Decks(Limsa Lominsa)
@@ -43,17 +51,25 @@ namespace LlamaLibrary.Helpers
             new HuntBoardNpc(2010340, 819, new Vector3(-83.604248f, -0.01532f, -90.745422f), new uint[] { 10, 11, 12, 13 }), //Nuts Board  The Crystarium(The Crystarium) };
             new HuntBoardNpc(2012236, 962, new Vector3(29.37905f, -15.64699f, 100.2111f), new uint[] { 14, 15, 16, 17 }), //Guildship Hunt Board  Old Sharlayan  };
             new HuntBoardNpc(2014155, 1185, new Vector3(25.65039f, -14.023071f, 135.39331f), new uint[] { 18, 19, 20, 21 }) //Hunt Board Tuliyollal };
-
         };
 
+        /// <summary>Order type indices for A Realm Reborn grand company hunts.</summary>
         public static readonly int[] ARRHunts = { 0 };
-        public static readonly int[] ClanHunts = { 1, 2, 3 };
-        public static readonly int[] VerteranClanHunts = { 6, 7, 8 };
-        public static readonly int[] NutClanHunts = { 10, 11, 12 };
-        public static readonly int[] EwHunts = { 14, 15, 16 };
-        public static readonly int[] DtHunts = { 18, 19, 20 };
 
-        
+        /// <summary>Order type indices for Heavensward / Stormblood Clan Hunt bills.</summary>
+        public static readonly int[] ClanHunts = { 1, 2, 3 };
+
+        /// <summary>Order type indices for veteran-tier Stormblood Clan Hunt bills.</summary>
+        public static readonly int[] VerteranClanHunts = { 6, 7, 8 };
+
+        /// <summary>Order type indices for Shadowbringers Clan Nut hunt bills.</summary>
+        public static readonly int[] NutClanHunts = { 10, 11, 12 };
+
+        /// <summary>Order type indices for Endwalker hunt bills.</summary>
+        public static readonly int[] EwHunts = { 14, 15, 16 };
+
+        /// <summary>Order type indices for Dawntrail hunt bills.</summary>
+        public static readonly int[] DtHunts = { 18, 19, 20 };
 
         static HuntHelper()
         {
@@ -145,6 +161,12 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Returns daily hunt orders using the server-authoritative daily set (not the client-cached set).
+        /// Useful for detecting stale hunt data after daily reset.
+        /// </summary>
+        /// <param name="orderTypeIndex">The order type index to query.</param>
+        /// <returns>A list of <see cref="DailyHuntOrder"/> using server-side hunt data.</returns>
         public static List<DailyHuntOrder> GetServerDailyHunts(int orderTypeIndex)
         {
             //var accepted = GetAcceptedHunts();
@@ -190,6 +212,12 @@ namespace LlamaLibrary.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Returns today's daily hunt orders for the given order type index using the current (client-side) daily set.
+        /// Skips weekly types, unlocked-check failures, and fate-required hunts.
+        /// </summary>
+        /// <param name="orderTypeIndex">The order type index to query (see <see cref="ARRHunts"/>, <see cref="ClanHunts"/>, etc.).</param>
+        /// <returns>A list of <see cref="DailyHuntOrder"/> objects for today's available hunts.</returns>
         public static List<DailyHuntOrder> GetCurrentDailyHunts(int orderTypeIndex)
         {
             var accepted = GetAcceptedHunts();
@@ -263,6 +291,12 @@ namespace LlamaLibrary.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Returns the hunt orders for the given order type that have been accepted by the player.
+        /// Excludes weekly, unlocked-check failures, unaccepted types, and fate-required hunts.
+        /// </summary>
+        /// <param name="orderTypeIndex">The order type index to query.</param>
+        /// <returns>A list of <see cref="DailyHuntOrder"/> objects for currently accepted hunts.</returns>
         public static List<DailyHuntOrder> GetAcceptedDailyHunts(int orderTypeIndex)
         {
             var accepted = GetAcceptedHunts();
@@ -343,6 +377,10 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Reads the accepted-hunt bitfield from memory to determine which order types the player has currently accepted.
+        /// </summary>
+        /// <returns>A boolean array indexed by order type; <see langword="true"/> means the player has accepted that order type's bills.</returns>
         public static bool[] GetAcceptedHunts()
         {
             var accepted = new bool[MaxOrderTypes];
@@ -359,25 +397,38 @@ namespace LlamaLibrary.Helpers
             return accepted;
         }
 
+        /// <summary>Reads the <c>MobHuntTarget</c> ExD row for the given mob hunt target row ID via an injected call.</summary>
+        /// <param name="mob">The <c>MobHuntTarget</c> row ID.</param>
+        /// <returns>A <see cref="MobHuntTarget"/> struct with name, BNpcName ID, and fate data.</returns>
         public static MobHuntTarget GetMobHuntTarget(int mob)
         {
             return Core.Memory.Read<MobHuntTarget>(Core.Memory.CallInjectedWraper<IntPtr>(HuntHelperOffsets.Client__ExdData__getMobHuntTarget, (uint)mob));
         }
 
+        /// <summary>Reads the <c>MobHuntOrderType</c> ExD row (order item, type, starting order index) via an injected call.</summary>
+        /// <param name="typeKey">The order type index.</param>
+        /// <returns>A <see cref="MobHuntOrderType"/> struct describing the bill unlock item and hunt type.</returns>
         public static MobHuntOrderType GetMobHuntOrderType(int typeKey)
         {
             return Core.Memory.Read<MobHuntOrderType>(Core.Memory.CallInjectedWraper<IntPtr>(HuntHelperOffsets.Client__ExdData__getMobHuntOrderType, (uint)typeKey));
         }
 
+        /// <summary>Checks whether the given hunt order type has been unlocked by the player.</summary>
+        /// <param name="typeKey">The order type index to check.</param>
+        /// <returns><see langword="true"/> if the board type is unlocked; otherwise <see langword="false"/>.</returns>
         public static bool OrderTypeUnlocked(int typeKey)
         {
             var unlockState = Core.Memory.CallInjectedWraper<byte>(HuntHelperOffsets.CheckMobBoardUnlocked,
-                                                               HuntHelperOffsets.HuntData,
-                                                               (uint)typeKey);
+                                                                   HuntHelperOffsets.HuntData,
+                                                                   (uint)typeKey);
 
             return unlockState > 0;
         }
 
+        /// <summary>Reads the current kill count for a specific hunt mob from game memory (no-cache read).</summary>
+        /// <param name="huntOrderType">The order type index.</param>
+        /// <param name="mobIndex">The mob slot index within the order type (0–4).</param>
+        /// <returns>The number of kills completed for that mob this daily cycle.</returns>
         public static byte GetKillCount(int huntOrderType, int mobIndex)
         {
             var v1 = mobIndex + (huntOrderType * 5);
@@ -385,19 +436,31 @@ namespace LlamaLibrary.Helpers
             return Core.Memory.NoCacheRead<byte>(HuntHelperOffsets.HuntData + v3);
         }
 
+        /// <summary>Reads a specific <c>MobHuntOrder</c> ExD row via an injected call (clears call cache first).</summary>
+        /// <param name="typeKey">The order list key (bill sheet row number).</param>
+        /// <param name="mobIndex">The mob slot within the order (0–4).</param>
+        /// <returns>A <see cref="MobHuntOrder"/> struct with the target mob and required kill count.</returns>
         public static MobHuntOrder GetMobHuntOrder(uint typeKey, uint mobIndex)
         {
             Core.Memory.ClearCallCache();
             return Core.Memory.Read<MobHuntOrder>(Core.Memory.CallInjectedWraper<IntPtr>(HuntHelperOffsets.Client__ExdData__getMobHuntOrder, typeKey, mobIndex));
         }
 
+        /// <summary>Discards (yeets) the accepted hunt bills for the given order type key via an injected game call.</summary>
+        /// <param name="typekey">The order type key to discard.</param>
         public static void DiscardMobHuntType(uint typekey)
         {
             Core.Memory.CallInjectedWraper<IntPtr>(HuntHelperOffsets.YeetHuntOrderType,
-                                               HuntHelperOffsets.HuntData,
-                                               typekey);
+                                                   HuntHelperOffsets.HuntData,
+                                                   typekey);
         }
 
+        /// <summary>
+        /// Evaluates the completion status of each order type in <paramref name="dailyOrderTypes"/>
+        /// and classifies each as one of: NotAccepted, Unfinished, UnFinishedOld, OnlyFatesLeft, OnlyFatesLeftOld, Complete, or NotAcceptedOld.
+        /// </summary>
+        /// <param name="dailyOrderTypes">Array of order type indices to evaluate.</param>
+        /// <returns>A list of tuples pairing each order type index with its <see cref="HuntOrderStatus"/>.</returns>
         public static List<(uint OrderType, HuntOrderStatus HuntOrderStatus)> GetDailyStatus(int[] dailyOrderTypes)
         {
             var result = new List<(uint, HuntOrderStatus)>();
@@ -469,6 +532,10 @@ namespace LlamaLibrary.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Evaluates hunt status for the standard set of daily order types across all unlocked tiers.
+        /// </summary>
+        /// <returns>A list of tuples pairing each standard daily order type index with its <see cref="HuntOrderStatus"/>.</returns>
         public static List<(uint OrderType, HuntOrderStatus HuntOrderStatus)> GetDailyStatus()
         {
             var dailyOrderTypes = new[] { 0, 1, 2, 3, 6, 7, 8, 10, 11, 12 };
