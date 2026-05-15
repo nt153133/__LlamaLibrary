@@ -21,10 +21,22 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides navigation, NPC interaction, and action helpers for all three Grand Companies
+    /// (Maelstrom, Order of the Twin Adder, Immortal Flames).
+    /// </summary>
     public static class GrandCompanyHelper
     {
         private static readonly LLogger Log = new(nameof(GrandCompanyHelper), Colors.LimeGreen);
 
+        /// <summary>
+        /// Maps each Grand Company to the zone ID and world position of its headquarters.
+        /// <list type="bullet">
+        ///   <item><description>Immortal Flames → Ul'dah - Steps of Nald (zone 130)</description></item>
+        ///   <item><description>Order of the Twin Adder → New Gridania (zone 132)</description></item>
+        ///   <item><description>Maelstrom → Limsa Lominsa Upper Decks (zone 128)</description></item>
+        /// </list>
+        /// </summary>
         public static readonly Dictionary<GrandCompany, KeyValuePair<uint, Vector3>> BaseLocations = new()
         {
             { GrandCompany.Immortal_Flames, new KeyValuePair<uint, Vector3>(130, new Vector3(-139.3435f, 4.1f, -100.8658f)) },
@@ -32,6 +44,10 @@ namespace LlamaLibrary.Helpers
             { GrandCompany.Maelstrom, new KeyValuePair<uint, Vector3>(128, new Vector3(88.8576f, 40.24876f, 71.6758f)) }
         };
 
+        /// <summary>
+        /// Maps each Grand Company to the <see cref="Npc"/> that serves as the entrance to its squadron barracks.
+        /// A <see langword="null"/> value for key <c>0</c> represents players not yet enlisted in a Grand Company.
+        /// </summary>
         public static readonly Dictionary<GrandCompany, Npc?> Barracks = new()
         {
             { 0, null },
@@ -40,6 +56,9 @@ namespace LlamaLibrary.Helpers
             { GrandCompany.Immortal_Flames, new Npc(2007529, 130, new Vector3(-152.6426f, 4.109719f, -97.63382f), 67927) } //Entrance to the Barracks Ul'dah - Steps of Nald - Hall of Flames
         };
 
+        /// <summary>
+        /// NPC ID lookup table for Maelstrom (Limsa Lominsa Upper Decks) NPCs, keyed by <see cref="GCNpc"/> role.
+        /// </summary>
         public static readonly Dictionary<GCNpc, uint> MaelstromNPCs = new()
         {
             { GCNpc.Flyer, 1011820 },
@@ -57,6 +76,9 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Hunt_Billmaster, 1009552 }
         };
 
+        /// <summary>
+        /// NPC ID lookup table for Immortal Flames (Ul'dah - Hall of Flames) NPCs, keyed by <see cref="GCNpc"/> role.
+        /// </summary>
         public static readonly Dictionary<GCNpc, uint> FlameNPCs = new()
         {
             { GCNpc.Flyer, 1011818 },
@@ -74,6 +96,9 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Hunt_Billmaster, 1001379 }
         };
 
+        /// <summary>
+        /// NPC ID lookup table for Order of the Twin Adder (New Gridania - Adders' Nest) NPCs, keyed by <see cref="GCNpc"/> role.
+        /// </summary>
         public static readonly Dictionary<GCNpc, uint> TwinAdderNPCs = new()
         {
             { GCNpc.Flyer, 1011819 },
@@ -91,6 +116,10 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Entrance_to_the_Barracks, 2006962 }
         };
 
+        /// <summary>
+        /// Top-level lookup: maps each <see cref="GrandCompany"/> to its NPC role dictionary.
+        /// Use <see cref="GetNpcByType(GCNpc)"/> for a convenience accessor.
+        /// </summary>
         public static readonly Dictionary<GrandCompany, Dictionary<GCNpc, uint>> NpcList = new()
         {
             { GrandCompany.Immortal_Flames, FlameNPCs },
@@ -98,14 +127,28 @@ namespace LlamaLibrary.Helpers
             { GrandCompany.Maelstrom, MaelstromNPCs }
         };
 
+        /// <summary>
+        /// Gets the barracks entrance <see cref="Npc"/> for the local player's current Grand Company,
+        /// or <see langword="null"/> if the player is not enlisted.
+        /// </summary>
         public static Npc? BarracksNpc => Barracks[Core.Me.GrandCompany];
 
+        /// <summary>
+        /// Zone IDs corresponding to squadron barracks rooms for the three Grand Companies.
+        /// </summary>
         public static readonly ushort[] BarrackRoomZones = {
             534, 535, 536
         };
 
+        /// <summary>
+        /// Gets a value indicating whether the local player is currently inside a squadron barracks room.
+        /// </summary>
         public static bool IsInBarracks => BarrackRoomZones.Contains(WorldManager.ZoneId);
 
+        /// <summary>
+        /// Navigates the local player to their Grand Company headquarters.
+        /// Does nothing if the player is not enlisted in a Grand Company.
+        /// </summary>
         public static async Task GetToGCBase()
         {
             if (Core.Me.GrandCompany == 0)
@@ -118,6 +161,10 @@ namespace LlamaLibrary.Helpers
             await Navigation.GetTo(gcBase.Key, gcBase.Value);
         }
 
+        /// <summary>
+        /// Navigates the local player to the headquarters of the specified Grand Company.
+        /// </summary>
+        /// <param name="grandCompany">The Grand Company whose base to travel to.</param>
         public static async Task GetToGCBase(GrandCompany grandCompany)
         {
             var gcBase = BaseLocations[grandCompany];
@@ -125,6 +172,14 @@ namespace LlamaLibrary.Helpers
             await Navigation.GetTo(gcBase.Key, gcBase.Value);
         }
 
+        /// <summary>
+        /// Navigates the local player into their Grand Company squadron barracks.
+        /// Initialises the navigation provider if necessary and handles the zone-transition dialog.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the player is now inside the barracks;
+        /// <see langword="false"/> if the player is not enlisted, the barracks NPC is not found, or navigation fails.
+        /// </returns>
         public static async Task<bool> GetToGCBarracks()
         {
             if (Navigator.NavigationProvider == null)
@@ -191,16 +246,32 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Returns the NPC ID for the given role in the local player's Grand Company.
+        /// </summary>
+        /// <param name="npc">The NPC role to look up.</param>
+        /// <returns>The NPC ID as a <see cref="uint"/>.</returns>
         public static uint GetNpcByType(GCNpc npc)
         {
             return NpcList[Core.Me.GrandCompany][npc];
         }
 
+        /// <summary>
+        /// Returns the NPC ID for the given role in the specified Grand Company.
+        /// </summary>
+        /// <param name="npc">The NPC role to look up.</param>
+        /// <param name="grandCompany">The Grand Company to query.</param>
+        /// <returns>The NPC ID as a <see cref="uint"/>.</returns>
         public static uint GetNpcByType(GCNpc npc, GrandCompany grandCompany)
         {
             return NpcList[grandCompany][npc];
         }
 
+        /// <summary>
+        /// Navigates to the local player's Grand Company base and interacts with the specified NPC role.
+        /// Does nothing if the player is not enlisted in a Grand Company.
+        /// </summary>
+        /// <param name="npc">The NPC role to interact with.</param>
         public static async Task InteractWithNpc(GCNpc npc)
         {
             if (Core.Me.GrandCompany == 0)
@@ -231,6 +302,11 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Navigates to the specified Grand Company's base and interacts with the given NPC role.
+        /// </summary>
+        /// <param name="npc">The NPC role to interact with.</param>
+        /// <param name="grandCompany">The Grand Company whose NPC to visit.</param>
         public static async Task InteractWithNpc(GCNpc npc, GrandCompany grandCompany)
         {
             var targetNpc = GameObjectManager.GetObjectByNPCId(NpcList[grandCompany][npc]);
@@ -256,6 +332,12 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Purchases the specified Free Company action from the OIC Quartermaster of the given Grand Company.
+        /// Navigates to the base, opens the exchange window, and completes the transaction.
+        /// </summary>
+        /// <param name="grandCompany">Grand Company whose OIC Quartermaster to visit.</param>
+        /// <param name="actionId">The internal ID of the FC action to purchase.</param>
         public static async Task BuyFCAction(GrandCompany grandCompany, int actionId)
         {
             await InteractWithNpc(GCNpc.OIC_Quartermaster, grandCompany);
@@ -290,6 +372,10 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Applies for a promotion with the local player's Grand Company Personnel Officer.
+        /// Navigates to the GC base, opens the rank-up dialog, and confirms the promotion.
+        /// </summary>
         public static async Task GoGCRankUp()
         {
             var grandCompany = Core.Me.GrandCompany;
@@ -333,6 +419,11 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Opens the Grand Company Expert Delivery window and hands in all eligible items, collecting seals.
+        /// Switches the supply list to Expert Delivery mode, applies the "Hide Armory" filter, then
+        /// iterates every listed item and confirms each hand-in via the reward dialog.
+        /// </summary>
         public static async Task GCHandInExpert()
         {
             if (!await ExpertDelivery.MakeSureWindowOpen())

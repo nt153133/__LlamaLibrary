@@ -9,10 +9,24 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides a helper for activating Free Company buffs (actions).
+    /// Opens the Free Company panel, purchases any missing buff actions from the GC shop if needed,
+    /// then activates the requested buffs via the <see cref="FreeCompanyAction"/> window.
+    /// </summary>
     public static class FreeCompanyActions
     {
         private static readonly LLogger Log = new(nameof(FreeCompanyActions), Colors.DarkTurquoise);
 
+        /// <summary>
+        /// Ensures that Free Company buffs <paramref name="buff1"/> and <paramref name="buff2"/> are active.
+        /// If either buff has not been purchased it will be bought from the Grand Company shop using
+        /// <see cref="GrandCompanyHelper.BuyFCAction"/> before activation.
+        /// Does nothing if both buffs are already running.
+        /// </summary>
+        /// <param name="buff1">Action ID of the first FC buff to activate.</param>
+        /// <param name="buff2">Action ID of the second FC buff to activate.</param>
+        /// <param name="grandCompany">The player's Grand Company, used when purchasing missing actions.</param>
         public static async Task ActivateBuffs(int buff1, int buff2, GrandCompany grandCompany)
         {
             if (!FreeCompany.Instance.IsOpen)

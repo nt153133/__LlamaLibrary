@@ -8,10 +8,30 @@ using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides weighted scoring for items to help determine relative gear upgrade value for a given job.
+    /// Weights are based on primary stats relevant to the job category (DoH, DoL, or combat job via
+    /// <see cref="ClassItemWeightStorage"/>), and special starter/relic items are always given
+    /// the highest possible weight so they are never discarded at low levels.
+    /// </summary>
     public static class ItemWeight
     {
         private static readonly LLogger Log = new(nameof(ItemWeight), Colors.Aquamarine);
 
+        /// <summary>
+        /// Calculates a weight score for <paramref name="item"/> based on the attributes relevant to
+        /// <paramref name="job"/>. Returns <c>-1</c> when the item is not a weapon or armour piece, or
+        /// when it is not valid for the given job.
+        /// Special starter / relic items (e.g., the Weathered weapons and early-level relics) return
+        /// <c>5000</c> when the character is still within the level range where they represent a
+        /// meaningful upgrade.
+        /// </summary>
+        /// <param name="item">The item to score.</param>
+        /// <param name="job">
+        /// The job to score for. Defaults to <see cref="ClassJobType.Adventurer"/>, which resolves to
+        /// the player's current job via <see cref="Core.Me.CurrentJob"/>.
+        /// </param>
+        /// <returns>A non-negative weight score, or <c>-1</c> when the item is ineligible.</returns>
         public static float GetItemWeight(Item item, ClassJobType job = ClassJobType.Adventurer)
         {
             if (!MainHandsAndOffHands.Contains(item.EquipmentCatagory) && !item.IsArmor && !item.IsWeapon)
@@ -81,6 +101,10 @@ namespace LlamaLibrary.Helpers
             return weight;
         }
 
+        /// <summary>
+        /// Attribute weights used for Disciples of the Hand jobs
+        /// (Craftsmanship, Control, and CP each weighted equally at 1.0).
+        /// </summary>
         private static readonly Dictionary<ItemAttribute, float> DoHWeights = new()
         {
             { ItemAttribute.Craftsmanship, 1 },
@@ -88,6 +112,10 @@ namespace LlamaLibrary.Helpers
             { ItemAttribute.CP, 1 }
         };
 
+        /// <summary>
+        /// Attribute weights used for Disciples of the Land jobs
+        /// (Gathering, Perception, and GP each weighted equally at 1.0).
+        /// </summary>
         private static readonly Dictionary<ItemAttribute, float> DoLWeights = new()
         {
             { ItemAttribute.Gathering, 1 },
@@ -95,6 +123,14 @@ namespace LlamaLibrary.Helpers
             { ItemAttribute.GP, 1 }
         };
 
+        /// <summary>
+        /// Returns the current level of the player for <paramref name="job"/>.
+        /// For advanced jobs (e.g., <see cref="ClassJobType.Paladin"/>) that do not have a direct
+        /// level entry, the level of the corresponding base class is returned instead
+        /// (e.g., <see cref="ClassJobType.Gladiator"/> for Paladin).
+        /// </summary>
+        /// <param name="job">The job whose level to retrieve.</param>
+        /// <returns>The character's current level for the job, or <c>1</c> on failure.</returns>
         public static ushort ClassJobLevel(ClassJobType job)
         {
             try
@@ -146,6 +182,11 @@ namespace LlamaLibrary.Helpers
                                                         .ToList();
         */
 
+        /// <summary>
+        /// All main-hand and off-hand weapon/tool <see cref="ItemUiCategory"/> values recognised by the weight system.
+        /// Items whose <see cref="Item.EquipmentCatagory"/> is not in this list (and that are not armour)
+        /// receive a weight of <c>-1</c> and are ignored.
+        /// </summary>
         public static readonly List<ItemUiCategory> MainHandsAndOffHands = new()
         {
             ItemUiCategory.Pugilists_Arm,
@@ -193,6 +234,7 @@ namespace LlamaLibrary.Helpers
             ItemUiCategory.Dancers_Arm
         };
 
+        /// <summary>Main-hand-only weapon and primary-tool categories (excludes shields and secondary tools).</summary>
         public static readonly List<ItemUiCategory> MainHands = new()
         {
             ItemUiCategory.Pugilists_Arm,
@@ -228,6 +270,7 @@ namespace LlamaLibrary.Helpers
             ItemUiCategory.Dancers_Arm
         };
 
+        /// <summary>Off-hand weapon and secondary-tool categories (shields and all crafting/gathering secondary tools).</summary>
         public static readonly List<ItemUiCategory> OffHands = new()
         {
             ItemUiCategory.Shield,

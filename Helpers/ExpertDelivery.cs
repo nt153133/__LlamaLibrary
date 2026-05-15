@@ -18,10 +18,18 @@ using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Automates the Grand Company Expert Delivery process: navigating to the Personnel Officer,
+    /// opening the supply window, delivering items for GC seals, and closing the window.
+    /// Deliveries are rejected if they would push the player's seal count over the cap.
+    /// </summary>
     public static class ExpertDelivery
     {
         private static readonly LLogger Log = new(nameof(ExpertDelivery), Colors.DarkKhaki);
 
+        /// <summary>
+        /// Maps each Grand Company to the Personnel Officer NPC that handles Expert Delivery.
+        /// </summary>
         public static Dictionary<GrandCompany, Npc> PersonnelOfficers = new()
         {
             { GrandCompany.Order_Of_The_Twin_Adder, new Npc(1002394, 132, new Vector3(-68.34107f, -0.5017813f, -7.787445f)) }, //serpent personnel officer New Gridania - Adders' Nest
@@ -29,11 +37,22 @@ namespace LlamaLibrary.Helpers
             { GrandCompany.Immortal_Flames, new Npc(1002391, 130, new Vector3(-142.8766f, 4.099999f, -106.1056f)) }, //flame personnel officer Ul'dah - Steps of Nald - Hall of Flames
         };
 
+        /// <summary>
+        /// Delivers all inventory slots whose <see cref="BagSlot.RawItemId"/> matches <paramref name="itemId"/>.
+        /// </summary>
+        /// <param name="itemId">The item ID to deliver.</param>
+        /// <returns>A <see cref="DeliveryStatus"/> indicating the outcome.</returns>
         public static async Task<DeliveryStatus> DeliverItems(uint itemId)
         {
             return await DeliverItems(InventoryManager.FilledSlots.Where(i => i.RawItemId == itemId));
         }
 
+        /// <summary>
+        /// Delivers all inventory slots whose <see cref="BagSlot.RawItemId"/> is contained in <paramref name="itemIds"/>.
+        /// Returns <see cref="DeliveryStatus.Success"/> immediately if no matching slots are found.
+        /// </summary>
+        /// <param name="itemIds">Collection of item IDs to deliver.</param>
+        /// <returns>A <see cref="DeliveryStatus"/> indicating the outcome.</returns>
         public static async Task<DeliveryStatus> DeliverItems(IEnumerable<uint> itemIds)
         {
             var slots = InventoryManager.FilledSlots.Where(i => itemIds.Contains(i.RawItemId)).ToList();
@@ -45,6 +64,12 @@ namespace LlamaLibrary.Helpers
             return await DeliverItems(slots);
         }
 
+        /// <summary>
+        /// Delivers each bag slot in <paramref name="bagSlots"/> via the Expert Delivery window.
+        /// Opens the window if it is not already open, and closes it when finished.
+        /// </summary>
+        /// <param name="bagSlots">The bag slots to deliver.</param>
+        /// <returns>A <see cref="DeliveryStatus"/> indicating the outcome.</returns>
         public static async Task<DeliveryStatus> DeliverItems(IEnumerable<BagSlot> bagSlots)
         {
             if (!await MakeSureWindowOpen())
@@ -65,6 +90,18 @@ namespace LlamaLibrary.Helpers
             return await CloseWindow() ? DeliveryStatus.Success : DeliveryStatus.WindowError;
         }
 
+        /// <summary>
+        /// Delivers a single bag slot item via Expert Delivery.
+        /// Validates that the slot has no materia, ensures the window is open and set to Expert mode,
+        /// confirms the reward matches the expected seal count, and optionally closes the window.
+        /// Returns <see cref="DeliveryStatus.MaxSeals"/> without delivering if the reward would exceed the seal cap.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot to deliver.</param>
+        /// <param name="closeWindow">
+        /// When <c>true</c> (default), the supply window is closed after a successful delivery.
+        /// Pass <c>false</c> when delivering multiple items in sequence to leave the window open.
+        /// </param>
+        /// <returns>A <see cref="DeliveryStatus"/> indicating the outcome.</returns>
         public static async Task<DeliveryStatus> DeliverItem(BagSlot bagSlot, bool closeWindow = true)
         {
             //Sanity check on bagslot
@@ -182,6 +219,11 @@ namespace LlamaLibrary.Helpers
             return await Coroutine.Wait(5000, () => AgentGrandCompanySupply.Instance.SupplyItemCount < oldCount) ? DeliveryStatus.Success : DeliveryStatus.OtherError;
         }
 
+        /// <summary>
+        /// Navigates to the appropriate Personnel Officer and opens the GC Supply window, switching
+        /// it to Expert Delivery mode. Returns <c>true</c> if the window is open on return.
+        /// </summary>
+        /// <returns><c>true</c> when the <see cref="GrandCompanySupplyList"/> window is open; otherwise <c>false</c>.</returns>
         public static async Task<bool> MakeSureWindowOpen()
         {
             if (GrandCompanySupplyList.Instance.IsOpen)
@@ -220,6 +262,11 @@ namespace LlamaLibrary.Helpers
             return GrandCompanySupplyList.Instance.IsOpen;
         }
 
+        /// <summary>
+        /// Closes the GC Supply window and dismisses any lingering conversation dialogue.
+        /// Returns <c>true</c> if the window is confirmed closed.
+        /// </summary>
+        /// <returns><c>true</c> when the window is no longer open; otherwise <c>false</c>.</returns>
         public static async Task<bool> CloseWindow()
         {
             if (!GrandCompanySupplyList.Instance.IsOpen)
@@ -242,13 +289,22 @@ namespace LlamaLibrary.Helpers
         }
     }
 
+    /// <summary>
+    /// Indicates the result of an Expert Delivery attempt.
+    /// </summary>
     public enum DeliveryStatus
     {
+        /// <summary>The item was delivered successfully.</summary>
         Success,
+        /// <summary>The bag slot was invalid (empty, missing, or contains materia).</summary>
         BagSlotError,
+        /// <summary>A required UI window could not be opened or closed.</summary>
         WindowError,
+        /// <summary>An unspecified error occurred (e.g., the supply item list was empty).</summary>
         OtherError,
+        /// <summary>Delivering the item would exceed the player's maximum GC seal capacity.</summary>
         MaxSeals,
+        /// <summary>The reward window showed a different item than expected.</summary>
         WrongItem
     }
 }

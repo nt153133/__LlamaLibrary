@@ -16,15 +16,38 @@ using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides helpers for switching the active botbase to the Order Bot, loading a profile,
+    /// waiting for it to run to completion, and then restoring the original botbase.
+    /// </summary>
     public class OrderbotHelper
     {
         private static readonly LLogger Log = new(nameof(OrderbotHelper), Colors.MediumPurple);
 
+        /// <summary>Tracks whether the Order Bot profile has been loaded (used by the background thread).</summary>
         public static bool loaded;
+
+        /// <summary>Temporary flag set by the botbase-start event handler to signal that the restored botbase has started.</summary>
         public static bool tempbool;
+
+        /// <summary>
+        /// Set to <c>true</c> when the user clicks the RebornBuddy stop button, preventing the original botbase
+        /// from being restarted after the Order Bot finishes.
+        /// </summary>
         public static bool StopBot;
+
+        /// <summary>
+        /// Retrieves the RebornBuddy main-window Start/Stop button via reflection.
+        /// Returns <c>null</c> when the field cannot be found.
+        /// </summary>
         public static Button? RbStartButton => typeof(MainWpf).GetField("btnStart", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(MainWpf.current) as Button;
 
+        /// <summary>
+        /// Starts a background thread that stops the current botbase, switches to the Order Bot,
+        /// loads <paramref name="profile"/>, waits for it to finish, and then restores the previous botbase.
+        /// </summary>
+        /// <param name="profile">Path to the NeoProfile to load in the Order Bot.</param>
+        /// <returns>A completed task with value <c>true</c> once the thread has been started.</returns>
         public static Task<bool> CallOrderbot(string profile)
         {
             StopBot = false;
