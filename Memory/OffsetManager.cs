@@ -45,7 +45,7 @@ namespace LlamaLibrary.Memory;
 
 public static class OffsetManager
 {
-    private const long _version = 51;
+    private const long _version = 52;
     private const bool _debug = false;
 
     // --- Namespace / type filters ---------------------------------------------------------------
