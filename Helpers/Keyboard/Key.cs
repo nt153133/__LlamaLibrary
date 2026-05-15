@@ -23,6 +23,12 @@ public class Key : UITypeEditor
         ShiftType = shiftType;
     }
 
+    /// <summary>
+    /// Constructs a <see cref="Key"/> from a <see cref="char"/>, automatically resolving the
+    /// corresponding virtual key code via <see cref="Messaging.GetVirtualKeyCode"/>.
+    /// No shift modifier is applied.
+    /// </summary>
+    /// <param name="c">The character whose virtual key code should be used.</param>
     public Key(char c)
     {
         _buttonCounter = 0;
@@ -64,11 +70,13 @@ public class Key : UITypeEditor
         return await PressBackground(hWnd);
     }
 
+    /// <summary>
+    /// Emulates a foreground key press using the system-level <see cref="Messaging.ForegroundKeyPress(Key, int)"/>
+    /// API (no target window handle). Only <see cref="Messaging.ShiftType.NONE"/> is supported;
+    /// the method retries once on failure before returning <see langword="false"/>.
+    /// </summary>
+    /// <returns><see langword="true"/> if the key was pressed successfully; otherwise <see langword="false"/>.</returns>
     public async Task<bool> PressForeground()
-    {
-        switch (ShiftType)
-        {
-            case Messaging.ShiftType.NONE:
                 if (!await Messaging.ForegroundKeyPress(this))
                 {
                     _buttonCounter++;

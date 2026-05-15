@@ -30,12 +30,22 @@ using Character = LlamaLibrary.RemoteWindows.Character;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// General-purpose utility class providing a wide variety of FFXIV automation helpers.
+    /// Covers inventory management, gear equipping, retainer interactions, relic turn-ins,
+    /// housing navigation, duty status checks, and more.
+    /// </summary>
     public static class GeneralFunctions
     {
         private static readonly LLogger Log = new(nameof(GeneralFunctions), Colors.Aquamarine);
 
         private static FrameCachedObject<QuestLayout[]>? _questLayouts;
 
+        /// <summary>
+        /// Provides access to the internal <see cref="FrameCachedObject{T}"/> that ff14bot uses
+        /// for the quest layout array. Retrieved via reflection the first time it is accessed.
+        /// </summary>
+        /// <value>A frame-cached wrapper around the array of all quest layouts, or <see langword="null"/> if unavailable.</value>
         public static FrameCachedObject<QuestLayout[]>? QuestLayouts
         {
             get
@@ -50,18 +60,33 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>The four primary player inventory bags (Bag1–Bag4).</summary>
         public static readonly InventoryBagId[] MainBags = { InventoryBagId.Bag1, InventoryBagId.Bag2, InventoryBagId.Bag3, InventoryBagId.Bag4 };
 
+        /// <summary>
+        /// The two saddlebag inventory slot IDs used by the player's chocobo saddlebag.
+        /// </summary>
         public static readonly InventoryBagId[] SaddlebagIds =
         {
             (InventoryBagId)0xFA0, (InventoryBagId)0xFA1 //, (InventoryBagId) 0x1004,(InventoryBagId) 0x1005
         };
 
+        /// <summary>Returns all filled <see cref="BagSlot"/>s from the player's four main inventory bags.</summary>
+        /// <returns>An enumerable of every filled <see cref="BagSlot"/> in <see cref="MainBags"/>.</returns>
         public static IEnumerable<BagSlot> MainBagsFilledSlots()
         {
             return InventoryManager.GetBagsByInventoryBagId(MainBags).SelectMany(x => x.FilledSlots);
         }
 
+        /// <summary>
+        /// Returns the <see cref="ClassJobType"/> required to accept or complete the given quest.
+        /// Quest IDs above 65536 are automatically normalized (subtracted by 65536).
+        /// </summary>
+        /// <param name="questId">The quest ID to look up.</param>
+        /// <returns>
+        /// The required <see cref="ClassJobType"/>, or <see cref="ClassJobType.Adventurer"/> if the
+        /// quest is not found or has no class requirement.
+        /// </returns>
         public static ClassJobType QuestClass(int questId)
         {
             if (questId > 65536)
@@ -78,6 +103,10 @@ namespace LlamaLibrary.Helpers
             return (ClassJobType)quest.Value.QuestBytes[7];
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the local player is currently mid-jump,
+        /// determined by reading the jump condition byte from <see cref="Core.Memory"/>.
+        /// </summary>
         public static bool IsJumping => Core.Memory.NoCacheRead<byte>(Offsets.Conditions + Offsets.JumpingCondition) != 0;
 
         private static bool CheckIfBusy(bool leaveDuty, bool stopFishing, bool dismount)
@@ -133,6 +162,14 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
+        /// <summary>
+        /// Attempts to exit all busy game states up to 5 times. Handles fishing, crafting,
+        /// duty instances, mounting, NPC dialogs, loot windows, and targeting.
+        /// Stops the bot via <see cref="TreeRoot.Stop"/> if busy state persists after all attempts.
+        /// </summary>
+        /// <param name="leaveDuty">When <see langword="true"/>, leaves the active duty instance if in one.</param>
+        /// <param name="stopFishing">When <see langword="true"/>, cancels any active fishing action.</param>
+        /// <param name="dismount">When <see langword="true"/>, dismounts the player if mounted.</param>
         public static async Task StopBusy(bool leaveDuty = true, bool stopFishing = true, bool dismount = true)
         {
             for (var tryStep = 1; tryStep < 6; tryStep++)
@@ -269,6 +306,12 @@ namespace LlamaLibrary.Helpers
 
         private static bool InSmallTalk => SelectYesno.IsOpen || SelectString.IsOpen || SelectIconString.IsOpen || Talk.DialogOpen || JournalAccept.IsOpen || QuestLogManager.InCutscene || CommonBehaviors.IsLoading;
 
+        /// <summary>
+        /// Handles and dismisses in-game dialog prompts: yes/no dialogs, string selection menus,
+        /// icon-string selection menus, cutscenes, NPC talk dialogs, and journal-accept windows.
+        /// Waits up to <paramref name="waitTime"/> ms for a dialog to appear before proceeding.
+        /// </summary>
+        /// <param name="waitTime">Milliseconds to wait for the first dialog to appear.</param>
         public static async Task SmallTalk(int waitTime = 500)
         {
             await Coroutine.Wait(waitTime, () => InSmallTalk);
@@ -388,6 +431,13 @@ namespace LlamaLibrary.Helpers
             return RaptureAtkUnitManager.GetWindowByName(windowName) == null;
         }
 
+        /// <summary>
+        /// Opens the Character window and equips the best available gear for each slot.
+        /// Optionally uses the game's built-in "Recommend Equip" feature for bulk upgrades,
+        /// then saves the current loadout as a gear set.
+        /// </summary>
+        /// <param name="updateGearSet">When <see langword="true"/>, saves the resulting loadout as the active gear set.</param>
+        /// <param name="useRecommendEquip">When <see langword="true"/>, uses the game's Recommend Equip shortcut for slots with multiple improvements.</param>
         public static async Task InventoryEquipBest(bool updateGearSet = true, bool useRecommendEquip = true)
         {
             await StopBusy(leaveDuty: false, dismount: false);
@@ -518,6 +568,15 @@ namespace LlamaLibrary.Helpers
             Character.Instance.Close();
         }
 
+        /// <summary>
+        /// Opens the Character window and saves the currently equipped items as the active gear set.
+        /// Handles the confirmation dialog if one appears.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the gear set was updated successfully;
+        /// <see langword="false"/> if the Character window could not be opened or the gear set
+        /// could not be saved within the timeout.
+        /// </returns>
         public static async Task<bool> UpdateGearSet()
         {
             if (!Character.Instance.IsOpen)
@@ -593,11 +652,22 @@ namespace LlamaLibrary.Helpers
             };
         }
 
+        /// <summary>
+        /// Returns all filled armory slots that are not referenced by any saved gear set.
+        /// Useful for identifying items that are safe to sell or discard.
+        /// </summary>
+        /// <returns>An enumerable of <see cref="BagSlot"/>s not assigned to any gear set.</returns>
         public static IEnumerable<BagSlot> NonGearSetItems()
         {
             return InventoryManager.FilledArmorySlots.Where(bs => !GearsetManager.GearSets.SelectMany(gs => gs.Gear).Select(g => g.Item).Contains(bs.Item));
         }
 
+        /// <summary>
+        /// Sells each <see cref="BagSlot"/> in <paramref name="items"/> to the first available retainer
+        /// via the summoning bell. Opens the retainer's inventory, sells each item, and closes
+        /// the retainer list when finished.
+        /// </summary>
+        /// <param name="items">The collection of <see cref="BagSlot"/>s to sell.</param>
         public static async Task RetainerSellItems(IEnumerable<BagSlot> items)
         {
             if (await HelperFunctions.GetNumberOfRetainers() == 0)
@@ -692,6 +762,17 @@ namespace LlamaLibrary.Helpers
             await RetainerRoutine.CloseRetainers();
         }
 
+        /// <summary>
+        /// Closes any open retainer UI panels in the correct order: inventory → task list → talk dialog.
+        /// Optionally also closes the retainer list itself.
+        /// </summary>
+        /// <param name="exitList">
+        /// When <see langword="true"/>, closes the retainer list window after exiting the retainer.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the retainer list is open (or was successfully closed if
+        /// <paramref name="exitList"/> is <see langword="true"/>); otherwise <see langword="false"/>.
+        /// </returns>
         public static async Task<bool> ExitRetainer(bool exitList = false)
         {
             if (RetainerTasks.IsInventoryOpen())
@@ -765,6 +846,14 @@ namespace LlamaLibrary.Helpers
         }
         */
 
+        /// <summary>
+        /// Returns the average item level of all non-empty gear slots in the given <see cref="GearSet"/>.
+        /// </summary>
+        /// <param name="gs">The gear set to evaluate.</param>
+        /// <returns>
+        /// The average item level of the slots that contain items, or <c>0</c> if the gear set
+        /// is empty.
+        /// </returns>
         public static int GetGearSetiLvl(GearSet gs)
         {
             var gear = gs.Gear.Select(i => i.Item.ItemLevel).Where(x => x > 0).ToList();
@@ -776,6 +865,10 @@ namespace LlamaLibrary.Helpers
             return gear.Sum(i => i) / gear.Count;
         }
 
+        /// <summary>
+        /// Navigates the player back to the player's home point using the in-game Return action.
+        /// Waits for the cast to finish and for the teleport loading screen to complete.
+        /// </summary>
         public static async Task GoHome()
         {
             var privateHousing = new uint[] { 59, 60, 61, 97 };
@@ -875,6 +968,10 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
+        /// <summary>
+        /// Turns in all eligible "Oddly Delicate" crafting relic items in the player's inventory
+        /// to the appropriate NPC, including opening the NPC dialog and selecting collectables.
+        /// </summary>
         public static async Task TurninOddlyDelicate()
         {
             var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
@@ -983,6 +1080,9 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Turns in all eligible Resplendent crafting relic items to the appropriate NPC.
+        /// </summary>
         public static async Task TurninResplendentCrafting()
         {
             var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
@@ -1096,6 +1196,9 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Turns in all eligible Splendorous crafting relic items to the appropriate NPC.
+        /// </summary>
         public static async Task TurninSplendorousCrafting()
         {
             var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
@@ -1236,6 +1339,9 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Turns in all eligible Splendorous (patch 6.51) crafting relic items to the appropriate NPC.
+        /// </summary>
         public static async Task TurninSplendorous651Crafting()
         {
             var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
@@ -1402,6 +1508,10 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Turns in all eligible Splendorous crafting relic items on the Chinese (CN) client
+        /// to the appropriate NPC.
+        /// </summary>
         public static async Task TurninCNSplendorousCrafting()
         {
             var turnItemList = new Dictionary<uint, CraftingRelicTurnin>
@@ -1517,6 +1627,10 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Interacts with and opens all nearby treasure chests (within 30 yalms, in line of sight,
+        /// and in the unopened state) until no more are available.
+        /// </summary>
         public static async Task OpenChests()
         {
             LLogger lLogger = new("Treasure", Colors.Gold);
@@ -1573,12 +1687,22 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Returns all nearby treasure chests that are within 30 yalms, in line of sight,
+        /// and currently in the unopened state (<c>State == 0</c>).
+        /// </summary>
+        /// <returns>An enumerable of <see cref="Treasure"/> objects matching the criteria.</returns>
         public static IEnumerable<Treasure> GetTreasureChests()
         {
             var meLocation = Core.Me.Location;
             return GameObjectManager.GetObjectsOfType<Treasure>().Where(i => i.Location.Distance2D(meLocation) <= 30 && i.InLineOfSight() && i.State == 0);
         }
 
+        /// <summary>
+        /// Navigates to and interacts with the NPC Denys (ID 1032900) in Gangos, then selects
+        /// the option at position <paramref name="selectString"/> in the presented menu.
+        /// </summary>
+        /// <param name="selectString">Zero-based index of the menu option to choose.</param>
         public static async Task InteractWithDenys(int selectString)
         {
             var npc = GameObjectManager.GetObjectByNPCId(1032900);
@@ -1604,6 +1728,9 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Turns in all eligible Sky Steel crafting relic items to the appropriate NPC.
+        /// </summary>
         public static async Task TurninSkySteelCrafting()
         {
             var TurnItemList = new Dictionary<uint, CraftingRelicTurnin>
@@ -1679,6 +1806,9 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Turns in all eligible Sky Steel gathering relic items to the appropriate NPC.
+        /// </summary>
         public static async Task TurninSkySteelGathering()
         {
             var GatheringItems = new Dictionary<uint, (uint Reward, uint Cost)>
@@ -1715,16 +1845,30 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Determines whether the duty with the given ID has been completed at least once.
+        /// </summary>
+        /// <param name="dutyId">The ID of the duty from <c>ContentFinderCondition</c>.</param>
+        /// <returns><see langword="true"/> if the duty has been completed; otherwise <see langword="false"/>.</returns>
         public static bool IsDutyComplete(uint dutyId)
         {
             return DataManager.InstanceContentResults.TryGetValue(dutyId, out var instanceContentResult) && IsInstanceContentCompleted(instanceContentResult.Content);
         }
 
+        /// <summary>
+        /// Determines whether the duty with the given ID has been unlocked for the current character.
+        /// </summary>
+        /// <param name="dutyId">The ID of the duty from <c>ContentFinderCondition</c>.</param>
+        /// <returns><see langword="true"/> if the duty is unlocked; otherwise <see langword="false"/>.</returns>
         public static bool IsDutyUnlocked(uint dutyId)
         {
             return DataManager.InstanceContentResults.TryGetValue(dutyId, out var instanceContentResult) && Core.Memory.CallInjectedWraper<bool>(Offsets.IsInstanceContentUnlocked, instanceContentResult.Content);
         }
 
+        /// <summary>
+        /// Passes on all loot in the current loot notification window.
+        /// Handles both the quick loot notification and the full Need/Greed window.
+        /// </summary>
         public static async Task PassOnAllLoot()
         {
             if (!NotificationLoot.Instance.IsOpen)
@@ -1766,6 +1910,10 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Opens the MVP voting panel and casts a vote for the suggested player.
+        /// Logs the name of the player voted for.
+        /// </summary>
         public static async Task VoteMVPTask()
         {
             Log.Information("Voting on MVP");
@@ -1775,26 +1923,54 @@ namespace LlamaLibrary.Helpers
             Log.Information($"Voted for {name}");
         }
 
+        /// <summary>
+        /// Returns the total number of rows in the DawnContent table via an injected memory call.
+        /// </summary>
+        /// <returns>The row count as a <see cref="uint"/>.</returns>
         public static uint GetDawnContentRowCount()
         {
             return Core.Memory.CallInjectedWraper<uint>(Offsets.GetDawnContentRowCount, IntPtr.Zero);
         }
 
+        /// <summary>
+        /// Returns a pointer to the DawnContent row at <paramref name="index"/> via an injected memory call.
+        /// </summary>
+        /// <param name="index">The zero-based row index to retrieve.</param>
+        /// <returns>An <see cref="IntPtr"/> pointing to the raw row data.</returns>
         public static IntPtr GetDawnContentRow(uint index)
         {
             return Core.Memory.CallInjectedWraper<IntPtr>(Offsets.GetDawnContentRow, index);
         }
 
+        /// <summary>
+        /// Returns whether the instance content with the given ID has been completed,
+        /// using an injected memory call to the game's own completion check.
+        /// </summary>
+        /// <param name="instantContentId">The instance content ID to check.</param>
+        /// <returns><see langword="true"/> if completed; otherwise <see langword="false"/>.</returns>
         public static bool IsInstanceContentCompleted(uint instantContentId)
         {
             return Core.Memory.CallInjectedWraper<bool>(Offsets.IsInstanceContentCompleted, instantContentId);
         }
 
+        /// <summary>
+        /// Detects whether the Dalamud plugin framework is loaded in the current FFXIV process
+        /// by scanning loaded process modules for <c>Dalamud.dll</c>.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if <c>Dalamud.dll</c> is present in the process module list;
+        /// otherwise <see langword="false"/>.
+        /// </returns>
         public static bool DalamudDetected()
         {
             return Core.Memory.Process.Modules.Cast<ProcessModule>().Any(processModule => string.Equals(processModule.ModuleName, "Dalamud.dll", StringComparison.OrdinalIgnoreCase));
         }
 
+        /// <summary>
+        /// Returns the full path of the source file from which this method was called,
+        /// using the <see cref="StackFrame"/> one level up the call stack.
+        /// </summary>
+        /// <returns>The caller's source file path, or <see langword="null"/> if not available.</returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static string? SourceFileName()
         {
@@ -1802,6 +1978,14 @@ namespace LlamaLibrary.Helpers
             return frame.GetFileName();
         }
 
+        /// <summary>
+        /// Returns a <see cref="DirectoryInfo"/> for the directory containing the source file from
+        /// which this method was called, using the <see cref="StackFrame"/> one level up.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="DirectoryInfo"/> for the caller's source directory, or <see langword="null"/>
+        /// if the source file path is unavailable or does not exist on disk.
+        /// </returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static DirectoryInfo? SourceDirectory()
         {
@@ -1816,11 +2000,21 @@ namespace LlamaLibrary.Helpers
             return null;
         }
 
+        /// <summary>
+        /// Returns the localized (client-language) zone name for the given zone ID.
+        /// </summary>
+        /// <param name="zoneId">The zone ID to look up.</param>
+        /// <returns>The localized zone name, or <see cref="string.Empty"/> if not found.</returns>
         public static string CurrentLocalizedZoneNameById(int zoneId)
         {
             return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out var zoneNameResult) ? string.Empty : zoneNameResult.CurrentLocaleName;
         }
 
+        /// <summary>
+        /// Returns the English zone name for the given zone ID regardless of the client language.
+        /// </summary>
+        /// <param name="zoneId">The zone ID to look up.</param>
+        /// <returns>The English zone name, or <see cref="string.Empty"/> if not found.</returns>
         public static string CurrentEnglishZoneNameById(int zoneId)
         {
             return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out var zoneNameResult) ? string.Empty : zoneNameResult.EnglishName;

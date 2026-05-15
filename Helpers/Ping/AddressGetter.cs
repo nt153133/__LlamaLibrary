@@ -9,11 +9,26 @@ using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers.Ping
 {
-    /**
-     * Almost every part of this class was taken from
-     * https://github.com/karashiiro/PingPlugin
-     * and karashiiro takes credit for getting the current ffxiv server ip
-     */
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Windows.Media;
+using ff14bot;
+using LlamaLibrary.Logging;
+
+namespace LlamaLibrary.Helpers.Ping
+{
+    /// <summary>
+    /// Determines the remote IP address and port of the FFXIV game server that the current
+    /// process is connected to by inspecting the active TCP connections via
+    /// <c>GetExtendedTcpTable</c> (Iphlpapi.dll).
+    /// </summary>
+    /// <remarks>
+    /// Implementation is derived from the
+    /// <see href="https://github.com/karashiiro/PingPlugin">PingPlugin</see> project by karashiiro.
+    /// </remarks>
     public class AddressGetter
     {
         private static readonly LLogger Log = new(nameof(AddressGetter), Colors.Chocolate);
@@ -31,9 +46,30 @@ namespace LlamaLibrary.Helpers.Ping
         private const ushort XIV_MIN_PORT_4 = 55296;
         private const ushort XIV_MAX_PORT_4 = 55551;
 
+        /// <summary>Gets or sets the last successfully detected FFXIV server IP address.</summary>
+        /// <value>
+        /// The remote IP address of the game server, or the value from the most recent successful
+        /// call to <see cref="GetAddress"/>. Defaults to <see langword="null"/> until first resolved.
+        /// </value>
         public IPAddress Address { get; set; }
+
+        /// <summary>Gets or sets the remote port of the active FFXIV server connection.</summary>
+        /// <value>The remote TCP port number detected during the last call to <see cref="GetAddress"/>.</value>
         public int Port { get; set; }
 
+        /// <summary>
+        /// Scans the system's TCP connection table for an active connection from the current
+        /// FFXIV process (<see cref="Core.Memory"/>.Process) to a known FFXIV server port range,
+        /// and returns the remote IP address.
+        /// </summary>
+        /// <param name="verbose">
+        /// When <see langword="true"/>, logs a message if a new server address is detected that
+        /// differs from <see cref="Address"/>.
+        /// </param>
+        /// <returns>
+        /// The detected FFXIV server <see cref="IPAddress"/>, or <see cref="IPAddress.Loopback"/>
+        /// if no matching connection could be found or an error occurred.
+        /// </returns>
         public IPAddress GetAddress(bool verbose = false)
         {
             IntPtr pTcpTable = IntPtr.Zero;
@@ -146,6 +182,9 @@ namespace LlamaLibrary.Helpers.Ping
         }
     }
 
+    /// <summary>
+    /// Windows error codes returned by <c>GetExtendedTcpTable</c> and related Win32 networking APIs.
+    /// </summary>
     public enum WinError
     {
         UNKNOWN = -1,
