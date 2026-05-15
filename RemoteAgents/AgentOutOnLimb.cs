@@ -10,7 +10,7 @@ namespace LlamaLibrary.RemoteAgents
     public class AgentOutOnLimb : AgentInterface<AgentOutOnLimb>, IAgent
     {
         public IntPtr RegisteredVtable => AgentOutOnLimbOffsets.VTable;
-        
+
 
         public IntPtr addressLocation = IntPtr.Zero;
         private readonly Random rnd = new();
@@ -40,8 +40,8 @@ namespace LlamaLibrary.RemoteAgents
         public void Refresh()
         {
             var intptr_0 = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
-            var intptr_1 = Core.Memory.Read<IntPtr>(intptr_0 + 0x38);
-            var intptr_2 = Core.Memory.Read<IntPtr>(intptr_1 + 0x18);
+            var intptr_1 = Core.Memory.Read<IntPtr>(intptr_0 + 0x38); //AtkArrayDataHolder pointer
+            var intptr_2 = Core.Memory.Read<IntPtr>(intptr_1 + 0x18); //AtkArrayDataHolder->NumberArrays pointer
             var intptr_3 = Core.Memory.Read<IntPtr>(intptr_2 + AgentOutOnLimbOffsets.LastOffset); //0x310
             addressLocation = Core.Memory.Read<IntPtr>(intptr_3 + AgentOutOnLimbOffsets.LastLastOffset);
         }

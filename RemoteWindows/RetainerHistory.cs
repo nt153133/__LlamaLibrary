@@ -27,13 +27,13 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public IntPtr ArrayLocation => Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(RetainerHistoryOffsets.NumberArrayIndex) + RetainerHistoryOffsets.NumberArrayData_IntArray);
+        public IntPtr ArrayLocation => Core.Memory.Read<IntPtr>(AtkArrayDataHolder.NumberArray(RetainerHistoryOffsets.NumberArrayIndex) + RetainerHistoryOffsets.NumberArrayData_IntArray);
 
         public IntPtr NumberArrayStart
         {
             get
             {
-                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(RetainerHistoryOffsets.NumberArrayIndex) + RetainerHistoryOffsets.NumberArrayData_IntArray);
+                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.NumberArray(RetainerHistoryOffsets.NumberArrayIndex) + RetainerHistoryOffsets.NumberArrayData_IntArray);
 
                 var start = arrayLocation + ((RetainerHistoryOffsets.NumberArrayData_Start - 3) * 4);
 
@@ -45,7 +45,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             get
             {
-                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetNumberArray(RetainerHistoryOffsets.NumberArrayIndex) + RetainerHistoryOffsets.NumberArrayData_IntArray);
+                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.NumberArray(RetainerHistoryOffsets.NumberArrayIndex) + RetainerHistoryOffsets.NumberArrayData_IntArray);
 
                 return arrayLocation + (RetainerHistoryOffsets.NumberArrayData_Count * 4);
             }
@@ -53,13 +53,13 @@ namespace LlamaLibrary.RemoteWindows
 
         public int HistoryCount => Core.Memory.Read<int>(HistoryCountLocation);
 
-        public IntPtr StringArrayLocation => Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetStringArray(RetainerHistoryOffsets.StringArrayIndex) + RetainerHistoryOffsets.StringArrayData_StrArray);
+        public IntPtr StringArrayLocation => Core.Memory.Read<IntPtr>(AtkArrayDataHolder.StringArray(RetainerHistoryOffsets.StringArrayIndex) + RetainerHistoryOffsets.StringArrayData_StrArray);
 
         public IntPtr StringArrayStart
         {
             get
             {
-                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.GetStringArray(RetainerHistoryOffsets.StringArrayIndex) + RetainerHistoryOffsets.StringArrayData_StrArray);
+                var arrayLocation = Core.Memory.Read<IntPtr>(AtkArrayDataHolder.StringArray(RetainerHistoryOffsets.StringArrayIndex) + RetainerHistoryOffsets.StringArrayData_StrArray);
 
                 var start = arrayLocation + ((RetainerHistoryOffsets.StringArrayData_Start - 2) * 8);
 

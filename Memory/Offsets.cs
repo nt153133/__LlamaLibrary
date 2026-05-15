@@ -26,12 +26,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8D 05 ? ? ? ? 4C 89 43 ? 48 89 03 B9 ? ? ? ? Add 3 TraceRelative")]
         public static IntPtr RepairVTable;
 
-        //7.3
-        [Offset("Search 48 8B 0D ? ? ? ? 48 8B D3 48 8B 49 ? E8 ? ? ? ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8B 05 ? ? ? ? 4C 89 44 24 ? 44 8D 47 ? Add 3 TraceRelative")]
-        public static IntPtr AtkStage;
 
-        public static IntPtr SearchResultPtr => AtkStage;
 
         //7.3
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 8B 93 ? ? ? ? 48 8B 08 Add 3 TraceRelative")]
@@ -188,6 +183,26 @@ namespace LlamaLibrary.Memory
     {
         [Offset("Search E8 ?? ?? ?? ?? 80 7B 1D 01 TraceCall")]
         public static IntPtr GetUiModule;
+    }
+
+    //ATK
+    public static partial class Offsets
+    {
+        //7.3
+        [Offset("Search 48 8B 0D ? ? ? ? 48 8B D3 48 8B 49 ? E8 ? ? ? ? Add 3 TraceRelative")]
+        [OffsetTC("Search 48 8B 05 ? ? ? ? 4C 89 44 24 ? 44 8D 47 ? Add 3 TraceRelative")]
+        public static IntPtr AtkStage;
+
+        public static IntPtr SearchResultPtr => AtkStage;
+
+        [Offset("Search E8 ?? ?? ?? ?? 6B 94 TraceCall")]
+        public static IntPtr GetNumberArrayData;
+
+        [Offset("Search E8 ?? ?? ?? ?? 42 8D 1C AD TraceCall")]
+        public static IntPtr GetStringArrayData;
+
+        [Offset("Search E8 ?? ?? ?? ?? 48 8B 48 ?? 48 89 4D TraceCall")]
+        public static IntPtr GetExtendArrayData;
     }
 
     public static class AchievementsOffsets
