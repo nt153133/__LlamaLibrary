@@ -18,6 +18,11 @@ using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers;
 
+/// <summary>
+/// Automates feeding and managing chocobo companions stabled in player housing.
+/// Handles stable navigation, food selection, Thavnairian Onion logic for capped chocobos,
+/// and optional fetch-after-feeding.
+/// </summary>
 public static class ChocoboHelper
 {
     private static readonly string Name = "ChocoboHelper";
@@ -26,6 +31,16 @@ public static class ChocoboHelper
 
     internal static Regex TimeRegex = new(@"(?:.*?)(\d+).*", RegexOptions.Compiled);
 
+    /// <summary>
+    /// Teleports to the specified housing aetheryte, navigates to the stable location, then
+    /// runs the full chocobo feeding and management workflow.
+    /// </summary>
+    /// <param name="AE">The aetheryte ID for the housing area to teleport to.</param>
+    /// <param name="stableLoc">World position of the Chocobo Stable object.</param>
+    /// <param name="CleanBefore">If <see langword="true"/>, cleans the stable with Magicked Stable Brooms before feeding.</param>
+    /// <param name="ChocoboFoodId">Item ID of the food to feed to chocobos (e.g., Gysahl Greens = 4868).</param>
+    /// <param name="FetchAfter">If <see langword="true"/>, fetches the player's chocobo back out of the stable after feeding.</param>
+    /// <param name="UseThavnairianOnion">If <see langword="true"/>, automatically switches to Thavnairian Onions for rank-capped chocobos.</param>
     public static async Task GoGoChocobo(uint AE, Vector3 stableLoc, bool CleanBefore, uint ChocoboFoodId, bool FetchAfter, bool UseThavnairianOnion)
     {
         if (stableLoc != default)
@@ -61,6 +76,15 @@ public static class ChocoboHelper
         }
     }
 
+    /// <summary>
+    /// Core stable interaction workflow: optionally cleans the stable, stables the chocobo if not already stabled,
+    /// feeds it (switching to Thavnairian Onions if rank-capped), and optionally fetches the chocobo back out.
+    /// </summary>
+    /// <param name="CleanBefore">If <see langword="true"/>, uses up to 3 Magicked Stable Brooms before feeding.</param>
+    /// <param name="ChocoboFoodId">Item ID of the food to feed to chocobos.</param>
+    /// <param name="FetchAfter">If <see langword="true"/>, retrieves the player's chocobo after the feeding session.</param>
+    /// <param name="UseThavnairianOnion">If <see langword="true"/>, switches to Thavnairian Onions for rank-capped chocobos.</param>
+    /// <returns><see langword="true"/> when the workflow completes successfully.</returns>
     public static async Task<bool> Main(bool CleanBefore, uint ChocoboFoodId, bool FetchAfter, bool UseThavnairianOnion)
     {
         if (CleanBefore)

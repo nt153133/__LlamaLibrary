@@ -19,6 +19,14 @@ using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.Helpers.LocationTracking;
 
+/// <summary>
+/// Static helper that provides high-level navigation methods for entering and returning to housing
+/// locations — including houses, housing plots, workshops, and general housing area positions.
+/// </summary>
+/// <remarks>
+/// Methods in this class coordinate with <see cref="HousingTraveler"/> for ward selection and
+/// with <see cref="HousingHelper"/> for state detection.
+/// </remarks>
 public static class HouseTravelHelper
 {
     private static readonly LLogger Log = new LLogger("HouseTravelHelper", Colors.IndianRed);
@@ -27,8 +35,23 @@ public static class HouseTravelHelper
     private static readonly uint[] AdditionalChambers = { 2004353, 2004624, 2004625, 2004626, 2008126, 2011571 };
     private static readonly uint[] HouseExits = { 2002738, 2004361, 2007444 };
     private const uint WorkShopExit = 2005124;
+    /// <summary>
+    /// Zone IDs for FC workshop areas in all five residential districts, in the order
+    /// Mist, Lavender Beds, The Goblet, Shirogane, and Empyreum.
+    /// </summary>
     public static readonly ushort[] WorkshopZones = { 423, 424, 425, 653, 984 };
 
+    /// <summary>
+    /// Returns to the specified <paramref name="previousHouseLocation"/>, entering the house if
+    /// the player is not already inside it.
+    /// </summary>
+    /// <param name="previousHouseLocation">
+    /// The house to return to, or <see langword="null"/> to abort immediately.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the player has successfully entered the target house;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
     public static async Task<bool> GoBackToHouse(HouseLocation? previousHouseLocation)
     {
         if (previousHouseLocation == null)
@@ -62,6 +85,17 @@ public static class HouseTravelHelper
 
 
 
+    /// <summary>
+    /// Navigates to the outdoor plot for <paramref name="previousHouseLocation"/> without
+    /// entering the house interior.
+    /// </summary>
+    /// <param name="previousHouseLocation">
+    /// The plot to return to, or <see langword="null"/> to abort immediately.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the player is standing within the target plot;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
     internal static async Task<bool> GoBackToPlot(HouseLocation? previousHouseLocation)
     {
         var location = CurrentHouseLocation;
@@ -107,6 +141,17 @@ public static class HouseTravelHelper
         return HousingHelper.IsWithinPlot && CurrentHouseLocation != null && CurrentHouseLocation.Equals(previousHouseLocation);
     }
 
+    /// <summary>
+    /// Returns to the outdoor housing area described by <paramref name="previousHouseLocation"/>,
+    /// switching world and ward as necessary.
+    /// </summary>
+    /// <param name="previousHouseLocation">
+    /// The area snapshot to return to, or <see langword="null"/> to abort immediately.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the player is back in the correct housing area at approximately
+    /// the recorded position; otherwise <see langword="false"/>.
+    /// </returns>
     internal static async Task<bool> GoBackToHousingLocation(HousingAreaLocation? previousHouseLocation)
     {
         if (previousHouseLocation == null)
@@ -144,6 +189,15 @@ public static class HouseTravelHelper
         return HousingHelper.IsInHousingArea && current != null && current.Ward == previousHouseLocation.Ward && current.HousingZone == previousHouseLocation.HousingZone && current.World == previousHouseLocation.World && current.Location.DistanceSqr(previousHouseLocation.Location) < 10;
     }
 
+    /// <summary>
+    /// Enters the house at the specified <paramref name="plot"/> within <paramref name="housingZone"/>
+    /// by interacting with the plot's entrance object.
+    /// </summary>
+    /// <param name="housingZone">The outdoor ward zone that contains the target plot.</param>
+    /// <param name="plot">The 1-based plot number to enter.</param>
+    /// <returns>
+    /// <see langword="true"/> when the player has entered the house; otherwise <see langword="false"/>.
+    /// </returns>
     public static async Task<bool> GetIntoHouse(HousingZone housingZone, int plot)
     {
         if (!ResourceManager.HousingPlots.TryGetValue(housingZone, out var plots))
@@ -157,6 +211,12 @@ public static class HouseTravelHelper
         return await plot1.Enter();
     }
 
+    /// <summary>
+    /// Enters the nearest house in the current zone.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> when the player has entered the house; otherwise <see langword="false"/>.
+    /// </returns>
     [Obsolete("Use GetIntoHouse with housing zone and plot parameters instead")]
     public static async Task<bool> GetIntoHouse()
     {
@@ -171,6 +231,14 @@ public static class HouseTravelHelper
         return await plot.Enter();
     }
 
+    /// <summary>
+    /// Navigates from the player's FC estate house into the attached workshop (Additional Chambers).
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> when the player is inside the workshop;
+    /// <see langword="false"/> when the player is not on the home world, does not have an FC
+    /// estate, or the workshop entrance cannot be found.
+    /// </returns>
     public static async Task<bool> GoIntoWorkshop()
     {
         if (WorkshopZones.Contains(WorldManager.ZoneId) || HousingHelper.IsInsideWorkshop)
@@ -234,6 +302,14 @@ public static class HouseTravelHelper
         return HousingHelper.IsInsideWorkshop;
     }
 
+    /// <summary>
+    /// Leaves the workshop by interacting with the exit NPC and confirming the dialogue.
+    /// Does nothing if the player is not currently inside a workshop zone.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> when the player has left the workshop (or was never inside one);
+    /// otherwise <see langword="false"/>.
+    /// </returns>
     public static async Task<bool> LeaveWorkshop()
     {
         if (!WorkshopZones.Contains(WorldManager.ZoneId) || !HousingHelper.IsInsideWorkshop)
@@ -266,6 +342,10 @@ public static class HouseTravelHelper
         return !HousingHelper.IsInsideWorkshop;
     }
 
+    /// <summary>
+    /// Gets a <see cref="HouseLocation"/> representing the house or plot the player is currently
+    /// inside or standing on, or <see langword="null"/> when not in a housing interior or plot.
+    /// </summary>
     internal static HouseLocation? CurrentHouseLocation
     {
         get
@@ -287,6 +367,10 @@ public static class HouseTravelHelper
         }
     }
 
+    /// <summary>
+    /// Gets a <see cref="HousingAreaLocation"/> snapshot of the player's current housing-area
+    /// position, or <see langword="null"/> when not in any housing area.
+    /// </summary>
     internal static HousingAreaLocation? CurrentHousingAreaLocation
     {
         get
@@ -307,10 +391,21 @@ public static class HouseTravelHelper
     }
 }
 
+/// <summary>
+/// Immutable snapshot of a player's position within a housing area (outdoor ward), capturing the
+/// zone, ward number, world, and in-world coordinates.
+/// </summary>
 public record HousingAreaLocation
 {
+    /// <summary>Gets or sets the zone ID of the outdoor housing ward.</summary>
     public ushort HousingZone { get; set; }
+
+    /// <summary>Gets or sets the 1-based ward number.</summary>
     public int Ward { get; set; }
+
+    /// <summary>Gets or sets the world the housing area is on.</summary>
     public World World { get; set; }
+
+    /// <summary>Gets or sets the player's position within the housing area.</summary>
     public Vector3 Location { get; set; }
 }

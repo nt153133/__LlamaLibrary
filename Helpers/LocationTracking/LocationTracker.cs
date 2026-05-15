@@ -16,6 +16,22 @@ using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers.LocationTracking;
 
+/// <summary>
+/// Captures the player's current location at construction time and provides a
+/// <see cref="GoBack"/> method to return to that location after an automation task moves the player elsewhere.
+/// </summary>
+/// <remarks>
+/// The tracker recognises four location types: open world, housing area (outdoor ward),
+/// housing plot (outdoor within a specific plot), and house interior.  On <see cref="GoBack"/> it
+/// restores the player to the correct world, ward, and position for each type.
+/// </remarks>
+/// <example>
+/// <code>
+/// var tracker = new LocationTracker();
+/// // … do automation work that moves the player …
+/// await tracker.GoBack();
+/// </code>
+/// </example>
 public class LocationTracker
 {
     private static readonly LLogger Log = new LLogger("LocationTracker", Colors.IndianRed);
@@ -25,6 +41,10 @@ public class LocationTracker
     private readonly LocationType _previousLocationType;
     private float _previousHeading;
 
+    /// <summary>
+    /// Initialises a new <see cref="LocationTracker"/> by snapshotting the player's current world,
+    /// zone, coordinates, heading, and housing state.
+    /// </summary>
     public LocationTracker()
     {
         Log.Verbose("LocationTracker initialized.");
@@ -53,6 +73,17 @@ public class LocationTracker
         }
     }
 
+    /// <summary>
+    /// Returns the player to the location captured at construction time.
+    /// </summary>
+    /// <remarks>
+    /// Handles world travel if the player has changed worlds.  Delegates to
+    /// <see cref="HouseTravelHelper"/> for housing-specific navigation.
+    /// </remarks>
+    /// <returns>
+    /// <see langword="true"/> when the player has successfully returned;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
     public async Task<bool> GoBack()
     {
         if (_previousLocation == null)
@@ -151,10 +182,15 @@ public class LocationTracker
     }
 }
 
+/// <summary>Classifies the type of location the player occupied when <see cref="LocationTracker"/> was constructed.</summary>
 public enum LocationType
 {
+    /// <summary>An ordinary non-housing open-world zone.</summary>
     World,
+    /// <summary>An outdoor housing ward (not on a specific plot).</summary>
     HousingArea,
+    /// <summary>Inside a house or FC workshop interior.</summary>
     House,
+    /// <summary>Standing within a plot's boundary but not inside the house interior.</summary>
     HousingPlot,
 }

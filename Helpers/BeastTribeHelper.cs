@@ -11,6 +11,10 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides access to FFXIV Beast Tribe quest data, including daily allowances, tribe ranks, and current quest progress.
+    /// Beast Tribes are factions with whom the player can complete daily quests to earn reputation and unlock rewards.
+    /// </summary>
     public static class BeastTribeHelper
     {
         private static readonly LLogger Log = new(nameof(BeastTribeHelper), Colors.Gold);
@@ -35,6 +39,9 @@ namespace LlamaLibrary.Helpers
             _beastTribes = tribes.ToArray();
         }
 
+        /// <summary>
+        /// Logs the name, unlock status, and maximum rank for every Beast Tribe to the debug console.
+        /// </summary>
         public static void PrintBeastTribes()
         {
             var tribes = GetBeastTribes();
@@ -57,6 +64,10 @@ namespace LlamaLibrary.Helpers
             return char.ToUpper(s[0]) + s.Substring(1);
         }
 
+        /// <summary>
+        /// Logs a summary of the current daily Beast Tribe quest status including how many allowances remain,
+        /// how many quests are accepted, and which are still incomplete.
+        /// </summary>
         public static void PrintDailies()
         {
             var dailies = GetCurrentDailies();
@@ -67,6 +78,10 @@ namespace LlamaLibrary.Helpers
             Log.Information($"Daily quests left: {BeastTribeHelperOffsets.DailyQuestCount - accepted}\n\tAccepted: {accepted}\n\tFinished: {finished}\n\tCurrentDailies: {string.Join(",", unfinished)}");
         }
 
+        /// <summary>
+        /// Returns the number of Beast Tribe daily quest allowances remaining for the current reset cycle.
+        /// </summary>
+        /// <returns>Number of daily quests that can still be accepted today.</returns>
         public static int DailyQuestAllowance()
         {
             var dailies = GetCurrentDailies();
@@ -88,12 +103,20 @@ namespace LlamaLibrary.Helpers
         }
         */
 
+        /// <summary>
+        /// Reads the player's currently accepted Beast Tribe daily quests directly from game memory.
+        /// </summary>
+        /// <returns>An array of <see cref="DailyQuestRead"/> structs representing the active quest slots.</returns>
         public static DailyQuestRead[] GetCurrentDailies()
         {
             //Log.Verbose($"{(BeastTribeHelperOffsets.QuestPointer + BeastTribeHelperOffsets.DailyQuestOffset).ToString("X")}");
             return Core.Memory.ReadArray<DailyQuestRead>(BeastTribeHelperOffsets.QuestPointer + BeastTribeHelperOffsets.DailyQuestOffset, BeastTribeHelperOffsets.DailyQuestCount);
         }
 
+        /// <summary>
+        /// Reads all Beast Tribe stat data (rank, reputation, etc.) for every tribe from game memory.
+        /// </summary>
+        /// <returns>An array of <see cref="BeastTribeStat"/> structs, one entry per tribe.</returns>
         public static BeastTribeStat[] GetBeastTribes()
         {
             //6.5
@@ -101,6 +124,11 @@ namespace LlamaLibrary.Helpers
            return Core.Memory.ReadArray<BeastTribeStat>(BeastTribeHelperOffsets.QuestPointer + 0xCA8, BeastTribeHelperOffsets.BeastTribeCount);
         }
 
+        /// <summary>
+        /// Gets the player's current rank with a specific Beast Tribe.
+        /// </summary>
+        /// <param name="tribe">The 1-based index of the tribe as used in the game data.</param>
+        /// <returns>The player's current rank (reputation level) with the specified tribe.</returns>
         public static int GetBeastTribeRank(int tribe)
         {
             var tribes = GetBeastTribes();

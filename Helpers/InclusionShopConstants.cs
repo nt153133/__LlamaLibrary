@@ -4,8 +4,26 @@ using Clio.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Contains static reference data for Allagan Tomestone / Scripture scrip-exchange shops (InclusionShop NPCs).
+    /// <para>
+    /// <see cref="ShopNpcs"/> lists known vendor NPCs with their shop key, NPC ID, zone ID, required quest,
+    /// and world position. <see cref="KnownItems"/> maps each shop key to the array of item IDs available
+    /// from that shop, allowing callers to locate the cheapest NPC for a specific item.
+    /// </para>
+    /// </summary>
     public static class InclusionShopConstants
     {
+        /// <summary>
+        /// A list of known InclusionShop vendor NPCs. Each entry contains:
+        /// <list type="bullet">
+        ///   <item><description><c>ShopKey</c> — matches keys in <see cref="KnownItems"/>.</description></item>
+        ///   <item><description><c>NpcId</c> — the NPC's game object ID.</description></item>
+        ///   <item><description><c>ZoneId</c> — the zone the NPC resides in.</description></item>
+        ///   <item><description><c>RequiredQuest</c> — quest ID that must be completed to use the NPC (0 = no requirement).</description></item>
+        ///   <item><description><c>Location</c> — world-space position of the NPC.</description></item>
+        /// </list>
+        /// </summary>
         public static List<(uint ShopKey, uint NpcId, ushort ZoneId, uint RequiredQuest, Vector3 Location)> ShopNpcs =
             new()
             {
@@ -38,6 +56,10 @@ namespace LlamaLibrary.Helpers
                 (3801103, 1049085, 1186, 70544, new Vector3(-160.58228f, 0.92195225f, -42.534424f)) //Solution Nine Scrip Exchange
             };
 
+        /// <summary>
+        /// Maps each shop key to the array of raw item IDs purchasable from that shop.
+        /// Used by <see cref="InclusionShopHelper.BuyItemGoToNpc"/> to determine which NPCs sell a given item.
+        /// </summary>
         public static Dictionary<uint, uint[]> KnownItems = new()
         {
             {

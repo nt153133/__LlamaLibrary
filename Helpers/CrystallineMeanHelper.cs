@@ -21,6 +21,11 @@ using Newtonsoft.Json;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Automates Crystalline Mean facet quests (Endwalker crafter/gatherer content).
+    /// The Crystalline Mean is the crafting and gathering hub in The Crystarium (Shadowbringers)
+    /// where players turn in high-quality items to progress their job storylines.
+    /// </summary>
     public static class CrystallineMeanHelper
     {
         private static readonly LLogger Log = new(nameof(CrystallineMeanHelper), Colors.Gold);
@@ -45,6 +50,10 @@ namespace LlamaLibrary.Helpers
         //Fisher
         private static readonly Npc Frithrik = new(1027237, 819, new Vector3(-8.957031f, 20.186f, -119.1882f));
 
+        /// <summary>
+        /// Maps each crafting/gathering job to its corresponding Crystalline Mean facet NPC.
+        /// Used to determine which NPC to interact with based on the player's current job.
+        /// </summary>
         public static readonly Dictionary<ClassJobType, Npc> FacetNPCs = FacetNPCs = new Dictionary<ClassJobType, Npc>
         {
             { ClassJobType.Blacksmith, Iola },
@@ -62,6 +71,12 @@ namespace LlamaLibrary.Helpers
 
         private static Npc? ClassNpc => FacetNPCs.ContainsKey(Core.Me.CurrentJob) ? FacetNPCs[Core.Me.CurrentJob] : default;
 
+        /// <summary>
+        /// Full automation workflow: navigate to the facet NPC for the current job, open the supply window,
+        /// generate a Lisbeth crafting/gathering order for the requested item, travel back to hand in the items,
+        /// and handle all cutscenes and dialog along the way.
+        /// </summary>
+        /// <returns><see langword="true"/> if the turn-in completed successfully; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> CraftItems()
         {
             var npc = ClassNpc;
@@ -258,6 +273,11 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Reads the requested item from the open <c>HugeCraftworksSupply</c> window and sends a Lisbeth order to craft or gather it.
+        /// Automatically determines quantity and order type based on the current job.
+        /// </summary>
+        /// <returns><see langword="true"/> if the Lisbeth order was accepted; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GenerateLisbethOrder()
         {
             if (!HugeCraftworksSupply.Instance.IsOpen)
@@ -291,6 +311,10 @@ namespace LlamaLibrary.Helpers
             return await Lisbeth.ExecuteOrders(JsonConvert.SerializeObject(outList, Formatting.None));
         }
 
+        /// <summary>
+        /// Prompts and confirms the cutscene skip dialog if a skippable cutscene is currently playing.
+        /// </summary>
+        /// <returns><see langword="true"/> always (fire-and-forget convenience wrapper).</returns>
         public static async Task<bool> SkipCutscene()
         {
             Log.Information("Dealing with cutscene.");
@@ -310,6 +334,9 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Advances through all open Talk dialog boxes until none remain.
+        /// </summary>
         public static async Task DealWithTalk()
         {
             if (Talk.DialogOpen)

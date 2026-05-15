@@ -17,16 +17,32 @@ using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers.HousingTravel
 {
+    /// <summary>
+    /// Central helper for navigating to FFXIV residential districts, wards, and individual housing plots.
+    /// </summary>
+    /// <remarks>
+    /// This static class coordinates world travel, aetheryte teleportation, and in-zone navigation to
+    /// bring the player to any plot in Mist, Lavender Beds, The Goblet, Shirogane, or Empyreum.
+    /// It also exposes helpers for entering house interiors and determining the optimal ward via
+    /// known house teleports.
+    /// </remarks>
     public static class HousingTraveler
     {
+        /// <summary>The singleton instances for each of the five residential districts.</summary>
         public static readonly ResidentialDistrict[] HousingZones;
 
         private static readonly LLogger Log = new(nameof(HousingTraveler), Colors.Gold);
 
+        /// <summary>The zone IDs for all five residential districts.</summary>
         public static readonly IReadOnlyList<ushort> HousingZoneIds;
 
+        /// <summary>The five primary <see cref="HousingZone"/> enum values (excludes sub-types such as Apartment and Chamber).</summary>
         public static readonly IReadOnlyList<HousingZone> HousingZonesEnums = new List<HousingZone> { HousingZone.Mist, HousingZone.LavenderBeds, HousingZone.Empyreum, HousingZone.Goblet, HousingZone.Shirogane };
 
+        /// <summary>
+        /// Gets the <see cref="ResidentialDistrict"/> the player is currently inside, or
+        /// <see langword="null"/> when the player is not in any housing area.
+        /// </summary>
         public static ResidentialDistrict? CurrentResidentialDistrict => !HousingHelper.IsInHousingArea ? null : GetResidentialDistrictByZone(WorldManager.ZoneId);
 
         static HousingTraveler()
@@ -35,6 +51,15 @@ namespace LlamaLibrary.Helpers.HousingTravel
             HousingZoneIds = HousingZones.Select(i => i.ZoneId).ToList();
         }
 
+        /// <summary>
+        /// Normalises a sub-type <see cref="HousingZone"/> (e.g. Apartment, Chamber, Cottage, House,
+        /// Mansion variant) to its parent residential-district zone.
+        /// </summary>
+        /// <param name="zone">The <see cref="HousingZone"/> to translate.</param>
+        /// <returns>
+        /// The primary <see cref="HousingZone"/> for the district, or the original value when no
+        /// mapping is needed.
+        /// </returns>
         public static HousingZone TranslateZone(HousingZone zone)
         {
             zone = zone switch
@@ -70,6 +95,14 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return zone;
         }
 
+        /// <summary>
+        /// Navigates to a housing plot and enters the house interior.
+        /// </summary>
+        /// <param name="location">The <see cref="HouseLocation"/> identifying the district, ward, and plot.</param>
+        /// <returns>
+        /// <see langword="true"/> if the player is inside the house after the operation;
+        /// otherwise <see langword="false"/>.
+        /// </returns>
         public static async Task<bool> EnterHouse(HouseLocation location)
         {
             if (!await GetToResidential(location))
@@ -88,6 +121,14 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await EnterHouse(recordedPlot);
         }
 
+        /// <summary>
+        /// Enters a house interior via a <see cref="RecordedPlot"/> reference.
+        /// </summary>
+        /// <param name="recordedPlot">The recorded plot whose entrance to use.</param>
+        /// <returns>
+        /// <see langword="true"/> if the player is already inside the correct house or successfully
+        /// enters it; otherwise <see langword="false"/>.
+        /// </returns>
         public static async Task<bool> EnterHouse(RecordedPlot recordedPlot)
         {
             if (HousingHelper.IsInsideHouse && HousingHelper.CurrentHouseLocation?.Plot == recordedPlot.Plot)
@@ -98,11 +139,29 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await recordedPlot.Enter();
         }
 
+        /// <summary>
+        /// Looks up the pre-recorded plot data for a specific housing zone and plot number.
+        /// </summary>
+        /// <param name="zone">The housing zone (will be normalised via <see cref="TranslateZone"/>).</param>
+        /// <param name="plot">The 1-based plot number within the ward.</param>
+        /// <returns>
+        /// The <see cref="RecordedPlot"/> if available, or <see langword="null"/> when the zone
+        /// is not in <see cref="HousingZonesEnums"/> or the plot is not recorded.
+        /// </returns>
         public static RecordedPlot? GetRecordedPlot(HousingZone zone, int plot)
         {
             return !HousingZonesEnums.Contains(TranslateZone(zone)) ? null : ResourceManager.HousingPlots[TranslateZone(zone)].Value[plot];
         }
 
+        /// <summary>
+        /// Navigates the player to a specific housing plot, using the fastest available route
+        /// (private estate, free-company estate, shared estate, or direct travel).
+        /// </summary>
+        /// <param name="location">The target <see cref="HouseLocation"/>.</param>
+        /// <returns>
+        /// <see langword="true"/> when the player is in the correct ward near the plot entrance;
+        /// otherwise <see langword="false"/>.
+        /// </returns>
         public static async Task<bool> GetToResidential(HouseLocation location)
         {
             location.HousingZone = TranslateZone(location.HousingZone);
@@ -213,6 +272,14 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await GetToResidential(location.World, location.HousingZone, recorded.EntranceLocation, location.Ward);
         }
 
+        /// <summary>
+        /// Navigates to the housing zone associated with an <see cref="Npc"/>, using the NPC's
+        /// current ward when already inside the correct zone.
+        /// </summary>
+        /// <param name="npc">An NPC whose location is inside a housing zone.</param>
+        /// <returns>
+        /// <see langword="true"/> on success; <see langword="false"/> if the NPC is not a housing-zone NPC.
+        /// </returns>
         public static async Task<bool> GetToResidential(Npc npc)
         {
             if (!npc.IsHousingZoneNpc)
@@ -229,6 +296,12 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await GetToResidential(npc.Location, ward);
         }
 
+        /// <summary>
+        /// Travels to the specified world and then navigates to a housing NPC's location.
+        /// </summary>
+        /// <param name="world">The target world server.</param>
+        /// <param name="npc">An NPC located inside a housing zone on that world.</param>
+        /// <returns><see langword="true"/> on success; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToResidential(World world, Npc npc)
         {
             if (!await WorldTravel.WorldTravel.GoToWorld(world))
@@ -239,11 +312,26 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await GetToResidential(npc);
         }
 
+        /// <summary>
+        /// Navigates to a <see cref="Location"/> inside a housing zone, selecting the given ward.
+        /// </summary>
+        /// <param name="location">The target location (zone ID + coordinates).</param>
+        /// <param name="ward">The 1-based ward number to navigate to.</param>
+        /// <returns><see langword="true"/> on success; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToResidential(Location location, int ward)
         {
             return await GetToResidential(location.ZoneId, location.Coordinates, ward);
         }
 
+        /// <summary>
+        /// Navigates to a housing zone by zone ID and explicit coordinates, selecting the specified ward.
+        /// </summary>
+        /// <param name="zoneId">The housing zone ID.</param>
+        /// <param name="x">Target X coordinate.</param>
+        /// <param name="y">Target Y coordinate.</param>
+        /// <param name="z">Target Z coordinate.</param>
+        /// <param name="ward">The 1-based ward number.</param>
+        /// <returns><see langword="true"/> on success; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToResidential(ushort zoneId, double x, double y, double z, int ward)
         {
             var district = GetResidentialDistrictByZone(zoneId);
@@ -256,6 +344,13 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await GetToResidential(district, new Vector3((float)x, (float)y, (float)z), ward);
         }
 
+        /// <summary>
+        /// Travels to the given world and then navigates to a location inside a housing zone.
+        /// </summary>
+        /// <param name="world">The target world server.</param>
+        /// <param name="location">The in-game location inside the housing zone.</param>
+        /// <param name="ward">The 1-based ward number to navigate to.</param>
+        /// <returns><see langword="true"/> on success; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToResidential(World world, Location location, int ward)
         {
             return await GetToResidential(world, location.ZoneId, location.Coordinates, ward);
@@ -266,6 +361,16 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await GetToResidential(world, zoneId, locationCoordinates.X, locationCoordinates.Y, locationCoordinates.Z, ward);
         }
 
+        /// <summary>
+        /// Travels to the given world and navigates to an explicit location within a housing zone.
+        /// </summary>
+        /// <param name="world">The target world server.</param>
+        /// <param name="zoneId">The housing zone ID.</param>
+        /// <param name="x">Target X coordinate.</param>
+        /// <param name="y">Target Y coordinate.</param>
+        /// <param name="z">Target Z coordinate.</param>
+        /// <param name="ward">The 1-based ward number.</param>
+        /// <returns><see langword="true"/> on success; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToResidential(World world, ushort zoneId, double x, double y, double z, int ward)
         {
             if (!await WorldTravel.WorldTravel.GoToWorld(world))
@@ -283,6 +388,14 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await GetToResidential(district, new Vector3((float)x, (float)y, (float)z), ward);
         }
 
+        /// <summary>
+        /// Navigates to a specific <see cref="Vector3"/> location within a housing zone enum,
+        /// selecting the given ward.
+        /// </summary>
+        /// <param name="zone">The primary <see cref="HousingZone"/> enum value.</param>
+        /// <param name="location">The 3-D destination coordinates within the zone.</param>
+        /// <param name="ward">The 1-based ward number.</param>
+        /// <returns><see langword="true"/> on success; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToResidential(HousingZone zone, Vector3 location, int ward)
         {
             var district = GetResidentialDistrictByZone((ushort)zone);
@@ -295,6 +408,14 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await GetToResidential(district, location, ward, 1f);
         }
 
+        /// <summary>
+        /// Selects the specified ward within a district and then navigates to the destination.
+        /// </summary>
+        /// <param name="district">The <see cref="ResidentialDistrict"/> singleton to use.</param>
+        /// <param name="location">The 3-D destination coordinates.</param>
+        /// <param name="ward">The 1-based ward number (1–30).</param>
+        /// <param name="distance">Stop distance from the destination in yalms (default 2.5).</param>
+        /// <returns><see langword="true"/> on success; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToResidential(ResidentialDistrict district, Vector3 location, int ward, float distance = 2.5f)
         {
             if (!await district.SelectWard(ward))
@@ -307,6 +428,17 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await district.TravelWithinZone(location, distance);
         }
 
+        /// <summary>
+        /// Navigates to a destination inside a housing zone by raw zone ID.
+        /// </summary>
+        /// <param name="zone">The zone ID of the residential district.</param>
+        /// <param name="location">The 3-D destination coordinates.</param>
+        /// <param name="ward">
+        /// The 1-based ward number; when 1, the ward is determined automatically via
+        /// <see cref="GetWardWithTeleport"/>.
+        /// </param>
+        /// <param name="distance">Stop distance in yalms (default 2.5).</param>
+        /// <returns><see langword="true"/> on success; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToResidential(ushort zone, Vector3 location, int ward = 1, float distance = 2.5f)
         {
             if (!HousingZones.Select(i => i.ZoneId).Contains(zone))
@@ -322,6 +454,14 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await GetToResidential(HousingZones.First(i => i.ZoneId == zone), location, ward, distance);
         }
 
+        /// <summary>
+        /// Travels to the given world and then navigates to a housing zone and ward.
+        /// </summary>
+        /// <param name="world">The target world server.</param>
+        /// <param name="zone">The target <see cref="HousingZone"/>.</param>
+        /// <param name="entranceLocation">The 3-D location to navigate to within the zone.</param>
+        /// <param name="ward">The 1-based ward number.</param>
+        /// <returns><see langword="true"/> on success; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToResidential(World world, HousingZone zone, Vector3 entranceLocation, int ward)
         {
             if (!await WorldTravel.WorldTravel.GoToWorld(world))
@@ -332,6 +472,14 @@ namespace LlamaLibrary.Helpers.HousingTravel
             return await GetToResidential(zone, entranceLocation, ward);
         }
 
+        /// <summary>
+        /// Returns the <see cref="ResidentialDistrict"/> singleton that corresponds to a given zone ID.
+        /// </summary>
+        /// <param name="zoneId">The zone ID to look up (should be one of the five primary district zone IDs).</param>
+        /// <returns>
+        /// The matching <see cref="ResidentialDistrict"/> singleton, or <see langword="null"/> when
+        /// the zone ID does not correspond to any known residential district.
+        /// </returns>
         public static ResidentialDistrict? GetResidentialDistrictByZone(ushort zoneId)
         {
             return (HousingZone)zoneId switch
@@ -345,6 +493,19 @@ namespace LlamaLibrary.Helpers.HousingTravel
             };
         }
 
+        /// <summary>
+        /// Determines the best ward to target for a given housing location by attempting to teleport
+        /// via a known registered house (private estate, apartment, FC estate, or shared estate).
+        /// </summary>
+        /// <param name="targetLocation">The <see cref="Location"/> of the target housing zone.</param>
+        /// <returns>
+        /// The 1-based ward number the player landed in after teleporting, or <c>1</c> when no
+        /// house teleport is available or the player is not on the home world.
+        /// </returns>
+        /// <remarks>
+        /// This method only attempts house teleports when the player is on their home world.
+        /// If already inside the correct housing area, the current ward is returned directly.
+        /// </remarks>
         public static async Task<int> GetWardWithTeleport(Location targetLocation)
         {
             if (!WorldHelper.IsOnHomeWorld)

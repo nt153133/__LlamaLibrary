@@ -9,11 +9,24 @@ using ff14bot.Interfaces;
 
 namespace LlamaLibrary.Helpers;
 
+/// <summary>
+/// Manages custom buttons injected into the RebornBuddy main WPF window UI.
+/// Allows plugins and botbases to add, remove, and update labeled action buttons
+/// in a shared vertical panel next to the bot selector dropdown.
+/// </summary>
 public static class RbButtonHelper
 {
+    /// <summary>All currently registered buttons, keyed by their unique name identifier.</summary>
     public static readonly ConcurrentDictionary<string, Button> Buttons = new ConcurrentDictionary<string, Button>(StringComparer.Ordinal);
     private static StackPanel? _stackPanel;
 
+    /// <summary>
+    /// Adds a new button to the RebornBuddy UI with the specified name, label, and click handler.
+    /// Creates the container panel on first use. Does nothing if a button with the same name already exists.
+    /// </summary>
+    /// <param name="name">Unique key identifying this button.</param>
+    /// <param name="content">Visible label text on the button.</param>
+    /// <param name="handler">Action to invoke when the button is clicked.</param>
     public static void AddButton(string name, string content, Action handler)
     {
         MainWpf.current.Dispatcher.Invoke(() =>
@@ -46,6 +59,9 @@ public static class RbButtonHelper
         });
     }
 
+    /// <summary>Updates the label text of an existing button.</summary>
+    /// <param name="buttonName">The unique name of the button to update.</param>
+    /// <param name="content">New label text to display.</param>
     public static void ChangeButtonText(string buttonName, string content)
     {
         if (!Buttons.ContainsKey(buttonName))
@@ -56,6 +72,11 @@ public static class RbButtonHelper
         MainWpf.current.Dispatcher.Invoke(() => { Buttons[buttonName].Content = content; });
     }
 
+    /// <summary>Updates the label text, background color, and foreground color of an existing button.</summary>
+    /// <param name="buttonName">The unique name of the button to update.</param>
+    /// <param name="content">New label text.</param>
+    /// <param name="backgroundColor">New background color for the button.</param>
+    /// <param name="foregroundColor">New foreground (text) color for the button.</param>
     public static void ChangeButtonText(string buttonName, string content, Color backgroundColor, Color foregroundColor)
     {
         if (!Buttons.ContainsKey(buttonName))
@@ -71,26 +92,36 @@ public static class RbButtonHelper
         });
     }
 
+    /// <summary>Adds a button for an <see cref="IBotPlugin"/>, using its name as both key and label.</summary>
+    /// <param name="plugin">The plugin to register a button for.</param>
     public static void AddButton(IBotPlugin plugin)
     {
         AddButton($"Btn{plugin.Name.Replace(" ", "")}", plugin.Name, plugin.OnButtonPress);
     }
 
+    /// <summary>Adds a button for a <see cref="BotBase"/>, using its name as both key and label.</summary>
+    /// <param name="botBase">The botbase to register a button for.</param>
     public static void AddButton(BotBase botBase)
     {
         AddButton($"Btn{botBase.Name.Replace(" ", "")}", botBase.Name, botBase.OnButtonPress);
     }
 
+    /// <summary>Removes the button registered for the given <see cref="IBotPlugin"/>.</summary>
+    /// <param name="plugin">The plugin whose button should be removed.</param>
     public static void RemoveButton(IBotPlugin plugin)
     {
         RemoveButton($"Btn{plugin.Name.Replace(" ", "")}");
     }
 
+    /// <summary>Removes the button registered for the given <see cref="BotBase"/>.</summary>
+    /// <param name="botBase">The botbase whose button should be removed.</param>
     public static void RemoveButton(BotBase botBase)
     {
         RemoveButton($"Btn{botBase.Name.Replace(" ", "")}");
     }
 
+    /// <summary>Removes the button with the specified unique name from the UI panel.</summary>
+    /// <param name="name">The unique key of the button to remove.</param>
     public static void RemoveButton(string name)
     {
         if (!Buttons.ContainsKey(name))

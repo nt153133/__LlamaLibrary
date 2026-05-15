@@ -10,6 +10,14 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Helpers.HousingTravel.Districts
 {
+    /// <summary>
+    /// Concrete <see cref="ResidentialDistrict"/> for Empyreum, the Ishgard housing district
+    /// introduced in Endwalker (patch 6.1).
+    /// </summary>
+    /// <remarks>
+    /// Empyreum uses off-mesh navigation.  Access without the required quest uses the gatekeep
+    /// NPC "Thomelin" in Coerthas Western Highlands; with the quest the Ishgard aetheryte is used.
+    /// </remarks>
     public class Empyreum : ResidentialDistrict<Empyreum>
     {
         public override string Name => "Empyreum";
@@ -48,6 +56,14 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
         private readonly Npc _gateKeeperNpc = new(1031682, 418, new Vector3(152.9716f, -20f, 63.76746f)); //Thomelin (Gatekeep)
 
+        /// <summary>
+        /// Navigates to the Empyreum gatekeep NPC in Coerthas Western Highlands and walks through
+        /// the district entrance for players who have not yet completed the unlock quest.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the loading screen after entering Empyreum completes;
+        /// otherwise <see langword="false"/>.
+        /// </returns>
         public override async Task<bool> WalkToResidential()
         {
             if (!await Navigation.GetToNpc(_gateKeeperNpc))

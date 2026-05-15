@@ -21,23 +21,48 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides helpers for reading the Grand Company seal exchange shop and purchasing items from it.
+    /// Uses direct memory reads of the active shop pointer for live shop data.
+    /// </summary>
     public static class GrandCompanyShop
     {
         private static readonly LLogger Log = new(nameof(GrandCompanyShop), Colors.SeaGreen);
 
         
 
+        /// <summary>
+        /// Gets the pointer to the currently open Grand Company exchange shop structure in game memory.
+        /// </summary>
         public static IntPtr ActiveShopPtr => Core.Memory.Read<IntPtr>(GrandCompanyShopOffsets.GCShopPtr);
 
+        /// <summary>
+        /// Gets the pointer to the first element of the shop item array within the active shop structure.
+        /// </summary>
         public static IntPtr ListStart => ActiveShopPtr + GrandCompanyShopOffsets.GCArrayStart;
 
+        /// <summary>
+        /// Gets all non-empty items currently visible in the open Grand Company exchange shop.
+        /// </summary>
         public static List<GCShopItem> Items => Core.Memory.ReadArray<GCShopItem>(ActiveShopPtr + GrandCompanyShopOffsets.GCArrayStart, GrandCompanyShopOffsets.GCShopCount).Where(i => i.ItemID != 0).ToList();
 
+        /// <summary>
+        /// Returns the maximum quantity of the given shop item the player can afford with their current GC seal balance.
+        /// </summary>
+        /// <param name="item">The shop item to evaluate.</param>
+        /// <returns>Maximum purchasable quantity (may be 0 if the player cannot afford even one).</returns>
         public static int CanAfford(GCShopItem item)
         {
             return (int)Math.Floor((double)(Core.Me.GCSeals() / item.Cost));
         }
 
+        /// <summary>
+        /// Opens the Grand Company seal shop (if necessary), buys up to <paramref name="qty"/> of the specified item,
+        /// then closes the shop.
+        /// </summary>
+        /// <param name="ItemId">The item ID to purchase.</param>
+        /// <param name="qty">Desired quantity; actual quantity purchased is capped by the player's seal balance.</param>
+        /// <returns>The actual quantity purchased, or 0 on failure.</returns>
         public static async Task<int> BuyItem(uint ItemId, int qty)
         {
             if (!await OpenShop())
@@ -89,6 +114,13 @@ namespace LlamaLibrary.Helpers
             return qtyCanBuy;
         }
 
+        /// <summary>
+        /// Purchases each item in <paramref name="items"/> from the Grand Company seal shop,
+        /// automatically switching rank group and category as needed.
+        /// Uses <see cref="ResourceManager.GCShopItems"/> to look up the correct shop tab for each item.
+        /// </summary>
+        /// <param name="items">A list of (item ID, quantity) tuples to purchase in order.</param>
+        /// <returns><see langword="true"/> if all purchases succeeded; <see langword="false"/> if any failed.</returns>
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing")]
         public static async Task<bool> BuyKnownItems(List<(uint ItemId, int qty)> items)
         {
@@ -174,6 +206,12 @@ namespace LlamaLibrary.Helpers
             */
         }
 
+        /// <summary>
+        /// Purchases the specified item from the Grand Company seal shop using cached rank/category metadata.
+        /// </summary>
+        /// <param name="ItemId">The item ID to purchase.</param>
+        /// <param name="qty">Desired quantity.</param>
+        /// <returns>Actual quantity purchased, or 0 if the item is not found in <see cref="ResourceManager.GCShopItems"/>.</returns>
         public static async Task<int> BuyKnownItem(uint ItemId, int qty)
         {
             var item = ResourceManager.GCShopItems[Core.Me.GrandCompany].FirstOrDefault(i => i.ItemId == ItemId);
@@ -188,6 +226,15 @@ namespace LlamaLibrary.Helpers
             return await BuyItem(ItemId, qty, item.GCRankGroup, item.Category);
         }
 
+        /// <summary>
+        /// Opens the GC seal shop, switches to the specified rank group and category, then purchases
+        /// up to <paramref name="qty"/> of the given item.
+        /// </summary>
+        /// <param name="ItemId">The item ID to purchase.</param>
+        /// <param name="qty">Desired quantity.</param>
+        /// <param name="GCRankGroup">Rank group tab index in the shop UI.</param>
+        /// <param name="Category">Item category tab in the shop UI.</param>
+        /// <returns>Actual quantity purchased, or 0 on failure.</returns>
         public static async Task<int> BuyItem(uint ItemId, int qty, int GCRankGroup, GCShopCategory Category)
         {
             if (!await OpenShop())
@@ -214,6 +261,10 @@ namespace LlamaLibrary.Helpers
             return await BuyItem(ItemId, qty);
         }
 
+        /// <summary>
+        /// Ensures the Grand Company exchange window is open, navigating to the Quartermaster NPC if needed.
+        /// </summary>
+        /// <returns><see langword="true"/> if the shop is open; <see langword="false"/> otherwise.</returns>
         public static async Task<bool> OpenShop()
         {
             if (!GrandCompanyExchange.Instance.IsOpen)
@@ -237,6 +288,10 @@ namespace LlamaLibrary.Helpers
             return GrandCompanyExchange.Instance.IsOpen;
         }
 
+        /// <summary>
+        /// Closes the Grand Company exchange window and clears the current target.
+        /// </summary>
+        /// <returns><see langword="true"/> if the shop closed successfully; <see langword="false"/> otherwise.</returns>
         public static async Task<bool> CloseShop()
         {
             GrandCompanyExchange.Instance.Close();
@@ -251,17 +306,30 @@ namespace LlamaLibrary.Helpers
             return !GrandCompanyExchange.Instance.IsOpen;
         }
 
+        /// <summary>
+        /// Checks whether the given item ID is available for purchase at any Grand Company seal shop,
+        /// using <see cref="ResourceManager.GCShopItems"/> as the source of truth.
+        /// </summary>
+        /// <param name="itemId">The item ID to check.</param>
+        /// <returns><see langword="true"/> if the item is sold at a GC shop; <see langword="false"/> otherwise.</returns>
         public static bool IsBuyableItem(uint itemId)
         {
             return ResourceManager.GCShopItems.SelectMany(i => i.Value.Select(j => j.ItemId)).Contains(itemId);
         }
     }
 
+    /// <summary>
+    /// Represents the item category tabs available in the Grand Company seal exchange shop.
+    /// </summary>
     public enum GCShopCategory
     {
+        /// <summary>Materiel tab (crafting/gathering materials purchasable with GC seals).</summary>
         Materiel = 1,
+        /// <summary>Weapons tab.</summary>
         Weapons = 2,
+        /// <summary>Armor tab.</summary>
         Armor = 3,
+        /// <summary>Materials tab (raw materials).</summary>
         Materials = 4
     }
 }

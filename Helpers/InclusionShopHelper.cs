@@ -12,10 +12,27 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides high-level purchasing helpers for the Allagan Tomestone / Scripture scrip exchange shops
+    /// (InclusionShop). Handles navigating to the NPC, selecting the correct category and sub-category,
+    /// and completing the purchase exchange dialogue.
+    /// </summary>
     public static class InclusionShopHelper
     {
         private static readonly LLogger Log = new(nameof(InclusionShopHelper), Colors.Moccasin);
 
+        /// <summary>
+        /// Purchases <paramref name="qty"/> of item <paramref name="itemId"/> from the currently open
+        /// <see cref="InclusionShop"/> window. Navigates to the correct shop category and sub-category
+        /// before purchasing. If <paramref name="qty"/> is 0, buys as many as the player can afford.
+        /// Returns the actual number of items added to the inventory, or 0 on failure.
+        /// </summary>
+        /// <param name="itemId">The item to purchase (raw item ID).</param>
+        /// <param name="qty">
+        /// Desired quantity. Pass 0 to buy the maximum affordable quantity.
+        /// Clamped to the affordable amount when non-zero.
+        /// </param>
+        /// <returns>Number of items actually acquired, or 0 on failure.</returns>
         public static async Task<int> BuyItem(uint itemId, int qty)
         {
             if (!InclusionShop.Instance.IsOpen)
@@ -124,6 +141,17 @@ namespace LlamaLibrary.Helpers
                           currentAmt);
         }
 
+        /// <summary>
+        /// Locates an NPC that sells <paramref name="itemId"/> via the Inclusion Shop, teleports to them
+        /// (preferring the cheapest aetheryte if not already in the same zone), interacts to open the shop,
+        /// then delegates to <see cref="BuyItem"/> to complete the purchase.
+        /// Uses <see cref="InclusionShopConstants.KnownItems"/> to find valid shop keys and
+        /// <see cref="InclusionShopConstants.ShopNpcs"/> to find NPC locations.
+        /// Skips NPCs whose required quest is not completed.
+        /// </summary>
+        /// <param name="itemId">The item to purchase (raw item ID).</param>
+        /// <param name="qty">Desired quantity (0 = buy as many as affordable).</param>
+        /// <returns>Number of items actually acquired, or 0 on failure.</returns>
         public static async Task<int> BuyItemGoToNpc(uint itemId, int qty)
         {
             var shopIds = InclusionShopConstants.KnownItems.Where(i => i.Value.Contains(itemId)).Select(i => i.Key).ToList();

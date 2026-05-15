@@ -8,6 +8,13 @@ using LlamaLibrary.Helpers.Housing;
 
 namespace LlamaLibrary.Helpers.HousingTravel.Districts
 {
+    /// <summary>
+    /// Concrete <see cref="ResidentialDistrict"/> for Mist, the Limsa Lominsa housing district.
+    /// </summary>
+    /// <remarks>
+    /// Without the required quest, access is via the zone-change trigger in Lower La Noscea.
+    /// With the quest, the Limsa Lominsa Lower Decks aetheryte (ID 8) is used.
+    /// </remarks>
     public class Mist : ResidentialDistrict<Mist>
     {
         public override string Name => "Mist";
@@ -44,6 +51,13 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public override List<Vector3> TransitionStartLocations => _transitionStartLocations;
         public override List<Vector3> TransitionEndLocations => _transitionEndLocations;
 
+        /// <summary>
+        /// Navigates through the zone-change trigger in Lower La Noscea to enter Mist
+        /// for players without aetheryte access.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the ward-selection window opens; otherwise <see langword="false"/>.
+        /// </returns>
         public override async Task<bool> WalkToResidential()
         {
             await Navigation.GetTo(135, new Vector3(597.4801f, 61.59979f, -110.7737f));

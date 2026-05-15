@@ -8,6 +8,11 @@ using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides a helper for restarting the RebornBuddy process while keeping the FFXIV client running.
+    /// Writes a batch script to the user's AppData folder that waits for RebornBuddy to close,
+    /// then re-launches it attached to the same FFXIV process.
+    /// </summary>
     public static class RestartRbHelper
     {
         private static readonly string TempFolderLocation = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -35,6 +40,10 @@ exit";
 
         private static readonly LLogger Log = new("RestartRbHelper", Colors.MediumPurple);
 
+        /// <summary>
+        /// Writes the restart batch script and launches it, then sends a close request to the current RebornBuddy process.
+        /// The batch script waits for RB to exit, then re-launches it attached to the same FFXIV PID.
+        /// </summary>
         public static void RestartRebornbuddy()
         {
             try

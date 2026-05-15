@@ -22,14 +22,23 @@ using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides helpers for interacting with the Free Company chest (deposit, withdrawal, crystal management, and gil transfers).
+    /// Handles navigation to the nearest Company Chest NPC, permission checks, bag-slot moves, and window management.
+    /// </summary>
     public static class CompanyChestHelper
     {
+        /// <summary>NPC IDs for the housing-ward Company Chest objects (instanced and standard).</summary>
         public static readonly uint[] HousingCompanyChest = { 196627, 2000470 };
 
         private static readonly LLogger Log = new(nameof(CompanyChestHelper), Colors.BurlyWood);
 
+        /// <summary>Item IDs for all 18 crystal types (shards, crystals, and clusters, elements 0–17).</summary>
         public static readonly uint[] CrystalIds = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
 
+        /// <summary>
+        /// Maps each crystal item ID to its fixed bag-slot index in the <see cref="InventoryBagId.GrandCompany_Crystals"/> bag.
+        /// </summary>
         public static readonly IReadOnlyDictionary<uint, ushort> CrystalSlots = new Dictionary<uint, ushort>
         {
             { 2, 0 }, //Slot 0  Fire Shard
@@ -52,6 +61,7 @@ namespace LlamaLibrary.Helpers
             { 19, 17 }, //Slot 17  Water Cluster
         };
 
+        /// <summary>Maps chest tab index (0–4) to the corresponding <see cref="InventoryBagId"/> for that tab.</summary>
         public static readonly IReadOnlyDictionary<int, InventoryBagId> ChestTabBags = new Dictionary<int, InventoryBagId>
         {
             { 0, InventoryBagId.GrandCompany_Page1 },
@@ -61,6 +71,7 @@ namespace LlamaLibrary.Helpers
             { 4, InventoryBagId.GrandCompany_Page5 },
         };
 
+        /// <summary>Known city-state and residential district Company Chest NPC locations used when not in a housing zone.</summary>
         public static readonly IReadOnlyList<Npc> ChestLocations = new List<Npc>
         {
             new Npc(2000470, 132, new Vector3(-78.44666f, 0.5645142f, -0.04577637f)), //Company Chest New Gridania - Adders' Nest
@@ -73,6 +84,10 @@ namespace LlamaLibrary.Helpers
             new Npc(2000470, 628, new Vector3(54.67297f, 5.203247f, 55.28345f)), //Company Chest Kugane - Kogane Dori
         };
 
+        /// <summary>
+        /// Returns the nearest usable Company Chest NPC. Prefers a housing-ward chest when one is
+        /// visible nearby; otherwise returns the closest city-state chest from <see cref="ChestLocations"/>.
+        /// </summary>
         public static Npc? ClosestCompanyChest
         {
             get
@@ -87,24 +102,41 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary><c>true</c> when the player has permission to deposit gil into the FC chest.</summary>
         public static bool CanDepositGil => FreeCompanyChest.Instance.GilPermission is CompanyChestPermission.DepositOnly or CompanyChestPermission.FullAccess;
+        /// <summary><c>true</c> when the player has full-access permission to withdraw gil from the FC chest.</summary>
         public static bool CanWithdrawGil => FreeCompanyChest.Instance.GilPermission is CompanyChestPermission.FullAccess;
 
+        /// <summary><c>true</c> when the player has permission to deposit crystals into the FC chest.</summary>
         public static bool CanDepositCrystals => FreeCompanyChest.Instance.CrystalsPermission is CompanyChestPermission.DepositOnly or CompanyChestPermission.FullAccess;
+        /// <summary><c>true</c> when the player has full-access permission to withdraw crystals from the FC chest.</summary>
         public static bool CanWithdrawCrystals => FreeCompanyChest.Instance.CrystalsPermission is CompanyChestPermission.FullAccess;
 
+        /// <summary>Tab indexes for which the player has at least deposit permission.</summary>
         public static IEnumerable<int> DepositBagIndexes => FreeCompanyChest.Instance.ItemTabPermissions.Where(i => i.Value is CompanyChestPermission.DepositOnly or CompanyChestPermission.FullAccess).Select(i => i.Key);
 
+        /// <summary>Bag IDs corresponding to <see cref="DepositBagIndexes"/>.</summary>
         public static IEnumerable<InventoryBagId> DepositBagIds => DepositBagIndexes.Select(i => ChestTabBags[i]);
 
+        /// <summary>Tab indexes for which the player has full withdraw permission.</summary>
         public static IEnumerable<int> WithdrawBagIndexes => FreeCompanyChest.Instance.ItemTabPermissions.Where(i => i.Value is CompanyChestPermission.FullAccess).Select(i => i.Key);
 
+        /// <summary>Bag IDs corresponding to <see cref="WithdrawBagIndexes"/>.</summary>
         public static IEnumerable<InventoryBagId> WithdrawBagIds => WithdrawBagIndexes.Select(i => ChestTabBags[i]);
 
+        /// <summary>Tab indexes for tabs the player can access (any permission except NoAccess).</summary>
         public static IEnumerable<int> AllBagIndexes => FreeCompanyChest.Instance.ItemTabPermissions.Where(i => i.Value is not CompanyChestPermission.NoAccess).Select(i => i.Key);
 
+        /// <summary>Bag IDs corresponding to <see cref="AllBagIndexes"/>.</summary>
         public static IEnumerable<InventoryBagId> AllBagIds => AllBagIndexes.Select(i => ChestTabBags[i]);
 
+        /// <summary>
+        /// Deposits up to <paramref name="amount"/> of crystal <paramref name="crystalId"/> into the FC crystal tab.
+        /// Skips if the crystal tab is already at the stack cap. Returns the actual quantity deposited.
+        /// </summary>
+        /// <param name="crystalId">Item ID of the crystal (must be in <see cref="CrystalIds"/>).</param>
+        /// <param name="amount">Maximum quantity to deposit.</param>
+        /// <returns>The number of crystals actually deposited, or 0 on failure/no permission.</returns>
         public static async Task<uint> DepositCrystals(uint crystalId, uint amount)
         {
             if (!await MakeSureChestIsOpen(false, true))
@@ -165,6 +197,13 @@ namespace LlamaLibrary.Helpers
             return amt;
         }
 
+        /// <summary>
+        /// Withdraws up to <paramref name="amount"/> of crystal <paramref name="crystalId"/> from the FC crystal tab.
+        /// Skips if the player's crystal bag is already at the stack cap. Returns the actual quantity withdrawn.
+        /// </summary>
+        /// <param name="crystalId">Item ID of the crystal (must be in <see cref="CrystalIds"/>).</param>
+        /// <param name="amount">Maximum quantity to withdraw.</param>
+        /// <returns>The number of crystals actually withdrawn, or 0 on failure/no permission.</returns>
         public static async Task<uint> WithdrawCrystals(uint crystalId, uint amount)
         {
             if (!await MakeSureChestIsOpen(false, true))
@@ -229,6 +268,8 @@ namespace LlamaLibrary.Helpers
             return amt;
         }
 
+        /// <summary>Deposits all inventory slots whose <see cref="BagSlot.TrueItemId"/> matches one of <paramref name="itemIds"/>.</summary>
+        /// <returns><c>true</c> on success or when no matching slots exist.</returns>
         public static async Task<bool> DepositItems(IEnumerable<uint> itemIds)
         {
             var slots = InventoryManager.FilledSlots.Where(i => itemIds.Contains(i.TrueItemId));
@@ -241,6 +282,12 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Deposits all matching slots into the specified FC chest <paramref name="bagId"/>.
+        /// </summary>
+        /// <param name="itemIds">Item IDs to deposit.</param>
+        /// <param name="bagId">Target FC chest bag.</param>
+        /// <returns><c>true</c> on success or when no matching slots exist.</returns>
         public static async Task<bool> DepositItems(IEnumerable<uint> itemIds, InventoryBagId bagId)
         {
             var slots = InventoryManager.FilledSlots.Where(i => itemIds.Contains(i.TrueItemId));
@@ -253,6 +300,8 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>Deposits each bag slot in <paramref name="bagSlots"/> and closes the chest when done.</summary>
+        /// <returns><c>true</c> on success.</returns>
         public static async Task<bool> DepositItems(IEnumerable<BagSlot> bagSlots)
         {
             foreach (var slot in bagSlots)
@@ -266,6 +315,8 @@ namespace LlamaLibrary.Helpers
             return await CloseChest();
         }
 
+        /// <summary>Deposits each bag slot in <paramref name="bagSlots"/> into <paramref name="bagId"/> and closes the chest when done.</summary>
+        /// <returns><c>true</c> on success.</returns>
         public static async Task<bool> DepositItems(IEnumerable<BagSlot> bagSlots, InventoryBagId bagId)
         {
             foreach (var slot in bagSlots)
@@ -279,6 +330,13 @@ namespace LlamaLibrary.Helpers
             return await CloseChest();
         }
 
+        /// <summary>
+        /// Withdraws matching items from any accessible FC bag. Finds slots in <see cref="WithdrawBagIds"/>
+        /// and delegates to the bag-slot overload.
+        /// </summary>
+        /// <param name="itemIds">Item IDs to withdraw.</param>
+        /// <param name="amount">Maximum stack quantity per slot to transfer.</param>
+        /// <returns><c>true</c> on success or when no matching slots exist.</returns>
         public static async Task<bool> WithdrawItems(IEnumerable<uint> itemIds, uint amount = 1)
         {
             if (!await MakeSureChestIsOpen())
@@ -296,6 +354,14 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Withdraws matching items from a specific FC chest <paramref name="bagId"/>.
+        /// Prefers stacking into existing slots before pulling from multiple slots.
+        /// </summary>
+        /// <param name="itemIds">Item IDs to withdraw.</param>
+        /// <param name="bagId">The specific FC chest bag to withdraw from.</param>
+        /// <param name="amount">Maximum total quantity to transfer.</param>
+        /// <returns><c>true</c> on success or when no matching slots exist.</returns>
         public static async Task<bool> WithdrawItems(IEnumerable<uint> itemIds, InventoryBagId bagId, uint amount = 1)
         {
             if (!await MakeSureChestIsOpen(bagId))
@@ -330,6 +396,10 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>Withdraws each bag slot in <paramref name="bagSlots"/> from the chest and closes it when done.</summary>
+        /// <param name="bagSlots">FC chest bag slots to withdraw.</param>
+        /// <param name="amount">Maximum stack quantity per slot to transfer.</param>
+        /// <returns><c>true</c> on success.</returns>
         public static async Task<bool> WithdrawItems(IEnumerable<BagSlot> bagSlots, uint amount = 1)
         {
             if (!await MakeSureChestIsOpen())
@@ -348,6 +418,13 @@ namespace LlamaLibrary.Helpers
             return await CloseChest();
         }
 
+        /// <summary>
+        /// Deposits a single inventory <paramref name="bagSlot"/> into the first available FC chest tab.
+        /// Optionally closes the chest after the transfer.
+        /// </summary>
+        /// <param name="bagSlot">The player inventory slot to deposit.</param>
+        /// <param name="closeWindow">When <c>true</c>, closes the chest window after depositing.</param>
+        /// <returns><c>true</c> when the slot is no longer filled after the transfer.</returns>
         public static async Task<bool> DepositItem(BagSlot bagSlot, bool closeWindow = true)
         {
             if (!await MakeSureChestIsOpen())
@@ -383,6 +460,13 @@ namespace LlamaLibrary.Helpers
             return result && !(bagSlot.IsValid && bagSlot.IsFilled);
         }
 
+        /// <summary>
+        /// Deposits a single inventory <paramref name="bagSlot"/> into the specific FC chest <paramref name="bagId"/>.
+        /// </summary>
+        /// <param name="bagSlot">The player inventory slot to deposit.</param>
+        /// <param name="bagId">Target FC chest bag.</param>
+        /// <param name="closeWindow">When <c>true</c>, closes the chest window after depositing.</param>
+        /// <returns><c>true</c> when the slot is no longer filled after the transfer.</returns>
         public static async Task<bool> DepositItem(BagSlot bagSlot, InventoryBagId bagId, bool closeWindow = true)
         {
             if (!await MakeSureChestIsOpen(bagId))
@@ -418,6 +502,15 @@ namespace LlamaLibrary.Helpers
             return result && !(bagSlot.IsValid && bagSlot.IsFilled);
         }
 
+        /// <summary>
+        /// Withdraws <paramref name="amount"/> of the item in FC chest slot <paramref name="bagSlot"/> to the player's bags.
+        /// For stacks larger than 1 the InputNumeric dialogue is used.
+        /// Optionally closes the chest after the transfer.
+        /// </summary>
+        /// <param name="bagSlot">The FC chest bag slot to withdraw from.</param>
+        /// <param name="amount">Quantity to withdraw.</param>
+        /// <param name="closeWindow">When <c>true</c>, closes the chest window after withdrawing.</param>
+        /// <returns><c>true</c> on success.</returns>
         public static async Task<bool> WithdrawItem(BagSlot bagSlot, uint amount = 1, bool closeWindow = true)
         {
             if (!await MakeSureChestIsOpen())
@@ -458,6 +551,12 @@ namespace LlamaLibrary.Helpers
             return result && !(bagSlot.IsValid && bagSlot.IsFilled);
         }
 
+        /// <summary>
+        /// Deposits <paramref name="amount"/> gil into the FC chest.
+        /// Switches the gil bank window to Deposit mode if needed, waits for the balance to update, then closes the chest.
+        /// </summary>
+        /// <param name="amount">Gil amount to deposit.</param>
+        /// <returns><c>true</c> on success.</returns>
         public static async Task<bool> DepositGil(uint amount)
         {
             if (!await MakeSureChestIsOpen(true))
@@ -507,6 +606,12 @@ namespace LlamaLibrary.Helpers
             return await CloseChest();
         }
 
+        /// <summary>
+        /// Withdraws <paramref name="amount"/> gil from the FC chest.
+        /// Switches the gil bank window to Withdrawal mode if needed, waits for the balance to update, then closes the chest.
+        /// </summary>
+        /// <param name="amount">Gil amount to withdraw.</param>
+        /// <returns><c>true</c> on success.</returns>
         public static async Task<bool> WithdrawGil(uint amount)
         {
             if (!await MakeSureChestIsOpen(true))
@@ -556,6 +661,14 @@ namespace LlamaLibrary.Helpers
             return await CloseChest();
         }
 
+        /// <summary>
+        /// Finds the best destination slot for a move of <paramref name="bagSlot"/>.
+        /// For deposits, prefers an existing partial stack; falls back to the next free FC chest slot.
+        /// For withdrawals, prefers a stackable slot in the player's bags; falls back to the next free inventory slot.
+        /// </summary>
+        /// <param name="bagSlot">The source slot whose item is being moved.</param>
+        /// <param name="transactionType">Indicates deposit or withdrawal direction.</param>
+        /// <returns>The target <see cref="BagSlot"/>, or <c>null</c> when no space is available.</returns>
         public static BagSlot? GetNextOrStackSlot(BagSlot bagSlot, TransactionType transactionType)
         {
             IEqualityComparer<BagSlot> eqx;
@@ -588,6 +701,14 @@ namespace LlamaLibrary.Helpers
             return bagList.OrderBy(i => (int)i).NextFreeBagSlot();
         }
 
+        /// <summary>
+        /// Overload of <see cref="GetNextOrStackSlot(BagSlot,TransactionType)"/> that constrains deposit
+        /// operations to a specific <paramref name="bagId"/> rather than scanning all deposit-permitted tabs.
+        /// </summary>
+        /// <param name="bagSlot">The source slot.</param>
+        /// <param name="bagId">The target FC chest bag for deposits.</param>
+        /// <param name="transactionType">Indicates deposit or withdrawal direction.</param>
+        /// <returns>The target <see cref="BagSlot"/>, or <c>null</c> when no space is available or the bag is invalid.</returns>
         public static BagSlot? GetNextOrStackSlot(BagSlot bagSlot, InventoryBagId bagId, TransactionType transactionType)
         {
             IEnumerable<InventoryBagId>? bagList;
@@ -630,6 +751,15 @@ namespace LlamaLibrary.Helpers
             return bagList.OrderBy(i => (int)i).NextFreeBagSlot();
         }
 
+        /// <summary>
+        /// Moves <paramref name="count"/> items from <paramref name="source"/> to <paramref name="dest"/> via the FC chest
+        /// interface. If the source stack contains more than one item the InputNumeric dialogue is handled automatically.
+        /// When <paramref name="count"/> is 1 and the source is a stack, the full stack is moved.
+        /// </summary>
+        /// <param name="source">Source bag slot (player bags or FC chest).</param>
+        /// <param name="dest">Destination bag slot (FC chest or player bags).</param>
+        /// <param name="count">Number of items to move; defaults to 1 (full stack for stacked items).</param>
+        /// <returns><c>true</c> on success.</returns>
         public static async Task<bool> BagSlotMoveChest(BagSlot source, BagSlot dest, uint count = 1)
         {
             var itemToMove = source.Item;
@@ -663,6 +793,11 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Closes the FC chest window and waits up to 5 seconds for it to close.
+        /// Does nothing if the window is already closed.
+        /// </summary>
+        /// <returns><c>true</c> when the window is confirmed closed.</returns>
         public static async Task<bool> CloseChest()
         {
             if (FreeCompanyChest.Instance.IsOpen)
@@ -675,6 +810,13 @@ namespace LlamaLibrary.Helpers
             return !FreeCompanyChest.Instance.IsOpen;
         }
 
+        /// <summary>
+        /// Ensures the FC chest window is open. Travels to home world if needed, navigates to the
+        /// <see cref="ClosestCompanyChest"/>, and refreshes bags via <see cref="RefreshChestBags"/>.
+        /// </summary>
+        /// <param name="gilOnly">When <c>true</c>, only the gil tab is refreshed.</param>
+        /// <param name="crystalsOnly">When <c>true</c>, only the crystals tab is refreshed.</param>
+        /// <returns><c>true</c> when the chest window is open.</returns>
         public static async Task<bool> MakeSureChestIsOpen(bool gilOnly = false, bool crystalsOnly = false)
         {
             if (FreeCompanyChest.Instance.IsOpen)
@@ -704,6 +846,12 @@ namespace LlamaLibrary.Helpers
             return FreeCompanyChest.Instance.IsOpen;
         }
 
+        /// <summary>
+        /// Overload of <see cref="MakeSureChestIsOpen(bool,bool)"/> that opens the chest and refreshes
+        /// only the specified <paramref name="bagid"/> tab via <see cref="RefreshChestBag"/>.
+        /// </summary>
+        /// <param name="bagid">The FC chest bag tab to load after opening.</param>
+        /// <returns><c>true</c> when the chest window is open.</returns>
         public static async Task<bool> MakeSureChestIsOpen(InventoryBagId bagid)
         {
             if (FreeCompanyChest.Instance.IsOpen)
@@ -733,6 +881,13 @@ namespace LlamaLibrary.Helpers
             return FreeCompanyChest.Instance.IsOpen;
         }
 
+        /// <summary>
+        /// Refreshes the FC chest bag data from the server for all accessible tabs.
+        /// Only refreshes gil/crystals tabs when the player has the appropriate permission.
+        /// Does nothing if the chest is not open.
+        /// </summary>
+        /// <param name="gilOnly">When <c>true</c>, refreshes only the gil tab.</param>
+        /// <param name="crystalsOnly">When <c>true</c>, refreshes only the crystals tab.</param>
         public static async Task RefreshChestBags(bool gilOnly = false, bool crystalsOnly = false)
         {
             if (!FreeCompanyChest.Instance.IsOpen)
@@ -768,6 +923,8 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>Refreshes data for a single <paramref name="bagId"/> tab. Does nothing if the chest is not open.</summary>
+        /// <param name="bagId">The bag tab to reload from the server.</param>
         public static async Task RefreshChestBag(InventoryBagId bagId)
         {
             if (!FreeCompanyChest.Instance.IsOpen)
@@ -805,9 +962,14 @@ namespace LlamaLibrary.Helpers
         }
     }
 
+    /// <summary>
+    /// Specifies the direction of an FC chest transfer operation.
+    /// </summary>
     public enum TransactionType
     {
+        /// <summary>Move items from the player's bags to the FC chest.</summary>
         Deposit,
+        /// <summary>Move items from the FC chest to the player's bags.</summary>
         Withdrawal
     }
 }

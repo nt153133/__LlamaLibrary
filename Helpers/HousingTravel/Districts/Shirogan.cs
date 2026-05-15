@@ -10,6 +10,13 @@ using LlamaLibrary.Helpers.NPC;
 
 namespace LlamaLibrary.Helpers.HousingTravel.Districts
 {
+    /// <summary>
+    /// Concrete <see cref="ResidentialDistrict"/> for Shirogane, the Kugane housing district.
+    /// </summary>
+    /// <remarks>
+    /// Without the required quest, access is via a ferry NPC in Kugane docks.
+    /// With the quest, the Kugane aetheryte (ID 111) is used.
+    /// </remarks>
     public class Shirogan : ResidentialDistrict<Shirogan>
     {
         public override string Name => "Shirogan";
@@ -46,6 +53,12 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
 
         public override List<Npc> TransitionNpcs => _transitionNpcIds;
 
+        /// <summary>
+        /// Takes the Kugane ferry to Shirogane for players without aetheryte access.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the ward-selection window opens; otherwise <see langword="false"/>.
+        /// </returns>
         public override async Task<bool> WalkToResidential()
         {
             await Navigation.GetTo(628, new Vector3(-116.2294f, -7.010099f, -40.55866f));

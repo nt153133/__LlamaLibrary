@@ -6,8 +6,19 @@ using ff14bot.Managers;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Builds FFXIV chat-link byte payloads for items.
+    /// These payloads can be embedded in chat messages (e.g., via ChatBroadcaster) to produce
+    /// clickable item links with the correct rarity colour, glow, icon, and name.
+    /// </summary>
     public static class ItemLinking
     {
+        /// <summary>
+        /// Builds the full chat-link byte payload for the given item, including rarity foreground/glow colours,
+        /// the item payload, the item-link icon character (U+E10B), and the item name.
+        /// </summary>
+        /// <param name="item">The item to create a link for.</param>
+        /// <returns>A byte array representing the complete FFXIV chat-link payload.</returns>
         public static byte[] ChatLink(this Item item)
         {
             var result = new List<byte>();
@@ -26,6 +37,13 @@ namespace LlamaLibrary.Helpers
             return result.ToArray();
         }
 
+        /// <summary>
+        /// Builds a UI foreground colour payload (chunk type 0x48) that sets the text colour
+        /// to the palette entry identified by <paramref name="colorKey"/>.
+        /// Pass 0 to reset the colour to default.
+        /// </summary>
+        /// <param name="colorKey">UI colour palette index.</param>
+        /// <returns>Encoded payload bytes.</returns>
         public static byte[] UIForegroundPayload(ushort colorKey)
         {
             var collection = MakeInteger(colorKey);
@@ -40,6 +58,13 @@ namespace LlamaLibrary.Helpers
             return byteList.ToArray();
         }
 
+        /// <summary>
+        /// Encodes an unsigned integer into the compact FFXIV payload integer format.
+        /// Values below 207 are stored as a single byte (<c>value + 1</c>).
+        /// Larger values use a multi-byte big-endian encoding with a leading flag byte.
+        /// </summary>
+        /// <param name="value">The value to encode.</param>
+        /// <returns>The encoded byte sequence.</returns>
         public static byte[] MakeInteger(uint value)
         {
             if (value < 207U)
@@ -65,6 +90,12 @@ namespace LlamaLibrary.Helpers
             return byteList.ToArray();
         }
 
+        /// <summary>
+        /// Builds an item payload (chunk type 0x27) for the given item, embedding its ID, name,
+        /// and an optional HQ marker (U+E03C sequence) when the item is high quality.
+        /// </summary>
+        /// <param name="slot">The item to encode.</param>
+        /// <returns>Encoded payload bytes.</returns>
         public static byte[] ItemPayload(Item slot)
         {
             var collection = MakeInteger(slot.Id);
@@ -122,6 +153,13 @@ namespace LlamaLibrary.Helpers
             return byteList.ToArray();
         }
 
+        /// <summary>
+        /// Builds a UI glow colour payload (chunk type 0x49) that sets the text glow/outline colour
+        /// to the palette entry identified by <paramref name="colorKey"/>.
+        /// Pass 0 to reset the glow to default.
+        /// </summary>
+        /// <param name="colorKey">UI glow colour palette index.</param>
+        /// <returns>Encoded payload bytes.</returns>
         public static byte[] UIGlowPayload(ushort colorKey)
         {
             var collection = MakeInteger(colorKey);
@@ -136,11 +174,23 @@ namespace LlamaLibrary.Helpers
             return byteList.ToArray();
         }
 
+        /// <summary>
+        /// Encodes <paramref name="text"/> as a raw UTF-8 byte sequence.
+        /// Returns an empty array when <paramref name="text"/> is null or empty.
+        /// </summary>
+        /// <param name="text">The text to encode.</param>
+        /// <returns>UTF-8 bytes, or an empty array.</returns>
         public static byte[] TextPayload(string text)
         {
             return string.IsNullOrEmpty(text) ? Array.Empty<byte>() : Encoding.UTF8.GetBytes(text);
         }
 
+        /// <summary>
+        /// Strips the 3-byte header and 1-byte trailer from a pre-encoded FFXIV payload chunk
+        /// and re-wraps it with the correct length byte, returning the normalised chunk.
+        /// </summary>
+        /// <param name="data">A fully formed FFXIV payload chunk (starts with 0x02, ends with 0x03).</param>
+        /// <returns>The re-wrapped payload bytes.</returns>
         public static byte[] RawPayload(byte[] data)
         {
             var chunkType = data[1];

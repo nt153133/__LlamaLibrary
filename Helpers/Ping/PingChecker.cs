@@ -7,13 +7,30 @@ using ff14bot.Enums;
 
 namespace LlamaLibrary.Helpers.Ping
 {
+    /// <summary>
+    /// Measures and caches the round-trip ping latency to the FFXIV game server.
+    /// The server address is resolved automatically via <see cref="AddressGetter"/>.
+    /// When the active world changes, the ping is refreshed against the new server address.
+    /// </summary>
     public static class PingChecker
     {
         private static readonly AddressGetter _addressGetter = new();
         private static ushort lastWorld;
 
+        /// <summary>
+        /// Gets the most recently measured round-trip latency to the FFXIV game server in milliseconds.
+        /// </summary>
+        /// <value>
+        /// The average ping in milliseconds as of the last call to <see cref="UpdatePing"/>.
+        /// Defaults to <c>100</c> ms when the server address cannot be determined.
+        /// </value>
         public static int CurrentPing { get; private set; }
 
+        /// <summary>
+        /// Returns the current ping, refreshing it first if the active world has changed since
+        /// the last measurement.
+        /// </summary>
+        /// <returns>The current round-trip latency in milliseconds.</returns>
         public static async Task<int> GetCurrentPing()
         {
             if (WorldHelper.CurrentWorldId != lastWorld)
@@ -29,6 +46,11 @@ namespace LlamaLibrary.Helpers.Ping
             lastWorld = 0;
         }
 
+        /// <summary>
+        /// Re-measures the ping to the current FFXIV game server.
+        /// If the server address cannot be resolved, a fallback address is selected from a
+        /// hard-coded data-center map. Sets <see cref="CurrentPing"/> to the measured average.
+        /// </summary>
         public static async Task UpdatePing()
         {
             var ip = _addressGetter.GetAddress();
@@ -75,6 +97,15 @@ namespace LlamaLibrary.Helpers.Ping
             lastWorld = WorldHelper.CurrentWorldId;
         }
 
+        /// <summary>
+        /// Sends <paramref name="echoNum"/> ICMP echo requests to <paramref name="host"/> and
+        /// returns the average round-trip time in milliseconds across successful replies.
+        /// </summary>
+        /// <param name="host">The hostname or IP address string to ping.</param>
+        /// <param name="echoNum">The number of ICMP echo requests to send.</param>
+        /// <returns>
+        /// The average round-trip time in milliseconds, or <c>100</c> if an exception occurs.
+        /// </returns>
         public static async Task<double> PingTimeAverage(string host, int echoNum)
         {
             try

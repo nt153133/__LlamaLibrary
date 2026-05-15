@@ -24,13 +24,23 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Provides helpers for housing garden management: teleporting to a garden, watering plants,
+    /// fertilizing with Fish Meal (item 7767), and planting seeds with soil.
+    /// </summary>
     public static class GardenHelper
     {
         private static readonly LLogger Log = new("TheGardener", Colors.LawnGreen);
 
-        
-
+        /// <summary>
+        /// Reads the currently-selected soil item struct from the <see cref="AgentHousingPlant"/> agent memory.
+        /// </summary>
         public static HousingPlantSelectedItemStruct SoilStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + GardenHelperOffsets.StructOffset);
+
+        /// <summary>
+        /// Reads the currently-selected seed item struct from the <see cref="AgentHousingPlant"/> agent memory
+        /// (immediately follows the <see cref="SoilStruct"/> in memory).
+        /// </summary>
         public static HousingPlantSelectedItemStruct SeedStruct => Core.Memory.Read<HousingPlantSelectedItemStruct>(AgentHousingPlant.Instance.Pointer + GardenHelperOffsets.StructOffset + MarshalCache<HousingPlantSelectedItemStruct>.Size);
 
         /*
@@ -56,7 +66,15 @@ namespace LlamaLibrary.Helpers
         }
                 */
 
-        // TODO: arg `plantPlan` unused here.  Unfinished feature?  Safe to remove despite public method?
+        /// <summary>
+        /// Teleports to the housing zone identified by aetheryte <paramref name="AE"/>, moves to
+        /// <paramref name="gardenLoc"/>, and runs the watering/fertilizing cycle via <see cref="Main"/>.
+        /// Does nothing when <paramref name="gardenLoc"/> is the default value.
+        /// </summary>
+        /// <remarks>The <paramref name="plantPlan"/> parameter is accepted but currently unused.</remarks>
+        /// <param name="AE">Aetheryte ID of the housing zone to teleport to.</param>
+        /// <param name="gardenLoc">World position of the garden plot to tend.</param>
+        /// <param name="plantPlan">Reserved for future planting plan support; not currently used.</param>
         public static async Task GoGarden(uint AE, Vector3 gardenLoc, List<Tuple<uint, uint>> plantPlan)
         {
             if (gardenLoc != default)
@@ -92,8 +110,18 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// When <c>true</c>, all plants within range are watered regardless of whether they actually need it.
+        /// When <c>false</c> (default), only plants flagged as needing water by <see cref="GardenManager.NeedsWatering"/> are watered.
+        /// </summary>
         public static bool AlwaysWater { get; set; }
 
+        /// <summary>
+        /// Waters all plants within 10 yalms of <paramref name="gardenLoc"/> that need attention,
+        /// then fertilizes all plants in range using Fish Meal (item ID 7767) from the player's bags.
+        /// </summary>
+        /// <param name="gardenLoc">Centre point of the garden plot; used to filter nearby plants.</param>
+        /// <returns><c>true</c> when the routine completes (always).</returns>
         public static async Task<bool> Main(Vector3 gardenLoc)
         {
             var watering = GardenManager.Plants.Where(r => !Blacklist.Contains(r) && r.Distance2D(gardenLoc) < 10).ToArray();
@@ -207,6 +235,13 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Plants <paramref name="seeds"/> and <paramref name="soil"/> in the currently open
+        /// <see cref="HousingGardening"/> window using the native plant function, then confirms
+        /// the placement dialogue.
+        /// </summary>
+        /// <param name="seeds">Bag slot containing the seed item.</param>
+        /// <param name="soil">Bag slot containing the soil item.</param>
         public static async Task Plant(BagSlot seeds, BagSlot soil)
         {
             Core.Memory.CallInjectedWraper<IntPtr>(GardenHelperOffsets.PlantFunction,
@@ -229,6 +264,14 @@ namespace LlamaLibrary.Helpers
             await Coroutine.Wait(5000, () => !SelectYesno.IsOpen);
         }
 
+        /// <summary>
+        /// Finds the garden plot matching <paramref name="GardenIndex"/> and <paramref name="PlantIndex"/>
+        /// within 10 yalms of the player, then delegates to <see cref="Plant(EventObject?,BagSlot,BagSlot)"/>.
+        /// </summary>
+        /// <param name="GardenIndex">The housing gardening index of the target plot.</param>
+        /// <param name="PlantIndex">The plant slot index within the target plot.</param>
+        /// <param name="seeds">Bag slot containing the seed item.</param>
+        /// <param name="soil">Bag slot containing the soil item.</param>
         public static async Task Plant(int GardenIndex, int PlantIndex, BagSlot seeds, BagSlot soil)
         {
             var plants = GardenManager.Plants.Where(i => i.Distance(Core.Me.Location) < 10);
@@ -261,6 +304,14 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Moves to <paramref name="plant"/>, opens the gardening interaction menu, navigates to the
+        /// <see cref="HousingGardening"/> window, and calls <see cref="Plant(BagSlot,BagSlot)"/> to
+        /// complete the planting. Does nothing if <paramref name="plant"/> is <c>null</c>.
+        /// </summary>
+        /// <param name="plant">The garden plot event object to interact with.</param>
+        /// <param name="seeds">Bag slot containing the seed item.</param>
+        /// <param name="soil">Bag slot containing the soil item.</param>
         public static async Task Plant(EventObject? plant, BagSlot seeds, BagSlot soil)
         {
             if (plant != null)

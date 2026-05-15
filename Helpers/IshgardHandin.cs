@@ -14,6 +14,12 @@ using LlamaLibrary.RemoteWindows;
 namespace LlamaLibrary.Helpers
 {
     //TODO So many hardcoded values...
+    /// <summary>
+    /// Provides helpers for Firmament (Ishgard Restoration) hand-in automation: navigating to the
+    /// zone, submitting Skybuilders' gatherables and collectables to the relevant NPCs, and
+    /// purchasing items with Skybuilders' Scrips. All methods teleport to the Firmament zone
+    /// (<c>ZoneId 886</c>) if not already there.
+    /// </summary>
     public static class IshgardHandin
     {
         private static readonly LLogger Log = new(nameof(IshgardHandin), Colors.Aquamarine);

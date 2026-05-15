@@ -19,6 +19,13 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Helpers.WorldTravel
 {
+    /// <summary>
+    /// Static helper that orchestrates cross-world travel via the in-game World Travel aetheryte menu.
+    /// </summary>
+    /// <remarks>
+    /// The player must be located at Limsa Lominsa, Ul'dah, or Gridania to open the world-travel UI.
+    /// <see cref="OpenWorldTravelMenu"/> handles the teleport automatically when the player is elsewhere.
+    /// </remarks>
     public static class WorldTravel
     {
         private static readonly LLogger Log = new(nameof(WorldTravel), Colors.Chocolate);
@@ -29,6 +36,24 @@ namespace LlamaLibrary.Helpers.WorldTravel
 
         private static bool InValidZone => ValidZones.Contains(WorldManager.ZoneId);
 
+        /// <summary>
+        /// Opens the World Travel selection menu, teleporting to a valid city first if necessary.
+        /// </summary>
+        /// <param name="travelCity">
+        /// The preferred city to travel to in order to access the world-travel aetheryte.
+        /// Defaults to <see cref="TravelCity.Cheapest"/>, which selects the cheapest available
+        /// city aetheryte automatically.
+        /// </param>
+        /// <remarks>
+        /// If the player is already in a valid zone (Limsa Lominsa, Ul'dah, or Gridania) the
+        /// teleport step is skipped.  The method opens <c>AgentWorldTravelSelect</c> and waits
+        /// up to 5 seconds for the window to become ready.
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// await WorldTravel.OpenWorldTravelMenu(TravelCity.Limsa);
+        /// </code>
+        /// </example>
         public static async Task OpenWorldTravelMenu(TravelCity travelCity = DefaultStart)
         {
             if (WorldTravelSelect.Instance.IsOpen)
@@ -95,6 +120,16 @@ namespace LlamaLibrary.Helpers.WorldTravel
             await Coroutine.Sleep(500);
         }
 
+        /// <summary>
+        /// Travels to the specified <see cref="WorldLocation"/>, switching worlds if required and
+        /// then navigating to the location's coordinates.
+        /// </summary>
+        /// <param name="worldLocation">The target world and in-game location.</param>
+        /// <param name="travelCity">The preferred city aetheryte used for world travel.</param>
+        /// <returns>
+        /// <see langword="true"/> if the player successfully reaches the target location;
+        /// otherwise <see langword="false"/>.
+        /// </returns>
         public static async Task<bool> GetTo(WorldLocation worldLocation, TravelCity travelCity = TravelCity.Uldah)
         {
             if (WorldHelper.CurrentWorldId != (int)worldLocation.World && !await GoToWorld(worldLocation.World, travelCity))
@@ -110,11 +145,33 @@ namespace LlamaLibrary.Helpers.WorldTravel
             return await Navigation.GetTo(worldLocation.Location);
         }
 
+        /// <summary>
+        /// Travels to the specified world using the aetheryte World Travel menu.
+        /// </summary>
+        /// <param name="world">The target <see cref="World"/> server.</param>
+        /// <param name="travelCity">The preferred city aetheryte used to access the world-travel UI.</param>
+        /// <returns>
+        /// <see langword="true"/> if the player is on <paramref name="world"/> after the operation;
+        /// otherwise <see langword="false"/>.
+        /// </returns>
         public static async Task<bool> GoToWorld(World world, TravelCity travelCity = DefaultStart)
         {
             return await GoToWorld((ushort)world, travelCity);
         }
 
+        /// <summary>
+        /// Travels to the specified world by world ID using the aetheryte World Travel menu.
+        /// </summary>
+        /// <param name="worldId">The numeric world ID of the target server.</param>
+        /// <param name="travelCity">The preferred city aetheryte used to access the world-travel UI.</param>
+        /// <returns>
+        /// <see langword="true"/> if the player is on the requested world after the operation;
+        /// otherwise <see langword="false"/>.
+        /// </returns>
+        /// <remarks>
+        /// The method handles party management (leaving non-cross-realm parties), opens the world travel
+        /// UI, selects the target world, confirms the dialogue, and waits for the loading screen to finish.
+        /// </remarks>
         public static async Task<bool> GoToWorld(ushort worldId, TravelCity travelCity = DefaultStart)
         {
             if (!WorldHelper.CheckDC((World)worldId))
@@ -252,6 +309,14 @@ namespace LlamaLibrary.Helpers.WorldTravel
             return WorldHelper.CurrentWorldId == worldId;
         }
 
+        /// <summary>
+        /// Ensures the player is on their home world, travelling there if necessary.
+        /// </summary>
+        /// <param name="travelCity">The preferred city aetheryte used for world travel.</param>
+        /// <returns>
+        /// <see langword="true"/> if the player is on the home world after the operation;
+        /// otherwise <see langword="false"/>.
+        /// </returns>
         public static async Task<bool> MakeSureHome(TravelCity travelCity = DefaultStart)
         {
             if (WorldHelper.CurrentWorldId == WorldHelper.HomeWorldId)
@@ -262,6 +327,13 @@ namespace LlamaLibrary.Helpers.WorldTravel
             return await GoToWorld(WorldHelper.HomeWorldId, travelCity);
         }
 
+        /// <summary>
+        /// Navigates the player to the specified city aetheryte game object.
+        /// </summary>
+        /// <param name="travelCity">The city whose main aetheryte to navigate to.</param>
+        /// <returns>
+        /// The aetheryte <see cref="GameObject"/> if navigation succeeded; otherwise <see langword="null"/>.
+        /// </returns>
         public static async Task<GameObject?> GetAE(TravelCity travelCity = DefaultStart)
         {
             uint id;
@@ -275,6 +347,13 @@ namespace LlamaLibrary.Helpers.WorldTravel
             return await Navigation.GetToAE(id);
         }
 
+        /// <summary>
+        /// Selects the "Visit Another World Server" option from the aetheryte conversation menu.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the option was found and selected;
+        /// <see langword="false"/> if the option was not present in the conversation list.
+        /// </returns>
         public static bool SelectWorldVisit()
         {
             var test = Conversation.GetConversationList.TakeWhile(line => !line.Contains(Translator.VisitAnotherWorldServer)).Count();

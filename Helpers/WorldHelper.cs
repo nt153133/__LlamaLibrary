@@ -11,10 +11,21 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
+    /// <summary>
+    /// Static helper that exposes world (server) and data-centre information for the local player.
+    /// </summary>
+    /// <remarks>
+    /// World and data-centre values are read directly from game memory or resolved through
+    /// <see cref="WorldMap"/>. Prefer the <see cref="World"/> and <see cref="WorldDCGroupType"/>
+    /// enums over the deprecated string dictionaries.
+    /// </remarks>
     public static class WorldHelper
     {
         private static readonly IntPtr DcOffsetLocation;
 
+        /// <summary>
+        /// Initialises the static helper by resolving the data-centre offset location from game memory.
+        /// </summary>
         static WorldHelper()
         {
             var agentPointer = AgentModule.AgentPointers[0];
@@ -22,6 +33,10 @@ namespace LlamaLibrary.Helpers
             DcOffsetLocation = offset1 + WorldHelperOffsets.DCOffset;
         }
 
+        /// <summary>
+        /// Gets the UTF-8 display name of the player's current sub-zone (place-name).
+        /// </summary>
+        /// <value>The localised sub-zone name string, resolved via an injected game call against the current sub-zone ID.</value>
         public static string CurrentPlaceName
         {
             get
@@ -31,6 +46,10 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Maps each <see cref="WorldDCGroupType"/> data centre to the array of <see cref="World"/>
+        /// servers it contains, covering NA, EU, JP, OCE, CN, and KR regions.
+        /// </summary>
         public static readonly Dictionary<WorldDCGroupType, World[]> WorldMap = new()
         {
             { WorldDCGroupType.Materia, new[] { World.Ravana, World.Bismarck, World.Sephirot, World.Sophia, World.Zurvan } },
@@ -55,6 +74,13 @@ namespace LlamaLibrary.Helpers
             { WorldDCGroupType.TCRegion1, new[] { World.TcBahamut, World.TcGaruda, World.TcPhoenix, World.TcIfrit, World.TcTitan, World.TcRamuh, World.TcLeviathan, World.TcOdin } },
         };
 
+        /// <summary>
+        /// Gets all worlds on the same data centre as the player's current world.
+        /// </summary>
+        /// <value>
+        /// An array of <see cref="World"/> values for every server on the current DC,
+        /// or an empty array when the current world is not found in <see cref="WorldMap"/>.
+        /// </value>
         public static World[] CurrentWorldList
         {
             get
@@ -68,8 +94,22 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the player is currently on their home world.
+        /// </summary>
+        /// <value>
+        /// <see langword="true"/> when <see cref="CurrentWorldId"/> equals <see cref="HomeWorldId"/>.
+        /// </value>
         public static bool IsOnHomeWorld => CurrentWorldId == HomeWorldId;
 
+        /// <summary>
+        /// Gets the raw numeric identifier of the player's current data centre.
+        /// </summary>
+        /// <remarks>
+        /// On Traditional Chinese builds the value is always <c>TCRegion1</c>.
+        /// On CN builds the value is derived by searching <see cref="WorldMap"/>.
+        /// On all other builds it is read directly from game memory.
+        /// </remarks>
         public static byte DataCenterId
         {
             get
@@ -92,6 +132,22 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Determines whether the specified world belongs to the same data centre as the current player.
+        /// </summary>
+        /// <param name="world">The <see cref="World"/> server to check.</param>
+        /// <returns>
+        /// <see langword="true"/> when <paramref name="world"/> is listed under the current DC in
+        /// <see cref="WorldMap"/>, or always <see langword="true"/> on Traditional Chinese builds.
+        /// </returns>
+        /// <example>
+        /// <code>
+        /// if (WorldHelper.CheckDC(World.Balmung))
+        /// {
+        ///     // Balmung is on the same DC — world travel is possible
+        /// }
+        /// </code>
+        /// </example>
         public static bool CheckDC(World world)
         {
             if (OffsetManager.ActiveRegion == ClientRegion.TraditionalChinese)
@@ -102,8 +158,18 @@ namespace LlamaLibrary.Helpers
             return WorldMap.ContainsKey(DataCenter) && WorldMap[DataCenter].Contains(world);
         }
 
+        /// <summary>
+        /// Gets the player's current data centre as a <see cref="WorldDCGroupType"/> enum value.
+        /// </summary>
         public static WorldDCGroupType DataCenter => (WorldDCGroupType)DataCenterId;
 
+        /// <summary>
+        /// Maps legacy numeric data-centre identifiers to their string names.
+        /// </summary>
+        /// <remarks>
+        /// This member is preserved for backward compatibility only.
+        /// Use <see cref="DataCenter"/> and the <see cref="WorldDCGroupType"/> enum instead.
+        /// </remarks>
         [Obsolete("Use Enum instead")]
         public static readonly Dictionary<byte, string> DataCenterNamesDictionary = new()
         {
@@ -122,14 +188,34 @@ namespace LlamaLibrary.Helpers
             { 99, "Beta" },
         };
 
+        /// <summary>
+        /// Gets the raw numeric identifier of the world the player is currently visiting.
+        /// </summary>
         public static ushort CurrentWorldId => Core.Memory.NoCacheRead<ushort>(Core.Me.Pointer + WorldHelperOffsets.CurrentWorld);
 
+        /// <summary>
+        /// Gets the raw numeric identifier of the player's home world
+        /// (the server on which the character was created).
+        /// </summary>
         public static ushort HomeWorldId => Core.Memory.NoCacheRead<ushort>(Core.Me.Pointer + WorldHelperOffsets.HomeWorld);
 
+        /// <summary>
+        /// Gets the world the player is currently visiting as a <see cref="World"/> enum value.
+        /// </summary>
         public static World CurrentWorld => (World)CurrentWorldId;
 
+        /// <summary>
+        /// Gets the player's home world as a <see cref="World"/> enum value.
+        /// </summary>
         public static World HomeWorld => (World)HomeWorldId;
 
+        /// <summary>
+        /// Maps legacy numeric world identifiers to their string names.
+        /// </summary>
+        /// <remarks>
+        /// This member is preserved for backward compatibility only.
+        /// Use <see cref="CurrentWorld"/> / <see cref="HomeWorld"/> and the <see cref="World"/> enum instead.
+        /// </remarks>
         [Obsolete("Use Enum instead")]
         public static readonly Dictionary<ushort, string> WorldNamesDictionary = new()
         {
@@ -222,8 +308,14 @@ namespace LlamaLibrary.Helpers
             { 407, "Maduin" },
         };
 
+        /// <summary>
+        /// Gets the localised display name of the player's current data centre.
+        /// </summary>
         public static string DataCenterName => DataCenter.DCName();
 
+        /// <summary>
+        /// Gets the localised display name of the player's home world.
+        /// </summary>
         public static string HomeWorldName => HomeWorld.WorldName();
     }
 }
