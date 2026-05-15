@@ -11,6 +11,13 @@ using LlamaLibrary.Helpers.NPC;
 
 namespace LlamaLibrary.Helpers.HousingTravel.Districts
 {
+    /// <summary>
+    /// Concrete <see cref="ResidentialDistrict"/> for Lavender Beds, the Gridania housing district.
+    /// </summary>
+    /// <remarks>
+    /// Without the required quest, access is via the Black Shroud ferry NPC in Central Shroud.
+    /// With the quest, the Gridania aetheryte (ID 2) is used.
+    /// </remarks>
     public class LavenderBeds : ResidentialDistrict<LavenderBeds>
     {
         public override string Name => "Lavender Beds";
@@ -43,6 +50,13 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         private readonly List<Npc> _transitionNpcIds = new() { new Npc(1005655, 340, new Vector3(10.72699f, 2.610901f, 208.0873f)), new Npc(1005655, 340, new Vector3(-912.108f, 2.607928f, -693.2632f)) };
         public override List<Npc> TransitionNpcs => _transitionNpcIds;
 
+        /// <summary>
+        /// Takes the Black Shroud ferry to Lavender Beds for players without aetheryte access.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the ward-selection window opens after the ferry ride;
+        /// otherwise <see langword="false"/>.
+        /// </returns>
         public override async Task<bool> WalkToResidential()
         {
             await Navigation.GetTo(148, new Vector3(199.5991f, -32.04532f, 324.2699f));

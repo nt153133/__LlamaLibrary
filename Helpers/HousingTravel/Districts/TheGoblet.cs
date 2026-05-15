@@ -8,6 +8,13 @@ using LlamaLibrary.Helpers.Housing;
 
 namespace LlamaLibrary.Helpers.HousingTravel.Districts
 {
+    /// <summary>
+    /// Concrete <see cref="ResidentialDistrict"/> for The Goblet, the Ul'dah housing district.
+    /// </summary>
+    /// <remarks>
+    /// Without the required quest, access is via the zone-change trigger in Western Thanalan.
+    /// With the quest, the Ul'dah – Steps of Nald aetheryte (ID 9) is used.
+    /// </remarks>
     public class TheGoblet : ResidentialDistrict<TheGoblet>
     {
         public override string Name => "The Goblet";
@@ -44,6 +51,13 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public override List<Vector3> TransitionStartLocations => _transitionStartLocations;
         public override List<Vector3> TransitionEndLocations => _transitionEndLocations;
 
+        /// <summary>
+        /// Navigates through the zone-change trigger in Western Thanalan to enter The Goblet
+        /// for players without aetheryte access.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the ward-selection window opens; otherwise <see langword="false"/>.
+        /// </returns>
         public override async Task<bool> WalkToResidential()
         {
             await Navigation.GetTo(140, new Vector3(317.0663f, 67.27534f, 232.8395f));
