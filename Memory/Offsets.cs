@@ -183,6 +183,9 @@ namespace LlamaLibrary.Memory
     {
         [Offset("Search E8 ?? ?? ?? ?? 80 7B 1D 01 TraceCall")]
         public static IntPtr GetUiModule;
+
+        [Offset("Search 48 89 86 ? ? ? ? 0F B6 42 ? Add 3 Read32")]
+        public static int IndoorTerritoryHouseId;
     }
 
     //ATK

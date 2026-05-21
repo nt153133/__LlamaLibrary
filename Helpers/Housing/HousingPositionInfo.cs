@@ -1,5 +1,6 @@
 ﻿using System;
 using ff14bot;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers.Housing
 {
@@ -45,17 +46,20 @@ namespace LlamaLibrary.Helpers.Housing
 
             try
             {
-                InHouse = Core.Memory.Read<byte>(_address + 0x96A9) == 0;
-                House = (ushort)(!InHouse ? 0 : Core.Memory.Read<ushort>(_address + 0x96A0) + 1);
-                var internalWard = (ushort)(Core.Memory.Read<ushort>(_address + 0x96A2) + 1);
-                var internalPlot = (byte)(InHouse ? 0 : Core.Memory.Read<byte>(_address + 0x96A8) + 1);
+                var houseId = _address + Offsets.IndoorTerritoryHouseId;
+
+
+                InHouse = Core.Memory.Read<byte>(houseId + 0x9) == 0;
+                House = (ushort)(!InHouse ? 0 : Core.Memory.Read<ushort>(houseId) + 1);
+                var internalWard = (ushort)(Core.Memory.Read<ushort>(houseId + 0x2) + 1);
+                var internalPlot = (byte)(InHouse ? 0 : Core.Memory.Read<byte>(houseId + 0x8) + 1);
                 Room = (internalWard & RoomMask) >> MaskSize;
                 var wardTemp = ((internalWard & WardMask) >> MaskSize) + 1;
                 Ward = (internalWard < 50) ? internalWard : wardTemp;
-                Subdivision = Core.Memory.Read<byte>(_address + 0x96A9) == 2;
-                Zone = Core.Memory.Read<InternalHousingZone>(_address + 0x96A4);
+                Subdivision = Core.Memory.Read<byte>(houseId + 0x9) == 2;
+                Zone = Core.Memory.Read<InternalHousingZone>(houseId + 0x4);
                 Plot = InHouse ? House : internalPlot;
-                HousingFloor = Core.Memory.Read<HousingFloor>(_address + 0x9704);
+                HousingFloor = Core.Memory.Read<HousingFloor>(houseId + 0x4);
             }
             catch (Exception e)
             {
