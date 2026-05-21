@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -180,6 +180,11 @@ namespace LlamaLibrary.Helpers
         /// <see langword="true"/> if the player is now inside the barracks;
         /// <see langword="false"/> if the player is not enlisted, the barracks NPC is not found, or navigation fails.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// await LlamaLibrary.Helpers.GrandCompanyHelper.GetToGCBarracks();
+        /// </code>
+        /// </example>
         public static async Task<bool> GetToGCBarracks()
         {
             if (Navigator.NavigationProvider == null)
@@ -272,6 +277,11 @@ namespace LlamaLibrary.Helpers
         /// Does nothing if the player is not enlisted in a Grand Company.
         /// </summary>
         /// <param name="npc">The NPC role to interact with.</param>
+        /// <example>
+        /// <code>
+        /// await GrandCompanyHelper.InteractWithNpc(GCNpc.Personnel_Officer);
+        /// </code>
+        /// </example>
         public static async Task InteractWithNpc(GCNpc npc)
         {
             if (Core.Me.GrandCompany == 0)
@@ -338,6 +348,11 @@ namespace LlamaLibrary.Helpers
         /// </summary>
         /// <param name="grandCompany">Grand Company whose OIC Quartermaster to visit.</param>
         /// <param name="actionId">The internal ID of the FC action to purchase.</param>
+        /// <example>
+        /// <code>
+        /// await GrandCompanyHelper.BuyFCAction(Core.Me.GrandCompany, actionId);
+        /// </code>
+        /// </example>
         public static async Task BuyFCAction(GrandCompany grandCompany, int actionId)
         {
             await InteractWithNpc(GCNpc.OIC_Quartermaster, grandCompany);
@@ -376,6 +391,11 @@ namespace LlamaLibrary.Helpers
         /// Applies for a promotion with the local player's Grand Company Personnel Officer.
         /// Navigates to the GC base, opens the rank-up dialog, and confirms the promotion.
         /// </summary>
+        /// <example>
+        /// <code>
+        /// await LlamaLibrary.Helpers.GrandCompanyHelper.GoGCRankUp();
+        /// </code>
+        /// </example>
         public static async Task GoGCRankUp()
         {
             var grandCompany = Core.Me.GrandCompany;
@@ -424,6 +444,11 @@ namespace LlamaLibrary.Helpers
         /// Switches the supply list to Expert Delivery mode, applies the "Hide Armory" filter, then
         /// iterates every listed item and confirms each hand-in via the reward dialog.
         /// </summary>
+        /// <example>
+        /// <code>
+        /// await LlamaLibrary.Helpers.GrandCompanyHelper.GCHandInExpert();
+        /// </code>
+        /// </example>
         public static async Task GCHandInExpert()
         {
             if (!await ExpertDelivery.MakeSureWindowOpen())

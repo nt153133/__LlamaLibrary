@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -253,6 +253,11 @@ namespace LlamaLibrary.Retainers
         /// <see langword="true"/> if a summoning bell game object was successfully located after navigation;
         /// otherwise <see langword="false"/>.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// var bell = await HelperFunctions.GoToSummoningBell();
+        /// </code>
+        /// </example>
         public static async Task<bool> GoToSummoningBell()
         {
             if (!await WorldTravel.MakeSureHome())
@@ -374,6 +379,14 @@ namespace LlamaLibrary.Retainers
         /// <see langword="true"/> if <see cref="RetainerList"/> is open;
         /// otherwise <see langword="false"/>.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// if (!await HelperFunctions.OpenRetainerList())
+        /// {
+        ///     Log.Error("Could not open retainer list.");
+        /// }
+        /// </code>
+        /// </example>
         public static async Task<bool> OpenRetainerList()
         {
             if (!RetainerList.Instance.IsOpen)
@@ -412,6 +425,11 @@ namespace LlamaLibrary.Retainers
         /// <see langword="false"/> if <see cref="SelectString"/> is not open, or if an expected window
         /// failed to open during the flow.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// await HelperFunctions.RetainerHandleVentures();
+        /// </code>
+        /// </example>
         public static async Task<bool> RetainerHandleVentures()
         {
             if (!SelectString.IsOpen)
@@ -492,6 +510,14 @@ namespace LlamaLibrary.Retainers
         /// <see langword="true"/> if <see cref="RetainerList"/> is closed after the operation;
         /// otherwise <see langword="false"/>.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// if (!await HelperFunctions.CloseRetainerList())
+        /// {
+        ///     Log.Error("Could not close retainer list.");
+        /// }
+        /// </code>
+        /// </example>
         public static async Task<bool> CloseRetainerList()
         {
             if (RetainerList.Instance.IsOpen)
@@ -649,6 +675,11 @@ namespace LlamaLibrary.Retainers
         /// A reordered array of <see cref="RetainerInfo"/> structs matching the retainer display order,
         /// or the raw array if it is empty.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// var retainers = await HelperFunctions.GetOrderedRetainerArray(true);
+        /// </code>
+        /// </example>
         public static async Task<RetainerInfo[]> GetOrderedRetainerArray(bool force = false)
         {
             var retainers = await GetRetainerArray(force);
@@ -725,6 +756,11 @@ namespace LlamaLibrary.Retainers
         /// <returns>
         /// The number of hired retainers, or <c>0</c> if retainer data could not be verified.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// var count = await HelperFunctions.GetNumberOfRetainers();
+        /// </code>
+        /// </example>
         public static async Task<int> GetNumberOfRetainers()
         {
             var verified = await VerifiedRetainerData();

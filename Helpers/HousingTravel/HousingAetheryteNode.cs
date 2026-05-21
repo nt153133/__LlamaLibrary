@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Behavior;
@@ -31,6 +31,13 @@ public class HousingAetheryteNode : NavGraph.CustomLogicNode
     /// </summary>
     /// <param name="source">The aetheryte the player must interact with to initiate the teleport.</param>
     /// <param name="target">The aetheryte the player will be transported to.</param>
+    /// <example>
+    /// <code>
+    /// var sourceAetheryte = new HousingAetheryte(4, 2003398, "Seagaze Markets", new Vector3(11.41876f, 6.002154f, 13.62034f), false);
+    /// var targetAetheryte = new HousingAetheryte(12, 2004971, "Seagaze Markets Subdivision", new Vector3(-716.7053f, 6.002154f, -692.8323f), true);
+    /// var node = new HousingAetheryteNode(sourceAetheryte, targetAetheryte);
+    /// </code>
+    /// </example>
     public HousingAetheryteNode(HousingAetheryte source, HousingAetheryte target) : base()
     {
         Source = source;

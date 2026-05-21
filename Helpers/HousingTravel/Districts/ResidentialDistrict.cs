@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -117,6 +117,14 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         /// <see langword="true"/> when the ward-selection window (<c>HousingSelectBlock</c>) is open;
         /// otherwise <see langword="false"/>.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// if (!await district.OpenWardSelection())
+        /// {
+        ///     Log.Error("Could not open ward selection.");
+        /// }
+        /// </code>
+        /// </example>
         public async Task<bool> OpenWardSelection()
         {
             if (WorldManager.ZoneId == ZoneId)
@@ -160,6 +168,14 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         /// <see langword="true"/> if the player successfully enters the specified ward;
         /// otherwise <see langword="false"/>.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// if (!await district.SelectWard(ward))
+        /// {
+        ///     Log.Error($"Can't get to ward {ward} of {district.Name}");
+        /// }
+        /// </code>
+        /// </example>
         public async Task<bool> SelectWard(int ward)
         {
             if (ward is < 1 or > 30)
@@ -215,6 +231,11 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         /// Closes the ward-selection window, handling the confirmation dialogue and any loading screen.
         /// </summary>
         /// <returns><see langword="true"/> when the window is no longer open.</returns>
+        /// <example>
+        /// <code>
+        /// await district.CloseWardSelection();
+        /// </code>
+        /// </example>
         public async Task<bool> CloseWardSelection()
         {
             if (QuestComplete)
@@ -503,6 +524,11 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         /// <see langword="true"/> if the player is within 5 yalms of the destination after navigation;
         /// otherwise <see langword="false"/>.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// return await district.TravelWithinZone(location, distance);
+        /// </code>
+        /// </example>
         public async Task<bool> TravelWithinZone(Vector3 destination, float stopDistance = 3)
         {
             if (WorldManager.ZoneId != ZoneId)

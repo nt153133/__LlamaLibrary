@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -119,6 +119,15 @@ namespace LlamaLibrary.Retainers
             return true;
         }
 
+        /// <example>
+        /// <code>
+        /// var retainers = await RetainerRoutine.ReadRetainers(async (retainer, index) => 
+        /// {
+        ///     // Do something with retainer
+        ///     return new CompleteRetainer();
+        /// });
+        /// </code>
+        /// </example>
         public static async Task<List<CompleteRetainer>> ReadRetainers(Func<RetainerInfo, int, Task<CompleteRetainer>> retainerTask)
         {
             var retainers = new List<CompleteRetainer>();
@@ -164,6 +173,11 @@ namespace LlamaLibrary.Retainers
             return retainers;
         }
 
+        /// <example>
+        /// <code>
+        /// await RetainerRoutine.CloseRetainers();
+        /// </code>
+        /// </example>
         public static async Task CloseRetainers()
         {
             if (RetainerList.Instance.IsOpen)
@@ -280,6 +294,14 @@ namespace LlamaLibrary.Retainers
             return await SelectRetainer(list[retainerIndex].Unique);
         }
 
+        /// <example>
+        /// <code>
+        /// if (!await RetainerRoutine.SelectRetainer(retainer.Unique))
+        /// {
+        ///     Log.Error("Could not select retainer.");
+        /// }
+        /// </code>
+        /// </example>
         public static async Task<bool> SelectRetainer(ulong retainerContentId)
         {
             Log.Information($"Selecting retainer {retainerContentId}");
@@ -327,6 +349,11 @@ namespace LlamaLibrary.Retainers
             }
         }
 
+        /// <example>
+        /// <code>
+        /// await RetainerRoutine.DeSelectRetainer();
+        /// </code>
+        /// </example>
         public static async Task<bool> DeSelectRetainer()
         {
             if (!RetainerTasks.IsOpen)

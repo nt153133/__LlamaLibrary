@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +19,11 @@ using TreeSharp;
 
 namespace LlamaLibrary;
 
+/// <summary>
+/// A template base class for creating a <see cref="BotPlugin"/> in RebornBuddy.
+/// BotPlugin is the base plugin class that all plugins should inherit from.
+/// This template handles common lifecycle events, pulse threading, settings UI invocation, and hooking into OrderBot or Lisbeth.
+/// </summary>
 public abstract class TemplatePlugin : BotPlugin, IBotPlugin
 {
     private static volatile PulseFlags _pulseFlags = PulseFlags.None;
@@ -49,14 +54,30 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
 
     private readonly List<PulseFlags> _tempPulseFlags = new();
     protected LLogger Log = null!;
+    /// <summary>
+    /// Gets the name of the plugin as it will appear in the RebornBuddy plugins list.
+    /// </summary>
     public abstract string PluginName { get; }
 
+    /// <summary>
+    /// Gets the color used for logging messages to the RebornBuddy console.
+    /// </summary>
     protected virtual Color LogColor { get; } = Colors.CornflowerBlue;
 
+    /// <summary>
+    /// Gets the type of the Windows Forms <see cref="Form"/> to be used for the plugin settings UI.
+    /// If null, the plugin will not open a settings form when the Settings button is pressed.
+    /// </summary>
     protected virtual Type? SettingsForm { get; } = null;
 
+    /// <summary>
+    /// Gets a value indicating whether this plugin requires a dedicated pulse thread/timer.
+    /// </summary>
     protected virtual bool RequiresPulseThread { get; } = false;
 
+    /// <summary>
+    /// Gets the <see cref="PulseFlags"/> indicating what subsystems this plugin wants to pulse if it uses a pulse thread.
+    /// </summary>
     protected virtual PulseFlags PulseFlags { get; } = PulseFlags.None;
 
     public static int FPS => (int)Core.Memory.NoCacheRead<float>(Core.Memory.Read<IntPtr>(Offsets.Framework) + Offsets.Framerate);

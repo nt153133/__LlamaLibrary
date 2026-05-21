@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
@@ -53,6 +53,14 @@ namespace LlamaLibrary.Helpers
         /// </summary>
         /// <param name="achievementId">The numeric ID of the achievement to check.</param>
         /// <returns><see langword="true"/> if the achievement is completed; otherwise <see langword="false"/>.</returns>
+        /// <example>
+        /// <code>
+        /// if (Achievements.HasAchievement(achId))
+        /// {
+        ///     Log.Information("Achievement is already unlocked.");
+        /// }
+        /// </code>
+        /// </example>
         public static bool HasAchievement(int achievementId)
         {
             return Core.Memory.CallInjectedWraper<bool>(AchievementsOffsets.IsCompletePtr, AchievementsOffsets.AchievementInstancePtr, achievementId);

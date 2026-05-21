@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -12,14 +12,32 @@ using TreeSharp;
 
 namespace LlamaLibrary
 {
+    /// <summary>
+    /// A template base class for creating a standard <see cref="BotBase"/> in RebornBuddy.
+    /// BotBase is the base class all non-async botbases should inherit from, typically relying on TreeSharp for its behavior tree.
+    /// </summary>
     public abstract class TemplateBotBase : BotBase
     {
+        /// <summary>
+        /// Gets the name of the botbase as it will appear in the RebornBuddy drop-down menu.
+        /// </summary>
         protected abstract string BotBaseName { get; }
 
+        /// <summary>
+        /// Gets the type of the Windows Forms <see cref="Form"/> to be used for the botbase settings UI.
+        /// If null, the botbase will not open a settings form when the Settings button is pressed.
+        /// </summary>
         protected virtual Type? SettingsForm { get; } = null;
 
+        /// <summary>
+        /// Gets the color used for logging messages to the RebornBuddy console.
+        /// </summary>
         protected virtual Color LogColor { get; } = Colors.Aqua;
 
+        /// <summary>
+        /// The main asynchronous execution logic of the botbase, wrapped by an ActionRunCoroutine.
+        /// </summary>
+        /// <returns>A task representing the botbase's execution.</returns>
         protected abstract Task<bool> Run();
 
         private Composite? _root;
@@ -86,10 +104,29 @@ namespace LlamaLibrary
             }
         }
 
+        /// <summary>
+        /// Return false if human presence is needed.
+        /// </summary>
         public override bool IsAutonomous => true;
+        
+        /// <summary>
+        /// Gets the name of the botbase.
+        /// </summary>
         public override string Name => BotBaseName;
+        
+        /// <summary>
+        /// Flags indicating what systems should be ticked by the RebornBuddy engine when this botbase is active.
+        /// </summary>
         public override PulseFlags PulseFlags => PulseFlags.All;
+        
+        /// <summary>
+        /// Indicates if this botbase requires a profile to be loaded to function.
+        /// </summary>
         public override bool RequiresProfile => false;
+        
+        /// <summary>
+        /// The root behavior tree composite.
+        /// </summary>
         public override Composite Root => _root!;
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using ff14bot;
@@ -53,6 +53,11 @@ namespace LlamaLibrary.Helpers.Housing
         /// Gets the array of housing residences registered to the current character,
         /// automatically refreshing the cache when it is older than 5 minutes or stale.
         /// </summary>
+        /// <example>
+        /// <code>
+        /// var availableHouses = HousingHelper.Residences.ToDictionary(i => i.HouseLocationIndex, i => (HouseLocation?)i);
+        /// </code>
+        /// </example>
         public static ResidenceInfo[] Residences
         {
             get
@@ -110,6 +115,14 @@ namespace LlamaLibrary.Helpers.Housing
         /// Gets a value indicating whether the player is currently inside any housing area
         /// (outdoor ward, indoor house, workshop, or apartment).
         /// </summary>
+        /// <example>
+        /// <code>
+        /// if (HousingHelper.IsInHousingArea && WorldManager.ZoneId == npc.Location.ZoneId)
+        /// {
+        ///     ward = HousingHelper.HousingPositionInfo.Ward;
+        /// }
+        /// </code>
+        /// </example>
         public static bool IsInHousingArea
         {
             get
@@ -133,6 +146,14 @@ namespace LlamaLibrary.Helpers.Housing
         /// Gets a value indicating whether the player is inside a house interior
         /// (the current territory matches the indoor territory pointer).
         /// </summary>
+        /// <example>
+        /// <code>
+        /// if (HousingHelper.IsInsideHouse && HousingHelper.CurrentHouseLocation?.Plot == recordedPlot.Plot)
+        /// {
+        ///     return true;
+        /// }
+        /// </code>
+        /// </example>
         public static bool IsInsideHouse
         {
             get
@@ -235,6 +256,11 @@ namespace LlamaLibrary.Helpers.Housing
         /// Forces an immediate refresh of the <see cref="Residences"/> cache from game memory,
         /// unless the cache is already fresh (updated within the last 5 minutes for the same world).
         /// </summary>
+        /// <example>
+        /// <code>
+        /// HousingHelper.UpdateResidenceArray();
+        /// </code>
+        /// </example>
         public static void UpdateResidenceArray()
         {
             if (_lastUpdateWorld == WorldHelper.CurrentWorld && DateTime.Now.Subtract(_lastHousingUpdate).TotalMinutes < 5)

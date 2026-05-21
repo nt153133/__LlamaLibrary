@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Clio.Utilities;
 
 namespace LlamaLibrary.Helpers.HousingTravel
@@ -45,6 +45,11 @@ namespace LlamaLibrary.Helpers.HousingTravel
         /// <param name="subdivision">
         /// <see langword="true"/> if this aetheryte is in the subdivision; otherwise <see langword="false"/>.
         /// </param>
+        /// <example>
+        /// <code>
+        /// var aetheryte = new HousingAetheryte(4, 2003398, "Seagaze Markets", new Vector3(11.41876f, 6.002154f, 13.62034f), false);
+        /// </code>
+        /// </example>
         public HousingAetheryte(uint key, uint npcId, string name, Vector3 location, bool subdivision)
         {
             Key = key;

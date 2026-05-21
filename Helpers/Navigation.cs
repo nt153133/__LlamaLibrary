@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -98,6 +98,14 @@ namespace LlamaLibrary.Helpers
             return await GetTo(ZoneId, XYZ);
         }
 
+        /// <summary>
+        /// Navigates to a specific location in a zone using the navigation graph or flight.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// await Navigation.GetTo(148, new Vector3(199.5991f, -32.04532f, 324.2699f));
+        /// </code>
+        /// </example>
         public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ)
         {
             if (Navigator.NavigationProvider == null)
@@ -361,6 +369,14 @@ namespace LlamaLibrary.Helpers
             Navigator.PlayerMover.MoveStop();
         }
 
+        /// <summary>
+        /// Moves towards a target object without using the navigation mesh until it is within interact range.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// await Navigation.OffMeshMoveInteract(unit);
+        /// </code>
+        /// </example>
         public static async Task<bool> OffMeshMoveInteract(GameObject _target)
         {
             WaitTimer_0.Reset();
@@ -439,6 +455,14 @@ namespace LlamaLibrary.Helpers
             return WorldManager.ZoneId == 399;
         }
 
+        /// <summary>
+        /// Uses Flightor to move to a destination, returning true if successfully reached.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// await Navigation.FlightorMove(target);
+        /// </code>
+        /// </example>
         public static async Task<bool> FlightorMove(Vector3 loc)
         {
             var moving = MoveResult.GeneratingPath;
@@ -582,6 +606,17 @@ namespace LlamaLibrary.Helpers
             return Core.Me.Location.Distance(loc) <= distance;
         }
 
+        /// <summary>
+        /// Navigates to a specific Aetheryte by its NPC ID.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// if (WorldManager.ZoneId != 144 && await Navigation.GetToAE(62) == default)
+        /// {
+        ///     Log.Error("Could not reach aetheryte.");
+        /// }
+        /// </code>
+        /// </example>
         public static async Task<GameObject?> GetToAE(uint id)
         {
             var AE = GameObjectManager.GetObjectsOfType<Aetheryte>().FirstOrDefault(i => i.NpcId == id);
@@ -725,6 +760,17 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
+        /// <summary>
+        /// Navigates to an NPC and interacts with them until a specific remote window is open.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// if (!await Navigation.GetToInteractNpc(vendor, ShopProxy.Instance))
+        /// {
+        ///     Log.Error("Could not reach and interact with vendor.");
+        /// }
+        /// </code>
+        /// </example>
         public static async Task<bool> GetToInteractNpc(Npc? npc, RemoteWindow window)
         {
             if (npc == null)
@@ -788,6 +834,17 @@ namespace LlamaLibrary.Helpers
             return window.IsOpen;
         }
 
+        /// <summary>
+        /// Navigates to an NPC, interacts with them, and selects an option from the SelectString window.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// if (!await LlamaLibrary.Helpers.Navigation.GetToInteractNpcSelectString(jalzahn))
+        /// {
+        ///     Log.Error("Could not navigate and select string.");
+        /// }
+        /// </code>
+        /// </example>
         public static async Task<bool> GetToInteractNpcSelectString(Npc npc, int option = -1)
         {
             return await GetToInteractNpcSelectString(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, option);

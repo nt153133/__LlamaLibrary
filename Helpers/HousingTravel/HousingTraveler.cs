@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -60,6 +60,11 @@ namespace LlamaLibrary.Helpers.HousingTravel
         /// The primary <see cref="HousingZone"/> for the district, or the original value when no
         /// mapping is needed.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// var zoneName = HousingTraveler.TranslateZone(houseLocation.HousingZone).AddSpacesToEnum();
+        /// </code>
+        /// </example>
         public static HousingZone TranslateZone(HousingZone zone)
         {
             zone = zone switch
@@ -148,6 +153,11 @@ namespace LlamaLibrary.Helpers.HousingTravel
         /// The <see cref="RecordedPlot"/> if available, or <see langword="null"/> when the zone
         /// is not in <see cref="HousingZonesEnums"/> or the plot is not recorded.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// var recorded = HousingTraveler.GetRecordedPlot(previousHouseLocation.HousingZone, previousHouseLocation.Plot);
+        /// </code>
+        /// </example>
         public static RecordedPlot? GetRecordedPlot(HousingZone zone, int plot)
         {
             return !HousingZonesEnums.Contains(TranslateZone(zone)) ? null : ResourceManager.HousingPlots[TranslateZone(zone)].Value[plot];
@@ -162,6 +172,14 @@ namespace LlamaLibrary.Helpers.HousingTravel
         /// <see langword="true"/> when the player is in the correct ward near the plot entrance;
         /// otherwise <see langword="false"/>.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// if (!await HousingTraveler.GetToResidential(estate))
+        /// {
+        ///     Log.Error("Failed to travel to the estate.");
+        /// }
+        /// </code>
+        /// </example>
         public static async Task<bool> GetToResidential(HouseLocation location)
         {
             location.HousingZone = TranslateZone(location.HousingZone);
@@ -280,6 +298,14 @@ namespace LlamaLibrary.Helpers.HousingTravel
         /// <returns>
         /// <see langword="true"/> on success; <see langword="false"/> if the NPC is not a housing-zone NPC.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// if (await HousingTraveler.GetToResidential(npc))
+        /// {
+        ///     npc.Interact();
+        /// }
+        /// </code>
+        /// </example>
         public static async Task<bool> GetToResidential(Npc npc)
         {
             if (!npc.IsHousingZoneNpc)

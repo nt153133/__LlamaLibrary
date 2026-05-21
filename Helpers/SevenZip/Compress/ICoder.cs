@@ -66,8 +66,8 @@ namespace SevenZip
 	public interface ICoder2
 	{
 		 void Code(ISequentialInStream []inStreams,
-				const UInt64 []inSizes, 
-				ISequentialOutStream []outStreams, 
+				const UInt64 []inSizes,
+				ISequentialOutStream []outStreams,
 				UInt64 []outSizes,
 				ICodeProgress progress);
 	};
@@ -99,15 +99,15 @@ namespace SevenZip
 		/// </summary>
 		BlockSize,
 		/// <summary>
-		/// Specifies number of postion state bits for LZMA (0 <= x <= 4).
+		/// Specifies number of postion state bits for LZMA
 		/// </summary>
 		PosStateBits,
 		/// <summary>
-		/// Specifies number of literal context bits for LZMA (0 <= x <= 8).
+		/// Specifies number of literal context bits for LZMA
 		/// </summary>
 		LitContextBits,
 		/// <summary>
-		/// Specifies number of literal position bits for LZMA (0 <= x <= 4).
+		/// Specifies number of literal position bits for LZMA
 		/// </summary>
 		LitPosBits,
 		/// <summary>

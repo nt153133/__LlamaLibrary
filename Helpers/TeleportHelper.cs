@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -85,6 +85,14 @@ public static class TeleportHelper
     /// <see langword="true"/> if the teleport succeeded; <see langword="false"/> if no apartment destination
     /// was found or the teleport failed.
     /// </returns>
+    /// <example>
+    /// <code>
+    /// if (!await TeleportHelper.TeleportToApartment())
+    /// {
+    ///     Log.Error("Failed to teleport to apartment.");
+    /// }
+    /// </code>
+    /// </example>
     public static async Task<bool> TeleportToApartment()
     {
         var house = -1;
@@ -115,6 +123,14 @@ public static class TeleportHelper
     /// <see langword="true"/> if the teleport succeeded; <see langword="false"/> if no private estate destination
     /// was found or the teleport failed.
     /// </returns>
+    /// <example>
+    /// <code>
+    /// if (!await TeleportHelper.TeleportToPrivateEstate())
+    /// {
+    ///     Log.Error("Failed to teleport to private estate.");
+    /// }
+    /// </code>
+    /// </example>
     public static async Task<bool> TeleportToPrivateEstate()
     {
         var house = -1;
@@ -146,6 +162,14 @@ public static class TeleportHelper
     /// <see langword="true"/> if the teleport succeeded; <see langword="false"/> if no FC estate was found
     /// or the teleport failed.
     /// </returns>
+    /// <example>
+    /// <code>
+    /// if (!await TeleportHelper.TeleportToFreeCompanyEstate())
+    /// {
+    ///     Log.Error("Failed to teleport to FC estate.");
+    /// }
+    /// </code>
+    /// </example>
     public static async Task<bool> TeleportToFreeCompanyEstate()
     {
         var house = -1;
@@ -382,6 +406,11 @@ public static class TeleportHelper
     /// <returns>
     /// <see langword="true"/> if the player arrives at the aetheryte's zone; otherwise <see langword="false"/>.
     /// </returns>
+    /// <example>
+    /// <code>
+    /// await TeleportHelper.TeleportByIdTicket(AE.Item1);
+    /// </code>
+    /// </example>
     public static async Task<bool> TeleportByIdTicket(uint aetheryteId)
     {
         Log.Information($"Using AE id {DataManager.AetheryteCache[aetheryteId].CurrentLocaleAethernetName}");

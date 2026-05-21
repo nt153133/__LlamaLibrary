@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows.Media;
 using ff14bot;
@@ -33,6 +33,11 @@ namespace LlamaLibrary.Helpers
         /// <param name="a6">Additional parameter passed to <c>DoAction</c>.</param>
         /// <param name="a7">Additional parameter passed to <c>DoAction</c>.</param>
         /// <returns><see langword="true"/> if the action was accepted by the game; otherwise <see langword="false"/>.</returns>
+        /// <example>
+        /// <code>
+        /// ActionHelper.UseAction((ff14bot.Enums.ActionType)8, minionId);
+        /// </code>
+        /// </example>
         public static bool UseAction(ff14bot.Enums.ActionType actionType, uint actionID, long targetID = 0xE000_0000, uint a4 = 0, uint a5 = 0, uint a6 = 0, uint a7 = 0)
         {
             Core.Memory.ClearCallCache();
@@ -84,6 +89,14 @@ namespace LlamaLibrary.Helpers
         /// Checks whether the player currently has an active (non-quest) treasure map in their key-item bag.
         /// </summary>
         /// <returns><see langword="true"/> if a treasure map is present; otherwise <see langword="false"/>.</returns>
+        /// <example>
+        /// <code>
+        /// if (ActionHelper.HasMap())
+        /// {
+        ///     Log.Information("Player already has a map.");
+        /// }
+        /// </code>
+        /// </example>
         public static bool HasMap()
         {
             var questMaps = new uint[] { 2001351, 2001705, 2001772, 200974 };

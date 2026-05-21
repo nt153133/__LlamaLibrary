@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -154,6 +154,11 @@ namespace LlamaLibrary.Helpers.WorldTravel
         /// <see langword="true"/> if the player is on <paramref name="world"/> after the operation;
         /// otherwise <see langword="false"/>.
         /// </returns>
+        /// <example>
+        /// <code>
+        /// await WorldTravel.GoToWorld(ViewModel.Instance.WorldToTravel);
+        /// </code>
+        /// </example>
         public static async Task<bool> GoToWorld(World world, TravelCity travelCity = DefaultStart)
         {
             return await GoToWorld((ushort)world, travelCity);

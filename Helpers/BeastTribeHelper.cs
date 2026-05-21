@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
@@ -82,6 +82,11 @@ namespace LlamaLibrary.Helpers
         /// Returns the number of Beast Tribe daily quest allowances remaining for the current reset cycle.
         /// </summary>
         /// <returns>Number of daily quests that can still be accepted today.</returns>
+        /// <example>
+        /// <code>
+        /// var allowances = BeastTribeHelper.DailyQuestAllowance();
+        /// </code>
+        /// </example>
         public static int DailyQuestAllowance()
         {
             var dailies = GetCurrentDailies();
@@ -129,6 +134,11 @@ namespace LlamaLibrary.Helpers
         /// </summary>
         /// <param name="tribe">The 1-based index of the tribe as used in the game data.</param>
         /// <returns>The player's current rank (reputation level) with the specified tribe.</returns>
+        /// <example>
+        /// <code>
+        /// var rank = BeastTribeHelper.GetBeastTribeRank(tribeId);
+        /// </code>
+        /// </example>
         public static int GetBeastTribeRank(int tribe)
         {
             var tribes = GetBeastTribes();
