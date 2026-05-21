@@ -1,12 +1,12 @@
 ﻿using System;
 using ff14bot;
 using ff14bot.Managers;
+using LlamaLibrary.ClientDataHelpers;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
-    //TODO This agent has stupid hardcoded memory offsets in Refresh()
     public class AgentOutOnLimb : AgentInterface<AgentOutOnLimb>, IAgent
     {
         public IntPtr RegisteredVtable => AgentOutOnLimbOffsets.VTable;
@@ -27,23 +27,28 @@ namespace LlamaLibrary.RemoteAgents
             set => Core.Memory.Write(Pointer + AgentOutOnLimbOffsets.CursorLocked, (byte)(value ? 0 : 1));
         }
 
+        [Obsolete("Use Director Instead")]
         public int CursorLocation
         {
             get => Core.Memory.Read<ushort>(addressLocation);
             set => Core.Memory.Write(addressLocation, LocationValue(value));
         }
 
-        public bool IsReadyBotanist => Core.Memory.Read<byte>(Pointer + AgentOutOnLimbOffsets.IsReady) == 3;
+        public bool IsReadyBotanist => Core.Memory.NoCacheRead<byte>(Pointer + AgentOutOnLimbOffsets.IsReady) == 3;
 
-        public bool IsReadyAimg => Core.Memory.Read<byte>(Pointer + AgentOutOnLimbOffsets.IsReady) == 2;
+        public bool IsReadyAimg => Core.Memory.NoCacheRead<byte>(Pointer + AgentOutOnLimbOffsets.IsReady) == 2;
 
         public void Refresh()
         {
-            var intptr_0 = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
-            var intptr_1 = Core.Memory.Read<IntPtr>(intptr_0 + 0x38); //AtkArrayDataHolder pointer
-            var intptr_2 = Core.Memory.Read<IntPtr>(intptr_1 + 0x18); //AtkArrayDataHolder->NumberArrays pointer
-            var intptr_3 = Core.Memory.Read<IntPtr>(intptr_2 + AgentOutOnLimbOffsets.LastOffset); //0x310
-            addressLocation = Core.Memory.Read<IntPtr>(intptr_3 + AgentOutOnLimbOffsets.LastLastOffset);
+            var numArray = AtkArrayDataHolder.NumberArray(104);
+
+            if (numArray == IntPtr.Zero)
+            {
+                return;
+            }
+
+            addressLocation = Core.Memory.Read<IntPtr>(numArray + RetainerHistoryOffsets.NumberArrayData_IntArray);
+
         }
 
         private ushort LocationValue(int percent)
@@ -51,7 +56,7 @@ namespace LlamaLibrary.RemoteAgents
             var location = (ushort)((percent * 100) + rnd.Next(0, 99));
 
             //Logger.Info($"Setting Location {location}");
-            return location;
+            return Math.Clamp(location, (ushort)0, (ushort)9999);
         }
     }
 }
