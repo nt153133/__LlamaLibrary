@@ -4,8 +4,6 @@ LlamaLibrary is a robust support library for RebornBuddy botbases, plugins, comb
 
 It provides functionality that RebornBuddy does not expose directly, including helper functions, template botbases and plugins, offset and client-function access, remote window and agent wrappers, retainer helpers, script conditions, and shared game data/resources.
 
-Brand site: [llamamagic.cc](https://llamamagic.cc)
-
 ## Runtime vs Development
 
 For users, LlamaLibrary is installed into the RebornBuddy folder at:
