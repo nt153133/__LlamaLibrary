@@ -28,6 +28,9 @@ namespace LlamaLibrary.Extensions
 
         private static IntPtr _eventHandler = IntPtr.Zero;
 
+        /// <summary>
+        /// Gets the pointer to the game's event handler, retrieved from memory.
+        /// </summary>
         public static IntPtr EventHandler
         {
             get
@@ -41,6 +44,12 @@ namespace LlamaLibrary.Extensions
             }
         }
 
+        /// <summary>
+        /// Splits a specified amount from the item stack in this bag slot into a new stack.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the stack to split.</param>
+        /// <param name="amount">The number of items to split into the new stack.</param>
+        /// <returns><see langword="true"/> if the split operation was successful; otherwise <see langword="false"/>.</returns>
         public static bool Split(this BagSlot bagSlot, int amount)
         {
             if (bagSlot.Count > amount)
@@ -55,6 +64,10 @@ namespace LlamaLibrary.Extensions
             return false;
         }
 
+        /// <summary>
+        /// Discards the item(s) contained in this bag slot.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot to discard.</param>
         public static void Discard(this BagSlot bagSlot)
         {
             Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.ItemDiscardFunc,
@@ -63,6 +76,10 @@ namespace LlamaLibrary.Extensions
                                                  bagSlot.Slot);
         }
 
+        /// <summary>
+        /// Initiates the desynthesis process for the item in this bag slot.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the item to desynthesize.</param>
         public static void Desynth(this BagSlot bagSlot)
         {
             Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
@@ -73,6 +90,11 @@ namespace LlamaLibrary.Extensions
                                                  2);
         }
 
+        /// <summary>
+        /// Lowers the quality of the item in this bag slot (e.g., from High Quality to Normal Quality).
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the item to lower in quality.</param>
+        /// <returns><see langword="true"/> if the quality was successfully lowered; otherwise <see langword="false"/>.</returns>
         public static bool LowerQuality(this BagSlot bagSlot)
         {
             if (bagSlot.IsHighQuality || bagSlot.IsCollectable)
@@ -88,6 +110,10 @@ namespace LlamaLibrary.Extensions
             return false;
         }
 
+        /// <summary>
+        /// Initiates aetherial reduction on the item in this bag slot.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the item to reduce.</param>
         public static void Reduce(this BagSlot bagSlot)
         {
             Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
@@ -98,6 +124,11 @@ namespace LlamaLibrary.Extensions
                                                  0);
         }
 
+        /// <summary>
+        /// Retrieves a specified quantity of items from a retainer's inventory into the player's inventory.
+        /// </summary>
+        /// <param name="bagSlot">The retainer bag slot to retrieve items from.</param>
+        /// <param name="amount">The quantity of items to retrieve.</param>
         public static void RetainerRetrieveQuantity(this BagSlot bagSlot, int amount)
         {
             if (bagSlot.Count < amount)
@@ -112,6 +143,11 @@ namespace LlamaLibrary.Extensions
                                                  amount);
         }
 
+        /// <summary>
+        /// Entrusts a specified quantity of items from the player's inventory to a retainer.
+        /// </summary>
+        /// <param name="bagSlot">The player bag slot containing items to entrust.</param>
+        /// <param name="amount">The quantity of items to entrust.</param>
         public static void RetainerEntrustQuantity(this BagSlot bagSlot, int amount)
         {
             Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.EntrustRetainerFunc,
@@ -122,6 +158,10 @@ namespace LlamaLibrary.Extensions
                                                  amount);
         }
 
+        /// <summary>
+        /// Sells the item in this bag slot to a retainer.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the item to sell.</param>
         public static void RetainerSellItem(this BagSlot bagSlot)
         {
             Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.SellFunc,
@@ -131,6 +171,10 @@ namespace LlamaLibrary.Extensions
                                                  0);
         }
 
+        /// <summary>
+        /// Sells the item in this bag slot to an NPC merchant.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the item to sell.</param>
         public static void NpcSellItem(this BagSlot bagSlot)
         {
             Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.SellFunc,
@@ -140,6 +184,10 @@ namespace LlamaLibrary.Extensions
                                                  0);
         }
 
+        /// <summary>
+        /// Removes all materia from the item in this bag slot.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the item to remove materia from.</param>
         public static void RemoveMateria(this BagSlot bagSlot)
         {
             Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.RemoveMateriaFunc,
@@ -150,6 +198,10 @@ namespace LlamaLibrary.Extensions
                                                  0);
         }
 
+        /// <summary>
+        /// Extracts materia from the item in this bag slot if it has reached 100% spiritbond.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the item to extract materia from.</param>
         public static void ExtractMateria(this BagSlot bagSlot)
         {
             if ((int)bagSlot.SpiritBond != 100)
@@ -163,6 +215,12 @@ namespace LlamaLibrary.Extensions
                                                  bagSlot.Slot);
         }
 
+        /// <summary>
+        /// Affixes a piece of materia to a piece of equipment.
+        /// </summary>
+        /// <param name="Equipment">The equipment bag slot to receive the materia.</param>
+        /// <param name="Materia">The bag slot containing the materia to be affixed.</param>
+        /// <param name="BulkMeld">If <see langword="true"/>, attempts to perform a bulk meld operation.</param>
         public static void AffixMateria(this BagSlot Equipment, BagSlot Materia, bool BulkMeld)
         {
             var offset = Core.Memory.Read<int>(Core.Me.Pointer + BagSlotExtensionsOffsets.PlayerMeldOffset);
@@ -175,6 +233,10 @@ namespace LlamaLibrary.Extensions
                                                    BulkMeld ? 1 : 0);
         }
 
+        /// <summary>
+        /// Opens the materia melding interface for the item in this bag slot.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot to open the melding interface for.</param>
         public static void OpenMeldInterface(this BagSlot bagSlot)
         {
             Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.MeldWindowFunc,
@@ -182,6 +244,11 @@ namespace LlamaLibrary.Extensions
                                                  bagSlot.Pointer);
         }
 
+        /// <summary>
+        /// Retrieves the suggested posting price for the item in this bag slot from the game's inventory manager.
+        /// </summary>
+        /// <param name="slot">The bag slot to check.</param>
+        /// <returns>The posting price as a <see cref="uint"/>.</returns>
         public static uint PostingPrice(this BagSlot slot)
         {
             return Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.GetPostingPriceSlot,
@@ -189,6 +256,11 @@ namespace LlamaLibrary.Extensions
                                                         slot.Slot);
         }
 
+        /// <summary>
+        /// Checks if the item in this bag slot has any materia affixed to it.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot to check.</param>
+        /// <returns><see langword="true"/> if at least one materia is present; otherwise <see langword="false"/>.</returns>
         public static bool HasMateria(this BagSlot bagSlot)
         {
             var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + BagSlotExtensionsOffsets.BagSlotMateriaType, 5);
@@ -203,6 +275,11 @@ namespace LlamaLibrary.Extensions
             return false;
         }
 
+        /// <summary>
+        /// Counts the number of materia pieces affixed to the item in this bag slot.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot to check.</param>
+        /// <returns>The number of affixed materia pieces (up to 5).</returns>
         public static int MateriaCount(this BagSlot bagSlot)
         {
             var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + BagSlotExtensionsOffsets.BagSlotMateriaType, 5);
@@ -218,6 +295,11 @@ namespace LlamaLibrary.Extensions
             return count;
         }
 
+        /// <summary>
+        /// Retrieves a list of <see cref="MateriaItem"/> objects representing the materia affixed to the item in this bag slot.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot to retrieve materia information for.</param>
+        /// <returns>A list of <see cref="MateriaItem"/> instances.</returns>
         public static List<MateriaItem> Materia(this BagSlot bagSlot)
         {
             var materiaType = Core.Memory.ReadArray<ushort>(bagSlot.Pointer + BagSlotExtensionsOffsets.BagSlotMateriaType, 5);
@@ -245,6 +327,10 @@ namespace LlamaLibrary.Extensions
             return materia;
         }
 
+        /// <summary>
+        /// Adds the item in this bag slot to the current trade window.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the item to trade.</param>
         public static void TradeItem(this BagSlot bagSlot)
         {
             uint result;
@@ -262,26 +348,54 @@ namespace LlamaLibrary.Extensions
             }
         }
 
+        /// <summary>
+        /// Determines whether the item in this bag slot is eligible for trading with other players.
+        /// </summary>
+        /// <param name="slot">The bag slot to check.</param>
+        /// <returns>
+        /// <see langword="true"/> if the item is not untradeable, not a collectable, and has no spiritbond;
+        /// otherwise <see langword="false"/>.
+        /// </returns>
         public static bool CanTrade(this BagSlot slot)
         {
             return !slot.Item.Untradeable && !slot.IsCollectable && !(slot.SpiritBond > 0);
         }
 
+        /// <summary>
+        /// Places an aetherial wheel from this bag slot into a nearby housing aetherial wheel stand.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the aetherial wheel.</param>
         public static void PlaceAetherWheel(this BagSlot bagSlot)
         {
             PlaceAetherWheel((uint)bagSlot.BagId, bagSlot.Slot);
         }
 
+        /// <summary>
+        /// Attempts to move a specified quantity of items from the player's inventory to the chocobo saddlebag.
+        /// </summary>
+        /// <param name="bagSlot">The player bag slot containing the items.</param>
+        /// <param name="amount">The quantity to move.</param>
+        /// <returns><see langword="true"/> if the operation was successful (resulted in a null pointer return from memory call); otherwise <see langword="false"/>.</returns>
         public static bool AddToSaddlebagQuantity(this BagSlot bagSlot, uint amount)
         {
             return AddToSaddleCall(Offsets.g_InventoryManager, (uint)bagSlot.BagId, bagSlot.Slot, amount) == IntPtr.Zero;
         }
 
+        /// <summary>
+        /// Attempts to move a specified quantity of items from the chocobo saddlebag to the player's inventory.
+        /// </summary>
+        /// <param name="bagSlot">The saddlebag slot containing the items.</param>
+        /// <param name="amount">The quantity to move.</param>
+        /// <returns><see langword="true"/> if the operation was successful; otherwise <see langword="false"/>.</returns>
         public static bool RemoveFromSaddlebagQuantity(this BagSlot bagSlot, uint amount)
         {
             return RemoveFromSaddleCall(Offsets.g_InventoryManager, (uint)bagSlot.BagId, bagSlot.Slot, amount) == IntPtr.Zero;
         }
 
+        /// <summary>
+        /// Uses the item in this bag slot directly via the game's internal UseItem function.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the item to use.</param>
         public static void UseItemRaw(this BagSlot bagSlot)
         {
             BagSlotUseItemCall(Offsets.g_InventoryManager, bagSlot.TrueItemId, (uint)bagSlot.BagId, bagSlot.Slot);
@@ -332,11 +446,21 @@ namespace LlamaLibrary.Extensions
                                                           destSlot);
         }
 
+        /// <summary>
+        /// Moves items from a source bag slot to a destination bag slot within the Free Company chest.
+        /// </summary>
+        /// <param name="sourceBagSlot">The source bag slot.</param>
+        /// <param name="destBagSlot">The destination bag slot.</param>
         public static void FcChestMove(this BagSlot sourceBagSlot, BagSlot destBagSlot)
         {
             FcChestCall((uint)sourceBagSlot.BagId, sourceBagSlot.Slot, (uint)destBagSlot.BagId, destBagSlot.Slot);
         }
 
+        /// <summary>
+        /// Returns a housing item from the storeroom to the player's inventory.
+        /// </summary>
+        /// <param name="bagSlot">The storeroom bag slot containing the item.</param>
+        /// <returns><see langword="true"/> if the item was successfully moved; otherwise <see langword="false"/>.</returns>
         public static bool StoreroomReturnToInventory(this BagSlot bagSlot)
         {
             if (!bagSlot.IsFilled || InventoryManager.FreeSlots < 1)
@@ -351,6 +475,11 @@ namespace LlamaLibrary.Extensions
             return true;
         }
 
+        /// <summary>
+        /// Moves a housing item from the player's inventory to the housing storeroom.
+        /// </summary>
+        /// <param name="bagSlot">The player bag slot containing the item.</param>
+        /// <returns><see langword="true"/> if the item was successfully moved; otherwise <see langword="false"/>.</returns>
         public static bool InventoryToStoreroom(this BagSlot bagSlot)
         {
             if (!bagSlot.IsFilled)
@@ -365,11 +494,25 @@ namespace LlamaLibrary.Extensions
             return true;
         }
 
+        /// <summary>
+        /// Reads the stain (dye) identifier associated with the item in this bag slot.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot to check.</param>
+        /// <returns>The stain ID as a <see cref="byte"/>.</returns>
         public static byte StainId(this BagSlot bagSlot)
         {
             return Core.Memory.Read<byte>(bagSlot.Pointer + BagSlotExtensionsOffsets.StainId);
         }
 
+        /// <summary>
+        /// Attempts to apply a dye to the specified item using another bag slot as the dye source.
+        /// </summary>
+        /// <param name="item">The item to be dyed.</param>
+        /// <param name="dye">The bag slot containing the dye to use.</param>
+        /// <returns>A status byte indicating the result of the dyeing operation.</returns>
+        /// <remarks>
+        /// This function was reported as broken in game version 7.5.
+        /// </remarks>
         public static byte DyeItem(this BagSlot item, BagSlot dye)
         {
             //TODO Function broke in 7.5
@@ -393,21 +536,41 @@ namespace LlamaLibrary.Extensions
                                                         bagslot.Address);
         }
 
+        /// <summary>
+        /// Entrusts a specified quantity (as <see cref="uint"/>) of items from the player's inventory to a retainer.
+        /// </summary>
+        /// <param name="bagSlot">The player bag slot containing items to entrust.</param>
+        /// <param name="amount">The quantity of items to entrust.</param>
         public static void RetainerEntrustQuantity(this BagSlot bagSlot, uint amount)
         {
             bagSlot.RetainerEntrustQuantity((int)amount);
         }
 
+        /// <summary>
+        /// Retrieves a specified quantity (as <see cref="uint"/>) of items from a retainer's inventory.
+        /// </summary>
+        /// <param name="bagSlot">The retainer bag slot to retrieve items from.</param>
+        /// <param name="amount">The quantity of items to retrieve.</param>
         public static void RetainerRetrieveQuantity(this BagSlot bagSlot, uint amount)
         {
             bagSlot.RetainerRetrieveQuantity((int)amount);
         }
 
+        /// <summary>
+        /// Gets the localized name of the item in this bag slot, appending "(HQ)" if the item is high quality.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot to retrieve the name for.</param>
+        /// <returns>The localized item name string.</returns>
         public static string ItemName(this BagSlot bagSlot)
         {
             return GetItemName(bagSlot.TrueItemId);
         }
 
+        /// <summary>
+        /// Gets the localized name for the specified item ID, appending "(HQ)" if the ID indicates a high-quality item.
+        /// </summary>
+        /// <param name="ItemId">The item ID to look up.</param>
+        /// <returns>The localized item name string.</returns>
         public static string GetItemName(uint ItemId)
         {
             if (ItemId >= 1000000)
@@ -420,6 +583,14 @@ namespace LlamaLibrary.Extensions
 
         public const int DefaultBagSlotMoveWait = 600;
 
+        /// <summary>
+        /// Wait for a bag slot's contents to change (due to a move or stack operation) before proceeding.
+        /// Adjusts the wait time based on current network ping.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot to monitor.</param>
+        /// <param name="curSlotCount">The initial item count in the slot.</param>
+        /// <param name="waitMs">The maximum time to wait in milliseconds.</param>
+        /// <returns><see langword="true"/> if the slot count changed or became invalid within the timeout; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> BagSlotMoveWait(BagSlot bagSlot, uint curSlotCount, int waitMs = DefaultBagSlotMoveWait)
         {
             var sw = Stopwatch.StartNew();
@@ -446,6 +617,12 @@ namespace LlamaLibrary.Extensions
             return false;
         }
 
+        /// <summary>
+        /// Wait for a bag slot to become empty (unfilled) before proceeding.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot to monitor.</param>
+        /// <param name="waitMs">The maximum time to wait in milliseconds (doubled internally for safety).</param>
+        /// <returns><see langword="true"/> if the slot became unfilled within the timeout; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> BagSlotNotFilledWait(BagSlot bagSlot, int waitMs = DefaultBagSlotMoveWait)
         {
             var sw = new Stopwatch();
@@ -466,6 +643,13 @@ namespace LlamaLibrary.Extensions
             return false;
         }
 
+        /// <summary>
+        /// Attempts to move a specified quantity of items to the saddlebag and waits for the operation to complete.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing items to move.</param>
+        /// <param name="moveCount">The quantity to move.</param>
+        /// <param name="waitMs">Maximum wait time in milliseconds.</param>
+        /// <returns><see langword="true"/> if the move was successful; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> TryAddToSaddlebag(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
         {
             var curSlotCount = bagSlot.Count;
@@ -473,6 +657,13 @@ namespace LlamaLibrary.Extensions
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
         }
 
+        /// <summary>
+        /// Attempts to retrieve a specified quantity of items from the saddlebag and waits for the operation to complete.
+        /// </summary>
+        /// <param name="bagSlot">The saddlebag slot containing items to retrieve.</param>
+        /// <param name="moveCount">The quantity to retrieve.</param>
+        /// <param name="waitMs">Maximum wait time in milliseconds.</param>
+        /// <returns><see langword="true"/> if the move was successful; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> TryRemoveFromSaddlebag(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
         {
             var curSlotCount = bagSlot.Count;
@@ -480,6 +671,12 @@ namespace LlamaLibrary.Extensions
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
         }
 
+        /// <summary>
+        /// Attempts to sell the item in this bag slot to a retainer and waits for the operation to complete.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing the item to sell.</param>
+        /// <param name="waitMs">Maximum wait time in milliseconds.</param>
+        /// <returns><see langword="true"/> if the item was sold; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> TrySellItem(this BagSlot bagSlot, int waitMs = DefaultBagSlotMoveWait)
         {
             var curSlotCount = bagSlot.Count;
@@ -487,6 +684,14 @@ namespace LlamaLibrary.Extensions
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
         }
 
+        /// <summary>
+        /// Attempts to entrust a specified quantity of items to a retainer and waits for the operation to complete.
+        /// If the direct entrust fails, it attempts to move the item to the first free retainer bag slot.
+        /// </summary>
+        /// <param name="bagSlot">The bag slot containing items to entrust.</param>
+        /// <param name="moveCount">The quantity to entrust.</param>
+        /// <param name="waitMs">Maximum wait time in milliseconds.</param>
+        /// <returns><see langword="true"/> if the items were successfully entrusted; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> TryEntrustToRetainer(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
         {
             var curSlotCount = bagSlot.Count;
@@ -505,6 +710,13 @@ namespace LlamaLibrary.Extensions
             return true;
         }
 
+        /// <summary>
+        /// Attempts to retrieve a specified quantity of items from a retainer and waits for the operation to complete.
+        /// </summary>
+        /// <param name="bagSlot">The retainer bag slot containing items to retrieve.</param>
+        /// <param name="moveCount">The quantity to retrieve.</param>
+        /// <param name="waitMs">Maximum wait time in milliseconds.</param>
+        /// <returns><see langword="true"/> if the items were successfully retrieved; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> TryRetrieveFromRetainer(this BagSlot bagSlot, uint moveCount, int waitMs = DefaultBagSlotMoveWait)
         {
             var curSlotCount = bagSlot.Count;
@@ -512,6 +724,13 @@ namespace LlamaLibrary.Extensions
             return await BagSlotMoveWait(bagSlot, curSlotCount, waitMs);
         }
 
+        /// <summary>
+        /// Attempts to return a housing item from the storeroom to the player's inventory,
+        /// handling the confirmation dialog if it appears, and waits for the operation to complete.
+        /// </summary>
+        /// <param name="bagSlot">The storeroom bag slot containing the item.</param>
+        /// <param name="waitMs">Maximum wait time in milliseconds.</param>
+        /// <returns><see langword="true"/> if the item was successfully returned; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> TryStoreroomReturnToInventory(this BagSlot bagSlot, int waitMs = DefaultBagSlotMoveWait)
         {
             if (bagSlot.StoreroomReturnToInventory())
@@ -531,6 +750,12 @@ namespace LlamaLibrary.Extensions
             return false;
         }
 
+        /// <summary>
+        /// Attempts to move a housing item from the player's inventory to the storeroom and waits for the operation to complete.
+        /// </summary>
+        /// <param name="bagSlot">The player bag slot containing the item.</param>
+        /// <param name="waitMs">Maximum wait time in milliseconds.</param>
+        /// <returns><see langword="true"/> if the item was successfully moved; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> TryInventoryToStoreroom(this BagSlot bagSlot, int waitMs = DefaultBagSlotMoveWait)
         {
             if (bagSlot.InventoryToStoreroom())
@@ -541,6 +766,12 @@ namespace LlamaLibrary.Extensions
             return false;
         }
 
+        /// <summary>
+        /// Attempts to dye an item using a specified dye and waits for the process (including the desynthesis/dye lock) to complete.
+        /// </summary>
+        /// <param name="item">The equipment item to dye.</param>
+        /// <param name="dye">The bag slot containing the dye.</param>
+        /// <returns><see langword="true"/> if the dyeing process completed successfully; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> TryDyeItem(this BagSlot item, BagSlot dye)
         {
             var result = item.DyeItem(dye);
