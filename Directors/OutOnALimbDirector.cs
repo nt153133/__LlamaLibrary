@@ -133,6 +133,12 @@ namespace LlamaLibrary.Directors
         /// </value>
         public static int DoubleDownPayout => Core.Memory.NoCacheRead<int>(Pointer + OutOnALimbDirectorOffsets.DoubleDownPayout);
 
+        public static byte SwingResultRaw
+        {
+            get => Core.Memory.NoCacheRead<byte>(Pointer + OutOnALimbDirectorOffsets.SwingResult);
+            set => Core.Memory.Write(Pointer + OutOnALimbDirectorOffsets.SwingResult, value);
+        }
+
         /// <summary>
         /// The result of the last swing. Determines how much progress the log receives per swing
         /// (Excellent = most damage, TryAgain = least or none).
@@ -145,22 +151,26 @@ namespace LlamaLibrary.Directors
         {
             get
             {
-                var result = Core.Memory.NoCacheRead<byte>(Pointer + OutOnALimbDirectorOffsets.SwingResult);
-                switch (result)
+                var result = SwingResultRaw;
+
+                return result switch
                 {
-                    case 182 or 177:
-                        return SwingResultType.TryAgain;
-                    case 183 or 178:
-                        return SwingResultType.Good;
-                    case 184 or 179:
-                        return SwingResultType.Great;
-                    case 185 or 180:
-                        return SwingResultType.Excellent;
-                    default:
-                        return SwingResultType.TryAgain;
-                }
+                    182 or 177 => SwingResultType.TryAgain,
+                    183 or 178 => SwingResultType.Good,
+                    184 or 179 => SwingResultType.Great,
+                    185 or 180 => SwingResultType.Excellent,
+                    _          => LogUnexpectedAndDefault(result)
+                };
             }
-            set => Core.Memory.Write(Pointer + OutOnALimbDirectorOffsets.SwingResult, value);
+            // Explicitly cast to byte so you are writing the primitive value, not the enum token
+            set => Core.Memory.Write(Pointer + OutOnALimbDirectorOffsets.SwingResult, (byte)value);
+        }
+
+        // Out-of-line helper to keep the property getter clean
+        private static SwingResultType LogUnexpectedAndDefault(byte result)
+        {
+            ff14bot.Helpers.Logging.WriteDiagnostic($"Unexpected swing result value: {result}. Defaulting to TryAgain.");
+            return SwingResultType.TryAgain;
         }
 
         /// <summary>
