@@ -1523,6 +1523,10 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search C6 87 ? ? ? ? ? 8B 46 ? 89 87 ? ? ? ? 83 7E ? ? Add 2 Read32")] //7.2
         internal static int SwingsTaken;
 
+        [Offset("Search 0F B6 B3 ? ? ? ? 48 8B 0D ? ? ? ? 2B F0 44 8B B3 ? ? ? ? Add 3 Read32")]
+        [OffsetTC("Search 0F B6 9F ? ? ? ? 48 8B 0D ? ? ? ? 2B D8 44 8B B7 ? ? ? ? Add 3 Read32")] //7.2
+        internal static int MaxSwings;
+
         [Offset("Search 80 3D ? ? ? ? ? 0F 84 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? Add 2 TraceRelative")]
         internal static IntPtr IsActiveByte;
     }

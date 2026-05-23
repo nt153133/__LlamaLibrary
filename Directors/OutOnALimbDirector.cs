@@ -1,5 +1,6 @@
 ﻿using System;
 using ff14bot;
+using ff14bot.Managers;
 using LlamaLibrary.ClientDataHelpers;
 using LlamaLibrary.Memory.Attributes;
 using LlamaLibrary.Utilities;
@@ -8,7 +9,7 @@ using LlamaLibrary.Memory;
 namespace LlamaLibrary.Directors
 {
     /// <summary>
-    /// Provides read-only access to FFXIV's internal director state for the <c>Out on a Limb</c> mini-game
+    /// Provides read-only access to FFXIV's internal director state for the <c>Out on a Limb</c> and <c>The Finer Miner</c> mini-game
     /// </summary>
     /// <remarks>
     /// <para>
@@ -142,7 +143,23 @@ namespace LlamaLibrary.Directors
         /// </value>
         public static SwingResultType SwingResult
         {
-            get => Core.Memory.NoCacheRead<SwingResultType>(Pointer + OutOnALimbDirectorOffsets.SwingResult);
+            get
+            {
+                var result = Core.Memory.NoCacheRead<byte>(Pointer + OutOnALimbDirectorOffsets.SwingResult);
+                switch (result)
+                {
+                    case 182 or 177:
+                        return SwingResultType.TryAgain;
+                    case 183 or 178:
+                        return SwingResultType.Good;
+                    case 184 or 179:
+                        return SwingResultType.Great;
+                    case 185 or 180:
+                        return SwingResultType.Excellent;
+                    default:
+                        return SwingResultType.TryAgain;
+                }
+            }
             set => Core.Memory.Write(Pointer + OutOnALimbDirectorOffsets.SwingResult, value);
         }
 
@@ -179,10 +196,10 @@ namespace LlamaLibrary.Directors
         public static byte MaxProgress => 10;
 
         /// <summary>
-        /// The maximum number of swings allowed per round. Fixed at 10.
+        /// The maximum number of swings allowed per round. Exceeding this limit results in a failed round. 10 for out on a limb, 4-6 for The Finer Miner depending on difficulty
         /// </summary>
         /// <value>Fixed value: <c>10</c>.</value>
-        public static byte MaxNumberOfSwings => 10;
+        public static byte MaxNumberOfSwings => Core.Memory.Read<byte>(Pointer + OutOnALimbDirectorOffsets.MaxSwings);
 
         /// <summary>
         /// The number of swings remaining before the round is lost (too many misses).
