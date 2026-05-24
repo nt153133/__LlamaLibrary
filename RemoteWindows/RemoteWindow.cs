@@ -8,10 +8,18 @@ using LlamaLibrary.RemoteWindows.Atk;
 
 namespace LlamaLibrary.RemoteWindows
 {
+    /// <summary>
+    /// A generic base class for remote windows that implement a singleton pattern via <see cref="Instance"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the derived remote window.</typeparam>
     public class RemoteWindow<T> : RemoteWindow
         where T : RemoteWindow<T>, new()
     {
         private static T _instance;
+
+        /// <summary>
+        /// Gets the singleton instance of the remote window.
+        /// </summary>
         public static T Instance => _instance ??= new T();
 
         protected RemoteWindow(string windowName) : base(windowName)
@@ -23,6 +31,10 @@ namespace LlamaLibrary.RemoteWindows
         }
     }
 
+    /// <summary>
+    /// An abstract base class for interacting with FFXIV remote UI windows (addons).
+    /// Provides methods for opening, closing, and sending actions to the window.
+    /// </summary>
     public abstract class RemoteWindow
     {
         //7.1
@@ -36,12 +48,24 @@ namespace LlamaLibrary.RemoteWindows
         private const int Offset2 = 0x178; //4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
 
 
+        /// <summary>
+        /// Gets a value indicating whether the window is currently open and visible in the UI.
+        /// </summary>
         public virtual bool IsOpen => WindowByName != null;
 
+        /// <summary>
+        /// Gets the internal name of the window (e.g., "RetainerList").
+        /// </summary>
         public virtual string WindowName { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref="AgentInterface"/> associated with this window.
+        /// </summary>
         public virtual AgentInterface Agent { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref="AtkAddonControl"/> for the window if it is open.
+        /// </summary>
         public virtual AtkAddonControl? WindowByName => RaptureAtkUnitManager.GetWindowByName(WindowName);
 
         protected bool HasAgentInterfaceId => GetAgentInterfaceId() != 0;
@@ -57,6 +81,9 @@ namespace LlamaLibrary.RemoteWindows
             WindowName = windowName;
         }
 
+        /// <summary>
+        /// Closes the window by sending a standard close action.
+        /// </summary>
         public virtual void Close()
         {
             if (IsOpen)
@@ -101,6 +128,11 @@ namespace LlamaLibrary.RemoteWindows
 
         protected ushort ElementCount => WindowByName != null ? Core.Memory.Read<ushort>(WindowByName.Pointer + Offset0) : (ushort)0;
 
+        /// <summary>
+        /// Sends a raw action to the window using the specified number of ulong pairs.
+        /// </summary>
+        /// <param name="pairCount">The number of parameter pairs being sent.</param>
+        /// <param name="param">The parameters for the action.</param>
         public void SendAction(int pairCount, params ulong[] param)
         {
             if (WindowByName == null)
@@ -114,6 +146,10 @@ namespace LlamaLibrary.RemoteWindows
             }
         }
 
+        /// <summary>
+        /// Attempts to open the window by toggling its associated <see cref="Agent"/>.
+        /// </summary>
+        /// <returns><see langword="true"/> if the window was opened successfully; otherwise <see langword="false"/>.</returns>
         public virtual async Task<bool> Open()
         {
             if (IsOpen)

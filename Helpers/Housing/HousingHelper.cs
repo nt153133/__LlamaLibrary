@@ -117,7 +117,7 @@ namespace LlamaLibrary.Helpers.Housing
         /// </summary>
         /// <example>
         /// <code>
-        /// if (HousingHelper.IsInHousingArea && WorldManager.ZoneId == npc.Location.ZoneId)
+        /// if (HousingHelper.IsInHousingArea &amp;&amp; WorldManager.ZoneId == npc.Location.ZoneId)
         /// {
         ///     ward = HousingHelper.HousingPositionInfo.Ward;
         /// }
@@ -148,7 +148,7 @@ namespace LlamaLibrary.Helpers.Housing
         /// </summary>
         /// <example>
         /// <code>
-        /// if (HousingHelper.IsInsideHouse && HousingHelper.CurrentHouseLocation?.Plot == recordedPlot.Plot)
+        /// if (HousingHelper.IsInsideHouse &amp;&amp; HousingHelper.CurrentHouseLocation?.Plot == recordedPlot.Plot)
         /// {
         ///     return true;
         /// }
