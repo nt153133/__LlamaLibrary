@@ -5,13 +5,23 @@ using LlamaLibrary.Logging;
 
 namespace LlamaLibrary.Retainers
 {
+    /// <summary>
+    /// Provides methods for interacting with the retainer task selection window (SelectString).
+    /// </summary>
     //TODO this is a sad copy of a window since it's only a select string window. I think i have better code for it somewhere.
     public class RetainerTasks
     {
         private static readonly LLogger Log = new(nameof(RetainerRoutine), Colors.White);
 
+        /// <summary>
+        /// Gets a value indicating whether the retainer task selection window is currently open.
+        /// </summary>
         public static bool IsOpen => SelectString.IsOpen;
 
+        /// <summary>
+        /// Attempts to open the retainer's inventory by clicking the first slot in the task menu.
+        /// </summary>
+        /// <returns><see langword="true"/> if the command was sent; otherwise <see langword="false"/>.</returns>
         public static bool OpenInventory()
         {
             if (IsOpen)
@@ -24,6 +34,10 @@ namespace LlamaLibrary.Retainers
             return false;
         }
 
+        /// <summary>
+        /// Attempts to close the retainer's inventory window by sending a close action to either the standard or large inventory window.
+        /// </summary>
+        /// <returns><see langword="true"/> if the window was closed or already closed; otherwise <see langword="false"/>.</returns>
         public static bool CloseInventory()
         {
             if (!IsInventoryOpen())
@@ -46,6 +60,10 @@ namespace LlamaLibrary.Retainers
             return false;
         }
 
+        /// <summary>
+        /// Closes the retainer task menu by clicking the last available slot (typically "Quit").
+        /// </summary>
+        /// <returns><see langword="true"/> if the task window is no longer open; otherwise <see langword="false"/>.</returns>
         public static bool CloseTasks()
         {
             if (IsOpen)
@@ -56,12 +74,19 @@ namespace LlamaLibrary.Retainers
             return !IsOpen;
         }
 
+        /// <summary>
+        /// Checks if either the standard or large retainer inventory window is currently open in the UI.
+        /// </summary>
+        /// <returns><see langword="true"/> if a retainer inventory window is found; otherwise <see langword="false"/>.</returns>
         public static bool IsInventoryOpen()
         {
             return RaptureAtkUnitManager.GetWindowByName("InventoryRetainer") != null ||
                    RaptureAtkUnitManager.GetWindowByName("InventoryRetainerLarge") != null;
         }
 
+        /// <summary>
+        /// Internal utility class containing localized strings for retainer task menu options.
+        /// </summary>
         internal static class RetainerTaskStrings
         {
             //For partial string searches use SelectIconString.ClickLineContains(string) and not Equals
