@@ -8,18 +8,30 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
+    /// <summary>
+    /// Represents the remote agent responsible for managing the list of retainers.
+    /// Provides access to the raw retainer pointer array and helper methods to order retainer information.
+    /// </summary>
     //TODO This agent might be completely useless given the current way I get the retainers
     public class AgentRetainerList : AgentInterface<AgentRetainerList>, IAgent
     {
+        /// <inheritdoc/>
         public IntPtr RegisteredVtable => AgentRetainerListOffsets.VTable;
-        
 
         protected AgentRetainerList(IntPtr pointer) : base(pointer)
         {
         }
 
+        /// <summary>
+        /// Gets an array of pointers to the retainers managed by this agent.
+        /// </summary>
         public IntPtr[] RetainerList => Core.Memory.ReadArray<IntPtr>(Pointer + AgentRetainerListOffsets.AgentRetainerOffset, AgentRetainerListOffsets.MaxRetainers);
 
+        /// <summary>
+        /// Returns an ordered list of <see cref="RetainerInfo"/> based on the memory order in <see cref="RetainerList"/>.
+        /// </summary>
+        /// <param name="retainers">The source array of retainer information to be ordered.</param>
+        /// <returns>An array of <see cref="RetainerInfo"/> sorted according to the agent's internal list.</returns>
         public RetainerInfo[] OrderedRetainerList(RetainerInfo[] retainers)
         {
             var count = RetainerList.Count(i => i != IntPtr.Zero);

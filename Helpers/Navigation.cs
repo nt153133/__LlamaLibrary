@@ -611,7 +611,7 @@ namespace LlamaLibrary.Helpers
         /// </summary>
         /// <example>
         /// <code>
-        /// if (WorldManager.ZoneId != 144 && await Navigation.GetToAE(62) == default)
+        /// if (WorldManager.ZoneId != 144 &amp;&amp; await Navigation.GetToAE(62) == default)
         /// {
         ///     Log.Error("Could not reach aetheryte.");
         /// }
