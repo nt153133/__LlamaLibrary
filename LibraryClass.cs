@@ -15,6 +15,10 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary;
 
+/// <summary>
+/// The main entry point for LlamaLibrary, implementing the RebornBuddy <see cref="ILibrary"/> interface.
+/// Handles early initialization, memory offset resolution, and safe mode detection.
+/// </summary>
 public class LibraryClass : ILibrary
 {
     private const string SafeModeArgument = "-safemode";
@@ -25,8 +29,17 @@ public class LibraryClass : ILibrary
     [DllImport("USER32.dll")]
     static extern short GetKeyState(VirtualKeyStates nVirtKey);
 
+    /// <summary>
+    /// Gets a value indicating whether the library is running in safe mode.
+    /// Safe mode disables or restricts certain features to prevent issues during startup or debugging.
+    /// </summary>
     public static bool SafeMode { get; private set; }
 
+    /// <summary>
+    /// Performs early initialization before memory offsets are resolved.
+    /// Checks for the "-safemode" command-line argument or Shift+Ctrl key combination to enable safe mode.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation, returning <see langword="true"/> if successful.</returns>
     public async Task<bool> PreOffsetWarmup()
     {
         foreach (var argument in Environment.GetCommandLineArgs())
@@ -58,6 +71,11 @@ public class LibraryClass : ILibrary
         return await OffsetManager.InitLib().ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Performs initialization after memory offsets have been resolved.
+    /// Sets up post-offset dependencies, login events, and hooks into the bot start cycle.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation, returning <see langword="true"/> if successful.</returns>
     public Task<bool> PostOffsetWarmup()
     {
         OffsetManager.SetPostOffsets();
@@ -127,6 +145,9 @@ public class LibraryClass : ILibrary
     }
 }
 
+/// <summary>
+/// Defines virtual key codes used for checking keyboard state via Win32 API.
+/// </summary>
 public enum VirtualKeyStates
 {
     VK_LBUTTON = 0x01,
