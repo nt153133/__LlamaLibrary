@@ -12,6 +12,11 @@ using Newtonsoft.Json.Serialization;
 
 namespace LlamaLibrary;
 
+/// <summary>
+/// Provides a proxy for resolving and loading assemblies within the RebornBuddy AppDomain.
+/// This ensures that dependencies like <c>Newtonsoft.Json</c> and <c>GreyMagic</c> are correctly resolved
+/// even when loaded from different contexts or versions.
+/// </summary>
 public static class AssemblyProxy
 {
     private static readonly ConcurrentDictionary<string, Assembly> Assemblies = new ConcurrentDictionary<string, Assembly>(StringComparer.Ordinal);
@@ -19,6 +24,10 @@ public static class AssemblyProxy
     private static bool _initialized;
     private static readonly object Lock = new object();
 
+    /// <summary>
+    /// Initializes the assembly proxy and registers core assemblies for resolution.
+    /// Also hooks into the <see cref="AppDomain.AssemblyResolve"/> event.
+    /// </summary>
     public static void Init()
     {
         lock (Lock)
@@ -56,6 +65,11 @@ public static class AssemblyProxy
         AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
     }
 
+    /// <summary>
+    /// Registers an assembly with the proxy for later resolution.
+    /// </summary>
+    /// <param name="name">The short name of the assembly (e.g., "Newtonsoft").</param>
+    /// <param name="assembly">The <see cref="Assembly"/> instance to register.</param>
     public static void AddAssembly(string name, Assembly assembly)
     {
         if (string.IsNullOrEmpty(name))
@@ -81,6 +95,12 @@ public static class AssemblyProxy
         return null;
     }
 
+    /// <summary>
+    /// A manual assembly resolution handler that redirects core library requests to the correct instances.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="args">The event data containing the name of the assembly to resolve.</param>
+    /// <returns>The resolved <see cref="Assembly"/>, or <see langword="null"/> if resolution fails.</returns>
     public static Assembly OnCurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
     {
         var assemblyName = new AssemblyName(args.Name);
