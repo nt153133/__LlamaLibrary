@@ -16,9 +16,28 @@ namespace LlamaLibrary.Helpers;
 /// Base decorator used to create and register orderbot hooks with the TreeHooks system.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Derive from this class and implement <see cref="HookName"/>, <see cref="HookDescription"/>,
 /// <see cref="ShouldRun(object)"/> and <see cref="Run"/> to provide hook behavior. The constructor
 /// creates a coroutine child that invokes the hook logic and attaches it as the decorator's child.
+/// </para>
+/// <para>
+/// Hooks registered in the same <see cref="Location"/> slot are wrapped in a <c>PrioritySelector</c>
+/// by the TreeHooks system. Each hook is evaluated in registration order, and the selector stops as
+/// soon as one returns <c>RunStatus.Success</c>. The return value of <see cref="Run"/> controls this:
+/// </para>
+/// <list type="bullet">
+///   <item><description>
+///     <b>Return <c>false</c></b> for cooperative/task hooks (updating retainers, refreshing market
+///     listings, printing summaries, etc.). The hook completes its work and passes through, allowing
+///     all subsequent hooks in the slot to also evaluate this tick.
+///   </description></item>
+///   <item><description>
+///     <b>Return <c>true</c></b> for exclusive/intercepting hooks (dialog handlers, death recovery,
+///     any situation where no other hook or bot logic should run while this hook is active). This
+///     consumes the tick and skips all remaining hooks.
+///   </description></item>
+/// </list>
 /// </remarks>
 public abstract class OrderbotHook : Decorator
 {
@@ -79,18 +98,41 @@ public abstract class OrderbotHook : Decorator
     /// Determines whether this hook should run for the provided behavior-tree <paramref name="context"/>.
     /// </summary>
     /// <param name="context">The behavior-tree context passed into <see cref="CanRun(object)"/>.</param>
-    /// <returns><c>true</c> if the hook should run for the given context; otherwise <c>false</c>.</returns>
-    /// <remarks>Implementations should be quick and non-blocking. This is used by the decorator to decide execution.</remarks>
+    /// <returns>
+    /// <c>true</c> if the conditions for running this hook are met and <see cref="Run"/> should be
+    /// invoked; <c>false</c> to skip this hook entirely for this tick (equivalent to
+    /// <c>RunStatus.Failure</c>, allowing the next hook in the slot to evaluate).
+    /// </returns>
+    /// <remarks>
+    /// Implementations must be synchronous and fast — this is called every tick as a guard.
+    /// Do not perform async work or blocking I/O here.
+    /// </remarks>
     protected abstract bool ShouldRun(object context);
 
     /// <summary>
     /// Executes the hook's logic asynchronously.
     /// </summary>
     /// <returns>
-    /// A <see cref="Task"/> that completes with <c>true</c> if the hook completed successfully
-    /// (and any downstream behavior should consider the run successful); otherwise <c>false</c>.
+    /// <para>
+    /// <c>true</c> (<c>RunStatus.Success</c>) — <b>exclusive/intercepting</b>: this hook claims the
+    /// current tick. The parent <c>PrioritySelector</c> stops evaluating remaining hooks and the calling
+    /// tree also skips its own siblings for this tick. Use this when the hook must prevent all other
+    /// bot logic from running while it is active (e.g. a dialog handler, a death-recovery routine).
+    /// </para>
+    /// <para>
+    /// <c>false</c> (<c>RunStatus.Failure</c>) — <b>cooperative/task</b>: this hook is done with its
+    /// work and steps aside. The parent <c>PrioritySelector</c> immediately evaluates the next
+    /// registered hook. Use this for independent background tasks (retainer updates, market board
+    /// refreshes, status summaries) that should not prevent other hooks from also running.
+    /// </para>
     /// </returns>
-    /// <remarks>This method is invoked when <see cref="ShouldRun(object)"/> returns <c>true</c>. Implementations may perform async work.</remarks>
+    /// <remarks>
+    /// This method is invoked when <see cref="ShouldRun(object)"/> returns <c>true</c>.
+    /// Note that while the returned <see cref="Task"/> is still running (incomplete), the
+    /// <c>PrioritySelector</c> returns <c>RunStatus.Running</c> and subsequent hooks are stalled
+    /// until this task completes. The <c>true</c>/<c>false</c> distinction only takes effect once
+    /// the task finishes.
+    /// </remarks>
     protected abstract Task<bool> Run();
 
     /// <summary>
