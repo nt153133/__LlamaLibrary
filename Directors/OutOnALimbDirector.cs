@@ -159,6 +159,7 @@ namespace LlamaLibrary.Directors
                     183 or 178 => SwingResultType.Good,
                     184 or 179 => SwingResultType.Great,
                     185 or 180 => SwingResultType.Excellent,
+                    0 => 0,
                     _          => LogUnexpectedAndDefault(result)
                 };
             }
