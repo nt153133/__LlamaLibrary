@@ -27,6 +27,11 @@ namespace LlamaLibrary.Directors
     /// </remarks>
     public static class OutOnALimbDirector
     {
+        #if RB_TC
+        private const int MiniGameNumberArrayIndex = 103;
+        #else
+        private const int MiniGameNumberArrayIndex = 104;
+        #endif
         /// <summary>
         /// Refreshes <see cref="Pointer"/> to the current director. Returns <see langword="false"/> if
         /// the director is not active, in which case <see cref="Pointer"/> is set to <see cref="IntPtr.Zero"/>.
@@ -72,7 +77,7 @@ namespace LlamaLibrary.Directors
                     return IntPtr.Zero;
                 }
 
-                var numArray = AtkArrayDataHolder.NumberArray(104);
+                var numArray = AtkArrayDataHolder.NumberArray(MiniGameNumberArrayIndex);
 
                 if (numArray == IntPtr.Zero)
                 {
