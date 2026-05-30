@@ -12,17 +12,39 @@ using LlamaLibrary.Memory;
 namespace LlamaLibrary.LlamaManagers
 
 {
+    /// <summary>
+    /// Static manager for tracking progress on the "Trials of the Braves" (Relic Weapon) books.
+    /// Handles retrieval of localized book names and completion status for various relic stages.
+    /// </summary>
     public class RelicBookManager
     {
+        /// <summary>
+        /// Gets the current game language used for localized strings.
+        /// </summary>
         public static readonly Language Language;
 
+        /// <summary>Gets the localized name for "The Books of Fire".</summary>
         public static string BooksofFire => CmnDefRelicWeapon025GetNote_00167_9[Language];
+
+        /// <summary>Gets the localized name for "The Books of Fall".</summary>
         public static string BooksofFall => CmnDefRelicWeapon025GetNote_00167_10[Language];
+
+        /// <summary>Gets the localized name for "The Books of Wind".</summary>
         public static string BooksofWind => CmnDefRelicWeapon025GetNote_00167_11[Language];
+
+        /// <summary>Gets the localized name for "The Books of Earth".</summary>
         public static string BooksofEarth => CmnDefRelicWeapon025GetNote_00167_12[Language];
+
+        /// <summary>Gets the localized name for "The Book of Netherfire" (Paladin).</summary>
         public static string PLDBookOfNetherfire => CmnDefRelicWeapon025GetNote_00167_13[Language];
+
+        /// <summary>Gets the localized name for "The Book of Netherfall" (Paladin).</summary>
         public static string PLDBookOfNetherfall => CmnDefRelicWeapon025GetNote_00167_14[Language];
+
+        /// <summary>Gets the localized name for books pertaining to swords (Paladin).</summary>
         public static string PLDBooksOfSwords => CmnDefRelicWeapon025GetNote_00167_7[Language];
+
+        /// <summary>Gets the localized name for books pertaining to shields (Paladin).</summary>
         public static string PLDBooksOfShields => CmnDefRelicWeapon025GetNote_00167_8[Language];
 
         static RelicBookManager()
@@ -122,6 +144,9 @@ namespace LlamaLibrary.LlamaManagers
             { Language.TraditionalChinese, "選擇盾之「黃道文書」" }
         };
 
+        /// <summary>
+        /// Gets the maximum number of objectives required for each book type in a standard relic weapon stage.
+        /// </summary>
         public static Dictionary<RelicBookType, byte> MaxCount = new()
         {
             { RelicBookType.Fire, 3 },
@@ -130,36 +155,65 @@ namespace LlamaLibrary.LlamaManagers
             { RelicBookType.Earth, 1 }
         };
 
+        /// <summary>
+        /// Retrieves the number of completed objectives for a specific book type and relic ID.
+        /// </summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <param name="relicBookType">The category of the book (Fire, Fall, Wind, Earth).</param>
+        /// <returns>The number of objectives completed.</returns>
         public static byte GetNumOfRelicNoteCompleted(uint relicId, RelicBookType relicBookType)
         {
             return Core.Memory.CallInjectedWraper<byte>(RelicBookManagerOffsets.GetNumOfRelicNoteCompleted, RelicBookManagerOffsets.UIRelicNote, relicId, (byte)relicBookType);
         }
 
+        /// <summary>Retrieves the number of completed objectives for "Books of Fire".</summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <returns>The number of objectives completed.</returns>
         public static byte NumOfFireCompleted(uint relicId)
         {
             return GetNumOfRelicNoteCompleted(relicId, RelicBookType.Fire);
         }
 
+        /// <summary>Retrieves the number of completed objectives for "Books of Fall".</summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <returns>The number of objectives completed.</returns>
         public static byte NumOfFallCompleted(uint relicId)
         {
             return GetNumOfRelicNoteCompleted(relicId, RelicBookType.Fall);
         }
 
+        /// <summary>Retrieves the number of completed objectives for "Books of Wind".</summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <returns>The number of objectives completed.</returns>
         public static byte NumOfWindCompleted(uint relicId)
         {
             return GetNumOfRelicNoteCompleted(relicId, RelicBookType.Wind);
         }
 
+        /// <summary>Retrieves the number of completed objectives for "Books of Earth".</summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <returns>The number of objectives completed.</returns>
         public static byte NumOfEarthCompleted(uint relicId)
         {
             return GetNumOfRelicNoteCompleted(relicId, RelicBookType.Earth);
         }
 
+        /// <summary>Checks if a specific book type is fully completed for the given relic ID.</summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <param name="relicBookType">The category of the book.</param>
+        /// <returns><see langword="true"/> if all objectives are completed; otherwise <see langword="false"/>.</returns>
         public static bool IsBookCompleted(uint relicId, RelicBookType relicBookType)
         {
             return GetNumOfRelicNoteCompleted(relicId, relicBookType) >= MaxCountByType(relicId, relicBookType);
         }
 
+        /// <summary>
+        /// Gets the total number of objectives required for a specific relic ID and book type,
+        /// accounting for special cases like Paladin's Curtana and Holy Shield.
+        /// </summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <param name="relicBookType">The category of the book.</param>
+        /// <returns>The total number of objectives to complete.</returns>
         public static byte MaxCountByType(uint relicId, RelicBookType relicBookType)
         {
             return relicId switch
@@ -170,26 +224,45 @@ namespace LlamaLibrary.LlamaManagers
             };
         }
 
+        /// <summary>Checks if the "Books of Fire" are completed.</summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <returns><see langword="true"/> if completed; otherwise <see langword="false"/>.</returns>
         public static bool IsFireCompleted(uint relicId)
         {
             return IsBookCompleted(relicId, RelicBookType.Fire);
         }
 
+        /// <summary>Checks if the "Books of Fall" are completed.</summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <returns><see langword="true"/> if completed; otherwise <see langword="false"/>.</returns>
         public static bool IsFallCompleted(uint relicId)
         {
             return IsBookCompleted(relicId, RelicBookType.Fall);
         }
 
+        /// <summary>Checks if the "Books of Wind" are completed.</summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <returns><see langword="true"/> if completed; otherwise <see langword="false"/>.</returns>
         public static bool IsWindCompleted(uint relicId)
         {
             return IsBookCompleted(relicId, RelicBookType.Wind);
         }
 
+        /// <summary>Checks if the "Books of Earth" are completed.</summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <returns><see langword="true"/> if completed; otherwise <see langword="false"/>.</returns>
         public static bool IsEarthCompleted(uint relicId)
         {
             return IsBookCompleted(relicId, RelicBookType.Earth);
         }
 
+        /// <summary>
+        /// Generates a localized progress string (e.g., "The Books of Fire (1/3)") for the specified relic and book type.
+        /// </summary>
+        /// <param name="relicId">The ID of the relic weapon.</param>
+        /// <param name="relicBookType">The category of the book.</param>
+        /// <returns>A formatted progress string.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if the book type is invalid.</exception>
         public static string ProgressString(uint relicId, RelicBookType relicBookType)
         {
             if (relicId == 7833 && relicBookType == RelicBookType.Fire)
@@ -215,11 +288,21 @@ namespace LlamaLibrary.LlamaManagers
 
     }
 
+    /// <summary>
+    /// Categorizes the different types of "Trials of the Braves" relic books.
+    /// </summary>
     public enum RelicBookType : byte
     {
+        /// <summary>The Books of Fire.</summary>
         Fire = 0,
+
+        /// <summary>The Books of Fall (Water).</summary>
         Fall = 1,
+
+        /// <summary>The Books of Wind.</summary>
         Wind = 2,
+
+        /// <summary>The Books of Earth.</summary>
         Earth = 3
     }
 }
