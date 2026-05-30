@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,14 +18,26 @@ using LlamaLibrary.Memory;
 #pragma warning disable 649
 namespace LlamaLibrary.RetainerItemFinder
 {
+    /// <summary>
+    /// Provides access to the game's internal item finder system, allowing retrieval of cached inventory data for retainers, saddlebags, and the glamour dresser.
+    /// </summary>
     public static class ItemFinder
     {
         private static readonly LLogger Log = new(nameof(ItemFinder), Colors.Pink);
 
+        /// <summary>
+        /// The base pointer for the RaptureItemFinder module.
+        /// </summary>
         public static IntPtr Pointer;
 
+        /// <summary>
+        /// Gets the root pointer of the internal binary tree used for storing retainer inventory data.
+        /// </summary>
         internal static IntPtr TreeStart => Core.Memory.ReadArray<IntPtr>(ParentStart, 3)[1];
 
+        /// <summary>
+        /// Gets the pointer to the parent structure of the inventory tree.
+        /// </summary>
         internal static IntPtr ParentStart => Core.Memory.Read<IntPtr>(Pointer + ItemFinderOffsets.TreeStartOff);
 
         private static readonly List<IntPtr> VisitedNodes = new();
@@ -34,10 +46,16 @@ namespace LlamaLibrary.RetainerItemFinder
 
         private static bool firstTimeSaddleRead = true;
 
+        /// <summary>
+        /// Pointer to the game's Framework instance.
+        /// </summary>
         public static IntPtr Framework;
 
         private static bool _hasGoneToDresser;
 
+        /// <summary>
+        /// Initializes the <see cref="ItemFinder"/> static class by resolving the RaptureItemFinder pointer from the Framework.
+        /// </summary>
         static ItemFinder()
         {
             Framework = Core.Memory.Read<IntPtr>(ItemFinderOffsets.GFramework2);
@@ -47,6 +65,11 @@ namespace LlamaLibrary.RetainerItemFinder
             Pointer = getRaptureItemFinder;
         }
 
+        /// <summary>
+        /// Safely retrieves cached inventory data for all retainers.
+        /// Checks if the player has any retainers before attempting to traverse the inventory tree.
+        /// </summary>
+        /// <returns>A dictionary mapping retainer Content IDs to their <see cref="StoredRetainerInventory"/>.</returns>
         public static async Task<Dictionary<ulong, StoredRetainerInventory>> SafelyGetCachedRetainerInventories()
         {
             var retData = await HelperFunctions.GetOrderedRetainerArray(true);
@@ -60,6 +83,10 @@ namespace LlamaLibrary.RetainerItemFinder
             return GetCachedRetainerInventories();
         }
 
+        /// <summary>
+        /// Traverses the internal inventory tree and returns cached data for all retainers.
+        /// </summary>
+        /// <returns>A dictionary mapping retainer Content IDs to their <see cref="StoredRetainerInventory"/>.</returns>
         public static Dictionary<ulong, StoredRetainerInventory> GetCachedRetainerInventories()
         {
             VisitedNodes.Clear();
@@ -74,6 +101,10 @@ namespace LlamaLibrary.RetainerItemFinder
             return RetainerInventoryPointers;
         }
 
+        /// <summary>
+        /// Retrieves the complete cached inventory data for the player's Chocobo Saddlebag.
+        /// </summary>
+        /// <returns>A <see cref="StoredSaddleBagInventory"/> containing the saddlebag items.</returns>
         public static StoredSaddleBagInventory GetCachedSaddlebagInventoryComplete()
         {
             var ids = Core.Memory.ReadArray<uint>(Pointer + ItemFinderOffsets.SaddleBagItemIds, 140);
@@ -82,6 +113,10 @@ namespace LlamaLibrary.RetainerItemFinder
             return new StoredSaddleBagInventory(ids, qtys);
         }
 
+        /// <summary>
+        /// Safely retrieves the complete cached saddlebag inventory, optionally triggering a UI flash to populate the cache if it's empty.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> resulting in a <see cref="StoredSaddleBagInventory"/>.</returns>
         public static async Task<StoredSaddleBagInventory> SafelyGetCachedSaddlebagInventoryComplete()
         {
             var ids = Core.Memory.ReadArray<uint>(Pointer + ItemFinderOffsets.SaddleBagItemIds, 140);
@@ -101,6 +136,10 @@ namespace LlamaLibrary.RetainerItemFinder
             return new StoredSaddleBagInventory(ids, qtys);
         }
 
+        /// <summary>
+        /// Briefly opens and closes the Chocobo Saddlebag window to force the game to populate the local item cache.
+        /// </summary>
+        /// <returns><see langword="true"/> if the window was opened successfully; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> FlashSaddlebags()
         {
             var couldOpen = await InventoryBuddy.Instance.Open();
@@ -115,6 +154,11 @@ namespace LlamaLibrary.RetainerItemFinder
             return couldOpen;
         }
 
+        /// <summary>
+        /// Retrieves a simplified dictionary of item IDs and quantities from the cached saddlebag inventory.
+        /// Optionally triggers a UI flash to populate the cache if it's empty.
+        /// </summary>
+        /// <returns>A dictionary mapping item IDs to total quantities.</returns>
         public static async Task<Dictionary<uint, int>> GetCachedSaddlebagInventories()
         {
             var result = new Dictionary<uint, int>();
@@ -157,12 +201,20 @@ namespace LlamaLibrary.RetainerItemFinder
             return result;
         }
 
+        /// <summary>
+        /// Retrieves the cached item IDs present in the player's glamour dresser.
+        /// </summary>
+        /// <returns>An array of 800 item IDs from the glamour dresser cache.</returns>
         public static int[] GetCachedGlamourDresserInventory()
         {
             var ids = Core.Memory.ReadArray<int>(Pointer + ItemFinderOffsets.GlamourDresserItemIds, 800);
             return ids;
         }
 
+        /// <summary>
+        /// Gets the updated glamour dresser inventory, visiting the dresser if necessary and if it hasn't been visited in this session.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> resulting in an array of item IDs.</returns>
         public static async Task<int[]> GetGlamourDressedUpdated()
         {
             if (_hasGoneToDresser)
@@ -180,6 +232,10 @@ namespace LlamaLibrary.RetainerItemFinder
             return GetCachedGlamourDresserInventory();
         }
 
+        /// <summary>
+        /// Navigates to the nearest glamour dresser and interacts with it to update the internal item cache.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task UpdateGlamourDresser()
         {
             if (IsGlamourDresserCached)
@@ -202,14 +258,25 @@ namespace LlamaLibrary.RetainerItemFinder
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the glamour dresser inventory is currently cached in memory.
+        /// </summary>
         public static bool IsGlamourDresserCached => Core.Memory.Read<byte>(Pointer + ItemFinderOffsets.GlamourDresserCached) == 1;
 
+        /// <summary>
+        /// Determines if the glamour dresser should be visited based on whether the current cache is entirely empty.
+        /// </summary>
+        /// <returns><see langword="true"/> if all cached IDs are zero; otherwise <see langword="false"/>.</returns>
         public static bool ShouldVisitGlamourDresser()
         {
             var ids = Core.Memory.ReadArray<int>(Pointer + ItemFinderOffsets.GlamourDresserItemIds, 800);
             return ids.All(i => i == 0);
         }
 
+        /// <summary>
+        /// Recursively traverses the binary tree of retainer inventories, collecting data into <see cref="RetainerInventoryPointers"/>.
+        /// </summary>
+        /// <param name="nodePtr">The pointer to the current tree node to visit.</param>
         private static void Visit(IntPtr nodePtr)
         {
             if (VisitedNodes.Contains(nodePtr))
