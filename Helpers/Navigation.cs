@@ -53,16 +53,37 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Navigates to a specific <see cref="Location"/> (zone and coordinates).
+        /// </summary>
+        /// <param name="location">The destination location.</param>
+        /// <returns><see langword="true"/> if the destination was reached; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetTo(Location location)
         {
             return await GetTo(location.ZoneId, location.Coordinates);
         }
 
+        /// <summary>
+        /// Navigates to a specific location in a zone using Lisbeth's travel system if possible,
+        /// falling back to standard navigation if Lisbeth is unavailable or fails.
+        /// </summary>
+        /// <param name="ZoneId">The ID of the destination zone.</param>
+        /// <param name="x">The X coordinate.</param>
+        /// <param name="y">The Y coordinate.</param>
+        /// <param name="z">The Z coordinate.</param>
+        /// <returns><see langword="true"/> if the destination was reached; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToWithLisbeth(uint ZoneId, double x, double y, double z)
         {
             return await GetToWithLisbeth(ZoneId, new Vector3((float)x, (float)y, (float)z));
         }
 
+        /// <summary>
+        /// Navigates to a specific location in a zone using Lisbeth's travel system if possible,
+        /// falling back to standard navigation if Lisbeth is unavailable or fails.
+        /// </summary>
+        /// <param name="ZoneId">The ID of the destination zone.</param>
+        /// <param name="XYZ">The destination coordinates.</param>
+        /// <returns><see langword="true"/> if the destination was reached; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToWithLisbeth(uint ZoneId, Vector3 XYZ)
         {
             if (!await Lisbeth.TravelToZones(ZoneId, XYZ))
@@ -73,21 +94,50 @@ namespace LlamaLibrary.Helpers
             return true;
         }
 
+        /// <summary>
+        /// Navigates to a specific location in a zone using coordinates.
+        /// </summary>
+        /// <param name="ZoneId">The ID of the destination zone.</param>
+        /// <param name="x">The X coordinate.</param>
+        /// <param name="y">The Y coordinate.</param>
+        /// <param name="z">The Z coordinate.</param>
+        /// <returns><see langword="true"/> if the destination was reached; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetTo(uint ZoneId, double x, double y, double z)
         {
             return await GetTo(ZoneId, new Vector3((float)x, (float)y, (float)z));
         }
 
+        /// <summary>
+        /// Navigates to a specific <see cref="Location"/> on a specific <see cref="World"/>.
+        /// Handles cross-world travel if necessary.
+        /// </summary>
+        /// <param name="world">The destination world.</param>
+        /// <param name="location">The destination location.</param>
+        /// <returns><see langword="true"/> if the destination was reached; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetTo(World world, Location location)
         {
             return await GetTo(world, location.ZoneId, location.Coordinates);
         }
 
+        /// <summary>
+        /// Navigates to a specific <see cref="WorldLocation"/>.
+        /// Handles cross-world travel if necessary.
+        /// </summary>
+        /// <param name="worldLocation">The destination world and location.</param>
+        /// <returns><see langword="true"/> if the destination was reached; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetTo(WorldLocation worldLocation)
         {
             return await GetTo(worldLocation.World, worldLocation.Location);
         }
 
+        /// <summary>
+        /// Navigates to a specific location in a zone on a specific <see cref="World"/>.
+        /// Handles cross-world travel if necessary.
+        /// </summary>
+        /// <param name="world">The destination world.</param>
+        /// <param name="ZoneId">The ID of the destination zone.</param>
+        /// <param name="XYZ">The destination coordinates.</param>
+        /// <returns><see langword="true"/> if the destination was reached; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetTo(World world, uint ZoneId, Vector3 XYZ)
         {
             if (!await WorldTravel.WorldTravel.GoToWorld(world))
@@ -101,6 +151,9 @@ namespace LlamaLibrary.Helpers
         /// <summary>
         /// Navigates to a specific location in a zone using the navigation graph or flight.
         /// </summary>
+        /// <param name="ZoneId">The ID of the destination zone.</param>
+        /// <param name="XYZ">The destination coordinates.</param>
+        /// <returns><see langword="true"/> if the destination was reached; otherwise <see langword="false"/>.</returns>
         /// <example>
         /// <code>
         /// await Navigation.GetTo(148, new Vector3(199.5991f, -32.04532f, 324.2699f));
@@ -203,6 +256,13 @@ namespace LlamaLibrary.Helpers
 
             return Navigator.InPosition(Core.Me.Location, XYZ, 3);
         }
+        /// <summary>
+        /// Navigates to a specific location in a zone, arriving within a specified distance tolerance.
+        /// </summary>
+        /// <param name="ZoneId">The ID of the destination zone.</param>
+        /// <param name="XYZ">The destination coordinates.</param>
+        /// <param name="distance">The distance tolerance for arrival.</param>
+        /// <returns><see langword="true"/> if the destination was reached within the tolerance; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetTo(uint ZoneId, Vector3 XYZ, float distance)
         {
             if (Navigator.NavigationProvider == null)
@@ -356,6 +416,11 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Moves towards a target location without using the navigation mesh.
+        /// Stops if it takes longer than the <see cref="WaitTimer_0"/> duration or reaches within 4 yalms.
+        /// </summary>
+        /// <param name="_target">The destination coordinates.</param>
         public static async Task OffMeshMove(Vector3 _target)
         {
             WaitTimer_0.Reset();
@@ -372,6 +437,8 @@ namespace LlamaLibrary.Helpers
         /// <summary>
         /// Moves towards a target object without using the navigation mesh until it is within interact range.
         /// </summary>
+        /// <param name="_target">The target game object to move towards.</param>
+        /// <returns><see langword="true"/> if the object was reached within interact range; otherwise <see langword="false"/>.</returns>
         /// <example>
         /// <code>
         /// await Navigation.OffMeshMoveInteract(unit);
@@ -391,6 +458,14 @@ namespace LlamaLibrary.Helpers
             return _target.IsWithinInteractRange;
         }
 
+        /// <summary>
+        /// Navigates to an NPC and uses them to transition between zones (e.g., using a ferry or talk-to-travel NPC).
+        /// Handles the interaction, dialog, and loading screen.
+        /// </summary>
+        /// <param name="oldzone">The current zone ID.</param>
+        /// <param name="transition">The coordinates of the NPC or transition point.</param>
+        /// <param name="npcId">The NPC ID to interact with.</param>
+        /// <param name="dialogOption">The index of the dialog option to select.</param>
         public static async Task UseNpcTransition(uint oldzone, Vector3 transition, uint npcId, uint dialogOption)
         {
             await GetTo(oldzone, transition);
@@ -438,6 +513,10 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Specifically handles navigation to Map 399 (The Diadem) from the Foundation entrance.
+        /// </summary>
+        /// <returns><see langword="true"/> if the transition to Map 399 was successful; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToMap399()
         {
             await GetTo(478, new Vector3(74.39938f, 205f, 140.4551f));
@@ -458,6 +537,8 @@ namespace LlamaLibrary.Helpers
         /// <summary>
         /// Uses Flightor to move to a destination, returning true if successfully reached.
         /// </summary>
+        /// <param name="loc">The destination coordinates.</param>
+        /// <returns><see langword="true"/> if the destination was reached; otherwise <see langword="false"/>.</returns>
         /// <example>
         /// <code>
         /// await Navigation.FlightorMove(target);
@@ -485,6 +566,12 @@ namespace LlamaLibrary.Helpers
             return moving == MoveResult.ReachedDestination;
         }
 
+        /// <summary>
+        /// Uses Flightor to move to a destination, stopping if the destination is reached or if the <paramref name="stopCondition"/> is met.
+        /// </summary>
+        /// <param name="loc">The destination coordinates.</param>
+        /// <param name="stopCondition">A function that returns <see langword="true"/> when movement should stop.</param>
+        /// <returns><see langword="true"/> if the destination was reached or the stop condition was met; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> FlightorMove(Vector3 loc, Func<bool> stopCondition)
         {
             var moving = MoveResult.GeneratingPath;
@@ -507,6 +594,12 @@ namespace LlamaLibrary.Helpers
             return moving == MoveResult.ReachedDestination || stopCondition();
         }
 
+        /// <summary>
+        /// Uses Flightor to move to a destination, arriving within a specified distance tolerance.
+        /// </summary>
+        /// <param name="loc">The destination coordinates.</param>
+        /// <param name="distance">The distance tolerance for arrival.</param>
+        /// <returns><see langword="true"/> if the destination was reached within the tolerance; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> FlightorMove(Vector3 loc, float distance)
         {
             var moving = MoveResult.GeneratingPath;
@@ -530,6 +623,11 @@ namespace LlamaLibrary.Helpers
             return Core.Me.Distance(loc) <= distance;
         }
 
+        /// <summary>
+        /// Uses Flightor to move to a FATE location, stopping if reached or if the FATE ends.
+        /// </summary>
+        /// <param name="fate">The FATE data containing the destination location.</param>
+        /// <returns><see langword="true"/> if the FATE location was reached; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> FlightorMove(FateData? fate)
         {
             if (fate == null)
@@ -557,6 +655,13 @@ namespace LlamaLibrary.Helpers
             return moving == MoveResult.ReachedDestination;
         }
 
+        /// <summary>
+        /// Uses the standard navigator to move to a destination on the ground, arriving within a specified distance tolerance.
+        /// Includes stuck detection and will attempt to recover or fail if progress is not made.
+        /// </summary>
+        /// <param name="loc">The destination coordinates.</param>
+        /// <param name="distance">The distance tolerance for arrival.</param>
+        /// <returns><see langword="true"/> if the destination was reached within the tolerance; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GroundMove(Vector3 loc, float distance)
         {
             Log.Information("Using Ground Move");
@@ -657,6 +762,11 @@ namespace LlamaLibrary.Helpers
             return AE;
         }
 
+        /// <summary>
+        /// Specifically handles navigation to the Isles of Umbra (Western La Noscea),
+        /// using the ferry NPC if necessary.
+        /// </summary>
+        /// <returns><see langword="true"/> if the player is at the Isles of Umbra; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToIslesOfUmbra()
         {
             if (WorldManager.ZoneId == 138 && (WorldManager.SubZoneId == 461 || WorldManager.SubZoneId == 228))
@@ -679,6 +789,12 @@ namespace LlamaLibrary.Helpers
             return WorldManager.ZoneId == 138 && (WorldManager.SubZoneId == 461 || WorldManager.SubZoneId == 228);
         }
 
+        /// <summary>
+        /// Navigates to a specific <see cref="Npc"/>, handling housing travel or zone travel as needed.
+        /// Moves within interact range of the NPC.
+        /// </summary>
+        /// <param name="npc">The NPC to travel to.</param>
+        /// <returns><see langword="true"/> if the NPC was reached; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToNpc(Npc npc)
         {
             if (npc.CanGetTo)
@@ -713,6 +829,12 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
+        /// <summary>
+        /// Navigates to a specific <see cref="Npc"/> using flight, handling zone travel via teleportation if needed.
+        /// Moves within interact range of the NPC.
+        /// </summary>
+        /// <param name="npc">The NPC to fly to.</param>
+        /// <returns><see langword="true"/> if the NPC was reached; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> FlyToNpc(Npc npc)
         {
             if (WorldManager.ZoneId != npc.Location.ZoneId)
@@ -741,6 +863,12 @@ namespace LlamaLibrary.Helpers
             return false;
         }
 
+        /// <summary>
+        /// Navigates to a specific location in a zone using flight, handling teleportation if the player is in a different zone.
+        /// </summary>
+        /// <param name="ZoneId">The ID of the destination zone.</param>
+        /// <param name="XYZ">The destination coordinates.</param>
+        /// <returns><see langword="false"/> (always returns false based on current implementation logic, but completes movement).</returns>
         public static async Task<bool> FlyToWithZone(uint ZoneId, Vector3 XYZ)
         {
             if (WorldManager.ZoneId != ZoneId)
@@ -781,6 +909,14 @@ namespace LlamaLibrary.Helpers
             return await GetToInteractNpc(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, window);
         }
 
+        /// <summary>
+        /// Navigates to a specific NPC and interacts with them until a specific remote window is open.
+        /// </summary>
+        /// <param name="npcId">The NPC ID to interact with.</param>
+        /// <param name="zoneId">The ID of the zone where the NPC is located.</param>
+        /// <param name="location">The coordinates of the NPC.</param>
+        /// <param name="window">The remote window expected to open.</param>
+        /// <returns><see langword="true"/> if the window is open; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToInteractNpc(uint npcId, ushort zoneId, Vector3 location, RemoteWindow window)
         {
             var unit = GameObjectManager.GetObjectByNPCId(npcId);
@@ -850,11 +986,29 @@ namespace LlamaLibrary.Helpers
             return await GetToInteractNpcSelectString(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, option);
         }
 
+        /// <summary>
+        /// Navigates to an NPC, interacts with them, and selects an option from the SelectString window,
+        /// then waits for a specific remote window to open.
+        /// </summary>
+        /// <param name="npc">The NPC to interact with.</param>
+        /// <param name="option">The index of the dialog option to select.</param>
+        /// <param name="window">The remote window expected to open after selection.</param>
+        /// <returns><see langword="true"/> if the window is open; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToInteractNpcSelectString(Npc npc, int option, RemoteWindow window)
         {
             return await GetToInteractNpcSelectString(npc.NpcId, npc.Location.ZoneId, npc.Location.Coordinates, option, window);
         }
 
+        /// <summary>
+        /// Navigates to an NPC, interacts with them, and optionally selects an option from the SelectString window.
+        /// Can also wait for a subsequent window to open.
+        /// </summary>
+        /// <param name="npcId">The NPC ID to interact with.</param>
+        /// <param name="zoneId">The ID of the zone where the NPC is located.</param>
+        /// <param name="location">The coordinates of the NPC.</param>
+        /// <param name="selectStringIndex">The index of the dialog option to select, or -1 to skip selection.</param>
+        /// <param name="nextWindow">An optional remote window to wait for after selection.</param>
+        /// <returns><see langword="true"/> if the interaction was successful or the target window is open; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToInteractNpcSelectString(uint npcId, ushort zoneId, Vector3 location, int selectStringIndex = -1, RemoteWindow? nextWindow = null)
         {
             if (await GetTo(zoneId, location))
@@ -921,6 +1075,14 @@ namespace LlamaLibrary.Helpers
             return Conversation.IsOpen;
         }
 
+        /// <summary>
+        /// Finds the primary aetheryte ID for a given zone and location.
+        /// If the zone has multiple aetherytes, it returns the one closest to the location.
+        /// If the location is near an aethernet shard, it resolves the primary aetheryte for that shard's network.
+        /// </summary>
+        /// <param name="zoneId">The zone ID to search.</param>
+        /// <param name="location">The coordinates near which to search.</param>
+        /// <returns>The ID of the primary aetheryte, or 0 if none found.</returns>
         public static uint GetPrimaryAetheryte(ushort zoneId, Vector3 location)
         {
             var aeList = DataManager.AetheryteCache.Values.Where(i => i.ZoneId == zoneId).ToList();
@@ -942,6 +1104,13 @@ namespace LlamaLibrary.Helpers
             return ae?.Id ?? 0;
         }
 
+        /// <summary>
+        /// Finds the primary aetheryte ID for a given zone.
+        /// If the zone has multiple aetherytes, it returns the first one found.
+        /// If the zone only has aethernet shards, it resolves the primary aetheryte for their network.
+        /// </summary>
+        /// <param name="zoneId">The zone ID to search.</param>
+        /// <returns>The ID of the primary aetheryte, or 0 if none found.</returns>
         public static uint GetPrimaryAetheryte(ushort zoneId)
         {
             var aeList = DataManager.AetheryteCache.Values.Where(i => i.ZoneId == zoneId).ToList();
@@ -962,17 +1131,43 @@ namespace LlamaLibrary.Helpers
             return ae?.Id ?? 0;
         }
 
+        /// <summary>
+        /// Generates a random <see cref="Location"/> at a specific distance and heading from the player,
+        /// with a random angular offset applied.
+        /// </summary>
+        /// <param name="range">The max angular offset range (in tenths of a radian).</param>
+        /// <param name="distance">The distance from the player.</param>
+        /// <param name="heading">The base heading to offset from.</param>
+        /// <returns>A new <see cref="Location"/> object.</returns>
         public static Location GetRandomPoint(int range, float distance, float heading)
         {
             var point = Random.Next(-range, range) / 10f;
             return new Location(WorldManager.ZoneId, MathEx.GetPointAt(Core.Me.Location, distance, heading + point));
         }
 
+        /// <summary>
+        /// Generates a random <see cref="Location"/> at a specific distance from a game object,
+        /// using the object's heading as the base.
+        /// </summary>
+        /// <param name="range">The max angular offset range (in tenths of a radian).</param>
+        /// <param name="distance">The distance from the object.</param>
+        /// <param name="gameObject">The source game object.</param>
+        /// <returns>A new <see cref="Location"/> object.</returns>
         public static Location GetRandomPoint(int range, float distance, GameObject gameObject)
         {
             return GetRandomPoint(range, distance, gameObject.Heading);
         }
 
+        /// <summary>
+        /// Navigates to a spot roughly in front of a specific NPC.
+        /// Uses the navigation graph to get close, then moves to a random point relative to the NPC.
+        /// </summary>
+        /// <param name="zoneId">The zone ID.</param>
+        /// <param name="location">The NPC's coordinates.</param>
+        /// <param name="npcId">The NPC ID.</param>
+        /// <param name="distance">The desired distance from the NPC.</param>
+        /// <param name="range">The angular range for the random offset.</param>
+        /// <returns><see langword="true"/> if reached within interact range of the NPC; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToSpotInFrontOf(ushort zoneId, Vector3 location, uint npcId, float distance = 4f, int range = 6)
         {
             var path = await NavGraph.GetPathAsync(zoneId, location);
@@ -1070,16 +1265,37 @@ namespace LlamaLibrary.Helpers
             return npc != null && npc.IsWithinInteractRange;
         }
 
+        /// <summary>
+        /// Navigates to a spot roughly in front of a specific <see cref="Npc"/>.
+        /// </summary>
+        /// <param name="npc">The NPC.</param>
+        /// <param name="distance">The desired distance from the NPC.</param>
+        /// <param name="range">The angular range for the random offset.</param>
+        /// <returns><see langword="true"/> if reached within interact range of the NPC; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToSpotInFrontOf(Npc npc, float distance = 4f, int range = 6)
         {
             return await GetToSpotInFrontOf(npc.Location.ZoneId, npc.Location.Coordinates, npc.NpcId, distance, range);
         }
 
+        /// <summary>
+        /// Navigates to a spot roughly in front of an NPC at a specific <see cref="Location"/>.
+        /// </summary>
+        /// <param name="location">The NPC's location.</param>
+        /// <param name="npcId">The NPC ID.</param>
+        /// <param name="distance">The desired distance from the NPC.</param>
+        /// <param name="range">The angular range for the random offset.</param>
+        /// <returns><see langword="true"/> if reached within interact range of the NPC; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> GetToSpotInFrontOf(Location location, uint npcId, float distance = 4f, int range = 6)
         {
             return await GetToSpotInFrontOf(location.ZoneId, location.Coordinates, npcId, distance, range);
         }
 
+        /// <summary>
+        /// Navigates to a destination using the navigation graph if available,
+        /// falling back to a direct ground move if no path is found.
+        /// </summary>
+        /// <param name="location">The destination coordinates.</param>
+        /// <returns><see langword="true"/> if the destination was reached; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> NavGraphOrGround(Vector3 location)
         {
             var path = await NavGraph.GetPathAsync(WorldManager.ZoneId, location);
