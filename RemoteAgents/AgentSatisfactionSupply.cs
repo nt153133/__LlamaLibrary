@@ -57,6 +57,8 @@ public class AgentSatisfactionSupply : AgentInterface<AgentSatisfactionSupply>, 
 
     public bool HasAnyTurnin => HasDoHTurnin || HasDoLTurnin || HasFshTurnin;
 
+    public IntPtr DeliveriesPointer => Pointer + AgentSatisfactionSupplyOffsets.CustomDeliveryArray;
+
     public async Task LoadWindow(uint npc)
     {
         if (SatisfactionSupply.Instance.IsOpen)
@@ -72,6 +74,8 @@ public class AgentSatisfactionSupply : AgentInterface<AgentSatisfactionSupply>, 
                                                1U);
 
         await Coroutine.Wait(5000, () => SatisfactionSupply.Instance.IsOpen);
+        _customDeliveries = ReadDeliveries;
+        _lastNpcId = NpcId;
 
         if (SatisfactionSupply.Instance.IsOpen)
         {

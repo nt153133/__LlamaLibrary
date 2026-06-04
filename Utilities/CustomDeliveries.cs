@@ -553,5 +553,26 @@ namespace LlamaLibrary.Utilities
                 }
             }
         }
+
+        public static async Task<bool> DebugCustomDeliveries()
+        {
+            var DeliveryNpcs = ResourceManager.CustomDeliveryNpcs.Value;
+            Log.Information(AgentSatisfactionSupply.Instance.DeliveriesPointer.ToString("x8"));
+            foreach (var npc in DeliveryNpcs.Where(i => ConditionParser.IsQuestCompleted(i.RequiredQuest)).OrderBy(i => i.Index))
+            {
+                await AgentSatisfactionSupply.Instance.LoadWindow(npc.Index);
+
+                Log.Information($"{npc.Name}");
+                Log.Information($"\tHeartLevel:{AgentSatisfactionSupply.Instance.HeartLevel}");
+                Log.Information($"\tRep:{AgentSatisfactionSupply.Instance.CurrentRep}/{AgentSatisfactionSupply.Instance.MaxRep}");
+                Log.Information($"\tDeliveries Remaining:{AgentSatisfactionSupply.Instance.DeliveriesRemaining}");
+                Log.Information($"\tDoH: {DataManager.GetItem(AgentSatisfactionSupply.Instance.DoHItemId)}");
+                Log.Information($"\tDoL: {DataManager.GetItem(AgentSatisfactionSupply.Instance.DoLItemId)}");
+                Log.Information($"\tFsh: {DataManager.GetItem(AgentSatisfactionSupply.Instance.FshItemId)}");
+            }
+
+            TreeRoot.Stop("Stop Requested");
+            return true;
+        }
     }
 }
