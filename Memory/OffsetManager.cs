@@ -101,10 +101,10 @@ public static class OffsetManager
 
         ActiveRecord = ActiveRegion switch
         {
-            ClientRegion.China              => new GameRecord(7.5f, OffsetFlags.China),
-            ClientRegion.Korea              => new GameRecord(7.3f,  OffsetFlags.Korea),
+            ClientRegion.China              => new GameRecord(7.51f, OffsetFlags.China),
+            ClientRegion.Korea              => new GameRecord(7.31f,  OffsetFlags.Korea),
             ClientRegion.TraditionalChinese => new GameRecord(7.1f,  OffsetFlags.TraditionalChinese),
-            _                               => new GameRecord(7.5f, OffsetFlags.Global),
+            _                               => new GameRecord(7.51f, OffsetFlags.Global),
         };
 
         IsChinese = ActiveRegion == ClientRegion.China;
