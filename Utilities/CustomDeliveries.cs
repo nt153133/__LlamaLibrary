@@ -52,7 +52,7 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
-        public static async Task<bool> RunCustomDeliveriesBySelection(bool doZhloe, bool doMnaago, bool doKurenai, bool doAdkiragh, bool doKaishirr, bool doEhlltou, bool doCharlemend, bool doAmeliance, bool doAnden, bool doMargrat, bool doNitowikwe, DohClasses dohClass = DohClasses.Carpenter)
+        public static async Task<bool> RunCustomDeliveriesBySelection(bool doZhloe, bool doMnaago, bool doKurenai, bool doAdkiragh, bool doKaishirr, bool doEhlltou, bool doCharlemend, bool doAmeliance, bool doAnden, bool doMargrat, bool doNitowikwe, bool doTiisolJa, DohClasses dohClass = DohClasses.Carpenter)
         {
             if (Navigator.NavigationProvider == null)
             {
@@ -205,6 +205,20 @@ namespace LlamaLibrary.Utilities
             if (doNitowikwe)
             {
                 var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Nitowikwe", StringComparison.Ordinal));
+
+                if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
+                {
+                    await NotUnlocked(npc);
+                }
+                else
+                {
+                    await CraftThenHandinNpc(npc, dohClass, false);
+                }
+            }
+
+            if (doTiisolJa)
+            {
+                var npc = DeliveryNpcs.Find(i => string.Equals(i.Name, "Tiisol Ja", StringComparison.Ordinal));
 
                 if (npc != null && !QuestLogManager.IsQuestCompleted((uint)npc.RequiredQuest))
                 {

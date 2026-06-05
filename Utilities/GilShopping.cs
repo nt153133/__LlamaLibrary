@@ -40,11 +40,18 @@ public class GilShopping
         { 44862, 1048606 }, // Map Printing Components
         { 44863, 1048606 }, // Engineer's Supply Kit Components
         { 44864, 1048606 }, // Railroad Repair Kit Kit Components
+        // Tiisol Ja
+        { 52027, 1058168 }, // Advertisement Supplies
+        { 52028, 1048606 }, // Taco Tin Supplies
+        { 52029, 1048606 }, // Neomasher Supplies
+        { 52030, 1048606 }, // Assorted Turali Pigments
+        { 52031, 1048606 }, // Shocking Supplies
     };
 
     public static Npc AndenVendor = new Npc(1044548, 816, new Vector3(-246.9673f, 51.059f, 617.0291f));
     public static Npc MargratVendor = new Npc(1046406, 956, new Vector3(-54.89797f, -29.49739f, -53.02695f));
     public static Npc NitowikweVendor = new Npc(1048606, 1190, new Vector3(-360.06714f, 19.493467f, -109.056274f));
+    public static Npc TiisolJaVendor = new Npc(1058168, 1185, new Vector3(70.7561f, -14f, 61.997314f));
 
     public static List<Npc> Vendors = new List<Npc> { AndenVendor, MargratVendor, NitowikweVendor };
 

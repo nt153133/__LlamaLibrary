@@ -152,5 +152,19 @@
     "Name": "Nitowikwe",
     "RequiredQuest": 70775,
     "Index": 11
+  },
+  {
+    "npcId": 1058167,
+    "Zone": 1185,
+    "Location": {
+      "X": 91.210594,
+      "Y": -14,
+      "Z": 52.807392,
+      "MagnitudeSqr": 106.01606,
+      "Magnitude": 11239.405
+    },
+    "Name": "Tiisol Ja",
+    "RequiredQuest": 70996,
+    "Index": 12
   }
 ]
