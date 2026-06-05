@@ -18,24 +18,51 @@ public static class UIState
 
     
 
+    /// <summary>Gets the memory address of the game's UIState instance.</summary>
     public static IntPtr Instance => UIStateOffsets.Instance;
 
+    /// <summary>Gets the pointer to the game's internal function that checks if an item action is unlocked.</summary>
     public static IntPtr IsItemActionUnlockedPtr => UIStateOffsets.IsItemActionUnlocked;
 
+    /// <summary>Gets the pointer to the game's internal function for retrieving item EXD data.</summary>
     public static IntPtr ExdGetItemPtr => UIStateOffsets.ExdGetItem;
 
+    /// <summary>Gets the byte offset within an item structure where the item action identifier is stored.</summary>
     public static int ItemActionOffset => UIStateOffsets.ItemActionOffset;
 
+    /// <summary>Determines if a Triple Triad card is unlocked for the current player.</summary>
+    /// <param name="id">The numeric identifier of the card.</param>
+    /// <returns><see langword="true"/> if the card is unlocked; otherwise <see langword="false"/>.</returns>
     public static bool CardUnlocked(int id) => Core.Memory.CallInjectedWraper<bool>(UIStateOffsets.CardUnlocked, UIStateOffsets.Instance, id);
 
+    /// <summary>Determines if an emote is unlocked for the current player.</summary>
+    /// <param name="id">The numeric identifier of the emote.</param>
+    /// <returns><see langword="true"/> if the emote is unlocked; otherwise <see langword="false"/>.</returns>
     public static bool EmoteUnlocked(int id) => Core.Memory.CallInjectedWraper<bool>(UIStateOffsets.EmoteUnlocked, UIStateOffsets.Instance, id);
 
+    /// <summary>Gets the raw bit-array from memory representing the player's unlocked minions.</summary>
     public static byte[] MinionArray => Core.Memory.ReadBytes(UIStateOffsets.MinionArray, 0x50);
 
+    /// <summary>Determines if a minion is unlocked for the current player by checking the bit-field in <see cref="MinionArray"/>.</summary>
+    /// <param name="id">The numeric identifier of the minion.</param>
+    /// <returns><see langword="true"/> if the minion is unlocked; otherwise <see langword="false"/>.</returns>
     public static bool MinionUnlocked(int id) => ((1 << (id & 7)) & MinionArray[id >> 3]) > 0;
 
+    /// <summary>Retrieves the memory pointer to the EXD data record for the specified item ID.</summary>
+    /// <param name="id">The numeric identifier of the item.</param>
+    /// <returns>A pointer to the item's EXD record in game memory.</returns>
     public static IntPtr GetItemExdData(uint id) => Core.Memory.CallInjectedWraper<IntPtr>(UIStateOffsets.ExdGetItem, id);
 
+    /// <summary>
+    /// Determines if the specific item action associated with an item (e.g., teaching a mount or minion)
+    /// has already been unlocked or consumed by the player.
+    /// </summary>
+    /// <param name="id">The raw numeric ID of the item to check.</param>
+    /// <returns><see langword="true"/> if the item's action is unlocked; otherwise <see langword="false"/>.</returns>
+    /// <remarks>
+    /// If the item's EXD record cannot be resolved directly, a temporary structure is allocated
+    /// in memory to perform the check.
+    /// </remarks>
     public static bool IsItemActionUnlocked(uint id)
     {
         var itemPtr = GetItemExdData(id);
@@ -76,6 +103,12 @@ public static class UIState
         return Core.Memory.CallInjectedWraper<int>(UIStateOffsets.IsItemActionUnlocked, UIStateOffsets.Instance, itemPtr) == 1;
     }
 
+    /// <summary>
+    /// Determines if an item can currently be "unlocked" (used to acquire a mount, minion, or emote).
+    /// Returns <see langword="true"/> if the item has an unlock action and the player hasn't used it yet.
+    /// </summary>
+    /// <param name="itemId">The numeric identifier of the item.</param>
+    /// <returns><see langword="true"/> if the item is unlockable and currently not unlocked; otherwise <see langword="false"/>.</returns>
     public static bool CanUnlockItem(uint itemId)
     {
         var item = DataManager.GetItem(itemId);
@@ -95,11 +128,18 @@ public static class UIState
     }
 
     /// <summary>
-    /// Checks to see if you have an item unlocked like a mount/hairstyle/emote/minion OR if you have the item in your inventory/retainer/saddlebags/glamour dresser. Ignores HQ/NQ. Force glamour dresser check if you want to make it open the glamour dresser if it's not loaded.
+    /// Checks if the player has already acquired or currently possesses a specific item.
     /// </summary>
-    /// <param name="itemId">Item Id (use raw id not true id).</param>
-    /// <param name="forceGlamour">Force going to a glamour dresser if no items are cached for it</param>
-    /// <returns>True if you have already acquired or used the item. False otherwise.</returns>
+    /// <param name="itemId">The raw numeric ID of the item (ignores HQ/NQ modifiers).</param>
+    /// <param name="forceGlamour">When <see langword="true"/>, forces navigation to a glamour dresser if its cache is empty.</param>
+    /// <returns>
+    /// <see langword="true"/> if the item's action is unlocked (for consumables like mounts) OR
+    /// if the physical item exists in inventory, armory, retainer storage, saddlebags, or the glamour dresser.
+    /// </returns>
+    /// <remarks>
+    /// Retainer inventory checks are only performed when the player is on their home world.
+    /// Glamour dresser check is skipped if the glamour dresser quest (68554) is not completed.
+    /// </remarks>
     public static async Task<bool> HasItem(uint itemId, bool forceGlamour = false)
     {
         var item = DataManager.GetItem(itemId);
@@ -131,6 +171,18 @@ public static class UIState
         return inventoryItem || retainerItem || saddlebagsItem || glamourDresserItem;
     }
 
+    /// <summary>
+    /// Synchronously checks if the player has already acquired or currently possesses a specific item.
+    /// </summary>
+    /// <param name="itemId">The raw numeric ID of the item.</param>
+    /// <returns>
+    /// <see langword="true"/> if the item is acquired or possessed across all supported storage systems
+    /// (inventory, armory, retainer, saddlebags, dresser).
+    /// </returns>
+    /// <remarks>
+    /// This method uses the existing memory cache for retainers and saddlebags and does not trigger
+    /// any asynchronous UI operations.
+    /// </remarks>
     public static bool HasItemSync(uint itemId)
     {
         var item = DataManager.GetItem(itemId);
