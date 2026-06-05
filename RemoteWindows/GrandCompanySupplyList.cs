@@ -13,9 +13,15 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    //TODO Move element numbers to dictionary
+    /// <summary>
+    /// Interaction interface for the "GrandCompanySupplyList" window.
+    /// Manages item turn-ins for Grand Company Supply, Provisioning, and Expert Delivery missions.
+    /// </summary>
     public class GrandCompanySupplyList : RemoteWindow<GrandCompanySupplyList>
     {
+        /// <summary>
+        /// Map of internal UI element indices for the supply list, which can vary by game locale.
+        /// </summary>
         public static Dictionary<string, int> Properties = new(StringComparer.Ordinal)
         {
             { "NumberOfTurnins", 8 },
@@ -24,20 +30,16 @@ namespace LlamaLibrary.RemoteWindows
             { "TurninIdElements", 425 },
         };
 
-        //E8 ? ? ? ? 49 8D 8F ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 8B F8
-        
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GrandCompanySupplyList"/> class.
+        /// Resolves locale-specific UI element offsets (e.g., for Chinese clients).
+        /// </summary>
         public GrandCompanySupplyList() : base("GrandCompanySupplyList")
         {
             if (Translator.Language == Language.Chn)
             {
-                Properties = new Dictionary<string, int>
-(StringComparer.Ordinal)
+                Properties = new Dictionary<string, int>(StringComparer.Ordinal)
                 {
-                    /*{ "NumberOfTurnins", 7 },
-                    { "ReqElements", 386 },
-                    { "HandInElements", 346 },
-                    { "TurninIdElements", 426 },*/
                     { "NumberOfTurnins", 8 },
                     { "ReqElements", 385 },
                     { "HandInElements", 345 },
@@ -46,11 +48,20 @@ namespace LlamaLibrary.RemoteWindows
             }
         }
 
+        /// <summary>
+        /// Gets the total number of items currently listed in the active turn-in tab.
+        /// </summary>
+        /// <returns>The number of items available for turn-in.</returns>
         public int GetNumberOfTurnins()
         {
             return IsOpen ? Elements[Properties["NumberOfTurnins"]].TrimmedData : 0;
         }
 
+        /// <summary>
+        /// Retrieves the "can hand in" status for every item in the current list.
+        /// Compares the quantity possessed by the player against the quantity requested.
+        /// </summary>
+        /// <returns>An array of booleans where <see langword="true"/> indicates the item is ready for turn-in.</returns>
         public bool[] GetTurninBools()
         {
             var currentElements = Elements;
@@ -69,6 +80,10 @@ namespace LlamaLibrary.RemoteWindows
             return turins;
         }
 
+        /// <summary>
+        /// Gets the raw item IDs for all items listed in the current turn-in tab.
+        /// </summary>
+        /// <returns>An array of item identifiers.</returns>
         public uint[] GetTurninItemsIds()
         {
             var currentElements = Elements;
@@ -79,6 +94,10 @@ namespace LlamaLibrary.RemoteWindows
             return turninIdElements;
         }
 
+        /// <summary>
+        /// Gets the requested quantities for all items listed in the current turn-in tab.
+        /// </summary>
+        /// <returns>An array of required counts for each item.</returns>
         public uint[] GetTurninRequired()
         {
             var currentElements = Elements;
@@ -89,11 +108,19 @@ namespace LlamaLibrary.RemoteWindows
             return reqElements;
         }
 
+        /// <summary>
+        /// Clicks a specific item in the list by its index to open the hand-in dialog.
+        /// </summary>
+        /// <param name="index">The zero-based index of the item in the current list.</param>
         public void ClickItem(int index)
         {
             SendAction(2, 3, 1, 3, (ulong)index);
         }
 
+        /// <summary>
+        /// Switches the UI to the "Expert Delivery" tab and sets the filter to hide gear sets.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task SwitchToExpertDelivery()
         {
             SendAction(2, 3, 0, 3, 2);
@@ -102,6 +129,12 @@ namespace LlamaLibrary.RemoteWindows
             await Coroutine.Sleep(500);
         }
 
+        /// <summary>
+        /// Sets the inventory filter for Expert Delivery (e.g., Hide Gear Sets).
+        /// </summary>
+        /// <param name="filter">
+        /// The filter mode: 0 for all items, 1 to hide Armoury Chest items, 2 to hide Gear Set items.
+        /// </param>
         public void SetExpertFilter(byte filter)
         {
             SendAction(2, 3, 5, 3, filter);
@@ -111,6 +144,10 @@ namespace LlamaLibrary.RemoteWindows
             }
         }
 
+        /// <summary>
+        /// Switches the UI to the "Provisioning" tab.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task SwitchToProvisioning()
         {
             //var button = WindowByName.FindButton(12);
@@ -118,6 +155,10 @@ namespace LlamaLibrary.RemoteWindows
             await Coroutine.Sleep(500);
         }
 
+        /// <summary>
+        /// Switches the UI to the "Supply" tab.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task SwitchToSupply()
         {
             SendAction(2, 3, 0, 3, 0);
