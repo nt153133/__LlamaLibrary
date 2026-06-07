@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -19,6 +19,10 @@ namespace LlamaLibrary.Settings.Base;
 
 using LogLevel = LogLevel;
 
+/// <summary>
+/// Provides a base class for persistent settings in LlamaLibrary.
+/// Handles JSON serialization, debounced saving, and property change notification with UI thread synchronization.
+/// </summary>
 public abstract class BaseSettings : INotifyPropertyChanged
 {
     private readonly LLogger _logger;
@@ -26,6 +30,11 @@ public abstract class BaseSettings : INotifyPropertyChanged
     private Dictionary<string, DebounceDispatcher>? _debounceDispatchers;
     private bool _loaded;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BaseSettings"/> class using the specified file path.
+    /// Uses the main WPF dispatcher for synchronization.
+    /// </summary>
+    /// <param name="path">The full path to the settings file.</param>
     public BaseSettings(string path)
     {
         Dispatcher = MainWpf.current.Dispatcher;
@@ -35,6 +44,11 @@ public abstract class BaseSettings : INotifyPropertyChanged
         LoadFrom(FilePath);
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BaseSettings"/> class using the specified file path and dispatcher.
+    /// </summary>
+    /// <param name="path">The full path to the settings file.</param>
+    /// <param name="dispatcher">The dispatcher to use for UI thread synchronization.</param>
     public BaseSettings(string path, Dispatcher? dispatcher)
     {
         Dispatcher = dispatcher;
@@ -44,18 +58,39 @@ public abstract class BaseSettings : INotifyPropertyChanged
         LoadFrom(FilePath);
     }
 
+    /// <summary>
+    /// Gets the directory path where the LlamaLibrary assembly is located.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if the assembly path cannot be determined.</exception>
     public static string AssemblyDirectory => JsonSettings.AssemblyPath ?? throw new InvalidOperationException();
 
+    /// <summary>
+    /// Gets the path to the LlamaLibrary assembly.
+    /// </summary>
     public static string AssemblyPath => AssemblyDirectory;
 
+    /// <summary>
+    /// Gets the default directory path for LlamaLibrary settings files.
+    /// </summary>
     public static string SettingsPath => Path.Combine(AssemblyPath, "Settings");
 
+    /// <summary>
+    /// Gets the dispatcher used for synchronizing property changes and UI updates.
+    /// </summary>
     protected Dispatcher? Dispatcher { get; }
 
+    /// <summary>
+    /// Gets the full file path where these settings are stored.
+    /// </summary>
     [JsonIgnore]
     [Browsable(false)]
     public string FilePath { get; }
 
+    /// <summary>
+    /// Constructs a full settings file path by combining the base <see cref="SettingsPath"/> with the provided sub-path parts.
+    /// </summary>
+    /// <param name="subPathParts">The parts of the sub-path to combine.</param>
+    /// <returns>A string representing the combined file path.</returns>
     public static string GetSettingsFilePath(params string[] subPathParts)
     {
         var list = new List<string> { SettingsPath };
@@ -63,6 +98,11 @@ public abstract class BaseSettings : INotifyPropertyChanged
         return Path.Combine(list.ToArray());
     }
 
+    /// <summary>
+    /// Loads the settings from the specified JSON file.
+    /// Initializes default values and sets up property change listeners for collections and nested objects.
+    /// </summary>
+    /// <param name="file">The path to the settings file to load.</param>
     protected void LoadFrom(string file)
     {
         var properties = GetType().GetProperties();
@@ -203,6 +243,10 @@ public abstract class BaseSettings : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Triggers a debounced save of the settings to the current <see cref="FilePath"/>.
+    /// The save is delayed by 500ms to consolidate multiple rapid changes.
+    /// </summary>
     public virtual void Save()
     {
         _saveDebounceDispatcher.Debounce(500, null!, DispatcherPriority.ApplicationIdle, Dispatcher);
@@ -213,6 +257,11 @@ public abstract class BaseSettings : INotifyPropertyChanged
         SaveAs(FilePath);
     }
 
+    /// <summary>
+    /// Synchronously saves the settings to the specified file path in JSON format.
+    /// Creates the target directory if it does not exist.
+    /// </summary>
+    /// <param name="file">The path to the file where settings should be saved.</param>
     public void SaveAs(string file)
     {
         try
@@ -246,6 +295,10 @@ public abstract class BaseSettings : INotifyPropertyChanged
         Save();
     }
 
+    /// <summary>
+    /// Triggers a debounced property change notification and schedules a save operation.
+    /// </summary>
+    /// <param name="propertyName">The name of the property that changed.</param>
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         if (propertyName == null)
@@ -261,6 +314,14 @@ public abstract class BaseSettings : INotifyPropertyChanged
         _debounceDispatchers![propertyName].Debounce(50, propertyName, DispatcherPriority.ApplicationIdle, Dispatcher);
     }
 
+    /// <summary>
+    /// Sets a field to a new value and triggers property change notification if the value has changed.
+    /// </summary>
+    /// <typeparam name="T">The type of the field.</typeparam>
+    /// <param name="field">A reference to the field to be updated.</param>
+    /// <param name="value">The new value for the field.</param>
+    /// <param name="propertyName">The name of the property (automatically populated via <see cref="CallerMemberNameAttribute"/>).</param>
+    /// <returns><see langword="true"/> if the value was changed and notification was triggered; otherwise <see langword="false"/>.</returns>
     protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value))
@@ -273,5 +334,8 @@ public abstract class BaseSettings : INotifyPropertyChanged
         return true;
     }
 
+    /// <summary>
+    /// Occurs when a property value changes.
+    /// </summary>
     public event PropertyChangedEventHandler? PropertyChanged;
 }
