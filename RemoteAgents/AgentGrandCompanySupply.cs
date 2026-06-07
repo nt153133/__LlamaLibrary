@@ -47,8 +47,9 @@ namespace LlamaLibrary.RemoteAgents
         /// Gets the list of items filtered and sorted for the Expert Delivery interface.
         /// </summary>
         /// <remarks>
-        /// This property skips the first 11 entries in the <see cref="SortArray"/> (which typically contain metadata)
-        /// and applies the current <see cref="ExpertFilter"/> and <see cref="HandinType"/> to the items.
+        /// This property skips the first 11 entries in the <see cref="SortArray"/>, which correspond to the 8 crafting (DOH)
+        /// and 3 gathering (DOL) daily turn-ins, and applies the current <see cref="ExpertFilter"/> and <see cref="HandinType"/>
+        /// to the remaining items.
         /// </remarks>
         public GCSupplyItem[] ExpertSupplyItems
         {
