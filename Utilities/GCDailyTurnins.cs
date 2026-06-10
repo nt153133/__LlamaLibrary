@@ -18,11 +18,23 @@ using Newtonsoft.Json;
 
 namespace LlamaLibrary.Utilities
 {
+    /// <summary>
+    /// Provides automation for Grand Company daily supply and provisioning missions.
+    /// Handles item identification, calling <see cref="Lisbeth"/> for crafting/gathering, and performing the hand-in.
+    /// </summary>
     public static class GCDailyTurnins
     {
+        /// <summary>
+        /// Gets the static display name for this utility.
+        /// </summary>
         public static string NameStatic => "GCDailyTurnins";
+
         private static readonly LLogger Log = new(NameStatic, Colors.Gold);
 
+        /// <summary>
+        /// Automatically performs all available Grand Company daily turn-ins.
+        /// Identifies missing items, requests them from <see cref="Lisbeth"/>, and manages the hand-in interaction with the Personnel Officer.
+        /// </summary>
         public static async Task DoGCDailyTurnins()
         {
             var items = Core.Memory.ReadArray<GCTurninItem>(Offsets.GCTurnin, Offsets.GCTurninCount);
@@ -185,6 +197,10 @@ namespace LlamaLibrary.Utilities
             }
         }
 
+        /// <summary>
+        /// Generates a JSON list of required items for current Grand Company missions that the player does not currently possess.
+        /// </summary>
+        /// <returns>A JSON string representing a list of <see cref="LisbethOrder"/> objects, or an empty string if nothing is needed.</returns>
         public static async Task<string> GetGCSupplyList()
         {
             if (!ContentsInfoDetail.Instance.IsOpen)
@@ -249,6 +265,10 @@ namespace LlamaLibrary.Utilities
             return JsonConvert.SerializeObject(outList, Formatting.None);
         }
 
+        /// <summary>
+        /// Logs the current Grand Company mission requirements to the console and writes them to a <c>GCSupply.json</c> file.
+        /// </summary>
+        /// <returns><see langword="true"/> if the list was successfully retrieved and logged; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> PrintGCSupplyList()
         {
             if (!ContentsInfoDetail.Instance.IsOpen)

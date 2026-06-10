@@ -23,11 +23,25 @@ using Newtonsoft.Json;
 
 namespace LlamaLibrary.Utilities
 {
+    /// <summary>
+    /// Provides automation for FFXIV Custom Deliveries, including crafting, material purchasing via <see cref="GilShopping"/>,
+    /// and handing in items to various satisfaction NPCs.
+    /// </summary>
     public static class CustomDeliveries
     {
+        /// <summary>
+        /// Gets the static display name for this utility.
+        /// </summary>
         public static string NameStatic => "Custom Deliveries";
+
         private static readonly LLogger Log = new(NameStatic, Colors.Gold);
 
+        /// <summary>
+        /// Automatically runs custom deliveries for all NPCs whose unlock quests are completed.
+        /// Iterates NPCs in descending index order and completes available deliveries.
+        /// </summary>
+        /// <param name="dohClass">The Disciple of the Hand class to use for crafting.</param>
+        /// <returns><see langword="true"/> upon completion.</returns>
         public static async Task<bool> RunCustomDeliveries(DohClasses dohClass = DohClasses.Carpenter)
         {
             if (Navigator.NavigationProvider == null)
@@ -52,6 +66,24 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
+        /// <summary>
+        /// Runs custom deliveries for a specific selection of NPCs.
+        /// Checks unlock status for each selected NPC before attempting to craft and hand in.
+        /// </summary>
+        /// <param name="doZhloe">Flag for Zhloe Aliapoh.</param>
+        /// <param name="doMnaago">Flag for M'naago.</param>
+        /// <param name="doKurenai">Flag for Kurenai.</param>
+        /// <param name="doAdkiragh">Flag for Adkiragh.</param>
+        /// <param name="doKaishirr">Flag for Kai-Shirr.</param>
+        /// <param name="doEhlltou">Flag for Ehll Tou.</param>
+        /// <param name="doCharlemend">Flag for Charlemend.</param>
+        /// <param name="doAmeliance">Flag for Ameliance.</param>
+        /// <param name="doAnden">Flag for Anden.</param>
+        /// <param name="doMargrat">Flag for Margrat.</param>
+        /// <param name="doNitowikwe">Flag for Nitowikwe.</param>
+        /// <param name="doTiisolJa">Flag for Tiisol Ja.</param>
+        /// <param name="dohClass">The Disciple of the Hand class to use for crafting.</param>
+        /// <returns><see langword="true"/> upon completion.</returns>
         public static async Task<bool> RunCustomDeliveriesBySelection(bool doZhloe, bool doMnaago, bool doKurenai, bool doAdkiragh, bool doKaishirr, bool doEhlltou, bool doCharlemend, bool doAmeliance, bool doAnden, bool doMargrat, bool doNitowikwe, bool doTiisolJa, DohClasses dohClass = DohClasses.Carpenter)
         {
             if (Navigator.NavigationProvider == null)
@@ -234,6 +266,10 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
+        /// <summary>
+        /// Displays an error message and stops the bot when a specific custom delivery NPC is not yet unlocked.
+        /// </summary>
+        /// <param name="deliveryNpc">The NPC that is currently locked.</param>
         public static async Task NotUnlocked(CustomDeliveryNpc deliveryNpc)
         {
             var message = $"{DataManager.GetLocalizedNPCName((int)deliveryNpc.npcId)} not unlocked.\nPlease complete the quest '{DataManager.GetLocalizedQuestName(deliveryNpc.RequiredQuest)}' or run the unlock profile.";
@@ -243,6 +279,11 @@ namespace LlamaLibrary.Utilities
             TreeRoot.Stop($"{message}");
         }
 
+        /// <summary>
+        /// Retrieves the specific item ID and remaining delivery allowance for a Disciple of the Hand (DOH) delivery to the given NPC.
+        /// </summary>
+        /// <param name="deliveryNpc">The target custom delivery NPC.</param>
+        /// <returns>A tuple containing the required item ID and the remaining allowances.</returns>
         public static async Task<(uint ItemId, int DeliveriesReamining)> GetCraftingDeliveryItems(CustomDeliveryNpc deliveryNpc)
         {
             await AgentSatisfactionSupply.Instance.LoadWindow(deliveryNpc.Index);
@@ -264,6 +305,13 @@ namespace LlamaLibrary.Utilities
             return (AgentSatisfactionSupply.Instance.DoHItemId, AgentSatisfactionSupply.Instance.DeliveriesRemaining);
         }
 
+        /// <summary>
+        /// Manages the full workflow for a specific NPC: checks satisfaction level, calls <see cref="Lisbeth"/> to craft
+        /// required items (after purchasing materials via <see cref="GilShopping"/>), and performs the hand-in.
+        /// </summary>
+        /// <param name="deliveryNpc">The NPC to process.</param>
+        /// <param name="dohClass">The crafting class to use.</param>
+        /// <param name="stopAtFiveHearts">If <see langword="true"/>, skips NPCs who have already reached maximum satisfaction (5 hearts).</param>
         public static async Task CraftThenHandinNpc(CustomDeliveryNpc? deliveryNpc, DohClasses dohClass = DohClasses.Carpenter, bool stopAtFiveHearts = true)
         {
             if (deliveryNpc == null)
@@ -349,6 +397,13 @@ namespace LlamaLibrary.Utilities
             }
         }
 
+        /// <summary>
+        /// Attempts to find a stored recipe for a specific item produced by a Disciple of the Hand (DOH) class.
+        /// Currently relies on <see cref="ResourceManager.Recipes_Anden"/>.
+        /// </summary>
+        /// <param name="resultingItem">The item ID produced by the recipe.</param>
+        /// <param name="dohClass">The crafting class to filter by.</param>
+        /// <returns>The <see cref="StoredRecipe"/> if found; otherwise <see langword="null"/>.</returns>
         public static StoredRecipe? LookUpRecipe(uint resultingItem, DohClasses dohClass = DohClasses.Carpenter)
         {
             if (!ResourceManager.Recipes_Anden.TryGetValue(resultingItem, out var recipe))
@@ -359,6 +414,12 @@ namespace LlamaLibrary.Utilities
             return recipe.Find(i => i.CraftingClass == (ClassJobType)dohClass);
         }
 
+        /// <summary>
+        /// Performs the physical hand-in of custom delivery items to an NPC.
+        /// Handles NPC interaction, dialog selection, and the satisfaction result window (including cutscenes).
+        /// </summary>
+        /// <param name="deliveryNpc">The NPC to hand items to.</param>
+        /// <returns><see langword="true"/> if the hand-in was completed; otherwise <see langword="false"/>.</returns>
         public static async Task<bool> HandInCustomNpc(CustomDeliveryNpc deliveryNpc)
         {
             var npc = GameObjectManager.GetObjectByNPCId(deliveryNpc.npcId);
@@ -553,6 +614,9 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
+        /// <summary>
+        /// Dismisses active NPC talk dialogs by repeatedly sending the "Next" action until the dialog is closed.
+        /// </summary>
         public static async Task DealWithTalk()
         {
             if (Talk.DialogOpen)
@@ -568,6 +632,10 @@ namespace LlamaLibrary.Utilities
             }
         }
 
+        /// <summary>
+        /// Logs current satisfaction and delivery status for all unlocked custom delivery NPCs to the console.
+        /// </summary>
+        /// <returns><see langword="true"/> upon completion (bot stops when finished).</returns>
         public static async Task<bool> DebugCustomDeliveries()
         {
             var DeliveryNpcs = ResourceManager.CustomDeliveryNpcs.Value;
