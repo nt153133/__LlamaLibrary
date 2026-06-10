@@ -458,7 +458,7 @@ namespace LlamaLibrary.Helpers
                         continue;
                     }
 
-                    if (bagSlot is {Slot: 0, IsFilled: false })
+                    if (bagSlot is { Slot: 0, IsFilled: false })
                     {
                         Log.Error("MainHand slot isn't filled. How?");
                         continue;
@@ -2018,6 +2018,77 @@ namespace LlamaLibrary.Helpers
         public static string CurrentEnglishZoneNameById(int zoneId)
         {
             return !DataManager.ZoneNameResults.TryGetValue((uint)zoneId, out var zoneNameResult) ? string.Empty : zoneNameResult.EnglishName;
+        }
+
+        /// <summary>
+        /// Closes how to windows
+        /// </summary>
+        public static async Task CloseHowTos()
+        {
+            if (RaptureAtkUnitManager.GetWindowByName("HowToNotice") != null)
+            {
+                do
+                {
+                    var windowbyname = RaptureAtkUnitManager.GetWindowByName("HowToNotice");
+
+                    if (windowbyname != null)
+                    {
+                        windowbyname.SendAction(1, 3, 0);
+                    }
+
+                    await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("HowTo") != null);
+
+                    windowbyname = RaptureAtkUnitManager.GetWindowByName("HowTo");
+
+                    if (windowbyname != null)
+                    {
+                        windowbyname.SendAction(1, 3uL, 0xFFFFFFFFuL);
+                    }
+
+                    await Coroutine.Sleep(500);
+                }
+                while (RaptureAtkUnitManager.GetWindowByName("HowToNotice") != null);
+            }
+
+            if (RaptureAtkUnitManager.GetWindowByName("HowTo") != null)
+            {
+                RaptureAtkUnitManager.GetWindowByName("HowTo").SendAction(1, 3uL, 0xFFFFFFFFuL);
+            }
+
+            if (RaptureAtkUnitManager.GetWindowByName("PlayGuide") != null)
+            {
+                RaptureAtkUnitManager.GetWindowByName("PlayGuide").SendAction(1, 3uL, 0xFFFFFFFFuL);
+            }
+
+            if (LlamaLibrary.RemoteWindows.ContentsTutorial.Instance.IsOpen)
+            {
+                LlamaLibrary.RemoteWindows.ContentsTutorial.Instance.Close();
+            }
+
+            if (RaptureAtkUnitManager.GetWindowByName("JobHudNotice") != null)
+            {
+                do
+                {
+                    var windowbyname = RaptureAtkUnitManager.GetWindowByName("JobHudNotice");
+
+                    if (windowbyname != null)
+                    {
+                        windowbyname.SendAction(1, 3, 0);
+                    }
+
+                    await Coroutine.Wait(5000, () => RaptureAtkUnitManager.GetWindowByName("Guide") != null);
+
+                    windowbyname = RaptureAtkUnitManager.GetWindowByName("Guide");
+
+                    if (windowbyname != null)
+                    {
+                        windowbyname.SendAction(1, 3uL, 0xFFFFFFFFuL);
+                    }
+
+                    await Coroutine.Sleep(500);
+                }
+                while (RaptureAtkUnitManager.GetWindowByName("HowToNotice") != null);
+            }
         }
     }
 }
