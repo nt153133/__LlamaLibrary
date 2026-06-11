@@ -357,6 +357,13 @@ namespace LlamaLibrary.Memory
         internal static int Loaded;
     }
 
+
+    public static class AgentDeepDungeonStatusOffsets
+    {
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 41 56 48 83 EC ? Add 3 TraceRelative")] //0x1860
+        internal static IntPtr VTable;
+    }
+
     public static class AgentFateProgressOffsets
     {
         [Offset("Search 48 8D 05 ? ? ? ? 66 C7 46 ? ? ? 48 89 06 Add 3 TraceRelative")]
