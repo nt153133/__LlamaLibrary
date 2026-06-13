@@ -16,10 +16,17 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Utilities;
 
+/// <summary>
+/// Provides utility methods for purchasing crafting materials from specific NPC vendors.
+/// Primarily used to automate material acquisition for Custom Deliveries.
+/// </summary>
 public class GilShopping
 {
     private static readonly LLogger Log = new("GilShopper", Colors.Gold);
 
+    /// <summary>
+    /// Maps material item IDs to the NPC ID of the vendor that sells them.
+    /// </summary>
     public static Dictionary<uint, uint> ItemVendors = new()
     {
         // Anden Items
@@ -48,13 +55,33 @@ public class GilShopping
         { 52031, 1048606 }, // Shocking Supplies
     };
 
+    /// <summary>Gets the <see cref="Npc"/> record for Anden's material vendor.</summary>
     public static Npc AndenVendor = new Npc(1044548, 816, new Vector3(-246.9673f, 51.059f, 617.0291f));
+
+    /// <summary>Gets the <see cref="Npc"/> record for Margrat's material vendor.</summary>
     public static Npc MargratVendor = new Npc(1046406, 956, new Vector3(-54.89797f, -29.49739f, -53.02695f));
+
+    /// <summary>Gets the <see cref="Npc"/> record for Nitowikwe's material vendor.</summary>
     public static Npc NitowikweVendor = new Npc(1048606, 1190, new Vector3(-360.06714f, 19.493467f, -109.056274f));
+
+    /// <summary>Gets the <see cref="Npc"/> record for Tiisol Ja's material vendor.</summary>
     public static Npc TiisolJaVendor = new Npc(1058168, 1185, new Vector3(70.7561f, -14f, 61.997314f));
 
+    /// <summary>
+    /// The list of known material vendors used for navigation and interaction lookup.
+    /// </summary>
     public static List<Npc> Vendors = new List<Npc> { AndenVendor, MargratVendor, NitowikweVendor };
 
+    /// <summary>
+    /// Checks the player's inventory for the ingredients required by <paramref name="recipe"/>
+    /// and automatically purchases any missing items that are available from the configured gil shops.
+    /// </summary>
+    /// <param name="recipe">The recipe whose ingredients should be verified and acquired.</param>
+    /// <param name="amount">The number of times the recipe will be crafted.</param>
+    /// <returns>
+    /// <see langword="true"/> if all required gil-shop ingredients are now in the player's possession;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
     public static async Task<bool> GetRequiredItems(StoredRecipe recipe, int amount = 1)
     {
         var ingredients = recipe.GetRequiredIngredients(amount);
@@ -77,6 +104,15 @@ public class GilShopping
         return gotAll;
     }
 
+    /// <summary>
+    /// Navigates to the appropriate vendor and purchases the specified quantity of an item.
+    /// </summary>
+    /// <param name="itemId">The numeric ID of the item to purchase.</param>
+    /// <param name="amount">The quantity to purchase.</param>
+    /// <returns>
+    /// <see langword="true"/> if the items were successfully purchased and are now in inventory;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
     public static async Task<bool> PurchaseIngredients(uint itemId, uint amount)
     {
         if (!ItemVendors.ContainsKey(itemId))
