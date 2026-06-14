@@ -827,6 +827,32 @@ namespace LlamaLibrary.Helpers
             { Language.TraditionalChinese, "移動到公會工坊" }
         };
 
+        public static string ApartmentGoToYourRoom => ApartmentGoToYourRoomText[Language];
+
+        //custom/003/HouFixMansionEntrance_00359_1_0
+        private static readonly Dictionary<Language, string> ApartmentGoToYourRoomText = new()
+        {
+            { Language.Eng, "Go to your apartment" },
+            { Language.Jap, "自分の部屋に移動する" },
+            { Language.Fre, "Aller dans votre appartement" },
+            { Language.Ger, "Die eigene Wohnung betreten" },
+            { Language.Chn, "移动到自己的房间" },
+            { Language.TraditionalChinese, "移動到自己的房間" }
+        };
+
+        public static string ApartmentGoToSpecifiedRoom => ApartmentGoToSpecifiedRoomText[Language];
+
+        //custom/003/HouFixMansionEntrance_00359_1_2
+        private static readonly Dictionary<Language, string> ApartmentGoToSpecifiedRoomText = new()
+        {
+            { Language.Eng, "Go to specified apartment" },
+            { Language.Jap, "部屋番号を指定して移動（ハウスアピール確認）" },
+            { Language.Fre, "Spécifier l'appartement où aller (Voir les attraits)" },
+            { Language.Ger, "Eine bestimmte Wohnung betreten (Zweck der Unterkunft einsehen)" },
+            { Language.Chn, "移动到指定号码房间（查看房屋宣传标签）" },
+            { Language.TraditionalChinese, "移動到指定號碼房間（查看房屋宣傳標籤）" }
+        };
+
         public static string Hard => HardText[Language];
 
         private static readonly Dictionary<Language, string> HardText = new()

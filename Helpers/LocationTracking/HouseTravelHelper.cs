@@ -14,6 +14,7 @@ using LlamaLibrary.Helpers.Housing;
 using LlamaLibrary.Helpers.HousingTravel;
 using LlamaLibrary.JsonObjects;
 using LlamaLibrary.Logging;
+using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
 using LlamaLibrary.Structs;
 
@@ -59,6 +60,12 @@ public static class HouseTravelHelper
             return false;
         }
 
+        // Apartments and FC private chambers need their own entry flow.
+        if (previousHouseLocation.Room.HasValue && previousHouseLocation.RoomKind != HousingRoomKind.None)
+        {
+            return await GoBackToRoom(previousHouseLocation);
+        }
+
         var location = CurrentHouseLocation;
         var skip = false;
         if (location != null)
@@ -81,6 +88,245 @@ public static class HouseTravelHelper
         }
 
         return await GetIntoHouse(previousHouseLocation.HousingZone, previousHouseLocation.Plot) && CurrentHouseLocation != null && CurrentHouseLocation.Equals(previousHouseLocation);
+    }
+
+    /// <summary>
+    /// Travels to a saved <see cref="HouseLocation"/>: enters the house, or the apartment / FC
+    /// private chamber when the location carries a room (see <see cref="HouseLocation.RoomKind"/>).
+    /// This is the entry point external callers should use to reach a saved location.
+    /// </summary>
+    /// <param name="location">The saved location to travel to.</param>
+    /// <returns><see langword="true"/> when the player is at the location; otherwise <see langword="false"/>.</returns>
+    public static Task<bool> GoToHouseLocation(HouseLocation? location)
+    {
+        return GoBackToHouse(location);
+    }
+
+    private static readonly HousingZone[] ApartmentZones =
+    {
+        HousingZone.ApartmentMist, HousingZone.ApartmentLavenderBeds, HousingZone.ApartmentGoblet,
+        HousingZone.ApartmentShirogane, HousingZone.ApartmentEmpyreum,
+    };
+
+    private static bool IsApartmentZone(HousingZone zone) => ApartmentZones.Contains(zone);
+
+    /// <summary>
+    /// Returns the player to a saved apartment or FC private chamber, teleporting to the ward first
+    /// and then taking the personal or specified entry option depending on whether it is the
+    /// player's own room.
+    /// </summary>
+    /// <param name="target">The room to return to.</param>
+    /// <returns>
+    /// <see langword="true"/> when the player is inside the target room; otherwise <see langword="false"/>.
+    /// </returns>
+    private static async Task<bool> GoBackToRoom(HouseLocation target)
+    {
+        if (HousingHelper.IsInsideRoom && CurrentHouseLocation != null && CurrentHouseLocation.Equals(target))
+        {
+            return true;
+        }
+
+        if (!await HousingTraveler.GetToResidential(target))
+        {
+            Log.Error("Failed to reach the residential ward for the room");
+            return false;
+        }
+
+        var ownRoom = IsOwnRoom(target);
+        return target.RoomKind switch
+        {
+            HousingRoomKind.Apartment => await GoIntoApartment(target, ownRoom),
+            HousingRoomKind.FreeCompanyRoom => await GoIntoPrivateChambers(target, ownRoom),
+            _ => false,
+        };
+    }
+
+    /// <summary>
+    /// Determines whether <paramref name="target"/> is one of the player's own registered rooms,
+    /// allowing the direct "go to your room" option instead of room-number entry.
+    /// </summary>
+    private static bool IsOwnRoom(HouseLocation target)
+    {
+        HousingHelper.UpdateResidenceArray();
+        foreach (var residence in HousingHelper.Residences)
+        {
+            if (residence == null || (!residence.IsApartment && !residence.IsFcRoom))
+            {
+                continue;
+            }
+
+            if (HousingTraveler.TranslateZone((HousingZone)residence.Zone) == HousingTraveler.TranslateZone(target.HousingZone)
+                && residence.Ward == target.Ward
+                && residence.Room == (target.Room ?? 0))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Enters an apartment from the apartment building entrance in the current ward.
+    /// </summary>
+    /// <param name="target">The apartment room to enter.</param>
+    /// <param name="ownApartment">
+    /// <see langword="true"/> to take the direct "go to your apartment" option; otherwise the
+    /// "specified apartment" option is used (room-number entry — see <see cref="EnterSpecifiedApartment"/>).
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the player is inside the apartment; otherwise <see langword="false"/>.
+    /// </returns>
+    public static async Task<bool> GoIntoApartment(HouseLocation target, bool ownApartment)
+    {
+        if (HousingHelper.IsInsideRoom)
+        {
+            return true;
+        }
+
+        // GetToResidential already placed us at the correct apartment building, so only that
+        // building's entrance is loaded — the nearest match is the right one.
+        var entrance = GameObjectManager.GetObjectsByNPCIds<GameObject>(new[] { AptEntranceId }).OrderBy(gameObject => gameObject.Distance()).FirstOrDefault();
+        if (entrance == null)
+        {
+            Log.Error("No apartment entrance found in this ward");
+            return false;
+        }
+
+        if (!await NavigationHelper.InteractWithNpc(entrance) || !await Coroutine.Wait(10000, () => Conversation.IsOpen))
+        {
+            Log.Error("Could not open the apartment entrance menu");
+            return false;
+        }
+
+        var lines = Conversation.GetConversationList;
+        var option = ownApartment ? Translator.ApartmentGoToYourRoom : Translator.ApartmentGoToSpecifiedRoom;
+        var index = lines.TakeWhile(line => !line.Contains(option)).Count();
+        if (index == lines.Count)
+        {
+            Log.Error("Could not find the apartment menu option");
+            return false;
+        }
+
+        Conversation.SelectLine((uint)index);
+
+        if (!ownApartment && !await EnterSpecifiedApartment(target.Room ?? 0))
+        {
+            return false;
+        }
+
+        if (!await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
+        {
+            return false;
+        }
+
+        await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+        return HousingHelper.IsInsideRoom;
+    }
+
+    /// <summary>
+    /// Enters a Free Company private chamber. Requires reaching the FC estate interior, where the
+    /// additional-chambers entrance is used.
+    /// </summary>
+    /// <param name="target">The FC private chamber to enter.</param>
+    /// <param name="ownRoom">
+    /// <see langword="true"/> for the player's own chamber; otherwise the "specified private
+    /// chambers" option is used (room-number entry — see <see cref="EnterSpecifiedFcRoom"/>).
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the player is inside the chamber; otherwise <see langword="false"/>.
+    /// </returns>
+    public static async Task<bool> GoIntoPrivateChambers(HouseLocation target, bool ownRoom)
+    {
+        if (HousingHelper.IsInsideRoom)
+        {
+            return true;
+        }
+
+        if (!HousingHelper.IsInsideHouse && !await GetIntoHouse(target.HousingZone, target.Plot))
+        {
+            Log.Error("Could not enter the FC estate to reach the private chambers");
+            return false;
+        }
+
+        var entrance = GameObjectManager.GetObjectsByNPCIds<GameObject>(AdditionalChambers).OrderBy(gameObject => gameObject.Distance()).FirstOrDefault();
+        if (entrance == null)
+        {
+            Log.Error("No private chamber entrance found");
+            return false;
+        }
+
+        if (!await NavigationHelper.InteractWithNpc(entrance) || !await Coroutine.Wait(10000, () => Conversation.IsOpen))
+        {
+            Log.Error("Could not open the private chamber menu");
+            return false;
+        }
+
+        var lines = Conversation.GetConversationList;
+        var option = ownRoom ? Translator.HousePersonalRoom : Translator.HouseOtherRoom;
+        var index = lines.TakeWhile(line => !line.Contains(option)).Count();
+        if (index == lines.Count)
+        {
+            Log.Error("Could not find the private chamber menu option");
+            return false;
+        }
+
+        Conversation.SelectLine((uint)index);
+
+        if (!ownRoom && !await EnterSpecifiedFcRoom(target.Room ?? 0))
+        {
+            return false;
+        }
+
+        if (!await Coroutine.Wait(30000, () => CommonBehaviors.IsLoading))
+        {
+            return false;
+        }
+
+        await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
+        return HousingHelper.IsInsideRoom;
+    }
+
+    /// <summary>
+    /// Enters a specified (non-personal) apartment number through the <c>MansionSelectRoom</c> window.
+    /// </summary>
+    private static async Task<bool> EnterSpecifiedApartment(int roomNumber)
+    {
+        if (roomNumber <= 0)
+        {
+            Log.Error($"Invalid apartment number {roomNumber}");
+            return false;
+        }
+
+        if (!await Coroutine.Wait(10000, () => MansionSelectRoom.Instance.IsOpen))
+        {
+            Log.Error("MansionSelectRoom window did not open");
+            return false;
+        }
+
+        AgentMansionSelectRoom.Instance.SelectApartment(roomNumber);
+        return true;
+    }
+
+    /// <summary>
+    /// Enters a specified (non-personal) FC private chamber number through the <c>HousingSelectRoom</c> window.
+    /// </summary>
+    private static async Task<bool> EnterSpecifiedFcRoom(int roomNumber)
+    {
+        if (roomNumber <= 0)
+        {
+            Log.Error($"Invalid FC room number {roomNumber}");
+            return false;
+        }
+
+        if (!await Coroutine.Wait(10000, () => HousingSelectRoom.Instance.IsOpen))
+        {
+            Log.Error("HousingSelectRoom window did not open");
+            return false;
+        }
+
+        AgentPersonalRoomPortal.Instance.SelectRoom(roomNumber);
+        return true;
     }
 
 
@@ -254,7 +500,7 @@ public static class HouseTravelHelper
         if (HousingHelper.Residences.Any(i => i.HouseLocationIndex == HouseLocationIndex.FreeCompanyEstate) && !HousingHelper.IsInsideWorkshop && !GameObjectManager.GetObjectsByNPCIds<GameObject>(AdditionalChambers).Any())
         {
             var estate = HousingHelper.Residences.First(i => i.HouseLocationIndex == HouseLocationIndex.FreeCompanyEstate);
-            await HousingTraveler.GetToResidential(estate);
+            await HousingTraveler.GetToResidential(((HouseLocation?)estate)!);
             await GetIntoHouse((HousingZone)estate.Zone, estate.Plot);
         }
 
@@ -363,7 +609,13 @@ public static class HouseTravelHelper
                 return null;
             }
 
-            return new HouseLocation(HousingTraveler.TranslateZone((HousingZone)WorldManager.ZoneId), info.Ward, info.Plot);
+            var rawZone = (HousingZone)WorldManager.ZoneId;
+            int? room = info.Room != 0 ? info.Room : (int?)null;
+            var roomKind = room is null
+                ? HousingRoomKind.None
+                : IsApartmentZone(rawZone) ? HousingRoomKind.Apartment : HousingRoomKind.FreeCompanyRoom;
+
+            return new HouseLocation(HousingTraveler.TranslateZone(rawZone), info.Ward, info.Plot, room, roomKind, info.Subdivision);
         }
     }
 

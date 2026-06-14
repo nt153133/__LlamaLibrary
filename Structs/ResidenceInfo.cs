@@ -7,7 +7,7 @@ namespace LlamaLibrary.Structs;
 
 public class ResidenceInfo
 {
-    private const ushort RoomMask = 0b0000_1111_1100_0000;
+    private const ushort RoomMask = 0b1111_1111_1100_0000; // bits 6-15: full 10-bit room number (apartments up to 90)
     private const ushort WardMask = 0b0000_0000_0011_1111;
     private const ushort MaskSize = 6;
 
@@ -85,14 +85,19 @@ public class ResidenceInfo
 
     public static implicit operator HouseLocation?(ResidenceInfo? info)
     {
-        if (info == null)
+        if (info == null || info.Zone == 255)
         {
             return null;
         }
 
-        if (info.Zone == 255 || info.IsApartment || info.IsFcRoom)
+        if (info.IsApartment)
         {
-            return null;
+            return new HouseLocation((HousingZone)info.Zone, info.Ward, info.Plot, info.Room, HousingRoomKind.Apartment);
+        }
+
+        if (info.IsFcRoom)
+        {
+            return new HouseLocation((HousingZone)info.Zone, info.Ward, info.Plot, info.Room, HousingRoomKind.FreeCompanyRoom);
         }
 
         return new HouseLocation((HousingZone)info.Zone, info.Ward, info.Plot);

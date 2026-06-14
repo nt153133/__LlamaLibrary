@@ -263,6 +263,23 @@ namespace LlamaLibrary.Memory
         internal static int ArrayCount;
     }
 
+    public static class AgentMansionSelectRoomOffsets
+    {
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 48 8B C6 89 BE ? ? ? ? Add 3 TraceRelative")]
+        internal static IntPtr Vtable;
+
+        //void SelectApartment(AgentPtr, 0, apartmentNumber) — apartmentNumber is 1-based
+        [Offset("Search E8 ? ? ? ? 48 8B 07 48 8B CF FF 50 ? E9 ? ? ? ? 48 8B CD TraceCall")]
+        internal static IntPtr SelectApartmentFunction;
+    }
+
+    public static class AgentPersonalRoomPortalOffsets
+    {
+        //Reuses AgentMansionSelectRoomOffsets.SelectApartmentFunction with this agent's pointer.
+        [Offset("Search 48 8D 05 ? ? ? ? 48 C7 46 ? ? ? ? ? 48 8D 4E ? 48 89 06 E8 ? ? ? ? 48 C7 86 ? ? ? ? ? ? ? ? 48 8D 9E ? ? ? ? C6 86 ? ? ? ? ? BF ? ? ? ? 48 8B CB E8 ? ? ? ? C6 43 ? ? 48 83 C3 ? 48 83 EF ? 75 ? 48 8B 5C 24 ? 48 8B C6 Add 3 TraceRelative")]
+        internal static IntPtr Vtable;
+    }
+
     public static class AgentAchievementOffsets
     {
         [Offset("Search 48 8D 05 ? ? ? ? 4C 89 7F ? 48 89 07 48 8D B7 ? ? ? ? Add 3 TraceRelative")]

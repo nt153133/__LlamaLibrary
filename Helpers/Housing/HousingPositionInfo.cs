@@ -13,7 +13,7 @@ namespace LlamaLibrary.Helpers.Housing
     /// </remarks>
     public readonly struct HousingPositionInfo
     {
-        private const ushort RoomMask = 0b0000_1111_1100_0000;
+        private const ushort RoomMask = 0b1111_1111_1100_0000; // bits 6-15: full 10-bit room number (apartments up to 90)
         private const ushort WardMask = 0b0000_0000_0011_1111;
         private const ushort MaskSize = 6;
 

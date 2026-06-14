@@ -56,7 +56,13 @@ public class LocationTracker
             return;
         }
 
-        if (HousingHelper.IsWithinPlot && !HousingHelper.IsInsideHouse)
+        if (HousingHelper.IsInsideRoom)
+        {
+            // A room is also IsInsideHouse, so this must be checked first.
+            _previousLocationType = LocationType.Room;
+            _previousHouseLocation = HouseTravelHelper.CurrentHouseLocation;
+        }
+        else if (HousingHelper.IsWithinPlot && !HousingHelper.IsInsideHouse)
         {
             _previousLocationType = LocationType.HousingPlot;
             _previousHouseLocation = HouseTravelHelper.CurrentHouseLocation;
@@ -165,6 +171,15 @@ public class LocationTracker
                 }
 
                 break;
+            case LocationType.Room:
+                Log.Information("Going back to room");
+                if (!await HouseTravelHelper.GoBackToHouse(_previousHouseLocation))
+                {
+                    Log.Error("Failed to get back to room");
+                    return false;
+                }
+
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -193,4 +208,6 @@ public enum LocationType
     House,
     /// <summary>Standing within a plot's boundary but not inside the house interior.</summary>
     HousingPlot,
+    /// <summary>Inside an apartment room or FC private chamber.</summary>
+    Room,
 }

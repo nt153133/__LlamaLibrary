@@ -14,6 +14,12 @@ namespace LlamaLibrary.JsonObjects
         public int Ward { get; set; }
         public int Plot { get; set; }
 
+        // Apartment / FC private-chamber identity. Room is null for plot-level locations (and for
+        // legacy serialized data that predates these fields), keeping old saves behaving as before.
+        public int? Room { get; set; }
+        public bool Subdivision { get; set; }
+        public HousingRoomKind RoomKind { get; set; }
+
         public HouseLocation(World world, HousingZone housingZone, int ward, int plot)
         {
             World = world;
@@ -30,6 +36,14 @@ namespace LlamaLibrary.JsonObjects
             Plot = plot;
         }
 
+        public HouseLocation(HousingZone housingZone, int ward, int plot, int? room, HousingRoomKind roomKind = HousingRoomKind.None, bool subdivision = false)
+            : this(housingZone, ward, plot)
+        {
+            Room = room;
+            RoomKind = roomKind;
+            Subdivision = subdivision;
+        }
+
         public HouseLocation()
         {
         }
@@ -37,7 +51,8 @@ namespace LlamaLibrary.JsonObjects
         public override string ToString()
         {
             var zoneName = HousingTraveler.TranslateZone(HousingZone).AddSpacesToEnum();
-            return $"{World} - {zoneName} - W{Ward} P{Plot}";
+            var roomText = Room.HasValue ? $" R{Room.Value}" : string.Empty;
+            return $"{World} - {zoneName} - W{Ward} P{Plot}{roomText}";
         }
 
         public bool Equals(HouseLocation? other)
@@ -52,7 +67,7 @@ namespace LlamaLibrary.JsonObjects
                 return true;
             }
 
-            return World == other.World && HousingTraveler.TranslateZone(HousingZone) == HousingTraveler.TranslateZone(other.HousingZone) && Ward == other.Ward && Plot == other.Plot;
+            return World == other.World && HousingTraveler.TranslateZone(HousingZone) == HousingTraveler.TranslateZone(other.HousingZone) && Ward == other.Ward && Plot == other.Plot && Room == other.Room && RoomKind == other.RoomKind && Subdivision == other.Subdivision;
         }
 
         public override bool Equals(object? obj)
@@ -77,7 +92,20 @@ namespace LlamaLibrary.JsonObjects
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(World, HousingZone, Ward, Plot);
+            return HashCode.Combine(World, HousingZone, Ward, Plot, Room, RoomKind, Subdivision);
         }
+    }
+
+    /// <summary>Classifies a <see cref="HouseLocation"/> that points at an instanced room.</summary>
+    public enum HousingRoomKind
+    {
+        /// <summary>Not a room — a plot, house, or workshop location.</summary>
+        None = 0,
+
+        /// <summary>A residential apartment room.</summary>
+        Apartment,
+
+        /// <summary>A Free Company private chamber.</summary>
+        FreeCompanyRoom,
     }
 }
