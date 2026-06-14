@@ -245,7 +245,7 @@ public static class HouseTravelHelper
     {
         for (var attempt = 0; attempt < 3; attempt++)
         {
-            if (attempt > 0 && !entrance.IsWithinInteractRange)
+            if (!entrance.IsWithinInteractRange)
             {
                 await Navigation.GroundMove(entrance.Location, 3f);
             }
