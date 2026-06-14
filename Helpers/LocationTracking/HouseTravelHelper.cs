@@ -211,22 +211,18 @@ public static class HouseTravelHelper
             return false;
         }
 
-        if (!await NavigationHelper.InteractWithNpc(entrance) || !await Coroutine.Wait(10000, () => Conversation.IsOpen))
+        if (!await OpenEntranceMenu(entrance))
         {
             Log.Error("Could not open the apartment entrance menu");
             return false;
         }
 
-        var lines = Conversation.GetConversationList;
         var option = ownApartment ? Translator.ApartmentGoToYourRoom : Translator.ApartmentGoToSpecifiedRoom;
-        var index = lines.TakeWhile(line => !line.Contains(option)).Count();
-        if (index == lines.Count)
+        if (!Conversation.SelectLineContains(option))
         {
             Log.Error("Could not find the apartment menu option");
             return false;
         }
-
-        Conversation.SelectLine((uint)index);
 
         if (!ownApartment && !await EnterSpecifiedApartment(target.Room ?? 0))
         {
@@ -240,6 +236,32 @@ public static class HouseTravelHelper
 
         await Coroutine.Wait(-1, () => !CommonBehaviors.IsLoading);
         return HousingHelper.IsInsideRoom;
+    }
+
+    // The apartment entrance object's Location sits up at the door, so moving onto it can leave us
+    // out of interact range. Interact from the current (recorded) spot first, then close the gap and
+    // retry if the menu doesn't open.
+    private static async Task<bool> OpenEntranceMenu(GameObject entrance)
+    {
+        for (var attempt = 0; attempt < 3; attempt++)
+        {
+            if (attempt > 0 && !entrance.IsWithinInteractRange)
+            {
+                await Navigation.GroundMove(entrance.Location, 3f);
+            }
+
+            entrance.Target();
+            entrance.Interact();
+
+            if (await Coroutine.Wait(5000, () => Conversation.IsOpen))
+            {
+                return true;
+            }
+
+            await Coroutine.Sleep(500);
+        }
+
+        return false;
     }
 
     /// <summary>
