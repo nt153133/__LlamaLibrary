@@ -1,4 +1,4 @@
-﻿/*
+/*
 DeepDungeon is licensed under a
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
 
@@ -82,6 +82,14 @@ public static class OffsetManager
     public static readonly GameRecord ActiveRecord;
     public static readonly ClientRegion ActiveRegion;
 
+    #if RB_CN
+        public static readonly ClientRegion HardCodedRegion = ClientRegion.China;
+    #elif RB_TC
+        public static readonly ClientRegion HardCodedRegion = ClientRegion.TraditionalChinese;
+    #else
+        public static readonly ClientRegion HardCodedRegion = ClientRegion.Global;
+    #endif
+
     [Obsolete("Use ActiveRegion instead")]
     public static readonly bool IsChinese;
 
@@ -90,6 +98,11 @@ public static class OffsetManager
 
     static OffsetManager()
     {
+#if RB_CN
+        ActiveRegion = ClientRegion.China;
+#elif RB_TC
+        ActiveRegion = ClientRegion.TraditionalChinese;
+#else
         ActiveRegion = DataManager.CurrentLanguage switch
         {
             Language.Chn                  => ClientRegion.China,
@@ -98,6 +111,7 @@ public static class OffsetManager
             Language.TraditionalChinese   => ClientRegion.TraditionalChinese,
             _                             => ClientRegion.Global,
         };
+#endif
 
         ActiveRecord = ActiveRegion switch
         {
