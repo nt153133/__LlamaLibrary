@@ -12,6 +12,9 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers;
 
+/// <summary>
+/// Provides static methods for checking the player's unlock status for various game features (cards, emotes, minions) and item actions by reading game memory.
+/// </summary>
 public static class UIState
 {
     private static readonly LLogger Log = new(nameof(UIState), Colors.Pink);
@@ -41,11 +44,13 @@ public static class UIState
     public static bool EmoteUnlocked(int id) => Core.Memory.CallInjectedWraper<bool>(UIStateOffsets.EmoteUnlocked, UIStateOffsets.Instance, id);
 
     /// <summary>Gets the raw bit-array from memory representing the player's unlocked minions.</summary>
+    /// <remarks>The array is 0x50 bytes long, where each bit corresponds to a specific minion ID.</remarks>
     public static byte[] MinionArray => Core.Memory.ReadBytes(UIStateOffsets.MinionArray, 0x50);
 
     /// <summary>Determines if a minion is unlocked for the current player by checking the bit-field in <see cref="MinionArray"/>.</summary>
     /// <param name="id">The numeric identifier of the minion.</param>
     /// <returns><see langword="true"/> if the minion is unlocked; otherwise <see langword="false"/>.</returns>
+    /// <remarks>The unlock status is determined by the bit-mask: <c>(1 &lt;&lt; (id &amp; 7)) &amp; array[id &gt;&gt; 3]</c>.</remarks>
     public static bool MinionUnlocked(int id) => ((1 << (id & 7)) & MinionArray[id >> 3]) > 0;
 
     /// <summary>Retrieves the memory pointer to the EXD data record for the specified item ID.</summary>
