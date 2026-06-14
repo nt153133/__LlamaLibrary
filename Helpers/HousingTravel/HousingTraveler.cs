@@ -160,7 +160,13 @@ namespace LlamaLibrary.Helpers.HousingTravel
         /// </example>
         public static RecordedPlot? GetRecordedPlot(HousingZone zone, int plot)
         {
-            return !HousingZonesEnums.Contains(TranslateZone(zone)) ? null : ResourceManager.HousingPlots[TranslateZone(zone)].Value[plot];
+            var translated = TranslateZone(zone);
+            if (!HousingZonesEnums.Contains(translated))
+            {
+                return null;
+            }
+
+            return ResourceManager.HousingPlots[translated].Value.TryGetValue(plot, out var recordedPlot) ? recordedPlot : null;
         }
 
         /// <summary>

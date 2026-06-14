@@ -74,6 +74,16 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         /// <summary>Gets the 3-D world position of the town aetheryte NPC.</summary>
         public virtual Vector3 TownAetheryteLocation { get; } = Vector3.Zero;
 
+        /// <summary>Gets the world position in front of the apartment building entrance (main division), or zero when unset.</summary>
+        public virtual Vector3 ApartmentEntrance { get; } = Vector3.Zero;
+
+        /// <summary>Gets the world position in front of the apartment building entrance (subdivision), or zero when unset.</summary>
+        public virtual Vector3 ApartmentEntranceSubdivision { get; } = Vector3.Zero;
+
+        /// <summary>Returns the apartment building entrance position for the requested division.</summary>
+        /// <param name="subdivision"><see langword="true"/> for the subdivision building; otherwise the main building.</param>
+        public Vector3 GetApartmentEntrance(bool subdivision) => subdivision ? ApartmentEntranceSubdivision : ApartmentEntrance;
+
         /// <summary>
         /// Gets a value indicating whether this district requires off-mesh navigation paths.
         /// </summary>

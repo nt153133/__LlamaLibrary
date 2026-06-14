@@ -20,6 +20,8 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public override string Name => "Mist";
         public override uint TownAetheryteId => 8;
         public override ushort ZoneId => (ushort)HousingZone.Mist;
+        public override Vector3 ApartmentEntrance => new(-165.54907f, 31.499998f, -48.29974f);
+        public override Vector3 ApartmentEntranceSubdivision => new(-655.189f, 31.499998f, -865.2008f);
 
         private readonly List<HousingAetheryte> aetherytes = new()
         {

@@ -126,19 +126,37 @@ public static class HouseTravelHelper
             return true;
         }
 
+        var ownRoom = IsOwnRoom(target);
+
+        if (target.RoomKind == HousingRoomKind.Apartment)
+        {
+            // An apartment isn't a navigable plot (its stored plot is the 128/129 division marker).
+            // Navigate to the recorded apartment-building entrance in the target ward, then enter.
+            var district = HousingTraveler.GetResidentialDistrictByZone((ushort)target.HousingZone);
+            var entrance = district?.GetApartmentEntrance(target.Subdivision) ?? Vector3.Zero;
+            if (district == null || entrance.Equals(Vector3.Zero))
+            {
+                Log.Error($"No apartment building entrance recorded for {target.HousingZone}.");
+                return false;
+            }
+
+            if (!await HousingTraveler.GetToResidential(target.World, target.HousingZone, entrance, target.Ward))
+            {
+                Log.Error("Failed to navigate to the apartment building.");
+                return false;
+            }
+
+            return await GoIntoApartment(target, ownRoom);
+        }
+
+        // FC private chamber: reach the FC estate plot, then enter through the chamber entrance.
         if (!await HousingTraveler.GetToResidential(target))
         {
             Log.Error("Failed to reach the residential ward for the room");
             return false;
         }
 
-        var ownRoom = IsOwnRoom(target);
-        return target.RoomKind switch
-        {
-            HousingRoomKind.Apartment => await GoIntoApartment(target, ownRoom),
-            HousingRoomKind.FreeCompanyRoom => await GoIntoPrivateChambers(target, ownRoom),
-            _ => false,
-        };
+        return await GoIntoPrivateChambers(target, ownRoom);
     }
 
     /// <summary>

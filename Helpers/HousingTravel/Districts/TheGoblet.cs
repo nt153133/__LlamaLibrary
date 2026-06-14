@@ -20,6 +20,8 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public override string Name => "The Goblet";
         public override uint TownAetheryteId => 9;
         public override ushort ZoneId => (ushort)HousingZone.Goblet;
+        public override Vector3 ApartmentEntrance => new(-85.08838f, 20.400013f, 82.65958f);
+        public override Vector3 ApartmentEntranceSubdivision => new(-785.5406f, 20.376888f, -789.3054f);
 
         private readonly List<HousingAetheryte> aetherytes = new()
         {

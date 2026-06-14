@@ -22,6 +22,8 @@ namespace LlamaLibrary.Helpers.HousingTravel.Districts
         public override string Name => "Shirogan";
         public override uint TownAetheryteId => 111;
         public override ushort ZoneId => (ushort)HousingZone.Shirogane;
+        public override Vector3 ApartmentEntrance => new(-9.247713f, 28.049944f, -24.886766f);
+        public override Vector3 ApartmentEntranceSubdivision => new(-676.1036f, 28.05f, -711.65515f);
 
         private readonly List<HousingAetheryte> _aetherytes = new()
         {
