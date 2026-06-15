@@ -54,7 +54,8 @@ namespace LlamaLibrary.Helpers.Housing
                 var internalWard = (ushort)(Core.Memory.Read<ushort>(houseId + 0x2) + 1);
                 var internalPlot = (byte)(InHouse ? 0 : Core.Memory.Read<byte>(houseId + 0x8) + 1);
                 Room = (internalWard & RoomMask) >> MaskSize;
-                var wardTemp = ((internalWard & WardMask) >> MaskSize) + 1;
+                // Ward occupies bits 0-5, so no shift; the 1-based offset is already baked into internalWard.
+                var wardTemp = internalWard & WardMask;
                 Ward = (internalWard < 50) ? internalWard : wardTemp;
                 Subdivision = Core.Memory.Read<byte>(houseId + 0x9) == 2;
                 Zone = Core.Memory.Read<InternalHousingZone>(houseId + 0x4);
