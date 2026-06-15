@@ -364,7 +364,10 @@ public static class OffsetAttributeExtensions
                 case FieldInfo fieldInfo:
                     if (fieldInfo.FieldType == typeof(IntPtr))
                     {
-                        fieldInfo.SetValue(null, Core.Memory.GetAbsolute(new IntPtr(offset)));
+                        var value = field.CacheAsRelativeAddress()
+                            ? Core.Memory.GetAbsolute(new IntPtr(offset))
+                            : new IntPtr(offset);
+                        fieldInfo.SetValue(null, value);
                     }
                     else
                     {
@@ -375,7 +378,10 @@ public static class OffsetAttributeExtensions
                 case PropertyInfo propertyInfo:
                     if (propertyInfo.PropertyType == typeof(IntPtr))
                     {
-                        propertyInfo.SetValue(null, Core.Memory.GetAbsolute(new IntPtr(offset)));
+                        var value = field.CacheAsRelativeAddress()
+                            ? Core.Memory.GetAbsolute(new IntPtr(offset))
+                            : new IntPtr(offset);
+                        propertyInfo.SetValue(null, value);
                     }
                     else
                     {
@@ -436,7 +442,9 @@ public static class OffsetAttributeExtensions
             switch (field.GetMemberType())
             {
                 case { } type when type == typeof(IntPtr):
-                    return Core.Memory.GetAbsolute(new IntPtr(offset));
+                    return field.CacheAsRelativeAddress(forceClientMode)
+                        ? Core.Memory.GetAbsolute(new IntPtr(offset))
+                        : new IntPtr(offset);
                 case { } type when type == typeof(int):
                     return new IntPtr((int)offset);
             }
@@ -447,7 +455,13 @@ public static class OffsetAttributeExtensions
         {
             try
             {
-                OffsetManager.OffsetCache.TryAdd(field.MemberName(), field.GetMemberType() == typeof(IntPtr) ? Core.Memory.GetRelative(result).ToInt64() : result.ToInt32());
+                var cacheValue = field.GetMemberType() == typeof(IntPtr)
+                    ? field.CacheAsRelativeAddress(forceClientMode)
+                        ? Core.Memory.GetRelative(result).ToInt64()
+                        : result.ToInt64()
+                    : result.ToInt32();
+
+                OffsetManager.OffsetCache.TryAdd(field.MemberName(), cacheValue);
             }
             catch (Exception e)
             {
@@ -457,6 +471,25 @@ public static class OffsetAttributeExtensions
         }
 
         return result;
+    }
+
+    private static bool CacheAsRelativeAddress(this MemberInfo field, ClientRegion forceClientMode = ClientRegion.NotSpecified)
+    {
+        if (field.GetMemberType() != typeof(IntPtr))
+        {
+            return false;
+        }
+
+        var pattern = field.GetAttribute(forceClientMode)?.Pattern;
+        return pattern == null || !ReadsImmediateValue(pattern);
+    }
+
+    private static bool ReadsImmediateValue(string pattern)
+    {
+        return pattern.Contains(" Read8", StringComparison.OrdinalIgnoreCase)
+               || pattern.Contains(" Read16", StringComparison.OrdinalIgnoreCase)
+               || pattern.Contains(" Read32", StringComparison.OrdinalIgnoreCase)
+               || pattern.Contains(" Read64", StringComparison.OrdinalIgnoreCase);
     }
 
     public static string MemberName(this MemberInfo field)

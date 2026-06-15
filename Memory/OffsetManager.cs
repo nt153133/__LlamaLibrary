@@ -45,13 +45,16 @@ namespace LlamaLibrary.Memory;
 
 public static class OffsetManager
 {
-    private const long _version = 53;
+    private const long _version = 54;
     private const bool _debug = false;
 
     // --- Namespace / type filters ---------------------------------------------------------------
     private const string MemoryNamespacePrefix = "LlamaLibrary.Memory";
     private const string OffsetsClassToken = "Offsets";
     private const string RemoteAgentsNamespace = "LlamaLibrary.RemoteAgents";
+    private const string CacheVersionKey = "Version";
+    private const string CacheGameVersionKey = "GameVersion";
+    private const string CacheRegionKey = "Region";
 
     // --- State ----------------------------------------------------------------------------------
     public static readonly Dictionary<string, string> patterns = new(StringComparer.Ordinal);
@@ -76,7 +79,7 @@ public static class OffsetManager
         }
     }
 
-    private static string OffsetFile { get; } = Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{GameVersion}.json");
+    private static string GetOffsetFile(int gameVersion) => Path.Combine(JsonSettings.SettingsPath, $"LL_Offsets_{gameVersion}.json");
 
     // --- Region / record ------------------------------------------------------------------------
     public static readonly GameRecord ActiveRecord;
@@ -177,11 +180,14 @@ public static class OffsetManager
 
     private static async Task SearchAndSetLL()
     {
-        if (File.Exists(OffsetFile) && GameVersion != 0)
+        var gameVersion = await GetGameVersionForCacheAsync().ConfigureAwait(false);
+        var offsetFile = GetOffsetFile(gameVersion);
+
+        if (File.Exists(offsetFile) && gameVersion != 0)
         {
             try
             {
-                var json = await File.ReadAllTextAsync(OffsetFile).ConfigureAwait(false);
+                var json = await File.ReadAllTextAsync(offsetFile).ConfigureAwait(false);
                 OffsetCache = JsonConvert.DeserializeObject<ConcurrentDictionary<string, long>>(json)
                               ?? new ConcurrentDictionary<string, long>(StringComparer.Ordinal);
             }
@@ -191,23 +197,82 @@ public static class OffsetManager
                 OffsetCache = new ConcurrentDictionary<string, long>(StringComparer.Ordinal);
             }
 
-            if (!OffsetCache.TryGetValue("Version", out var v) || v != _version)
+            if (!IsCacheMetadataValid(gameVersion))
             {
-                OffsetCache.Clear();
-                OffsetCache["Version"] = _version;
+                OffsetCache = CreateNewOffsetCache(gameVersion);
                 _isNewGameBuild = true;
+            }
+            else
+            {
+                EnsureCacheMetadata(gameVersion);
             }
         }
         else
         {
-            OffsetCache = new ConcurrentDictionary<string, long>(StringComparer.Ordinal)
-            {
-                ["Version"] = _version
-            };
-             _isNewGameBuild = true;
+            OffsetCache = CreateNewOffsetCache(gameVersion);
+            _isNewGameBuild = true;
         }
 
         await SetOffsetObjectsAsync(GetOffsetTypes()).ConfigureAwait(false);
+    }
+
+    private static async Task<int> GetGameVersionForCacheAsync()
+    {
+        var gameVersion = GameVersion;
+        if (gameVersion != 0)
+        {
+            return gameVersion;
+        }
+
+        for (var attempt = 0; attempt < 20; attempt++)
+        {
+            await Task.Delay(100).ConfigureAwait(false);
+            gameVersion = GameVersion;
+            if (gameVersion != 0)
+            {
+                return gameVersion;
+            }
+        }
+
+        return 0;
+    }
+
+    private static ConcurrentDictionary<string, long> CreateNewOffsetCache(int gameVersion)
+    {
+        var cache = new ConcurrentDictionary<string, long>(StringComparer.Ordinal);
+        WriteCacheMetadata(cache, gameVersion);
+        return cache;
+    }
+
+    private static bool IsCacheMetadataValid(int gameVersion)
+    {
+        if (!OffsetCache.TryGetValue(CacheVersionKey, out var version) || version != _version)
+        {
+            return false;
+        }
+
+        if (OffsetCache.TryGetValue(CacheGameVersionKey, out var cachedGameVersion) &&
+            cachedGameVersion != gameVersion)
+        {
+            return false;
+        }
+
+        if (OffsetCache.TryGetValue(CacheRegionKey, out var cachedRegion) &&
+            cachedRegion != (long)ActiveRegion)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static void EnsureCacheMetadata(int gameVersion) => WriteCacheMetadata(OffsetCache, gameVersion);
+
+    private static void WriteCacheMetadata(ConcurrentDictionary<string, long> cache, int gameVersion)
+    {
+        cache[CacheVersionKey] = _version;
+        cache[CacheGameVersionKey] = gameVersion;
+        cache[CacheRegionKey] = (long)ActiveRegion;
     }
 
     // --- Cache management -----------------------------------------------------------------------
@@ -782,6 +847,16 @@ public static class OffsetManager
 
     private static void ScheduleCacheWrite()
     {
+        var gameVersion = GameVersion;
+        if (gameVersion == 0)
+        {
+            Logger.Debug("Skipping offset cache write because game version is 0");
+            return;
+        }
+
+        EnsureCacheMetadata(gameVersion);
+        var offsetFile = GetOffsetFile(gameVersion);
+
         var newCts = new CancellationTokenSource();
         var oldCts = Interlocked.Exchange(ref _writeCts, newCts);
         oldCts?.Cancel();
@@ -793,25 +868,7 @@ public static class OffsetManager
             try
             {
                 await Task.Delay(500, token).ConfigureAwait(false);
-
-                await WriteLock.WaitAsync(token).ConfigureAwait(false);
-                try
-                {
-                    // Snapshot to a sorted list without materializing an intermediate dictionary.
-                    var snapshot = OffsetCache.ToArray();
-                    Array.Sort(snapshot, static (a, b) => string.CompareOrdinal(a.Key, b.Key));
-
-                    var sorted = new Dictionary<string, long>(snapshot.Length, StringComparer.Ordinal);
-                    foreach (var kv in snapshot) sorted[kv.Key] = kv.Value;
-
-                    var json = JsonConvert.SerializeObject(sorted);
-                    await File.WriteAllTextAsync(OffsetFile, json, token).ConfigureAwait(false);
-                    Logger.Debug("OffsetCache written to disk");
-                }
-                finally
-                {
-                    WriteLock.Release();
-                }
+                await WriteCacheSnapshotAsync(offsetFile).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -822,5 +879,62 @@ public static class OffsetManager
                 Logger.Error($"Failed to write offset cache: {e.Message}");
             }
         }, CancellationToken.None);
+    }
+
+    private static async Task WriteCacheSnapshotAsync(string offsetFile)
+    {
+        await WriteLock.WaitAsync().ConfigureAwait(false);
+        var tempFile = string.Empty;
+
+        try
+        {
+            var directory = Path.GetDirectoryName(offsetFile);
+            if (!string.IsNullOrEmpty(directory))
+            {
+                Directory.CreateDirectory(directory);
+                tempFile = Path.Combine(directory, $"{Path.GetFileName(offsetFile)}.{Guid.NewGuid():N}.tmp");
+            }
+            else
+            {
+                tempFile = $"{offsetFile}.{Guid.NewGuid():N}.tmp";
+            }
+
+            // Snapshot first so concurrent cache additions cannot change the JSON mid-write.
+            var snapshot = OffsetCache.ToArray();
+            Array.Sort(snapshot, static (a, b) => string.CompareOrdinal(a.Key, b.Key));
+
+            var sorted = new Dictionary<string, long>(snapshot.Length, StringComparer.Ordinal);
+            foreach (var kv in snapshot) sorted[kv.Key] = kv.Value;
+
+            var json = JsonConvert.SerializeObject(sorted);
+            await File.WriteAllTextAsync(tempFile, json).ConfigureAwait(false);
+
+            if (File.Exists(offsetFile))
+            {
+                File.Replace(tempFile, offsetFile, null);
+            }
+            else
+            {
+                File.Move(tempFile, offsetFile);
+            }
+
+            Logger.Debug("OffsetCache written to disk");
+        }
+        finally
+        {
+            if (!string.IsNullOrEmpty(tempFile) && File.Exists(tempFile))
+            {
+                try
+                {
+                    File.Delete(tempFile);
+                }
+                catch
+                {
+                    // Best-effort cleanup; the cache write already failed or completed.
+                }
+            }
+
+            WriteLock.Release();
+        }
     }
 }
