@@ -238,9 +238,9 @@ public static class HouseTravelHelper
         return HousingHelper.IsInsideRoom;
     }
 
-    // The apartment entrance object's Location sits up at the door, so moving onto it can leave us
-    // out of interact range. Interact from the current (recorded) spot first, then close the gap and
-    // retry if the menu doesn't open.
+    // GetToResidential drops us at the recorded spot, which is out of interact range of the entrance
+    // object (its Location sits up at the door), so always close the gap to interact range before
+    // interacting, with a couple of retries in case the menu doesn't open.
     private static async Task<bool> OpenEntranceMenu(GameObject entrance)
     {
         for (var attempt = 0; attempt < 3; attempt++)
@@ -655,10 +655,10 @@ public static class HouseTravelHelper
                 ? HousingRoomKind.None
                 : IsApartmentZone(rawZone) ? HousingRoomKind.Apartment : HousingRoomKind.FreeCompanyRoom;
 
-            // HousingPositionInfo.Subdivision reads the outdoor-plot byte, which is always 0 (false)
-            // while inside an interior. For an apartment, derive the building from the plot marker
-            // instead: 128 = main building, 129 = subdivision building.
-            var subdivision = roomKind == HousingRoomKind.Apartment ? info.Plot == 129 : info.Subdivision;
+            // HousingPositionInfo.Subdivision reads the outdoor-plot byte and is always false while
+            // inside an interior. For an apartment the building is identified by the plot marker:
+            // 129 = main building, 130 = subdivision (consistent across all districts).
+            var subdivision = roomKind == HousingRoomKind.Apartment ? info.Plot == 130 : info.Subdivision;
 
             return new HouseLocation(HousingTraveler.TranslateZone(rawZone), info.Ward, info.Plot, room, roomKind, subdivision);
         }
