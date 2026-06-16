@@ -655,7 +655,12 @@ public static class HouseTravelHelper
                 ? HousingRoomKind.None
                 : IsApartmentZone(rawZone) ? HousingRoomKind.Apartment : HousingRoomKind.FreeCompanyRoom;
 
-            return new HouseLocation(HousingTraveler.TranslateZone(rawZone), info.Ward, info.Plot, room, roomKind, info.Subdivision);
+            // HousingPositionInfo.Subdivision reads the outdoor-plot byte, which is always 0 (false)
+            // while inside an interior. For an apartment, derive the building from the plot marker
+            // instead: 128 = main building, 129 = subdivision building.
+            var subdivision = roomKind == HousingRoomKind.Apartment ? info.Plot == 129 : info.Subdivision;
+
+            return new HouseLocation(HousingTraveler.TranslateZone(rawZone), info.Ward, info.Plot, room, roomKind, subdivision);
         }
     }
 
