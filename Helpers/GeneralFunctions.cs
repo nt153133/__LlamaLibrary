@@ -2060,6 +2060,16 @@ namespace LlamaLibrary.Helpers
                 RaptureAtkUnitManager.GetWindowByName("PlayGuide").SendAction(1, 3uL, 0xFFFFFFFFuL);
             }
 
+            if (RaptureAtkUnitManager.GetWindowByName("RecommendList") != null)
+            {
+                RaptureAtkUnitManager.GetWindowByName("RecommendList").SendAction(1, 3uL, 0xFFFFFFFFuL);
+            }
+
+            if (RaptureAtkUnitManager.GetWindowByName("AchievementInfo") != null)
+            {
+                RaptureAtkUnitManager.GetWindowByName("AchievementInfo").SendAction(1, 3uL, 0xFFFFFFFFuL);
+            }
+
             if (LlamaLibrary.RemoteWindows.ContentsTutorial.Instance.IsOpen)
             {
                 LlamaLibrary.RemoteWindows.ContentsTutorial.Instance.Close();
