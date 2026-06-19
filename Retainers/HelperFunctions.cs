@@ -574,12 +574,13 @@ namespace LlamaLibrary.Retainers
         /// </summary>
         public static async Task ForceGetRetainerData()
         {
+            ResetRetainerDataLoadedFlag();
             RequestRetainerData();
             if (!await Coroutine.Wait(3000, () => Core.Memory.Read<uint>(Offsets.RetainerData) != 0))
             {
                 Log.Warning("Retainer Data not loaded yet...");
             }
-            if (!await Coroutine.Wait(3000, () => Core.Memory.Read<byte>(Offsets.RetainerData + Offsets.RetainerDataLoaded) != 0))
+            if (!await Coroutine.Wait(3000, () => Core.Memory.NoCacheRead<byte>(Offsets.RetainerData + Offsets.RetainerDataLoaded) != 0))
             {
                 Log.Warning("Retainer Data not finished loading yet...");
             }
@@ -592,9 +593,20 @@ namespace LlamaLibrary.Retainers
         /// </summary>
         public static void ForceGetRetainerDataSync()
         {
+            ResetRetainerDataLoadedFlag();
             RequestRetainerData();
             WaitUntil(() => Core.Memory.Read<uint>(Offsets.RetainerData) != 0, timeout: 3000);
-            WaitUntil(() => Core.Memory.Read<byte>(Offsets.RetainerData + Offsets.RetainerDataLoaded) != 0, timeout: 3000);
+            WaitUntil(() => Core.Memory.NoCacheRead<byte>(Offsets.RetainerData + Offsets.RetainerDataLoaded) != 0, timeout: 3000);
+        }
+
+        private static void ResetRetainerDataLoadedFlag()
+        {
+            if (Offsets.RetainerData == IntPtr.Zero || Offsets.RetainerDataLoaded == 0)
+            {
+                return;
+            }
+
+            Core.Memory.Write<byte>(Offsets.RetainerData + Offsets.RetainerDataLoaded, 0);
         }
 
         /// <summary>
