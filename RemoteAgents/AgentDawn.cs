@@ -6,15 +6,26 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
+    /// <summary>
+    /// Remote agent for the "Dawn" (Duty Support and Trust) system.
+    /// Manages the selection of NPCs and duty configurations for the Duty Support and Trust interfaces.
+    /// </summary>
     public class AgentDawn : AgentInterface<AgentDawn>, IAgent
     {
+        /// <inheritdoc/>
         public IntPtr RegisteredVtable => AgentDawnOffsets.DawnVtable;
-        
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AgentDawn"/> class.
+        /// </summary>
+        /// <param name="pointer">The memory address of the agent.</param>
         protected AgentDawn(IntPtr pointer) : base(pointer)
         {
         }
 
+        /// <summary>
+        /// Gets or sets the identifier for the selected Trust or Duty Support configuration.
+        /// </summary>
         public int TrustId
         {
             get => Core.Memory.Read<byte>(Pointer + AgentDawnOffsets.DawnTrustId);
