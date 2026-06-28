@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -26,6 +26,7 @@ public class GilShopping
 
     /// <summary>
     /// Maps material item IDs to the NPC ID of the vendor that sells them.
+    /// Includes items for Anden, Margrat, Nitowikwe, and Tiisol Ja.
     /// </summary>
     public static Dictionary<uint, uint> ItemVendors = new()
     {
