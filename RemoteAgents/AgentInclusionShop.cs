@@ -59,16 +59,19 @@ namespace LlamaLibrary.RemoteAgents
 
         /// <summary>
         /// Gets the actual (true) category identifier based on the user's selection index.
+        /// This identifier is used as an index into the shop's structural arrays.
         /// </summary>
         public int TrueCategory => Core.Memory.Read<byte>(StartOfShopThing + AgentInclusionShopOffsets.CategoryArray + SelectedCategory);
 
         /// <summary>
         /// Gets the pointer to the currently active category data.
+        /// This pointer represents the start of the sub-category array for the selected category.
         /// </summary>
         public IntPtr CategoryPtr => Core.Memory.Read<IntPtr>(StartOfShopThing + (TrueCategory * AgentInclusionShopOffsets.StructSizeCategory) + AgentInclusionShopOffsets.SubCategoryArrayStart);
 
         /// <summary>
         /// Gets the base pointer for the currently active category's structure.
+        /// This structure contains metadata about the category, including sub-category counts.
         /// </summary>
         public IntPtr CategoryPtrPtr => StartOfShopThing + (TrueCategory * AgentInclusionShopOffsets.StructSizeCategory);
 
