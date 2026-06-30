@@ -6,6 +6,7 @@ using System.Windows.Media;
 using Buddy.Coroutines;
 using Clio.Utilities;
 using ff14bot;
+using ff14bot.Behavior;
 using ff14bot.Enums;
 using ff14bot.Managers;
 using ff14bot.Objects;
@@ -322,6 +323,13 @@ namespace LlamaLibrary.Retainers
             if (!await Navigation.GetTo(bellLocation.ZoneId, bellLocation.Location))
             {
                 return false;
+            }
+
+            if (!await CommonTasks.Land())
+            {
+                Log.Error("Couldn't land");
+                await CommonTasks.StopAndDismount();
+                await Coroutine.Sleep(500);
             }
 
             var bell = FindSummoningBell();
