@@ -11,16 +11,28 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteAgents
 {
+    /// <summary>
+    /// Remote agent for the Free Company (FC) interface.
+    /// Manages the FC roster, online status of members, and active/available FC actions.
+    /// </summary>
     //TODO This agent has way too many hardcoded memory offsets
     public class AgentFreeCompany : AgentInterface<AgentFreeCompany>, IAgent
     {
+        /// <inheritdoc/>
         public IntPtr RegisteredVtable => AgentFreeCompanyOffsets.VTable;
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AgentFreeCompany"/> class.
+        /// </summary>
+        /// <param name="pointer">The memory address of the agent.</param>
         protected AgentFreeCompany(IntPtr pointer) : base(pointer)
         {
         }
 
+        /// <summary>
+        /// Gets the base memory pointer for the Free Company member roster.
+        /// </summary>
+        /// <returns>The pointer to the member roster data.</returns>
         public IntPtr GetRosterPtr()
         {
             var ptr1 = Core.Memory.Read<IntPtr>(Pointer + 0x48);
@@ -29,6 +41,10 @@ namespace LlamaLibrary.RemoteAgents
             return ptr2;
         }
 
+        /// <summary>
+        /// Retrieves a list of all Free Company members including their names and current online status.
+        /// </summary>
+        /// <returns>A list of tuples containing member names and their online status.</returns>
         public List<(string Name, bool Online)> GetMembers()
         {
             var i = 0;
@@ -51,9 +67,15 @@ namespace LlamaLibrary.RemoteAgents
             return result;
         }
 
+        /// <summary>
+        /// Gets the number of entries currently displayed in the FC history log.
+        /// </summary>
         [Obsolete("Not sure what's using this but pattern is returning multiple values")]
         public byte HistoryLineCount => Core.Memory.Read<byte>(Pointer + AgentFreeCompanyOffsets.HistoryCount);
 
+        /// <summary>
+        /// Gets the memory address of the FC actions structure by traversing the ATK stage hierarchy.
+        /// </summary>
         public IntPtr ActionAddress
         {
             get
@@ -67,6 +89,10 @@ namespace LlamaLibrary.RemoteAgents
             }
         }
 
+        /// <summary>
+        /// Retrieves the list of FC actions that are currently active (primed and providing buffs).
+        /// </summary>
+        /// <returns>An array of <see cref="FcAction"/> representing active buffs.</returns>
         public async Task<FcAction[]> GetCurrentActions()
         {
             var wasopen = FreeCompany.Instance.IsOpen;
@@ -96,6 +122,10 @@ namespace LlamaLibrary.RemoteAgents
             return new FcAction[0];
         }
 
+        /// <summary>
+        /// Retrieves the list of FC actions available for activation from the company's current stock.
+        /// </summary>
+        /// <returns>An array of <see cref="FcAction"/> representing available actions.</returns>
         public async Task<FcAction[]> GetAvailableActions()
         {
             var wasopen = FreeCompany.Instance.IsOpen;
@@ -126,11 +156,17 @@ namespace LlamaLibrary.RemoteAgents
         }
     }
 
+    /// <summary>
+    /// Represents a single Free Company action (buff) in memory.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Size = 0xC)]
     public struct FcAction
     {
+        /// <summary>The internal action identifier.</summary>
         public uint id;
+        /// <summary>The icon identifier for the action.</summary>
         public uint iconId;
+        /// <summary>Unknown field at offset 0x8.</summary>
         public uint unk;
     }
 }
