@@ -2021,6 +2021,33 @@ namespace LlamaLibrary.Helpers
         }
 
         /// <summary>
+        /// This will set any active Hunting Log mobs as kill.poi to kill them as we pass by.
+        /// </summary>
+        /// <returns>The row count as a <see cref="uint"/>.</returns>
+        public static async Task<bool> KillHuntingLogMobs()
+        {
+            // At least one of these quests need to be complete to unlock Hunting Log
+            uint[] wayOfQuestIds = { 65557,65558,65559,65789,66069,65881,65989,65847 };
+
+            if (!Core.Me.IsAlive || !wayOfQuestIds.Any(QuestLogManager.IsQuestCompleted))
+            {
+                return false;
+            }
+
+            LLogger Logging = new("Hunting Log:", Colors.Aquamarine);
+            var mobsToKill = GameObjectManager.GetObjectsOfType<BattleCharacter>()
+                .OrderBy(bc => bc.Distance()).FirstOrDefault(bc => bc.InLineOfSight() && bc.IsAlive && !bc.IsFate && bc.IsActiveHuntTarget && bc.IsVisible && bc.IsTargetable && bc.ClassLevel <= Core.Me.ClassLevel +3);
+
+            if (mobsToKill != null && mobsToKill.IsValid && !Core.Me.InCombat && (Poi.Current == null || Poi.Current.Type != PoiType.Kill))
+            {
+                Logging.Information($"Found Target {mobsToKill.EnglishName}");
+                Poi.Current = new Poi(mobsToKill, PoiType.Kill);
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Closes how to windows
         /// </summary>
         public static async Task CloseHowTos()
