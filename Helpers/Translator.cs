@@ -877,6 +877,18 @@ namespace LlamaLibrary.Helpers
             { Language.TraditionalChinese, "极难本" }
         };
 
+        public static string JourneyToSouthHorn => JourneyToSouthHornText[Language];
+
+        private static readonly Dictionary<Language, string> JourneyToSouthHornText = new()
+        {
+            { Language.Eng, "Journey to the Occult Crescent: South Horn" },
+            { Language.Jap, "Journey to the Occult Crescent: South Horn" },
+            { Language.Fre, "Journey to the Occult Crescent: South Horn" },
+            { Language.Ger, "Journey to the Occult Crescent: South Horn" },
+            { Language.Chn, "Journey to the Occult Crescent: South Horn" },
+            { Language.TraditionalChinese, "Journey to the Occult Crescent: South Horn" }
+        };
+
         public static string Savage => SavageText[Language];
 
         private static readonly Dictionary<Language, string> SavageText = new()
