@@ -1,4 +1,6 @@
-﻿namespace LlamaLibrary.RemoteWindows
+﻿using LlamaLibrary.RemoteWindows.Atk;
+
+namespace LlamaLibrary.RemoteWindows
 {
     public class Class2JobHotbar : RemoteWindow<Class2JobHotbar>
     {
@@ -8,7 +10,12 @@
 
         public void Wait()
         {
+            SendAction(true, (ValueType.Undefined, 0),(ValueType.Int, 0x2));
+        }
 
+        public void Cancel()
+        {
+            SendAction(false, (ValueType.Undefined, 0),(ValueType.Int, 0x1));
         }
     }
 }
