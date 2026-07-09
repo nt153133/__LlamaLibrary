@@ -8,14 +8,19 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
+        public void Transfer()
+        {
+            SendAction(true, (ValueType.Undefined, 0), (ValueType.Int, 0x0));
+        }
+
         public void Wait()
         {
-            SendAction(true, (ValueType.Undefined, 0),(ValueType.Int, 0x2));
+            SendAction(true, (ValueType.Undefined, 0), (ValueType.Int, 0x2));
         }
 
         public void Cancel()
         {
-            SendAction(false, (ValueType.Undefined, 0),(ValueType.Int, 0x1));
+            SendAction(false, (ValueType.Undefined, 0), (ValueType.Int, 0x1));
         }
     }
 }
