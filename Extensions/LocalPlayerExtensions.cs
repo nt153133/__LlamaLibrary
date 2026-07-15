@@ -159,6 +159,21 @@ namespace LlamaLibrary.Extensions
         }
 
         /// <summary>
+        /// Condition flag index for the Free Trial state (FFXIVClientStructs Client::Game::Condition, FieldOffset 69).
+        /// </summary>
+        private const byte OnFreeTrialCondition = 69;
+
+        /// <summary>
+        /// Checks whether the current client is running on a Free Trial account.
+        /// </summary>
+        /// <param name="player">The local player instance.</param>
+        /// <returns><see langword="true"/> if the account is a Free Trial account; otherwise <see langword="false"/>.</returns>
+        public static bool IsOnFreeTrial(this LocalPlayer player)
+        {
+            return player.CheckCondition(OnFreeTrialCondition);
+        }
+
+        /// <summary>
         /// Determines if the player has a specific permission, optionally excluding certain conditions.
         /// </summary>
         /// <param name="player">The local player instance.</param>
