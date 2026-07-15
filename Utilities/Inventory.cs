@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -15,13 +15,28 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Utilities
 {
+    /// <summary>
+    /// Provides utility methods for managing the player's inventory, including coffer opening,
+    /// collectible item usage, item desynthesis, aetherial reduction, and materia extraction.
+    /// </summary>
     public static class Inventory
     {
         private static readonly LLogger Log = new("InventoryUtilities", Colors.Green);
 
+        /// <summary>
+        /// Gets a value indicating whether the player is currently occupied with a task that prevents
+        /// automated inventory actions.
+        /// </summary>
+        /// <remarks>
+        /// Busy states include: being in a duty instance or queue, casting, being mounted, in combat,
+        /// having a talk dialog open, moving, or otherwise being flagged as occupied by the game's movement manager.
+        /// </remarks>
         public static bool IsBusy => DutyManager.InInstance || DutyManager.InQueue || DutyManager.DutyReady || Core.Me.IsCasting || Core.Me.IsMounted || Core.Me.InCombat || Talk.DialogOpen || MovementManager.IsMoving ||
                                      MovementManager.IsOccupied;
 
+        /// <summary>
+        /// The identifiers for the player's four primary inventory bags.
+        /// </summary>
         public static readonly InventoryBagId[] InventoryBagIds = new InventoryBagId[4]
         {
             InventoryBagId.Bag1,
@@ -30,6 +45,9 @@ namespace LlamaLibrary.Utilities
             InventoryBagId.Bag4
         };
 
+        /// <summary>
+        /// The identifiers for the various armory chest categories.
+        /// </summary>
         public static readonly InventoryBagId[] ArmoryBagIds = new InventoryBagId[12]
         {
             InventoryBagId.Armory_MainHand,
@@ -46,6 +64,10 @@ namespace LlamaLibrary.Utilities
             InventoryBagId.Armory_Rings
         };
 
+        /// <summary>
+        /// Identifies and opens all coffer-type items (Action ID 388) in the player's inventory.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> that returns <see langword="true"/> once all coffers have been processed.</returns>
         public static async Task<bool> CofferTask()
         {
             foreach (var bagslot in InventoryManager.FilledSlots.Where(bagslot => bagslot.Item.ItemAction == 388))
@@ -64,6 +86,11 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
+        /// <summary>
+        /// Searches for and uses consumable "unlockable" items in the player's inventory, such as minions,
+        /// orchestrion rolls, Triple Triad cards, and master crafting/gathering books.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task UseUnlockablesAsync()
         {
             var backingActionIds = new HashSet<uint>
@@ -122,6 +149,15 @@ namespace LlamaLibrary.Utilities
             Log.Verbose("Done desynth");
         }
 
+        /// <summary>
+        /// Performs batch desynthesis on a collection of <see cref="BagSlot"/> entries.
+        /// Filters out items that cannot be desynthesized due to the player's job level (requires level 30).
+        /// </summary>
+        /// <param name="itemsToDesynth">The collection of bag slots containing items to desynthesize.</param>
+        /// <returns>
+        /// <see langword="true"/> if the process was completed; <see langword="false"/> if the player was busy
+        /// or the collection was empty.
+        /// </returns>
         public static async Task<bool> Desynth(IEnumerable<BagSlot> itemsToDesynth)
         {
             await GeneralFunctions.StopBusy(leaveDuty: false);
@@ -173,6 +209,10 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
+        /// <summary>
+        /// Performs aetherial reduction on all eligible items found in the player's main inventory bags.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> that returns <see langword="true"/> once all eligible items have been reduced.</returns>
         public static async Task<bool> ReduceAll()
         {
             await GeneralFunctions.StopBusy(false);
@@ -203,6 +243,14 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
+        /// <summary>
+        /// Automatically extracts materia from all equipped and armory gear that has reached 100% spiritbond.
+        /// </summary>
+        /// <remarks>
+        /// Explicitly excludes Relic Sphere Scrolls (IDs 7873-7882, 9255) to prevent accidental extraction.
+        /// Stops early if the player becomes busy (e.g., enters combat or starts moving).
+        /// </remarks>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task ExtractFromAllGear()
         {
             await GeneralFunctions.StopBusy(leaveDuty: false);
