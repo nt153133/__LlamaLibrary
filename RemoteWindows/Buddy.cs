@@ -1,4 +1,3 @@
-using LlamaLibrary.RemoteWindows.Atk;
 using ff14bot.Managers;
 
 namespace LlamaLibrary.RemoteWindows
@@ -35,7 +34,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public void OpenTab(BuddyTab tab)
         {
-            SendAction(true, (ValueType.Int, 0xF), (ValueType.Int, (int)tab), (ValueType.Undefined, 0));
+            SendAction(3, 3, 0xF, 3, (ulong)tab, 0, 0);
         }
     }
 }
