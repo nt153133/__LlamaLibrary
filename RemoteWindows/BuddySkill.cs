@@ -18,6 +18,7 @@ namespace LlamaLibrary.RemoteWindows
         private const int CompanionInfoOffset = 0x2370;
         private const int CompanionSkillPointsOffset = 0x3A;
         private const int CompanionLevelsOffset = 0x3B;
+        private const int CompanionActiveCommandOffset = 0x3E;
 
         public BuddySkill() : base("BuddySkill")
         {
@@ -34,6 +35,8 @@ namespace LlamaLibrary.RemoteWindows
 
         public int HealerLevel => GetRoleLevel(BuddySkillRole.Healer);
 
+        public int ActiveCommand => ReadCompanionInfoByte(CompanionActiveCommandOffset);
+
         public int GetRoleLevel(BuddySkillRole role)
         {
             return ReadCompanionInfoByte(CompanionLevelsOffset + (int)role);
@@ -48,6 +51,30 @@ namespace LlamaLibrary.RemoteWindows
         {
             var roleLevel = GetRoleLevel(role);
             return roleLevel < 10 && SkillPoints >= roleLevel + 1;
+        }
+
+        public bool TryGetActiveRole(out BuddySkillRole role)
+        {
+            switch (ActiveCommand)
+            {
+                case 0:
+                    role = BuddySkillRole.Defender;
+                    return true;
+                case 1:
+                    role = BuddySkillRole.Attacker;
+                    return true;
+                case 2:
+                    role = BuddySkillRole.Healer;
+                    return true;
+                default:
+                    role = BuddySkillRole.Attacker;
+                    return false;
+            }
+        }
+
+        public bool CanLearnNextSkillForActiveRole()
+        {
+            return TryGetActiveRole(out var role) && CanLearnNextSkill(role);
         }
 
         public void LearnNextDefenderSkill()
