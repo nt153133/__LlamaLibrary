@@ -2042,6 +2042,7 @@ namespace LlamaLibrary.Helpers
             {
                 Logging.Information($"Found Target {mobsToKill.EnglishName}");
                 Poi.Current = new Poi(mobsToKill, PoiType.Kill);
+                return true;
             }
 
             return false;
