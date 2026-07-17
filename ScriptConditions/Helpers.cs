@@ -84,6 +84,15 @@ namespace LlamaLibrary.ScriptConditions
         }
 
         /// <summary>
+        /// Checks if the chocobo companion has enough skill points to learn the next skill in its current role.
+        /// </summary>
+        /// <returns><see langword="true"/> when the current companion role can rank up; otherwise <see langword="false"/>.</returns>
+        public static bool HasEnoughSP()
+        {
+            return LlamaLibrary.RemoteWindows.BuddySkill.Instance.CanLearnNextSkillForActiveRole();
+        }
+
+        /// <summary>
         /// Checks if the player has at least 10 Ishgard Restoration mining materials in their inventory.
         /// </summary>
         /// <returns><see langword="true"/> if possessed; otherwise <see langword="false"/>.</returns>
