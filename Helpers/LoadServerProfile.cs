@@ -257,6 +257,54 @@ public class LoadServerProfile
         await LoadProfile(profileName, (QueueType)queueType, goToBarracks, sayHello, sayHelloCustom, sayHelloMessages);
     }
 
+    /// <summary>
+    /// Loads a profile supplied by a plugin-owned source while retaining the standard duty queue workflow.
+    /// </summary>
+    public static async Task LoadProfile(string profileName, QueueType queueType, bool goToBarracks, IServerProfileSource profileSource, bool sayHello = false, bool sayHelloCustom = false, string sayHelloMessages = "")
+    {
+        ArgumentNullException.ThrowIfNull(profileSource);
+        Log.Information(GetLoadingMessage(profileName, queueType));
+
+        if (DutyManager.QueueState == QueueState.InQueue)
+        {
+            Log.Information("Already in queue");
+        }
+
+        await GeneralFunctions.StopBusy(false);
+
+        var profile = await FindProfileByName(profileName, profileSource);
+        if (profile == null)
+        {
+            return;
+        }
+
+        if (profile.Type == ProfileType.Quest)
+        {
+            await LoadMaterializedProfile(profile, profileSource);
+            return;
+        }
+
+        if (profile.Type != ProfileType.Duty)
+        {
+            return;
+        }
+
+        if (DutyManager.QueueState == QueueState.InDungeon)
+        {
+            Log.Information("Already in dungeon");
+            await LoadMaterializedProfile(profile, profileSource);
+            return;
+        }
+
+        await RunDutyTask(profile, goToBarracks, sayHello, sayHelloCustom, sayHelloMessages, (int)queueType, profileSource);
+    }
+
+    /// <summary>
+    /// Backward-compatible integer queue type overload for plugin-owned profile sources.
+    /// </summary>
+    public static Task LoadProfile(string profileName, int queueType, bool goToBarracks, IServerProfileSource profileSource, bool sayHello = false, bool sayHelloCustom = false, string sayHelloMessages = "")
+        => LoadProfile(profileName, (QueueType)queueType, goToBarracks, profileSource, sayHello, sayHelloCustom, sayHelloMessages);
+
     public static async Task LoadProfileByZone(int zoneId)
     {
         Log.Information("Loading Profile by Zone ID");
@@ -267,6 +315,23 @@ public class LoadServerProfile
         if (profile?.Type == ProfileType.Duty)
         {
             await RunDutyTask(profile, goToBarracks: false, sayHello: false, sayHelloCustom: false, sayHelloMessages: "hi/welcome", (int)QueueType.Undersized);
+        }
+    }
+
+    /// <summary>
+    /// Loads a profile by zone through a plugin-owned profile source.
+    /// </summary>
+    public static async Task LoadProfileByZone(int zoneId, IServerProfileSource profileSource)
+    {
+        ArgumentNullException.ThrowIfNull(profileSource);
+        Log.Information("Loading Profile by Zone ID");
+
+        await GeneralFunctions.StopBusy(false);
+
+        var profile = await FindProfileByZone(zoneId, profileSource);
+        if (profile?.Type == ProfileType.Duty)
+        {
+            await RunDutyTask(profile, goToBarracks: false, sayHello: false, sayHelloCustom: false, sayHelloMessages: "hi/welcome", (int)QueueType.Undersized, profileSource);
         }
     }
 
@@ -366,13 +431,16 @@ public class LoadServerProfile
         return NeoProfileManager.CurrentProfile != null && NeoProfileManager.CurrentProfile.Name != "Loading Profile";
     }
 
-    internal static async Task RunDutyTask(ServerProfile profile, bool goToBarracks, bool sayHello, bool sayHelloCustom, string sayHelloMessages, int queueType)
+    internal static Task RunDutyTask(ServerProfile profile, bool goToBarracks, bool sayHello, bool sayHelloCustom, string sayHelloMessages, int queueType)
+        => RunDutyTask(profile, goToBarracks, sayHello, sayHelloCustom, sayHelloMessages, queueType, null);
+
+    private static async Task RunDutyTask(ServerProfile profile, bool goToBarracks, bool sayHello, bool sayHelloCustom, string sayHelloMessages, int queueType, IServerProfileSource? profileSource)
     {
         while (DutyManager.QueueState != QueueState.InDungeon)
         {
             await GeneralFunctions.StopBusy(false);
 
-            if (!await ValidateAndPrepareForQueue(profile, queueType))
+            if (!await ValidateAndPrepareForQueue(profile, queueType, profileSource))
             {
                 return;
             }
@@ -408,7 +476,7 @@ public class LoadServerProfile
             Log.Information("Should be ready");
         }
 
-        await LoadDutyProfile(profile);
+        await LoadDutyProfile(profile, profileSource);
     }
 
     private static List<uint>? _dutySupportDuties;
@@ -486,6 +554,19 @@ public class LoadServerProfile
         return profile;
     }
 
+    private static async Task<ServerProfile?> FindProfileByName(string profileName, IServerProfileSource profileSource)
+    {
+        var profileList = await profileSource.GetProfilesAsync();
+        var profile = profileList.FirstOrDefault(p => p.Name != null && p.Name.Equals(profileName, StringComparison.OrdinalIgnoreCase));
+        if (profile == null)
+        {
+            Log.Error($"Profile {profileName} not found in the supplied profile source.");
+            TreeRoot.Stop($"Profile {profileName} not found in the supplied profile source.");
+        }
+
+        return profile;
+    }
+
     private static async Task<ServerProfile?> FindProfileByZone(int zoneId)
     {
         var profileList = await GetProfileList(ProfileServerUrl);
@@ -505,15 +586,35 @@ public class LoadServerProfile
         return profile;
     }
 
-    private static async Task<bool> ValidateAndPrepareForQueue(ServerProfile profile, int queueType)
+    private static async Task<ServerProfile?> FindProfileByZone(int zoneId, IServerProfileSource profileSource)
+    {
+        var profileList = await profileSource.GetProfilesAsync();
+        var profile = profileList.FirstOrDefault(p => p.ZoneId == zoneId);
+        if (profile == null)
+        {
+            Log.Error($"Profile with ID {zoneId} not found in the supplied profile source.");
+            TreeRoot.Stop($"Profile with ID {zoneId} not found in the supplied profile source.");
+        }
+
+        return profile;
+    }
+
+    private static async Task<bool> ValidateAndPrepareForQueue(ServerProfile profile, int queueType, IServerProfileSource? profileSource)
     {
         // Check unlock quest
         if (profile.UnlockQuest != 0 && !QuestLogManager.IsQuestCompleted((uint)profile.UnlockQuest))
         {
             Log.Information($"Unlock quest {DataManager.GetLocalizedQuestName(profile.UnlockQuest)} is not complete. Loading profile to complete quest.");
-            ConditionParser.Initialize();
-            NeoProfileManager.Load(profile.URL, false);
-            NeoProfileManager.UpdateCurrentProfileBehavior();
+            if (profileSource == null)
+            {
+                ConditionParser.Initialize();
+                NeoProfileManager.Load(profile.URL, false);
+                NeoProfileManager.UpdateCurrentProfileBehavior();
+            }
+            else
+            {
+                await LoadMaterializedProfile(profile, profileSource, true);
+            }
             return false;
         }
 
@@ -804,19 +905,66 @@ public class LoadServerProfile
         _                  => new TimeSpan(1, 29, 59)
     };
 
-    private static async Task LoadDutyProfile(ServerProfile profile)
+    private static async Task LoadDutyProfile(ServerProfile profile, IServerProfileSource? profileSource)
     {
         if (WorldManager.ZoneId == profile.ZoneId)
         {
             Log.Information($"Loading {DataManager.InstanceContentResults[(uint)profile.DutyId].CurrentLocaleName} profile.");
-            ConditionParser.Initialize();
-            NeoProfileManager.Load(profile.URL, false);
+            if (profileSource == null)
+            {
+                ConditionParser.Initialize();
+                NeoProfileManager.Load(profile.URL, false);
+            }
+            else
+            {
+                await LoadMaterializedProfile(profile, profileSource);
+            }
+        }
+        else if (profileSource != null)
+        {
+            Log.Information("Zone mismatch, attempting to find profile by current Zone ID");
+            await LoadProfileByZoneId(profile, profileSource);
         }
         else
         {
             Log.Information("Zone mismatch, attempting to find profile by current Zone ID");
             await LoadProfileByZoneId(profile);
         }
+    }
+
+    private static async Task LoadProfileByZoneId(ServerProfile expectedProfile, IServerProfileSource profileSource)
+    {
+        var profileList = await profileSource.GetProfilesAsync();
+        var zoneProfile = profileList.FirstOrDefault(p => p.ZoneId == WorldManager.ZoneId);
+        if (zoneProfile?.Type != ProfileType.Duty)
+        {
+            Log.Error($"Profile with Zone ID {WorldManager.ZoneId} not found in the supplied profile source.");
+            Log.Error($"Expected: {DataManager.InstanceContentResults[(uint)expectedProfile.DutyId].CurrentLocaleName} (Zone {expectedProfile.ZoneId})");
+            Log.Error($"Current: {CurrentLocalizedZoneNameById(WorldManager.ZoneId)} (Zone {WorldManager.ZoneId})");
+            TreeRoot.Stop($"Profile with ID {WorldManager.ZoneId} not found in the supplied profile source.");
+            return;
+        }
+
+        await LoadMaterializedProfile(zoneProfile, profileSource);
+    }
+
+    private static async Task<bool> LoadMaterializedProfile(ServerProfile profile, IServerProfileSource profileSource, bool updateBehavior = false)
+    {
+        var profilePath = await profileSource.MaterializeProfileAsync(profile);
+        if (string.IsNullOrWhiteSpace(profilePath))
+        {
+            ShowErrorToast($"Unable to materialize profile {profile.Name ?? profile.DutyId.ToString()}.");
+            return false;
+        }
+
+        ConditionParser.Initialize();
+        NeoProfileManager.Load(profilePath, false);
+        if (updateBehavior)
+        {
+            NeoProfileManager.UpdateCurrentProfileBehavior();
+        }
+
+        return true;
     }
 
     private static async Task LoadProfileByZoneId(ServerProfile expectedProfile)
