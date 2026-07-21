@@ -73,6 +73,8 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Entrance_to_the_Barracks, 2007527 },
             { GCNpc.Commander, 1003281 },
             { GCNpc.Squadron_Sergeant, 1016986 },
+            { GCNpc.Regimen_Board, 2007151 }, // Maelstrom Barracks (territory 536)
+            { GCNpc.Enlistment_Papers, 2007154 }, // Maelstrom Barracks (territory 536)
             { GCNpc.Hunt_Billmaster, 1009552 }
         };
 
@@ -93,6 +95,8 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Entrance_to_the_Barracks, 2007529 },
             { GCNpc.Hunt_Board, 2004440 },
             { GCNpc.Squadron_Sergeant, 1016987 },
+            { GCNpc.Regimen_Board, 2007152 }, // Immortal Flames Barracks (territory 535)
+            { GCNpc.Enlistment_Papers, 2007155 }, // Immortal Flames Barracks (territory 535)
             { GCNpc.Hunt_Billmaster, 1001379 }
         };
 
@@ -113,6 +117,8 @@ namespace LlamaLibrary.Helpers
             { GCNpc.Hunt_Board, 2004439 },
             { GCNpc.OIC_Officer_of_Arms, 1004401 },
             { GCNpc.Squadron_Sergeant, 1016924 },
+            { GCNpc.Regimen_Board, 2007150 }, // Twin Adder Barracks (territory 534)
+            { GCNpc.Enlistment_Papers, 2007153 }, // Twin Adder Barracks (territory 534)
             { GCNpc.Entrance_to_the_Barracks, 2006962 }
         };
 
@@ -289,10 +295,38 @@ namespace LlamaLibrary.Helpers
                 return;
             }
 
+            var isBarracksNpc = npc == GCNpc.Squadron_Sergeant ||
+                                npc == GCNpc.Regimen_Board ||
+                                npc == GCNpc.Enlistment_Papers;
+            if (isBarracksNpc)
+            {
+                if (!IsInBarracks && !await GetToGCBarracks())
+                {
+                    return;
+                }
+
+                await Coroutine.Wait(5000, () =>
+                    GameObjectManager.GetObjectByNPCId(NpcList[Core.Me.GrandCompany][npc]) != null);
+            }
+
             var targetNpc = GameObjectManager.GetObjectByNPCId(NpcList[Core.Me.GrandCompany][npc]);
             if (targetNpc == null || !targetNpc.IsWithinInteractRange)
             {
-                await GetToGCBase();
+                if (isBarracksNpc)
+                {
+                    // Squadron targets only exist inside the instanced barracks. Never route
+                    // through the outdoor GC base after confirming that we are inside.
+                    if (targetNpc == null)
+                    {
+                        Log.Error($"{npc} was not available inside the Barracks");
+                        return;
+                    }
+                }
+                else
+                {
+                    await GetToGCBase();
+                }
+
                 targetNpc = GameObjectManager.GetObjectByNPCId(NpcList[Core.Me.GrandCompany][npc]);
             }
 

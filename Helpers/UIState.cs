@@ -38,6 +38,11 @@ public static class UIState
     /// <returns><see langword="true"/> if the card is unlocked; otherwise <see langword="false"/>.</returns>
     public static bool CardUnlocked(int id) => Core.Memory.CallInjectedWraper<bool>(UIStateOffsets.CardUnlocked, UIStateOffsets.Instance, id);
 
+    /// <summary>Determines whether the current character has defeated a Triple Triad NPC at least once.</summary>
+    /// <param name="tripleTriadResidentId">The TripleTriadResident sheet row ID, not the ENpc ID.</param>
+    public static bool TripleTriadNpcBeaten(uint tripleTriadResidentId) =>
+        Core.Memory.CallInjectedWraper<bool>(UIStateOffsets.TripleTriadNpcBeaten, UIStateOffsets.Instance, tripleTriadResidentId);
+
     /// <summary>Determines if an emote is unlocked for the current player.</summary>
     /// <param name="id">The numeric identifier of the emote.</param>
     /// <returns><see langword="true"/> if the emote is unlocked; otherwise <see langword="false"/>.</returns>

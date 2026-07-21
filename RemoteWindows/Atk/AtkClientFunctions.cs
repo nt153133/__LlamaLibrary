@@ -85,4 +85,5 @@ public static class AtkClientFunctions
 
         Core.Memory.CallInjectedWraper<IntPtr>(Offsets.DialogueOkay, window.Pointer, 0x19);
     }
+
 }

@@ -15,5 +15,7 @@
         Commander,
         Hunt_Billmaster,
         Squadron_Sergeant,
+        Regimen_Board,
+        Enlistment_Papers,
     }
 }

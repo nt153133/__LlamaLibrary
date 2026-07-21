@@ -52,11 +52,10 @@ namespace LlamaLibrary.RemoteWindows
 
         public void OpenShopCardDialog(uint index)
         {
-#if RB_DT
-            SendAction(2, 3, 0, 5, index);
-#else
-            SendAction(2, 3, 0, 4, index);
-#endif
+            // The legacy variadic wrapper has caused delegate-thunk crashes on current RB builds.
+            // This is the same callback expressed through the typed addon action path:
+            // (ValueType.Int, 0), (ValueType.UInt, index).
+            SendAction(true, new Atk.AtkValue(0), new Atk.AtkValue(index));
         }
     }
 }

@@ -114,19 +114,39 @@ namespace LlamaLibrary.RemoteWindows
         {
             get
             {
-                if (WindowByName == null)
-                {
-                    return Array.Empty<TwoInt>();
-                }
-
-                var elementCount = ElementCount;
-                var addr = Core.Memory.Read<IntPtr>(WindowByName.Pointer + Offset2);
-
-                return Core.Memory.ReadArray<TwoInt>(addr, elementCount);
+                return ReadElements(WindowByName);
             }
         }
 
-        protected ushort ElementCount => WindowByName != null ? Core.Memory.Read<ushort>(WindowByName.Pointer + Offset0) : (ushort)0;
+        protected static TwoInt[] ReadElements(AtkAddonControl? window)
+        {
+            if (window == null || window.Pointer == IntPtr.Zero)
+            {
+                return Array.Empty<TwoInt>();
+            }
+
+            var elementCount = Core.Memory.Read<ushort>(window.Pointer + Offset0);
+            if (elementCount == 0)
+            {
+                return Array.Empty<TwoInt>();
+            }
+
+            var addr = Core.Memory.Read<IntPtr>(window.Pointer + Offset2);
+            return addr == IntPtr.Zero
+                ? Array.Empty<TwoInt>()
+                : Core.Memory.ReadArray<TwoInt>(addr, elementCount);
+        }
+
+        protected ushort ElementCount
+        {
+            get
+            {
+                var window = WindowByName;
+                return window == null || window.Pointer == IntPtr.Zero
+                    ? (ushort)0
+                    : Core.Memory.Read<ushort>(window.Pointer + Offset0);
+            }
+        }
 
         /// <summary>
         /// Sends a raw action to the window using the specified number of ulong pairs.

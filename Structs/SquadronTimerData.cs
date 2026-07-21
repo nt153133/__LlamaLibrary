@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-//Info for this struct pulled from https://github.com/Ottermandias/Accountant
+// This is the 14-byte Squadron block beginning at PlayerState + 0x604.
+// Field layout is also documented by FFXIVClientStructs PlayerState.
 namespace LlamaLibrary.Structs
 {
     /// <summary>
@@ -9,7 +10,8 @@ namespace LlamaLibrary.Structs
     /// Values are typically read from the game's internal squadron status offsets.
     /// </summary>
     /// <remarks>
-    /// Information for this struct was originally referenced from the Accountant project (https://github.com/Ottermandias/Accountant).
+    /// Information for this struct was originally referenced from the Accountant project and
+    /// is independently documented by FFXIVClientStructs in Client.Game.UI.PlayerState.
     /// </remarks>
     [StructLayout(LayoutKind.Sequential, Size = 14)]
     public struct SquadronTimerData

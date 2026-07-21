@@ -15,6 +15,11 @@ public class AtkValue : IDisposable
     private readonly uint _uInt;
     private readonly IntPtr _vector;
 
+    public AtkValue(ValueType type)
+    {
+        Type = type;
+    }
+
     public AtkValue(int value)
     {
         Type = ValueType.Int;
@@ -118,7 +123,7 @@ public class AtkValue : IDisposable
             ValueType.Int   => new AtkValue(value.value),
             ValueType.UInt  => new AtkValue((uint)value.value),
             ValueType.Float => new AtkValue((float) value.value),
-            _               => new AtkValue(0)
+            _               => new AtkValue(value.type)
         };
     }
 
@@ -132,7 +137,7 @@ public class AtkValue : IDisposable
             ValueType.Float  => new AtkValue((float) value.value),
             ValueType.String => new AtkValue((string) value.value),
             ValueType.Bool   => new AtkValue((bool) value.value),
-            _                => new AtkValue(0)
+            _                => new AtkValue(value.type)
         };
     }
 

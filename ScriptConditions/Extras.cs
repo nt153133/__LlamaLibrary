@@ -574,6 +574,24 @@ namespace LlamaLibrary.ScriptConditions
         }
 
         /// <summary>
+        /// Checks a TripleTriadCardResident row directly. Generated profiles use this overload so
+        /// their conditions remain independent of the client's language.
+        /// </summary>
+        public static bool IsTripleTriadCardUnlocked(int cardId)
+        {
+            return cardId > 0 && UIState.CardUnlocked(cardId);
+        }
+
+        /// <summary>
+        /// Checks whether the current character has not yet defeated a Triple Triad NPC.
+        /// </summary>
+        /// <param name="tripleTriadResidentId">The TripleTriadResident sheet row ID, not the ENpc ID.</param>
+        public static bool HasNotBeatenNPC(uint tripleTriadResidentId)
+        {
+            return !UIState.TripleTriadNpcBeaten(tripleTriadResidentId);
+        }
+
+        /// <summary>
         /// Checks if the player has the item in their inventory required to unlock a specific Triple Triad card.
         /// </summary>
         /// <param name="name">The name of the card.</param>

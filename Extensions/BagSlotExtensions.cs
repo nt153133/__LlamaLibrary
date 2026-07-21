@@ -313,14 +313,15 @@ namespace LlamaLibrary.Extensions
                     continue;
                 }
 
-                try
+                if (!ResourceManager.MateriaList.Value.TryGetValue(materiaType[i], out var materiaByTier))
                 {
-                    materia.Add(ResourceManager.MateriaList.Value[materiaType[i]].First(j => j.Tier == materiaLevel[i]));
+                    continue;
                 }
-                catch (Exception e)
+
+                var matchingMateria = materiaByTier.FirstOrDefault(j => j.Tier == materiaLevel[i]);
+                if (matchingMateria != null)
                 {
-                    ff14bot.Helpers.Logging.WriteDiagnostic(e.Message);
-                    // ignored
+                    materia.Add(matchingMateria);
                 }
             }
 

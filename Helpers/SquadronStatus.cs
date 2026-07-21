@@ -70,5 +70,29 @@ namespace LlamaLibrary.Helpers
         /// Gets a value indicating whether the current squadron training session has been completed.
         /// </summary>
         public static bool TrainingDone => Status.TrainingEnd <= DateTime.Now;
+
+        /// <summary>Gets whether an autonomous Squadron mission is currently underway.</summary>
+        public static bool HasActiveMission
+            => Status.MissionId != 0 && Status.MissionEndTime > DateTime.Now;
+
+        /// <summary>Gets whether a dispatched Squadron mission has returned and awaits handling.</summary>
+        public static bool HasReturnedMission
+            => Status.MissionId != 0 && Status.MissionEndTime <= DateTime.Now;
+
+        /// <summary>Gets the remaining autonomous mission time, clamped to zero.</summary>
+        public static TimeSpan MissionRemaining
+            => HasActiveMission ? Status.MissionEndTime - DateTime.Now : TimeSpan.Zero;
+
+        /// <summary>Gets whether Squadron training is currently underway.</summary>
+        public static bool HasActiveTraining
+            => Status.TrainingId != 0 && Status.TrainingEnd > DateTime.Now;
+
+        /// <summary>Gets whether Squadron training has finished and awaits handling.</summary>
+        public static bool HasReturnedTraining
+            => Status.TrainingId != 0 && Status.TrainingEnd <= DateTime.Now;
+
+        /// <summary>Gets the remaining training time, clamped to zero.</summary>
+        public static TimeSpan TrainingRemaining
+            => HasActiveTraining ? Status.TrainingEnd - DateTime.Now : TimeSpan.Zero;
     }
 }
