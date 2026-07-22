@@ -267,6 +267,19 @@ namespace LlamaLibrary.ScriptConditions
             return (int)Core.Me.GCRank();
         }
 
+        /// <summary>Returns whether the specified Challenge Log row is complete this week.</summary>
+        public static bool ChallengeLogComplete(int rowId)
+        {
+            return RemoteWindows.ContentsNote.Instance.IsComplete(rowId);
+        }
+
+        /// <summary>Returns whether Timers reports Squadron enlistment papers awaiting review.</summary>
+        public static bool SquadronNewRecruitAvailable()
+        {
+            SquadronStatus.Update();
+            return SquadronStatus.Status.NewRecruits;
+        }
+
         /// <summary>
         /// Checks if the player's current job is a tanking (Fending) class.
         /// </summary>
