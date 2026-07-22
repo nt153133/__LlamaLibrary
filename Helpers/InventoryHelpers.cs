@@ -57,8 +57,18 @@ namespace LlamaLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// Determines whether the item in the specified bag slot is a food item (meal).
+        /// </summary>
+        /// <param name="slot">The bag slot to check.</param>
+        /// <returns><see langword="true"/> if the item is a food item; otherwise <see langword="false"/>.</returns>
         private static bool IsFoodItem(this BagSlot slot) => slot.Item.EquipmentCatagory == ItemUiCategory.Meal;
 
+        /// <summary>
+        /// Determines whether the item in the specified bag slot is a medicine item.
+        /// </summary>
+        /// <param name="slot">The bag slot to check.</param>
+        /// <returns><see langword="true"/> if the item is a medicine item; otherwise <see langword="false"/>.</returns>
         private static bool IsMedicineItem(this BagSlot slot) => slot.Item.EquipmentCatagory == ItemUiCategory.Medicine;
 
         /// <summary>
