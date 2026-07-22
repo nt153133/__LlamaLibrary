@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -15,13 +15,24 @@ using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.Utilities
 {
+    /// <summary>
+    /// Provides a suite of utility methods for managing the player's inventory,
+    /// including automated coffer opening, desynthesis, item reduction, and materia extraction.
+    /// </summary>
     public static class Inventory
     {
         private static readonly LLogger Log = new("InventoryUtilities", Colors.Green);
 
+        /// <summary>
+        /// Gets a value indicating whether the player is currently busy or occupied with an action.
+        /// Checks for active casting, mounting, combat, movement, open dialogs, and duty-related states.
+        /// </summary>
         public static bool IsBusy => DutyManager.InInstance || DutyManager.InQueue || DutyManager.DutyReady || Core.Me.IsCasting || Core.Me.IsMounted || Core.Me.InCombat || Talk.DialogOpen || MovementManager.IsMoving ||
                                      MovementManager.IsOccupied;
 
+        /// <summary>
+        /// Gets the standard set of inventory bag identifiers for player-carried items.
+        /// </summary>
         public static readonly InventoryBagId[] InventoryBagIds = new InventoryBagId[4]
         {
             InventoryBagId.Bag1,
@@ -30,6 +41,9 @@ namespace LlamaLibrary.Utilities
             InventoryBagId.Bag4
         };
 
+        /// <summary>
+        /// Gets the standard set of armory chest bag identifiers for equipment.
+        /// </summary>
         public static readonly InventoryBagId[] ArmoryBagIds = new InventoryBagId[12]
         {
             InventoryBagId.Armory_MainHand,
@@ -46,6 +60,11 @@ namespace LlamaLibrary.Utilities
             InventoryBagId.Armory_Rings
         };
 
+        /// <summary>
+        /// Automatically identifies and opens coffer-style items (Item Action 388) in the player's inventory.
+        /// This includes gear containers and other items that require a casting bar to open.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task<bool> CofferTask()
         {
             foreach (var bagslot in InventoryManager.FilledSlots.Where(bagslot => bagslot.Item.ItemAction == 388))
@@ -64,6 +83,11 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
+        /// <summary>
+        /// Scans the player's inventory for items that unlock game content (minions, orchestrion rolls, cards, books, tomes)
+        /// and attempts to use each one.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task UseUnlockablesAsync()
         {
             var backingActionIds = new HashSet<uint>
@@ -122,6 +146,12 @@ namespace LlamaLibrary.Utilities
             Log.Verbose("Done desynth");
         }
 
+        /// <summary>
+        /// Performs batch desynthesis on a collection of <see cref="BagSlot"/> objects.
+        /// Skips items where the player's level for the required repair class is below 30.
+        /// </summary>
+        /// <param name="itemsToDesynth">The collection of bag slots containing items to desynthesize.</param>
+        /// <returns><see langword="true"/> if the process completed; otherwise <see langword="false"/> if the player is busy.</returns>
         public static async Task<bool> Desynth(IEnumerable<BagSlot> itemsToDesynth)
         {
             await GeneralFunctions.StopBusy(leaveDuty: false);
@@ -173,6 +203,10 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
+        /// <summary>
+        /// Automatically performs Aetherial Reduction on all reducible items found in the standard player inventory bags.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task<bool> ReduceAll()
         {
             await GeneralFunctions.StopBusy(false);
@@ -203,6 +237,11 @@ namespace LlamaLibrary.Utilities
             return true;
         }
 
+        /// <summary>
+        /// Scans inventory and armory for gear with 100% spiritbond and attempts to extract Materia from each.
+        /// Excludes Relic Sphere Scrolls (item IDs 7873-7882, 9255) to prevent accidental loss or interruption.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static async Task ExtractFromAllGear()
         {
             await GeneralFunctions.StopBusy(leaveDuty: false);
