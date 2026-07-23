@@ -91,10 +91,14 @@ namespace LlamaLibrary.RemoteWindows
             }
         }
 
-        /// <summary>Selects one of the three autonomous mission categories.</summary>
+        /// <summary>Selects an autonomous mission category currently unlocked for this squadron.</summary>
         public bool SelectCategory(int index)
         {
-            if (!IsOpen || index < 0 || index >= Categories.Count)
+            // Fresh squadrons initially expose only Trainee Missions. Routine
+            // and Priority tabs are added later, so validate against the live
+            // category count without dereferencing localized label pointers.
+            var categoryCount = Math.Min(3, Math.Max(CategoryCount, 0));
+            if (!IsOpen || index < 0 || index >= categoryCount)
             {
                 return false;
             }
@@ -155,7 +159,8 @@ namespace LlamaLibrary.RemoteWindows
         /// </summary>
         public bool Deploy()
         {
-            if (!IsOpen || SelectedMissionId <= 0 || !CanDeploy)
+            // City Patrol is row/mission 0 and is a valid Rank 1 deployment.
+            if (!IsOpen || SelectedMissionIndex < 0 || !CanDeploy)
             {
                 return false;
             }
@@ -223,7 +228,24 @@ namespace LlamaLibrary.RemoteWindows
         }
 
         private static string ReadString(ff14bot.RemoteWindows.TwoInt[] values, int index)
-            => values[index].Data == 0 ? string.Empty : Core.Memory.ReadString((IntPtr)values[index].Data, Encoding.UTF8);
+        {
+            if (index < 0 || index >= values.Length || values[index].Data == 0)
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                return Core.Memory.ReadString((IntPtr)values[index].Data, Encoding.UTF8);
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                // Addon string storage can be replaced between Elements and
+                // ReadString while switching tabs. A missing label must not
+                // abort or restart the Squadron workflow.
+                return string.Empty;
+            }
+        }
     }
 
     public enum GcArmyMissionCategory

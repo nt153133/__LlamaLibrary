@@ -73,11 +73,13 @@ namespace LlamaLibrary.Helpers
 
         /// <summary>Gets whether an autonomous Squadron mission is currently underway.</summary>
         public static bool HasActiveMission
-            => Status.MissionId != 0 && Status.MissionEndTime > DateTime.Now;
+            // Mission ID 0 is the valid initial Trainee Mission (City Patrol).
+            // A nonzero end timestamp distinguishes it from no mission.
+            => Status.MissionEndTimeStamp != 0 && Status.MissionEndTime > DateTime.Now;
 
         /// <summary>Gets whether a dispatched Squadron mission has returned and awaits handling.</summary>
         public static bool HasReturnedMission
-            => Status.MissionId != 0 && Status.MissionEndTime <= DateTime.Now;
+            => Status.MissionEndTimeStamp != 0 && Status.MissionEndTime <= DateTime.Now;
 
         /// <summary>Gets the remaining autonomous mission time, clamped to zero.</summary>
         public static TimeSpan MissionRemaining

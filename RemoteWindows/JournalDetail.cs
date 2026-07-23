@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using ff14bot.Managers;
+using LlamaLibrary.RemoteWindows.Atk;
 
 namespace LlamaLibrary.RemoteWindows
 {
@@ -17,6 +18,13 @@ namespace LlamaLibrary.RemoteWindows
         public void InitiateLeve(ulong globalId)
         {
             SendAction(2, 3, 4, 4, globalId);
+        }
+
+        /// <summary>Clicks Accept for the quest currently displayed in JournalDetail.</summary>
+        /// <param name="questId">The quest ID supplied by the JournalDetail callback.</param>
+        public void AcceptQuest(uint questId)
+        {
+            SendAction(true, (ValueType.Int, 0x3), (ValueType.UInt, questId));
         }
 
         public override void Close()
