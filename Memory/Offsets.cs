@@ -1077,9 +1077,15 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search BA ? ? ? ? E8 ? ? ? ? 48 8B 7C 24 ? 48 8B 5C 24 ? 84 C0 Add 1 Read32")]
         public static int ReduceId;
 
-        // InventoryItem::_materia and InventoryItem::_materiaGrades.
-        public static int BagSlotMateriaType = 0x28;
-        public static int BagSlotMateriaLevel = 0x32;
+        //7.3
+        [Offset("Search 0F B7 44 7B ? 66 85 C0 0F 84 ? ? ? ? 48 8B 74 24 ? Add 4 Read8")]
+        [OffsetTC("Search 0F B7 44 7B ? 66 85 C0 0F 84 ? ? ? ? 4C 8B 74 24 ? Add 4 Read8")]
+        public static int BagSlotMateriaType;
+
+        //7.3
+        [Offset("Search 0F B6 44 18 ? 0F B6 C0 0F BF 74 46 ? Add 4 Read8")]
+        [OffsetTC("Search 0F B6 44 18 ? 4D 8B 37 Add 4 Read8")]
+        public static int BagSlotMateriaLevel;
 
         //7.4
         [Offset("Search BA ? ? ? ? 48 8B CF E8 ? ? ? ? 83 7E ? ? Add 1 Read32")]
@@ -1821,7 +1827,7 @@ namespace LlamaLibrary.Memory
         internal static IntPtr CardUnlocked;
 
         // UIState::IsTripleTriadNpcBeaten(TripleTriadResident row id)
-        [Offset("Search 40 53 48 83 EC 20 8D 82 FE FF DC FF")]
+        [Offset("Search 40 53 48 83 EC ? 8D 82 ? ? ? ? 48 8B D9 3D ? ? ? ?")]
         internal static IntPtr TripleTriadNpcBeaten;
 
         [Offset("Search E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 48 8D 0D ? ? ? ? 48 89 5C 24 ? TraceCall")]
