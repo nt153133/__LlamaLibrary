@@ -442,7 +442,7 @@ namespace LlamaLibrary.Helpers
 
         public static async Task<bool> IsProductKeyValid()
         {
-            return await Coroutine.ExternalTask(_isProductKeyValid());
+            return await _isProductKeyValid();
         }
 
         public static async Task<bool> IsProductKeyValidNoCoroutine()
