@@ -6,7 +6,7 @@ public class BeastTribeExd
 
     public byte Expansion { get; private set; }
 
-    public ushort Currency { get; private set; }
+    public uint Currency { get; private set; }
 
     public string Name { get; set; }
 
