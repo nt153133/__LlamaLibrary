@@ -955,6 +955,14 @@ namespace LlamaLibrary.Memory
         //        internal static int PointerOffset = 0x30;
     }
 
+    public static class AgentShopExchangeCoinOffsets
+    {
+        //7.55
+        [Offset("Search 48 8D 05 ? ? ? ? 8B DA 48 89 01 48 8B F9 E8 ? ? ? ? F6 C3 ? 74 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C7 48 83 C4 ? 5F C3 ? ? 48 89 5C 24 ? 57 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B F9 48 89 01 8B DA 48 83 C1 ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? F6 C3 ? 74 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C7 48 83 C4 ? 5F C3 ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
+        [IgnoreCache]
+        internal static IntPtr VTable;
+    }
+
     public static class AgentTripleTriadCoinExchangeOffsets
     {
         [Offset("Search 3B 59 ? 0F 83 ? ? ? ? 48 8B 41 ? Add 2 Read8")]
@@ -1709,6 +1717,17 @@ namespace LlamaLibrary.Memory
         [Offset("Search 8B 5B ? FF 50 ? F6 05 ? ? ? ? ? 48 89 44 24 ? C7 44 24 ? ? ? ? ? 48 C7 44 24 ? ? ? ? ? 89 5C 24 ? 0F 85 ? ? ? ? Add 2 Read8")]
         [OffsetTC("Search 8B 5B ? FF 50 ? F6 05 ? ? ? ? ? 48 89 44 24 ? C7 44 24 ? ? ? ? ? 48 C7 44 24 ? ? ? ? ? 89 5C 24 ? 0F 85 ? ? ? ? Add 2 Read8")]
         internal static int ShopIdPointer;
+    }
+
+    public static class ShopExchangeCoinOffsets
+    {
+        //7.4
+        [Offset("Search E8 ? ? ? ? 83 F8 0E 75 2B Add 1 TraceRelative")]
+        internal static IntPtr ComponentGetType;
+
+        //7.4
+        [Offset("Search E8 ? ? ? ? 81 4F ? ? ? ? ? EB 07 Add 1 TraceRelative")]
+        internal static IntPtr NumericInputSetValue;
     }
 
     public static class SnipeManagerOffsets
