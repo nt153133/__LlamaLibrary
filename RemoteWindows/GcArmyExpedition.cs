@@ -159,8 +159,11 @@ namespace LlamaLibrary.RemoteWindows
         /// </summary>
         public bool Deploy()
         {
-            // City Patrol is row/mission 0 and is a valid Rank 1 deployment.
-            if (!IsOpen || SelectedMissionIndex < 0 || !CanDeploy)
+            // CanDeploy is an advisory addon value and can remain false after
+            // returning from Edit Squadron even when the visible Deploy button
+            // accepts the callback. The resulting confirmation window is the
+            // authoritative validation for callers.
+            if (!IsOpen || SelectedMissionIndex < 0)
             {
                 return false;
             }
