@@ -45,7 +45,7 @@ namespace LlamaLibrary.Extensions
 
             return newText.ToString();
         }
-
+#if !NET10_0_OR_GREATER
         /// <summary>
         /// Randomly shuffles the elements of an <see cref="IEnumerable{T}"/> using the default random number generator.
         /// </summary>
@@ -93,7 +93,7 @@ namespace LlamaLibrary.Extensions
                 buffer[j] = buffer[i];
             }
         }
-
+#endif
         /// <summary>
         /// Serializes a collection of Lisbeth <see cref="Order"/> objects into a JSON string.
         /// Configured to ignore null and default values and use string representations for enums.
