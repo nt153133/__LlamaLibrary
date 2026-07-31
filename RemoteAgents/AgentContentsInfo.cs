@@ -16,6 +16,24 @@ namespace LlamaLibrary.RemoteAgents
         private const int EstateSlotCount = 5;
         private const int ScheduledForDemolitionStatus = 4;
 
+        //TODO: Get these hardcoded offsets out of here
+
+        // AgentContentsTimer tail layout. These values are deliberately kept
+        // behind the agent wrapper so consumers never depend on client layout.
+#if RB_TC
+        /// <summary>Byte offset of the five-element estate status array in AgentContentsTimer.</summary>
+        internal const int EstateStatusArray = 0x17DC;
+
+        /// <summary>Byte offset of the five-element Unix deadline array in AgentContentsTimer.</summary>
+        internal const int EstateDeadlineArray = 0x17F0;
+#else
+        /// <summary>Byte offset of the five-element estate status array in AgentContentsTimer.</summary>
+        internal const int EstateStatusArray = 0x17DC;
+
+        /// <summary>Byte offset of the five-element Unix deadline array in AgentContentsTimer.</summary>
+        internal const int EstateDeadlineArray = 0x17F0;
+#endif
+
         // AgentContentsTimer stores FC, private, and shared estates in fixed slots.
         // Slot 1 is not an actionable estate entry and is intentionally omitted.
         private static readonly (int Slot, EstateType EstateType, bool CanCancel)[] EstateSlots =
@@ -47,8 +65,8 @@ namespace LlamaLibrary.RemoteAgents
                 return UnknownSnapshot(now, "The Contents Info agent is unavailable.");
             }
 
-            var statuses = Core.Memory.ReadArray<int>(Pointer + AgentContentsInfoOffsets.EstateStatusArray, EstateSlotCount);
-            var deadlines = Core.Memory.ReadArray<ulong>(Pointer + AgentContentsInfoOffsets.EstateDeadlineArray, EstateSlotCount);
+            var statuses = Core.Memory.ReadArray<int>(Pointer + EstateStatusArray, EstateSlotCount);
+            var deadlines = Core.Memory.ReadArray<ulong>(Pointer + EstateDeadlineArray, EstateSlotCount);
             if (statuses.Length != EstateSlotCount || deadlines.Length != EstateSlotCount)
             {
                 return UnknownSnapshot(now, "The estate timer arrays could not be read completely.");
