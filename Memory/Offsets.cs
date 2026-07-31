@@ -338,6 +338,22 @@ namespace LlamaLibrary.Memory
     {
         [Offset("Search 48 8D 05 ? ? ? ? BE ? ? ? ? 48 89 03 48 8D 7B ? Add 3 TraceRelative")]
         internal static IntPtr VTable;
+
+        // AgentContentsTimer tail layout. These values are deliberately kept
+        // behind the agent wrapper so consumers never depend on client layout.
+#if RB_TC
+        /// <summary>Byte offset of the five-element estate status array in AgentContentsTimer.</summary>
+        internal const int EstateStatusArray = 0x17DC;
+
+        /// <summary>Byte offset of the five-element Unix deadline array in AgentContentsTimer.</summary>
+        internal const int EstateDeadlineArray = 0x17F0;
+#else
+        /// <summary>Byte offset of the five-element estate status array in AgentContentsTimer.</summary>
+        internal const int EstateStatusArray = 0x17DC;
+
+        /// <summary>Byte offset of the five-element Unix deadline array in AgentContentsTimer.</summary>
+        internal const int EstateDeadlineArray = 0x17F0;
+#endif
     }
 
     public static class AgentDawnOffsets
