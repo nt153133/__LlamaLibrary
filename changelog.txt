@@ -1,9 +1,0 @@
-LlamaLibrary Changelog
-
-Unreleased
-
-Memory and offsets
-
-- Improved MGP exchange compatibility across client updates by replacing volatile exact operand bytes with flexible signatures.
-- Prevented fixed structure-layout constants, including estate demolition arrays, from being treated as writable pattern offsets during startup.
-- Removed the MGP exchange agent's patch-sensitive vtable lookup in favor of its stable game-agent slot.

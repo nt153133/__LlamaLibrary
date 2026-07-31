@@ -955,6 +955,18 @@ namespace LlamaLibrary.Memory
         //        internal static int PointerOffset = 0x30;
     }
 
+    public static class AgentShopExchangeCoinOffsets
+    {
+        // A single operand-masked constructor is shared by multiple agents, so this anchor extends
+        // through the adjacent constructor/destructor pair until it is unique. Address, call,
+        // displacement, branch, stack, and immediate operands are wildcarded; Add 3 TraceRelative
+        // resolves the initial RIP-relative LEA to the vtable. It matched once in .text on Global
+        // 2026.07.16.0001.0000 and TC 2026.07.22.0000.0000. Keep this offset cacheable because the
+        // cache is already versioned per client patch and rescanning it on every RB start is wasteful.
+        [Offset("Search 48 8D 05 ? ? ? ? 8B DA 48 89 01 48 8B F9 E8 ? ? ? ? F6 C3 ? 74 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C7 48 83 C4 ? 5F C3 ? ? 48 89 5C 24 ? 57 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B F9 48 89 01 8B DA 48 83 C1 ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? F6 C3 ? 74 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C7 48 83 C4 ? 5F C3 ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
+        internal static IntPtr VTable;
+    }
+
     public static class AgentTripleTriadCoinExchangeOffsets
     {
         [Offset("Search 3B 59 ? 0F 83 ? ? ? ? 48 8B 41 ? Add 2 Read8")]
