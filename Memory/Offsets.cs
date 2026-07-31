@@ -955,14 +955,6 @@ namespace LlamaLibrary.Memory
         //        internal static int PointerOffset = 0x30;
     }
 
-    public static class AgentShopExchangeCoinOffsets
-    {
-        //7.55
-        [Offset("Search 48 8D 05 ? ? ? ? 8B DA 48 89 01 48 8B F9 E8 ? ? ? ? F6 C3 ? 74 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C7 48 83 C4 ? 5F C3 ? ? 48 89 5C 24 ? 57 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B F9 48 89 01 8B DA 48 83 C1 ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? F6 C3 ? 74 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C7 48 83 C4 ? 5F C3 ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
-        [IgnoreCache]
-        internal static IntPtr VTable;
-    }
-
     public static class AgentTripleTriadCoinExchangeOffsets
     {
         [Offset("Search 3B 59 ? 0F 83 ? ? ? ? 48 8B 41 ? Add 2 Read8")]
@@ -1721,12 +1713,17 @@ namespace LlamaLibrary.Memory
 
     public static class ShopExchangeCoinOffsets
     {
-        //7.4
-        [Offset("Search E8 ? ? ? ? 83 F8 0E 75 2B Add 1 TraceRelative")]
+        // Ghidra identifies the call target, comparison value, branch distance, and bit index as
+        // operand data, so each is wildcarded. The four-instruction semantic anchor matched once in
+        // .text on Global 2026.07.16.0001.0000 and TC 2026.07.22.0000.0000; TraceRelative resolves
+        // the first call to the component type function.
+        [Offset("Search E8 ? ? ? ? 83 F8 ? 75 ? 0F BA E3 ? Add 1 TraceRelative")]
         internal static IntPtr ComponentGetType;
 
-        //7.4
-        [Offset("Search E8 ? ? ? ? 81 4F ? ? ? ? ? EB 07 Add 1 TraceRelative")]
+        // This anchor keeps only opcode/register structure from the call, flag update, jump, and
+        // alternate bit-set path. Ghidra operand masks wildcard both call/branch targets and every
+        // displacement/immediate; it matched once in the same Global and TC client builds.
+        [Offset("Search E8 ? ? ? ? 81 4F ? ? ? ? ? EB ? 0F BA EA ? Add 1 TraceRelative")]
         internal static IntPtr NumericInputSetValue;
     }
 
