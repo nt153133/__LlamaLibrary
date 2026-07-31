@@ -220,6 +220,8 @@ namespace LlamaLibrary.Helpers
 
         public static string Cancel => Aetheryte13[Language];
 
+        public static string RetireToInnRoom => WarpInnRoom[Language];
+
         public static string RelicWeaponZenithEnhancement => CustomTalk721061[Language];
 
         public static string RelicWeaponAtmaEnhancement => CustomTalk721062[Language];
@@ -418,6 +420,17 @@ namespace LlamaLibrary.Helpers
             { Language.Ger, "Abgeschlossen" },
             { Language.Chn, "结束" },
             { Language.TraditionalChinese, "結束" }
+        };
+
+        //warp/WarpInnGridania_11, warp/WarpInnLimsaLominsa_11, warp/WarpInnUldah_11
+        private static readonly Dictionary<Language, string> WarpInnRoom = new()
+        {
+            { Language.Eng, "Retire to an inn room." },
+            { Language.Jap, "客室に移動する" },
+            { Language.Fre, "Aller dans ma chambre" },
+            { Language.Ger, "Ein Gästezimmer beziehen." },
+            { Language.Chn, "去客房" },
+            { Language.TraditionalChinese, "去客房" }
         };
 
         //CustomTalk721061

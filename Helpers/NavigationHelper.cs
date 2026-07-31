@@ -251,9 +251,15 @@ namespace LlamaLibrary.Helpers
                 return false;
             }
 
-            if (!await Navigation.GetToInteractNpcSelectString(npc, 0))
+            if (!await Navigation.GetToInteractNpcSelectString(npc))
             {
                 Log.Error($"Failed to get to {npc.Name}");
+                return false;
+            }
+
+            if (!LlamaLibrary.RemoteWindows.Conversation.SelectLineContains(Translator.RetireToInnRoom))
+            {
+                Log.Error($"Could not find {Translator.RetireToInnRoom}");
                 return false;
             }
 
