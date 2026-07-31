@@ -45,7 +45,7 @@ namespace LlamaLibrary.Memory;
 
 public static class OffsetManager
 {
-    private const long _version = 56;
+    private const long _version = 57;
     private const bool _debug = false;
 
     // --- Namespace / type filters ---------------------------------------------------------------
@@ -530,10 +530,17 @@ public static class OffsetManager
     private const BindingFlags OffsetMemberFlags =
         BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public;
 
+    /// <summary>
+    /// Enumerates writable offset members while excluding constants and private implementation
+    /// details that reflection cannot populate. Constants must never enter offset resolution:
+    /// attempting to assign them caused AgentContentsInfo estate layout values to fail startup.
+    /// </summary>
+    /// <param name="j">The offset container type to inspect.</param>
+    /// <returns>The fields and properties eligible for cache restoration or pattern resolution.</returns>
     public static IEnumerable<MemberInfo> MemberInfos(Type j)
     {
         foreach (var f in j.GetFields(OffsetMemberFlags))
-            if (!f.IsInitOnly && !f.IsPrivate)
+            if (!f.IsLiteral && !f.IsInitOnly && !f.IsPrivate)
                 yield return f;
 
         foreach (var p in j.GetProperties(OffsetMemberFlags))
@@ -541,6 +548,9 @@ public static class OffsetManager
                 yield return p;
     }
 
+    /// <summary>Enumerates writable offset members from multiple offset container types.</summary>
+    /// <param name="j">The offset container types to inspect.</param>
+    /// <returns>The flattened sequence of members eligible for offset resolution.</returns>
     public static IEnumerable<MemberInfo> MemberInfos(IEnumerable<Type> j) => j.SelectMany(MemberInfos);
 
     private static List<MemberInfo> CollectMemberInfos(IEnumerable<Type> types)
