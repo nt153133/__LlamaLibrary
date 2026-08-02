@@ -10,8 +10,10 @@ on:
         type: string
 
 env:
-  VERIFIER_URL: https://llamalibraryoffsetverifier.llamaserver.com/LlamaLibraryOffsetVerifier-linux-x64-9e7597a574019eed726d4c2f0b17218a828979d1.tar.gz
-  VERIFIER_SHA256: d2fb67f3a35a0768a89f5ee0e527e6aee03946db387e50bc95d659cdb8dc5a18
+  VERIFIER_ID: 1472883b7684ad63faad4f1c9b90d7e54d125e16
+  VERIFIER_URL: https://llamalibraryoffsetverifier.llamaserver.com/LlamaLibraryOffsetVerifier-linux-x64-1472883b7684ad63faad4f1c9b90d7e54d125e16.tar.gz?release=v1.1.0
+  VERIFIER_SHA256: 7008b6b48a9142d64625233d1fbe205c643bad01f823ec6622fa6ccf8f9a3183
+  ARTIFACT_SERVER: https://api.llamashepherd.com
 
 jobs:
   verify:
@@ -20,7 +22,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download verifier
         shell: bash
@@ -38,7 +40,31 @@ jobs:
             -C "$RUNNER_TEMP/llama-offset-verifier"
           chmod +x "$RUNNER_TEMP/llama-offset-verifier/LlamaLibraryOffsetVerifier"
 
+      - name: Resolve regional targets
+        id: targets
+        shell: bash
+        env:
+          REGIONS: ${{ inputs.regions }}
+        run: |
+          set -euo pipefail
+          targets_path="$RUNNER_TEMP/ffxiv-targets.json"
+          "$RUNNER_TEMP/llama-offset-verifier/LlamaLibraryOffsetVerifier" targets \
+            --artifact-server "$ARTIFACT_SERVER" \
+            --region "$REGIONS" \
+            --json "$targets_path"
+          target_digest="$(sha256sum "$targets_path" | cut -d ' ' -f 1)"
+          echo "path=$targets_path" >> "$GITHUB_OUTPUT"
+          echo "digest=$target_digest" >> "$GITHUB_OUTPUT"
+
+      - name: Restore client cache
+        id: client-cache
+        uses: actions/cache/restore@v5
+        with:
+          path: ${{ runner.temp }}/ffxiv-clients
+          key: ffxiv-offset-clients-v1-${{ env.VERIFIER_ID }}-${{ steps.targets.outputs.digest }}
+
       - name: Verify offsets
+        id: verify
         shell: bash
         env:
           REGIONS: ${{ inputs.regions }}
@@ -46,10 +72,29 @@ jobs:
           "$RUNNER_TEMP/llama-offset-verifier/LlamaLibraryOffsetVerifier" verify \
             --source-root "$GITHUB_WORKSPACE" \
             --client-root "$RUNNER_TEMP/ffxiv-clients" \
-            --artifact-server "https://api.llamashepherd.com" \
+            --artifact-server "$ARTIFACT_SERVER" \
             --region "$REGIONS" \
+            --targets "${{ steps.targets.outputs.path }}" \
             --json "$GITHUB_WORKSPACE/offset-verification.json" \
             --summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Check prepared client cache
+        id: client-cache-ready
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f "$RUNNER_TEMP/ffxiv-clients/client-cache-manifest.json" ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Save client cache
+        if: always() && steps.client-cache.outputs.cache-hit != 'true' && steps.client-cache-ready.outputs.ready == 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ runner.temp }}/ffxiv-clients
+          key: ffxiv-offset-clients-v1-${{ env.VERIFIER_ID }}-${{ steps.targets.outputs.digest }}
 
       - name: Upload verification report
         if: always()
