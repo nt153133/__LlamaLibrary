@@ -1,0 +1,60 @@
+name: Verify FFXIV offsets
+
+on:
+  workflow_dispatch:
+    inputs:
+      regions:
+        description: Comma-separated regions to verify
+        required: true
+        default: Global,China,TC
+        type: string
+
+env:
+  VERIFIER_URL: https://llamalibraryoffsetverifier.llamaserver.com/LlamaLibraryOffsetVerifier-linux-x64-9e7597a574019eed726d4c2f0b17218a828979d1.tar.gz
+  VERIFIER_SHA256: d2fb67f3a35a0768a89f5ee0e527e6aee03946db387e50bc95d659cdb8dc5a18
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d "$RUNNER_TEMP/llama-offset-verifier"
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "$VERIFIER_URL" \
+            --output "$RUNNER_TEMP/llama-offset-verifier.tar.gz"
+          printf '%s  %s\n' \
+            "$VERIFIER_SHA256" \
+            "$RUNNER_TEMP/llama-offset-verifier.tar.gz" \
+            | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/llama-offset-verifier.tar.gz" \
+            -C "$RUNNER_TEMP/llama-offset-verifier"
+          chmod +x "$RUNNER_TEMP/llama-offset-verifier/LlamaLibraryOffsetVerifier"
+
+      - name: Verify offsets
+        shell: bash
+        env:
+          REGIONS: ${{ inputs.regions }}
+        run: |
+          "$RUNNER_TEMP/llama-offset-verifier/LlamaLibraryOffsetVerifier" verify \
+            --source-root "$GITHUB_WORKSPACE" \
+            --client-root "$RUNNER_TEMP/ffxiv-clients" \
+            --artifact-server "https://api.llamashepherd.com" \
+            --region "$REGIONS" \
+            --json "$GITHUB_WORKSPACE/offset-verification.json" \
+            --summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload verification report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: offset-verification
+          path: offset-verification.json
+          if-no-files-found: warn
