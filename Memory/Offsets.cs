@@ -603,7 +603,6 @@ namespace LlamaLibrary.Memory
         internal static int LotteryEntryCount;
 
         //7.3
-        // OffsetChecker: AllowAmbiguous
         [Offset("Search 48 89 86 ? ? ? ? 48 8B 01 FF 50 ? 4D 8D 86 ? ? ? ? Add 3 Read32")]
         [OffsetTC("Search 48 89 86 ? ? ? ? 48 8B 01 FF 50 ? 4D 8D 86 ? ? ? ? Add 3 Read32")]
         internal static int FcOwned;
@@ -805,8 +804,7 @@ namespace LlamaLibrary.Memory
     public static class AgentMinionNoteBookOffsets
     {
         //Has 2 values but luckily MinionNotebook is the first one, alternative pattern is loooong
-        // OffsetChecker: AllowAmbiguous
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? 40 53 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8B 4B ? 48 85 C9 74 ? 48 8B 53 ? 41 B8 ? ? ? ? 48 2B D1 48 83 E2 ? E8 ? ? ? ? 33 C0 48 89 43 ? 48 89 43 ? 48 89 43 ? 48 8B CB 48 83 C4 ? 5B E9 ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 48 8B 80 ? ? ? ? 8B 40 ? C1 E8 ? F6 D0 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? 40 53 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8B 4B ? 48 85 C9 74 ? 48 8B 53 ? 41 B8 ? ? ? ? 48 2B D1 48 83 E2 ? E8 ? ? ? ? 33 C0 48 89 43 ? 48 89 43 ? 48 89 43 ? 48 8B CB 48 83 C4 ? 5B E9 ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 48 8B 80 ? ? ? ? 8B 40 ? C1 E8 ? F6 D0 24 ? 48 83 C4 ? C3 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 TraceRelative")]
         internal static IntPtr VTable;
 
         [Offset("Search 48 8B 73 ? 4C 8B 53 ? 4C 2B D6 Add 3 Read8")] //Could be wrong
@@ -843,9 +841,7 @@ namespace LlamaLibrary.Memory
 
     public static class AgentRecommendEquipOffsets
     {
-        // OffsetChecker: AllowAmbiguous
         [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8B C3 C7 43 ? ? ? ? ? 48 83 C4 ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8B C3 C7 43 ? ? ? ? ? Add 3 TraceRelative")]
         internal static IntPtr VTable;
     }
 
@@ -904,7 +900,6 @@ namespace LlamaLibrary.Memory
         internal static int CurrentRep;
 
         //7.5
-        // OffsetChecker: AllowAmbiguous
         [Offset("0F B7 7B ? BA ? ? ? ? E8 ? ? ? ? 41 89 BE ? ? ? ? 49 8D 8E ? ? ? ? 0F B6 7B ? Add 3 Read8")]
         //7.3
         //[Offset("Search 0F B7 7B ? BA ? ? ? ? E8 ? ? ? ? 41 89 BE ? ? ? ? BA ? ? ? ? Add 3 Read8")]
@@ -1051,9 +1046,7 @@ namespace LlamaLibrary.Memory
         public static IntPtr ItemDiscardFunc;
 
         //7.4
-        // OffsetChecker: AllowAmbiguous
         [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 0F BF D8")]
-        [OffsetTC("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 0F BF D8")]
         public static IntPtr ItemLowerQualityFunc;
 
         [Offset("Search 40 55 53 56 57 41 55 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 8D B2 ? ? ? ?")]
@@ -1063,9 +1056,7 @@ namespace LlamaLibrary.Memory
         public static IntPtr MeldWindowFunc;
 
         //7.4
-        // OffsetChecker: AllowAmbiguous
         [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8 8B DA 48 8B F1 45 33 C0")]
-        [OffsetTC("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8")]
         public static IntPtr ExtractMateriaFunc;
 
         //7.4
@@ -1130,7 +1121,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search E9 ? ? ? ? 84 C0 75 ? 48 8B 49 ? Add 1 TraceRelative")]
         public static IntPtr FCChestMove;
 
-        [Offset("Search 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 63 F2 48 8B F9")]
+        [Offset("Search E8 ? ? ? ? 48 8D 47 ? 48 03 C0 48 8D 4F ? 48 03 C9 48 03 FF 48 8B 04 C6 48 89 04 CE 48 8B 44 FE ? 48 89 44 FE ? 4C 8B 74 24 ? 48 8B 6C 24 ? 48 8B 7C 24 ? 48 83 C4 ? 5E C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 4C 8B DC TraceCall")]
         public static IntPtr PlaceAetherWheel;
 
         [Offset("Search 48 8B 05 ? ? ? ? 48 85 C0 74 ? 83 B8 ? ? ? ? ? 75 ? E8 ? ? ? ? Add 3 TraceRelative")]
@@ -1173,9 +1164,7 @@ namespace LlamaLibrary.Memory
         internal static int DailyQuestCount;
 
         //7.2
-        // OffsetChecker: AllowAmbiguous
         [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? 73 ? TraceCall")]
-        [OffsetTC("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? TraceCall")]
         internal static IntPtr GetBeastTribeExd;
 
         [Offset("Search E8 ? ? ? ? 4C 8B C8 EB ? 4C 8D 0D ? ? ? ? TraceCall")]
@@ -1942,7 +1931,6 @@ namespace LlamaLibrary.Memory
         public static IntPtr AgentFreeCompanyCreditShopVTable;
 
         [Offset("Search 89 91 ? ? ? ? 48 8D 44 24 ? BF ? ? ? ? Add 2 Read32")]
-        [OffsetTC("Search 89 91 ? ? ? ? 48 8D 44 24 ? Add 2 Read32")]
         public static int FreeCompanyCredits;
 
         [Offset("Search E8 ? ? ? ? EB ? 80 7E ? ? 75 ? 48 8B 4E ? 48 8B 01 FF 50 ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? EB ? 45 33 C0 TraceCall")]
