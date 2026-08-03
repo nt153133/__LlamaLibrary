@@ -8,6 +8,14 @@ on:
         required: true
         default: Global,China,TC
         type: string
+  push:
+    paths:
+      - Memory/Offsets.cs
+      - Memory/Attributes/OffsetAttribute.cs
+  pull_request:
+    paths:
+      - Memory/Offsets.cs
+      - Memory/Attributes/OffsetAttribute.cs
 
 env:
   VERIFIER_ID: 1472883b7684ad63faad4f1c9b90d7e54d125e16
@@ -44,7 +52,7 @@ jobs:
         id: targets
         shell: bash
         env:
-          REGIONS: ${{ inputs.regions }}
+          REGIONS: ${{ inputs.regions || 'Global,China,TC' }}
         run: |
           set -euo pipefail
           targets_path="$RUNNER_TEMP/ffxiv-targets.json"
@@ -67,7 +75,7 @@ jobs:
         id: verify
         shell: bash
         env:
-          REGIONS: ${{ inputs.regions }}
+          REGIONS: ${{ inputs.regions || 'Global,China,TC' }}
         run: |
           "$RUNNER_TEMP/llama-offset-verifier/LlamaLibraryOffsetVerifier" verify \
             --source-root "$GITHUB_WORKSPACE" \
