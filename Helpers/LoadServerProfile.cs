@@ -41,6 +41,104 @@ public class LoadServerProfile
         Trust = 3
     }
 
+    /// <summary>
+    /// Describes the eligibility restrictions returned by the native Contents Finder check.
+    /// The game combines these values as a bit mask, so callers must decode every set flag
+    /// instead of treating the result as a sequential error number. The meanings mirror the
+    /// current client's own Duty Finder validation and explanatory UI text; unknown future
+    /// bits are deliberately preserved by <see cref="DescribeDutyQueueRestrictions"/>.
+    /// </summary>
+    [Flags]
+    private enum DutyQueueRestriction : ulong
+    {
+        /// <summary>The selected duty has not been unlocked.</summary>
+        DutyNotUnlocked = 1UL << 0,
+
+        /// <summary>The account does not have the expansion required by the duty.</summary>
+        RequiredExpansionUnavailable = 1UL << 1,
+
+        /// <summary>The current class or job is below the duty's required level.</summary>
+        ClassJobLevelTooLow = 1UL << 2,
+
+        /// <summary>The current class or job is not eligible for the selected duty.</summary>
+        ClassJobNotEligible = 1UL << 3,
+
+        /// <summary>The equipped average item level is below the duty's requirement.</summary>
+        AverageItemLevelTooLow = 1UL << 4,
+
+        /// <summary>The duty does not support the Unrestricted Party option.</summary>
+        UnrestrictedPartyUnavailable = 1UL << 5,
+
+        /// <summary>The duty does not support the Minimum Item Level option.</summary>
+        MinimumItemLevelUnavailable = 1UL << 6,
+
+        /// <summary>The duty does not support the selected additional loot rules.</summary>
+        AdditionalLootRulesUnavailable = 1UL << 7,
+
+        /// <summary>The current party does not meet the duty's preformed-party size requirement.</summary>
+        PartySizeRequirementNotMet = 1UL << 8,
+
+        /// <summary>The duty requires a battle mentor with a current certification.</summary>
+        BattleMentorCertificationRequired = 1UL << 9,
+
+        /// <summary>The current party's jobs, roles, or composition are not eligible.</summary>
+        PartyCompositionNotEligible = 1UL << 10,
+
+        /// <summary>A Duty Finder withdrawal or abandonment penalty is active.</summary>
+        DutyFinderPenaltyActive = 1UL << 11,
+
+        /// <summary>The duty only accepts members of a registered PvP team.</summary>
+        PvpTeamMembersRequired = 1UL << 12,
+
+        /// <summary>The duty is temporarily unavailable.</summary>
+        DutyTemporarilyUnavailable = 1UL << 13,
+
+        /// <summary>The scheduled or rotating duty is not currently available.</summary>
+        ScheduledDutyUnavailable = 1UL << 14,
+
+        /// <summary>Registration must be performed from the character's Home World.</summary>
+        HomeWorldRegistrationRequired = 1UL << 15,
+
+        /// <summary>The client reported a restriction whose specific UI label is currently unknown.</summary>
+        UnidentifiedGameRestriction = 1UL << 16,
+
+        /// <summary>The current limited job is not permitted in the selected duty.</summary>
+        LimitedJobUnavailable = 1UL << 17,
+
+        /// <summary>The first duty-specific registration condition has not been met.</summary>
+        DutySpecificConditionOneNotMet = 1UL << 18,
+
+        /// <summary>The second duty-specific registration condition has not been met.</summary>
+        DutySpecificConditionTwoNotMet = 1UL << 19,
+
+        /// <summary>The third duty-specific registration condition has not been met.</summary>
+        DutySpecificConditionThreeNotMet = 1UL << 20,
+
+        /// <summary>The duty cannot be entered while New Game+ is active.</summary>
+        NewGamePlusUnavailable = 1UL << 21,
+
+        /// <summary>The duty does not support the Silence Echo option.</summary>
+        SilenceEchoUnavailable = 1UL << 22,
+
+        /// <summary>The duty does not support Explorer Mode.</summary>
+        ExplorerModeUnavailable = 1UL << 23,
+
+        /// <summary>Explorer Mode requires the duty to have been completed previously.</summary>
+        ExplorerModeCompletionRequired = 1UL << 24,
+
+        /// <summary>A duty-defined unlock criterion has not been met.</summary>
+        DutyUnlockCriterionNotMet = 1UL << 25,
+
+        /// <summary>Registration must be performed from the character's Home World physical data center.</summary>
+        HomePhysicalDataCenterRequired = 1UL << 26,
+
+        /// <summary>Registration must be performed from the data center hosting the duty.</summary>
+        HostingDataCenterRequired = 1UL << 27,
+
+        /// <summary>The game could not resolve eligibility data for the supplied duty entry.</summary>
+        DutyEntryResolutionFailed = 1UL << 28
+    }
+
     internal static readonly string NameValue = "DomesticHelper";
     private static readonly LLogger Log = new(NameValue, Colors.MediumPurple);
 
@@ -680,18 +778,74 @@ public class LoadServerProfile
 
     private static bool HandleGameSpecificError(long result, InstanceContentResult instanceContent)
     {
-        Log.Error($"Cannot queue for {instanceContent.CurrentLocaleName}: Game returned error code {result}");
+        var restrictions = DescribeDutyQueueRestrictions(unchecked((ulong)result));
+        var errorMessage = $"Cannot queue for {instanceContent.CurrentLocaleName}: {restrictions}";
 
-        var errorMessage = result switch
-        {
-            1 => $"{instanceContent.CurrentLocaleName} requires a higher item level",
-            2 => $"{instanceContent.CurrentLocaleName} requires a higher class level",
-            3 => $"You are not eligible to queue for {instanceContent.CurrentLocaleName}",
-            _ => $"Cannot queue for {instanceContent.CurrentLocaleName} (Error {result})"
-        };
-
+        // Retain the raw value in diagnostics because Square Enix can introduce new flags
+        // before LlamaLibrary has a semantic label for them, while keeping the user-facing
+        // toast focused on actionable explanations rather than an opaque number.
+        Log.Error($"{errorMessage} (Game restriction flags: {result})");
         ShowErrorToast(errorMessage);
         return false;
+    }
+
+    /// <summary>
+    /// Converts the game's combinable Contents Finder restriction flags into actionable text.
+    /// </summary>
+    /// <param name="rawResult">The positive bit mask returned by <see cref="DutyManager.CanQueue(InstanceContentResult[])"/>.</param>
+    /// <returns>A semicolon-separated description of every known restriction plus any unknown bits.</returns>
+    private static string DescribeDutyQueueRestrictions(ulong rawResult)
+    {
+        var reasons = new List<string>();
+
+        AddReason(DutyQueueRestriction.DutyNotUnlocked, "the duty has not been unlocked");
+        AddReason(DutyQueueRestriction.RequiredExpansionUnavailable, "the required expansion is not available on this account");
+        AddReason(DutyQueueRestriction.ClassJobLevelTooLow, "the current class or job level is too low");
+        AddReason(DutyQueueRestriction.ClassJobNotEligible, "the current class or job cannot enter this duty");
+        AddReason(DutyQueueRestriction.AverageItemLevelTooLow, "the equipped average item level is too low");
+        AddReason(DutyQueueRestriction.UnrestrictedPartyUnavailable, "Unrestricted Party is not allowed");
+        AddReason(DutyQueueRestriction.MinimumItemLevelUnavailable, "Minimum Item Level is not available");
+        AddReason(DutyQueueRestriction.AdditionalLootRulesUnavailable, "the selected additional loot rules are not available");
+        AddReason(DutyQueueRestriction.PartySizeRequirementNotMet, "the preformed-party or party-size requirement is not met");
+        AddReason(DutyQueueRestriction.BattleMentorCertificationRequired, "a battle mentor with current certification is required");
+        AddReason(DutyQueueRestriction.PartyCompositionNotEligible, "the current job, role, or party composition is not eligible");
+        AddReason(DutyQueueRestriction.DutyFinderPenaltyActive, "a Duty Finder penalty is active");
+        AddReason(DutyQueueRestriction.PvpTeamMembersRequired, "only PvP Team members may register");
+        AddReason(DutyQueueRestriction.DutyTemporarilyUnavailable, "the duty is temporarily unavailable");
+        AddReason(DutyQueueRestriction.ScheduledDutyUnavailable, "the scheduled or rotating duty is not currently available");
+        AddReason(DutyQueueRestriction.HomeWorldRegistrationRequired, "registration must be performed from the Home World");
+        AddReason(DutyQueueRestriction.UnidentifiedGameRestriction, "the game reported an unidentified Duty Finder restriction");
+        AddReason(DutyQueueRestriction.LimitedJobUnavailable, "the current limited job is not allowed");
+        AddReason(DutyQueueRestriction.DutySpecificConditionOneNotMet, "a duty-specific registration condition is not met");
+        AddReason(DutyQueueRestriction.DutySpecificConditionTwoNotMet, "a second duty-specific registration condition is not met");
+        AddReason(DutyQueueRestriction.DutySpecificConditionThreeNotMet, "a third duty-specific registration condition is not met");
+        AddReason(DutyQueueRestriction.NewGamePlusUnavailable, "the duty is not available during New Game+");
+        AddReason(DutyQueueRestriction.SilenceEchoUnavailable, "the Silence Echo option is not available");
+        AddReason(DutyQueueRestriction.ExplorerModeUnavailable, "Explorer Mode is not available");
+        AddReason(DutyQueueRestriction.ExplorerModeCompletionRequired, "Explorer Mode requires prior duty completion");
+        AddReason(DutyQueueRestriction.DutyUnlockCriterionNotMet, "a duty-specific unlock criterion is not met");
+        AddReason(DutyQueueRestriction.HomePhysicalDataCenterRequired, "registration must be performed from the Home World physical data center");
+        AddReason(DutyQueueRestriction.HostingDataCenterRequired, "registration must be performed from the data center hosting the duty");
+        AddReason(DutyQueueRestriction.DutyEntryResolutionFailed, "the game could not resolve the supplied duty entry");
+
+        const ulong knownFlags = (1UL << 29) - 1;
+        var unknownFlags = rawResult & ~knownFlags;
+        if (unknownFlags != 0)
+        {
+            reasons.Add($"the game reported unknown restriction flags 0x{unknownFlags:X}");
+        }
+
+        return reasons.Count > 0
+            ? string.Join("; ", reasons)
+            : $"the game returned an unrecognized restriction value ({rawResult})";
+
+        void AddReason(DutyQueueRestriction restriction, string reason)
+        {
+            if ((rawResult & (ulong)restriction) != 0)
+            {
+                reasons.Add(reason);
+            }
+        }
     }
 
     private static async Task<bool> QueueForDuty(ServerProfile profile, int queueType)
