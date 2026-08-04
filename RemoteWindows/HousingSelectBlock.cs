@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Text;
 using ff14bot;
 using LlamaLibrary.Memory.Attributes;
@@ -6,36 +7,42 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    //TODO Move element numbers to dictionary
     public class HousingSelectBlock : RemoteWindow<HousingSelectBlock>
     {
-        
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "NumberOfWards", 4 },
+            { "NumberOfPlots", 35 },
+            { "HousingWardName", 2 },
+            { "PlotPriceBase", 38 },
+            { "PlotNameBase", 37 },
+        };
 
         public HousingSelectBlock() : base("HousingSelectBlock")
         {
         }
 
-        public int NumberOfWards => Elements[4].TrimmedData;
+        public int NumberOfWards => Elements[Properties["NumberOfWards"]].TrimmedData;
 
-        public int NumberOfPlots => Elements[35].TrimmedData;
+        public int NumberOfPlots => Elements[Properties["NumberOfPlots"]].TrimmedData;
 
-        public string HousingWard => Core.Memory.ReadString((IntPtr)Elements[2].Data, Encoding.UTF8);
+        public string HousingWard => Core.Memory.ReadString((IntPtr)Elements[Properties["HousingWardName"]].Data, Encoding.UTF8);
 
         public byte[]? EligibilityArray => WindowByName != null ? Core.Memory.ReadBytes(WindowByName.Pointer + HousingSelectBlockOffsets.EligibilityArray, 4) : null;
 
         public string PlotPrice(int plot)
         {
-            return Core.Memory.ReadString((IntPtr)Elements[38 + (plot * 7)].Data, Encoding.UTF8);
+            return Core.Memory.ReadString((IntPtr)Elements[Properties["PlotPriceBase"] + (plot * 7)].Data, Encoding.UTF8);
         }
 
         public string PlotString(int plot)
         {
-            return Core.Memory.ReadString((IntPtr)Elements[37 + (plot * 7)].Data, Encoding.UTF8);
+            return Core.Memory.ReadString((IntPtr)Elements[Properties["PlotNameBase"] + (plot * 7)].Data, Encoding.UTF8);
         }
 
         public string PlotString1(int plot)
         {
-            return Core.Memory.ReadString((IntPtr)Elements[37 + (plot * 7)].Data, Encoding.Unicode);
+            return Core.Memory.ReadString((IntPtr)Elements[Properties["PlotNameBase"] + (plot * 7)].Data, Encoding.Unicode);
         }
 
         public void SelectWard(int index)

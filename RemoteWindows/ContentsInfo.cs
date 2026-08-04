@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
@@ -9,6 +10,11 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class ContentsInfo : RemoteWindow<ContentsInfo>
     {
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "BeastTribeAllowance", 50 },
+        };
+
         public ContentsInfo() : base("ContentsInfo")
         {
         }
@@ -43,7 +49,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public int GetNumberOfBeastTribeAllowance()
         {
-            var line = Instance.GetElementString(50);
+            var line = Instance.GetElementString(Properties["BeastTribeAllowance"]);
             return line == "" ? 0 : int.Parse(line.Split(':')[1].Trim());
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Text;
 using ff14bot;
 using ff14bot.Enums;
@@ -6,36 +7,43 @@ using LlamaLibrary.Helpers;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    //TODO Move element numbers to dictionary
     public class HWDSupply : RemoteWindow<HWDSupply>
     {
+        public static readonly Dictionary<string, int> Properties = new(System.StringComparer.Ordinal)
+        {
+#if RB_CN
+            { "ClassSelected", 29 },
+            { "KupoVoucherData", 0 },
+#else
+            { "ClassSelected", 62 },
+            { "KupoVoucherData", 3 },
+#endif
+            { "ScoreBase", 17 },
+        };
+
         public HWDSupply() : base("HWDSupply")
         {
         }
 
         public int CurrentClassSelected()
         {
-            if (Translator.Language == Language.Chn)
-            {
-                return Elements[29].TrimmedData;
-            }
-
-            return Elements[62].TrimmedData;
+            return Elements[Properties["ClassSelected"]].TrimmedData;
         }
 
         public int GetAccumulatedScore()
         {
-            return Elements[17 + CurrentClassSelected()].TrimmedData;
+            return Elements[Properties["ScoreBase"] + CurrentClassSelected()].TrimmedData;
         }
 
         public int GetKupoVoucherCount()
         {
-            if (Translator.Language == Language.Chn)
+            var index = Properties["KupoVoucherData"];
+            if (index == 0)
             {
                 return 0;
             }
 
-            var data = Core.Memory.ReadString((IntPtr)Elements[3].Data, Encoding.UTF8).Split('/');
+            var data = Core.Memory.ReadString((IntPtr)Elements[index].Data, Encoding.UTF8).Split('/');
             return data.Length < 2 ? 0 : int.Parse(data[0].Trim());
         }
 

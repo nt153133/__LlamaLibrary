@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ff14bot;
@@ -8,16 +9,19 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    //TODO Move element numbers to dictionary
     public class GuildLeve : RemoteWindow<GuildLeve>
     {
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "LeveWindowType", 6 },
+            { "LeveNamesBase", 628 },
+        };
+
         public GuildLeve() : base("GuildLeve")
         {
         }
 
-        
-
-        public LeveWindow Window => (LeveWindow) Elements[6].TrimmedData;
+        public LeveWindow Window => (LeveWindow) Elements[Properties["LeveWindowType"]].TrimmedData;
 
         /*
         private static readonly Type LeveManagerType =
@@ -86,10 +90,11 @@ namespace LlamaLibrary.RemoteWindows
         public string[] GetLeveGroup(int index)
         {
             var names = new string[3];
+            var baseOffset = (index * 8) + Properties["LeveNamesBase"];
 
-            names[0] = Core.Memory.ReadString((IntPtr) Elements[(index * 8) + 628].Data, Encoding.UTF8);
-            names[1] = Core.Memory.ReadString((IntPtr) Elements[((index * 8) + 628) + 2].Data, Encoding.UTF8);
-            names[2] = Core.Memory.ReadString((IntPtr) Elements[((index * 8) + 628) + 4].Data, Encoding.UTF8);
+            names[0] = Core.Memory.ReadString((IntPtr) Elements[baseOffset].Data, Encoding.UTF8);
+            names[1] = Core.Memory.ReadString((IntPtr) Elements[baseOffset + 2].Data, Encoding.UTF8);
+            names[2] = Core.Memory.ReadString((IntPtr) Elements[baseOffset + 4].Data, Encoding.UTF8);
 
             return names;
         }

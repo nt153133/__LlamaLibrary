@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using ff14bot;
@@ -23,6 +24,14 @@ namespace LlamaLibrary.RemoteWindows;
 /// </remarks>
 public class MiniGameBotanist : RemoteWindow<MiniGameBotanist>
 {
+    public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+    {
+        { "TriesLeft", 11 },
+        { "ProgressLeft", 12 },
+        { "TotalProgress", 13 },
+        { "TimeLeftString", 15 },
+    };
+
     private readonly Regex _timeRegex = new(@"(\d):(\d+).*", RegexOptions.Compiled);
 
     /// <summary>
@@ -71,20 +80,20 @@ public class MiniGameBotanist : RemoteWindow<MiniGameBotanist>
     }
 
     [Obsolete("Use OutOnALimbDirector.SwingsRemaining")]
-    public int GetNumberOfTriesLeft => IsOpen ? Elements[11].TrimmedData : 0;
+    public int GetNumberOfTriesLeft => IsOpen ? Elements[Properties["TriesLeft"]].TrimmedData : 0;
 
     [Obsolete("Use OutOnALimbDirector.CurrentProgress")]
-    public int GetProgressLeft => IsOpen ? Elements[12].TrimmedData : 0;
+    public int GetProgressLeft => IsOpen ? Elements[Properties["ProgressLeft"]].TrimmedData : 0;
 
     [Obsolete("Use OutOnALimbDirector.MaxProgress")]
-    public int GetProgressTotal => IsOpen ? Elements[13].TrimmedData : 0;
+    public int GetProgressTotal => IsOpen ? Elements[Properties["TotalProgress"]].TrimmedData : 0;
 
     [Obsolete]
     public int GetTimeLeft
     {
         get
         {
-            var data = Core.Memory.ReadString((IntPtr)Elements[15].Data, Encoding.UTF8);
+            var data = Core.Memory.ReadString((IntPtr)Elements[Properties["TimeLeftString"]].Data, Encoding.UTF8);
 
             if (!_timeRegex.IsMatch(data))
             {

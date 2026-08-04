@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,10 +19,7 @@ namespace LlamaLibrary.RemoteWindows
     /// </summary>
     public class GrandCompanySupplyList : RemoteWindow<GrandCompanySupplyList>
     {
-        /// <summary>
-        /// Map of internal UI element indices for the supply list, which can vary by game locale.
-        /// </summary>
-        public static Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
         {
             { "NumberOfTurnins", 8 },
             { "ReqElements", 385 },
@@ -32,20 +29,9 @@ namespace LlamaLibrary.RemoteWindows
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GrandCompanySupplyList"/> class.
-        /// Resolves locale-specific UI element offsets (e.g., for Chinese clients).
         /// </summary>
         public GrandCompanySupplyList() : base("GrandCompanySupplyList")
         {
-            if (Translator.Language == Language.Chn)
-            {
-                Properties = new Dictionary<string, int>(StringComparer.Ordinal)
-                {
-                    { "NumberOfTurnins", 8 },
-                    { "ReqElements", 385 },
-                    { "HandInElements", 345 },
-                    { "TurninIdElements", 425 },
-                };
-            }
         }
 
         /// <summary>
