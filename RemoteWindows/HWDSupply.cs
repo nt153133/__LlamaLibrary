@@ -27,12 +27,12 @@ namespace LlamaLibrary.RemoteWindows
 
         public int CurrentClassSelected()
         {
-            return Elements[Properties["ClassSelected"]].TrimmedData;
+            return Elements[Properties["ClassSelected"]].Int;
         }
 
         public int GetAccumulatedScore()
         {
-            return Elements[Properties["ScoreBase"] + CurrentClassSelected()].TrimmedData;
+            return Elements[Properties["ScoreBase"] + CurrentClassSelected()].Int;
         }
 
         public int GetKupoVoucherCount()

@@ -68,18 +68,18 @@ namespace LlamaLibrary.RemoteWindows
                         continue;
                     }
 
-                    var state = values[offset].TrimmedData;
+                    var state = values[offset].Int;
                     result.Add(new GcArmyMember(
                         slot,
                         name,
                         ReadString(values, offset + 2),
                         ReadString(values, offset + 3),
-                        values[offset + 4].TrimmedData,
-                        values[offset + 5].TrimmedData,
+                        values[offset + 4].Int,
+                        values[offset + 5].Int,
                         state,
-                        values[offset + 8].TrimmedData,
-                        values[offset + 9].TrimmedData,
-                        values[offset + 10].TrimmedData,
+                        values[offset + 8].Int,
+                        values[offset + 9].Int,
+                        values[offset + 10].Int,
                         ReadString(values, offset + 13)));
                 }
 

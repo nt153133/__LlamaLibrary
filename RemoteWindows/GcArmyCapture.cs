@@ -17,9 +17,9 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public int DutyCount => IsOpen && Elements.Length > 7 ? Elements[7].TrimmedData : 0;
-        public int SelectedDutyIndex => IsOpen && Elements.Length > 8 ? Elements[8].TrimmedData : -1;
-        public bool CanCommence => IsOpen && Elements.Length > 10 && Elements[10].TrimmedData != 0;
+        public int DutyCount => IsOpen && Elements.Length > 7 ? Elements[7].Int : 0;
+        public int SelectedDutyIndex => IsOpen && Elements.Length > 8 ? Elements[8].Int : -1;
+        public bool CanCommence => IsOpen && Elements.Length > 10 && Elements[10].Bool;
 
         public IReadOnlyList<GcArmyCommandMission> Duties
         {
@@ -38,12 +38,12 @@ namespace LlamaLibrary.RemoteWindows
 
                     result.Add(new GcArmyCommandMission(
                         index,
-                        values[offset].TrimmedData,
+                        values[offset].Int,
                         ReadString(values, offset + 1),
                         ReadString(values, offset + 2),
-                        values[offset + 3].TrimmedData != 0,
-                        values[offset + 4].TrimmedData != 0,
-                        values[offset + 5].TrimmedData != 0));
+                        values[offset + 3].Bool,
+                        values[offset + 4].Bool,
+                        values[offset + 5].Bool));
                 }
 
                 return result;

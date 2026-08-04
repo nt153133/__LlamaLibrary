@@ -15,7 +15,7 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public int NumberOfItems => Elements[3].TrimmedData;
+        public int NumberOfItems => Elements[3].Int;
 
         public List<Item> GetAvailItems()
         {
@@ -23,7 +23,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 65, NumberOfItems);
 
-            return itemElements.Select(item => DataManager.GetItem((uint)item.TrimmedData)).ToList();
+            return itemElements.Select(item => DataManager.GetItem(item.UInt)).ToList();
         }
 
         public async Task<bool> BuyItem(uint itemId)

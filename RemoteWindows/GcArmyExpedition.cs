@@ -189,10 +189,10 @@ namespace LlamaLibrary.RemoteWindows
 
                     result.Add(new GcArmyMission(
                         index,
-                        values[offset].TrimmedData,
+                        values[offset].Int,
                         ReadString(values, offset + 1),
                         ReadString(values, offset + 2),
-                        values[offset + 3].TrimmedData != 0));
+                        values[offset + 3].Bool));
                 }
 
                 return result;
@@ -206,7 +206,7 @@ namespace LlamaLibrary.RemoteWindows
         }
 
         private static int ReadInt(ff14bot.RemoteWindows.TwoInt[] values, int index)
-            => index < values.Length ? values[index].TrimmedData : 0;
+            => index < values.Length ? values[index].Int : 0;
 
         private bool ReadBool(int index) => ReadInt(index) != 0;
 

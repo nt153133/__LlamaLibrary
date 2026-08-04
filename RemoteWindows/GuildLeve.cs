@@ -21,7 +21,7 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public LeveWindow Window => (LeveWindow) Elements[Properties["LeveWindowType"]].TrimmedData;
+        public LeveWindow Window => (LeveWindow) Elements[Properties["LeveWindowType"]].Int;
 
         /*
         private static readonly Type LeveManagerType =

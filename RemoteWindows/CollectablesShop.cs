@@ -109,7 +109,7 @@ namespace LlamaLibrary.RemoteWindows
                     continue; //IconID
                 }
 
-                var itemID = currentElements[34 + (j * 11)].TrimmedData;
+                var itemID = currentElements[34 + (j * 11)].Int;
                 if (itemID is 0 or > 1500000 or < 500000)
                 {
                     continue;

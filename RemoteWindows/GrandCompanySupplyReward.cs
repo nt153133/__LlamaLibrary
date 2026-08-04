@@ -2,7 +2,7 @@
 {
     public class GrandCompanySupplyReward : RemoteWindow<GrandCompanySupplyReward>
     {
-        public int SealReward => Elements[9].TrimmedData;
+        public int SealReward => Elements[9].Int;
 
         public GrandCompanySupplyReward() : base("GrandCompanySupplyReward")
         {

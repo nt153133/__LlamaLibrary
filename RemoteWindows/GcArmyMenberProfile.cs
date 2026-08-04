@@ -179,19 +179,19 @@ namespace LlamaLibrary.RemoteWindows
         private int ReadInt(int index)
         {
             var values = Elements;
-            return index < values.Length ? values[index].TrimmedData : 0;
+            return index < values.Length ? values[index].Int : 0;
         }
 
         private bool ReadBool(int index)
         {
             var values = Elements;
-            return index < values.Length && values[index].TrimmedData != 0;
+            return index < values.Length && values[index].Bool;
         }
 
         private static bool IsExistingProfile(AtkAddonControl control)
         {
             var values = ReadElements(control);
-            return values.Length > 24 && values[21].TrimmedData != 0 && values[24].TrimmedData != 0;
+            return values.Length > 24 && values[21].Bool && values[24].Bool;
         }
 
         private string ReadString(int index)

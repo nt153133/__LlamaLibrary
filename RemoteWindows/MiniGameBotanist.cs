@@ -80,13 +80,13 @@ public class MiniGameBotanist : RemoteWindow<MiniGameBotanist>
     }
 
     [Obsolete("Use OutOnALimbDirector.SwingsRemaining")]
-    public int GetNumberOfTriesLeft => IsOpen ? Elements[Properties["TriesLeft"]].TrimmedData : 0;
+    public int GetNumberOfTriesLeft => IsOpen ? Elements[Properties["TriesLeft"]].Int : 0;
 
     [Obsolete("Use OutOnALimbDirector.CurrentProgress")]
-    public int GetProgressLeft => IsOpen ? Elements[Properties["ProgressLeft"]].TrimmedData : 0;
+    public int GetProgressLeft => IsOpen ? Elements[Properties["ProgressLeft"]].Int : 0;
 
     [Obsolete("Use OutOnALimbDirector.MaxProgress")]
-    public int GetProgressTotal => IsOpen ? Elements[Properties["TotalProgress"]].TrimmedData : 0;
+    public int GetProgressTotal => IsOpen ? Elements[Properties["TotalProgress"]].Int : 0;
 
     [Obsolete]
     public int GetTimeLeft

@@ -34,7 +34,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public CompanyChestPermission GilPermission => WindowByName != null ? Core.Memory.Read<CompanyChestPermission>(WindowByName.Pointer + FreeCompanyChestOffsets.GilPermission) : CompanyChestPermission.NoAccess;
 
-        public int ItemTabCount => Elements[4].TrimmedData;
+        public int ItemTabCount => Elements[4].Int;
 
         public FreeCompanyChest() : base("FreeCompanyChest")
         {

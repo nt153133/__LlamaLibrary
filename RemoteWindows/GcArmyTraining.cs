@@ -31,7 +31,7 @@ namespace LlamaLibrary.RemoteWindows
         /// Gets the zero-based regimen callback index. The addon stores 0 for no
         /// selection and 1-7 for regimen callbacks 0-6.
         /// </summary>
-        public int SelectedIndex => IsOpen && Elements.Length > 11 ? Elements[11].TrimmedData - 1 : -1;
+        public int SelectedIndex => IsOpen && Elements.Length > 11 ? Elements[11].Int - 1 : -1;
         public bool IsCompletedRegimen
             => IsOpen && string.IsNullOrEmpty(ReadString(2)) && !string.IsNullOrEmpty(ReadString(22));
         public int CurrentPhysical => ReadInt(13);
@@ -108,7 +108,7 @@ namespace LlamaLibrary.RemoteWindows
         private int ReadInt(int index)
         {
             var values = Elements;
-            return index < values.Length ? values[index].TrimmedData : 0;
+            return index < values.Length ? values[index].Int : 0;
         }
 
         private string ReadString(int index)

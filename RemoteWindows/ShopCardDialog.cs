@@ -21,10 +21,10 @@ namespace LlamaLibrary.RemoteWindows
             { "QuantityOwned", 6 },
         };
 
-        public int ItemId => IsOpen ? Elements[Properties["ItemId"]].TrimmedData : 0;
-        public int CardId => IsOpen ? Elements[Properties["CardId"]].TrimmedData : 0;
-        public int Price => IsOpen ? Elements[Properties["Price"]].TrimmedData : 0;
-        public int QuantityOwned => IsOpen ? Elements[Properties["QuantityOwned"]].TrimmedData : 0;
+        public int ItemId => IsOpen ? Elements[Properties["ItemId"]].Int : 0;
+        public int CardId => IsOpen ? Elements[Properties["CardId"]].Int : 0;
+        public int Price => IsOpen ? Elements[Properties["Price"]].Int : 0;
+        public int QuantityOwned => IsOpen ? Elements[Properties["QuantityOwned"]].Int : 0;
 
         public void ExchangeCard(int qty)
         {

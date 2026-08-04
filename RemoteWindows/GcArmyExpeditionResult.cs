@@ -11,11 +11,11 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public bool Succeeded => IsOpen && Elements.Length > 2 && Elements[2].TrimmedData != 0;
+        public bool Succeeded => IsOpen && Elements.Length > 2 && Elements[2].Bool;
         public string ResultText => ReadString(3);
         public string MissionName => ReadString(4);
-        public int MemberCount => IsOpen && Elements.Length > 5 ? Elements[5].TrimmedData : 0;
-        public int SquadronExperience => IsOpen && Elements.Length > 9 ? Elements[9].TrimmedData : 0;
+        public int MemberCount => IsOpen && Elements.Length > 5 ? Elements[5].Int : 0;
+        public int SquadronExperience => IsOpen && Elements.Length > 9 ? Elements[9].Int : 0;
 
         /// <summary>Completes the mission debriefing and closes the result window.</summary>
         public bool Complete()

@@ -7,7 +7,7 @@
         {
         }
 
-        public int NumberOfItems => ElementCount < 4 ? 0 : Elements[3].TrimmedData;
+        public int NumberOfItems => ElementCount < 4 ? 0 : Elements[3].Int;
 
         public uint[] ItemIds
         {
@@ -17,7 +17,7 @@
                 var j = 0;
                 for (var i = 7; i < NumberOfItems; i += 7)
                 {
-                    result[j] = (uint)Elements[i].TrimmedData;
+                    result[j] = Elements[i].UInt;
                     j++;
                 }
 

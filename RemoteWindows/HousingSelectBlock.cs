@@ -22,9 +22,9 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public int NumberOfWards => Elements[Properties["NumberOfWards"]].TrimmedData;
+        public int NumberOfWards => Elements[Properties["NumberOfWards"]].Int;
 
-        public int NumberOfPlots => Elements[Properties["NumberOfPlots"]].TrimmedData;
+        public int NumberOfPlots => Elements[Properties["NumberOfPlots"]].Int;
 
         public string HousingWard => Core.Memory.ReadString((IntPtr)Elements[Properties["HousingWardName"]].Data, Encoding.UTF8);
 

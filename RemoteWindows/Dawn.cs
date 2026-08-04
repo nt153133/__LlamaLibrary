@@ -47,24 +47,24 @@ namespace LlamaLibrary.RemoteWindows
             };
         }
 
-        public int NumberOfTrustsAvailable => Elements[Properties["NumberOfTrustsAvailable"]].TrimmedData;
-        public int SelectedTrustId => Elements[Properties["SelectedTrustId"]].TrimmedData;
+        public int NumberOfTrustsAvailable => Elements[Properties["NumberOfTrustsAvailable"]].Int;
+        public int SelectedTrustId => Elements[Properties["SelectedTrustId"]].Int;
         public string SelectedTrustName => Core.Memory.ReadString((IntPtr)Elements[Properties["SelectedTrustName"]].Data, Encoding.UTF8);
 
-        public TrustNPC? SelectedNpc1 => GetTrustNpc(Elements[Properties["SelectedNpc1"]].TrimmedData);
-        public TrustNPC? SelectedNpc2 => GetTrustNpc(Elements[Properties["SelectedNpc2"]].TrimmedData);
-        public TrustNPC? SelectedNpc3 => GetTrustNpc(Elements[Properties["SelectedNpc3"]].TrimmedData);
+        public TrustNPC? SelectedNpc1 => GetTrustNpc(Elements[Properties["SelectedNpc1"]].Int);
+        public TrustNPC? SelectedNpc2 => GetTrustNpc(Elements[Properties["SelectedNpc2"]].Int);
+        public TrustNPC? SelectedNpc3 => GetTrustNpc(Elements[Properties["SelectedNpc3"]].Int);
 
-        public TrustNPC? Npc1 => GetTrustNpc(Elements[Properties["Npc1"]].TrimmedData);
-        public TrustNPC? Npc2 => GetTrustNpc(Elements[Properties["Npc2"]].TrimmedData);
-        public TrustNPC? Npc3 => GetTrustNpc(Elements[Properties["Npc3"]].TrimmedData);
-        public TrustNPC? Npc4 => GetTrustNpc(Elements[Properties["Npc4"]].TrimmedData);
-        public TrustNPC? Npc5 => GetTrustNpc(Elements[Properties["Npc5"]].TrimmedData);
-        public TrustNPC? Npc6 => GetTrustNpc(Elements[Properties["Npc6"]].TrimmedData);
+        public TrustNPC? Npc1 => GetTrustNpc(Elements[Properties["Npc1"]].Int);
+        public TrustNPC? Npc2 => GetTrustNpc(Elements[Properties["Npc2"]].Int);
+        public TrustNPC? Npc3 => GetTrustNpc(Elements[Properties["Npc3"]].Int);
+        public TrustNPC? Npc4 => GetTrustNpc(Elements[Properties["Npc4"]].Int);
+        public TrustNPC? Npc5 => GetTrustNpc(Elements[Properties["Npc5"]].Int);
+        public TrustNPC? Npc6 => GetTrustNpc(Elements[Properties["Npc6"]].Int);
 
-        public int Npc1Level => Elements[Properties["Npc1Level"]].TrimmedData;
-        public int Npc1Leve2 => Elements[Properties["Npc1Leve2"]].TrimmedData;
-        public int Npc1Leve3 => Elements[Properties["Npc1Leve3"]].TrimmedData;
+        public int Npc1Level => Elements[Properties["Npc1Level"]].Int;
+        public int Npc1Leve2 => Elements[Properties["Npc1Leve2"]].Int;
+        public int Npc1Leve3 => Elements[Properties["Npc1Leve3"]].Int;
 
         public bool CanRegister()
         {

@@ -40,7 +40,7 @@ namespace LlamaLibrary.RemoteWindows
         /// <returns>The number of items available for turn-in.</returns>
         public int GetNumberOfTurnins()
         {
-            return IsOpen ? Elements[Properties["NumberOfTurnins"]].TrimmedData : 0;
+            return IsOpen ? Elements[Properties["NumberOfTurnins"]].Int : 0;
         }
 
         /// <summary>
@@ -53,8 +53,8 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = Elements;
             var numberTurnins = GetNumberOfTurnins();
 
-            var canHandInElements = new ArraySegment<TwoInt>(currentElements, Properties["HandInElements"], numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
-            var reqElements = new ArraySegment<TwoInt>(currentElements, Properties["ReqElements"], numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
+            var canHandInElements = new ArraySegment<TwoInt>(currentElements, Properties["HandInElements"], numberTurnins).Select(i => i.UInt).ToArray();
+            var reqElements = new ArraySegment<TwoInt>(currentElements, Properties["ReqElements"], numberTurnins).Select(i => i.UInt).ToArray();
 
             var turins = new bool[numberTurnins];
 
@@ -75,7 +75,7 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = Elements;
             var numberTurnins = GetNumberOfTurnins();
 
-            var turninIdElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninIdElements"], numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
+            var turninIdElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninIdElements"], numberTurnins).Select(i => i.UInt).ToArray();
 
             return turninIdElements;
         }
@@ -89,7 +89,7 @@ namespace LlamaLibrary.RemoteWindows
             var currentElements = Elements;
             var numberTurnins = GetNumberOfTurnins();
 
-            var reqElements = new ArraySegment<TwoInt>(currentElements, Properties["ReqElements"], numberTurnins).Select(i => (uint)i.TrimmedData).ToArray();
+            var reqElements = new ArraySegment<TwoInt>(currentElements, Properties["ReqElements"], numberTurnins).Select(i => i.UInt).ToArray();
 
             return reqElements;
         }

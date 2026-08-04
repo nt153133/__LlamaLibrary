@@ -45,11 +45,11 @@ namespace LlamaLibrary.RemoteWindows
 
         const int MateriaCount = 28;
 
-        public int MaxInfuse => Elements[Properties["MaxInfuse"]].TrimmedData;
+        public int MaxInfuse => Elements[Properties["MaxInfuse"]].Int;
 
-        public int CurrentInfuse => Elements[Properties["CurrentInfuse"]].TrimmedData;
+        public int CurrentInfuse => Elements[Properties["CurrentInfuse"]].Int;
 
-        public int ItemId => Elements[Properties["ItemId"]].TrimmedData;
+        public int ItemId => Elements[Properties["ItemId"]].Int;
 
         public void SelectMateria(int index)
         {
@@ -69,8 +69,8 @@ namespace LlamaLibrary.RemoteWindows
                 materiaOptions[i] = new MateriaOption(i,
                                                       Core.Memory.ReadString((IntPtr)Elements[Properties["NameStart"] + i].Data, Encoding.UTF8),
                                                       Core.Memory.ReadString((IntPtr)Elements[Properties["StatStart"] + i].Data, Encoding.UTF8),
-                                                      Elements[Properties["CountStart"] + i].TrimmedData,
-                                                      Elements[Properties["HighlightStart"] + i].TrimmedData == 1);
+                                                      Elements[Properties["CountStart"] + i].Int,
+                                                      Elements[Properties["HighlightStart"] + i].Int == 1);
             }
 
             return materiaOptions;

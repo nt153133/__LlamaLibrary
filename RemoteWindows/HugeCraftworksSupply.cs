@@ -14,7 +14,7 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public int TurnInItemId => Elements[9].TrimmedData;
+        public int TurnInItemId => Elements[9].Int;
 
         public void Deliver()
         {

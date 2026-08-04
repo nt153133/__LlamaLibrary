@@ -39,11 +39,11 @@ public class SharlayanCraftworksSupply : RemoteWindow<SharlayanCraftworksSupply>
         },
     };
 
-    public int TurnInItemId => Elements[Properties["TurnInItemId"]].TrimmedData;
+    public int TurnInItemId => Elements[Properties["TurnInItemId"]].Int;
 
-    public int EsteemLevel => Elements[Properties["EsteemLevel"]].TrimmedData;
+    public int EsteemLevel => Elements[Properties["EsteemLevel"]].Int;
 
-    public int Esteem => Elements[Properties["Esteem"]].TrimmedData;
+    public int Esteem => Elements[Properties["Esteem"]].Int;
 
     public void Deliver()
     {

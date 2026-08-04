@@ -22,12 +22,12 @@ namespace LlamaLibrary.RemoteWindows
 
         public int GetNumberOfTurnins()
         {
-            return IsOpen ? Elements[11].TrimmedData : 0;
+            return IsOpen ? Elements[11].Int : 0;
         }
 
         public int GetCraftItemID()
         {
-            return IsOpen ? Elements[0].TrimmedData : 0;
+            return IsOpen ? Elements[0].Int : 0;
         }
 
         public List<Item> GetTurninItemsObjs()
@@ -36,7 +36,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 12, GetNumberOfTurnins());
 
-            return itemElements.Select(item => DataManager.GetItem((uint)item.TrimmedData)).ToList();
+            return itemElements.Select(item => DataManager.GetItem(item.UInt)).ToList();
         }
 
         public List<int> GetTurninItemsIds()
@@ -45,7 +45,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 12, GetNumberOfTurnins());
 
-            return itemElements.Select(item => item.TrimmedData).ToList();
+            return itemElements.Select(item => item.Int).ToList();
         }
 
         public List<int> GetTurninItemsQty()
@@ -54,7 +54,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 60, GetNumberOfTurnins());
 
-            return itemElements.Select(item => item.TrimmedData).ToList();
+            return itemElements.Select(item => item.Int).ToList();
         }
 
         public List<int> GetTurninsRequired()
@@ -63,7 +63,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 120, GetNumberOfTurnins());
 
-            return itemElements.Select(item => item.TrimmedData).ToList();
+            return itemElements.Select(item => item.Int).ToList();
         }
 
         public List<int> GetTurninsDone()
@@ -72,7 +72,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 108, GetNumberOfTurnins());
 
-            return itemElements.Select(item => item.TrimmedData).ToList();
+            return itemElements.Select(item => item.Int).ToList();
         }
 
         public List<int> GetItemAvailCount()
@@ -81,7 +81,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 72, GetNumberOfTurnins());
 
-            return itemElements.Select(item => item.TrimmedData).ToList();
+            return itemElements.Select(item => item.Int).ToList();
         }
 
         public List<FCWorkshopItem> GetCraftingTurninItems()

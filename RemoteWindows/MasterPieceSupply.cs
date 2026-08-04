@@ -15,10 +15,10 @@ namespace LlamaLibrary.RemoteWindows
 
         public int ClassSelected
         {
-            get => Elements[45].TrimmedData;
+            get => Elements[45].Int;
             set
             {
-                if (WindowByName != null && Elements[45].TrimmedData != value)
+                if (WindowByName != null && Elements[45].Int != value)
                 {
                     SendAction(2, 1, 2, 1, (ulong)value);
                 }
@@ -27,7 +27,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public int GetNumberOfTurnins()
         {
-            return IsOpen ? Elements[0].TrimmedData : 0;
+            return IsOpen ? Elements[0].Int : 0;
         }
 
         public List<Item> GetTurninItems()
@@ -36,7 +36,7 @@ namespace LlamaLibrary.RemoteWindows
 
             var itemElements = new ArraySegment<TwoInt>(currentElements, 87, GetNumberOfTurnins());
 
-            return itemElements.Select(item => DataManager.GetItem((uint)(item.TrimmedData - 500000))).ToList();
+            return itemElements.Select(item => DataManager.GetItem((item.UInt - 500000))).ToList();
         }
 
         public Dictionary<Item, bool> GetTurninItemsStarred()
@@ -50,7 +50,7 @@ namespace LlamaLibrary.RemoteWindows
 
             for (var i = 0; i < GetNumberOfTurnins(); i++)
             {
-                result.Add(DataManager.GetItem((uint)(itemElements[i].TrimmedData - 500000)), starElements[i].TrimmedData == 1);
+                result.Add(DataManager.GetItem((itemElements[i].UInt - 500000)), starElements[i].Bool);
             }
 
             return result;

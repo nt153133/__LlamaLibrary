@@ -7,6 +7,6 @@
         {
         }
 
-        public int MGPReward => Elements[1].TrimmedData;
+        public int MGPReward => Elements[1].Int;
     }
 }

@@ -20,33 +20,33 @@ namespace LlamaLibrary.RemoteWindows
             { "ElementInDeck", 204 },
         };
 
-        public int GetNumberOfItems => IsOpen ? Elements[Properties["NumberOfItems"]].TrimmedData : 0;
+        public int GetNumberOfItems => IsOpen ? Elements[Properties["NumberOfItems"]].Int : 0;
 
         public uint[] GetTurninItemsIds()
         {
             var currentElements = Elements;
-            var turninIdElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninIdElements"], GetNumberOfItems).Select(i => (uint)i.TrimmedData).ToArray();
+            var turninIdElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninIdElements"], GetNumberOfItems).Select(i => i.UInt).ToArray();
             return turninIdElements;
         }
 
         public uint[] GetCardPrices()
         {
             var currentElements = Elements;
-            var costElements = new ArraySegment<TwoInt>(currentElements, Properties["ElementPrices"], GetNumberOfItems).Select(i => (uint)i.TrimmedData).ToArray();
+            var costElements = new ArraySegment<TwoInt>(currentElements, Properties["ElementPrices"], GetNumberOfItems).Select(i => i.UInt).ToArray();
             return costElements;
         }
 
         public uint[] GetCardQuantities()
         {
             var currentElements = Elements;
-            var costElements = new ArraySegment<TwoInt>(currentElements, Properties["ElementQuantities"], GetNumberOfItems).Select(i => (uint)i.TrimmedData).ToArray();
+            var costElements = new ArraySegment<TwoInt>(currentElements, Properties["ElementQuantities"], GetNumberOfItems).Select(i => i.UInt).ToArray();
             return costElements;
         }
 
         public bool[] GetCardInDeck()
         {
             var currentElements = Elements;
-            var costElements = new ArraySegment<TwoInt>(currentElements, Properties["ElementInDeck"], GetNumberOfItems).Select(i => i.TrimmedData == 1 ? true : false).ToArray();
+            var costElements = new ArraySegment<TwoInt>(currentElements, Properties["ElementInDeck"], GetNumberOfItems).Select(i => i.Bool).ToArray();
             return costElements;
         }
 

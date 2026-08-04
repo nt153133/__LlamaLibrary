@@ -11,9 +11,9 @@ public class MateriaAttachDialog : RemoteWindow<MateriaAttachDialog>
         get
         {
 #if RB_DT
-            return Elements[41].TrimmedData;
+            return Elements[41].Int;
 #else
-            return Elements[43].TrimmedData;
+            return Elements[43].Int;
 #endif
         }
     }
