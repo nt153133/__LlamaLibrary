@@ -8,13 +8,13 @@ namespace LlamaLibrary.RemoteWindows
     /// <summary>
     /// Interaction interface for exchanging gil for MGP.
     /// </summary>
+    /// <remarks>
+    /// Atk node-layout members are signature-resolved because they belong to native UI structures and
+    /// must track all supported clients instead of being frozen in this window implementation.
+    /// </remarks>
     public class ShopExchangeCoin : RemoteWindow<ShopExchangeCoin>
     {
         private const int UldManagerOffset = 0x28;
-        private const int NodeListCountOffset = 0x42;
-        private const int NodeListOffset = 0x50;
-        private const int NodeTypeOffset = 0x40;
-        private const int ComponentOffset = 0xC0;
         private const ushort ComponentNodeTypeStart = 1000;
         private const int NumericInputComponentType = 8;
 
@@ -88,8 +88,8 @@ namespace LlamaLibrary.RemoteWindows
             }
 
             var uldManager = window.Pointer + UldManagerOffset;
-            var nodeCount = Core.Memory.Read<ushort>(uldManager + NodeListCountOffset);
-            var nodeList = Core.Memory.Read<IntPtr>(uldManager + NodeListOffset);
+            var nodeCount = Core.Memory.Read<ushort>(uldManager + ShopExchangeCoinOffsets.NodeListCount);
+            var nodeList = Core.Memory.Read<IntPtr>(uldManager + ShopExchangeCoinOffsets.NodeList);
             if (nodeList == IntPtr.Zero)
             {
                 return IntPtr.Zero;
@@ -99,12 +99,12 @@ namespace LlamaLibrary.RemoteWindows
             {
                 var node = Core.Memory.Read<IntPtr>(nodeList + (index * IntPtr.Size));
                 if (node == IntPtr.Zero ||
-                    Core.Memory.Read<ushort>(node + NodeTypeOffset) < ComponentNodeTypeStart)
+                    Core.Memory.Read<ushort>(node + ShopExchangeCoinOffsets.NodeType) < ComponentNodeTypeStart)
                 {
                     continue;
                 }
 
-                var component = Core.Memory.Read<IntPtr>(node + ComponentOffset);
+                var component = Core.Memory.Read<IntPtr>(node + ShopExchangeCoinOffsets.Component);
                 if (component == IntPtr.Zero)
                 {
                     continue;
