@@ -340,10 +340,12 @@ namespace LlamaLibrary.Memory
         internal static IntPtr VTable;
 
         // AgentContentsTimer walks five estate records by deriving the deadline-array base and
-        // then stepping to the status array. Operand metadata marks both structure displacements,
-        // the loop count, and the RIP-relative constant as dynamic. This whole-instruction anchor
-        // resolves the two arrays without keeping client layout in the agent wrapper.
-        [Offset("Search 4C 8D B3 ? ? ? ? 48 2B CE B8 ? ? ? ? F3 0F 7F 45 ? 48 81 C1 ? ? ? ? 41 8B FC 66 0F 6F 05 ? ? ? ? 41 BC ? ? ? ? Add 17 Read32")]
+        // then stepping directly to the status array. Each signature starts at the instruction that
+        // owns the extracted displacement, keeping the Read32 cursor local while the adjacent whole
+        // instructions provide the semantic context needed for a unique match. Ghidra-classified
+        // displacement, immediate, and RIP-relative operands are wildcarded; both patterns matched
+        // exactly once on Global/China 13733124 and TC 13751666 and returned the documented layouts.
+        [Offset("Search 48 81 C1 ? ? ? ? 41 8B FC 66 0F 6F 05 ? ? ? ? 41 BC ? ? ? ? Add 3 Read32")]
         internal static int EstateStatusArray;
 
         [Offset("Search 4C 8D B3 ? ? ? ? 48 2B CE B8 ? ? ? ? F3 0F 7F 45 ? 48 81 C1 ? ? ? ? 41 8B FC 66 0F 6F 05 ? ? ? ? 41 BC ? ? ? ? Add 3 Read32")]
@@ -1203,6 +1205,7 @@ namespace LlamaLibrary.Memory
         // metadata requires the Buddy displacement, record count/stride, call, and branch to be masked.
         // TC emits two alignment NOPs before the loop and retains the older 0x1EA8 layout, so it has a
         // structurally precise override instead of broadening the Global/China anchor around the NOPs.
+        // The regional patterns matched exactly once on Global/China 13733124 and TC 13751666.
         [Offset("Search 48 8D 9E ? ? ? ? BD ? ? ? ? 48 8D 7B ? 90 48 8D 4F ? C7 47 ? ? ? ? ? 4C 89 67 ? 66 44 89 67 ? 44 88 67 ? E8 ? ? ? ? 48 8D BF ? ? ? ? 48 83 ED ? 75 ? Add 3 Read32")]
         [OffsetTC("Search 48 8D 9E ? ? ? ? BD ? ? ? ? 48 8D 7B ? 0F 1F 40 ? 66 0F 1F 84 00 ? ? ? ? 48 8D 4F ? C7 47 ? ? ? ? ? 4C 89 67 ? 66 44 89 67 ? 44 88 67 ? E8 ? ? ? ? 48 8D BF ? ? ? ? 48 83 ED ? 75 ? Add 3 Read32")]
         internal static int Buddy;
@@ -1213,13 +1216,18 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 89 9B ? ? ? ? 33 C0 44 89 A3 ? ? ? ? 0F 57 C0 44 89 A3 ? ? ? ? 41 8B CC 66 44 89 A3 ? ? ? ? 44 88 A3 ? ? ? ? 44 89 A3 ? ? ? ? Add 3 Read32")]
         internal static int CompanionInfo;
 
-        [Offset("Search 48 89 9B ? ? ? ? 33 C0 44 89 A3 ? ? ? ? 0F 57 C0 44 89 A3 ? ? ? ? 41 8B CC 66 44 89 A3 ? ? ? ? 44 88 A3 ? ? ? ? 44 89 A3 ? ? ? ? Add 28 Read32")]
+        // These field stores occur together during CompanionInfo reset. Each signature begins on the
+        // store that owns the requested displacement, while the following stores distinguish this
+        // constructor block from similar resets elsewhere in UIState. All displacement operands are
+        // wildcarded; the three patterns matched exactly once and Read32 returned the expected absolute
+        // members on Global/China 13733124 and TC 13751666.
+        [Offset("Search 44 88 A3 ? ? ? ? 44 89 A3 ? ? ? ? 66 44 89 A3 ? ? ? ? 44 89 A3 ? ? ? ? 0F 11 83 ? ? ? ? Add 3 Read32")]
         internal static int CompanionSkillPointsAbsolute;
 
-        [Offset("Search 89 83 ? ? ? ? 66 89 83 ? ? ? ? 66 89 83 ? ? ? ? 88 83 ? ? ? ? 88 83 ? ? ? ? Add 10 Read32")]
+        [Offset("Search 66 89 83 ? ? ? ? 88 83 ? ? ? ? 88 83 ? ? ? ? 48 8D 83 ? ? ? ? Add 3 Read32")]
         internal static int CompanionLevelsAbsolute;
 
-        [Offset("Search 48 89 9B ? ? ? ? 33 C0 44 89 A3 ? ? ? ? 0F 57 C0 44 89 A3 ? ? ? ? 41 8B CC 66 44 89 A3 ? ? ? ? 44 88 A3 ? ? ? ? 44 89 A3 ? ? ? ? Add 2F Read32")]
+        [Offset("Search 44 89 A3 ? ? ? ? 66 44 89 A3 ? ? ? ? 44 89 A3 ? ? ? ? 0F 11 83 ? ? ? ? Add 3 Read32")]
         internal static int CompanionActiveCommandAbsolute;
 
         internal static int CompanionSkillPoints => CompanionSkillPointsAbsolute - CompanionInfo;
@@ -1319,14 +1327,16 @@ namespace LlamaLibrary.Memory
     {
         // The expedition agent update validates the selected tab, stores both selected indices, then
         // obtains number-array 113. Register/branch/call operands are masked; the three extracted values
-        // therefore remain tied to one coherent UI update path instead of unrelated immediate matches.
+        // remain tied to that coherent UI update path while each cursor begins on its owning instruction.
+        // Each pattern matched exactly once and its Read8/Read32 result was verified on Global/China
+        // 13733124 and TC 13751666.
         [Offset("Search 41 8B 4F ? 85 C9 78 ? 49 8B 47 ? 3B 48 ? 7C ? 49 8B 47 ? 41 89 77 ? 41 89 5F ? 83 78 ? ? 0F 84 ? ? ? ? 49 8B 4F ? 48 8B 01 FF 50 ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? Add 3 Read8")]
         internal static int AgentSelectedTab;
 
-        [Offset("Search 41 8B 4F ? 85 C9 78 ? 49 8B 47 ? 3B 48 ? 7C ? 49 8B 47 ? 41 89 77 ? 41 89 5F ? 83 78 ? ? 0F 84 ? ? ? ? 49 8B 4F ? 48 8B 01 FF 50 ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? Add 1C Read8")]
+        [Offset("Search 41 89 5F ? 83 78 ? ? 0F 84 ? ? ? ? 49 8B 4F ? Add 3 Read8")]
         internal static int AgentSelectedRow;
 
-        [Offset("Search 41 8B 4F ? 85 C9 78 ? 49 8B 47 ? 3B 48 ? 7C ? 49 8B 47 ? 41 89 77 ? 41 89 5F ? 83 78 ? ? 0F 84 ? ? ? ? 49 8B 4F ? 48 8B 01 FF 50 ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? Add 35 Read32")]
+        [Offset("Search BA ? ? ? ? E8 ? ? ? ? 49 8B 4F ? 48 8B 01 FF 50 ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? 41 BC ? ? ? ? 48 8D 44 24 ? 41 8B CC Add 1 Read32")]
         internal static int NumberArrayIndex;
     }
 
@@ -1549,7 +1559,9 @@ namespace LlamaLibrary.Memory
     {
         // The serialization path copies GameObject.BaseId immediately before OwnerId and ObjectIndex.
         // Reading the first dword displacement distinguishes BaseId from the GimmickId byte at 0x80,
-        // which was the source of the stale minion ID read after the object layout changed.
+        // which was the source of the stale minion ID read after the object layout changed. All structure
+        // displacements are wildcarded; the pattern matched once and Read32 returned 0x84 on Global/China
+        // 13733124 and TC 13751666.
         [Offset("Search 41 8B 87 ? ? ? ? 89 84 24 ? ? ? ? 41 8B 87 ? ? ? ? 89 84 24 ? ? ? ? 41 0F B6 87 ? ? ? ? Add 3 Read32")]
         internal static int CompanionBaseId;
     }
@@ -1781,20 +1793,22 @@ namespace LlamaLibrary.Memory
     {
         // SearchNodeById reads AtkUldManager.NodeListCount and NodeList before comparing the requested
         // node ID. Displacements and the conditional branch are operand bytes, so the signature keeps
-        // only the stable opcode/register structure and resolves each layout member independently.
+        // only stable opcode/register structure and resolves each member from its owning instruction.
+        // Both patterns matched exactly once and returned 0x42/0x50 on Global/China 13733124 and TC 13751666.
         [Offset("Search 44 0F B7 41 ? 41 0F B7 C3 48 8B 51 ? 66 45 3B D8 73 ? Add 4 Read8")]
         internal static int NodeListCount;
 
-        [Offset("Search 44 0F B7 41 ? 41 0F B7 C3 48 8B 51 ? 66 45 3B D8 73 ? Add C Read8")]
+        [Offset("Search 48 8B 51 ? 66 45 3B D8 73 ? Add 3 Read8")]
         internal static int NodeList;
 
         // This sibling traversal accepts component nodes and distinguishes two component kinds before
         // continuing to the next sibling. That semantic context makes the otherwise-common NodeType and
         // Component loads unique while wildcarding every displacement, immediate, and branch target.
+        // Both patterns matched exactly once and returned 0x40/0xC0 on the same three regional builds.
         [Offset("Search 66 44 39 52 ? 72 ? 48 8B 8A ? ? ? ? 44 0F B6 81 ? ? ? ? 41 80 E0 ? 41 80 F8 ? 75 ? 80 B9 ? ? ? ? ? 75 ? 48 8B 41 ? 80 78 ? ? 74 ? 80 78 ? ? 74 ? 48 8B 52 ? 48 85 D2 75 ? Add 4 Read8")]
         internal static int NodeType;
 
-        [Offset("Search 66 44 39 52 ? 72 ? 48 8B 8A ? ? ? ? 44 0F B6 81 ? ? ? ? 41 80 E0 ? 41 80 F8 ? 75 ? 80 B9 ? ? ? ? ? 75 ? 48 8B 41 ? 80 78 ? ? 74 ? 80 78 ? ? 74 ? 48 8B 52 ? 48 85 D2 75 ? Add A Read32")]
+        [Offset("Search 48 8B 8A ? ? ? ? 44 0F B6 81 ? ? ? ? 41 80 E0 ? 41 80 F8 ? 75 ? 80 B9 ? ? ? ? ? 75 ? 48 8B 41 ? Add 3 Read32")]
         internal static int Component;
 
         // Ghidra identifies the call target, comparison value, branch distance, and bit index as
