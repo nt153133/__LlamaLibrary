@@ -1,5 +1,6 @@
 using System;
 using ff14bot;
+using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteWindows.Atk;
 using AtkValueType = LlamaLibrary.RemoteWindows.Atk.ValueType;
 
@@ -12,21 +13,20 @@ namespace LlamaLibrary.RemoteWindows
         Healer = 2,
     }
 
+    /// <summary>Provides access to the companion skill window and its live Buddy state.</summary>
+    /// <remarks>
+    /// Buddy and CompanionInfo members are signature-resolved because this nested UIState layout is
+    /// client-owned and must not be duplicated as fixed offsets in the window wrapper.
+    /// </remarks>
     public class BuddySkill : RemoteWindow<BuddySkill>
     {
-        private const int BuddyOffset = 0x1EF0;
-        private const int CompanionInfoOffset = 0x2370;
-        private const int CompanionSkillPointsOffset = 0x3A;
-        private const int CompanionLevelsOffset = 0x3B;
-        private const int CompanionActiveCommandOffset = 0x3E;
-
         public BuddySkill() : base("BuddySkill")
         {
         }
 
         public int SkillPoints
         {
-            get => ReadCompanionInfoByte(CompanionSkillPointsOffset);
+            get => ReadCompanionInfoByte(BuddySkillOffsets.CompanionSkillPoints);
         }
 
         public int DefenderLevel => GetRoleLevel(BuddySkillRole.Defender);
@@ -35,11 +35,11 @@ namespace LlamaLibrary.RemoteWindows
 
         public int HealerLevel => GetRoleLevel(BuddySkillRole.Healer);
 
-        public int ActiveCommand => ReadCompanionInfoByte(CompanionActiveCommandOffset);
+        public int ActiveCommand => ReadCompanionInfoByte(BuddySkillOffsets.CompanionActiveCommand);
 
         public int GetRoleLevel(BuddySkillRole role)
         {
-            return ReadCompanionInfoByte(CompanionLevelsOffset + (int)role);
+            return ReadCompanionInfoByte(BuddySkillOffsets.CompanionLevels + (int)role);
         }
 
         public int GetNextSkillCost(BuddySkillRole role)
@@ -102,7 +102,7 @@ namespace LlamaLibrary.RemoteWindows
             var uiState = Helpers.UIState.Instance;
             return uiState == IntPtr.Zero
                 ? 0
-                : Core.Memory.Read<byte>(IntPtr.Add(uiState, BuddyOffset + CompanionInfoOffset + offset));
+                : Core.Memory.Read<byte>(IntPtr.Add(uiState, BuddySkillOffsets.Buddy + BuddySkillOffsets.CompanionInfo + offset));
         }
     }
 }

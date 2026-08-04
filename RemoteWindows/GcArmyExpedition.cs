@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ff14bot;
 using LlamaLibrary.ClientDataHelpers;
+using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteWindows.Atk;
 using AtkValueType = LlamaLibrary.RemoteWindows.Atk.ValueType;
 
@@ -11,6 +12,10 @@ namespace LlamaLibrary.RemoteWindows
     /// <summary>
     /// Read-only access to the autonomous adventurer squadron mission window.
     /// </summary>
+    /// <remarks>
+    /// Agent selection fields and the addon number-array index are resolved from the expedition update
+    /// path so region or patch-specific client layout never leaks into this window abstraction.
+    /// </remarks>
     public class GcArmyExpedition : RemoteWindow<GcArmyExpedition>
     {
         private const int MissionStart = 9;
@@ -20,14 +25,10 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        private const int NumberArrayIndex = 113;
-        private const int AgentSelectedTabOffset = 0x40;
-        private const int AgentSelectedRowOffset = 0x44;
-
-        public int SelectedCategory => ReadAgentInt(AgentSelectedTabOffset, ReadInt(0));
+        public int SelectedCategory => ReadAgentInt(GcArmyExpeditionOffsets.AgentSelectedTab, ReadInt(0));
         public GcArmyMissionCategory SelectedCategoryType => (GcArmyMissionCategory)SelectedCategory;
         public int CategoryCount => ReadInt(1);
-        public int SelectedMissionIndex => ReadAgentInt(AgentSelectedRowOffset, -1);
+        public int SelectedMissionIndex => ReadAgentInt(GcArmyExpeditionOffsets.AgentSelectedRow, -1);
         public bool CanDeploy => ReadBool(8);
 
         /// <summary>Gets the selected mission's game-data row ID.</summary>
@@ -63,7 +64,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             get
             {
-                var numberArray = AtkArrayDataHolder.NumberArray(NumberArrayIndex);
+                var numberArray = AtkArrayDataHolder.NumberArray(GcArmyExpeditionOffsets.NumberArrayIndex);
                 if (numberArray == IntPtr.Zero)
                 {
                     return Array.Empty<int>();

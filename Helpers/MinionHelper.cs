@@ -1,12 +1,17 @@
 ﻿using System;
 using ff14bot;
 using LlamaLibrary.Extensions;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
     /// <summary>
     /// Provides helpers for summoning and dismissing companion minions via the game action system.
     /// </summary>
+    /// <remarks>
+    /// The active minion ID is read through <see cref="MinionHelperOffsets"/> because GameObject.BaseId
+    /// moved when GimmickId was inserted; resolving the member prevents another stale fixed-layout read.
+    /// </remarks>
     public static class MinionHelper
     {
         /// <summary>
@@ -24,7 +29,7 @@ namespace LlamaLibrary.Helpers
                     return false;
                 }
 
-                return Core.Memory.Read<ushort>(ptr + 0x80) != 0;
+                return Core.Memory.Read<ushort>(ptr + MinionHelperOffsets.CompanionBaseId) != 0;
             }
         }
 
@@ -42,7 +47,7 @@ namespace LlamaLibrary.Helpers
                     return 0;
                 }
 
-                return Core.Memory.Read<ushort>(ptr + 0x80);
+                return Core.Memory.Read<ushort>(ptr + MinionHelperOffsets.CompanionBaseId);
             }
         }
 
