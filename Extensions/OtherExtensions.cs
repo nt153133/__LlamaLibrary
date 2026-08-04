@@ -45,7 +45,7 @@ namespace LlamaLibrary.Extensions
 
             return newText.ToString();
         }
-#if !NET10_0_OR_GREATER
+#if !RB10
         /// <summary>
         /// Randomly shuffles the elements of an <see cref="IEnumerable{T}"/> using the default random number generator.
         /// </summary>
