@@ -1166,6 +1166,7 @@ namespace LlamaLibrary.Memory
 
         //7.5
         [Offset("Search E8 ? ? ? ? E9 ? ? ? ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 4C 8B F8 48 85 C0 0F 84 ? ? ? ? 48 8B 5D ? TraceCall")]
+        // Legacy 7.2 signature retained for regional offset verification; the 7.5 DyeItem API does not call it.
         [OffsetTC("Search E8 ? ? ? ? 84 C0 74 ? C6 87 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? 41 56 TraceCall")]
         internal static IntPtr DyeItem;
 

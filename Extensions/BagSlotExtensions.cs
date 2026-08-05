@@ -502,39 +502,96 @@ namespace LlamaLibrary.Extensions
         /// <returns>The stain ID as a <see cref="byte"/>.</returns>
         public static byte StainId(this BagSlot bagSlot)
         {
-            return Core.Memory.Read<byte>(bagSlot.Pointer + BagSlotExtensionsOffsets.StainId);
+            return bagSlot.StainId(0);
         }
 
         /// <summary>
-        /// Attempts to apply a dye to the specified item using another bag slot as the dye source.
+        /// Reads the stain (dye) identifier for one of the item's two dye channels.
         /// </summary>
-        /// <param name="item">The item to be dyed.</param>
-        /// <param name="dye">The bag slot containing the dye to use.</param>
-        /// <returns>A status byte indicating the result of the dyeing operation.</returns>
-        /// <remarks>
-        /// This function was reported as broken in game version 7.5.
-        /// </remarks>
-        public static byte DyeItem(this BagSlot item, BagSlot dye)
+        /// <param name="bagSlot">The bag slot to check.</param>
+        /// <param name="channel">The zero-based dye channel (0 or 1).</param>
+        /// <returns>The stain ID for the requested channel.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="channel"/> is not 0 or 1.</exception>
+        public static byte StainId(this BagSlot bagSlot, int channel)
         {
-            //TODO Function broke in 7.5
+            if ((uint)channel > 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(channel), channel, "The dye channel must be 0 or 1.");
+            }
 
-            return 0;
-            using var bagid = Core.Memory.CreateAllocatedMemory(8);
-            using var bagslot = Core.Memory.CreateAllocatedMemory(4);
-            bagid.AllocateOfChunk("bagid", 8);
-            bagid.Write("bagid", 0x270F00000000 + (long)dye.BagId);
-            bagslot.AllocateOfChunk("bagslot", 4);
-            int test = -1 << 16;
-            int test2 = test + dye.Slot;
+            return Core.Memory.Read<byte>(bagSlot.Pointer + BagSlotExtensionsOffsets.StainId + channel);
+        }
 
-            bagslot.Write("bagslot", test2);
+        /// <summary>
+        /// Applies selected stain colors to an item using pigment from the supplied bag slots.
+        /// </summary>
+        /// <param name="item">The item to dye.</param>
+        /// <param name="primaryPigment">The pigment to consume for the primary channel, or <see langword="null"/> when that channel is unchanged.</param>
+        /// <param name="primaryStainId">The stain color selected for the primary channel.</param>
+        /// <param name="secondaryPigment">The pigment to consume for the secondary channel, or <see langword="null"/> when that channel is unchanged.</param>
+        /// <param name="secondaryStainId">The stain color selected for the secondary channel; use <see cref="byte.MaxValue"/> when the channel is not present.</param>
+        /// <returns><see langword="true"/> if the client accepted the dye request; otherwise <see langword="false"/>.</returns>
+        /// <remarks>This client function requires the 7.5-or-newer dye system and is unavailable on the Traditional Chinese 7.2 client.</remarks>
+        public static bool DyeItem(this BagSlot item,
+                                   BagSlot? primaryPigment,
+                                   byte primaryStainId,
+                                   BagSlot? secondaryPigment = null,
+                                   byte secondaryStainId = byte.MaxValue)
+        {
+            if (OffsetManager.ActiveRegion == ClientRegion.TraditionalChinese)
+            {
+                ff14bot.Helpers.Logging.WriteDiagnostic("DyeItem is not available on the Traditional Chinese 7.2 dye system.");
+                return false;
+            }
+
+            if (BagSlotExtensionsOffsets.DyeItem == IntPtr.Zero ||
+                !item.IsFilled ||
+                (primaryPigment != null && !primaryPigment.IsFilled) ||
+                (secondaryPigment != null && !secondaryPigment.IsFilled) ||
+                (primaryPigment == null && secondaryPigment == null))
+            {
+                return false;
+            }
+
+            if (primaryPigment != null &&
+                secondaryPigment != null &&
+                primaryPigment.Pointer == secondaryPigment.Pointer &&
+                primaryPigment.Count < 2)
+            {
+                return false;
+            }
+
+            const uint unusedInventoryType = 9999;
+            const ushort unusedSlot = ushort.MaxValue;
+
+            var primaryInventoryType = primaryPigment == null ? unusedInventoryType : (uint)primaryPigment.BagId;
+            var secondaryInventoryType = secondaryPigment == null ? unusedInventoryType : (uint)secondaryPigment.BagId;
+            var pigmentInventoryTypes = primaryInventoryType | ((ulong)secondaryInventoryType << 32);
+
+            var primarySlot = primaryPigment == null ? unusedSlot : (ushort)primaryPigment.Slot;
+            var secondarySlot = secondaryPigment == null ? unusedSlot : (ushort)secondaryPigment.Slot;
+            var pigmentSlots = (uint)(primarySlot | (secondarySlot << 16));
+            var stainIds = (ushort)(primaryStainId | (secondaryStainId << 8));
+
+            using var inventoryTypeMemory = Core.Memory.CreateAllocatedMemory(sizeof(ulong));
+            using var slotMemory = Core.Memory.CreateAllocatedMemory(sizeof(uint));
+            using var stainMemory = Core.Memory.CreateAllocatedMemory(sizeof(uint));
+
+            inventoryTypeMemory.AllocateOfChunk("inventoryTypes", sizeof(ulong));
+            slotMemory.AllocateOfChunk("slots", sizeof(uint));
+            stainMemory.AllocateOfChunk("stains", sizeof(uint));
+
+            inventoryTypeMemory.Write("inventoryTypes", pigmentInventoryTypes);
+            slotMemory.Write("slots", pigmentSlots);
+            stainMemory.Write("stains", (uint)stainIds);
 
             return Core.Memory.CallInjectedWraper<byte>(BagSlotExtensionsOffsets.DyeItem,
                                                         Offsets.g_InventoryManager,
-                                                        item.BagId,
-                                                        item.Slot,
-                                                        bagid.Address,
-                                                        bagslot.Address);
+                                                        (uint)item.BagId,
+                                                        (ushort)item.Slot,
+                                                        inventoryTypeMemory.Address,
+                                                        slotMemory.Address,
+                                                        stainMemory.Address) != 0;
         }
 
         /// <summary>
@@ -768,15 +825,21 @@ namespace LlamaLibrary.Extensions
         }
 
         /// <summary>
-        /// Attempts to dye an item using a specified dye and waits for the process (including the desynthesis/dye lock) to complete.
+        /// Applies selected stain colors to an item and waits for the dye operation to complete.
         /// </summary>
-        /// <param name="item">The equipment item to dye.</param>
-        /// <param name="dye">The bag slot containing the dye.</param>
+        /// <param name="item">The item to dye.</param>
+        /// <param name="primaryPigment">The pigment to consume for the primary channel, or <see langword="null"/> when that channel is unchanged.</param>
+        /// <param name="primaryStainId">The stain color selected for the primary channel.</param>
+        /// <param name="secondaryPigment">The pigment to consume for the secondary channel, or <see langword="null"/> when that channel is unchanged.</param>
+        /// <param name="secondaryStainId">The stain color selected for the secondary channel; use <see cref="byte.MaxValue"/> when the channel is not present.</param>
         /// <returns><see langword="true"/> if the dyeing process completed successfully; otherwise <see langword="false"/>.</returns>
-        public static async Task<bool> TryDyeItem(this BagSlot item, BagSlot dye)
+        public static async Task<bool> TryDyeItem(this BagSlot item,
+                                                  BagSlot? primaryPigment,
+                                                  byte primaryStainId,
+                                                  BagSlot? secondaryPigment = null,
+                                                  byte secondaryStainId = byte.MaxValue)
         {
-            var result = item.DyeItem(dye);
-            if (result != 1)
+            if (!item.DyeItem(primaryPigment, primaryStainId, secondaryPigment, secondaryStainId))
             {
                 return false;
             }
