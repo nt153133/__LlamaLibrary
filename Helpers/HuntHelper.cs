@@ -30,11 +30,7 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new(nameof(HuntHelper), Colors.Gold);
 
-#if RB_DT
-        private const int MaxOrderTypes = 0x16;
-#else
-        private const int MaxOrderTypes = 0x12;
-#endif
+        private static int MaxOrderTypes => HuntHelperOffsets.MaxMarkIndex;
 
         /// <summary>
         /// All hunt board NPC locations, mapped to the order type indices they manage.
@@ -92,7 +88,7 @@ namespace LlamaLibrary.Helpers
                 }
 
                 var listStart = orderType.OrderStart - 1;
-                var dailyNum = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + 8 + j);
+                var dailyNum = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + HuntHelperOffsets.AvailableMarkIdOffset + j);
 
                 Log.Information($"List Start {listStart} DailyNum {dailyNum}");
                 Log.Information($"{orderType.Item.CurrentLocaleName}");
@@ -138,12 +134,7 @@ namespace LlamaLibrary.Helpers
                 }
 
                 var listStart = orderType.OrderStart - 1;
-#if RB_DT
-                var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + j + 0x1E); //0x16
-
-#else
-                var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + j + 0x1A); //0x16
-#endif
+                var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + HuntHelperOffsets.ObtainedMarkIdOffset + j);
                 Log.Information($"{orderType.Item.CurrentLocaleName}");
                 var max = 5;
                 if (orderType.Type == MobHuntType.Weekly)
@@ -184,7 +175,7 @@ namespace LlamaLibrary.Helpers
             }
 
             var listStart = orderType.OrderStart - 1;
-            var dailyNum = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + 8 + orderTypeIndex);
+            var dailyNum = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + HuntHelperOffsets.AvailableMarkIdOffset + orderTypeIndex);
 
             var max = 5;
 
@@ -235,11 +226,7 @@ namespace LlamaLibrary.Helpers
             }
 
             var listStart = orderType.OrderStart - 1;
-#if RB_DT
-            var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + orderTypeIndex + 0x1E); //0x1A
-#else
-            var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + orderTypeIndex + 0x1A); //0x1A
-#endif
+            var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + HuntHelperOffsets.ObtainedMarkIdOffset + orderTypeIndex);
 
             if ((listStart + v8 > 620) && !accepted[orderTypeIndex])
             {
@@ -315,13 +302,7 @@ namespace LlamaLibrary.Helpers
             var listStart = orderType.OrderStart - 1;
 
             //Log.Information($"{(HuntHelperOffsets.HuntData + orderTypeIndex).ToString("X")}");
-#if RB_DT
-            var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + orderTypeIndex + 0x1E); //0x8
-
-#else
-            var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + orderTypeIndex + 0x1A); //0x8
-
-#endif
+            var v8 = Core.Memory.Read<byte>(HuntHelperOffsets.HuntData + HuntHelperOffsets.ObtainedMarkIdOffset + orderTypeIndex);
             var max = 5;
 
             for (byte i = 0; i < max; i++)

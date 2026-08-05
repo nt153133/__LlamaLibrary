@@ -124,14 +124,9 @@ namespace LlamaLibrary.Helpers
         /// <returns>An array of <see cref="BeastTribeStat"/> structs, one entry per tribe.</returns>
         public static BeastTribeStat[] GetBeastTribes()
         {
-#if RB_TC
-            // TC 7.1: Client::Game::QuestManager::BeastReputation
-            const int beastReputationOffset = 0xCA8;
-#else
-            // 7.5: Client::Game::QuestManager::BeastReputation
-            const int beastReputationOffset = 0xCE8;
-#endif
-            return Core.Memory.ReadArray<BeastTribeStat>(BeastTribeHelperOffsets.QuestPointer + beastReputationOffset, BeastTribeHelperOffsets.BeastTribeCount);
+            return Core.Memory.ReadArray<BeastTribeStat>(
+                BeastTribeHelperOffsets.QuestPointer + BeastTribeHelperOffsets.BeastReputation,
+                BeastTribeHelperOffsets.BeastTribeCount);
         }
 
         /// <summary>

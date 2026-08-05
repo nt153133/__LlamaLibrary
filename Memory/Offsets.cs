@@ -9,7 +9,9 @@ Orginal work done by zzi, contibutions by Omninewb, Freiheit, and mastahg
                                                                                  */
 
 using System;
+using System.Runtime.InteropServices;
 using LlamaLibrary.Memory.Attributes;
+using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.Memory
 {
@@ -1208,12 +1210,14 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 84 24 ? ? ? ? ?  Add 3 TraceRelative")]
         internal static IntPtr QuestPointer;
 
-        //6.4
+        // The rank getter indexes BeastReputationWork records in 0x10-byte blocks and reads Rank at
+        // +0x08. This returns 0xCF on the current shared layout and 0xCB on older TC clients.
         [Offset("Search 48 81 C1 ? ? ? ? 48 03 C9 0F B6 1C C8 Add 3 Read32")]
-        internal static int BeastTribeStart;
+        internal static int BeastReputationRankBlock;
 
-        [Offset("Search 66 89 BC C8 ? ? ? ? Add 4 Read32")]
-        internal static int BeastTribeRep;
+        internal static int BeastReputation =>
+            (BeastReputationRankBlock * Marshal.SizeOf<BeastTribeStat>()) -
+            Marshal.OffsetOf<BeastTribeStat>(nameof(BeastTribeStat._Rank)).ToInt32();
 
         //6.4
         [Offset("Search 83 FB ? 73 ? E8 ? ? ? ? 8B CB 48 81 C1 ? ? ? ? 48 03 C9 0F B6 1C C8 Add 2 Read8")]
@@ -1451,8 +1455,14 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search E8 ? ? ? ? 48 89 45 ? 48 8B D8 48 85 C0 0F 84 ? ? ? ? 48 8D 4D ? TraceCall")]
         internal static IntPtr Client__ExdData__getMobHuntTarget;
 
-        [Offset("Search 41 80 FE ? 0F 83 ? ? ? ? 41 0F B6 44 0E ? 48 89 74 24 ? 41 8B F6 48 89 7C 24 ? 4C 89 64 24 ? Add 2 Read8")]
-        internal static IntPtr CountMobHuntOrderType;
+        [Offset("Search 41 80 FE ?? 0F 83 ?? ?? ?? ?? 41 0F B6 44 0E ?? 48 89 74 24 ?? 41 8B F6 48 89 7C 24 ?? 4C 89 64 24 ?? Add 3 Read8")]
+        internal static int MaxMarkIndex;
+
+        [Offset("Search 0F B6 5C 08 ?? 84 DB 74 ?? 0F B6 CA E8 ?? ?? ?? ?? 48 85 C0 74 ?? 0F B7 40 ?? 66 85 C0 74 ?? FE CB 0F B6 CB 48 8B 5C 24 ?? 03 C8 8B C1 48 83 C4 ?? C3 48 8B 5C 24 ?? 33 C9 8B C1 48 83 C4 ?? C3 ?? ?? ?? ?? ?? ?? ?? ?? 48 83 EC ?? 80 FA ?? 72 ?? 33 C0 Add 4 Read8")]
+        internal static int AvailableMarkIdOffset;
+
+        [Offset("Search 0F B6 5C 08 ?? 84 DB 74 ?? 0F B6 CA E8 ?? ?? ?? ?? 48 85 C0 74 ?? 0F B7 40 ?? 66 85 C0 74 ?? FE CB 0F B6 CB 48 8B 5C 24 ?? 03 C8 8B C1 48 83 C4 ?? C3 48 8B 5C 24 ?? 33 C9 8B C1 48 83 C4 ?? C3 ?? ?? ?? ?? ?? ?? ?? ?? 48 83 EC ?? 80 FA ?? 72 ?? 32 C0 Add 4 Read8")]
+        internal static int ObtainedMarkIdOffset;
 
         [Offset("Search 48 8D 0D ? ? ? ? 0F B6 50 ? E8 ? ? ? ? 8B C8 Add 3 TraceRelative")]
         internal static IntPtr HuntData;
