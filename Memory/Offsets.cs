@@ -1157,7 +1157,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search E9 ? ? ? ? 84 C0 75 ? 48 8B 49 ? Add 1 TraceRelative")]
         public static IntPtr FCChestMove;
 
-        [Offset("Search E8 ? ? ? ? 48 8D 47 ? 48 03 C0 48 8D 4F ? 48 03 C9 48 03 FF 48 8B 04 C6 48 89 04 CE 48 8B 44 FE ? 48 89 44 FE ? 4C 8B 74 24 ? 48 8B 6C 24 ? 48 8B 7C 24 ? 48 83 C4 ? 5E C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 4C 8B DC TraceCall")]
+        [Offset("Search 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 48 63 EA")]
         public static IntPtr PlaceAetherWheel;
 
         [Offset("Search 48 8B 05 ? ? ? ? 48 85 C0 74 ? 83 B8 ? ? ? ? ? 75 ? E8 ? ? ? ? Add 3 TraceRelative")]
