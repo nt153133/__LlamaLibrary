@@ -10,6 +10,13 @@ namespace LlamaLibrary.RemoteWindows
     /// </summary>
     public class GcArmyCapture : RemoteWindow<GcArmyCapture>
     {
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "DutyCount", 7 },
+            { "SelectedDutyIndex", 8 },
+            { "CanCommence", 10 },
+        };
+
         private const int DutyStart = 11;
         private const int DutyStride = 6;
 
@@ -17,9 +24,9 @@ namespace LlamaLibrary.RemoteWindows
         {
         }
 
-        public int DutyCount => IsOpen && Elements.Length > 7 ? Elements[7].Int : 0;
-        public int SelectedDutyIndex => IsOpen && Elements.Length > 8 ? Elements[8].Int : -1;
-        public bool CanCommence => IsOpen && Elements.Length > 10 && Elements[10].Bool;
+        public int DutyCount => IsOpen && Elements.Length > Properties["DutyCount"] ? Elements[Properties["DutyCount"]].Int : 0;
+        public int SelectedDutyIndex => IsOpen && Elements.Length > Properties["SelectedDutyIndex"] ? Elements[Properties["SelectedDutyIndex"]].Int : -1;
+        public bool CanCommence => IsOpen && Elements.Length > Properties["CanCommence"] && Elements[Properties["CanCommence"]].Bool;
 
         public IReadOnlyList<GcArmyCommandMission> Duties
         {

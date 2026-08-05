@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using ff14bot.Managers;
 
 namespace LlamaLibrary.RemoteWindows
@@ -7,20 +7,28 @@ namespace LlamaLibrary.RemoteWindows
     /// Interface for the FFXIV Collectables Shop window.
     /// Handles job selection, item selection, and item turn-ins for scrips.
     /// </summary>
-    //TODO Move element numbers to dictionary
     public class CollectablesShop : RemoteWindow<CollectablesShop>
     {
+        public static readonly Dictionary<string, int> Properties = new(System.StringComparer.Ordinal)
+        {
+            { "RowCount", 20 },
+            { "SelectedCategoryIcon", 21 },
+            { "ItemIconBase", 32 },
+            { "ItemIdBase", 34 },
+            { "TurninCount", 4843 },
+        };
+
         /// <summary>
         /// Gets the total number of items eligible for turn-in in the current list.
         /// Resolved via element index 20.
         /// </summary>
-        public int RowCount => Elements[20].Int - 1;
+        public int RowCount => Elements[Properties["RowCount"]].Int - 1;
 
         /// <summary>
         /// Gets the count of items currently selected or ready for trade.
         /// Resolved via element index 4843.
         /// </summary>
-        public int TurninCount => Elements[4843].Int;
+        public int TurninCount => Elements[Properties["TurninCount"]].Int;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CollectablesShop"/> class.
@@ -62,17 +70,17 @@ namespace LlamaLibrary.RemoteWindows
         /// <returns>A list of strings in the format "Index: ItemName RawID".</returns>
         public List<string> ListItems()
         {
-            var count = Elements[20].Int - 1;
+            var count = Elements[Properties["RowCount"]].Int - 1;
             var currentElements = Elements;
             var result = new List<string>();
             for (var j = 0; j < count; j++)
             {
-                if (currentElements[32 + (j * 11)].Int == Elements[21].Int)
+                if (currentElements[Properties["ItemIconBase"] + (j * 11)].Int == Elements[Properties["SelectedCategoryIcon"]].Int)
                 {
                     continue; //IconID
                 }
 
-                var itemID = currentElements[34 + (j * 11)].Int;
+                var itemID = currentElements[Properties["ItemIdBase"] + (j * 11)].Int;
                 if (itemID is 0 or > 1500000 or < 500000)
                 {
                     continue;
@@ -93,23 +101,23 @@ namespace LlamaLibrary.RemoteWindows
         /// <returns>A list of tuples containing the Item ID and its corresponding line index.</returns>
         public List<(uint ItemId, int Line)> GetItems()
         {
-            var count = Elements[20].Int - 1;
+            var count = Elements[Properties["RowCount"]].Int - 1;
             var currentElements = Elements;
             var result = new List<(uint ItemId, int Line)>();
             var index = 0;
             for (var j = 0; j < count; j++)
             {
-                if (currentElements[34 + (j * 11)].Type == 0)
+                if (currentElements[Properties["ItemIdBase"] + (j * 11)].Type == 0)
                 {
                     continue;
                 }
 
-                if (currentElements[32 + (j * 11)].Int == Elements[21].Int)
+                if (currentElements[Properties["ItemIconBase"] + (j * 11)].Int == Elements[Properties["SelectedCategoryIcon"]].Int)
                 {
                     continue; //IconID
                 }
 
-                var itemID = currentElements[34 + (j * 11)].Int;
+                var itemID = currentElements[Properties["ItemIdBase"] + (j * 11)].Int;
                 if (itemID is 0 or > 1500000 or < 500000)
                 {
                     continue;

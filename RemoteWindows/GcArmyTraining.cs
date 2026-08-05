@@ -12,6 +12,21 @@ namespace LlamaLibrary.RemoteWindows
     /// </summary>
     public class GcArmyTraining : RemoteWindow<GcArmyTraining>
     {
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "SelectedIndex", 11 },
+            { "CurrentPhysical", 13 },
+            { "PreviewPhysical", 14 },
+            { "CurrentMental", 15 },
+            { "PreviewMental", 16 },
+            { "CurrentTactical", 17 },
+            { "PreviewTactical", 18 },
+            { "AllocationText", 19 },
+            { "AttributeCap", 21 },
+            { "CompletedRegimenCheck", 22 },
+            { "SessionsRemainingText", 23 },
+        };
+
         private static readonly string[] AttributeChanges =
         {
             "+40 physical, -20 mental, -20 tactical",
@@ -31,18 +46,18 @@ namespace LlamaLibrary.RemoteWindows
         /// Gets the zero-based regimen callback index. The addon stores 0 for no
         /// selection and 1-7 for regimen callbacks 0-6.
         /// </summary>
-        public int SelectedIndex => IsOpen && Elements.Length > 11 ? Elements[11].Int - 1 : -1;
+        public int SelectedIndex => IsOpen && Elements.Length > Properties["SelectedIndex"] ? Elements[Properties["SelectedIndex"]].Int - 1 : -1;
         public bool IsCompletedRegimen
-            => IsOpen && string.IsNullOrEmpty(ReadString(2)) && !string.IsNullOrEmpty(ReadString(22));
-        public int CurrentPhysical => ReadInt(13);
-        public int PreviewPhysical => ReadInt(14);
-        public int CurrentMental => ReadInt(15);
-        public int PreviewMental => ReadInt(16);
-        public int CurrentTactical => ReadInt(17);
-        public int PreviewTactical => ReadInt(18);
-        public int AttributeCap => ReadInt(21);
-        public string AllocationText => ReadString(19);
-        public string SessionsRemainingText => ReadString(23);
+            => IsOpen && string.IsNullOrEmpty(ReadString(2)) && !string.IsNullOrEmpty(ReadString(Properties["CompletedRegimenCheck"]));
+        public int CurrentPhysical => ReadInt(Properties["CurrentPhysical"]);
+        public int PreviewPhysical => ReadInt(Properties["PreviewPhysical"]);
+        public int CurrentMental => ReadInt(Properties["CurrentMental"]);
+        public int PreviewMental => ReadInt(Properties["PreviewMental"]);
+        public int CurrentTactical => ReadInt(Properties["CurrentTactical"]);
+        public int PreviewTactical => ReadInt(Properties["PreviewTactical"]);
+        public int AttributeCap => ReadInt(Properties["AttributeCap"]);
+        public string AllocationText => ReadString(Properties["AllocationText"]);
+        public string SessionsRemainingText => ReadString(Properties["SessionsRemainingText"]);
         public int SessionsRemaining
         {
             get

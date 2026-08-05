@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -12,9 +13,14 @@ using static ff14bot.RemoteWindows.Talk;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    //TODO Move element numbers to dictionary
     public class RetainerList : RemoteWindow<RetainerList>
     {
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "NumberOfVentures", 1 },
+            { "RetainerRoleBase", 4 },
+        };
+
         private static readonly LLogger Log = new(nameof(RetainerList), Colors.White);
 
         public RetainerList() : base("RetainerList")
@@ -25,7 +31,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public int NumberOfRetainers => OrderedRetainerList.Length;
 
-        public int NumberOfVentures => Elements[1].Int;
+        public int NumberOfVentures => Elements[Properties["NumberOfVentures"]].Int;
 
         public string RetainerName(int index)
         {
@@ -44,7 +50,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public RetainerRole RetainerRole(int index)
         {
-            return (RetainerRole)Elements[(index * 9) + 4].Int;
+            return (RetainerRole)Elements[(index * 9) + Properties["RetainerRoleBase"]].Int;
         }
 
         public async Task<bool> SelectRetainer(ulong retainerContentId)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,20 +8,25 @@ using ff14bot.RemoteWindows;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    //TODO Move element numbers to dictionary
     public class FreeShop : RemoteWindow<FreeShop>
     {
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "NumberOfItems", 3 },
+            { "ItemElementsStart", 65 },
+        };
+
         public FreeShop() : base("FreeShop")
         {
         }
 
-        public int NumberOfItems => Elements[3].Int;
+        public int NumberOfItems => Elements[Properties["NumberOfItems"]].Int;
 
         public List<Item> GetAvailItems()
         {
             var currentElements = Elements;
 
-            var itemElements = new ArraySegment<TwoInt>(currentElements, 65, NumberOfItems);
+            var itemElements = new ArraySegment<TwoInt>(currentElements, Properties["ItemElementsStart"], NumberOfItems);
 
             return itemElements.Select(item => DataManager.GetItem(item.UInt)).ToList();
         }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot.Managers;
@@ -7,14 +8,18 @@ using LlamaLibrary.RemoteAgents;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    //TODO Move element numbers to dictionary
     public class HugeCraftworksSupply : RemoteWindow<HugeCraftworksSupply>
     {
+        public static readonly Dictionary<string, int> Properties = new(System.StringComparer.Ordinal)
+        {
+            { "TurnInItemId", 9 },
+        };
+
         public HugeCraftworksSupply() : base("HugeCraftworksSupply")
         {
         }
 
-        public int TurnInItemId => Elements[9].Int;
+        public int TurnInItemId => Elements[Properties["TurnInItemId"]].Int;
 
         public void Deliver()
         {

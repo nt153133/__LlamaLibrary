@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using ff14bot.RemoteWindows;
 
@@ -10,6 +11,14 @@ namespace LlamaLibrary.RemoteWindows
     /// </summary>
     public class GrandCompanyExchange : RemoteWindow<GrandCompanyExchange>
     {
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "GetNumberOfItems", 1 },
+            { "GCRankGroup", 2 },
+            { "TurninIdElementsStart", 317 },
+            { "CostElementsStart", 67 },
+        };
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GrandCompanyExchange"/> class.
         /// </summary>
@@ -20,12 +29,12 @@ namespace LlamaLibrary.RemoteWindows
         /// <summary>
         /// Gets the total number of items currently listed in the active exchange category.
         /// </summary>
-        public int GetNumberOfItems => IsOpen ? Elements[1].Int : 0;
+        public int GetNumberOfItems => IsOpen ? Elements[Properties["GetNumberOfItems"]].Int : 0;
 
         /// <summary>
         /// Gets the index of the currently selected rank group (e.g., Private, Corporal).
         /// </summary>
-        public int GCRankGroup => IsOpen ? Elements[2].Int : 0;
+        public int GCRankGroup => IsOpen ? Elements[Properties["GCRankGroup"]].Int : 0;
 
         /// <summary>
         /// Retrieves the raw item IDs for all items listed in the current exchange category.
@@ -34,7 +43,7 @@ namespace LlamaLibrary.RemoteWindows
         public uint[] GetTurninItemsIds()
         {
             var currentElements = Elements;
-            var turninIdElements = new ArraySegment<TwoInt>(currentElements, 317, GetNumberOfItems).Select(i => i.UInt).ToArray();
+            var turninIdElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninIdElementsStart"], GetNumberOfItems).Select(i => i.UInt).ToArray();
             return turninIdElements;
         }
 
@@ -45,7 +54,7 @@ namespace LlamaLibrary.RemoteWindows
         public uint[] GetItemCosts()
         {
             var currentElements = Elements;
-            var costElements = new ArraySegment<TwoInt>(currentElements, 67, GetNumberOfItems).Select(i => i.UInt).ToArray();
+            var costElements = new ArraySegment<TwoInt>(currentElements, Properties["CostElementsStart"], GetNumberOfItems).Select(i => i.UInt).ToArray();
             return costElements;
         }
 

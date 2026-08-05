@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using ff14bot;
 using LlamaLibrary.Enums;
 using LlamaLibrary.Memory.Attributes;
@@ -8,7 +8,10 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class FreeCompanyChest : RemoteWindow<FreeCompanyChest>
     {
-        
+        public static readonly Dictionary<string, int> Properties = new(System.StringComparer.Ordinal)
+        {
+            { "ItemTabCount", 4 },
+        };
 
         public Dictionary<int, CompanyChestPermission> ItemTabPermissions
         {
@@ -34,7 +37,7 @@ namespace LlamaLibrary.RemoteWindows
 
         public CompanyChestPermission GilPermission => WindowByName != null ? Core.Memory.Read<CompanyChestPermission>(WindowByName.Pointer + FreeCompanyChestOffsets.GilPermission) : CompanyChestPermission.NoAccess;
 
-        public int ItemTabCount => Elements[4].Int;
+        public int ItemTabCount => Elements[Properties["ItemTabCount"]].Int;
 
         public FreeCompanyChest() : base("FreeCompanyChest")
         {

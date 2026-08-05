@@ -1,12 +1,18 @@
-﻿namespace LlamaLibrary.RemoteWindows
+using System.Collections.Generic;
+
+namespace LlamaLibrary.RemoteWindows
 {
-    //TODO Move element numbers to dictionary
     public class GoldSaucerReward : RemoteWindow<GoldSaucerReward>
     {
+        public static readonly Dictionary<string, int> Properties = new(System.StringComparer.Ordinal)
+        {
+            { "MGPReward", 1 },
+        };
+
         public GoldSaucerReward() : base("GoldSaucerReward")
         {
         }
 
-        public int MGPReward => Elements[1].Int;
+        public int MGPReward => Elements[Properties["MGPReward"]].Int;
     }
 }

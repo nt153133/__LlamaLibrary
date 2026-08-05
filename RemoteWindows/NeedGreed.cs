@@ -1,13 +1,20 @@
-﻿namespace LlamaLibrary.RemoteWindows
+using System.Collections.Generic;
+
+namespace LlamaLibrary.RemoteWindows
 {
-    //TODO Move element numbers to dictionary
     public class NeedGreed : RemoteWindow<NeedGreed>
     {
+        public static readonly Dictionary<string, int> Properties = new(System.StringComparer.Ordinal)
+        {
+            { "NumberOfItems", 3 },
+            { "ItemIdsBase", 7 },
+        };
+
         public NeedGreed() : base("NeedGreed")
         {
         }
 
-        public int NumberOfItems => ElementCount < 4 ? 0 : Elements[3].Int;
+        public int NumberOfItems => ElementCount < 4 ? 0 : Elements[Properties["NumberOfItems"]].Int;
 
         public uint[] ItemIds
         {
@@ -15,7 +22,7 @@
             {
                 var result = new uint[NumberOfItems];
                 var j = 0;
-                for (var i = 7; i < NumberOfItems; i += 7)
+                for (var i = Properties["ItemIdsBase"]; i < NumberOfItems; i += 7)
                 {
                     result[j] = Elements[i].UInt;
                     j++;

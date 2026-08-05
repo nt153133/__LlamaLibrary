@@ -1,8 +1,15 @@
-﻿namespace LlamaLibrary.RemoteWindows
+using System.Collections.Generic;
+
+namespace LlamaLibrary.RemoteWindows
 {
     public class GrandCompanySupplyReward : RemoteWindow<GrandCompanySupplyReward>
     {
-        public int SealReward => Elements[9].Int;
+        public static readonly Dictionary<string, int> Properties = new(System.StringComparer.Ordinal)
+        {
+            { "SealReward", 9 },
+        };
+
+        public int SealReward => Elements[Properties["SealReward"]].Int;
 
         public GrandCompanySupplyReward() : base("GrandCompanySupplyReward")
         {

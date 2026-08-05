@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ff14bot.Managers;
@@ -8,9 +8,19 @@ using LlamaLibrary.Structs;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    //TODO Move element numbers to dictionary, though this one will be rough with the element offsets for the arrays
     public class SubmarinePartsMenu : RemoteWindow<SubmarinePartsMenu>
     {
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "CraftItemID", 0 },
+            { "NumberOfTurnins", 11 },
+            { "TurninItemsStart", 12 },
+            { "TurninItemsQtyStart", 60 },
+            { "ItemAvailCountStart", 72 },
+            { "TurninsDoneStart", 108 },
+            { "TurninsRequiredStart", 120 },
+        };
+
         public SubmarinePartsMenu() : base("SubmarinePartsMenu")
         {
         }
@@ -22,19 +32,19 @@ namespace LlamaLibrary.RemoteWindows
 
         public int GetNumberOfTurnins()
         {
-            return IsOpen ? Elements[11].Int : 0;
+            return IsOpen ? Elements[Properties["NumberOfTurnins"]].Int : 0;
         }
 
         public int GetCraftItemID()
         {
-            return IsOpen ? Elements[0].Int : 0;
+            return IsOpen ? Elements[Properties["CraftItemID"]].Int : 0;
         }
 
         public List<Item> GetTurninItemsObjs()
         {
             var currentElements = Elements;
 
-            var itemElements = new ArraySegment<TwoInt>(currentElements, 12, GetNumberOfTurnins());
+            var itemElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninItemsStart"], GetNumberOfTurnins());
 
             return itemElements.Select(item => DataManager.GetItem(item.UInt)).ToList();
         }
@@ -43,7 +53,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             var currentElements = Elements;
 
-            var itemElements = new ArraySegment<TwoInt>(currentElements, 12, GetNumberOfTurnins());
+            var itemElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninItemsStart"], GetNumberOfTurnins());
 
             return itemElements.Select(item => item.Int).ToList();
         }
@@ -52,7 +62,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             var currentElements = Elements;
 
-            var itemElements = new ArraySegment<TwoInt>(currentElements, 60, GetNumberOfTurnins());
+            var itemElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninItemsQtyStart"], GetNumberOfTurnins());
 
             return itemElements.Select(item => item.Int).ToList();
         }
@@ -61,7 +71,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             var currentElements = Elements;
 
-            var itemElements = new ArraySegment<TwoInt>(currentElements, 120, GetNumberOfTurnins());
+            var itemElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninsRequiredStart"], GetNumberOfTurnins());
 
             return itemElements.Select(item => item.Int).ToList();
         }
@@ -70,7 +80,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             var currentElements = Elements;
 
-            var itemElements = new ArraySegment<TwoInt>(currentElements, 108, GetNumberOfTurnins());
+            var itemElements = new ArraySegment<TwoInt>(currentElements, Properties["TurninsDoneStart"], GetNumberOfTurnins());
 
             return itemElements.Select(item => item.Int).ToList();
         }
@@ -79,7 +89,7 @@ namespace LlamaLibrary.RemoteWindows
         {
             var currentElements = Elements;
 
-            var itemElements = new ArraySegment<TwoInt>(currentElements, 72, GetNumberOfTurnins());
+            var itemElements = new ArraySegment<TwoInt>(currentElements, Properties["ItemAvailCountStart"], GetNumberOfTurnins());
 
             return itemElements.Select(item => item.Int).ToList();
         }

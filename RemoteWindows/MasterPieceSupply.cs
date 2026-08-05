@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ff14bot.Managers;
@@ -6,19 +6,26 @@ using ff14bot.RemoteWindows;
 
 namespace LlamaLibrary.RemoteWindows
 {
-    //TODO Move element numbers to dictionary
     public class MasterPieceSupply : RemoteWindow<MasterPieceSupply>
     {
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "ClassSelected", 45 },
+            { "NumberOfTurnins", 0 },
+            { "ItemElementsStart", 87 },
+            { "StarElementsStart", 447 },
+        };
+
         public MasterPieceSupply() : base("MasterPieceSupply")
         {
         }
 
         public int ClassSelected
         {
-            get => Elements[45].Int;
+            get => Elements[Properties["ClassSelected"]].Int;
             set
             {
-                if (WindowByName != null && Elements[45].Int != value)
+                if (WindowByName != null && Elements[Properties["ClassSelected"]].Int != value)
                 {
                     SendAction(2, 1, 2, 1, (ulong)value);
                 }
@@ -27,14 +34,14 @@ namespace LlamaLibrary.RemoteWindows
 
         public int GetNumberOfTurnins()
         {
-            return IsOpen ? Elements[0].Int : 0;
+            return IsOpen ? Elements[Properties["NumberOfTurnins"]].Int : 0;
         }
 
         public List<Item> GetTurninItems()
         {
             var currentElements = Elements;
 
-            var itemElements = new ArraySegment<TwoInt>(currentElements, 87, GetNumberOfTurnins());
+            var itemElements = new ArraySegment<TwoInt>(currentElements, Properties["ItemElementsStart"], GetNumberOfTurnins());
 
             return itemElements.Select(item => DataManager.GetItem((item.UInt - 500000))).ToList();
         }
@@ -45,8 +52,8 @@ namespace LlamaLibrary.RemoteWindows
 
             var currentElements = Elements;
 
-            var itemElements = new ArraySegment<TwoInt>(currentElements, 87, GetNumberOfTurnins()).ToArray();
-            var starElements = new ArraySegment<TwoInt>(currentElements, 447, GetNumberOfTurnins()).ToArray();
+            var itemElements = new ArraySegment<TwoInt>(currentElements, Properties["ItemElementsStart"], GetNumberOfTurnins()).ToArray();
+            var starElements = new ArraySegment<TwoInt>(currentElements, Properties["StarElementsStart"], GetNumberOfTurnins()).ToArray();
 
             for (var i = 0; i < GetNumberOfTurnins(); i++)
             {

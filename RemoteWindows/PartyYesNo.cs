@@ -1,11 +1,17 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using ff14bot;
 
 namespace LlamaLibrary.RemoteWindows
 {
     public class PartyYesNo : RemoteWindow<PartyYesNo>
     {
-        public string NameLine => Core.Memory.ReadStringA((IntPtr)Elements[0].Data);
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "NameLine", 0 },
+        };
+
+        public string NameLine => Core.Memory.ReadStringA((IntPtr)Elements[Properties["NameLine"]].Data);
 
         public PartyYesNo() : base("SelectYesno")
         {

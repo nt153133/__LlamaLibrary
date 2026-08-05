@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using ff14bot;
 using AtkValueType = LlamaLibrary.RemoteWindows.Atk.ValueType;
@@ -7,15 +8,24 @@ namespace LlamaLibrary.RemoteWindows
 {
     public class GcArmyExpeditionResult : RemoteWindow<GcArmyExpeditionResult>
     {
+        public static readonly Dictionary<string, int> Properties = new(StringComparer.Ordinal)
+        {
+            { "Succeeded", 2 },
+            { "ResultText", 3 },
+            { "MissionName", 4 },
+            { "MemberCount", 5 },
+            { "SquadronExperience", 9 },
+        };
+
         public GcArmyExpeditionResult() : base("GcArmyExpeditionResult")
         {
         }
 
-        public bool Succeeded => IsOpen && Elements.Length > 2 && Elements[2].Bool;
-        public string ResultText => ReadString(3);
-        public string MissionName => ReadString(4);
-        public int MemberCount => IsOpen && Elements.Length > 5 ? Elements[5].Int : 0;
-        public int SquadronExperience => IsOpen && Elements.Length > 9 ? Elements[9].Int : 0;
+        public bool Succeeded => IsOpen && Elements.Length > Properties["Succeeded"] && Elements[Properties["Succeeded"]].Bool;
+        public string ResultText => ReadString(Properties["ResultText"]);
+        public string MissionName => ReadString(Properties["MissionName"]);
+        public int MemberCount => IsOpen && Elements.Length > Properties["MemberCount"] ? Elements[Properties["MemberCount"]].Int : 0;
+        public int SquadronExperience => IsOpen && Elements.Length > Properties["SquadronExperience"] ? Elements[Properties["SquadronExperience"]].Int : 0;
 
         /// <summary>Completes the mission debriefing and closes the result window.</summary>
         public bool Complete()
