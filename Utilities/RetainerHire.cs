@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -387,19 +385,15 @@ namespace LlamaLibrary.Utilities
 
         public static string ApiName(int min, int max)
         {
-            var client = new WebClient();
-
-            client.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-
-            var response = client.UploadValues(
-                "https://uzby.com/api.php",
-                new NameValueCollection
-                {
-                    { "min", $"{min}" },
-                    { "max", $"{max}" },
-                });
-
-            var name = Encoding.UTF8.GetString(response);
+            using var client = new HttpClient();
+            using var content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["min"] = min.ToString(),
+                ["max"] = max.ToString(),
+            });
+            using var response = client.PostAsync("https://uzby.com/api.php", content).GetAwaiter().GetResult();
+            response.EnsureSuccessStatusCode();
+            var name = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             return name.Substring(0, Math.Min(name.Length, max));
         }
 

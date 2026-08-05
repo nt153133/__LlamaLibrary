@@ -71,7 +71,7 @@ public class ItemIconStore : IFileStorable<Image>
 
 /// <summary>
 /// An <see cref="ICacheable{T}"/> implementation that fetches FFXIV item icons from game data
-/// via <see cref="DataManager.GetItem"/> on a cache miss.
+/// via <see cref="DataManager.GetItem(uint, bool)"/> on a cache miss.
 /// </summary>
 public class ItemIconCacheable : ICacheable<Image>
 {

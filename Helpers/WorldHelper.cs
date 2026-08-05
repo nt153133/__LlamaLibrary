@@ -115,11 +115,9 @@ namespace LlamaLibrary.Helpers
             get
             {
 
-                #if RB_TC
-                    return (byte)WorldDCGroupType.TCRegion1;
-                #endif
-
-                #if RB_CN
+#if RB_TC
+                return (byte)WorldDCGroupType.TCRegion1;
+#elif RB_CN
                 var dc = WorldMap.Where(x => x.Value.Any(y => y == CurrentWorld));
                 if (!dc.Any())
                 {
@@ -127,8 +125,9 @@ namespace LlamaLibrary.Helpers
                 }
 
                 return (byte)dc.First().Key;
-                #endif
+#else
                 return Core.Memory.Read<byte>(DcOffsetLocation);
+#endif
             }
         }
 

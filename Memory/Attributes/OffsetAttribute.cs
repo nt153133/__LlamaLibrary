@@ -256,7 +256,7 @@ public static class OffsetAttributeExtensions
         {
             return finder.FindSingle(pattern);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return IntPtr.Zero;
         }

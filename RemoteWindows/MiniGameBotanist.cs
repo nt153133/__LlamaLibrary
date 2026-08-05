@@ -16,7 +16,7 @@ namespace LlamaLibrary.RemoteWindows;
 /// exposes several live values read directly from the window's element data.
 /// </para>
 /// <para>
-/// <b>Note:</b> several members on this class are marked <see cref="Obsolete"/> because equivalent
+/// <b>Note:</b> several members on this class are marked <see cref="ObsoleteAttribute"/> because equivalent
 /// or better data is available from <see cref="Directors.OutOnALimbDirector"/>.
 /// That class reads directly from the director's memory and does not depend on the game window
 /// being open, making it more reliable for automation purposes.

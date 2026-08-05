@@ -1,5 +1,7 @@
 // LzOutWindow.cs
 
+#nullable disable
+
 using System.IO;
 
 namespace SevenZip.Compression.LZ

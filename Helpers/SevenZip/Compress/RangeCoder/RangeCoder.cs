@@ -1,4 +1,6 @@
 using System;
+#nullable disable
+
 using System.IO;
 
 namespace SevenZip.Compression.RangeCoder

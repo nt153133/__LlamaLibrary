@@ -6,5 +6,6 @@ namespace LlamaLibrary.Memory
     /// Record that stores some useful information related to the different game regions, can store flags etc that need to be toggled on a per-region basis.
     /// </summary>
     /// <param name="CurrentGameVersion"></param>
+    /// <param name="RegionFlag"></param>
     public record GameRecord(float CurrentGameVersion, OffsetFlags RegionFlag);
 }

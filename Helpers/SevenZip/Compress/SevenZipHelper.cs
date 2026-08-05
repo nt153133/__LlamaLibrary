@@ -1,4 +1,6 @@
 ﻿using System;
+#nullable disable
+
 using System.IO;
 using System.Text;
 using Decoder = SevenZip.Compression.LZMA.Decoder;

@@ -137,8 +137,8 @@ public class AgentSatisfactionSupply : AgentInterface<AgentSatisfactionSupply>, 
     /// <returns>A string in the format: "DoH: ItemName (ID), DoL: ItemName (ID), FSH: ItemName (ID)".</returns>
     public string PrintDeliverables()
     {
-        return $"DoH: {CustomDeliveries[DoHDeliverable].Item.CurrentLocaleName} ({CustomDeliveries[DoHDeliverable].DeliverableItemId}), " +
-               $"DoL: {CustomDeliveries[DoLDeliverable].Item.CurrentLocaleName} ({CustomDeliveries[DoLDeliverable].DeliverableItemId}), " +
-               $"FSH: {CustomDeliveries[FshDeliverable].Item.CurrentLocaleName} ({CustomDeliveries[FshDeliverable].DeliverableItemId})";
+        return $"DoH: {CustomDeliveries[DoHDeliverable].Item?.CurrentLocaleName ?? "Unknown"} ({CustomDeliveries[DoHDeliverable].DeliverableItemId}), " +
+               $"DoL: {CustomDeliveries[DoLDeliverable].Item?.CurrentLocaleName ?? "Unknown"} ({CustomDeliveries[DoLDeliverable].DeliverableItemId}), " +
+               $"FSH: {CustomDeliveries[FshDeliverable].Item?.CurrentLocaleName ?? "Unknown"} ({CustomDeliveries[FshDeliverable].DeliverableItemId})";
     }
 }

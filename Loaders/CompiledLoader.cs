@@ -709,6 +709,7 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
     // Entry point
     // ----------------------------------------------------------------------------------
 
+    // IAddonProxy<T> uses null to represent load failure but its external contract is not nullable-annotated.
     public async Task<T> Load(string directory)
     {
         var timer = Stopwatch.StartNew();
@@ -729,14 +730,14 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
             if (LibraryClass.SafeMode)
             {
                 Log.Information($"Safe mode enabled, skipping load of {ProjectName}");
-                return null;
+                return null!;
             }
 
             CompiledAssembly.Refresh();
 
             if (CompiledAssembly.Exists)
             {
-                return Load();
+                return Load()!;
             }
         }
         catch (Exception e)
@@ -750,7 +751,7 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
             Log.Information($"Load finished in {timer.ElapsedMilliseconds:N0}ms");
         }
 
-        return null;
+        return null!;
     }
 
     public void Dispose()

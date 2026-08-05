@@ -7,6 +7,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+#pragma warning disable CS1570 // Generated resource previews can truncate XML entities.
+
 using System.CodeDom.Compiler;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -212,3 +214,5 @@ namespace LlamaLibrary.Properties {
         }
     }
 }
+
+#pragma warning restore CS1570

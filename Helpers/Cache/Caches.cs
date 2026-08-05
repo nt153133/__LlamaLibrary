@@ -1,5 +1,7 @@
 ﻿using System.IO;
 
+using LlamaLibrary.Helpers.Cache.BaseClasses;
+
 namespace LlamaLibrary.Helpers.Cache;
 
 /// <summary>

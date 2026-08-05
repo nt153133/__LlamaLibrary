@@ -48,8 +48,6 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
     private List<Func<Task<bool>>> _orderBotHooks = new();
     private int _pulseDelayOld = 500;
 
-    private PulseFlags _pulseFlagsOld = PulseFlags.None;
-
     private Form? _settings;
 
     private readonly List<PulseFlags> _tempPulseFlags = new();
@@ -83,7 +81,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
     public static int FPS => (int)Core.Memory.NoCacheRead<float>(Core.Memory.Read<IntPtr>(Offsets.Framework) + Offsets.Framerate);
     private static int CriticalPulseDelay => Math.Max(25, 1000 / FPS) * 2;
 
-    private static System.Windows.Threading.DispatcherTimer _pulseTimer;
+    private static System.Windows.Threading.DispatcherTimer? _pulseTimer;
 
     public static ConcurrentBag<PulseFlags> BreakDownPulseFlags(PulseFlags flags)
     {
@@ -320,7 +318,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // ignored
                 //ff14bot.Helpers.Logging.WriteException(e);
@@ -533,14 +531,20 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
         }
     }
 
-    private static void PulseTimer_Tick(object sender, EventArgs e)
+    private static void PulseTimer_Tick(object? sender, EventArgs e)
     {
         try
         {
-            // Update the interval dynamically in case EnterCriticalMode changed the _pulseDelay
-            if (_pulseTimer.Interval.TotalMilliseconds != _pulseDelay)
+            var pulseTimer = _pulseTimer;
+            if (pulseTimer is null)
             {
-                _pulseTimer.Interval = TimeSpan.FromMilliseconds(_pulseDelay);
+                return;
+            }
+
+            // Update the interval dynamically in case EnterCriticalMode changed the _pulseDelay
+            if (pulseTimer.Interval.TotalMilliseconds != _pulseDelay)
+            {
+                pulseTimer.Interval = TimeSpan.FromMilliseconds(_pulseDelay);
             }
 
             if (!TreeRoot.IsRunning)
@@ -562,7 +566,7 @@ public abstract class TemplatePlugin : BotPlugin, IBotPlugin
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Safe to catch here now; it won't be a hard unmanaged deadlock anymore
             // ff14bot.Helpers.Logging.WriteException(ex);

@@ -39,8 +39,9 @@ namespace LlamaLibrary.Helpers
         /// When this method returns, contains the localized text for the current language, or the English fallback when found;
         /// otherwise, an empty string.
         /// </param>
+        /// <param name="allowOverride">Whether registered overrides may replace built-in translations.</param>
         /// <returns><see langword="true"/> when a translation was found; otherwise, <see langword="false"/>.</returns>
-        public static bool TryGetText(TranslationKey key, out string text,bool allowOverride = true)
+        public static bool TryGetText(TranslationKey key, out string text, bool allowOverride = true)
         {
             text = string.Empty;
 
@@ -56,6 +57,7 @@ namespace LlamaLibrary.Helpers
         /// Gets the localized text for a registered string translation key.
         /// </summary>
         /// <param name="key">The string translation key to resolve.</param>
+        /// <param name="allowOverride">Whether registered overrides may replace built-in translations.</param>
         /// <returns>
         /// The localized text for the current language, or the English fallback when the current language is unavailable.
         /// Returns an empty string when the key is not registered.
@@ -73,8 +75,9 @@ namespace LlamaLibrary.Helpers
         /// When this method returns, contains the localized text for the current language, or the English fallback when found;
         /// otherwise, an empty string.
         /// </param>
+        /// <param name="allowOverride">Whether registered overrides may replace built-in translations.</param>
         /// <returns><see langword="true"/> when a translation was found; otherwise, <see langword="false"/>.</returns>
-        public static bool TryGetText(string key, out string text,bool allowOverride = true)
+        public static bool TryGetText(string key, out string text, bool allowOverride = true)
         {
             text = string.Empty;
 
@@ -92,7 +95,7 @@ namespace LlamaLibrary.Helpers
         }
 
         /// <summary>
-        /// Registers a string translation key that can be resolved through <see cref="GetText(string)"/> and <see cref="TryGetText(string, out string)"/>.
+        /// Registers a string translation key that can be resolved through <see cref="GetText(string, bool)"/> and <see cref="TryGetText(string, out string, bool)"/>.
         /// </summary>
         /// <param name="key">The string translation key to register.</param>
         /// <param name="translations">The translations to associate with the key.</param>

@@ -379,8 +379,6 @@ namespace LlamaLibrary.Helpers
         {
             private readonly float distance;
             private MoveToParameters moveToParameters;
-            private MoveResult lastMoveResult = MoveResult.GeneratingPath;
-
             public TestNode(uint id, ushort zone, Vector3 loc, float distance)
             {
                 Id = id;

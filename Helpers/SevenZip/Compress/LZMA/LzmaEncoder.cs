@@ -1,6 +1,8 @@
 // LzmaEncoder.cs
 
 using System;
+#nullable disable
+
 using System.IO;
 using SevenZip.Compression.LZ;
 using SevenZip.Compression.RangeCoder;

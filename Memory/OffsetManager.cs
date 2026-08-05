@@ -64,7 +64,6 @@ public static class OffsetManager
     public static LLogger Logger { get; } = new("LLOffsetManager", Colors.RosyBrown, LogLevel.Debug);
 
     private static readonly TaskCompletionSource<bool> InitTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-    private static bool initDone;
     private static bool _isNewGameBuild;
     private static int _scriptManagerStarted;
 
@@ -152,7 +151,6 @@ public static class OffsetManager
         }
         finally
         {
-            initDone = true;
             InitTcs.TrySetResult(true);
             total.Stop();
             Logger.Debug($"OffsetManager Init took {total.ElapsedMilliseconds}ms");

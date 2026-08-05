@@ -37,7 +37,7 @@ namespace LlamaLibrary.Helpers.NPC
                 return enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(meLocation)).FirstOrDefault();
             }
 
-            return enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(i.Location.ClosestAetheryteResult.Position)).FirstOrDefault();
+            return enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.ClosestAetheryteResult is { } aetheryte ? i.Location.Coordinates.Distance2DSqr(aetheryte.Position) : float.MaxValue).FirstOrDefault();
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace LlamaLibrary.Helpers.NPC
                 return enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(meLocation)).ToList();
             }
 
-            return enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.Coordinates.Distance2DSqr(i.Location.ClosestAetheryteResult.Position)).ToList();
+            return enumerable.Where(i => i.CanGetTo).OrderByDescending(i => i.IsInCurrentZone).ThenByDescending(i => i.IsInCurrentArea).ThenBy(i => i.TeleportCost).ThenBy(i => i.Location.ClosestAetheryteResult is { } aetheryte ? i.Location.Coordinates.Distance2DSqr(aetheryte.Position) : float.MaxValue).ToList();
         }
 
         /// <summary>

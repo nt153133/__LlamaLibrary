@@ -68,6 +68,7 @@ namespace LlamaLibrary.Logging
         /// </summary>
         /// <param name="color">Log line <see cref="System.Windows.Media.Color"/>.</param>
         /// <param name="message">Text to write to log.</param>
+        /// <param name="rbLogLevel">The RebornBuddy log level used for the emitted line.</param>
         public virtual void WriteLog(Color color, string message, ff14bot.Helpers.LogLevel rbLogLevel = ff14bot.Helpers.LogLevel.Normal)
         {
             var logLine = $"[{_name}] {message}";

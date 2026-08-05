@@ -29,7 +29,7 @@ namespace LlamaLibrary.Helpers
         /// <param name="item">The item to score.</param>
         /// <param name="job">
         /// The job to score for. Defaults to <see cref="ClassJobType.Adventurer"/>, which resolves to
-        /// the player's current job via <see cref="Core.Me.CurrentJob"/>.
+        /// the player's current job via <c>Core.Me.CurrentJob</c>.
         /// </param>
         /// <returns>A non-negative weight score, or <c>-1</c> when the item is ineligible.</returns>
         public static float GetItemWeight(Item item, ClassJobType job = ClassJobType.Adventurer)
