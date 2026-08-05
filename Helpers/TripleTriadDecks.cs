@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using ff14bot;
 using LlamaLibrary.ClientDataHelpers;
+using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers;
 
@@ -11,11 +12,6 @@ public static class TripleTriadDecks
 {
     public const int DeckCount = 5;
     public const int CardCount = 5;
-
-    private const int DeckArrayOffset = 0x48;
-    private const int DeckSize = 0x3A;
-    private const int DeckNameSize = 0x30;
-    private const int DeckCardsOffset = 0x30;
 
     /// <summary>Writes a complete profile deck. Deck indices are zero-based.</summary>
     public static bool TryWrite(int deckIndex, ushort[] cardIds, string name, out string diagnostic)
@@ -39,14 +35,14 @@ public static class TripleTriadDecks
             return false;
         }
 
-        var deck = module + DeckArrayOffset + deckIndex * DeckSize;
-        var nameBytes = new byte[DeckNameSize];
+        var deck = module + TripleTriadDecksOffsets.DeckArrayOffset + deckIndex * TripleTriadDecksOffsets.DeckSize;
+        var nameBytes = new byte[TripleTriadDecksOffsets.DeckNameSize];
         var encodedName = Encoding.UTF8.GetBytes((name ?? string.Empty).Trim());
         Array.Copy(encodedName, nameBytes, Math.Min(encodedName.Length, nameBytes.Length - 1));
         Core.Memory.WriteBytes(deck, nameBytes);
 
         for (var cardIndex = 0; cardIndex < CardCount; cardIndex++)
-            Core.Memory.Write(deck + DeckCardsOffset + cardIndex * sizeof(ushort), cardIds[cardIndex]);
+            Core.Memory.Write(deck + TripleTriadDecksOffsets.DeckCardsOffset + cardIndex * sizeof(ushort), cardIds[cardIndex]);
 
         var readBack = Read(deckIndex);
         var success = readBack.SequenceEqual(cardIds);
@@ -62,7 +58,9 @@ public static class TripleTriadDecks
         if (deckIndex < 0 || deckIndex >= DeckCount) return Array.Empty<ushort>();
         var module = UiManagerProxy.GoldSaucerModule;
         if (module == IntPtr.Zero) return Array.Empty<ushort>();
-        var cards = module + DeckArrayOffset + deckIndex * DeckSize + DeckCardsOffset;
+        var cards = module + TripleTriadDecksOffsets.DeckArrayOffset
+                           + deckIndex * TripleTriadDecksOffsets.DeckSize
+                           + TripleTriadDecksOffsets.DeckCardsOffset;
         return Enumerable.Range(0, CardCount)
             .Select(x => Core.Memory.Read<ushort>(cards + x * sizeof(ushort)))
             .ToArray();

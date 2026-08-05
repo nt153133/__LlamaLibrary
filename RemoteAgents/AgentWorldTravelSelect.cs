@@ -13,19 +13,19 @@ namespace LlamaLibrary.RemoteAgents
     {
         public IntPtr RegisteredVtable => AgentWorldTravelSelectOffsets.VTable;
 
+        private const int MaxCountOffset = -1;
+
 #if RB_TC
-        const int MaxCountOffset = -1;
-const int MaxSkip = 0;
+        private const int MaxSkip = 0;
 #else
-        const int MaxCountOffset = -1;
-        const int MaxSkip = 1;
+        private const int MaxSkip = 1;
 #endif
 
         protected AgentWorldTravelSelect(IntPtr pointer) : base(pointer)
         {
         }
 
-        public ushort CurrentWorld => Core.Memory.NoCacheRead<ushort>(ChoicesPointer + 0x4);
+        public ushort CurrentWorld => Core.Memory.NoCacheRead<ushort>(ChoicesPointer + AgentWorldTravelSelectOffsets.CurrentWorldOffset);
         public IntPtr ChoicesPointer => Core.Memory.NoCacheRead<IntPtr>(Pointer + AgentWorldTravelSelectOffsets.ChoicesOffset);
 
         public ushort HomeWorld => Core.Memory.NoCacheRead<ushort>(ChoicesPointer);

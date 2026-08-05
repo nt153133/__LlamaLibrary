@@ -1051,12 +1051,12 @@ namespace LlamaLibrary.Memory
 
         //7.5
         [Offset("Search 48 8B 43 ? 0F B7 3C 07 Add 3 Read8")]
-        [OffsetTC("Search 48 8B 43 ? 0F B7 3C B0 Add 3 Read8")]
+        [OffsetTC("Search 48 8B 43 ? 0F B7 3C B0 66 89 7B ? E8 ? ? ? ? 44 0F B7 C7 Add 3 Read8")]
         internal static int ChoicesOffset;
 
-        //7.3
-        [Offset("Search 66 89 7B ? E8 ? ? ? ? 44 0F B7 C7 Add 3 Read8")]
-        [OffsetTC("Search 66 89 7B ? E8 ? ? ? ? 44 0F B7 C7 Add 3 Read8")]
+        // The current world is the second entry. Entry size differs by region.
+        [Offset("Search 89 79 ? 48 8D 49 ? 48 83 EE ? 75 ? EB ? 48 8B C7 Add 6 Read8")]
+        [OffsetTC("Search B8 ? ? ? ? 48 F7 E3 48 0F 40 C1 45 33 C9 48 8B C8 33 D2 E8 ? ? ? ? 48 85 C0 74 ? 48 8B C8 48 85 DB 74 ? 66 66 66 0F 1F 84 00 ? ? ? ? 89 29 48 8D 49 ? 48 83 EB ? 75 ? Add 1 Read32")]
         internal static int CurrentWorldOffset;
 
         //7.5
@@ -1923,6 +1923,21 @@ namespace LlamaLibrary.Memory
 
         [Offset("Search 48 83 EC 28 48 8B 05 ? ? ? ? 44 8B C1 BA 1e 01 00 00 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 05 48 83 C4 28")]
         internal static IntPtr GetCycleExd;
+    }
+
+    public static class TripleTriadDecksOffsets
+    {
+        [Offset("Search 48 8D 4F ? 4C 8B C0 48 03 CA BA ? ? ? ? E8 ? ? ? ? C6 47 ? ? Add 3 Read8")]
+        internal static int DeckArrayOffset;
+
+        [Offset("Search 48 6B D0 ? 48 8D 41 ? 48 03 C2 C3 33 C0 Add 3 Read8")]
+        internal static int DeckSize;
+
+        [Offset("Search 48 03 CA BA ? ? ? ? E8 ? ? ? ? C6 47 ? ? Add 4 Read32")]
+        internal static int DeckNameSize;
+
+        [Offset("Search 48 2B D8 48 8D 50 ? 0F 1F 00 0F B7 84 13 ? ? ? ? Add 6 Read8")]
+        internal static int DeckCardsOffset;
     }
 
     public static class UIInputHelperOffsets
