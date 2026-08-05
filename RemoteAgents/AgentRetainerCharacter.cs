@@ -10,7 +10,6 @@ namespace LlamaLibrary.RemoteAgents
     /// Remote agent for the retainer's character and attributes interface.
     /// Provides access to retainer-specific stats such as item level.
     /// </summary>
-    //TODO This agent has hardcoded memory offsets and i'm not actually sure why it's here
     public class AgentRetainerCharacter : AgentInterface<AgentRetainerCharacter>, IAgent
     {
         /// <inheritdoc/>
@@ -27,6 +26,6 @@ namespace LlamaLibrary.RemoteAgents
         /// <summary>
         /// Gets the current average item level of the retainer's equipped gear.
         /// </summary>
-        public int ILvl => Core.Memory.Read<byte>(Pointer + 0xa78);
+        public int ILvl => Core.Memory.Read<int>(Pointer + AgentRetainerCharacterOffsets.ItemLevel);
     }
 }

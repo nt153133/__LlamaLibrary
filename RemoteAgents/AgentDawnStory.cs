@@ -50,6 +50,6 @@ namespace LlamaLibrary.RemoteAgents
         /// <summary>
         /// Gets the index of the currently selected duty in the interface.
         /// </summary>
-        public byte SelectedDuty => Core.Memory.Read<byte>(Pointer + 0x28);
+        public byte SelectedDuty => Core.Memory.Read<byte>(Pointer + AgentDawnStoryOffsets.SelectedContentId);
     }
 }

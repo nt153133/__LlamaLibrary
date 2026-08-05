@@ -4,6 +4,7 @@ using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Managers;
 using ff14bot.RemoteWindows;
+using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteWindows.Atk;
 
 namespace LlamaLibrary.RemoteWindows
@@ -37,17 +38,6 @@ namespace LlamaLibrary.RemoteWindows
     /// </summary>
     public abstract class RemoteWindow
     {
-        //7.1
-        /*
-#if RB_CN
-        private const int Offset0 = 0x1DA; //0F BF 93 ? ? ? ? 41 B1 ? 4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
-        private const int Offset2 = 0x170; //4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
-#else
-*/
-        private const int Offset0 = 0x1E2; //0F BF 93 ? ? ? ? 41 B1 ? 4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
-        private const int Offset2 = 0x178; //4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32
-
-
         /// <summary>
         /// Gets a value indicating whether the window is currently open and visible in the UI.
         /// </summary>
@@ -125,13 +115,13 @@ namespace LlamaLibrary.RemoteWindows
                 return Array.Empty<TwoInt>();
             }
 
-            var elementCount = Core.Memory.Read<ushort>(window.Pointer + Offset0);
+            var elementCount = Core.Memory.Read<ushort>(window.Pointer + AtkUnitBaseOffsets.AtkValuesCount);
             if (elementCount == 0)
             {
                 return Array.Empty<TwoInt>();
             }
 
-            var addr = Core.Memory.Read<IntPtr>(window.Pointer + Offset2);
+            var addr = Core.Memory.Read<IntPtr>(window.Pointer + AtkUnitBaseOffsets.AtkValues);
             return addr == IntPtr.Zero
                 ? Array.Empty<TwoInt>()
                 : Core.Memory.ReadArray<TwoInt>(addr, elementCount);
@@ -144,7 +134,7 @@ namespace LlamaLibrary.RemoteWindows
                 var window = WindowByName;
                 return window == null || window.Pointer == IntPtr.Zero
                     ? (ushort)0
-                    : Core.Memory.Read<ushort>(window.Pointer + Offset0);
+                    : Core.Memory.Read<ushort>(window.Pointer + AtkUnitBaseOffsets.AtkValuesCount);
             }
         }
 

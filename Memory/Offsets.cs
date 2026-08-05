@@ -245,6 +245,15 @@ namespace LlamaLibrary.Memory
         internal static int DecipherSpell;
     }
 
+    public static class AtkUnitBaseOffsets
+    {
+        [Offset("Search 0F BF 93 ? ? ? ? 41 B1 ? 4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32")]
+        internal static int AtkValuesCount;
+
+        [Offset("Search 4C 8B 83 ? ? ? ? 48 8B CB C6 44 24 ? ? E8 ? ? ? ? 48 8B CB Add 3 Read32")]
+        internal static int AtkValues;
+    }
+
     public static class AgentAWGrowthFragTradeOffsets
     {
         [Offset("Search 48 8D 05 ? ? ? ? 48 8D 4B ? 48 89 03 33 D2 Add 3 TraceRelative")]
@@ -367,6 +376,9 @@ namespace LlamaLibrary.Memory
     {
         [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8B C3 48 C7 43 ? ? ? ? ? Add 3 TraceRelative")]
         internal static IntPtr Vtable;
+
+        [Offset("Search 41 88 46 ? 45 0F B6 5E ? 45 84 DB 75 ? 48 8B 8C Add 3 Read8")]
+        internal static int SelectedContentId;
 
         //7.3
         [Offset("Search 48 89 35 ? ? ? ? 48 8B 74 24 ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 3 TraceRelative")]
@@ -861,6 +873,9 @@ namespace LlamaLibrary.Memory
     {
         [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 48 8D 4E ? 48 8D 05 ? ? ? ? 48 89 46 ? E8 ? ? ? ? 33 ED Add 3 TraceRelative")]
         internal static IntPtr VTable;
+
+        [Offset("Search 41 89 86 ? ? ? ? E8 ? ? ? ? 4C 8B BC 24 ? ? ? ? 4C 8B A4 24 Add 3 Read32")]
+        internal static int ItemLevel;
     }
 
     public static class AgentRetainerInventoryOffsets
@@ -891,10 +906,17 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 66 89 43 ? 48 89 43 ? 88 43 ? Add 3 TraceRelative")]
         internal static IntPtr VTable;
 
-        //7.3
-        [Offset("Search 48 8B 4E ? 4C 8B E0 48 8B 01 Add 3 Read8")]
-        [OffsetTC("Search 48 8B 4E ? 4C 8B E0 48 8B 01 Add 3 Read8")]
+        [Offset("Search 0F 11 41 ? 41 0F 10 48 ? 0F 11 49 ? F2 41 0F 10 40 ? F2 0F 11 41 ? 41 0F B7 00 Add 3 Read8")]
         internal static int RetainerTask;
+
+        [Offset("Search 0F 11 49 ? F2 41 0F 10 40 ? F2 0F 11 41 ? 41 0F B7 00 Add 3 Read8")]
+        internal static int RewardItemIds;
+
+        internal static int ExperienceGain => RetainerTask + sizeof(int);
+        internal static int RewardItem1 => RewardItemIds;
+        internal static int RewardItem2 => RewardItemIds + sizeof(int);
+        internal static int RewardCounts => RewardItemIds + (2 * sizeof(int));
+        internal static int RewardCount2 => RewardCounts + sizeof(int);
     }
 
     public static class AgentSatisfactionSupplyOffsets
