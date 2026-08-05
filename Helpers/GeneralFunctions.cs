@@ -52,8 +52,8 @@ namespace LlamaLibrary.Helpers
             {
                 if (_questLayouts == null)
                 {
-                    var field = typeof(QuestLogManager).GetFields(BindingFlags.NonPublic | BindingFlags.Static).FirstOrDefault(i => i.FieldType == typeof(FrameCachedObject<QuestLayout[]>));
-                    _questLayouts = field?.GetValue(null) as FrameCachedObject<QuestLayout[]>;
+                    var questLayoutsField = typeof(QuestLogManager).GetFields(BindingFlags.NonPublic | BindingFlags.Static).FirstOrDefault(i => i.FieldType == typeof(FrameCachedObject<QuestLayout[]>));
+                    _questLayouts = questLayoutsField?.GetValue(null) as FrameCachedObject<QuestLayout[]>;
                 }
 
                 return _questLayouts;

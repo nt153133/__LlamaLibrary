@@ -52,7 +52,11 @@ namespace LlamaLibrary.Extensions
         /// <typeparam name="T">The type of elements in the collection.</typeparam>
         /// <param name="source">The collection to shuffle.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> with shuffled elements.</returns>
+#if NET10_0_OR_GREATER || RB10
+        public static IEnumerable<T> Shuffle<T>(IEnumerable<T> source)
+#else
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
+#endif
         {
             return source.Shuffle(Rng);
         }
