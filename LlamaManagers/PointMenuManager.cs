@@ -1,4 +1,3 @@
-#if RB_DT
 using System;
 using System.Windows.Media;
 using ff14bot;
@@ -45,4 +44,3 @@ namespace LlamaLibrary.LlamaManagers
         }
     }
 }
-#endif

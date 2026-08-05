@@ -36,17 +36,17 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <DefineConstants>TRACE, RB_DT</DefineConstants>
+        <DefineConstants>TRACE</DefineConstants>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2|AnyCPU'">
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <DefineConstants>TRACE, RB_DT</DefineConstants>
+        <DefineConstants>TRACE</DefineConstants>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'China' ">
-      <DefineConstants>TRACE, RB_CN, RB_DT</DefineConstants>
+      <DefineConstants>TRACE, RB_CN</DefineConstants>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows|AnyCPU'">
       <WarningLevel>2</WarningLevel>

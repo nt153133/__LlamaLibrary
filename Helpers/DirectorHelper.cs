@@ -9,11 +9,9 @@ using LlamaLibrary.Memory;
 
 namespace LlamaLibrary.Helpers
 {
-#if RB_DT
     /// <summary>
     /// Reads the active duty director's objective (todo) argument list from game memory.
     /// The todo list reflects the current duty's objective checklist shown in the UI.
-    /// Only available in RebornBuddy DT (Dawntrail) builds.
     /// </summary>
     public class DirectorHelper
     {
@@ -101,6 +99,4 @@ namespace LlamaLibrary.Helpers
             [FieldOffset(0x88)] public uint MapRowId;
         }
     }
-
-#endif
 }

@@ -44,7 +44,6 @@ public class BankaCraftworksSupply : RemoteWindow<BankaCraftworksSupply>
         SendAction(1, 3, 0);
     }
 
-#if RB_DT
     public async Task HandOverItems()
     {
         if (HelpWindow.Instance.IsOpen)
@@ -108,5 +107,4 @@ public class BankaCraftworksSupply : RemoteWindow<BankaCraftworksSupply>
         }
         */
     }
-#endif
 }
