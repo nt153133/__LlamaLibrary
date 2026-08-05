@@ -1918,17 +1918,10 @@ namespace LlamaLibrary.Memory
     public static class UIInputHelperOffsets
     {
         [Offset("Search 48 8B 48 ? 48 8B 01 48 8B 88 ? ? ? ? 48 89 4C 24 ? Add 3 Read8")]
-        internal static int off1; //0x28
+        internal static int AtkStageAtkInputManager;
 
-        //7.3
-        [Offset("Search 48 8B 78 ? E8 ? ? ? ? 41 B0 ? Add 3 Read8")]
-        [OffsetTC("Search 48 8B 78 ? E8 ? ? ? ? 41 B0 ? Add 3 Read8")]
-        internal static int off2; //0x18
-
-        //7.3
-        [Offset("Search 48 8B 70 ? 48 8B 06 48 8B 78 ? E8 ? ? ? ? 41 B0 ? Add 3 Read8")]
-        [OffsetTC("Search 48 8B 70 ? 48 8B 06 48 8B 78 ? E8 ? ? ? ? 41 B0 ? Add 3 Read8")]
-        internal static int off3; //0x8
+        [Offset("Search 48 89 41 ?? 48 8D 15 ?? ?? ?? ?? 48 8B 84 24 ?? ?? ?? ?? 48 8D 59 ?? Add 3 Read8")]
+        internal static int AtkModuleTextServiceEvent;
 
         //7.3
         [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F0")]
@@ -1946,10 +1939,8 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search E8 ? ? ? ? 4C 8B C7 48 8D 55 ? 49 8B CE E8 ? ? ? ? 48 8D 4D ? 48 89 45 ? TraceCall")]
         internal static IntPtr Utf8StringFromSequenceCtor;
 
-        //7.3
-        [Offset("Search 48 8B 41 ? 48 8D 4D ? 75 ? Add 3 Read8")]
-        [OffsetTC("Search 48 8B 41 ? 48 8D 4D ? 75 ? Add 3 Read8")]
-        internal static int CurrentTextControl; //0x8
+        [Offset("Search 4C 89 71 ?? 48 89 01 48 8B D9 48 8B 44 24 ?? Add 3 Read8")]
+        internal static int AtkTextInputTargetTextInputEventInterface;
     }
 
     public static class UIStateOffsets

@@ -2,10 +2,10 @@
 using System.Text;
 using System.Windows.Media;
 using ff14bot;
+using LlamaLibrary.ClientDataHelpers;
 using LlamaLibrary.Logging;
-using LlamaLibrary.Memory.Attributes;
-using LlamaLibrary.Utilities;
 using LlamaLibrary.Memory;
+using LlamaLibrary.Utilities;
 
 namespace LlamaLibrary.Helpers
 {
@@ -17,43 +17,56 @@ namespace LlamaLibrary.Helpers
     {
         private static readonly LLogger Log = new(nameof(UIInputHelper), Colors.Pink);
 
-        
-
         /// <summary>
-        /// Gets the pointer to the underlying text input handler within the <c>AtkStage</c> structure.
+        /// Gets the <c>TextServiceEvent</c> interface used to dispatch text input.
         /// </summary>
         public static IntPtr GetInputTextPtr
         {
             get
             {
-                var one = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
-                var two = Core.Memory.Read<IntPtr>(one + UIInputHelperOffsets.off1);
-                var twoHalf = Core.Memory.Read<IntPtr>(two);
-                var three = Core.Memory.Read<IntPtr>(twoHalf + UIInputHelperOffsets.off2);
-                var four = Core.Memory.Read<IntPtr>(three + UIInputHelperOffsets.off3);
-                return four;
+                var raptureAtkModule = UiManagerProxy.RaptureAtkModule;
+                return raptureAtkModule == IntPtr.Zero
+                    ? IntPtr.Zero
+                    : raptureAtkModule + UIInputHelperOffsets.AtkModuleTextServiceEvent;
+            }
+        }
+
+        private static IntPtr AtkTextInput
+        {
+            get
+            {
+                var atkStage = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
+                if (atkStage == IntPtr.Zero)
+                {
+                    return IntPtr.Zero;
+                }
+
+                var atkInputManager = Core.Memory.Read<IntPtr>(atkStage + UIInputHelperOffsets.AtkStageAtkInputManager);
+                return atkInputManager == IntPtr.Zero
+                    ? IntPtr.Zero
+                    : Core.Memory.Read<IntPtr>(atkInputManager);
             }
         }
 
         /// <summary>
-        /// Gets or sets the pointer to the currently selected <c>AtkComponentTextInput</c> in the UI.
+        /// Gets or sets the <c>AtkTextInputEventInterface</c> targeted by the active text input.
         /// </summary>
         public static IntPtr SelectedAtkComponentTextInputPtr
         {
             get
             {
-                var one = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
-                var two = Core.Memory.Read<IntPtr>(one + UIInputHelperOffsets.off1);
-                var twoHalf = Core.Memory.Read<IntPtr>(two);
-                var three = Core.Memory.Read<IntPtr>(twoHalf + UIInputHelperOffsets.CurrentTextControl);
-                return three;
+                var atkTextInput = AtkTextInput;
+                return atkTextInput == IntPtr.Zero
+                    ? IntPtr.Zero
+                    : Core.Memory.Read<IntPtr>(atkTextInput + UIInputHelperOffsets.AtkTextInputTargetTextInputEventInterface);
             }
             set
             {
-                var one = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
-                var two = Core.Memory.Read<IntPtr>(one + UIInputHelperOffsets.off1);
-                var twoHalf = Core.Memory.Read<IntPtr>(two);
-                Core.Memory.Write(twoHalf + UIInputHelperOffsets.CurrentTextControl, value);
+                var atkTextInput = AtkTextInput;
+                if (atkTextInput != IntPtr.Zero)
+                {
+                    Core.Memory.Write(atkTextInput + UIInputHelperOffsets.AtkTextInputTargetTextInputEventInterface, value);
+                }
             }
         }
 
