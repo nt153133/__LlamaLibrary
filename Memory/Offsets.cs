@@ -475,23 +475,23 @@ namespace LlamaLibrary.Memory
         [Offset("Search 8B 93 ? ? ? ? 39 93 ? ? ? ? Add 2 Read32")]
         internal static int HistoryCount;
 
-        [Offset("Search 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 Read8")]
-        internal static int off1;
+        [Offset("Search 48 8B 9A ?? ?? ?? ?? 48 8B F9 49 8B A8 ?? ?? ?? ?? 48 8B 43 Add 3 Read32")]
+        internal static int NumberArrayByteOffset;
 
-        [Offset("Search 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 8B 41 ? 48 8B 40 ? C3 ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 Read8")]
-        internal static int off2;
+        internal static int NumberArrayIndex => NumberArrayByteOffset / IntPtr.Size;
 
-        [Offset("Search 4C 8B 80 ? ? ? ? 4D 85 C0 0F 84 ? ? ? ? 83 EB ? Add 3 Read32")]
-        internal static int off3;
-
-        [Offset("Search 49 8B 40 ? 48 63 D1 0F B7 1C 90 Add 3 Read8")]
-        internal static int off4;
+        [Offset("Search 48 8B 43 ?? 83 38 ?? 75 ?? 48 8B 89 Add 3 Read8")]
+        internal static int NumberArrayDataIntArray;
 
         [Offset("Search 8B 70 ? 85 F6 75 ? 8B 91 ? ? ? ? Add 2 Read8")]
-        internal static int CurrentCount;
+        internal static int CurrentActionCount;
+
+        internal static int CurrentActionsStart => CurrentActionCount + sizeof(uint);
 
         [Offset("Search 8B 58 ? 85 DB 75 ? 8B 97 ? ? ? ? Add 2 Read8")]
-        internal static int ActionCount;
+        internal static int AvailableActionCount;
+
+        internal static int AvailableActionsStart => AvailableActionCount + sizeof(uint);
     }
 
     public static class AgentGoldSaucerInfoOffsets

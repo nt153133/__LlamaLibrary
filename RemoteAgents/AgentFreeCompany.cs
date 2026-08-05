@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Buddy.Coroutines;
 using ff14bot;
 using ff14bot.Managers;
-using LlamaLibrary.Memory.Attributes;
-using LlamaLibrary.RemoteWindows;
+using LlamaLibrary.ClientDataHelpers;
 using LlamaLibrary.Memory;
+using LlamaLibrary.RemoteWindows;
 
 namespace LlamaLibrary.RemoteAgents
 {
@@ -74,19 +74,16 @@ namespace LlamaLibrary.RemoteAgents
         public byte HistoryLineCount => Core.Memory.Read<byte>(Pointer + AgentFreeCompanyOffsets.HistoryCount);
 
         /// <summary>
-        /// Gets the memory address where the Free Company action data is stored.
-        /// Resolved through a series of offsets from the AtkStage.
+        /// Gets the integer-array data used by the Free Company action addon.
         /// </summary>
         public IntPtr ActionAddress
         {
             get
             {
-                var one = Core.Memory.Read<IntPtr>(Offsets.AtkStage);
-                var two = Core.Memory.Read<IntPtr>(one + AgentFreeCompanyOffsets.off1);
-                var three = Core.Memory.Read<IntPtr>(two + AgentFreeCompanyOffsets.off2);
-                var four = Core.Memory.Read<IntPtr>(three + AgentFreeCompanyOffsets.off3);
-                var final = Core.Memory.Read<IntPtr>(four + AgentFreeCompanyOffsets.off4);
-                return final;
+                var numberArray = AtkArrayDataHolder.NumberArray(AgentFreeCompanyOffsets.NumberArrayIndex);
+                return numberArray == IntPtr.Zero
+                    ? IntPtr.Zero
+                    : Core.Memory.Read<IntPtr>(numberArray + AgentFreeCompanyOffsets.NumberArrayDataIntArray);
             }
         }
 
@@ -110,8 +107,12 @@ namespace LlamaLibrary.RemoteAgents
                 await Coroutine.Wait(5000, () => FreeCompanyAction.Instance.IsOpen);
                 if (FreeCompanyAction.Instance.IsOpen)
                 {
-                    var numCurrentActions = Core.Memory.NoCacheRead<uint>(ActionAddress + AgentFreeCompanyOffsets.CurrentCount);
-                    var currentActions = Core.Memory.ReadArray<FcAction>(ActionAddress + 0x8, (int)numCurrentActions);
+                    var actionAddress = ActionAddress;
+                    var currentActions = actionAddress == IntPtr.Zero
+                        ? Array.Empty<FcAction>()
+                        : Core.Memory.ReadArray<FcAction>(
+                            actionAddress + AgentFreeCompanyOffsets.CurrentActionsStart,
+                            (int)Core.Memory.NoCacheRead<uint>(actionAddress + AgentFreeCompanyOffsets.CurrentActionCount));
                     if (!wasopen)
                     {
                         FreeCompany.Instance.Close();
@@ -121,7 +122,7 @@ namespace LlamaLibrary.RemoteAgents
                 }
             }
 
-            return new FcAction[0];
+            return Array.Empty<FcAction>();
         }
 
         /// <summary>
@@ -144,8 +145,12 @@ namespace LlamaLibrary.RemoteAgents
                 await Coroutine.Wait(5000, () => FreeCompanyAction.Instance.IsOpen);
                 if (FreeCompanyAction.Instance.IsOpen)
                 {
-                    var actionCount = Core.Memory.NoCacheRead<uint>(ActionAddress + AgentFreeCompanyOffsets.ActionCount);
-                    var actions = Core.Memory.ReadArray<FcAction>(ActionAddress + 0x30, (int)actionCount);
+                    var actionAddress = ActionAddress;
+                    var actions = actionAddress == IntPtr.Zero
+                        ? Array.Empty<FcAction>()
+                        : Core.Memory.ReadArray<FcAction>(
+                            actionAddress + AgentFreeCompanyOffsets.AvailableActionsStart,
+                            (int)Core.Memory.NoCacheRead<uint>(actionAddress + AgentFreeCompanyOffsets.AvailableActionCount));
                     if (!wasopen)
                     {
                         FreeCompany.Instance.Close();
@@ -155,7 +160,7 @@ namespace LlamaLibrary.RemoteAgents
                 }
             }
 
-            return new FcAction[0];
+            return Array.Empty<FcAction>();
         }
     }
 
