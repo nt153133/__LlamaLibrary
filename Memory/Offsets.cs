@@ -186,8 +186,6 @@ namespace LlamaLibrary.Memory
         [Offset("Search E8 ?? ?? ?? ?? 80 7B 1D 01 TraceCall")]
         public static IntPtr GetUiModule;
 
-        [Offset("Search 48 89 86 ? ? ? ? 0F B6 42 ? Add 3 Read32")]
-        public static int IndoorTerritoryHouseId;
     }
 
     //ATK
@@ -1421,6 +1419,15 @@ namespace LlamaLibrary.Memory
 
         [Offset("Search 48 8B 41 ? 48 85 C0 74 ? 8B 80 ? ? ? ? 48 C1 E8 ?")]
         internal static IntPtr GetCurrentWard;
+    }
+
+    public static class HousingPositionInfoOffsets
+    {
+        [Offset("Search 48 89 86 ? ? ? ? 0F B6 42 ? Add 3 Read32")]
+        internal static int HouseId;
+
+        [Offset("Search C9 74 ? 41 0F B6 C0 89 81 ? ? ? ? C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 8B 49 ? Add 9 Read32")]
+        internal static int CurrentFloor;
     }
 
     public static class HousingSelectBlockOffsets

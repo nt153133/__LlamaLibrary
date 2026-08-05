@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using ff14bot;
 using LlamaLibrary.Memory;
 
@@ -46,21 +47,18 @@ namespace LlamaLibrary.Helpers.Housing
 
             try
             {
-                var houseId = _address + Offsets.IndoorTerritoryHouseId;
+                var memory = Core.Memory.Read<HousingPositionInfoMemory>(_address + HousingPositionInfoOffsets.HouseId);
 
-
-                InHouse = Core.Memory.Read<byte>(houseId + 0x9) == 0;
-                House = (ushort)(!InHouse ? 0 : Core.Memory.Read<ushort>(houseId) + 1);
-                var internalWard = (ushort)(Core.Memory.Read<ushort>(houseId + 0x2) + 1);
-                var internalPlot = (byte)(InHouse ? 0 : Core.Memory.Read<byte>(houseId + 0x8) + 1);
-                Room = (internalWard & RoomMask) >> MaskSize;
-                // Ward occupies bits 0-5, so no shift; the 1-based offset is already baked into internalWard.
-                var wardTemp = internalWard & WardMask;
-                Ward = (internalWard < 50) ? internalWard : wardTemp;
-                Subdivision = Core.Memory.Read<byte>(houseId + 0x9) == 2;
-                Zone = Core.Memory.Read<InternalHousingZone>(houseId + 0x4);
-                Plot = InHouse ? House : internalPlot;
-                HousingFloor = Core.Memory.Read<HousingFloor>(houseId + 0x4);
+                InHouse = memory.Division == 0;
+                House = (ushort)(InHouse ? memory.IndoorPlotIndex + 1 : 0);
+                Room = (memory.WardAndRoom & RoomMask) >> MaskSize;
+                Ward = (memory.WardAndRoom & WardMask) + 1;
+                Subdivision = memory.Division == 2;
+                Zone = memory.Zone;
+                Plot = (ushort)(InHouse ? House : memory.PlotIndex + 1);
+                HousingFloor = InHouse
+                    ? (HousingFloor)Core.Memory.Read<int>(_address + HousingPositionInfoOffsets.CurrentFloor)
+                    : HousingFloor.Unknown;
             }
             catch (Exception e)
             {
@@ -113,6 +111,25 @@ namespace LlamaLibrary.Helpers.Housing
         /// the outdoor plot area).
         /// </summary>
         public bool InHouse { get; }
+
+        [StructLayout(LayoutKind.Explicit, Size = 0xA)]
+        private struct HousingPositionInfoMemory
+        {
+            [FieldOffset(0x0)]
+            public byte IndoorPlotIndex;
+
+            [FieldOffset(0x2)]
+            public ushort WardAndRoom;
+
+            [FieldOffset(0x4)]
+            public InternalHousingZone Zone;
+
+            [FieldOffset(0x8)]
+            public byte PlotIndex;
+
+            [FieldOffset(0x9)]
+            public byte Division;
+        }
     }
 
     /// <summary>Represents the floor within a house interior.</summary>
