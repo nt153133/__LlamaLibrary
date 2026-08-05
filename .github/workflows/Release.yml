@@ -12,9 +12,11 @@ jobs:
             - name: Setup dotnet
               uses: actions/setup-dotnet@v4
               with:
-                  dotnet-version: '8.0.x'
+                  dotnet-version: |
+                      8.0.x
+                      10.0.x
             - name: Install dependencies
-              run: dotnet restore -p:TargetFramework=net8.0-windows
+              run: dotnet restore
             - name: Get Current Date Time
               id: t1
               uses: Kaven-Universe/github-action-current-date-time@v1

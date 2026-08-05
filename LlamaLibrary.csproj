@@ -3,12 +3,11 @@
         <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
         <OutputType>Library</OutputType>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <LangVersion>10</LangVersion>
         <Nullable>enable</Nullable>
         <UseWindowsForms>true</UseWindowsForms>
         <UseWPF>true</UseWPF>
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-        <TargetFramework>net8.0-windows</TargetFramework>
+        <TargetFrameworks>net8.0-windows;net10.0-windows</TargetFrameworks>
         <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
         <Configurations>Debug;Release;Release2;China</Configurations>
         <EnableWindowsTargetingPack>true</EnableWindowsTargetingPack>
@@ -25,7 +24,6 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
         <PackageReadmeFile>Readme.md</PackageReadmeFile>
-        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
@@ -74,8 +72,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="RebornBuddy.ReferenceAssemblies" Version="1.0.882" />
-        <PackageReference Include="System.Net.Http" Version="4.3.4" />
-        <PackageReference Include="System.Resources.Extensions" Version="9.0.0-preview.4.24266.19" />
+        <PackageReference Include="RebornBuddy.ReferenceAssemblies" Version="1.0.882" PrivateAssets="all" />
+        <PackageReference Include="System.Net.Http" Version="4.3.4" PrivateAssets="all" />
+        <PackageReference Include="System.Resources.Extensions" Version="9.0.0-preview.4.24266.19" PrivateAssets="all" />
     </ItemGroup>
 </Project>
