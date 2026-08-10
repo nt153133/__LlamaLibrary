@@ -25,6 +25,7 @@
         FishingExpedition,
         ResourceApproval,
         Any,
-        TomestoneExchange
+        TomestoneExchange,
+        GrandCompanyExchange
     }
 }
