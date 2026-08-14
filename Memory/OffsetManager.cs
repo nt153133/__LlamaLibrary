@@ -35,6 +35,7 @@ using LlamaLibrary.Settings;
 using Newtonsoft.Json;
 using LogLevel = LlamaLibrary.Logging.LogLevel;
 using PatchManager = LlamaLibrary.Hooks.PatchManager;
+using RbScriptManager = Clio.Utilities.ScriptManager;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable MemberCanBePrivate.Global
@@ -502,7 +503,7 @@ public static class OffsetManager
     // --- Script manager helpers ----------------------------------------------------------------
     internal static void AddNamespacesToScriptManager(params string[] param)
     {
-        var field = typeof(ScriptManager)
+        var field = typeof(RbScriptManager)
             .GetFields(BindingFlags.Static | BindingFlags.NonPublic)
             .FirstOrDefault(f => f.FieldType == typeof(List<string>));
         if (field == null) return;
@@ -705,8 +706,8 @@ public static class OffsetManager
         Logger.Information("Setting ScriptManager");
         Task.Run(() =>
         {
-            ScriptManager.AddNamespaces("LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras");
-            ScriptManager.Init(typeof(ScriptConditions.Helpers));
+            RbScriptManager.AddNamespaces("LlamaLibrary", "LlamaLibrary.ScriptConditions", "LlamaLibrary.ScriptConditions.Helpers", "LlamaLibrary.ScriptConditions.Extras");
+            RbScriptManager.Init(typeof(ScriptConditions.Helpers));
             Logger.Information("ScriptManager Set");
         });
     }
