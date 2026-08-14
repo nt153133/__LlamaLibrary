@@ -14,6 +14,9 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Clio.Utilities;
@@ -70,9 +73,20 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
     protected virtual string CompiledAssemblyName => $"{ProjectName}.dll";
     protected bool ForceChineseDownload = false;
 
+    protected virtual bool ReleaseChannelsEnabled => false;
+    protected virtual string ReleaseChannel => "Stable";
+    protected virtual string PackagedReleaseChannel => "Unknown";
+    protected virtual string PackagedRuntime => "Unknown";
+    protected virtual string PackagedVersion => "Unknown";
+    protected virtual string RuntimeChannel => Environment.Version.Major >= 10 ? "net10" : "net8";
+
+    private string ReleaseRequestQuery => ReleaseChannelsEnabled
+        ? $"&channel={Uri.EscapeDataString(ReleaseChannel)}&runtime={Uri.EscapeDataString(RuntimeChannel)}"
+        : string.Empty;
+
     protected virtual string ChineseDataUrl =>
-        $"http://update.ffxivbots.com:3000/Download/cn?product={ProjectName}&force={(ForceChineseDownload ? "true" : "false")}";
-    protected virtual string GlobalDataUrl => $"http://update.ffxivbots.com:3000/Download?product={ProjectName}";
+        $"http://update.ffxivbots.com:3000/Download/cn?product={Uri.EscapeDataString(ProjectName)}&force={(ForceChineseDownload ? "true" : "false")}{ReleaseRequestQuery}";
+    protected virtual string GlobalDataUrl => $"http://update.ffxivbots.com:3000/Download?product={Uri.EscapeDataString(ProjectName)}{ReleaseRequestQuery}";
 
 #if RB_CN || RB_TC
     protected virtual string DataUrl => ChineseDataUrl;
@@ -80,7 +94,7 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
     protected virtual string DataUrl => GlobalDataUrl;
 #endif
 
-    protected virtual string VersionUrl => $"http://update.ffxivbots.com:3000/version?product={ProjectName}";
+    protected virtual string VersionUrl => $"http://update.ffxivbots.com:3000/version?product={Uri.EscapeDataString(ProjectName)}{ReleaseRequestQuery}";
     protected virtual bool Debug => false;
     private FileInfo? _compiledAssembly;
     protected FileInfo CompiledAssembly => _compiledAssembly ??= new FileInfo(Path.Combine(LocalFolderName, CompiledAssemblyName));
@@ -88,7 +102,9 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
     protected virtual LogLevel LogLevel => LogLevel.Information;
     protected virtual List<(string Name, Assembly Assembly)> AddedAssemblies => new();
 
-    protected virtual string CheckUrl => $"http://update.ffxivbots.com:3000/Version/check?product={ProjectName}&version=";
+    protected virtual string CheckUrl => $"http://update.ffxivbots.com:3000/Version/check?product={Uri.EscapeDataString(ProjectName)}&version=";
+
+    private LoaderCheckOutcome _lastCheckOutcome;
 
     // ----------------------------------------------------------------------------------
     // Loading
@@ -188,6 +204,15 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
 
     protected virtual async Task<bool> Update()
     {
+        if (ReleaseChannelsEnabled)
+        {
+            Log.Information($"Release channel: {ReleaseChannel}; runtime lane: {RuntimeChannel}");
+        }
+        else
+        {
+            Log.Verbose("Release channels disabled; using legacy update routing.");
+        }
+
         var assemblyPath = CompiledAssembly.FullName;
 
         if (File.Exists(assemblyPath) && IsFileLocked(assemblyPath))
@@ -196,10 +221,19 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
             return false;
         }
 
+        _lastCheckOutcome = LoaderCheckOutcome.Unknown;
         var downloadInfo = await CheckAndDownload().ConfigureAwait(false);
 
         if (downloadInfo.Stream == null)
         {
+            if (_lastCheckOutcome == LoaderCheckOutcome.Failed)
+            {
+                Log.Warning(
+                    $"Update failed for requested {ReleaseChannel}/{RuntimeChannel}; " +
+                    $"continuing with packaged {PackagedReleaseChannel}/{PackagedRuntime} version {PackagedVersion}.");
+                return false;
+            }
+
             Log.Verbose($"No update needed for {ProjectName}");
             return true;
         }
@@ -246,8 +280,8 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
             return true;
         }
 
-        Log.Error($"{ProjectName} version is the same after update. Local: {oldVersion} Remote: {newVersion}");
-        return false;
+        Log.Information($"{ProjectName} release identity refreshed at version {newVersion}.");
+        return true;
     }
 
     private async Task<string?> ExtractToTempAsync((MemoryStream? Stream, string? ContentType) downloadInfo)
@@ -455,10 +489,12 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
         if (localVersion == null)
         {
             Log.Information($"No local version found for {ProjectName}, falling back to full download.");
-            return await Download().ConfigureAwait(false);
+            var initialDownload = await Download().ConfigureAwait(false);
+            _lastCheckOutcome = initialDownload.Stream == null ? LoaderCheckOutcome.Failed : LoaderCheckOutcome.UpdateAvailable;
+            return initialDownload;
         }
 
-        var checkUrl = CheckUrl + localVersion;
+        var checkUrl = CheckUrl + Uri.EscapeDataString(localVersion.ToString()) + BuildCheckIdentityQuery();
         try
         {
             using var request = new HttpRequestMessage(HttpMethod.Head, checkUrl);
@@ -467,9 +503,32 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
                 .ConfigureAwait(false);
 
             var statusCode = (int)response.StatusCode;
+            var resolvedChannel = TryFirstHeader(response.Headers, "X-Release-Channel");
+            var resolvedRuntime = TryFirstHeader(response.Headers, "X-Release-Runtime");
+            var releaseSource = TryFirstHeader(response.Headers, "X-Release-Source");
+            LogResolvedRelease(resolvedChannel, resolvedRuntime, releaseSource);
 
             if (statusCode == 200)
             {
+                if (ReleaseChannelsEnabled
+                    && !string.IsNullOrWhiteSpace(resolvedChannel)
+                    && !string.IsNullOrWhiteSpace(resolvedRuntime)
+                    && !PackagedIdentityMatches(localVersion, resolvedChannel, resolvedRuntime))
+                {
+                    Log.Information(
+                        $"Numeric version is current, but packaged identity {PackagedReleaseChannel}/{PackagedRuntime}/{PackagedVersion} " +
+                        $"does not match resolved {resolvedChannel}/{resolvedRuntime}/{localVersion}. Refreshing the release.");
+                    var identityDownload = await Download().ConfigureAwait(false);
+                    _lastCheckOutcome = identityDownload.Stream == null ? LoaderCheckOutcome.Failed : LoaderCheckOutcome.UpdateAvailable;
+                    return identityDownload;
+                }
+
+                if (ReleaseChannelsEnabled && string.IsNullOrWhiteSpace(releaseSource))
+                {
+                    Log.Warning("UpdateServer returned no release identity; accepting legacy version behavior for compatibility.");
+                }
+
+                _lastCheckOutcome = LoaderCheckOutcome.UpToDate;
                 Log.Information($"{ProjectName} is up to date. Version: {localVersion}");
                 return (null, null);
             }
@@ -494,6 +553,7 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
                 if (string.IsNullOrEmpty(primaryUrl))
                 {
                     Log.Error($"Update available for {ProjectName} but no download URL was provided by the server.");
+                    _lastCheckOutcome = LoaderCheckOutcome.Failed;
                     return (null, null);
                 }
 
@@ -509,18 +569,70 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
                     result = await DownloadFromUrl(fallbackUrl!).ConfigureAwait(false);
                 }
 
+                _lastCheckOutcome = result.Stream == null ? LoaderCheckOutcome.Failed : LoaderCheckOutcome.UpdateAvailable;
                 return result;
             }
 
             Log.Error($"Unexpected status code {statusCode} from check endpoint for {ProjectName}.");
+            _lastCheckOutcome = LoaderCheckOutcome.Failed;
             return (null, null);
         }
         catch (Exception e)
         {
             Log.Error($"Failed to check for updates for {ProjectName}.");
             Log.Exception(e);
+            _lastCheckOutcome = LoaderCheckOutcome.Failed;
             return (null, null);
         }
+    }
+
+    private string BuildCheckIdentityQuery()
+    {
+        if (!ReleaseChannelsEnabled)
+        {
+            return string.Empty;
+        }
+
+        return ReleaseRequestQuery
+               + $"&packagedChannel={Uri.EscapeDataString(PackagedReleaseChannel)}"
+               + $"&packagedRuntime={Uri.EscapeDataString(PackagedRuntime)}"
+               + $"&packagedVersion={Uri.EscapeDataString(PackagedVersion)}";
+    }
+
+    private bool PackagedIdentityMatches(Version localVersion, string resolvedChannel, string resolvedRuntime)
+    {
+        return string.Equals(PackagedReleaseChannel, resolvedChannel, StringComparison.OrdinalIgnoreCase)
+               && string.Equals(PackagedRuntime, resolvedRuntime, StringComparison.OrdinalIgnoreCase)
+               && Version.TryParse(PackagedVersion, out var packagedVersion)
+               && VersionsEquivalent(packagedVersion, localVersion);
+    }
+
+    private void LogResolvedRelease(string? resolvedChannel, string? resolvedRuntime, string? releaseSource)
+    {
+        if (!ReleaseChannelsEnabled || string.IsNullOrWhiteSpace(resolvedChannel) || string.IsNullOrWhiteSpace(resolvedRuntime))
+        {
+            return;
+        }
+
+        if (!string.Equals(ReleaseChannel, resolvedChannel, StringComparison.OrdinalIgnoreCase)
+            || !string.Equals(RuntimeChannel, resolvedRuntime, StringComparison.OrdinalIgnoreCase))
+        {
+            Log.Warning(
+                $"Requested {ReleaseChannel}/{RuntimeChannel}; UpdateServer resolved {resolvedChannel}/{resolvedRuntime} " +
+                $"from {releaseSource ?? "an unspecified source"}.");
+        }
+        else
+        {
+            Log.Verbose($"Resolved release: {resolvedChannel}/{resolvedRuntime}; source: {releaseSource ?? "Unknown"}.");
+        }
+    }
+
+    private static bool VersionsEquivalent(Version left, Version right)
+    {
+        return left.Major == right.Major
+               && left.Minor == right.Minor
+               && left.Build == right.Build
+               && Math.Max(0, left.Revision) == Math.Max(0, right.Revision);
     }
 
     private static string? TryFirstHeader(HttpHeaders headers, string name)
@@ -812,6 +924,171 @@ public abstract class CompiledLoader<T> : IDisposable, IAddonProxy<T> where T : 
             return true;
         }
     }
+
+    private enum LoaderCheckOutcome
+    {
+        Unknown,
+        UpToDate,
+        UpdateAvailable,
+        Failed
+    }
+}
+
+public static class CompiledLoaderReleaseChannels
+{
+    private const string ReleaseStatusUrl = "http://update.ffxivbots.com:3000/Release/status";
+    private const string SelectorMarker = "LL_RELEASE_CHANNEL";
+    private static readonly HttpClient HttpClient = new() { Timeout = TimeSpan.FromSeconds(30) };
+    private static readonly Regex SelectorRegex = new(
+        "^(?<prefix>\\s*protected\\s+override\\s+string\\s+ReleaseChannel\\s*=>\\s*\\\")(?<channel>Stable|Beta)(?<suffix>\\\"\\s*;\\s*//\\s*LL_RELEASE_CHANNEL\\s*)$",
+        RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.CultureInvariant);
+
+    public static async Task<ReleaseStatus> GetReleaseStatusAsync(
+        string product,
+        string runtime,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(product);
+        ArgumentException.ThrowIfNullOrWhiteSpace(runtime);
+        var url = $"{ReleaseStatusUrl}?product={Uri.EscapeDataString(product)}&runtime={Uri.EscapeDataString(runtime)}";
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+        using var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        return await JsonSerializer.DeserializeAsync<ReleaseStatus>(
+                   stream,
+                   new JsonSerializerOptions { PropertyNameCaseInsensitive = true },
+                   cancellationToken)
+               .ConfigureAwait(false)
+               ?? throw new InvalidDataException("UpdateServer returned an empty release status response.");
+    }
+
+    public static bool TryGetSelectedChannel(Assembly productAssembly, out string channel, out string error)
+    {
+        channel = string.Empty;
+        if (!TryFindSelector(productAssembly, out var match, out error))
+        {
+            return false;
+        }
+
+        channel = match.Match.Groups["channel"].Value;
+        return true;
+    }
+
+    public static bool TrySetSelectedChannel(
+        Assembly productAssembly,
+        string channel,
+        out string error)
+    {
+        if (channel is not ("Stable" or "Beta"))
+        {
+            error = "Release channel must be exactly 'Stable' or 'Beta'.";
+            return false;
+        }
+
+        if (!TryFindSelector(productAssembly, out var selector, out error))
+        {
+            return false;
+        }
+
+        if (string.Equals(selector.Match.Groups["channel"].Value, channel, StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        var replacement = selector.Match.Groups["prefix"].Value + channel + selector.Match.Groups["suffix"].Value;
+        var updatedSource = selector.Source.Remove(selector.Match.Index, selector.Match.Length)
+            .Insert(selector.Match.Index, replacement);
+        var tempPath = $"{selector.Path}.llchannel.{Guid.NewGuid():N}.tmp";
+
+        try
+        {
+            File.WriteAllText(tempPath, updatedSource, new UTF8Encoding(false));
+            File.Move(tempPath, selector.Path, true);
+            error = string.Empty;
+            return true;
+        }
+        catch (Exception exception)
+        {
+            error = $"Failed to update release channel in '{selector.Path}': {exception.Message}";
+            return false;
+        }
+        finally
+        {
+            try
+            {
+                if (File.Exists(tempPath))
+                {
+                    File.Delete(tempPath);
+                }
+            }
+            catch
+            {
+                // Best-effort cleanup; the original source remains unchanged on failure.
+            }
+        }
+    }
+
+    private static bool TryFindSelector(Assembly productAssembly, out LoaderSelector selector, out string error)
+    {
+        selector = default;
+        ArgumentNullException.ThrowIfNull(productAssembly);
+        var assemblyLocation = productAssembly.Location;
+        if (string.IsNullOrWhiteSpace(assemblyLocation))
+        {
+            error = "The product assembly has no file location.";
+            return false;
+        }
+
+        var directory = Path.GetDirectoryName(assemblyLocation);
+        if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
+        {
+            error = "The product loader source directory does not exist.";
+            return false;
+        }
+
+        var matches = new List<LoaderSelector>();
+        foreach (var path in Directory.EnumerateFiles(directory, "*.cs", SearchOption.TopDirectoryOnly))
+        {
+            var source = File.ReadAllText(path);
+            if (!source.Contains(SelectorMarker, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            foreach (Match match in SelectorRegex.Matches(source))
+            {
+                matches.Add(new LoaderSelector(path, source, match));
+            }
+        }
+
+        if (matches.Count != 1)
+        {
+            error = matches.Count == 0
+                ? $"No valid {SelectorMarker} selector was found beside the product assembly."
+                : $"Found {matches.Count} {SelectorMarker} selectors; exactly one is required.";
+            return false;
+        }
+
+        selector = matches[0];
+        error = string.Empty;
+        return true;
+    }
+
+    private readonly record struct LoaderSelector(string Path, string Source, Match Match);
+}
+
+public sealed class ReleaseStatus
+{
+    public string Product { get; set; } = string.Empty;
+    public string State { get; set; } = string.Empty;
+    public string? RequestedChannel { get; set; }
+    public string? RequestedRuntime { get; set; }
+    public string? ResolvedChannel { get; set; }
+    public string? ResolvedRuntime { get; set; }
+    public string? Version { get; set; }
+    public string? Message { get; set; }
+    public bool IsActive => string.Equals(State, "Active", StringComparison.OrdinalIgnoreCase);
 }
 
 public static class UnblockHelper

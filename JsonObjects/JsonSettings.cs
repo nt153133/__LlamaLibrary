@@ -4,6 +4,7 @@ using ff14bot.Helpers;
 
 namespace LlamaLibrary.JsonObjects
 {
+    [System.Obsolete("Use a BaseSettings<T> subclass from LlamaLibrary.Settings.Base instead.")]
     public class JsonSettings<T> : JsonSettings, INotifyPropertyChanged
         where T : JsonSettings<T>, new()
     {
