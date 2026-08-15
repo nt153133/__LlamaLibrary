@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using ff14bot;
 using GreyMagic;
@@ -82,17 +83,86 @@ public static class AssemblyProxy
 
     private static Assembly? OnAssemblyResolve(object? sender, ResolveEventArgs args)
     {
-        if (Assemblies.TryGetValue(new AssemblyName(args.Name).Name ?? string.Empty, out var resolve))
+        var requested = new AssemblyName(args.Name);
+        var simpleName = requested.Name ?? string.Empty;
+        if (Assemblies.TryGetValue(simpleName, out var resolve))
         {
             return resolve;
         }
 
         if (!args.Name.Contains("resources"))
         {
-            Log.Debug("Assembly not found: " + args.Name + "");
+            ReportIfNeverLoaded(simpleName, requested, args.RequestingAssembly?.GetName());
         }
 
         return null;
+    }
+
+    // How long to wait before deciding a resolve miss was a real failure. Other
+    // AssemblyResolve handlers run after ours (packed/embedded resolvers, sidecar
+    // probing), so a miss here usually still succeeds a moment later.
+    private const int MissConfirmDelayMs = 3000;
+    private static readonly ConcurrentDictionary<string, byte> PendingMisses = new ConcurrentDictionary<string, byte>(StringComparer.OrdinalIgnoreCase);
+
+    private static void ReportIfNeverLoaded(string simpleName, AssemblyName requested, AssemblyName? requester)
+    {
+        if (simpleName.Length == 0 || !PendingMisses.TryAdd(simpleName, 0))
+        {
+            return;
+        }
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(MissConfirmDelayMs).ConfigureAwait(false);
+                if (!IsLoaded(simpleName))
+                {
+                    var message = "Assembly not found: " + Describe(requested)
+                                  + " (requested by " + (requester == null ? "unknown assembly" : Describe(requester)) + ")";
+                    if (requester?.Name != null && requester.Name.StartsWith("ScriptManager.IronPython", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // IronPython tries Assembly.Load for every dotted import path
+                        // (namespaces included) before falling back to scanning loaded
+                        // assemblies, so these misses are structural, not failures.
+                        Log.Verbose(message);
+                    }
+                    else
+                    {
+                        Log.Debug(message);
+                    }
+                }
+            }
+            catch
+            {
+                // Diagnostics only; never let the watcher surface an exception.
+            }
+            finally
+            {
+                PendingMisses.TryRemove(simpleName, out _);
+            }
+        });
+    }
+
+    // Culture and public key token are noise in a load-failure report; the simple
+    // name plus version is what identifies the assembly a caller went looking for.
+    private static string Describe(AssemblyName assemblyName)
+    {
+        var name = assemblyName.Name ?? assemblyName.FullName;
+        return assemblyName.Version == null ? name : name + " v" + assemblyName.Version;
+    }
+
+    private static bool IsLoaded(string simpleName)
+    {
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            if (string.Equals(assembly.GetName().Name, simpleName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
