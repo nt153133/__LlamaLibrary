@@ -1,4 +1,7 @@
-﻿using ff14bot;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using ff14bot;
 using ff14bot.Directors;
 using ff14bot.Enums;
 using ff14bot.Managers;
@@ -9,10 +12,6 @@ using LlamaLibrary.Helpers;
 using LlamaLibrary.Memory;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace LlamaLibrary.ScriptConditions
 {
@@ -48,17 +47,6 @@ namespace LlamaLibrary.ScriptConditions
             }
 
             return GameObjectManager.GetObjectsByNPCIds<BattleCharacter>(ids).Count(i => i.CanAttack && i.IsTargetable);
-        }
-
-        /// <summary>
-        /// Returns the number of enemies that can be attacked and are currently targetable.
-        /// </summary>
-        /// <param name="dist">Optional maximum distance to search. If 0, searches all loaded objects.</param>
-        /// <param name="ids">Optional list of specific NPC IDs to filter by.</param>
-        /// <returns>The count of matching attackable enemies.</returns>
-        public static int NumAttackableEnemies(float dist = 0, params int[] ids)
-        {
-            return NumAttackableEnemies(dist, [.. MemoryMarshal.Cast<int, uint>(ids)]);
         }
 
         /// <summary>
