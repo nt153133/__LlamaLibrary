@@ -492,7 +492,10 @@ public static class OffsetManager
 
         if (vtables.TryGetValue(iagent.RegisteredVtable, out var idx))
         {
-            Logger.Information($"\tTrying to add {type} {AgentModule.TryAddAgent(idx, type)}");
+            if (!AgentModule.TryAddAgent(idx, type))
+            {
+                Logger.Error($"\tFailed to add Agent {type.Name}");
+            }
         }
         else
         {
@@ -783,22 +786,8 @@ public static class OffsetManager
         }
 
         var agentTypes = assembly.GetTypes().Where(t => t.IsClass && typeof(IAgent).IsAssignableFrom(t));
-        var objects = new object[] { IntPtr.Zero };
-
-        foreach (var MyType in agentTypes)
-        {
-            var agent = (IAgent)Activator.CreateInstance(
-                MyType,
-                BindingFlags.Instance | BindingFlags.NonPublic,
-                null,
-                objects,
-                null)!;
-
-            if (vtables.TryGetValue(agent.RegisteredVtable, out var idx))
-                Logger.WriteLog(Colors.BlueViolet, $"\tTrying to add {MyType.Name} {AgentModule.TryAddAgent(idx, MyType)}");
-            else
-                Logger.WriteLog(Colors.BlueViolet, $"\tFound one {MyType.Name} {agent.RegisteredVtable:X} but no agent");
-        }
+        var added = RegisterAgentTypes(agentTypes, vtables);
+        Logger.Information($"Added {added} agents");
 
         InitTcs.Task.GetAwaiter().GetResult();
     }
