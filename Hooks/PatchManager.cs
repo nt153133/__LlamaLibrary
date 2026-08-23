@@ -22,32 +22,64 @@ public static class PatchManager
             return true;
         }
 
-        //Hooks.Add(new InstanceQuestDungeonHook());
-
+        var initialized = true;
         if (!skipInventory)
         {
-            Hooks.Add(new InventoryUpdatePatch());
+            initialized = TryInitializeHook(new InventoryUpdatePatch());
         }
         else
         {
             Log.Information("Skipping Inventory Patch");
         }
 
-        foreach (var hook in Hooks)
+        Initialized = true;
+        return initialized;
+    }
+
+    private static bool TryInitializeHook(AsmFunctionHook hook)
+    {
+        try
         {
             if (hook.Initialize() == false)
             {
                 Log.Error($"Failed to initialize hook {hook.Name}");
+                CleanupHook(hook);
                 return false;
             }
 
-            //Log.Information($"Initialized hook {hook.Name}");
             hook.OnHookStateChange += args => Log.Information($"Hook {args.DisplayName} {(args.Enable ? "Enabled" : "Disabled")}");
             hook.Enable = hook.ShouldEnable;
-        }
 
-        Initialized = true;
-        return true;
+            if (hook.ShouldEnable && !hook.Enable)
+            {
+                Log.Error($"Failed to enable hook {hook.Name}");
+                CleanupHook(hook);
+                return false;
+            }
+
+            Hooks.Add(hook);
+            return true;
+        }
+        catch (Exception exception)
+        {
+            Log.Error($"Failed to initialize hook {hook.Name}");
+            Log.Exception(exception);
+            CleanupHook(hook);
+            return false;
+        }
+    }
+
+    private static void CleanupHook(AsmFunctionHook hook)
+    {
+        try
+        {
+            hook.Cleanup();
+        }
+        catch (Exception exception)
+        {
+            Log.Error($"Failed to clean up hook {hook.Name}");
+            Log.Exception(exception);
+        }
     }
 
     public static AsmFunctionHook? GetHook(string name)
@@ -134,11 +166,6 @@ public static class PatchManager
     //Disable all
     public static void DisableAll()
     {
-        if (!Initialized)
-        {
-            return;
-        }
-
         foreach (var hook in Hooks.Where(hook => hook.Initialized))
         {
             hook.Enable = false;

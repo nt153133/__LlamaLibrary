@@ -358,7 +358,11 @@ public static class OffsetManager
 
         if (GameVersion != 0) ScheduleCacheWrite();
 
-        PatchManager.Initialize(skipInventoryPatch);
+        if (!PatchManager.Initialize(skipInventoryPatch))
+        {
+            LlamaLibrarySettings.Instance.TempDisableInventoryHook = true;
+            Logger.Error("Inventory patch initialization failed; the inventory watcher is temporarily disabled.");
+        }
     }
 
     private static int RegisterAgentTypes(IEnumerable<Type> agentTypes, IReadOnlyDictionary<IntPtr, int> vtables)
@@ -437,10 +441,21 @@ public static class OffsetManager
         {
             Logger.Information("Last patch not cleaned up, cleaning up now");
             var asm = Core.Memory.Asm;
-            asm.Clear();
-            asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatchOffsets.PatchLocation);
-            asm.AddLine("JMP {0}", origCall);
-            Core.Memory.WriteBytes(InventoryUpdatePatchOffsets.PatchLocation, asm.Assemble());
+            lock (Core.Memory.Executor.AssemblyLock)
+            {
+                try
+                {
+                    asm.Clear();
+                    asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatchOffsets.PatchLocation);
+                    asm.AddLine("JMP 0x{0:X16}", (ulong)origCall);
+                    Core.Memory.WriteBytes(InventoryUpdatePatchOffsets.PatchLocation, asm.Assemble());
+                }
+                finally
+                {
+                    asm.Clear();
+                }
+            }
+
             InventoryUpdatePatchOffsets.OriginalJump = origCall;
         }
         else

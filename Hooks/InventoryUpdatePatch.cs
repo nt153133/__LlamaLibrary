@@ -7,59 +7,100 @@ namespace LlamaLibrary.Hooks;
 
 public class InventoryUpdatePatch : AsmFunctionHook
 {
+    private const int RelativeJumpSize = 5;
+    private const int TrampolineSize = 60;
+
     public override string Name => "InventoryUpdatePatch";
-
-    
-
     public override IntPtr? Hook => InventoryUpdatePatchOffsets.PatchLocation;
 
-    public static IntPtr TickPtr = Core.Memory.AllocateMemory(8);
+    public static IntPtr TickPtr;
 
     public override bool ShouldEnable => Initialized;
 
     public override bool Initialize()
     {
+        var hook = Hook;
         var instructionTarget = InventoryUpdatePatchOffsets.OriginalJump;
 
-        if (Hook == null || Hook == IntPtr.Zero || instructionTarget == IntPtr.Zero)
+        if (hook is null || hook.Value == IntPtr.Zero || instructionTarget == IntPtr.Zero)
         {
             return false;
         }
 
-        JumpTo = Core.Memory.Executor.AllocNear(InventoryUpdatePatchOffsets.OriginalJump, 60, 64u);
+        TickPtr = Core.Memory.AllocateMemory(sizeof(ulong));
+        if (TickPtr == IntPtr.Zero)
+        {
+            return false;
+        }
+
+        var jumpOrigin = hook.Value + RelativeJumpSize;
+        JumpTo = Core.Memory.Executor.AllocNear(jumpOrigin, TrampolineSize, 64u);
+        if (JumpTo is null || JumpTo.Value == IntPtr.Zero)
+        {
+            return false;
+        }
+
+        var displacement = JumpTo.Value.ToInt64() - jumpOrigin.ToInt64();
+        if (displacement is < int.MinValue or > int.MaxValue)
+        {
+            return false;
+        }
 
         var asm = Core.Memory.Asm;
-        asm.Clear();
-        asm.AddLine("[org 0x{0:X16}]", (ulong)InventoryUpdatePatchOffsets.PatchLocation);
-        asm.AddLine("JMP {0}", JumpTo);
-        var jzPatch = asm.Assemble();
-
-        var procAddress = Core.Memory.GetProcAddress("kernel32", "GetTickCount64");
-        asm.Clear();
-        asm.AddLine("push rcx");
-        asm.AddLine("push rax");
-        asm.AddLine("call [GetTickCount]");
-        asm.AddLine("mov rcx, [TickPtr]");
-        asm.AddLine("mov [rcx], rax");
-        asm.AddLine("pop rax");
-        asm.AddLine("pop rcx");
-        asm.AddLine("JMP [OriginalJmp]");
-        asm.AddLine("[align 8]");
-        asm.AddLine("OriginalJmp: dq {0}", InventoryUpdatePatchOffsets.OriginalJump.ToInt64());
-        asm.AddLine("TickPtr: dq {0}", TickPtr.ToInt64());
-        asm.AddLine("GetTickCount: dq {0}", procAddress);
-
-        if (JumpTo == null)
+        byte[] jumpPatch;
+        lock (Core.Memory.Executor.AssemblyLock)
         {
-            return false;
+            try
+            {
+                asm.Clear();
+                asm.AddLine("[org 0x{0:X16}]", (ulong)hook.Value);
+                asm.AddLine("JMP 0x{0:X16}", (ulong)JumpTo.Value);
+                jumpPatch = asm.Assemble();
+                if (jumpPatch.Length != RelativeJumpSize)
+                {
+                    throw new InvalidOperationException($"Inventory jump patch assembled to {jumpPatch.Length} bytes instead of {RelativeJumpSize}.");
+                }
+
+                asm.Clear();
+                asm.AddLine("pushfq");
+                asm.AddLine("push rax");
+                asm.AddLine("mov rax, [TickPtr]");
+                asm.AddLine("lock inc qword [rax]");
+                asm.AddLine("pop rax");
+                asm.AddLine("popfq");
+                asm.AddLine("JMP [OriginalJmp]");
+                asm.AddLine("[align 8]");
+                asm.AddLine("OriginalJmp: dq 0x{0:X16}", (ulong)instructionTarget);
+                asm.AddLine("TickPtr: dq 0x{0:X16}", (ulong)TickPtr);
+                var trampoline = asm.Assemble(JumpTo.Value);
+                if (trampoline.Length > TrampolineSize)
+                {
+                    throw new InvalidOperationException($"Inventory trampoline assembled to {trampoline.Length} bytes, exceeding its {TrampolineSize}-byte allocation.");
+                }
+
+                Core.Memory.WriteBytes(JumpTo.Value, trampoline);
+            }
+            finally
+            {
+                asm.Clear();
+            }
         }
 
-        asm.Inject(JumpTo.Value);
-
-        JumpPatch = Core.Memory.Patches.Create(Hook.Value, jzPatch, Name);
+        JumpPatch = Core.Memory.Patches.Create(hook.Value, jumpPatch, Name);
 
         Initialized = true;
 
         return true;
+    }
+
+    public override void Cleanup()
+    {
+        base.Cleanup();
+
+        if (TickPtr != IntPtr.Zero)
+        {
+            Core.Memory.FreeMemory(TickPtr);
+            TickPtr = IntPtr.Zero;
+        }
     }
 }

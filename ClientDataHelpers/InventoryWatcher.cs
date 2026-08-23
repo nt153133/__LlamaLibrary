@@ -16,14 +16,14 @@ public static class InventoryWatcher
 
     public static void Pulse()
     {
-        if ((!PatchManager.GetHook<InventoryUpdatePatch>()?.Enable ?? false) || InventoryUpdatePatch.TickPtr == IntPtr.Zero)
+        var hook = PatchManager.GetHook<InventoryUpdatePatch>();
+        if (hook?.Enable != true || InventoryUpdatePatch.TickPtr == IntPtr.Zero)
         {
-            ff14bot.Helpers.Logging.WriteDiagnostic($"InventoryWatcher: Patch not enabled {PatchManager.GetHook<InventoryUpdatePatch>()?.Enable} or TickPtr {InventoryUpdatePatch.TickPtr.ToString("X")} is null.");
             return;
         }
 
-        var tick = Core.Memory.Read<uint>(InventoryUpdatePatch.TickPtr);
-        if (tick <= LastTick)
+        var tick = Core.Memory.Read<ulong>(InventoryUpdatePatch.TickPtr);
+        if (tick == LastTick)
         {
             return;
         }

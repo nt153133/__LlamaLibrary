@@ -1,4 +1,5 @@
 ﻿using System;
+using ff14bot;
 using GreyMagic;
 
 namespace LlamaLibrary.Hooks;
@@ -50,6 +51,20 @@ public abstract class AsmFunctionHook
     public virtual bool Initialize()
     {
         return false;
+    }
+
+    public virtual void Cleanup()
+    {
+        Enable = false;
+
+        if (JumpTo is { } jumpTo && jumpTo != IntPtr.Zero)
+        {
+            Core.Memory.FreeMemory(jumpTo);
+        }
+
+        JumpTo = null;
+        JumpPatch = null;
+        Initialized = false;
     }
 
     public event Action<OnHookStateChangeArgs>? OnHookStateChange;
