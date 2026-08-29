@@ -10,6 +10,7 @@ using ff14bot.Objects;
 using ff14bot.RemoteWindows;
 using LlamaLibrary.Helpers;
 using LlamaLibrary.Helpers.NPC;
+using LlamaLibrary.Helpers.Ping;
 using LlamaLibrary.Logging;
 using LlamaLibrary.Structs;
 using RetainerList = LlamaLibrary.RemoteWindows.RetainerList;
@@ -332,6 +333,14 @@ namespace LlamaLibrary.Retainers.Coordination
             Log.Information($"Session requested by {string.Join(", ", requestedBy)}. Claims: {context.DescribeClaims()}.");
 
             await GeneralFunctions.StopBusy(dismount: false);
+
+            // Participants pace their window interaction against PingChecker.CurrentPing, which is 0 until
+            // something measures it. Left unmeasured, every latency sleep in a participant collapses to
+            // nothing and it races the client - writing to an agent before the window it belongs to has
+            // settled. Measuring here makes it a property of the trip rather than something each
+            // participant has to remember.
+            await PingChecker.UpdatePing();
+            Log.Debug($"Ping measured at {PingChecker.CurrentPing}ms.");
 
             if (!await LeaveBarracks())
             {
