@@ -329,7 +329,7 @@ namespace LlamaLibrary.Retainers.Coordination
             // Claims are read here, once, after the trip is committed and before any callback runs. Never at
             // registration time, so a participant whose claims depend on configuration is read as configured
             // now rather than as configured when its plugin was enabled.
-            var context = new RetainerSessionContext(snapshot, ResolveClaims(Active(participants)), requestedBy);
+            var context = new RetainerSessionContext(snapshot, ResolveClaims(Active(participants), failures), requestedBy);
             Log.Information($"Session requested by {string.Join(", ", requestedBy)}. Claims: {context.DescribeClaims()}.");
 
             await GeneralFunctions.StopBusy(dismount: false);
@@ -511,33 +511,42 @@ namespace LlamaLibrary.Retainers.Coordination
         /// Assigns each capability to the lowest-priority participant that claims it.
         /// </summary>
         /// <param name="participants">Participants already ordered by priority, ascending.</param>
+        /// <param name="failures">Failure tally to record participants whose <see cref="IRetainerSessionParticipant.Claims"/> threw.</param>
         /// <returns>A map of capability to owning participant id, omitting capabilities nobody claimed.</returns>
-        private static Dictionary<RetainerCapability, string> ResolveClaims(List<IRetainerSessionParticipant> participants)
+        private static Dictionary<RetainerCapability, string> ResolveClaims(List<IRetainerSessionParticipant> participants, Dictionary<string, int> failures)
         {
+            // Read each participant's Claims exactly once, as the interface contract promises. Reading it
+            // per capability would invoke the getter five times, and a settings change between reads could
+            // tear the claim set: owning Ventures from the old configuration but not Gil from the new.
+            var declared = new List<(string Id, RetainerCapability Claims)>();
+
+            foreach (var participant in participants)
+            {
+                try
+                {
+                    declared.Add((participant.Id, participant.Claims));
+                    RecordSuccess(participant.Id);
+                }
+                catch (CoroutineStoppedException)
+                {
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    RecordFailure(participant.Id, "Claims", failures);
+                    Log.Error($"[{participant.Id}] Claims threw, treating as None: {e}");
+                }
+            }
+
             var owners = new Dictionary<RetainerCapability, string>();
 
             foreach (var capability in SingleCapabilities)
             {
-                foreach (var participant in participants)
+                foreach (var (id, claims) in declared)
                 {
-                    RetainerCapability claims;
-                    try
-                    {
-                        claims = participant.Claims;
-                    }
-                    catch (CoroutineStoppedException)
-                    {
-                        throw;
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error($"[{participant.Id}] Claims threw, treating as None: {e}");
-                        continue;
-                    }
-
                     if ((claims & capability) == capability)
                     {
-                        owners[capability] = participant.Id;
+                        owners[capability] = id;
                         break;
                     }
                 }

@@ -79,6 +79,10 @@ namespace LlamaLibrary.Retainers.Coordination
         /// inventory, not the retainer's bag, so collecting first lets fresh loot that stacks with the
         /// retainer's existing stock be entrusted on the same visit.
         /// </para>
+        /// <para>
+        /// Ties resolve by registration order, which follows plugin load order and is not deterministic
+        /// across products. Coordinate distinct priorities instead of relying on it.
+        /// </para>
         /// </remarks>
         int Priority { get; }
 
@@ -168,13 +172,21 @@ namespace LlamaLibrary.Retainers.Coordination
         Task OnRetainer(RetainerSessionContext context, RetainerInfo retainer);
 
         /// <summary>
-        /// Called once after the retainer list is closed, whether or not the session completed cleanly.
+        /// Called once at the end of the trip, after the broker has attempted to close the retainer list.
         /// </summary>
         /// <param name="context">The session context, carrying the final pass count.</param>
         /// <returns>A task that completes when this participant has finished tidying up.</returns>
         /// <remarks>
+        /// <para>
         /// The place for post-session work that does not need a retainer selected — combining stacks,
         /// clearing caches, stamping a last-run time. The player may no longer be at the bell.
+        /// </para>
+        /// <para>
+        /// Only a session that made a trip gets this call. A session that ended before the retainer list
+        /// was opened does not, and neither does one the bot stopped:
+        /// <see cref="Buddy.Coroutines.CoroutineStoppedException"/> unwinds the whole trip, this callback
+        /// included. Keep anything correctness depends on out of here.
+        /// </para>
         /// </remarks>
         Task OnSessionEnded(RetainerSessionContext context);
     }
