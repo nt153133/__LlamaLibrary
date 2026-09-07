@@ -23,7 +23,8 @@ namespace LlamaLibrary.Helpers
         public static string LastFilename => Core.Memory.ReadStringW(ScreenshotStruct + ScreenshotHelperOffsets.Filename);
 
         /// <summary>Gets the current screenshot capture state byte from game memory.</summary>
-        public static byte State => Core.Memory.Read<byte>(ScreenshotHelperOffsets.ScreenshotState);
+        // The matched MOV has an imm8 after its rel32. TraceRelative omits that final byte.
+        public static byte State => Core.Memory.Read<byte>(ScreenshotHelperOffsets.ScreenshotState + 1);
 
         /// <summary>Gets the screenshot busy flag; non-zero while a capture is in progress.</summary>
         public static byte Busy => Core.Memory.Read<byte>(ScreenshotStruct + ScreenshotHelperOffsets.Busy);

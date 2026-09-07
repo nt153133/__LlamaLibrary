@@ -50,6 +50,18 @@ public class OffsetAttribute : Attribute
     public readonly int ExpectedValue;
     public readonly OffsetFlags Flags;
 
+    /// <summary>
+    /// Stable target name shared by equivalent patterns across regions and consumers.
+    /// Null means the target has not been named.
+    /// </summary>
+    public string? Name { get; set; }
+
+    /// <summary>
+    /// Maintenance urgency: -1 is unclassified, 0 is highest priority, and larger values are lower priority.
+    /// This metadata does not affect runtime pattern selection.
+    /// </summary>
+    public int MaintenancePriority { get; set; } = -1;
+
     public OffsetAttribute(string pattern, int expectedValue = 0, OffsetFlags flags = OffsetFlags.AllServers)
     {
         if (!pattern.StartsWith("Search ", StringComparison.Ordinal))

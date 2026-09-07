@@ -245,15 +245,14 @@ namespace LlamaLibrary.Extensions
         }
 
         /// <summary>
-        /// Retrieves the suggested posting price for the item in this bag slot from the game's inventory manager.
+        /// Retired posting-price API. Always returns zero without reading or calling the client.
         /// </summary>
         /// <param name="slot">The bag slot to check.</param>
-        /// <returns>The posting price as a <see cref="uint"/>.</returns>
+        /// <returns>Always zero.</returns>
+        [Obsolete("PostingPrice is unavailable: its native offset is retired. This stub always returns zero.", true)]
         public static uint PostingPrice(this BagSlot slot)
         {
-            return Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.GetPostingPriceSlot,
-                                                        Offsets.g_InventoryManager,
-                                                        slot.Slot);
+            return 0;
         }
 
         /// <summary>
@@ -334,19 +333,20 @@ namespace LlamaLibrary.Extensions
         /// <param name="bagSlot">The bag slot containing the item to trade.</param>
         public static void TradeItem(this BagSlot bagSlot)
         {
-            uint result;
-            result = Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.TradeBagSlot,
-                                                          Offsets.g_InventoryManager,
-                                                          bagSlot.Slot,
-                                                          (uint)bagSlot.BagId);
-
-            if (result != 0)
+            var callback = AgentTrade.Instance?.InventoryContextEvent ?? IntPtr.Zero;
+            if (callback == IntPtr.Zero)
             {
-                Core.Memory.CallInjectedWraper<uint>(BagSlotExtensionsOffsets.TradeBagSlot,
-                                                     Offsets.g_InventoryManager,
-                                                     bagSlot.Slot,
-                                                     (uint)bagSlot.BagId);
+                return;
             }
+
+            // InventoryContextEvent.HandleCallback is void. Do not retry based on its undefined return register.
+            // This Trade implementation uses slot/container; the remaining callback flags and parameter are unused.
+            Core.Memory.CallInjectedWraper<IntPtr>(BagSlotExtensionsOffsets.TradeBagSlot,
+                                                   callback,
+                                                   (uint)bagSlot.Slot,
+                                                   (uint)bagSlot.BagId,
+                                                   0U,
+                                                   0UL);
         }
 
         /// <summary>

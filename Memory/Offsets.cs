@@ -19,37 +19,35 @@ namespace LlamaLibrary.Memory
     public static partial class Offsets
     {
         //7.1
-        [Offset("Search E8 ? ? ? ? 48 8B C7 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 48 8D 4B ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 48 8B C7 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 48 8D 4B ? Add 1 TraceRelative", Name = "AgentSalvage.SalvageItem")]
         public static IntPtr SalvageAgent;
 
-        [Offset("Search 4C 8D 0D ? ? ? ? 45 33 C0 33 D2 Add 3 TraceRelative")]
+        [Offset("Search 4C 8D 0D ? ? ? ? 45 33 C0 33 D2 Add 3 TraceRelative", Name = "AgentRepair.NpcRepairCallbackStorage")]
         public static IntPtr RepairVendor;
 
-        [Offset("Search 48 8D 05 ? ? ? ? 4C 89 43 ? 48 89 03 B9 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 4C 89 43 ? 48 89 03 B9 ? ? ? ? Add 3 TraceRelative", Name = "AgentRepair.VTable")]
         public static IntPtr RepairVTable;
 
 
 
         //7.3
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 8B 93 ? ? ? ? 48 8B 08 Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 8B 93 ? ? ? ? 48 8B 08 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 8B 93 ? ? ? ? 48 8B 08 Add 3 TraceRelative", Name = "InventoryManager.Instance")]
         public static IntPtr g_InventoryManager;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 41 ? 48 8B E9 48 83 C1 ?")]
+        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 41 ? 48 8B E9 48 83 C1 ?", Name = "AgentHugeCraftworksSupply.HandleInventoryContextCallback")]
         public static IntPtr HandInFunc;
 
-        [Offset("Search 48 8D 05 ? ? ? ? 40 88 BB ? ? ? ? 48 89 03 48 8D 05 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 40 88 BB ? ? ? ? 48 89 03 48 8D 05 ? ? ? ? Add 3 TraceRelative", Name = "HousingEventObject.VTable")]
         public static IntPtr HousingObjectVTable;
 
         [Offset("Search 41 BF ? ? ? ? 0F 1F 84 00 ? ? ? ? 8B 44 3B ? Add 2 Read32")]
         public static int GCTurninCount;
 
         //7.3
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 33 F6 48 8D 0D ? ? ? ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 33 F6 48 8D 0D ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 33 F6 48 8D 0D ? ? ? ? Add 3 TraceRelative", Name = "GCSupply.Instance")]
         public static IntPtr GCTurnin;
 
-        [Offset("Search 48 8D 0D ?? ?? ?? ?? BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 80 8B ?? ?? ?? ?? ?? 45 33 C9 44 8B C7 89 BB ?? ?? ?? ?? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ?? ?? ?? ?? BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 80 8B ?? ?? ?? ?? ?? 45 33 C9 44 8B C7 89 BB ?? ?? ?? ?? Add 3 TraceRelative", Name = "Conditions.Instance")]
         public static IntPtr Conditions;
 
         //7.4
@@ -71,46 +69,44 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search 44 89 81 ? ? ? ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 85 D2 Add 3 Read32")]
         public static int NextReistanceRank;
 
-        [Offset("Search 48 89 6C 24 ? 56 57 41 56 48 83 EC ? 48 8B E9 44 8B F2")]
+        [Offset("Search 48 89 6C 24 ? 56 57 41 56 48 83 EC ? 48 8B E9 44 8B F2", Name = "InventoryManager.SendTradeRequest")]
         public static IntPtr OpenTradeWindow;
 
-        [Offset("Search 44 0F B7 0D ? ? ? ? 48 8D 53 ? Add 4 TraceRelative")]
+        [Offset("Search 44 0F B7 0D ? ? ? ? 48 8D 53 ? Add 4 TraceRelative", Name = "UIState.CurrentItemLevel")]
         public static IntPtr ActorController_iLvl;
 
         [Offset("Search 80 B9 ? ? ? ? ? 75 ? 80 B9 ? ? ? ? ? 75 ? B0 ? C3 32 C0 C3 ? ? ? ? ? ? ? ? 48 83 EC ? Add 2 Read32")]
         public static int InventoryManagerFCTransfering;
 
         //7.1
-        [Offset("Search E8 ? ? ? ? 84 C0 74 ? 48 FF C3 48 83 FB ? 72 ? B0 ? 48 8B 4C 24 ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 84 C0 74 ? 48 FF C3 48 83 FB ? 72 ? B0 ? 48 8B 4C 24 ? Add 1 TraceRelative", Name = "UIState.IsInstanceContentCompleted")]
         public static IntPtr IsInstanceContentCompleted;
 
         //7.1
-        [Offset("Search E8 ? ? ? ? 3C ? 75 ? 32 C0 48 8B 5C 24 ? 48 8B 74 24 ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 3C ? 75 ? 32 C0 48 8B 5C 24 ? 48 8B 74 24 ? Add 1 TraceRelative", Name = "UIState.IsInstanceContentUnlocked")]
         public static IntPtr IsInstanceContentUnlocked;
 
         //7.3
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 47 ? BA ? ? ? ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 47 ? BA ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 49 89 47 ? BA ? ? ? ? Add 3 TraceRelative", Name = "Telepo.Instance")]
         public static IntPtr UIStateTelepo;
 
-        [Offset("Search 44 8B C2 4C 8B C9 41 C1 E8 ? 41 83 F8 ? 72 ? 32 C0 C3 0F B6 CA BA ? ? ? ? 83 E1 ? D3 E2")]
+        [Offset("Search 44 8B C2 4C 8B C9 41 C1 E8 ? 41 83 F8 ? 72 ? 32 C0 C3 0F B6 CA BA ? ? ? ? 83 E1 ? D3 E2", Name = "PlayerState.IsSecretRecipeBookUnlocked")]
         public static IntPtr IsSecretRecipeBookUnlocked;
 
-        [Offset("Search 40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ?")]
+        [Offset("Search 40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ?", Name = "PlayerState.IsFolkloreBookUnlocked")]
         public static IntPtr IsFolkloreBookUnlocked;
 
-        [Offset("Search 40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ?")]
+        [Offset("Search 40 53 48 83 EC ? 48 8B D9 0F B7 CA E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ?", Name = "PlayerState.IsOrnamentUnlocked")]
         public static IntPtr IsOrnamentUnlocked;
 
-        [Offset("Search 48 8D 0D ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? 0F B7 50 ? 48 8D 0D ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? 0F B7 50 ? 48 8D 0D ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? 0F B7 50 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? 0F B7 50 ? 48 8D 0D ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? 0F B7 50 ? 48 8D 0D ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? 0F B7 50 ? Add 3 TraceRelative", Name = "PlayerState.Instance")]
         public static IntPtr PlayerState;
 
         //7.3
-        [Offset("Search E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? E9 ? ? ? ? FF 50 ? TraceCall")]
-        [OffsetTC("Search E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? E9 ? ? ? ? FF 50 ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? E9 ? ? ? ? FF 50 ? TraceCall", Name = "ShellCommandModule.ExecuteCommandInner")]
         public static IntPtr ExecuteCommandInner;
 
-        [Offset("Search 48 8B 0D ?? ?? ?? ?? 48 8B DA E8 ?? ?? ?? ?? 48 85 C0 74 ?? 4C 8B 00 48 8B C8 41 FF 90 ?? ?? ?? ?? 48 8B C8 BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 85 C0 74 ?? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ?? 5B 49 FF 60 ?? 48 83 C4 ?? 5B C3 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 40 53 Add 3 TraceRelative")]
+        [Offset("Search 48 8B 0D ?? ?? ?? ?? 48 8B DA E8 ?? ?? ?? ?? 48 85 C0 74 ?? 4C 8B 00 48 8B C8 41 FF 90 ?? ?? ?? ?? 48 8B C8 BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 85 C0 74 ?? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ?? 5B 49 FF 60 ?? 48 83 C4 ?? 5B C3 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 40 53 Add 3 TraceRelative", Name = "Framework.InstancePointer2")]
         public static IntPtr Framework;
 
         [Offset("Search F3 0F 11 8B ? ? ? ? F3 0F 11 0D ? ? ? ? Add 4 Read32")]
@@ -119,22 +115,22 @@ namespace LlamaLibrary.Memory
         [Offset("Search 0F B7 41 ? C3 ? ? ? ? ? ? ? ? ? ? ? 0F B7 C2 41 B8 ? ? ? ? Add 3 Read8")]
         public static int AnimaLight;
 
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B 4C 24 ? 8B D0 E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? B8 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B 4C 24 ? 8B D0 E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? B8 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 3 TraceRelative", Name = "AnimaWeapon.EnhancementState")]
         public static IntPtr AnimaLightThing;
 
-        [Offset("Search E8 ? ? ? ? 4C 8B A4 24 ? ? ? ? 8D 58 ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 4C 8B A4 24 ? ? ? ? 8D 58 ? Add 1 TraceRelative", Name = "ExdModule.GetDawnContentRowCount")]
         public static IntPtr GetDawnContentRowCount;
 
-        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 8B 08 E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 8B 08 E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 ? Add 1 TraceRelative", Name = "ExdModule.GetDawnContentRowById")]
         public static IntPtr GetDawnContentRow;
     }
 
     public static partial class Offsets
     {
-        [Offset("Search 4C 8D 2D ? ? ? ? 66 0F 7F 44 24 ? 41 8B DF Add 3 TraceRelative")]
+        [Offset("Search 4C 8D 2D ? ? ? ? 66 0F 7F 44 24 ? 41 8B DF Add 3 TraceRelative", Name = "Inspect.BaseParams")]
         public static IntPtr RetainerStats;
 
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B F0 48 85 C0 74 ? 48 83 38 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B F0 48 85 C0 74 ? 48 83 38 ? Add 3 TraceRelative", Name = "RetainerManager.Instance")]
         public static IntPtr RetainerData;
 
         [Offset("Search 41 C6 87 ? ? ? ? ? 48 83 C4 ? 41 5F 41 5D 41 5C 5D Add 3 Read32")]
@@ -146,14 +142,14 @@ namespace LlamaLibrary.Memory
         [Offset("48 89 91 ? ? ? ? C3 ? ? ? ? ? ? ? ? 89 91 ? ? ? ? C3 ? ? ? ? ? ? ? ? ? 81 B9 ? ? ? ? ? ? ? ? Add 3 Read32")]
         public static int CurrentRetainer;
 
-        [Offset("Search 83 FA ? 73 ? 8B C2 0F B6 94 08 ? ? ? ? 80 FA ?")]
+        [Offset("Search 83 FA ? 73 ? 8B C2 0F B6 94 08 ? ? ? ? 80 FA ?", Name = "RetainerManager.GetRetainerBySortedIndex")]
         public static IntPtr GetRetainerPointer;
 
-        [Offset("Search 48 83 39 ? 4C 8B C9")]
+        [Offset("Search 48 83 39 ? 4C 8B C9", Name = "RetainerManager.GetRetainerCount")]
         public static IntPtr GetNumberOfRetainers;
 
-        [Offset("Search E8 ? ? ? ? 48 8B 06 48 8B CE FF 50 ? 44 89 76 ? E9 ? ? ? ? 40 84 FF Add 1 TraceRelative")]
-        [OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 8B E9 41 8B D9 48 8B 0D ? ? ? ? 41 8B F8 8B F2")]
+        [Offset("Search E8 ? ? ? ? 48 8B 06 48 8B CE FF 50 ? 44 89 76 ? E9 ? ? ? ? 40 84 FF Add 1 TraceRelative", Name = "GameMain.ExecuteCommand")]
+        [OffsetCN("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 8B E9 41 8B D9 48 8B 0D ? ? ? ? 41 8B F8 8B F2", Name = "GameMain.ExecuteCommand")]
         public static IntPtr ExecuteCommand; //RequestRetainerData
 
         [Offset("Search 48 8D 56 ? EB ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 Read8")]
@@ -168,22 +164,22 @@ namespace LlamaLibrary.Memory
         [Offset("Search B9 ? ? ? ? E8 ? ? ? ? 40 88 BD ? ? ? ? Add 1 Read32")]
         public static int RetainerNetworkPacket;
 
-        [Offset("Search E8 ? ? ? ? 0F B6 F0 48 8D 5C 24 ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 0F B6 F0 48 8D 5C 24 ? Add 1 TraceRelative", Name = "AtkUnitBase.FireCallback")]
         internal static IntPtr SendAction;
 
-        [Offset("Search 66 83 FA ? 75 ? 53 48 83 EC ? 48 8B D9 BA ? ? ? ? 48 8D 4C 24 ?")]
+        [Offset("Search 66 83 FA ? 75 ? 53 48 83 EC ? 48 8B D9 BA ? ? ? ? 48 8D 4C 24 ?", Name = "AddonDialogue.ReceiveEvent")]
         internal static IntPtr DialogueOkay;
 
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 89 44 24 60 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 89 44 24 60 Add 3 TraceRelative", Name = "Loot.Instance")]
         internal static IntPtr LootsAddr;
 
-        [Offset("Search E8 ? ? ? ? EB 4A 48 8D 4F 10 Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? EB 4A 48 8D 4F 10 Add 1 TraceRelative", Name = "Loot.SendRollRequest")]
         internal static IntPtr LootFunc;
     }
 
     public static partial class Offsets
     {
-        [Offset("Search E8 ?? ?? ?? ?? 80 7B 1D 01 TraceCall")]
+        [Offset("Search E8 ?? ?? ?? ?? 80 7B 1D 01 TraceCall", Name = "Framework.GetUIModule")]
         public static IntPtr GetUiModule;
 
     }
@@ -192,34 +188,33 @@ namespace LlamaLibrary.Memory
     public static partial class Offsets
     {
         //7.3
-        [Offset("Search 48 8B 0D ? ? ? ? 48 8B D3 48 8B 49 ? E8 ? ? ? ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8B 0D ? ? ? ? 48 8B D3 48 8B 49 ? E8 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8B 0D ? ? ? ? 48 8B D3 48 8B 49 ? E8 ? ? ? ? Add 3 TraceRelative", Name = "AtkStage.Instance")]
         public static IntPtr AtkStage;
 
         public static IntPtr SearchResultPtr => AtkStage;
 
-        [Offset("Search E8 ?? ?? ?? ?? 6B 94 TraceCall")]
+        [Offset("Search E8 ?? ?? ?? ?? 6B 94 TraceCall", Name = "AtkStage.GetNumberArrayData")]
         public static IntPtr GetNumberArrayData;
 
-        [Offset("Search E8 ?? ?? ?? ?? 42 8D 1C AD TraceCall")]
+        [Offset("Search E8 ?? ?? ?? ?? 42 8D 1C AD TraceCall", Name = "AtkStage.GetStringArrayData")]
         public static IntPtr GetStringArrayData;
 
-        [Offset("Search E8 ?? ?? ?? ?? 48 8B 48 ?? 48 89 4D TraceCall")]
+        [Offset("Search E8 ?? ?? ?? ?? 48 8B 48 ?? 48 89 4D TraceCall", Name = "AtkStage.GetExtendArrayData")]
         public static IntPtr GetExtendArrayData;
     }
 
     public static class AchievementsOffsets
     {
-        [Offset("Search E8 ?? ?? ?? ?? 04 30 FF C3 TraceCall")]
+        [Offset("Search E8 ?? ?? ?? ?? 04 30 FF C3 TraceCall", Name = "Achievement.IsComplete")]
         internal static IntPtr IsCompletePtr;
 
-        [Offset("Search 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 04 30 FF C3 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 04 30 FF C3 Add 3 TraceRelative", Name = "Achievement.Instance")]
         internal static IntPtr AchievementInstancePtr;
 
         [Offset("Search C7 81 ? ? ? ? ? ? ? ? 45 33 C9 B9 ? ? ? ? Add 2 Read32")]
         internal static int AchievementState;
 
-        [Offset("Search E8 ? ? ? ? 41 C6 44 24 ? ? E9 ? ? ? ? 48 8D 4F ? E8 ? ? ? ? 88 43 ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 41 C6 44 24 ? ? E9 ? ? ? ? 48 8D 4F ? E8 ? ? ? ? 88 43 ? TraceCall", Name = "Achievement.RequestAchievementProgress")]
         internal static IntPtr RequestAchievementFunction;
 
         [Offset("Search 44 89 81 ? ? ? ? 44 89 89 ? ? ? ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 8B 81 ? ? ? ? Add 3 Read32")]
@@ -231,12 +226,11 @@ namespace LlamaLibrary.Memory
 
     public static class ActionHelperOffsets
     {
-        [Offset("Search E8 ? ? ? ? 41 89 9E ? ? ? ? EB 0B TraceCall")]
+        [Offset("Search E8 ? ? ? ? 41 89 9E ? ? ? ? EB 0B TraceCall", Name = "ActionManager.UseAction")]
         internal static IntPtr DoAction;
 
         //7.3
-        [Offset("Search  48 8D 0D ? ? ? ? E8 ? ? ? ? 44 8B C0 4D 85 F6 Add 3 TraceRelative")]
-        [OffsetTC("Search  48 8D 0D ? ? ? ? E8 ? ? ? ? 44 8B C0 4D 85 F6 Add 3 TraceRelative")]
+        [Offset("Search  48 8D 0D ? ? ? ? E8 ? ? ? ? 44 8B C0 4D 85 F6 Add 3 TraceRelative", Name = "ActionManager.Instance")]
         internal static IntPtr ActionManagerParam;
 
         //41 B8 ? ? ? ? 89 5C 24 ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 75 ?
@@ -256,13 +250,12 @@ namespace LlamaLibrary.Memory
 
     public static class AgentAWGrowthFragTradeOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 8D 4B ? 48 89 03 33 D2 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 8D 4B ? 48 89 03 33 D2 Add 3 TraceRelative", Name = "AgentAWGrowthFragTrade.VTable")]
         internal static IntPtr Vtable;
 
         //(AgentPtr, index, qty)
         //7.3
-        [Offset("Search 4C 8B DC 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 83 B9 ? ? ? ? ?")]
-        [OffsetTC("Search 4C 8B DC 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 83 B9 ? ? ? ? ?")]
+        [Offset("Search 4C 8B DC 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 83 B9 ? ? ? ? ?", Name = "AgentAWGrowthFragTrade.BuyItem")]
         internal static IntPtr BuyFunction;
 
         [Offset("Search 49 8D 4D ? 4C 8D 0D ? ? ? ? Add 3 Read8")]
@@ -274,35 +267,34 @@ namespace LlamaLibrary.Memory
 
     public static class AgentMansionSelectRoomOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 48 8B C6 89 BE ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 48 8B C6 89 BE ? ? ? ? Add 3 TraceRelative", Name = "AgentMansionSelectRoom.VTable")]
         internal static IntPtr Vtable;
 
         //void SelectApartment(AgentPtr, 0, apartmentNumber) — apartmentNumber is 1-based
-        [Offset("Search E8 ? ? ? ? 48 8B 07 48 8B CF FF 50 ? E9 ? ? ? ? 48 8B CD TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 8B 07 48 8B CF FF 50 ? E9 ? ? ? ? 48 8B CD TraceCall", Name = "HousingRoomSelection.SubmitSelection")]
         internal static IntPtr SelectApartmentFunction;
     }
 
     public static class AgentPersonalRoomPortalOffsets
     {
         //Reuses AgentMansionSelectRoomOffsets.SelectApartmentFunction with this agent's pointer.
-        [Offset("Search 48 8D 05 ? ? ? ? 48 C7 46 ? ? ? ? ? 48 8D 4E ? 48 89 06 E8 ? ? ? ? 48 C7 86 ? ? ? ? ? ? ? ? 48 8D 9E ? ? ? ? C6 86 ? ? ? ? ? BF ? ? ? ? 48 8B CB E8 ? ? ? ? C6 43 ? ? 48 83 C3 ? 48 83 EF ? 75 ? 48 8B 5C 24 ? 48 8B C6 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 C7 46 ? ? ? ? ? 48 8D 4E ? 48 89 06 E8 ? ? ? ? 48 C7 86 ? ? ? ? ? ? ? ? 48 8D 9E ? ? ? ? C6 86 ? ? ? ? ? BF ? ? ? ? 48 8B CB E8 ? ? ? ? C6 43 ? ? 48 83 C3 ? 48 83 EF ? 75 ? 48 8B 5C 24 ? 48 8B C6 Add 3 TraceRelative", Name = "AgentPersonalRoomPortal.VTable")]
         internal static IntPtr Vtable;
     }
 
     public static class AgentAchievementOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 4C 89 7F ? 48 89 07 48 8D B7 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 4C 89 7F ? 48 89 07 48 8D B7 ? ? ? ? Add 3 TraceRelative", Name = "AgentAchievement.VTable")]
         internal static IntPtr VTable;
 
         //7.3
         [Offset("Search 41 8B 46 ? 41 3B C7 Add 3 Read8")]
-        [OffsetTC("Search 41 8B 46 ? 41 3B C7 Add 3 Read8")]
         internal static int Status;
     }
 
     public static class AgentAetherWheelOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 4C 8D 76 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 4C 8D 76 ? Add 3 TraceRelative", Name = "AgentAetherialWheel.VTable")]
         internal static IntPtr VTable;
 
         [Offset("Search 49 8D 75 ? F3 0F 10 3D ? ? ? ? Add 3 Read8")]
@@ -312,8 +304,7 @@ namespace LlamaLibrary.Memory
     public static class AgentBagSlotOffsets
     {
         //7.3
-        [Offset("Search 48 8D 05 ? ? ? ? 48 8B F1 48 89 01 48 8B 89 ? ? ? ? 48 85 C9 74 ? E8 ? ? ? ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 05 ? ? ? ? 48 8B F1 48 89 01 48 8B 89 ? ? ? ? 48 85 C9 74 ? E8 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 8B F1 48 89 01 48 8B 89 ? ? ? ? 48 85 C9 74 ? E8 ? ? ? ? Add 3 TraceRelative", Name = "AgentInventoryContext.VTable")]
         internal static IntPtr VTable;
 
         //7.1
@@ -327,7 +318,7 @@ namespace LlamaLibrary.Memory
     public static class AgentBankaCraftworksSupplyOffsets
     {
         //7.2 hf
-        [Offset("Search 48 8D 0D ? ? ? ? 83 7B ? ? 48 89 4C 24 ? 48 8D 0D ? ? ? ? 88 54 24 ? 41 0F 94 C0 83 3B ? 48 89 4C 24 ? 48 8D 4C 24 ? 48 8B 40 ? 0F 94 C2 48 89 44 24 ? E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? 48 83 C4 ? 5B C3 0F 1F 00 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? 83 7B ? ? 48 89 4C 24 ? 48 8D 0D ? ? ? ? 88 54 24 ? 41 0F 94 C0 83 3B ? 48 89 4C 24 ? 48 8D 4C 24 ? 48 8B 40 ? 0F 94 C2 48 89 44 24 ? E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? 48 83 C4 ? 5B C3 0F 1F 00 Add 3 TraceRelative", Name = "AgentBankaCraftworksSupply.VTable")]
         internal static IntPtr Vtable;
 
         //7.2 hf
@@ -339,13 +330,13 @@ namespace LlamaLibrary.Memory
     public static class AgentCharacterOffsets
     {
         //7.1
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 48 8D 8E ? ? ? ? 0F 57 C0 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 48 8D 8E ? ? ? ? 0F 57 C0 Add 3 TraceRelative", Name = "AgentStatus.VTable")]
         internal static IntPtr Vtable;
     }
 
     public static class AgentContentsInfoOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? BE ? ? ? ? 48 89 03 48 8D 7B ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? BE ? ? ? ? 48 89 03 48 8D 7B ? Add 3 TraceRelative", Name = "AgentContentsTimer.VTable")]
         internal static IntPtr VTable;
 
         // AgentContentsTimer walks five estate records by deriving the deadline-array base and
@@ -366,7 +357,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 45 0F B6 5E ? 45 84 DB 75 ? 49 8B 8C D9 ? ? ? ? Add 4 Read8")]
         internal static int DawnTrustId;
 
-        [Offset("Search 48 8D 05 ? ? ? ? C6 46 ? ? 33 ED Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? C6 46 ? ? 33 ED Add 3 TraceRelative", Name = "AgentDawn.VTable")]
         internal static IntPtr DawnVtable;
         /*[Offset("Search 41 88 46 ? E8 ? ? ? ? C6 43 ? ? Add 3 Read8")]
         internal static int DawnIsScenario;*/
@@ -374,20 +365,18 @@ namespace LlamaLibrary.Memory
 
     public static class AgentDawnStoryOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8B C3 48 C7 43 ? ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8B C3 48 C7 43 ? ? ? ? ? Add 3 TraceRelative", Name = "AgentDawnStory.VTable")]
         internal static IntPtr Vtable;
 
         [Offset("Search 41 88 46 ? 45 0F B6 5E ? 45 84 DB 75 ? 48 8B 8C Add 3 Read8")]
         internal static int SelectedContentId;
 
         //7.3
-        [Offset("Search 48 89 35 ? ? ? ? 48 8B 74 24 ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 89 35 ? ? ? ? 48 8B 74 24 ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 3 TraceRelative")]
+        [Offset("Search 48 89 35 ? ? ? ? 48 8B 74 24 ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? 48 83 EC ? Add 3 TraceRelative", Name = "DawnManager.Instance")]
         internal static IntPtr DutyListPtr;
 
         //7.3
         [Offset("Search 49 8D 96 ? ? ? ? E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? Add 3 Read32")]
-        [OffsetTC("Search 49 8D 96 ? ? ? ? E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? Add 3 Read32")]
         internal static int DutyListStart;
 
         [Offset("Search BF ? ? ? ? 48 8B D3 48 8B CE E8 ? ? ? ? 48 83 C3 Add 1 Read32")]
@@ -401,13 +390,13 @@ namespace LlamaLibrary.Memory
 
     public static class AgentDeepDungeonStatusOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 41 56 48 83 EC ? Add 3 TraceRelative")] //0x1860
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 41 56 48 83 EC ? Add 3 TraceRelative", Name = "AgentDeepDungeonStatus.VTable")] //0x1860
         internal static IntPtr VTable;
     }
 
     public static class AgentFateProgressOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 66 C7 46 ? ? ? 48 89 06 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 66 C7 46 ? ? ? 48 89 06 Add 3 TraceRelative", Name = "AgentFateProgress.VTable")]
         internal static IntPtr VTable;
 
         //[Offset("Search 66 89 47 ? 48 8B 5C 24 ? 48 8B 74 24 ? Add 3 Read8")]
@@ -419,8 +408,7 @@ namespace LlamaLibrary.Memory
     public static class AgentFishGuide2Offsets
     {
         //7.3
-        [Offset("Search 48 8D 05 ? ? ? ? 33 F6 48 89 07 B9 ? ? ? ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 05 ? ? ? ? 33 F6 48 89 07 B9 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 33 F6 48 89 07 B9 ? ? ? ? Add 3 TraceRelative", Name = "AgentFishGuide.VTable")]
         internal static IntPtr Vtable;
 
         //6.3 0x58
@@ -438,10 +426,10 @@ namespace LlamaLibrary.Memory
 
     public static class AgentFreeCompanyChestOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? ? ? ? 48 8D 59 ? 48 8D 05 ? ? ? ? 48 89 51 ? 48 89 41 ? 8D 75 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? ? ? ? 48 8D 59 ? 48 8D 05 ? ? ? ? 48 89 51 ? 48 89 41 ? 8D 75 Add 3 TraceRelative", Name = "AgentFreeCompanyChest.VTable")]
         internal static IntPtr VTable;
 
-        [Offset("Search E8 ? ? ? ? 8B 8B ? ? ? ? 84 C0 74 ? 83 C9 ? 89 8B ? ? ? ? 48 83 C4 ? 5B C3 F6 C1 ? 0F B6 C0 Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 8B 8B ? ? ? ? 84 C0 74 ? 83 C9 ? 89 8B ? ? ? ? 48 83 C4 ? 5B C3 F6 C1 ? 0F B6 C0 Add 1 TraceRelative", Name = "InventoryManager.RequestFreeCompanyChestContainer")]
         internal static IntPtr BagRequestCall;
 
         [Offset("Search 0F B6 7B ? BA ? ? ? ? E8 ? ? ? ? BA ? ? ? ? 89 7C 24 ? Add 3 Read8")]
@@ -468,7 +456,7 @@ namespace LlamaLibrary.Memory
 
     public static class AgentFreeCompanyOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 8B F9 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? 48 8D 05 ? ? ? ? 48 89 41 ? 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8B 8F ? ? ? ? BA ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 8B F9 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? 48 8D 05 ? ? ? ? 48 89 41 ? 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8B 8F ? ? ? ? BA ? ? ? ? Add 3 TraceRelative", Name = "AgentFreeCompany.VTable")]
         internal static IntPtr VTable;
 
         // OffsetChecker: AllowAmbiguous
@@ -496,14 +484,14 @@ namespace LlamaLibrary.Memory
 
     public static class AgentGoldSaucerInfoOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8D 4B ? 48 8D 05 ? ? ? ? 48 89 7B ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8D 4B ? 48 8D 05 ? ? ? ? 48 89 7B ? Add 3 TraceRelative", Name = "AgentGoldSaucer.VTable")]
         internal static IntPtr VTable;
     }
 
     public static class AgentGrandCompanyExchangeOffsets
     {
         //0x
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? E9 ? ? ? ? ? ? ? ? ? ? 40 53 48 83 EC ? 48 8B D9 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? E9 ? ? ? ? ? ? ? ? ? ? 40 53 48 83 EC ? 48 8B D9 Add 3 TraceRelative", Name = "AgentGrandCompanyExchange.VTable")]
         internal static IntPtr Vtable;
 
         //0x69 byte
@@ -515,14 +503,14 @@ namespace LlamaLibrary.Memory
         internal static int Category;
 
         //BuyItem (ShopPtr, 0, index, count)
-        [Offset("Search E8 ? ? ? ? 0F B6 D8 84 C0 74 ? 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 8B C8 48 8B 10 FF 92 ? ? ? ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 0F B6 D8 84 C0 74 ? 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 8B C8 48 8B 10 FF 92 ? ? ? ? Add 1 TraceRelative", Name = "GrandCompanyShop.BuyItem")]
         internal static IntPtr BuyItem;
     }
 
     public static class AgentGrandCompanySupplyOffsets
     {
         //0x
-        [Offset("Search 48 8D 05 ? ? ? ? 48 8B D9 48 89 01 E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 8B CB 48 89 43 ? 48 83 C4 ? 5B E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 79 ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 8B D9 48 89 01 E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 8B CB 48 89 43 ? 48 83 C4 ? 5B E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 79 ? ? Add 3 TraceRelative", Name = "AgentGrandCompanySupply.VTable")]
         internal static IntPtr Vtable;
 
         //0x68 ptr to GCSupplyItem[]
@@ -532,7 +520,6 @@ namespace LlamaLibrary.Memory
         //7.3
         //0x78 int
         [Offset("Search 44 3B 65 ? 0F 82 ? ? ? ? 44 8B B4 24 ? ? ? ? Add 3 Read8")]
-        [OffsetTC("Search 44 3B 65 ? 0F 82 ? ? ? ? 44 8B B4 24 ? ? ? ? Add 3 Read8")]
         internal static int ArrayCount;
 
         //0x90 byte
@@ -546,22 +533,21 @@ namespace LlamaLibrary.Memory
         //0x70 ptr to int[]
         //7.3
         [Offset("Search 49 8B 44 24 ? 8B D3 Add 4 Read8")]
-        [OffsetTC("Search 49 8B 44 24 ? 8B D3 Add 4 Read8")]
         internal static int SortArray;
     }
 
     public static class AgentHWDScoreOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 0F 57 C0 C7 43 ? ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 0F 57 C0 C7 43 ? ? ? ? ? Add 3 TraceRelative", Name = "AgentHwdScore.VTable")]
         internal static IntPtr VTable;
     }
 
     public static class AgentHandInOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? 48 8B D9 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? 48 8B D9 Add 3 TraceRelative", Name = "AgentHugeCraftworksSupply.VTable")]
         internal static IntPtr VTable;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 41 ? 48 8B E9 48 83 C1 ?")]
+        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 41 ? 48 8B E9 48 83 C1 ?", Name = "AgentHugeCraftworksSupply.HandleInventoryContextCallback")]
         internal static IntPtr HandInFunc;
 
         [Offset("Search 48 89 41 ? 48 8B D9 48 85 FF Add 3 Read8")]
@@ -570,18 +556,17 @@ namespace LlamaLibrary.Memory
 
     public static class AgentHousingOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? C6 47 ? ? 48 89 07 48 8D 4F ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? C6 47 ? ? 48 89 07 48 8D 4F ? Add 3 TraceRelative", Name = "AgentHousing.VTable")]
         internal static IntPtr VTable;
     }
 
     public static class AgentHousingSelectBlockOffsets
     {
-        [Offset("Search 4C 8D 2D ? ? ? ? 48 89 74 24 ? BD ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 4C 8D 2D ? ? ? ? 48 89 74 24 ? BD ? ? ? ? Add 3 TraceRelative", Name = "AgentHousingPortal.VTable")]
         internal static IntPtr VTable;
 
         //7.3
         [Offset("Search 44 0F B6 46 ? 48 8B C8 0F B7 56 ? Add 4 Read8")]
-        [OffsetTC("Search 44 0F B6 46 ? 48 8B C8 0F B7 56 ? Add 4 Read8")]
         internal static int WardNumber;
 
         [Offset("Search 49 8D 44 24 ? 49 83 C7 ? Add 4 Read8")]
@@ -591,23 +576,20 @@ namespace LlamaLibrary.Memory
 
     public static class AgentHousingSignBoardOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 7B ? 48 89 03 48 8D 4B ? 66 89 7B ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 7B ? 48 89 03 48 8D 4B ? 66 89 7B ? Add 3 TraceRelative", Name = "AgentHousingSignboard.VTable")]
         internal static IntPtr VTable;
 
         //0x3A
         //7.3
         [Offset("Search 44 88 63 ? 40 88 7B ? Add 3 Read8")]
-        [OffsetTC("Search 44 88 63 ? 40 88 7B ? Add 3 Read8")]
         internal static int Ward;
 
         //7.3
         [Offset("Search 40 88 7B ? 66 44 89 43 ? Add 3 Read8")]
-        [OffsetTC("Search 40 88 7B ? 66 44 89 43 ? Add 3 Read8")]
         internal static int Plot;
 
         //7.3
         [Offset("Search 66 44 89 7B ? 44 88 63 ? Add 4 Read8")]
-        [OffsetTC("Search 66 44 89 7B ? 44 88 63 ? Add 4 Read8")]
         internal static int Zone;
 
         [Offset("Search 40 88 7B ? 88 43 ? E8 ? ? ? ? Add 3 Read8")]
@@ -618,27 +600,24 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search 0F 11 4B ? F2 41 0F 10 46 ? Add 3 Read8")]
-        [OffsetTC("Search 0F 11 4B ? F2 41 0F 10 46 ? Add 3 Read8")]
         internal static int WinningLotteryNumber;
 
         //7.3
         [Offset("Search 0F 11 43 ? 41 0F 10 4E ? 0F 11 4B ? F2 41 0F 10 46 ? Add 3 Read32")]
-        [OffsetTC("Search 0F 11 43 ? 41 0F 10 4E ? 0F 11 4B ? F2 41 0F 10 46 ? Add 3 Read32")]
         internal static int LotteryEntryCount;
 
         //7.3
         [Offset("Search 48 89 86 ? ? ? ? 48 8B 01 FF 50 ? 4D 8D 86 ? ? ? ? Add 3 Read32")]
-        [OffsetTC("Search 48 89 86 ? ? ? ? 48 8B 01 FF 50 ? 4D 8D 86 ? ? ? ? Add 3 Read32")]
         internal static int FcOwned;
     }
 
     public static class AgentInclusionShopOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? 48 8D 05 ? ? ? ? 48 89 41 ? E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 48 83 EC ? 48 8B DA Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 ? 48 8D 05 ? ? ? ? 48 89 41 ? E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 48 83 EC ? 48 8B DA Add 3 TraceRelative", Name = "AgentInclusionShop.VTable")]
         internal static IntPtr Vtable;
 
         //(__int64 AgentPointer, char Category)
-        [Offset("Search 48 8B 41 ? 4C 8B D1 80 88 ? ? ? ? ?")]
+        [Offset("Search 48 8B 41 ? 4C 8B D1 80 88 ? ? ? ? ?", Name = "AgentInclusionShop.SelectCategory")]
         internal static IntPtr SetCategory;
 
         //0x18
@@ -719,18 +698,17 @@ namespace LlamaLibrary.Memory
     public static class AgentInventoryBuddyOffsets
     {
         //6.4
-        [Offset("Search 48 8D 05 ? ? ? ? BE ? ? ? ? 48 89 07 48 8D 5F ? 48 8D 05 ? ? ? ? 33 ED 48 89 47 ? 0F 1F 40 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? BE ? ? ? ? 48 89 07 48 8D 5F ? 48 8D 05 ? ? ? ? 33 ED 48 89 47 ? 0F 1F 40 ? Add 3 TraceRelative", Name = "AgentInventoryBuddy.VTable")]
         internal static IntPtr VTable;
     }
 
     public static class AgentItemAppraisalOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 48 89 43 ? 48 89 43 ? 48 89 83 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 48 89 43 ? 48 89 43 ? 48 89 83 ? ? ? ? Add 3 TraceRelative", Name = "AgentItemAppraisal.VTable")]
         internal static IntPtr VTable;
 
         //7.3
         [Offset("Search 66 C7 87 ? ? ? ? ? ? 48 8D 45 ? Add 3 Read8")]
-        [OffsetTC("Search 66 C7 87 ? ? ? ? ? ? 48 8D 45 ? Add 3 Read8")]
         internal static int ItemAppraisalReady;
     }
 
@@ -738,7 +716,7 @@ namespace LlamaLibrary.Memory
     {
         //0x18C9FC0
         //7.2
-        [Offset("Search 48 8D 05 ? ? ? ? 48 8B F9 ? ? ? 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8D 8F ? ? ? ? E8 ? ? ? ? 48 8B 8F Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 8B F9 ? ? ? 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8D 8F ? ? ? ? E8 ? ? ? ? 48 8B 8F Add 3 TraceRelative", Name = "AgentItemDetail.VTable")]
         internal static IntPtr Vtable;
 
         //0x5
@@ -749,14 +727,13 @@ namespace LlamaLibrary.Memory
     public static class AgentJournalDetailOffsets
     {
         //7.3
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 54 24 ? 48 89 03 Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 05 ? ? ? ? 48 89 54 24 ? 48 89 03 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 54 24 ? 48 89 03 Add 3 TraceRelative", Name = "AgentQuestJournal.VTable")]
         internal static IntPtr VTable;
     }
 
     public static class AgentLookingForGroupOffsets
     {
-        [Offset("Search 48 8D 05 ?? ?? ?? ?? 48 8B F1 48 89 01 48 8D 05 ?? ?? ?? ?? 48 89 41 ?? E8 ?? ?? ?? ?? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ?? ?? ?? ?? 48 8B F1 48 89 01 48 8D 05 ?? ?? ?? ?? 48 89 41 ?? E8 ?? ?? ?? ?? Add 3 TraceRelative", Name = "AgentLookingForGroup.VTable")]
         internal static IntPtr VTable;
 
         //0x2240
@@ -767,13 +744,13 @@ namespace LlamaLibrary.Memory
     public static class AgentMJIGatheringNoteBookOffsets
     {
         //6.4
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 32 C0 49 8B F0 48 83 79 ? ? 48 8B FA 48 8B D9 74 ? 45 85 C9 7E ? 83 6C 24 ? ? 75 ? 49 8B C8 E8 ? ? ? ? 83 F8 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 32 C0 49 8B F0 48 83 79 ? ? 48 8B FA 48 8B D9 74 ? 45 85 C9 7E ? 83 6C 24 ? ? 75 ? 49 8B C8 E8 ? ? ? ? 83 F8 ? Add 3 TraceRelative", Name = "AgentMJIGatheringNoteBook.VTable")]
         internal static IntPtr VTable;
     }
 
     public static class AgentMJIHudOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 C7 43 ? ? ? ? ? 48 89 03 48 8B C3 66 C7 43 ? ? ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8D 05 ? ? ? ? 48 89 01 E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 48 8B D9 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 C7 43 ? ? ? ? ? 48 89 03 48 8B C3 66 C7 43 ? ? ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8D 05 ? ? ? ? 48 89 01 E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 48 8B D9 Add 3 TraceRelative", Name = "AgentMJIHud.VTable")]
         internal static IntPtr VTable;
 
         [Offset("Search 49 8B 4E ? 0F B6 81 ? ? ? ? 24 ? Add 3 Read8")]
@@ -785,20 +762,20 @@ namespace LlamaLibrary.Memory
 
     public static class AgentMJIPouchOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 32 C0 49 8B F0 48 83 79 ? ? 48 8B FA 48 8B D9 74 ? 45 85 C9 7E ? 83 6C 24 ? ? 75 ? 49 8B C8 E8 ? ? ? ? 83 E8 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 32 C0 49 8B F0 48 83 79 ? ? 48 8B FA 48 8B D9 74 ? 45 85 C9 7E ? 83 6C 24 ? ? 75 ? 49 8B C8 E8 ? ? ? ? 83 E8 ? Add 3 TraceRelative", Name = "AgentMJIPouch.VTable")]
         internal static IntPtr VTable;
     }
 
     public static class AgentMJIRecipeNoteBookOffsets
     {
         //6.4
-        [Offset("Search 48 8D 05 ? ? ? ? 48 C7 43 ? ? ? ? ? 48 89 03 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? 48 8D 05 ? ? ? ? 48 89 01 E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B D9 48 8B FA 32 C9 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 C7 43 ? ? ? ? ? 48 89 03 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? 48 8D 05 ? ? ? ? 48 89 01 E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B D9 48 8B FA 32 C9 Add 3 TraceRelative", Name = "AgentMJIRecipeNoteBook.VTable")]
         internal static IntPtr VTable;
     }
 
     public static class AgentMeldOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 33 FF 48 89 03 48 8D 4B ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 33 FF 48 89 03 48 8D 4B ? Add 3 TraceRelative", Name = "AgentMateriaAttach.VTable")]
         internal static IntPtr VTable;
 
         [Offset("Search 0F B6 9F ? ? ? ? 48 8D 8D ? ? ? ? BA ? ? ? ? 44 89 AD ? ? ? ? E8 ? ? ? ? 41 8B C5 Add 3 Read32")]
@@ -809,7 +786,6 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search 66 41 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 Add 4 Read32")]
-        [OffsetTC("Search 66 41 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 Add 4 Read32")]
         internal static int IndexOfSelectedItem;
 
         [Offset("Search 0F BF BE ? ? ? ? 4D 8D 64 24 ? Add 3 Read32")]
@@ -828,23 +804,24 @@ namespace LlamaLibrary.Memory
     public static class AgentMinionNoteBookOffsets
     {
         //Has 2 values but luckily MinionNotebook is the first one, alternative pattern is loooong
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? 40 53 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8B 4B ? 48 85 C9 74 ? 48 8B 53 ? 41 B8 ? ? ? ? 48 2B D1 48 83 E2 ? E8 ? ? ? ? 33 C0 48 89 43 ? 48 89 43 ? 48 89 43 ? 48 8B CB 48 83 C4 ? 5B E9 ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 48 8B 80 ? ? ? ? 8B 40 ? C1 E8 ? F6 D0 24 ? 48 83 C4 ? C3 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? 40 53 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8B 4B ? 48 85 C9 74 ? 48 8B 53 ? 41 B8 ? ? ? ? 48 2B D1 48 83 E2 ? E8 ? ? ? ? 33 C0 48 89 43 ? 48 89 43 ? 48 89 43 ? 48 8B CB 48 83 C4 ? 5B E9 ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 48 8B 80 ? ? ? ? 8B 40 ? C1 E8 ? F6 D0 24 ? 48 83 C4 ? C3 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 TraceRelative", Name = "AgentMinionNoteBook.VTable")]
         internal static IntPtr VTable;
 
         [Offset("Search 48 8B 73 ? 4C 8B 53 ? 4C 2B D6 Add 3 Read8")] //Could be wrong
         internal static int AgentOffset;
 
-        [Offset("Search 83 3D ? ? ? ? ? 7D ? 32 C0 Add 2 TraceRelative")]
+        // Register comparison has no trailing immediate: rel32 ends at the next instruction.
+        [Offset("Search 39 2D ? ? ? ? 7F ? 83 E3 ? E8 ? ? ? ? BA ? ? ? ? 48 8B C8 Add 2 TraceRelative", Name = "AgentMinionNoteBook.MinionCount")]
         internal static IntPtr MinionCount;
 
         //6.4
-        [Offset("Search E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 66 83 78 ? ? 0F 86 ? ? ? ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 66 83 78 ? ? 0F 86 ? ? ? ? TraceCall", Name = "ExdModule.GetCompanionRowByIndex")]
         internal static IntPtr GetCompanion;
     }
 
     public static class AgentOutOnLimbOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 8D 4F ? 48 89 07 E8 ? ? ? ? 33 C9 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 8D 4F ? 48 89 07 E8 ? ? ? ? 33 C9 Add 3 TraceRelative", Name = "AgentGoldSaucerMiniGame.VTable")]
         internal static IntPtr VTable;
 
         [Offset("Search 41 80 BE ? ? ? ? ? 0F 84 ? ? ? ? BA ? ? ? ? Add 3 Read32")]
@@ -865,13 +842,13 @@ namespace LlamaLibrary.Memory
 
     public static class AgentRecommendEquipOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8B C3 C7 43 ? ? ? ? ? 48 83 C4 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? C6 43 ? ? 48 89 03 48 8B C3 C7 43 ? ? ? ? ? 48 83 C4 ? Add 3 TraceRelative", Name = "AgentRecommendEquip.VTable")]
         internal static IntPtr VTable;
     }
 
     public static class AgentRetainerCharacterOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 48 8D 4E ? 48 8D 05 ? ? ? ? 48 89 46 ? E8 ? ? ? ? 33 ED Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 06 48 8D 4E ? 48 8D 05 ? ? ? ? 48 89 46 ? E8 ? ? ? ? 33 ED Add 3 TraceRelative", Name = "AgentRetainerStatus.VTable")]
         internal static IntPtr VTable;
 
         [Offset("Search 41 89 86 ? ? ? ? E8 ? ? ? ? 4C 8B BC 24 ? ? ? ? 4C 8B A4 24 Add 3 Read32")]
@@ -882,7 +859,7 @@ namespace LlamaLibrary.Memory
     {
         //7.2
         //48 8D 05 ? ? ? ? 48 89 6E ? 48 89 06 48 8D 9E ? ? ? ?
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 6E ? 48 89 06 48 8D 9E ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 6E ? 48 89 06 48 8D 9E ? ? ? ? Add 3 TraceRelative", Name = "AgentRetainer.VTable")]
         internal static IntPtr VTable;
 
         [Offset("Search 48 8B 8B ? ? ? ? 48 85 C9 74 ? 48 83 C4 ? 5B E9 ? ? ? ? B0 ? Add 3 Read32")]
@@ -891,7 +868,7 @@ namespace LlamaLibrary.Memory
 
     public static class AgentRetainerListOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 8B F1 48 89 01 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8D 8E ? ? ? ? E8 ? ? ? ? BF ? ? ? ? 48 8D 9E ? ? ? ? 48 83 EB ? 48 8B CB E8 ? ? ? ? 48 83 EF ? 75 ? 48 8B CE 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F E9 ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 8B F1 48 89 01 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8D 8E ? ? ? ? E8 ? ? ? ? BF ? ? ? ? 48 8D 9E ? ? ? ? 48 83 EB ? 48 8B CB E8 ? ? ? ? 48 83 EF ? 75 ? 48 8B CE 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F E9 ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? Add 3 TraceRelative", Name = "AgentRetainerList.VTable")]
         internal static IntPtr VTable;
 
         [Offset("Search 48 8D 8E ? ? ? ? 33 D2 41 B8 ? ? ? ? E8 ? ? ? ? 48 8D 8E ? ? ? ? E8 ? ? ? ? Add 3 Read32")]
@@ -903,7 +880,7 @@ namespace LlamaLibrary.Memory
 
     public static class AgentRetainerVentureOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 66 89 43 ? 48 89 43 ? 88 43 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 66 89 43 ? 48 89 43 ? 88 43 ? Add 3 TraceRelative", Name = "AgentRetainerTask.VTable")]
         internal static IntPtr VTable;
 
         [Offset("Search 0F 11 41 ? 41 0F 10 48 ? 0F 11 49 ? F2 41 0F 10 40 ? F2 0F 11 41 ? 41 0F B7 00 Add 3 Read8")]
@@ -921,7 +898,7 @@ namespace LlamaLibrary.Memory
 
     public static class AgentSatisfactionSupplyOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 8B F1 48 89 01 48 8D 99 ? ? ? ? 48 8D 05 ? ? ? ? BF ? ? ? ? 48 89 41 ? 0F 1F 40 ? 66 0F 1F 84 00 ? ? ? ? 48 81 EB ? ? ? ? 48 8B CB Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 8B F1 48 89 01 48 8D 99 ? ? ? ? 48 8D 05 ? ? ? ? BF ? ? ? ? 48 89 41 ? 0F 1F 40 ? 66 0F 1F 84 00 ? ? ? ? 48 81 EB ? ? ? ? 48 8B CB Add 3 TraceRelative", Name = "AgentSatisfactionSupply.VTable")]
         internal static IntPtr VTable;
 
         //0x80
@@ -930,7 +907,6 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search 0F B7 7B ? BA ? ? ? ? E8 ? ? ? ? 41 89 BE ? ? ? ? 49 8D 8E ? ? ? ? 0F B7 7B ? Add 3 Read8")]
-        [OffsetTC("Search 0F B7 7B ? BA ? ? ? ? E8 ? ? ? ? 41 89 BE ? ? ? ? 49 8D 8E ? ? ? ? 0F B7 7B ? Add 3 Read8")]
         internal static int CurrentRep;
 
         //7.5
@@ -947,13 +923,12 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search 89 43 ? E8 ? ? ? ? 48 8B D0 49 8D 4E ? Add 2 Read8")]
-        [OffsetTC("Search 89 43 ? E8 ? ? ? ? 48 8B D0 49 8D 4E ? Add 2 Read8")]
         internal static int HeartLevel;
 
         [Offset("Search 44 0F B6 43 ? 89 43 ? Add 4 Read8")]
         internal static int DeliveriesRemaining;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 01 41 0F B6 E9 41 8B F8")]
+        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 01 41 0F B6 E9 41 8B F8", Name = "AgentSatisfactionSupply.OpenForNpc")]
         internal static IntPtr OpenWindow;
         /*
         #if RB_CN
@@ -968,7 +943,7 @@ namespace LlamaLibrary.Memory
     public static class AgentSharlayanCraftworksSupplyOffsets
     {
         //7.2
-        [Offset("Search 48 8D 0D ? ? ? ? 83 7F ? ? 48 89 4C 24 ? 48 8D 0D ? ? ? ? 88 54 24 ? 41 0F 94 C0 ? ? ? 48 89 4C 24 ? 48 8D 4C 24 ? 48 8B 40 ? 0F 94 C2 48 89 44 24 ? E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? E9 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? 83 7F ? ? 48 89 4C 24 ? 48 8D 0D ? ? ? ? 88 54 24 ? 41 0F 94 C0 ? ? ? 48 89 4C 24 ? 48 8D 4C 24 ? 48 8B 40 ? 0F 94 C2 48 89 44 24 ? E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? E9 Add 3 TraceRelative", Name = "AgentSharlayanCraftworksSupply.VTable")]
         internal static IntPtr Vtable;
 
         /*
@@ -992,7 +967,7 @@ namespace LlamaLibrary.Memory
         // resolves the initial RIP-relative LEA to the vtable. It matched once in .text on Global
         // 2026.07.16.0001.0000 and TC 2026.07.22.0000.0000. Keep this offset cacheable because the
         // cache is already versioned per client patch and rescanning it on every RB start is wasteful.
-        [Offset("Search 48 8D 05 ? ? ? ? 8B DA 48 89 01 48 8B F9 E8 ? ? ? ? F6 C3 ? 74 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C7 48 83 C4 ? 5F C3 ? ? 48 89 5C 24 ? 57 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B F9 48 89 01 8B DA 48 83 C1 ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? F6 C3 ? 74 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C7 48 83 C4 ? 5F C3 ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 8B DA 48 89 01 48 8B F9 E8 ? ? ? ? F6 C3 ? 74 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C7 48 83 C4 ? 5F C3 ? ? 48 89 5C 24 ? 57 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B F9 48 89 01 8B DA 48 83 C1 ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? F6 C3 ? 74 ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 5C 24 ? 48 8B C7 48 83 C4 ? 5F C3 ? ? ? ? ? ? 40 53 Add 3 TraceRelative", Name = "AgentShopExchangeCoin.VTable")]
         internal static IntPtr VTable;
     }
 
@@ -1004,7 +979,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 03 79 ? 41 89 1C 06 Add 3 Read8")]
         internal static int ListPtr;
 
-        [Offset("Search 48 8D 05 ? ? ? ? 48 8B D3 48 8D 4F ? 48 89 07 E8 ? ? ? ? 48 8B 5C 24 ? 33 C0 48 89 47 ? 48 89 47 ? 48 89 47 ? 48 89 47 ? 89 87 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 8B D3 48 8D 4F ? 48 89 07 E8 ? ? ? ? 48 8B 5C 24 ? 33 C0 48 89 47 ? 48 89 47 ? 48 89 47 ? 48 89 47 ? 89 87 ? ? ? ? Add 3 TraceRelative", Name = "AgentTripleTriadCoinExchange.VTable")]
         internal static IntPtr VTable;
 
         //[Offset("Search 41 54 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 8B 01")]
@@ -1012,40 +987,47 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search 41 8B 96 ? ? ? ? 49 8B CE 49 8B 46 ? Add 3 Read8")]
-        [OffsetTC("Search 41 8B 96 ? ? ? ? 49 8B CE 49 8B 46 ? Add 3 Read8")]
         internal static int SelectedCardIndex;
 
         //7.3
         [Offset("Search 49 8B 46 ? 8B 14 90 48 69 D2 ? ? ? ? Add 3 Read8")]
-        [OffsetTC("Search 49 8B 46 ? 8B 14 90 48 69 D2 ? ? ? ? Add 3 Read8")]
         internal static int CardIndexArray;
     }
 
     public static class AgentVoteMVPOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 48 89 43 ? 48 89 43 ? 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 48 89 43 ? 48 89 43 ? 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 TraceRelative", Name = "AgentContentsMvp.VTable")]
         // pre 6.3 [OffsetCN("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 48 89 43 ? 89 43 ? 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
         internal static IntPtr VTable;
 
         //7.3
         [Offset("Search 8B 7B ? 44 3B F7 Add 2 Read8")]
-        [OffsetTC("Search 8B 7B ? 44 3B F7 Add 2 Read8")]
         internal static int PlayerCount;
 
         //7.3
         [Offset("Search 48 03 4B ? E8 ? ? ? ? BA ? ? ? ? 48 8B CE 48 8B F8 E8 ? ? ? ? 48 89 7E ? 41 FF C6 Add 3 Read8")]
-        [OffsetTC("Search 48 03 4B ? E8 ? ? ? ? BA ? ? ? ? 48 8B CE 48 8B F8 E8 ? ? ? ? 48 89 7E ? 41 FF C6 Add 3 Read8")]
         internal static int ArrayStart;
+    }
+
+    public static class AgentTradeOffsets
+    {
+        [Offset("Search 48 8D 05 ? ? ? ? BE ? ? ? ? 48 89 07 48 8D 5F ? 48 8D 05 ? ? ? ? 33 ED 48 89 47 ? 4C 8D 35 Add 3 TraceRelative", Name = "AgentTrade.VTable")]
+        internal static IntPtr VTable;
+
+        // AgentTrade constructor writes the secondary InventoryContextEvent vtable at this offset.
+        [Offset("Search 33 ED 48 89 47 ? 4C 8D 35 ? ? ? ? Add 5 Read8", Name = "AgentTrade.InventoryContextEventOffset")]
+        internal static int InventoryContextEventOffset;
     }
 
     public static class AgentWorldTravelSelectOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8D 7B ? 48 89 6B ? 48 89 6B ? 8D 75 ? 48 89 6B ? 48 89 6B ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8D 7B ? 48 89 6B ? 48 89 6B ? 8D 75 ? 48 89 6B ? 48 89 6B ? Add 3 TraceRelative", Name = "AgentWorldTravel.VTable")]
         internal static IntPtr VTable;
 
-        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 80 78 ? ? 75 ? 8B 44 24 ? Add 1 TraceRelative")]
-        [Obsolete]
-        internal static IntPtr ExdData__getWorld;
+        // Retired: obsolete and unused; stale cache keys are ignored by OffsetManager.
+        // [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 80 78 ? ? 75 ? 8B 44 24 ? Add 1 TraceRelative")]
+        // [Obsolete]
+        // internal static IntPtr ExdData__getWorld;
 
         //7.5
         [Offset("Search 48 8B 43 ? 0F B7 3C 07 Add 3 Read8")]
@@ -1070,38 +1052,36 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search 4C 8B 41 ? 48 8B C8 41 FF D0 4C 8B E0 48 85 F6 Add 3 Read8")]
-        [OffsetTC("Search 4C 8B 41 ? 48 8B C8 41 FF D0 4C 8B E0 48 85 F6 Add 3 Read8")]
         internal static int AtkModule_vfStringArray;
     }
 
     public static class BagSlotExtensionsOffsets
     {
-        [Offset("Search E8 ? ? ? ? 48 8D 8B ? ? ? ? 48 8B 11 Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 48 8D 8B ? ? ? ? 48 8B 11 Add 1 TraceRelative", Name = "InventoryManager.DiscardItem")]
         public static IntPtr ItemDiscardFunc;
 
         //7.4
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 0F BF D8")]
+        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 0F BF D8", Name = "InventoryManager.LowerItemQuality")]
         public static IntPtr ItemLowerQualityFunc;
 
-        [Offset("Search 40 55 53 56 57 41 55 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 8D B2 ? ? ? ?")]
+        [Offset("Search 40 55 53 56 57 41 55 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 8D B2 ? ? ? ?", Name = "InventoryManager.SplitItem")]
         public static IntPtr ItemSplitFunc;
 
-        [Offset("Search 48 89 5C 24 ? 56 48 83 EC ? 80 3D ? ? ? ? ? 48 8B F2")]
+        [Offset("Search 48 89 5C 24 ? 56 48 83 EC ? 80 3D ? ? ? ? ? 48 8B F2", Name = "AgentMateriaAttach.OpenForItem")]
         public static IntPtr MeldWindowFunc;
 
         //7.4
-        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8 8B DA 48 8B F1 45 33 C0")]
+        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 41 0F BF F8 8B DA 48 8B F1 45 33 C0", Name = "Materia.ExtractFromInventorySlot")]
         public static IntPtr ExtractMateriaFunc;
 
         //7.4
-        [Offset("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 83 7F 20 ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 83 7E ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 83 7F 20 ? Add 3 TraceRelative", Name = "Materia.ExtractionContext")]
+        [OffsetTC("Search 48 8D 0D ? ? ? ? 8B D0 E8 ? ? ? ? 83 7E ? ? Add 3 TraceRelative", Name = "Materia.ExtractionContext")]
         public static IntPtr ExtractMateriaParam;
 
         //This client function does desynth, remove materia and reduce depending on the 2nd param
         //7.4
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 8B F8")]
-        [OffsetTC("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 8B F8")]
+        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 8B F8", Name = "EventFramework.MaterializeItem")]
         public static IntPtr RemoveMateriaFunc;
 
         //7.4
@@ -1116,12 +1096,10 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search 0F B7 44 7B ? 66 85 C0 0F 84 ? ? ? ? 48 8B 74 24 ? Add 4 Read8")]
-        [OffsetTC("Search 0F B7 44 7B ? 66 85 C0 0F 84 ? ? ? ? 48 8B 74 24 ? Add 4 Read8")]
         public static int BagSlotMateriaType;
 
         //7.3
         [Offset("Search 0F B6 44 18 ? 0F B6 C0 0F BF 74 46 ? Add 4 Read8")]
-        [OffsetTC("Search 0F B6 44 18 ? 0F B6 C0 0F BF 74 46 ? Add 4 Read8")]
         public static int BagSlotMateriaLevel;
 
         //7.4
@@ -1129,67 +1107,66 @@ namespace LlamaLibrary.Memory
         [OffsetTC("Search BA ? ? ? ? 48 8B CF E8 ? ? ? ? EB ? 48 8B 01 Add 1 Read32")]
         public static int RemoveMateriaId;
 
-        [Offset("Search 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 83 B9 ? ? ? ? ? 41 8B F0 8B EA 48 8B F9 0F 85 ? ? ? ?")]
+        [Offset("Search 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 83 B9 ? ? ? ? ? 41 8B F0 8B EA 48 8B F9 0F 85 ? ? ? ?", Name = "AgentTrade.HandleInventoryContextCallback")]
         public static IntPtr TradeBagSlot;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 40 8B CA ")]
+        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 40 8B CA ", Name = "InventoryActions.UseItemOnCurrentTarget")]
         public static IntPtr BagSlotUseItem;
 
-        [Offset("Search 48 89 6C 24 ? 56 41 56 41 57 48 83 EC ? 45 8B F9 45 0F B7 F0")]
+        [Offset("Search 48 89 6C 24 ? 56 41 56 41 57 48 83 EC ? 45 8B F9 45 0F B7 F0", Name = "InventoryManager.RetrieveFromSaddlebag")]
         public static IntPtr RemoveFromSaddle;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 45 33 DB 41 8B F9 45 8B D3 41 0F B7 F0 8B EA 48 8B D9 48 8B C1 0F 1F 80 ? ? ? ? 80 38 ? 75 ? 41 FF C3 49 FF C2 48 83 C0 ? 49 81 FA ? ? ? ? 7C ? EB ? 49 63 C3 48 6B D0 ? 48 03 D3 C6 02 ? 74 ? C7 42 ? ? ? ? ? 44 8B C7 89 6A ? 66 89 72 ? 89 7A ? 8B 81 ? ? ? ? 89 42 ? 0F B7 D6 44 8B 89 ? ? ? ? 8B CD E8 ? ? ? ? 8B 8B ? ? ? ? B8 ? ? ? ? FF C1 F7 E1 8B C1 2B C2 ? ? 03 C2 C1 E8 ? 69 C0 ? ? ? ? 2B C8 0F BA E9 ? 89 8B ? ? ? ? 48 8B 5C 24 ? 48 8B 6C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? 66 83 FA ?")]
+        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 45 33 DB 41 8B F9 45 8B D3 41 0F B7 F0 8B EA 48 8B D9 48 8B C1 0F 1F 80 ? ? ? ? 80 38 ? 75 ? 41 FF C3 49 FF C2 48 83 C0 ? 49 81 FA ? ? ? ? 7C ? EB ? 49 63 C3 48 6B D0 ? 48 03 D3 C6 02 ? 74 ? C7 42 ? ? ? ? ? 44 8B C7 89 6A ? 66 89 72 ? 89 7A ? 8B 81 ? ? ? ? 89 42 ? 0F B7 D6 44 8B 89 ? ? ? ? 8B CD E8 ? ? ? ? 8B 8B ? ? ? ? B8 ? ? ? ? FF C1 F7 E1 8B C1 2B C2 ? ? 03 C2 C1 E8 ? 69 C0 ? ? ? ? 2B C8 0F BA E9 ? 89 8B ? ? ? ? 48 8B 5C 24 ? 48 8B 6C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? 66 83 FA ?", Name = "InventoryManager.RetrieveFromRetainer")]
         public static IntPtr RetainerRetrieveQuantity;
 
         //7.3
-        [Offset("Search E8 ? ? ? ? 33 D2 45 33 C9 45 33 C0 8D 4A ? E8 ? ? ? ? E9 ? ? ? ? 48 8D 4F ? Add 1 TraceRelative")]
-        [OffsetTC("Search E8 ? ? ? ? 33 D2 45 33 C9 45 33 C0 8D 4A ? E8 ? ? ? ? E9 ? ? ? ? 48 8D 4F ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 33 D2 45 33 C9 45 33 C0 8D 4A ? E8 ? ? ? ? E9 ? ? ? ? 48 8D 4F ? Add 1 TraceRelative", Name = "AgentRetainer.TransferInventoryItem")]
         public static IntPtr EntrustRetainerFunc;
 
-        [Offset("Search 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 80 B9 ? ? ? ? ? 41 8B F0")]
+        [Offset("Search 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 80 B9 ? ? ? ? ? 41 8B F0", Name = "ShopEventHandler.SellStack")]
         public static IntPtr SellFunc;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 41 56 48 83 EC ? 45 8B F1")]
+        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 41 56 48 83 EC ? 45 8B F1", Name = "InventoryManager.EntrustToSaddlebag")]
         public static IntPtr AddToSaddle;
 
-        [Offset("Search E9 ? ? ? ? 84 C0 75 ? 48 8B 49 ? Add 1 TraceRelative")]
+        [Offset("Search E9 ? ? ? ? 84 C0 75 ? 48 8B 49 ? Add 1 TraceRelative", Name = "AgentFreeCompanyChest.MoveItemInChest")]
         public static IntPtr FCChestMove;
 
-        [Offset("Search 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 48 63 EA")]
+        [Offset("Search 48 89 6C 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 48 63 EA", Name = "AgentAetherialWheel.HandleInventoryContextCallback")]
         public static IntPtr PlaceAetherWheel;
 
-        [Offset("Search 48 8B 05 ? ? ? ? 48 85 C0 74 ? 83 B8 ? ? ? ? ? 75 ? E8 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8B 05 ? ? ? ? 48 85 C0 74 ? 83 B8 ? ? ? ? ? 75 ? E8 ? ? ? ? Add 3 TraceRelative", Name = "EventFramework.Instance")]
         public static IntPtr EventHandlerOff;
 
-        [Offset("Search E8 ? ? ? ? 48 8B 74 24 ? B0 ? 48 8B 6C 24 ? 48 8B 5C 24 ? 48 83 C4 ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 48 8B 74 24 ? B0 ? 48 8B 6C 24 ? 48 8B 5C 24 ? 48 83 C4 ? Add 1 TraceRelative", Name = "Materia.SendMeldRequest")]
         internal static IntPtr MeldItem;
 
         //7.5
-        [Offset("Search E8 ? ? ? ? E9 ? ? ? ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 4C 8B F8 48 85 C0 0F 84 ? ? ? ? 48 8B 5D ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? E9 ? ? ? ? BA ? ? ? ? 48 8B CF E8 ? ? ? ? 4C 8B F8 48 85 C0 0F 84 ? ? ? ? 48 8B 5D ? TraceCall", Name = "InventoryManager.DyeItem")]
         // Legacy 7.2 signature retained for regional offset verification; the 7.5 DyeItem API does not call it.
-        [OffsetTC("Search E8 ? ? ? ? 84 C0 74 ? C6 87 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? 41 56 TraceCall")]
+        [OffsetTC("Search E8 ? ? ? ? 84 C0 74 ? C6 87 ? ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 ? ? ? ? ? ? ? ? ? 41 56 TraceCall", Name = "InventoryManager.DyeItem")]
         internal static IntPtr DyeItem;
 
         [Offset("Search 66 89 43 ? 8B 47 ? 89 43 ? 0F B6 47 ? 88 43 ? E8 ? ? ? ? 85 C0 Add 3 Read8")]
         public static int StainId;
 
-        [Offset("Search 40 55 41 55 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 83 B9 ? ? ? ? ?")]
+        [Offset("Search 40 55 41 55 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 83 B9 ? ? ? ? ?", Name = "Housing.RetrieveFromStoreroom")]
         public static IntPtr StoreroomToInventory;
 
-        [Offset("Search E8 ? ? ? ? 48 89 BB ? ? ? ? 83 BB ? ? ? ? ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 89 BB ? ? ? ? 83 BB ? ? ? ? ? TraceCall", Name = "Housing.StoreInventoryItem")]
         public static IntPtr InventoryToStoreroom;
 
-        [Offset("Search E8 ? ? ? ? 89 83 ? ? ? ? C7 44 24 ? ? ? ? ? TraceCall")]
-        internal static IntPtr GetPostingPriceSlot;
+        // Retired: this pattern resolves to map discovery, not a posting-price function.
+        // [Offset("Search E8 ? ? ? ? 89 83 ? ? ? ? C7 44 24 ? ? ? ? ? TraceCall")]
+        // internal static IntPtr GetPostingPriceSlot;
 
         [Offset("Search 8B 68 ? 48 8B 07 FF 50 ? 48 8B 17 Add 2 Read8")]
-        [OffsetTC("Search 8B 68 ? 48 8B 07 FF 50 ? 48 8B 17 Add 2 Read8")]
         internal static int PlayerMeldOffset;
     }
 
     public static class BeastTribeHelperOffsets
     {
-        [Offset("Search E8 ? ? ? ? BA ? ? ? ? 48 8B C8 48 83 C4 ? E9 ? ? ? ? ? ? ? ? ? ? E9 ? ? ? ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? BA ? ? ? ? 48 8B C8 48 83 C4 ? E9 ? ? ? ? ? ? ? ? ? ? E9 ? ? ? ? TraceCall", Name = "QuestManager.GetSingleton")]
         internal static IntPtr GetQuestPointer;
 
         [Offset("Search 48 8D 81 ? ? ? ? 66 0F 1F 44 00 ? 66 39 50 ? 74 ? 41 FF C0 Add 3 Read32")]
@@ -1199,14 +1176,14 @@ namespace LlamaLibrary.Memory
         internal static int DailyQuestCount;
 
         //7.2
-        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? 73 ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 3A 58 ? 73 ? TraceCall", Name = "ExdModule.GetBeastTribeRowByIndex")]
         internal static IntPtr GetBeastTribeExd;
 
-        [Offset("Search E8 ? ? ? ? 4C 8B C8 EB ? 4C 8D 0D ? ? ? ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 4C 8B C8 EB ? 4C 8D 0D ? ? ? ? TraceCall", Name = "ExcelRow.ResolveStringColumnIndirection")]
         internal static IntPtr ResolveStringColumnIndirection;
 
         //7.1
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 84 24 ? ? ? ? ?  Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 84 24 ? ? ? ? ?  Add 3 TraceRelative", Name = "QuestManager.Instance")]
         internal static IntPtr QuestPointer;
 
         // The rank getter indexes BeastReputationWork records in 0x10-byte blocks and reads Rank at
@@ -1262,10 +1239,10 @@ namespace LlamaLibrary.Memory
 
     public static class BlueMageSpellBookOffsets
     {
-        [Offset("Search 48 8D 0D ? ? ? ? 8B D3 E8 ? ? ? ? 45 84 F6  Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? 8B D3 E8 ? ? ? ? 45 84 F6  Add 3 TraceRelative", Name = "ActionManager.Instance")]
         internal static IntPtr ActionManager;
 
-        [Offset("Search E8 ? ? ? ? 45 84 F6 74 2F TraceCall")]
+        [Offset("Search E8 ? ? ? ? 45 84 F6 74 2F TraceCall", Name = "ActionManager.AssignBlueMageActionToSlot")]
         internal static IntPtr SetSpell;
 
         [OffsetTC("Search 83 FE ? 0F 87 ? ? ? ? 48 89 58 ? Add 2 Read8")]
@@ -1279,14 +1256,14 @@ namespace LlamaLibrary.Memory
 
     public static class CraftingHelperOffsets
     {
-        [Offset("Search 4C 8D 0D ? ? ? ? 4C 8B 11 44 0F B7 41 ?  Add 3 TraceRelative")]
+        [Offset("Search 4C 8D 0D ? ? ? ? 4C 8B 11 44 0F B7 41 ?  Add 3 TraceRelative", Name = "InitializeSceneDataValues")]
         internal static IntPtr DohLastAction;
 
-        [Offset("Search 40 53 48 83 EC ? 8B D9 81 F9 ? ? ? ?")]
+        [Offset("Search 40 53 48 83 EC ? 8B D9 81 F9 ? ? ? ?", Name = "QuestManager.IsRecipeComplete")]
         internal static IntPtr HasCraftedRecipe;
 
         //7.1
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 84 24 ? ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? C6 84 24 ? ? ? ? ? Add 3 TraceRelative", Name = "QuestManager.Instance")]
         internal static IntPtr QuestPointer;
 
         [Offset("Search 81 F9 ? ? ? ? 73 38 Add 2 Read32")]
@@ -1301,22 +1278,22 @@ namespace LlamaLibrary.Memory
 
     public static class CurrencyHelperOffsets
     {
-        [Offset("Search 48 8B 1D ? ? ? ? 48 85 DB 74 27 48 8D 4B 20 E8 ? ? ? ? 48 8D 4B 10 E8 ? ? ? ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? 48 8B CB E8 ? ? ? ? 33 D2 Add 3 TraceRelative")]
+        [Offset("Search 48 8B 1D ? ? ? ? 48 85 DB 74 27 48 8D 4B 20 E8 ? ? ? ? 48 8D 4B 10 E8 ? ? ? ? 48 8B CB E8 ? ? ? ? BA ? ? ? ? 48 8B CB E8 ? ? ? ? 33 D2 Add 3 TraceRelative", Name = "CurrencyManager.Instance")]
         internal static IntPtr SpecialCurrencyStorage;
 
-        [Offset("Search E8 ? ? ? ? 41 89 47 0C TraceCall")]
+        [Offset("Search E8 ? ? ? ? 41 89 47 0C TraceCall", Name = "CurrencyManager.GetItemIdBySpecialId")]
         internal static IntPtr GetSpecialCurrencyItemId;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 8B F1 E8 ? ? ? ? 33 DB 8B F8 85 C0 74 ? 66 90 8B CB E8 ? ? ? ? 39 70 ? 74 ? FF C3 3B DF 72 ? 33 C0 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 8B 00")]
+        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 8B F1 E8 ? ? ? ? 33 DB 8B F8 85 C0 74 ? 66 90 8B CB E8 ? ? ? ? 39 70 ? 74 ? FF C3 3B DF 72 ? 33 C0 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 8B 00", Name = "GetTomestonesItem")]
         internal static IntPtr GetTomeItemId;
     }
 
     public static class DirectorHelperOffsets
     {
-        [Offset("Search E8 ? ? ? ? 89 6C 24 38 44 8B F5 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 89 6C 24 38 44 8B F5 TraceCall", Name = "DirectorTodo.GetTodos")]
         public static IntPtr GetTodoArgs;
 
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 89 6C 24 38 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 89 6C 24 38 Add 3 TraceRelative", Name = "ActiveDirector")]
         public static IntPtr ActiveDirector;
     }
 
@@ -1341,7 +1318,7 @@ namespace LlamaLibrary.Memory
 
     public static class GardenHelperOffsets
     {
-        [Offset("Search E8 ? ? ? ? 48 8B CB C7 43 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? B0 01 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 8B CB C7 43 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? B0 01 TraceCall", Name = "AgentHousingPlant.SetInventoryItem")]
         internal static IntPtr PlantFunction;
 
         [Offset("Search 41 8B 4E ? 8D 93 ? ? ? ? Add 3 Read8")]
@@ -1367,58 +1344,58 @@ namespace LlamaLibrary.Memory
 
     public static class GrandCompanyShopOffsets
     {
-        [Offset("Search 0F B6 0D ? ? ? ? FE C9  Add 3 TraceRelative")]
+        [Offset("Search 0F B6 0D ? ? ? ? FE C9  Add 3 TraceRelative", Name = "PlayerState.GrandCompany")]
         internal static IntPtr CurrentGC;
 
-        [Offset("Search 48 83 EC ? 48 8B 05 ? ? ? ? 44 8B C1 BA ? ? ? ? 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? C3 48 8B 00 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? 80 F9 ?")]
+        [Offset("Search 48 83 EC ? 48 8B 05 ? ? ? ? 44 8B C1 BA ? ? ? ? 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? C3 48 8B 00 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? 80 F9 ?", Name = "ExdModule.GetGrandCompanyRankRowByIndex")]
         internal static IntPtr GCGetMaxSealsByRank;
 
         //7.3
         [Offset("Search 48 8D 9E ? ? ? ? 4C 89 AC 24 ? ? ? ? 45 32 E4 Add 3 Read32")]
-        [OffsetTC("Search 48 8D 9E ? ? ? ? 4C 89 AC 24 ? ? ? ? 45 32 E4 Add 3 Read32")]
         internal static int GCArrayStart;
 
         [Offset("Search 83 F8 ? 0F 82 ? ? ? ? 41 0F B6 97 ? ? ? ? Add 2 Read8")]
         internal static int GCShopCount;
 
-        [Offset("Search 48 8B 05 ? ? ? ? 33 C9 40 84 FF 48 0F 45 C1 48 89 05 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8B 05 ? ? ? ? 33 C9 40 84 FF 48 0F 45 C1 48 89 05 ? ? ? ? Add 3 TraceRelative", Name = "GrandCompanyShop.ActiveShopPointer")]
         internal static IntPtr GCShopPtr;
     }
 
     public static class GrandCompanySupplyListOffsets
     {
         //0x
-        [Offset("Search E8 ? ? ? ? 49 8D 8F ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 8B F8 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 49 8D 8F ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 8B F8 TraceCall", Name = "AddonGrandCompanySupplyList.SetExchangeMode")]
         internal static IntPtr SetFilter;
     }
 
     public static class GuildLeveOffsets
     {
-        [Offset("Search 88 05 ? ? ? ? E8 ? ? ? ? 48 8B C8 48 83 C4 ? Add 2 TraceRelative")]
+        [Offset("Search 88 05 ? ? ? ? E8 ? ? ? ? 48 8B C8 48 83 C4 ? Add 2 TraceRelative", Name = "QuestManager.NumLeveAllowances")]
         public static IntPtr AllowancesPtr;
     }
 
     public static class HWDLotteryOffsets
     {
-        [Offset("Search E8 ? ? ? ? 32 C0 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 48 8B CB E8 ? ? ? ? 32 C0 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 32 C0 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 48 8B CB E8 ? ? ? ? 32 C0 TraceCall", Name = "RaptureLogModule.ShowLogMessage")]
         internal static IntPtr KupoFunction;
     }
 
     public static class HousingHelperOffsets
     {
-        [Offset("Search 48 8B 0D ? ? ? ? E8 ? ? ? ? 0F B6 F8 84 C0 75 18 44 8B C5 Add 3 TraceRelative")]
+        [Offset("Search 48 8B 0D ? ? ? ? E8 ? ? ? ? 0F B6 F8 84 C0 75 18 44 8B C5 Add 3 TraceRelative", Name = "HousingManager.Instance")]
         internal static IntPtr PositionInfoAddress;
 
-        [Offset("Search 48 8B 1D ? ? ? ? 48 83 FB FF Add 3 TraceRelative")] // Needs to be tested
-        internal static IntPtr HouseLocationArray;
+        // Retired: no active consumer and the old array layout is unverified.
+        // [Offset("Search 48 8B 1D ? ? ? ? 48 83 FB FF Add 3 TraceRelative")] // Needs to be tested
+        // internal static IntPtr HouseLocationArray;
 
-        [Offset("Search E8 ? ? ? ? BA ? ? ? ? 48 8B F8 8D 4A 02 TraceCall")]
+        [Offset("Search E8 ? ? ? ? BA ? ? ? ? 48 8B F8 8D 4A 02 TraceCall", Name = "HousingManager.GetCurrentIndoorHouseId")]
         internal static IntPtr GetCurrentHouseId;
 
-        [Offset("Search E8 ?? ?? ?? ?? 0F B6 D8 3C FF TraceCall")]
+        [Offset("Search E8 ?? ?? ?? ?? 0F B6 D8 3C FF TraceCall", Name = "HousingManager.GetCurrentPlot")]
         internal static IntPtr GetCurrentPlot;
 
-        [Offset("Search 48 8B 41 ? 48 85 C0 74 ? 8B 80 ? ? ? ? 48 C1 E8 ?")]
+        [Offset("Search 48 8B 41 ? 48 85 C0 74 ? 8B 80 ? ? ? ? 48 C1 E8 ?", Name = "HousingManager.GetCurrentWard")]
         internal static IntPtr GetCurrentWard;
     }
 
@@ -1442,25 +1419,24 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8D 8B ? ? ? ? 48 83 FE 16 Add 3 Read32")]
         internal static int AcceptedHuntBitfieldOffset;
 
-        [Offset("Search 48 89 5C 24 ? 56 48 83 EC 20 0F B6 DA 40 32 F6")]
+        [Offset("Search 48 89 5C 24 ? 56 48 83 EC 20 0F B6 DA 40 32 F6", Name = "MobHunt.IsMarkBillUnlocked")]
         internal static IntPtr CheckMobBoardUnlocked;
 
         //7.4
-        [Offset("Search E8 ? ? ? ? 8B 53 ? 41 B9 ? ? ? ? 33 C9 TraceCall")]
-        [OffsetTC("Search 48 83 EC 28 48 8B 05 ? ? ? ? 44 8B C1 BA 2f 00 00 00 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 05 48 83 C4 28 ")]
+        [Offset("Search E8 ? ? ? ? 8B 53 ? 41 B9 ? ? ? ? 33 C9 TraceCall", Name = "ExdModule.GetBNpcNameRowByIndex")]
+        [OffsetTC("Search 48 83 EC 28 48 8B 05 ? ? ? ? 44 8B C1 BA 2f 00 00 00 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 05 48 83 C4 28 ", Name = "ExdModule.GetBNpcNameRowByIndex")]
         internal static IntPtr Client__ExdData__getBNpcName;
 
-        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B6 40 ? 3B E8 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B6 40 ? 3B E8 TraceCall", Name = "ExdModule.GetMobHuntOrderSubRowById")]
         internal static IntPtr Client__ExdData__getMobHuntOrder;
 
         //7.3
-        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 ? 66 85 C0 74 ? FE CB 0F B6 CB 03 C8 TraceCall")]
-        [OffsetTC("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 ? 66 85 C0 74 ? FE CB 0F B6 CB 03 C8 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 0F B7 40 ? 66 85 C0 74 ? FE CB 0F B6 CB 03 C8 TraceCall", Name = "ExdModule.GetMobHuntOrderTypeRowByIndex")]
         internal static IntPtr Client__ExdData__getMobHuntOrderType;
 
         //7.4
-        [Offset("Search E8 ? ? ? ? 4C 8B E0 48 85 C0 0F 84 ? ? ? ? BA ? ? ? ? TraceCall")]
-        [OffsetTC("Search E8 ? ? ? ? 48 89 45 ? 48 8B D8 48 85 C0 0F 84 ? ? ? ? 48 8D 4D ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 4C 8B E0 48 85 C0 0F 84 ? ? ? ? BA ? ? ? ? TraceCall", Name = "ExdModule.GetMobHuntTargetRowByIndex")]
+        [OffsetTC("Search E8 ? ? ? ? 48 89 45 ? 48 8B D8 48 85 C0 0F 84 ? ? ? ? 48 8D 4D ? TraceCall", Name = "ExdModule.GetMobHuntTargetRowByIndex")]
         internal static IntPtr Client__ExdData__getMobHuntTarget;
 
         [Offset("Search 41 80 FE ?? 0F 83 ?? ?? ?? ?? 41 0F B6 44 0E ?? 48 89 74 24 ?? 41 8B F6 48 89 7C 24 ?? 4C 89 64 24 ?? Add 3 Read8")]
@@ -1472,13 +1448,13 @@ namespace LlamaLibrary.Memory
         [Offset("Search 0F B6 5C 08 ?? 84 DB 74 ?? 0F B6 CA E8 ?? ?? ?? ?? 48 85 C0 74 ?? 0F B7 40 ?? 66 85 C0 74 ?? FE CB 0F B6 CB 48 8B 5C 24 ?? 03 C8 8B C1 48 83 C4 ?? C3 48 8B 5C 24 ?? 33 C9 8B C1 48 83 C4 ?? C3 ?? ?? ?? ?? ?? ?? ?? ?? 48 83 EC ?? 80 FA ?? 72 ?? 32 C0 Add 4 Read8")]
         internal static int ObtainedMarkIdOffset;
 
-        [Offset("Search 48 8D 0D ? ? ? ? 0F B6 50 ? E8 ? ? ? ? 8B C8 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? 0F B6 50 ? E8 ? ? ? ? 8B C8 Add 3 TraceRelative", Name = "MobHunt.Instance")]
         internal static IntPtr HuntData;
 
         [Offset("Search 42 8B 44 89 ? C3 Add 4 Read8")]
         internal static int KillCountOffset;
 
-        [Offset("Search E8 ? ? ? ? 8B CF E8 ? ? ? ? 0F B7 D0 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 8B CF E8 ? ? ? ? 0F B7 D0 TraceCall", Name = "MobHunt.DiscardMarkBill")]
         internal static IntPtr YeetHuntOrderType;
     }
 
@@ -1490,7 +1466,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8B 80 ? ? ? ? 80 38 ? 0F 95 C0 84 C0 75 ? 49 8B 00 Add 3 Read32")]
         internal static int StringPtr; //0xE0
 
-        [Offset("Search 48 8D 1D ? ? ? ? BA ? ? ? ? 48 8D 4D ? E8 ? ? ? ? 4C 8D 45 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 1D ? ? ? ? BA ? ? ? ? 48 8D 4D ? E8 ? ? ? ? 4C 8D 45 ? Add 3 TraceRelative", Name = "AddonInputString.EmptyString")]
         internal static IntPtr UnkStatic;
     }
 
@@ -1498,7 +1474,7 @@ namespace LlamaLibrary.Memory
     {
         //4? 55 53 57 4? 8d ?? ?4 c9 4? 81 ec ?? ?? ?? ?? 4? 8b 05 ?? ?? ?? ??
         // +9 = patch location // + 16 = hook location
-        [Offset("Search 40 55 53 57 48 8d ? ? c9 48 81 ec ? ? ? ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 45 ? 8b c2 41 8b f9 48 8b d9 2d ? ? ? ?")]
+        [Offset("Search 40 55 53 57 48 8d ? ? c9 48 81 ec ? ? ? ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 45 ? 8b c2 41 8b f9 48 8b d9 2d ? ? ? ?", Name = "InstanceContentQuestBattle.ProcessContentSpecificDirectorUpdate")]
         internal static IntPtr PatchLocation;
 
         [Offset("Search 40 55 53 57 48 8d ? ? c9 48 81 ec ? ? ? ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 45 ? 8b c2 41 8b f9 48 8b d9 2d ? ? ? ? Add C Read32")]
@@ -1507,23 +1483,23 @@ namespace LlamaLibrary.Memory
 
     public static class InventoryUpdatePatchOffsets
     {
-        [Offset("Search E9 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 0D ? ? ? ?")]
+        [Offset("Search E9 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 0D ? ? ? ?", Name = "InventoryManager.NotifyInventoryChangedHookSite")]
         internal static IntPtr PatchLocation;
 
-        [Offset("Search E9 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 0D ? ? ? ? TraceCall")]
+        [Offset("Search E9 ? ? ? ? 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 8B 0D ? ? ? ? TraceCall", Name = "EventFramework.MarkInventoryChanged")]
         internal static IntPtr OriginalJump;
 
         //7.1
-        [Offset("Search E8 ? ? ? ? 33 DB FF C6 48 8D 3D ? ? ? ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 33 DB FF C6 48 8D 3D ? ? ? ? Add 1 TraceRelative", Name = "EventFramework.MarkInventoryChanged")]
         internal static IntPtr OrginalCall;
     }
 
     public static class ItemFinderOffsets
     {
-        [Offset("Search 48 8B 0D ?? ?? ?? ?? 48 8B DA E8 ?? ?? ?? ?? 48 85 C0 74 ?? 4C 8B 00 48 8B C8 41 FF 90 ?? ?? ?? ?? 48 8B C8 BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 85 C0 74 ?? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ?? 5B 49 FF 60 ?? 48 83 C4 ?? 5B C3 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 40 53 Add 3 TraceRelative")]
+        [Offset("Search 48 8B 0D ?? ?? ?? ?? 48 8B DA E8 ?? ?? ?? ?? 48 85 C0 74 ?? 4C 8B 00 48 8B C8 41 FF 90 ?? ?? ?? ?? 48 8B C8 BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 85 C0 74 ?? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ?? 5B 49 FF 60 ?? 48 83 C4 ?? 5B C3 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 40 53 Add 3 TraceRelative", Name = "Framework.InstancePointer2")]
         internal static IntPtr GFramework2;
 
-        [Offset("Search E8 ? ? ? ? 48 8B C8 48 85 C0 74 ? 48 8B 00 FF 90 ? ? ? ? 48 8B C8 33 D2 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 8B C8 48 85 C0 74 ? 48 8B 00 FF 90 ? ? ? ? 48 8B C8 33 D2 TraceCall", Name = "Framework.GetUIModule")]
         internal static IntPtr GetUiModule;
 
         //Broken pattern but it should be 0x88
@@ -1550,7 +1526,6 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search 80 B9 ? ? ? ? ? 48 8B D9 74 ? 48 83 C4 ? Add 2 Read32")]
-        [OffsetTC("Search 80 B9 ? ? ? ? ? 48 8B D9 74 ? 48 83 C4 ? Add 2 Read32")]
         internal static int GlamourDresserCached;
     }
 
@@ -1559,27 +1534,27 @@ namespace LlamaLibrary.Memory
         /*[Offset("Search 44 88 84 0A ? ? ? ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 88 91 ? ? ? ? Add 4 Read32")]
         internal static int GatheringStateOffset;*/
 
-        [Offset("Search 0F B6 0D ? ? ? ? FE C9  Add 3 TraceRelative")]
+        [Offset("Search 0F B6 0D ? ? ? ? FE C9  Add 3 TraceRelative", Name = "PlayerState.GrandCompany")]
         internal static IntPtr CurrentGC;
 
-        [Offset("Search 48 83 EC ? 48 8B 05 ? ? ? ? 44 8B C1 BA ? ? ? ? 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? C3 48 8B 00 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? 80 F9 ?")]
+        [Offset("Search 48 83 EC ? 48 8B 05 ? ? ? ? 44 8B C1 BA ? ? ? ? 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? C3 48 8B 00 48 83 C4 ? C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 83 EC ? 80 F9 ?", Name = "ExdModule.GetGrandCompanyRankRowByIndex")]
         internal static IntPtr GCGetMaxSealsByRank;
 
         //PlayerID 8byte ulong ID unique to that character which is included in MB listings
-        [Offset("Search 48 8B 05 ? ? ? ? 48 8D 0D ? ? ? ? 41 8B DC Add 3 TraceRelative")]
+        [Offset("Search 48 8B 05 ? ? ? ? 48 8D 0D ? ? ? ? 41 8B DC Add 3 TraceRelative", Name = "PlayerState.ContentId")]
         internal static IntPtr PlayerId;
 
         //Useless as of 7.2, kept for reference. New method is in AccountIdLocation which only works on the current account (not other players) and still works on CN 7.1
         //[Offset("Search 48 89 B3 ? ? ? ? 48 89 B3 ? ? ? ? 48 8B 74 24 ? 89 BB ? ? ? ? Add 3 Read32")]
         //internal static int AccountId;
 
-        [Offset("Search 48 8B 3D ? ? ? ? 48 85 FF 74 ? 48 89 5C 24 ? Add 3 TraceRelative")]
+        [Offset("Search 48 8B 3D ? ? ? ? 48 85 FF 74 ? 48 89 5C 24 ? Add 3 TraceRelative", Name = "AccountData.InstancePointer")]
         internal static IntPtr AccountIdLocation;
 
         [Offset("Search 48 89 77 ? C7 07 ? ? ? ? Add 3 Read8")]
         internal static int AccountIdOffset;
 
-        [Offset("Search 0F B6 05 ? ? ? ? 88 83 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 0F B6 05 ? ? ? ? 88 83 ? ? ? ? Add 3 TraceRelative", Name = "Movement.IsWalking")]
         internal static IntPtr RunWalk;
 
         [Offset("Search 48 8B 8F ? ? ? ? 48 85 C9 74 ? 48 8B 01 FF 90 ? ? ? ? 84 C0 Add 3 Read32")]
@@ -1591,7 +1566,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8B DA 66 83 B9 ? ? ? ? ?  Add 6 Read32")]
         internal static int CurrentMount;
 
-        [Offset("Search E8 ? ? ? ? 84 C0 75 ? 8B FB TraceCall")]
+        [Offset("Search E8 ? ? ? ? 84 C0 75 ? 8B FB TraceCall", Name = "Conditions.HasPermission")]
         internal static IntPtr HasPermission;
     }
 
@@ -1610,7 +1585,6 @@ namespace LlamaLibrary.Memory
     {
         //7.3
         [Offset("Search BA ? ? ? ? 48 8B 8B ? ? ? ? E8 ? ? ? ? 41 8B 86 ? ? ? ? Add 8 Read32")]
-        [OffsetTC("Search BA ? ? ? ? 48 8B 8B ? ? ? ? E8 ? ? ? ? 41 8B 86 ? ? ? ? Add 8 Read32")]
         internal static int AtkComponentTextInputNodePtr;
 
         [Offset("Search 48 8D 97 ? ? ? ? 48 8B 05 ? ? ? ? 33 F6 Add 3 Read32")]
@@ -1624,7 +1598,6 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search BA ? ? ? ? 48 8B 08 4C 8B 41 ? 48 8B C8 41 FF D0 48 8B F8 48 85 C0 0F 84 ? ? ? ? 45 33 C0 Add 1 Read8")]
-        [OffsetTC("Search BA ? ? ? ? 48 8B 08 4C 8B 41 ? 48 8B C8 41 FF D0 48 8B F8 48 85 C0 0F 84 ? ? ? ? 45 33 C0 Add 1 Read8")]
         internal static int NumberArrayIndex;
 
         [Offset("Search 48 8B 41 ? 48 63 D2 44 39 04 90 Add 3 Read8")]
@@ -1634,50 +1607,45 @@ namespace LlamaLibrary.Memory
     public static class NpcHelperOffsets
     {
         //7.1
-        [Offset("Search E8 ? ? ? ? 0F B6 48 ? 85 C9 0F 84 ? ? ? ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 0F B6 48 ? 85 C9 0F 84 ? ? ? ? TraceCall", Name = "ExdModule.GetENpcResidentRowById")]
         internal static IntPtr GetENpcResident;
     }
 
     public static class OutOnALimbDirectorOffsets
     {
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B D0 48 8D 0D ? ? ? ? B8 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B D0 48 8D 0D ? ? ? ? B8 ? ? ? ? Add 3 TraceRelative", Name = "ActiveDirector")]
         internal static IntPtr ActiveDirectorPtr;
 
         //7.3
-        [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? 48 8B 39 48 8B 07")]
-        [OffsetTC("Search 48 89 5C 24 ? 57 48 83 EC ? 48 8B 39 48 8B 07")]
+        [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? 48 8B 39 48 8B 07", Name = "DirectorTodo.GetTimeRemaining")]
         internal static IntPtr RemainingTimeFunction;
 
         //7.3
         [Offset("Search 89 86 ? ? ? ? 0F B6 45 ? 88 86 ? ? ? ? 8B 45 ? Add 2 Read32")]
-        [OffsetTC("Search 89 86 ? ? ? ? 0F B6 45 ? 88 86 ? ? ? ? 8B 45 ? Add 2 Read32")]
         internal static int SwingResult;
 
         //7.3
         [Offset("Search 89 86 ? ? ? ? 8B 45 ? 89 86 ? ? ? ? 0F B6 86 ? ? ? ? Add 2 Read32")]
-        [OffsetTC("Search 89 86 ? ? ? ? 8B 45 ? 89 86 ? ? ? ? 0F B6 86 ? ? ? ? Add 2 Read32")]
         internal static int CurrentPayout;
 
         //7.3
         [Offset("Search 89 86 ? ? ? ? 0F B6 86 ? ? ? ? 48 6B D0 ? Add 2 Read32")]
-        [OffsetTC("Search 89 86 ? ? ? ? 0F B6 86 ? ? ? ? 48 6B D0 ? Add 2 Read32")]
         internal static int DoubleDownPayout;
 
         //7.3
         [Offset("Search 66 89 86 ? ? ? ? 8B 96 ? ? ? ? Add 3 Read32")]
-        [OffsetTC("Search 66 89 86 ? ? ? ? 8B 96 ? ? ? ? Add 3 Read32")]
         internal static int ProgressNeeded;
 
         //7.3
         [Offset("Search C6 86 ? ? ? ? ? 8B 45 ? Add 2 Read32")]
-        [OffsetTC("Search C6 86 ? ? ? ? ? 8B 45 ? Add 2 Read32")] //7.2
+        //7.2
         internal static int SwingsTaken;
 
         [Offset("Search 0F B6 B3 ? ? ? ? 48 8B 0D ? ? ? ? 2B F0 44 8B B3 ? ? ? ? Add 3 Read32")]
-        [OffsetTC("Search 0F B6 B3 ? ? ? ? 48 8B 0D ? ? ? ? 2B F0 44 8B B3 ? ? ? ? Add 3 Read32")] //7.2
+        //7.2
         internal static int MaxSwings;
 
-        [Offset("Search 80 3D ? ? ? ? ? 0F 84 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? Add 2 TraceRelative")]
+        [Offset("Search 80 3D ? ? ? ? ? 0F 84 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? Add 2 TraceRelative", Name = "GoldSaucerMiniGame.ActiveFlagAnchor")]
         internal static IntPtr IsActiveByte;
     }
 
@@ -1685,30 +1653,28 @@ namespace LlamaLibrary.Memory
     {
         //7.3
         [Offset("Search 48 8B 89 ? ? ? ? 4D 8B F1 48 8B 87 ? ? ? ? Add 3 Read32")]
-        [OffsetTC("Search 48 8B 89 ? ? ? ? 4D 8B F1 48 8B 87 ? ? ? ? Add 3 Read32")]
         internal static int ObjectCount;
     }
 
     public static class RaceChocoboManagerOffsets
     {
         //7.3
-        [Offset("Search 48 8D 0D ? ? ? ? 8B DA E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? 5B C3 8B D3 48 8B C8 E8 ? ? ? ? B0 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 0D ? ? ? ? 8B DA E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? 5B C3 8B D3 48 8B C8 E8 ? ? ? ? B0 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? 8B DA E8 ? ? ? ? 48 85 C0 75 ? 48 83 C4 ? 5B C3 8B D3 48 8B C8 E8 ? ? ? ? B0 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 TraceRelative", Name = "RaceChocoboManager.Instance")]
         internal static IntPtr Instance;
     }
 
     public static class RelicBookManagerOffsets
     {
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 75 ? 33 C0 EB ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 75 ? 33 C0 EB ? Add 3 TraceRelative", Name = "RelicNote.Instance")]
         internal static IntPtr UIRelicNote;
 
-        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 56 41 57 48 83 EC 20 45 8B F8 ")]
+        [Offset("Search 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 56 41 57 48 83 EC 20 45 8B F8 ", Name = "RelicNote.GetCompletedBookCount")]
         internal static IntPtr GetNumOfRelicNoteCompleted;
     }
 
     public static class RequestHelperOffsets
     {
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 44 0F B6 E8 EB ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 44 0F B6 E8 EB ? Add 3 TraceRelative", Name = "NpcTrade.Instance")]
         internal static IntPtr RequestInfo;
 
         //7.3
@@ -1727,23 +1693,22 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search 0F B6 51 ? 3A C2 0F 83 ? ? ? ? Add 3 Read8")]
-        [OffsetTC("Search 0F B6 51 ? 3A C2 0F 83 ? ? ? ? Add 3 Read8")]
         internal static int ItemCount2;
     }
 
     public static class ResidentialHousingManagerOffsets
     {
         //6.3
-        [Offset("Search 33 C9 E8 ? ? ? ? 48 8B C8 E8 ? ? ? ?  Add 2 TraceCall")]
+        [Offset("Search 33 C9 E8 ? ? ? ? 48 8B C8 E8 ? ? ? ?  Add 2 TraceCall", Name = "HousingManager.GetOwnedHouseId")]
         internal static IntPtr GetResidentObject;
 
-        [Offset("Search 40 53 48 83 EC ? 48 8B D9 48 83 F9 ? 74 ?")]
+        [Offset("Search 40 53 48 83 EC ? 48 8B D9 48 83 F9 ? 74 ?", Name = "Housing.IsValidHouseId")]
         internal static IntPtr CheckValid;
     }
 
     public static class RetainerHireOffsets
     {
-        [Offset("Search 0F B6 15 ? ? ? ? EB ? Add 3 TraceRelative")]
+        [Offset("Search 0F B6 15 ? ? ? ? EB ? Add 3 TraceRelative", Name = "RetainerHiring.AvailableSlots")]
         internal static IntPtr MaxRetainers;
     }
 
@@ -1764,7 +1729,6 @@ namespace LlamaLibrary.Memory
 
         //7.3
         [Offset("Search BA ? ? ? ? 48 8B 08 4C 8B 41 ? 48 8B C8 41 FF D0 4C 8B E0 48 85 F6 Add 1 Read32")]
-        [OffsetTC("Search BA ? ? ? ? 48 8B 08 4C 8B 41 ? 48 8B C8 41 FF D0 4C 8B E0 48 85 F6 Add 1 Read32")]
         internal static int StringArrayIndex;
 
         [Offset("Search 48 8B 51 ? 0F 84 ? ? ? ? Add 3 Read8")]
@@ -1774,7 +1738,7 @@ namespace LlamaLibrary.Memory
         internal static int StringArrayData_Start;
 
         // GetSubModule
-        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ? 5B 49 FF 60 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ? 5B 49 FF 60 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 TraceCall", Name = "InfoModule.GetInfoProxyById")]
         internal static IntPtr GetSubModule;
 
         // vfunc 33 of UIModule
@@ -1788,24 +1752,25 @@ namespace LlamaLibrary.Memory
         [Offset("Search 48 8B 8B ? ? ? ? 48 8D 54 24 ? 48 89 4C 24 ? 45 33 C9 48 8B C8 Add 3 Read32")]
         internal static int RetainerId;
 
-        [Offset("Search E8 ? ? ? ? 84 C0 75 ? 48 8B 4F ? 83 4F ? ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 84 C0 75 ? 48 8B 4F ? 83 4F ? ? TraceCall", Name = "RetainerMarket.RequestSalesHistory")]
         internal static IntPtr RequestSales;
     }
 
     public static class ScreenshotHelperOffsets
     {
         //7.1
-        [Offset("Search E8 ? ? ? ? 84 C0 75 ? C6 05 ? ? ? ? ? E8 ? ? ? ? 48 89 05 ? ? ? ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 84 C0 75 ? C6 05 ? ? ? ? ? E8 ? ? ? ? 48 89 05 ? ? ? ? Add 1 TraceRelative", Name = "ScreenShot.ScheduleScreenShot")]
         internal static IntPtr ScreenshotFunc;
 
-        [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? BB ? ? ? ? 83 FA ?")]
+        [Offset("Search 48 89 5C 24 ? 57 48 83 EC ? BB ? ? ? ? 83 FA ?", Name = "UIModule.ScreenShotCallback")]
         internal static IntPtr CallbackFunction;
 
-        [Offset("Search 48 8B 0D ? ? ? ? 48 8D 15 ? ? ? ? 45 33 C0 E8 ? ? ? ? 84 C0 Add 3 TraceRelative")]
+        [Offset("Search 48 8B 0D ? ? ? ? 48 8D 15 ? ? ? ? 45 33 C0 E8 ? ? ? ? 84 C0 Add 3 TraceRelative", Name = "ScreenShot.InstancePointer")]
         internal static IntPtr ScreenshotStruct;
 
         //7.1
-        [Offset("Search C6 05 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? Add 2 TraceRelative")]
+        // MOV [RIP+disp32],imm8: TraceRelative stops before imm8. ScreenshotHelper.State adds 1.
+        [Offset("Search C6 05 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? Add 2 TraceRelative", Name = "UIInputModule.ScreenShotStateAnchor")]
         internal static IntPtr ScreenshotState;
 
         [Offset("Search 48 8D 4B ? 48 8D 44 24 ? 48 3B C1 Add 3 Read8")]
@@ -1825,7 +1790,6 @@ namespace LlamaLibrary.Memory
     {
         //7.3
         [Offset("Search 8B 5B ? FF 50 ? F6 05 ? ? ? ? ? 48 89 44 24 ? C7 44 24 ? ? ? ? ? 48 C7 44 24 ? ? ? ? ? 89 5C 24 ? 0F 85 ? ? ? ? Add 2 Read8")]
-        [OffsetTC("Search 8B 5B ? FF 50 ? F6 05 ? ? ? ? ? 48 89 44 24 ? C7 44 24 ? ? ? ? ? 48 C7 44 24 ? ? ? ? ? 89 5C 24 ? 0F 85 ? ? ? ? Add 2 Read8")]
         internal static int ShopIdPointer;
     }
 
@@ -1855,19 +1819,19 @@ namespace LlamaLibrary.Memory
         // operand data, so each is wildcarded. The four-instruction semantic anchor matched once in
         // .text on Global 2026.07.16.0001.0000 and TC 2026.07.22.0000.0000; TraceRelative resolves
         // the first call to the component type function.
-        [Offset("Search E8 ? ? ? ? 83 F8 ? 75 ? 0F BA E3 ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 83 F8 ? 75 ? 0F BA E3 ? Add 1 TraceRelative", Name = "AtkComponentBase.GetComponentType")]
         internal static IntPtr ComponentGetType;
 
         // This anchor keeps only opcode/register structure from the call, flag update, jump, and
         // alternate bit-set path. Ghidra operand masks wildcard both call/branch targets and every
         // displacement/immediate; it matched once in the same Global and TC client builds.
-        [Offset("Search E8 ? ? ? ? 81 4F ? ? ? ? ? EB ? 0F BA EA ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 81 4F ? ? ? ? ? EB ? 0F BA EA ? Add 1 TraceRelative", Name = "AtkComponentNumericInput.SetValue")]
         internal static IntPtr NumericInputSetValue;
     }
 
     public static class SnipeManagerOffsets
     {
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 05 45 32 E4 EB 0F Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 05 45 32 E4 EB 0F Add 3 TraceRelative", Name = "SnipeManager.InstancePointer")]
         internal static IntPtr Instance;
 
         [Offset("Search 8B 83 ? ? ? ? 89 45 10 48 8D 45 10 48 89 45 18 48 8D 42 01 48 3B C8 77 17 41 8B D6 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 54 24 ? 48 8B 4C 24 ? Add 2 Read32")]
@@ -1906,30 +1870,29 @@ namespace LlamaLibrary.Memory
 
     public static class SquadronStatusOffsets
     {
-        [Offset("Search 8B 3D ? ? ? ? 8B D8 3B F8 Add 2 TraceRelative")]
+        [Offset("Search 8B 3D ? ? ? ? 8B D8 3B F8 Add 2 TraceRelative", Name = "PlayerState.SquadronMissionCompletionTimestamp")]
         internal static IntPtr SquadronStatus;
     }
 
     public static class TeleportHelperOffsets
     {
         //7.3
-        [Offset("Search E8 ? ? ? ? 49 89 47 ? BA ? ? ? ? TraceCall")]
-        [OffsetTC("Search E8 ? ? ? ? 49 89 47 ? BA ? ? ? ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 49 89 47 ? BA ? ? ? ? TraceCall", Name = "Telepo.UpdateAetheryteList")]
         internal static IntPtr UpdatePlayerAetheryteList;
 
-        [Offset("Search E8 ? ? ? ? 48 8B 4B ? 84 C0 48 8B 01 74 ? Add 1 TraceRelative")]
+        [Offset("Search E8 ? ? ? ? 48 8B 4B ? 84 C0 48 8B 01 74 ? Add 1 TraceRelative", Name = "Telepo.Teleport")]
         internal static IntPtr TeleportWithSettings;
 
-        [Offset("Search 48 8D 0D ? ? ? ? 8B FA E8 ? ? ? ? 48 8B 4B ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? 8B FA E8 ? ? ? ? 48 8B 4B ? Add 3 TraceRelative", Name = "Telepo.Instance")]
         internal static IntPtr Telepo;
     }
 
     public static class TimersOffsets
     {
-        [Offset("Search 48 83 EC ? 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 48 8B C8 48 83 C4 ? E9 ? ? ? ? E8 ? ? ? ?")]
+        [Offset("Search 48 83 EC ? 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 48 8B C8 48 83 C4 ? E9 ? ? ? ? E8 ? ? ? ?", Name = "Framework.GetServerTime")]
         internal static IntPtr GetCurrentTime;
 
-        [Offset("Search 48 83 EC 28 48 8B 05 ? ? ? ? 44 8B C1 BA 1e 01 00 00 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 05 48 83 C4 28")]
+        [Offset("Search 48 83 EC 28 48 8B 05 ? ? ? ? 44 8B C1 BA 1e 01 00 00 48 8B 88 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 05 48 83 C4 28", Name = "ExdModule.GetCycleTimeRowByIndex")]
         internal static IntPtr GetCycleExd;
     }
 
@@ -1957,19 +1920,17 @@ namespace LlamaLibrary.Memory
         internal static int AtkModuleTextServiceEvent;
 
         //7.3
-        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F0")]
-        [OffsetTC("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F0")]
+        [Offset("Search 48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 41 0F B6 F0", Name = "AtkModule.InsertTextIntoFocusedInput")]
         internal static IntPtr SendStringToFocus;
 
-        [Offset("Search E8 ? ? ? ? 33 FF 48 8D 4B 70 33 D2 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 33 FF 48 8D 4B 70 33 D2 TraceCall", Name = "Utf8String.Ctor")]
         internal static IntPtr Utf8StringCtor;
 
-        [Offset("Search E8 ? ? ? ? 48 8B CB 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? 56 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 8B CB 48 8B 5C 24 ? 48 83 C4 ? 5F E9 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 ? 56 TraceCall", Name = "Utf8String.SetString")]
         internal static IntPtr Utf8SetString;
 
         //7.3
-        [Offset("Search E8 ? ? ? ? 4C 8B C7 48 8D 55 ? 49 8B CE E8 ? ? ? ? 48 8D 4D ? 48 89 45 ? TraceCall")]
-        [OffsetTC("Search E8 ? ? ? ? 4C 8B C7 48 8D 55 ? 49 8B CE E8 ? ? ? ? 48 8D 4D ? 48 89 45 ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 4C 8B C7 48 8D 55 ? 49 8B CE E8 ? ? ? ? 48 8D 4D ? 48 89 45 ? TraceCall", Name = "Utf8String.CtorFromSequence")]
         internal static IntPtr Utf8StringFromSequenceCtor;
 
         [Offset("Search 4C 89 71 ?? 48 89 01 48 8B D9 48 8B 44 24 ?? Add 3 Read8")]
@@ -1979,28 +1940,28 @@ namespace LlamaLibrary.Memory
     public static class UIStateOffsets
     {
         //7.5
-        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? 48 8B 05 ? ? ? ? 48 85 C0 74 ? F6 40 09 ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 48 8B 01 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? 48 8B 05 ? ? ? ? 48 85 C0 74 ? F6 40 09 ? Add 3 TraceRelative", Name = "UIState.Instance")]
+        [OffsetTC("Search 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B 8B ? ? ? ? 48 8B 01 Add 3 TraceRelative", Name = "UIState.Instance")]
         internal static IntPtr Instance;
 
-        [Offset("Search 40 53 48 83 EC ? 48 8B D9 66 85 D2 74 ?")]
+        [Offset("Search 40 53 48 83 EC ? 48 8B D9 66 85 D2 74 ?", Name = "UIState.IsTripleTriadCardUnlocked")]
         internal static IntPtr CardUnlocked;
 
         // UIState::IsTripleTriadNpcBeaten(TripleTriadResident row id)
-        [Offset("Search 40 53 48 83 EC ? 8D 82 ? ? ? ? 48 8B D9 3D ? ? ? ?")]
+        [Offset("Search 40 53 48 83 EC ? 8D 82 ? ? ? ? 48 8B D9 3D ? ? ? ?", Name = "UIState.IsTripleTriadNpcBeaten")]
         internal static IntPtr TripleTriadNpcBeaten;
 
-        [Offset("Search E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 48 8D 0D ? ? ? ? 48 89 5C 24 ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 48 8D 0D ? ? ? ? 48 89 5C 24 ? TraceCall", Name = "UIState.IsEmoteUnlocked")]
         internal static IntPtr EmoteUnlocked;
 
-        [Offset("Search 48 8D 0D ? ? ? ? 0F B6 04 08 84 D0 75 ? B8 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ? ? ? ? 0F B6 04 08 84 D0 75 ? B8 ? ? ? ? Add 3 TraceRelative", Name = "UnlockedCompanions")]
         internal static IntPtr MinionArray;
 
-        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 66 39 B0 ? ? ? ? 0F 84 ? ? ? ? TraceCall")]
-        [OffsetTC("Search E8 ? ? ? ? 48 85 C0 74 ? 66 83 B8 ? ? ? ? ? 0F 84 ? ? ? ? TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 66 39 B0 ? ? ? ? 0F 84 ? ? ? ? TraceCall", Name = "ExdModule.GetItemRowById")]
+        [OffsetTC("Search E8 ? ? ? ? 48 85 C0 74 ? 66 83 B8 ? ? ? ? ? 0F 84 ? ? ? ? TraceCall", Name = "ExdModule.GetItemRowById")]
         internal static IntPtr ExdGetItem;
 
-        [Offset("Search E8 ? ? ? ? 49 8B CE 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 49 8B CE 89 86 ? ? ? ? E8 ? ? ? ? 85 C0 TraceCall", Name = "UIState.IsItemActionUnlocked")]
         internal static IntPtr IsItemActionUnlocked;
 
         [Offset("Search 0F B7 8A ? ? ? ? E8 ? ? ? ? 48 8B F8 Add 3 Read32")]
@@ -2028,7 +1989,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search 0F B7 81 ? ? ? ? 66 89 44 24 ? 48 8D 4C 24 ? Add 3 Read32")]
         internal static int HomeWorld;
 
-        [Offset("Search 0F B7 4A 02 E8 ? ? ? ? 48 85 C0 Add 4 TraceCall")]
+        [Offset("Search 0F B7 4A 02 E8 ? ? ? ? 48 85 C0 Add 4 TraceCall", Name = "ExdModule.GetPlaceNameRowByIndex")]
         internal static IntPtr GetPlaceName;
     }
 
@@ -2037,62 +1998,58 @@ namespace LlamaLibrary.Memory
         /// <summary>
         ///     Pointer to where the game stores the map subkey.
         /// </summary>
-        [Offset("Search 48 8d 0d ?? ?? ?? ?? e8 ?? ?? ?? ?? 48 8d 0d ?? ?? ?? ?? 0f b7 d8 e8 ?? ?? ?? ?? Add 3 TraceRelative")]
+        [Offset("Search 48 8d 0d ?? ?? ?? ?? e8 ?? ?? ?? ?? 48 8d 0d ?? ?? ?? ?? 0f b7 d8 e8 ?? ?? ?? ?? Add 3 TraceRelative", Name = "TreasureMap.DecipheredMapState")]
         internal static IntPtr CurrentMap;
     }
 
     public static class PlatypusOffsets
     {
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 48 89 43 ? 48 89 43 ? 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 03 33 C0 48 89 43 ? 48 89 43 ? 48 8B C3 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 Add 3 TraceRelative", Name = "AgentContentsMvp.VTable")]
         public static IntPtr AgentMvpVTable;
 
-        [Offset("Search 48 8D 05 ? ? ? ? ? ? ? 48 8B D9 74 ? 0F B6 41 Add 3 TraceRelative")] // Starting in 7.25
+        [Offset("Search 48 8D 05 ? ? ? ? ? ? ? 48 8B D9 74 ? 0F B6 41 Add 3 TraceRelative", Name = "AgentActionDetail.VTable")] // Starting in 7.25
         public static IntPtr AgentNotificationVTable;
 
-        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ? 5B 49 FF 60 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 48 85 C0 74 ? 4C 8B 00 48 8B D3 48 8B C8 48 83 C4 ? 5B 49 FF 60 ? 48 83 C4 ? 5B C3 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 40 53 TraceCall", Name = "InfoModule.GetInfoProxyById")]
         public static IntPtr GetFreeCompanyInfoProxy;
 
         [Offset("Search BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 8B 53 ? 48 8B C8 E8 ? ? ? ? 48 8B 4B ? C7 43 ? ? ? ? ? Add 1 Read8")]
-        [OffsetTC("Search BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 ? 8B 53 ? 48 8B C8 E8 ? ? ? ? 48 8B 4B ? C7 43 ? ? ? ? ? Add 1 Read8")]
         public static int FreeCompanyInfoProxy;
 
         [Offset("Search 88 46 ? 41 0F B6 46 ? 88 46 ? 41 0F B6 46 ? 88 46 ? 49 8B 46 ? Add 2 Read8")]
         public static int FreeCompanyGrandCompany;
 
-        [Offset("Search E8 ? ? ? ? 44 0F B6 87 ? ? ? ? BA ? ? ? ? 44 0F B6 C8 TraceCall")]
-        [OffsetTC("Search E8 ? ? ? ? 44 0F B6 87 ? ? ? ? BA ? ? ? ? 44 0F B6 C8 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 44 0F B6 87 ? ? ? ? BA ? ? ? ? 44 0F B6 C8 TraceCall", Name = "InfoProxyFreeCompany.GetMaxInactiveActions")]
         public static IntPtr FreeCompanyMaxInactiveActionsFunction;
 
-        [Offset("Search E8 ? ? ? ? 44 0F B6 83 88 09 00 00 TraceCall")]
+        [Offset("Search E8 ? ? ? ? 44 0F B6 83 88 09 00 00 TraceCall", Name = "InfoProxyFreeCompany.GetMaxActiveActions")]
         public static IntPtr FreeCompanyMaxActiveActionsFunction;
 
         //7.5
-        [Offset("48 8D 05 ? ? ? ? 48 89 01 33 FF 48 8D 05 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("48 8D 05 ? ? ? ? 48 89 01 33 FF 48 8D 05 ? ? ? ? Add 3 TraceRelative", Name = "AgentFreeCompanyCreditShop.VTable")]
         //7.3
         //[Offset("Search 48 8D 05 ? ? ? ? 48 89 03 48 8D 05 ? ? ? ? 48 89 43 ? E8 ? ? ? ? 4C 89 6B ? Add 3 TraceRelative")]
-        [OffsetTC("Search 48 8D 05 ? ? ? ? 48 89 01 33 FF 48 8D 05 ? ? ? ? Add 3 TraceRelative")]
         public static IntPtr AgentFreeCompanyCreditShopVTable;
 
         [Offset("Search 89 91 ? ? ? ? 48 8D 44 24 ? BF ? ? ? ? Add 2 Read32")]
         public static int FreeCompanyCredits;
 
-        [Offset("Search E8 ? ? ? ? EB ? 80 7E ? ? 75 ? 48 8B 4E ? 48 8B 01 FF 50 ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? EB ? 45 33 C0 TraceCall")]
+        [Offset("Search E8 ? ? ? ? EB ? 80 7E ? ? 75 ? 48 8B 4E ? 48 8B 01 FF 50 ? 48 8B C8 BA ? ? ? ? E8 ? ? ? ? EB ? 45 33 C0 TraceCall", Name = "AgentTradeMultiple.AddItemQuantity")]
         public static IntPtr SelectMateriaFunc;
 
-        [Offset("Search E8 ?? ?? ?? ?? 04 30 FF C3 TraceCall")]
+        [Offset("Search E8 ?? ?? ?? ?? 04 30 FF C3 TraceCall", Name = "Achievement.IsComplete")]
         public static IntPtr IsCompletePtr;
 
-        [Offset("Search 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 04 30 FF C3 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 04 30 FF C3 Add 3 TraceRelative", Name = "Achievement.Instance")]
         public static IntPtr AchievementInstancePtr;
 
-        [Offset("Search 48 8D 05 ? ? ? ? 4C 89 7F ? 48 89 07 48 8D B7 ? ? ? ? Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 4C 89 7F ? 48 89 07 48 8D B7 ? ? ? ? Add 3 TraceRelative", Name = "AgentAchievement.VTable")]
         public static IntPtr AgentAchievementVTable;
 
         [Offset("Search 41 8B 46 ? 41 3B C7 Add 3 Read8")]
-        [OffsetTC("Search 41 8B 46 ? 41 3B C7 Add 3 Read8")]
         public static int AgentAchievementStatus;
 
-        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 28 E9 ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 18 48 89 74 24 20 Add 3 TraceRelative")]
+        [Offset("Search 48 8D 05 ? ? ? ? 48 89 01 48 8D 05 ? ? ? ? 48 89 41 28 E9 ? ? ? ? ? ? ? ? ? ? 48 89 5C 24 18 48 89 74 24 20 Add 3 TraceRelative", Name = "AgentTradeMultiple.VTable")]
         public static IntPtr AgentTradeMultiple;
     }
 }
