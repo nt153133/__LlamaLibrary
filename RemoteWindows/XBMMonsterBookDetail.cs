@@ -4,14 +4,15 @@ namespace LlamaLibrary.RemoteWindows
 {
     /// <summary>Provides access to the selected familiar's detail page in the Master's Bestiary.</summary>
     /// <remarks>
-    /// FFXIVClientStructs bb007e6f names this addon XBMMonsterNotebookDetail. The reported
-    /// XBMMonsterBookDetail spelling remains unverified; capture live addon names before adding an alias.
+    /// The live 7.56 capture confirms XBMMonsterBookDetail, despite FFXIVClientStructs bb007e6f's
+    /// XBMMonsterNotebookDetail symbol. Both book windows report agent 500 in that capture;
+    /// this detail addon has no ATK values of its own, while the notebook carries the selected details.
     /// Selection and assignment callback arguments are intentionally left unmapped until observed.
     /// </remarks>
-    public class XBMMonsterNotebookDetail : RemoteWindow<XBMMonsterNotebookDetail>
+    public class XBMMonsterBookDetail : RemoteWindow<XBMMonsterBookDetail>
     {
         /// <summary>Creates a wrapper for the client-owned selected-familiar detail page.</summary>
-        public XBMMonsterNotebookDetail() : base("XBMMonsterNotebookDetail")
+        public XBMMonsterBookDetail() : base("XBMMonsterBookDetail")
         {
         }
 

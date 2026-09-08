@@ -70,6 +70,22 @@ namespace LlamaLibrary.Helpers
                     var type = (AtkValueType)value.Type;
                     var baseType = type & AtkValueType.TypeMask;
                     var description = $"  [{index}] type={type} data=0x{value.Data:X}";
+                    // ATK's union can retain unrelated upper bytes when the client writes a
+                    // smaller scalar. The first 7.56 capture demonstrated this for UInt/Bool.
+                    // Decode the tagged width; retain the raw union only as diagnostic evidence.
+                    switch (baseType)
+                    {
+                        case AtkValueType.Bool:
+                            description += $" value={value.Bool}";
+                            break;
+                        case AtkValueType.Int:
+                            description += $" value={value.Int}";
+                            break;
+                        case AtkValueType.UInt:
+                            description += $" value={value.UInt}";
+                            break;
+                    }
+
                     if ((baseType == AtkValueType.String || baseType == AtkValueType.String8) && value.Data != 0)
                     {
                         // Bound diagnostic string reads to 1 KiB: labels are short, and an unexpected

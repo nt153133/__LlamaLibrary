@@ -26,10 +26,28 @@ an RB coroutine when closed and uses `/bestiary`; the other wrappers' `Open()`
 methods only report existing visibility because independent opening is not mapped.
 Inherited `SendAction` remains a low-level API, not verified Beastmaster support.
 
-The supplied name `XBMMonsterBookDetail` differs from the upstream symbol
-`XBMMonsterNotebookDetail`. Capture discovers all visible XBM names rather than
-silently treating those names as equivalent. The purpose of `XBMActivePet` relative
-to the Battlehorn Settings screen also remains to be confirmed.
+The live capture confirms `XBMMonsterBookDetail`, differing from the upstream
+`XBMMonsterNotebookDetail` symbol. The wrapper uses the observed runtime name.
+The purpose of `XBMActivePet` relative to Battlehorn Settings remains unconfirmed.
+
+## First live capture (2026-09-08)
+
+Chris supplied a diagnostic capture with Cu Sith selected (attachment
+`ce87cae4-6969-4a74-af30-612b9a2614d6/pasted-text.txt`). Both book addons report
+agent 500. The detail addon exposes zero ATK values; `XBMMonsterNotebook` exposes
+284, including the selected familiar's label/name at 229/230 and habitat text at
+257. A candidate grid occupies values 24 through 223, with 25 repeated groups of
+eight values and labels No. 1 through No. 25. These are observations of one state,
+not validated public field mappings or creature IDs.
+
+The capture contains no ContextMenu or active-pet addon. It cannot establish
+the three horn assignments. A stored "Team Composition" label also does not prove
+that the current UI is in Crucible mode; hidden controls can retain their labels.
+
+Scalar union storage contains unrelated high bytes, for example UInt
+`0x7FF600000001` represents UInt 1. Diagnostics now include the existing TwoInt
+typed Bool/Int/UInt interpretation alongside raw storage so before/after comparison
+does not mistake unused bytes for creature IDs or state changes.
 
 ## Live evidence required
 
@@ -63,6 +81,7 @@ upstream addresses above are only navigation hints, not runtime offsets.
 
 ## Validation boundary
 
-Compile both target frameworks. Runtime opening, addon spelling, typed value
-capture, and all assignment behavior require live validation; a successful build
-does not prove those client behaviors. No CN/TC Beastmaster behavior is claimed.
+Compile both target frameworks. The first capture validates runtime addon spelling
+and the basic capture path. Runtime opening, the updated typed scalar display, and
+all assignment behavior still require live validation; a successful build does not
+prove those client behaviors. No CN/TC Beastmaster behavior is claimed.
