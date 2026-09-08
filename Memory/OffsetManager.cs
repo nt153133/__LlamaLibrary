@@ -46,7 +46,7 @@ namespace LlamaLibrary.Memory;
 
 public static class OffsetManager
 {
-    private const long _version = 62; // Rescan the repaired jumping-condition and gil-transfer offsets.
+    private const long _version = 63; // Rescan GetNumberArrayData after removing an operand-byte false match.
     private const bool _debug = false;
 
     // --- Namespace / type filters ---------------------------------------------------------------

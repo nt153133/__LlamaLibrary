@@ -193,7 +193,7 @@ namespace LlamaLibrary.Memory
 
         public static IntPtr SearchResultPtr => AtkStage;
 
-        [Offset("Search E8 ?? ?? ?? ?? 6B 94 TraceCall", Name = "AtkStage.GetNumberArrayData")]
+        [Offset("Search E8 ? ? ? ? 6B 94 ? ? ? ? ? ? 4C 8B 80 ? ? ? ? TraceCall", Name = "AtkStage.GetNumberArrayData")]
         public static IntPtr GetNumberArrayData;
 
         [Offset("Search E8 ?? ?? ?? ?? 42 8D 1C AD TraceCall", Name = "AtkStage.GetStringArrayData")]
