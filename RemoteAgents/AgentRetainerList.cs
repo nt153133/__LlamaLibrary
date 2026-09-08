@@ -12,7 +12,7 @@ namespace LlamaLibrary.RemoteAgents
     /// Represents the remote agent responsible for managing the list of retainers.
     /// Provides access to the raw retainer pointer array and helper methods to order retainer information.
     /// </summary>
-    //TODO This agent might be completely useless given the current way I get the retainers
+    [Obsolete("AgentRetainerList is retired and no longer supported.", true)]
     public class AgentRetainerList : AgentInterface<AgentRetainerList>, IAgent
     {
         /// <inheritdoc/>
@@ -23,9 +23,9 @@ namespace LlamaLibrary.RemoteAgents
         }
 
         /// <summary>
-        /// Gets an array of pointers to the retainers managed by this agent.
+        /// Returns an empty array. This agent is retired.
         /// </summary>
-        public IntPtr[] RetainerList => Core.Memory.ReadArray<IntPtr>(Pointer + AgentRetainerListOffsets.AgentRetainerOffset, AgentRetainerListOffsets.MaxRetainers);
+        public IntPtr[] RetainerList => Array.Empty<IntPtr>();
 
         /// <summary>
         /// Returns an ordered list of <see cref="RetainerInfo"/> based on the memory order in <see cref="RetainerList"/>.

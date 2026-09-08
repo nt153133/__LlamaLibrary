@@ -46,7 +46,7 @@ namespace LlamaLibrary.Memory;
 
 public static class OffsetManager
 {
-    private const long _version = 61; // Rescan the repaired minion-count address on existing client builds.
+    private const long _version = 62; // Rescan the repaired jumping-condition and gil-transfer offsets.
     private const bool _debug = false;
 
     // --- Namespace / type filters ---------------------------------------------------------------

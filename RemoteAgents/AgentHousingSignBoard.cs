@@ -50,12 +50,10 @@ namespace LlamaLibrary.RemoteAgents
         public PlotSize Size => (PlotSize)Core.Memory.Read<byte>(Pointer + AgentHousingSignBoardOffsets.Size);
 
         /// <summary>
-        /// Gets the winning lottery number for the current or most recent lottery.
+        /// Returns zero. Reading the winning lottery number is currently unsupported.
         /// </summary>
-        /// <remarks>
-        /// Implementation Note: This property currently uses an offset relative to <c>LotteryEntryCount</c> from <see cref="AgentHousingSignBoardOffsets"/>.
-        /// </remarks>
-        public ushort WinningLotteryNumber => Core.Memory.Read<ushort>(Pointer + AgentHousingSignBoardOffsets.LotteryEntryCount + 0xC);
+        [Obsolete("Reading the winning lottery number is currently unsupported. This property always returns zero.")]
+        public ushort WinningLotteryNumber => 0;
 
         /// <summary>
         /// Gets the total number of entries in the lottery for this plot.
@@ -68,12 +66,12 @@ namespace LlamaLibrary.RemoteAgents
         /// <summary>
         /// Gets a value indicating whether the plot is owned by a Free Company.
         /// </summary>
-        public bool FcOwned => Core.Memory.Read<int>(Pointer + AgentHousingSignBoardOffsets.FcOwned) != 0;
+        public bool FcOwned => Core.Memory.Read<ulong>(Pointer + AgentHousingSignBoardOffsets.FcOwned) != 0;
 
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"Zone: {Zone}, Ward: {Ward}, Plot: {Plot}, ForSale: {ForSale}, Size: {Size}, LotteryEntryCount: {LotteryEntryCount}, WinningLotteryNumber: {WinningLotteryNumber}, FcOwned: {FcOwned}";
+            return $"Zone: {Zone}, Ward: {Ward}, Plot: {Plot}, ForSale: {ForSale}, Size: {Size}, LotteryEntryCount: {LotteryEntryCount}, FcOwned: {FcOwned}";
         }
     }
 }

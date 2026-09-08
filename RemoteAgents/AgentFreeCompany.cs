@@ -68,10 +68,10 @@ namespace LlamaLibrary.RemoteAgents
         }
 
         /// <summary>
-        /// Gets the number of lines in the Free Company history log.
+        /// Returns zero. Free Company history counting is no longer supported.
         /// </summary>
-        [Obsolete("Not sure what's using this but pattern is returning multiple values")]
-        public byte HistoryLineCount => Core.Memory.Read<byte>(Pointer + AgentFreeCompanyOffsets.HistoryCount);
+        [Obsolete("Free Company history counting is no longer supported. This property always returns zero.")]
+        public byte HistoryLineCount => 0;
 
         /// <summary>
         /// Gets the integer-array data used by the Free Company action addon.
