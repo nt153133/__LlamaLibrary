@@ -116,12 +116,19 @@ public static class OffsetManager
         };
 #endif
 
+        // Patch labels drive shared feature gates (including Beastmaster at 7.56); they are
+        // content versions, not Core.CurrentGameVer executable build numbers. Verified 2026-09-11:
+        // Global: https://na.finalfantasyxiv.com/lodestone/topics/detail/a8a526ad64db45c8ca8d1c7fdcce8a5eedaa18bc
+        // China: https://ff.web.sdo.com/project/launcher/news.asp (official 7.56 patch notes)
+        // Korea: https://www.ff14.co.kr/news/notice/view/2949 (September 8 maintenance completed)
+        // TC: https://www.ffxiv.com.tw/web/news/news_content.aspx?id=mPPBQZMZvm (July 28: 7.2)
+        // Keep regional entries independent: TC must reach the feature's patch before enabling it.
         ActiveRecord = ActiveRegion switch
         {
-            ClientRegion.China              => new GameRecord(7.51f, OffsetFlags.China),
-            ClientRegion.Korea              => new GameRecord(7.31f,  OffsetFlags.Korea),
-            ClientRegion.TraditionalChinese => new GameRecord(7.1f,  OffsetFlags.TraditionalChinese),
-            _                               => new GameRecord(7.51f, OffsetFlags.Global),
+            ClientRegion.China              => new GameRecord(7.56f, OffsetFlags.China),
+            ClientRegion.Korea              => new GameRecord(7.56f, OffsetFlags.Korea),
+            ClientRegion.TraditionalChinese => new GameRecord(7.2f, OffsetFlags.TraditionalChinese),
+            _                               => new GameRecord(7.56f, OffsetFlags.Global),
         };
 
         IsChinese = ActiveRegion == ClientRegion.China;
