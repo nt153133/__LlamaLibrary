@@ -131,20 +131,26 @@ namespace LlamaLibrary.RemoteAgents
                     {
                         var subCategory = Instance.SubCategoryPtrByIndex(category, i);
                         //var enabledByte = Core.Memory.Read<byte>(subCategory + AgentInclusionShopOffsets.SubCategoryEnabled);
-                        var itemNum = 0;
+
+                        // The agent keeps one struct per row, but the window gives every item its own line, so a row
+                        // that gives two items (a sword and its shield) takes two lines. InclusionShop.BuyItem takes
+                        // the line, so walk the structs one row at a time and number them by line.
+                        var row = 0;
+                        var line = 0;
                         InclusionShopItemStruct shopItemStruct;
                         do
                         {
-                            var pointer = subCategory + AgentInclusionShopOffsets.StructSizeCategory + ((AgentInclusionShopOffsets.StructSizeItem + AgentInclusionShopOffsets.ItemStructAdjustment) * itemNum);
+                            var pointer = subCategory + AgentInclusionShopOffsets.StructSizeCategory + ((AgentInclusionShopOffsets.StructSizeItem + AgentInclusionShopOffsets.ItemStructAdjustment) * row);
                             shopItemStruct = Core.Memory.Read<InclusionShopItemStruct>(pointer);
                             if (shopItemStruct.ItemId == 0)
                             {
                                 break;
                             }
 
-                            //shopItems.Add(new InclusionShopItem(shopItemStruct, cat, i, itemNum, (enabledByte & 1) == 1));
-                            shopItems.Add(new InclusionShopItem(shopItemStruct, cat, i, itemNum, false));
-                            itemNum += shopItemStruct.NumberOfItems;
+                            //shopItems.Add(new InclusionShopItem(shopItemStruct, cat, i, line, (enabledByte & 1) == 1));
+                            shopItems.Add(new InclusionShopItem(shopItemStruct, cat, i, line, false));
+                            row++;
+                            line += shopItemStruct.NumberOfItems;
                         }
                         while (shopItemStruct.ItemId > 0);
                     }
