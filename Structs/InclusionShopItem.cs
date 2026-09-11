@@ -24,6 +24,9 @@ namespace LlamaLibrary.Structs
 
         public bool Hidden;
 
+        /// <summary>
+        /// The item's line in the list the window shows, which is what InclusionShop.BuyItem takes. A row that gives two items takes two lines.
+        /// </summary>
         public int Index;
 
         public InclusionShopItem(InclusionShopItemStruct shopItem, byte category, byte subCategory, int location, bool hidden)
