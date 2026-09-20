@@ -71,8 +71,6 @@
 
     <ItemGroup>
         <PackageReference Include="System.Resources.Extensions" Version="9.0.0-preview.4.24266.19" PrivateAssets="all" />
-        <!-- Offline check projects generate their own assembly attributes under Scripts. -->
-        <Compile Remove="Scripts/**/*.cs" />
     </ItemGroup>
 
     <!-- Ijwhost.dll is a native runtime helper incorrectly exposed as a managed lib asset by the RB reference package. -->
