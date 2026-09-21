@@ -108,7 +108,11 @@ namespace LlamaLibrary.RemoteWindows
             }
         }
 
-        protected static TwoInt[] ReadElements(AtkAddonControl? window)
+        /// <summary>Reads ATK values when an existing RB wrapper does not expose a needed field.</summary>
+        /// <param name="window">Current addon, or null when absent.</param>
+        /// <returns>Copied values, or an empty array when unavailable. String pointers still reference client memory.</returns>
+        /// <remarks>Read and decode strings on the bot thread or within a frame lock; do not retain pointers between frames.</remarks>
+        public static TwoInt[] ReadElements(AtkAddonControl? window)
         {
             if (window == null || window.Pointer == IntPtr.Zero)
             {

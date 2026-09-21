@@ -4,6 +4,7 @@ using ff14bot.RemoteWindows;
 namespace LlamaLibrary.RemoteWindows
 {
     /// <summary>Copied addon values; native string pointers are decoded before the snapshot leaves the frame.</summary>
+    /// <remarks>Crucible layouts were verified on Global 2026.09.01. Read on the bot thread or within a frame lock.</remarks>
     public abstract class WindowSnapshot
     {
         /// <summary>Records whether a visible window supplied values.</summary>

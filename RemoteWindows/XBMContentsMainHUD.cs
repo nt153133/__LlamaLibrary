@@ -5,7 +5,7 @@ using ff14bot.RemoteWindows;
 namespace LlamaLibrary.RemoteWindows
 {
     /// <summary>Crucible HUD inventory and board-overview control.</summary>
-    public sealed class XBMContentsMainHUD : CrucibleWindow<XBMContentsMainHUD>
+    public sealed class XBMContentsMainHUD : RemoteWindow<XBMContentsMainHUD>
     {
         /// <summary>Creates a wrapper without opening the window.</summary>
         public XBMContentsMainHUD() : base("XBMContentsMainHUD")
@@ -14,13 +14,19 @@ namespace LlamaLibrary.RemoteWindows
 
         /// <summary>Copies the visible window's data on the bot thread or within a frame lock.</summary>
         /// <returns>A detached snapshot; IsOpen is false when the window is closed.</returns>
-        public Snapshot ReadSnapshot() => new Snapshot(ReadVisibleValues());
+        public Snapshot ReadSnapshot() => new Snapshot(Elements);
 
         /// <summary>Opens the board overview without suspending or forfeiting.</summary>
         /// <returns>Whether a callback was submitted; verify the resulting UI state.</returns>
         public bool OpenOverview()
         {
-            return Callback(3, 0);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(1, 3, 0);
+            return true;
         }
 
         /// <summary>Opens the temporary item's context menu.</summary>
@@ -33,7 +39,13 @@ namespace LlamaLibrary.RemoteWindows
                 throw new ArgumentOutOfRangeException(nameof(slot));
             }
 
-            return Callback(3, 6, 3, slot);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(2, 3, 6, 3, slot);
+            return true;
         }
 
         /// <summary>Detached crucible hud inventory and board-overview control data.</summary>

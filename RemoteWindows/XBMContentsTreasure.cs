@@ -5,7 +5,7 @@ using ff14bot.RemoteWindows;
 namespace LlamaLibrary.RemoteWindows
 {
     /// <summary>Treasure selection and already-owned temporary gear.</summary>
-    public sealed class XBMContentsTreasure : CrucibleWindow<XBMContentsTreasure>
+    public sealed class XBMContentsTreasure : RemoteWindow<XBMContentsTreasure>
     {
         /// <summary>Creates a wrapper without opening the window.</summary>
         public XBMContentsTreasure() : base("XBMContentsTreasure")
@@ -14,7 +14,7 @@ namespace LlamaLibrary.RemoteWindows
 
         /// <summary>Copies the visible window's data on the bot thread or within a frame lock.</summary>
         /// <returns>A detached snapshot; IsOpen is false when the window is closed.</returns>
-        public Snapshot ReadSnapshot() => new Snapshot(ReadVisibleValues());
+        public Snapshot ReadSnapshot() => new Snapshot(Elements);
 
         /// <summary>Chooses an offered treasure row.</summary>
         /// <param name="row">Zero-based offer row (0..3).</param>
@@ -26,7 +26,13 @@ namespace LlamaLibrary.RemoteWindows
                 throw new ArgumentOutOfRangeException(nameof(row));
             }
 
-            return Callback(3, 2, 3, row);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(2, 3, 2, 3, row);
+            return true;
         }
 
         /// <summary>Detached treasure selection and already-owned temporary gear data.</summary>

@@ -5,7 +5,7 @@ using ff14bot.RemoteWindows;
 namespace LlamaLibrary.RemoteWindows
 {
     /// <summary>Master's Bestiary catalog and team editor.</summary>
-    public sealed class XBMMonsterNotebook : CrucibleWindow<XBMMonsterNotebook>
+    public sealed class XBMMonsterNotebook : RemoteWindow<XBMMonsterNotebook>
     {
         /// <summary>Creates a wrapper without opening the window.</summary>
         public XBMMonsterNotebook() : base("XBMMonsterNotebook")
@@ -14,7 +14,7 @@ namespace LlamaLibrary.RemoteWindows
 
         /// <summary>Copies the visible window's data on the bot thread or within a frame lock.</summary>
         /// <returns>A detached snapshot; IsOpen is false when the window is closed.</returns>
-        public Snapshot ReadSnapshot() => new Snapshot(ReadVisibleValues());
+        public Snapshot ReadSnapshot() => new Snapshot(Elements);
 
         /// <summary>Changes the displayed catalog page.</summary>
         /// <param name="page">Zero-based catalog page.</param>
@@ -28,7 +28,13 @@ namespace LlamaLibrary.RemoteWindows
 
             // Catalog browsing used Int64 (4); team editing used UInt (5).
             // Preserve the captured argument types for each mode.
-            return Callback(3, 3, 4, page);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(2, 3, 3, 4, page);
+            return true;
         }
 
         /// <summary>Changes the team-edit page using its observed callback type.</summary>
@@ -41,7 +47,13 @@ namespace LlamaLibrary.RemoteWindows
                 throw new ArgumentOutOfRangeException(nameof(page));
             }
 
-            return Callback(3, 3, 5, page);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(2, 3, 3, 5, page);
+            return true;
         }
 
         /// <summary>Toggles the displayed familiar in the team.</summary>
@@ -54,7 +66,13 @@ namespace LlamaLibrary.RemoteWindows
                 throw new ArgumentOutOfRangeException(nameof(cell));
             }
 
-            return Callback(3, 7, 5, cell);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(2, 3, 7, 5, cell);
+            return true;
         }
 
         /// <summary>Detached master's bestiary catalog and team editor data.</summary>

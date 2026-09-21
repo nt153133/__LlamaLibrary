@@ -5,7 +5,7 @@ using ff14bot.RemoteWindows;
 namespace LlamaLibrary.RemoteWindows
 {
     /// <summary>Board overview and battle-entry details.</summary>
-    public sealed class XBMStageDetailList : CrucibleWindow<XBMStageDetailList>
+    public sealed class XBMStageDetailList : RemoteWindow<XBMStageDetailList>
     {
         /// <summary>Creates a wrapper without opening the window.</summary>
         public XBMStageDetailList() : base("XBMStageDetailList")
@@ -14,20 +14,32 @@ namespace LlamaLibrary.RemoteWindows
 
         /// <summary>Copies the visible window's data on the bot thread or within a frame lock.</summary>
         /// <returns>A detached snapshot; IsOpen is false when the window is closed.</returns>
-        public Snapshot ReadSnapshot() => new Snapshot(ReadVisibleValues());
+        public Snapshot ReadSnapshot() => new Snapshot(Elements);
 
         /// <summary>Challenges the board or starts its displayed battle.</summary>
         /// <returns>Whether a callback was submitted; verify the resulting UI state.</returns>
         public bool ActivatePrimary()
         {
-            return Callback(3, 8);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(1, 3, 8);
+            return true;
         }
 
         /// <summary>Closes the displayed board overview.</summary>
         /// <returns>Whether a callback was submitted; verify the resulting UI state.</returns>
         public bool CloseOverview()
         {
-            return Callback(3, 0);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(1, 3, 0);
+            return true;
         }
 
         /// <summary>Detached board overview and battle-entry details data.</summary>

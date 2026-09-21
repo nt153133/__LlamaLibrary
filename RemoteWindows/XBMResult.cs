@@ -6,7 +6,7 @@ using ff14bot.RemoteWindows;
 namespace LlamaLibrary.RemoteWindows
 {
     /// <summary>Board result, reward and exit controls.</summary>
-    public sealed class XBMResult : CrucibleWindow<XBMResult>
+    public sealed class XBMResult : RemoteWindow<XBMResult>
     {
         /// <summary>Creates a wrapper without opening the window.</summary>
         public XBMResult() : base("XBMResult")
@@ -15,13 +15,19 @@ namespace LlamaLibrary.RemoteWindows
 
         /// <summary>Copies the visible window's data on the bot thread or within a frame lock.</summary>
         /// <returns>A detached snapshot; IsOpen is false when the window is closed.</returns>
-        public Snapshot ReadSnapshot() => new Snapshot(ReadVisibleValues());
+        public Snapshot ReadSnapshot() => new Snapshot(Elements);
 
         /// <summary>Requests result progression through the agent; some clients leave the local page unchanged.</summary>
         /// <returns>Whether a callback was submitted; verify the resulting UI state.</returns>
         public bool Advance()
         {
-            return Callback(3, 0);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(1, 3, 0);
+            return true;
         }
 
         private IntPtr resultButton;

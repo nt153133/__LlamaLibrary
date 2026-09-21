@@ -18,7 +18,8 @@ namespace LlamaLibrary.RemoteWindows
 
         public void SelectEnable()
         {
-            RaptureAtkUnitManager.GetWindowByName("ContextMenu").SendAction(4, 3, 0, 3, 0, 4, 0, 0, 0);
+            // This flow already selected the company action; reuse the shared menu callback.
+            ContextMenu.Instance.SelectFirstEntry();
         }
 
         public async Task EnableAction(int index)

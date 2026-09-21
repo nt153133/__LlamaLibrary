@@ -5,7 +5,7 @@ using ff14bot.RemoteWindows;
 namespace LlamaLibrary.RemoteWindows
 {
     /// <summary>Familiar roster, battlehorn selection, feeding and rest.</summary>
-    public sealed class XBMPetParty : CrucibleWindow<XBMPetParty>
+    public sealed class XBMPetParty : RemoteWindow<XBMPetParty>
     {
         /// <summary>Creates a wrapper without opening the window.</summary>
         public XBMPetParty() : base("XBMPetParty")
@@ -14,7 +14,7 @@ namespace LlamaLibrary.RemoteWindows
 
         /// <summary>Copies the visible window's data on the bot thread or within a frame lock.</summary>
         /// <returns>A detached snapshot; IsOpen is false when the window is closed.</returns>
-        public Snapshot ReadSnapshot() => new Snapshot(ReadVisibleValues());
+        public Snapshot ReadSnapshot() => new Snapshot(Elements);
 
         /// <summary>Toggles the row for horns, feeding or rest in the current mode.</summary>
         /// <param name="row">Zero-based familiar row.</param>
@@ -26,7 +26,13 @@ namespace LlamaLibrary.RemoteWindows
                 throw new ArgumentOutOfRangeException(nameof(row));
             }
 
-            return Callback(3, 1, 3, row);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(2, 3, 1, 3, row);
+            return true;
         }
 
         /// <summary>Opens the familiar row context menu.</summary>
@@ -39,21 +45,39 @@ namespace LlamaLibrary.RemoteWindows
                 throw new ArgumentOutOfRangeException(nameof(row));
             }
 
-            return Callback(3, 2, 3, row);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(2, 3, 2, 3, row);
+            return true;
         }
 
         /// <summary>Opens the Bestiary for team editing.</summary>
         /// <returns>Whether a callback was submitted; verify the resulting UI state.</returns>
         public bool OpenNotebook()
         {
-            return Callback(3, 5);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(1, 3, 5);
+            return true;
         }
 
         /// <summary>Confirms feeding or rest selection.</summary>
         /// <returns>Whether a callback was submitted; verify the resulting UI state.</returns>
         public bool ConfirmSelection()
         {
-            return Callback(3, 3);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(1, 3, 3);
+            return true;
         }
 
         /// <summary>Detached familiar roster, battlehorn selection, feeding and rest data.</summary>

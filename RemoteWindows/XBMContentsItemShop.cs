@@ -5,7 +5,7 @@ using ff14bot.RemoteWindows;
 namespace LlamaLibrary.RemoteWindows
 {
     /// <summary>Temporary item shop, prices and inventory capacity.</summary>
-    public sealed class XBMContentsItemShop : CrucibleWindow<XBMContentsItemShop>
+    public sealed class XBMContentsItemShop : RemoteWindow<XBMContentsItemShop>
     {
         /// <summary>Creates a wrapper without opening the window.</summary>
         public XBMContentsItemShop() : base("XBMContentsItemShop")
@@ -14,7 +14,7 @@ namespace LlamaLibrary.RemoteWindows
 
         /// <summary>Copies the visible window's data on the bot thread or within a frame lock.</summary>
         /// <returns>A detached snapshot; IsOpen is false when the window is closed.</returns>
-        public Snapshot ReadSnapshot() => new Snapshot(ReadVisibleValues());
+        public Snapshot ReadSnapshot() => new Snapshot(Elements);
 
         /// <summary>Requests a shop purchase; the caller validates its confirmation.</summary>
         /// <param name="row">Zero-based shop offer row.</param>
@@ -26,14 +26,26 @@ namespace LlamaLibrary.RemoteWindows
                 throw new ArgumentOutOfRangeException(nameof(row));
             }
 
-            return Callback(3, 2, 3, row);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(2, 3, 2, 3, row);
+            return true;
         }
 
         /// <summary>Exits the temporary item shop.</summary>
         /// <returns>Whether a callback was submitted; verify the resulting UI state.</returns>
         public bool Exit()
         {
-            return Callback(3, 0);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(1, 3, 0);
+            return true;
         }
 
         /// <summary>Detached temporary item shop, prices and inventory capacity data.</summary>

@@ -5,7 +5,7 @@ using ff14bot.RemoteWindows;
 namespace LlamaLibrary.RemoteWindows
 {
     /// <summary>Board selection list.</summary>
-    public sealed class XBMStageList : CrucibleWindow<XBMStageList>
+    public sealed class XBMStageList : RemoteWindow<XBMStageList>
     {
         /// <summary>Creates a wrapper without opening the window.</summary>
         public XBMStageList() : base("XBMStageList")
@@ -14,7 +14,7 @@ namespace LlamaLibrary.RemoteWindows
 
         /// <summary>Copies the visible window's data on the bot thread or within a frame lock.</summary>
         /// <returns>A detached snapshot; IsOpen is false when the window is closed.</returns>
-        public Snapshot ReadSnapshot() => new Snapshot(ReadVisibleValues());
+        public Snapshot ReadSnapshot() => new Snapshot(Elements);
 
         /// <summary>Selects a board by its native identifier.</summary>
         /// <param name="board">Board identifier (1..5).</param>
@@ -26,7 +26,13 @@ namespace LlamaLibrary.RemoteWindows
                 throw new ArgumentOutOfRangeException(nameof(board));
             }
 
-            return Callback(3, 1, 3, board);
+            if (!IsOpen)
+            {
+                return false;
+            }
+
+            SendAction(2, 3, 1, 3, board);
+            return true;
         }
 
         /// <summary>Detached board selection list data.</summary>
