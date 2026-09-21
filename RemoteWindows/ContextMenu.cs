@@ -8,19 +8,9 @@
         {
         }
 
-        /// <summary>First command label, or empty when absent; read on the bot thread or within a frame lock.</summary>
-        public string FirstLabel => WindowSnapshot.Text(Elements, 8);
-
-        /// <summary>Selects the first command only if its label still matches.</summary>
-        /// <param name="expectedLabel">Exact localized label observed by the caller.</param>
-        /// <returns>Whether a callback was submitted.</returns>
-        public bool SelectFirstEntry(string expectedLabel)
-        {
-            return !string.IsNullOrEmpty(expectedLabel) && FirstLabel == expectedLabel && SelectFirstEntry();
-        }
-
-        /// <summary>Selects the first command when the caller has already established its context.</summary>
-        /// <returns>Whether a callback was submitted.</returns>
+        /// <summary>Selects the first command in a context menu opened by the caller.</summary>
+        /// <returns>Whether a callback was submitted; verify the resulting state.</returns>
+        /// <remarks>The caller must establish the source row and target. Localized labels do not identify commands.</remarks>
         public bool SelectFirstEntry()
         {
             if (!IsOpen)
@@ -28,8 +18,8 @@
                 return false;
             }
 
-            // Shared with FreeCompanyAction's existing context selection.
-            // Item commands use the current game target as their recipient.
+            // Same first-row callback used by FreeCompanyAction. For items,
+            // the current game target determines the recipient.
             SendAction(4, 3, 0, 3, 0, 4, 0, 0, 0);
             return true;
         }

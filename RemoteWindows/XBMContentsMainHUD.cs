@@ -29,7 +29,7 @@ namespace LlamaLibrary.RemoteWindows
             return true;
         }
 
-        /// <summary>Opens the temporary item's context menu.</summary>
+        /// <summary>Opens a populated, enabled temporary item slot's context menu.</summary>
         /// <param name="slot">Zero-based inventory slot (0..9).</param>
         /// <returns>Whether a callback was submitted; verify the resulting UI state.</returns>
         public bool OpenItemContext(uint slot)
@@ -40,6 +40,21 @@ namespace LlamaLibrary.RemoteWindows
             }
 
             if (!IsOpen)
+            {
+                return false;
+            }
+
+            // Crucible items are director inventory, not normal BagSlots. The
+            // HUD publishes their selectable state; names are display data only.
+            var values = Elements;
+            if (values.Length == 0)
+            {
+                return false;
+            }
+
+            WindowSnapshot.RequireLength(values, 111, "XBMContentsMainHUD");
+            int row = (int)slot * 5;
+            if (!values[10 + row].Bool || values[12 + row].UInt == 0)
             {
                 return false;
             }
