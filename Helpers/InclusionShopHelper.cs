@@ -9,6 +9,8 @@ using ff14bot.RemoteWindows;
 using LlamaLibrary.Logging;
 using LlamaLibrary.RemoteAgents;
 using LlamaLibrary.RemoteWindows;
+using InclusionShop = LlamaLibrary.RemoteWindows.InclusionShop;
+using ShopExchangeItemDialog = LlamaLibrary.RemoteWindows.ShopExchangeItemDialog;
 
 namespace LlamaLibrary.Helpers
 {

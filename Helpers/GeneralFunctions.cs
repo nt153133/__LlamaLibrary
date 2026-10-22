@@ -27,6 +27,7 @@ using LlamaLibrary.Retainers;
 using LlamaLibrary.Structs;
 using LlamaLibrary.Utilities;
 using Character = LlamaLibrary.RemoteWindows.Character;
+using CollectablesShop = LlamaLibrary.RemoteWindows.CollectablesShop;
 
 namespace LlamaLibrary.Helpers
 {
