@@ -234,6 +234,11 @@ namespace LlamaLibrary.Helpers.WorldTravel
                 return true;
             }
 
+            if (!Choices.Any(choice => choice.WorldID == worldId))
+            {
+                Log.Error($"{((World)worldId).WorldName()} is not in the World Visit list");
+            }
+
             for (var i = 0; i < Choices.Length; i++)
             {
                 if (Choices[i].WorldID != worldId)

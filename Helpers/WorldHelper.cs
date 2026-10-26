@@ -107,8 +107,9 @@ namespace LlamaLibrary.Helpers
         /// </summary>
         /// <remarks>
         /// On Traditional Chinese builds the value is always <c>TCRegion1</c>.
-        /// On CN builds the value is derived by searching <see cref="WorldMap"/>.
-        /// On all other builds it is read directly from game memory.
+        /// On all other builds it is derived from <see cref="CurrentWorld"/> via <see cref="WorldMap"/>.
+        /// Global builds fall back to <c>LobbyData.DataCenterId</c> when the current world is unmapped,
+        /// but that value is only set at login and goes stale after an in-game data-centre switch.
         /// </remarks>
         public static byte DataCenterId
         {
@@ -118,17 +119,31 @@ namespace LlamaLibrary.Helpers
 #if RB_TC
                 return (byte)WorldDCGroupType.TCRegion1;
 #elif RB_CN
-                var dc = WorldMap.Where(x => x.Value.Any(y => y == CurrentWorld));
-                if (!dc.Any())
-                {
-                    return 0;
-                }
-
-                return (byte)dc.First().Key;
+                return DataCenterIdFromCurrentWorld();
 #else
-                return Core.Memory.Read<byte>(DcOffsetLocation);
+                var dc = DataCenterIdFromCurrentWorld();
+                return dc != 0 ? dc : Core.Memory.Read<byte>(DcOffsetLocation);
 #endif
             }
+        }
+
+        private static byte DataCenterIdFromCurrentWorld()
+        {
+            if (!Core.IsInGame || Core.Me == null)
+            {
+                return 0;
+            }
+
+            var currentWorld = CurrentWorld;
+            foreach (var pair in WorldMap)
+            {
+                if (pair.Value.Contains(currentWorld))
+                {
+                    return (byte)pair.Key;
+                }
+            }
+
+            return 0;
         }
 
         /// <summary>
