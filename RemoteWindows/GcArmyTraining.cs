@@ -108,10 +108,16 @@ namespace LlamaLibrary.RemoteWindows
             return true;
         }
 
-        /// <summary>Acknowledges a completed one-hour regimen and closes the result window.</summary>
+        /// <summary>
+        /// Acknowledges a completed one-hour regimen and closes the result window.
+        /// The caller must establish that a regimen has returned before invoking
+        /// this operation. The normal regimen picker and completed-result layout
+        /// reuse the same addon, and the result layout does not expose a stable
+        /// language-independent AtkValue discriminator.
+        /// </summary>
         public bool ConfirmCompletedRegimen()
         {
-            if (!IsCompletedRegimen)
+            if (!IsOpen)
             {
                 return false;
             }
