@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -271,12 +272,22 @@ namespace LlamaLibrary.Helpers.WorldTravel
                     return false;
                 }
 
-                if (!await Coroutine.Wait(12_000, () => WorldTravelFinderReady.Instance.IsOpen))
+                if (!await Coroutine.Wait(12_000, () => WorldTravelFinderReady.Instance.IsOpen || WorldTravelFinderStatus.Instance.IsOpen))
                 {
                     Log.Error("WorldTravelFinderReady did not open");
                     WorldTravelSelect.Instance.Close();
                     await Coroutine.Wait(5000, () => !WorldTravelSelect.Instance.IsOpen);
                     return false;
+                }
+
+                if (WorldTravelFinderStatus.Instance.IsOpen)
+                {
+                    Log.Information("World Travel Finder Queue is open");
+                    if (!await Coroutine.Wait(8 * 60 * 1000, () => WorldTravelFinderReady.Instance.IsOpen))
+                    {
+                        Log.Error("WorldTravelFinderReady did not open after 8 minutes");
+                        WorldTravelSelect.Instance.Close();
+                    }
                 }
 
                 if (WorldTravelFinderReady.Instance.IsOpen)
