@@ -26,18 +26,31 @@ using Newtonsoft.Json;
 namespace LlamaLibrary.Helpers;
 
 /// <summary>
-/// Handles loading server profiles and managing duty queue operations.
+/// Loads server-hosted profiles and cooperatively drives RebornBuddy's duty queue state machine.
 /// </summary>
+/// <remarks>
+/// Queue operations use <see cref="Coroutine"/> waits and therefore must run from an active
+/// RebornBuddy coroutine (for example, an OrderBot profile behavior). The workflow deliberately
+/// resumes an existing queue instead of attempting to register again because
+/// <see cref="DutyManager.CanQueue(InstanceContentResult[])"/> reports an active queue as an error.
+/// </remarks>
 public class LoadServerProfile
 {
     /// <summary>
-    /// Queue type enumeration for type-safe queue selection.
+    /// Selects the game system used to enter a duty.
     /// </summary>
     public enum QueueType
     {
+        /// <summary>Queues a synchronized live-player party through Duty Finder.</summary>
         Standard = 0,
+
+        /// <summary>Queues the current party unrestricted through Duty Finder.</summary>
         Undersized = 1,
+
+        /// <summary>Enters with scenario NPCs through Duty Support.</summary>
         DutySupport = 2,
+
+        /// <summary>Enters with selected avatars through the Trust interface.</summary>
         Trust = 3
     }
 
@@ -295,16 +308,20 @@ public class LoadServerProfile
     private const string ProfileServerUrl = "https://sts.llamamagic.net/profiles.json";
     private const int ToastDurationMs = 25000;
     private const int HttpTimeoutSeconds = 10;
-    private const int QueueTimeout = 10000;
+    // Registration normally changes QueueState within a few frames. A bounded timeout and retry
+    // protect against dropped UI actions without turning a permanent eligibility failure into a loop.
+    private const int QueueRegistrationTimeout = 10000;
+    private const int QueueRegistrationAttempts = 3;
+    private const int QueueRegistrationRetryDelay = 1000;
     private const int TrustWindowTimeout = 8000;
     private const int DutyRecommenceDelay = 5000;
     private const int LoadContentTimeout = 1000;
+    private const int DirectorInitializationTimeout = 10000;
 
     private static readonly Color ToastHeaderColor = Color.FromRgb(147, 112, 219);
     private static readonly Color ToastTextColor = Color.FromRgb(13, 106, 175);
     private static readonly FontFamily ToastFont = new("Gautami");
 
-    private static readonly TimeSpan BarrierCheckInterval = TimeSpan.FromMilliseconds(500);
     private static readonly TimeSpan CutsceneCheckTimeout = TimeSpan.FromMilliseconds(2000);
 
     // GrandCompany Barracks Zone IDs
@@ -338,7 +355,7 @@ public class LoadServerProfile
             if (DutyManager.QueueState == QueueState.InDungeon)
             {
                 Log.Information("Already in dungeon");
-                LoadProfileDirect(profile.DutyId, profile.URL);
+                await LoadDutyProfile(profile, null);
             }
             else
             {
@@ -390,7 +407,7 @@ public class LoadServerProfile
         if (DutyManager.QueueState == QueueState.InDungeon)
         {
             Log.Information("Already in dungeon");
-            await LoadMaterializedProfile(profile, profileSource);
+            await LoadDutyProfile(profile, profileSource);
             return;
         }
 
@@ -458,18 +475,42 @@ public class LoadServerProfile
     {
         var profileUri = new Uri(uri);
 
-        using (var client = new HttpClient { Timeout = new TimeSpan(0, 0, 10) })
+        try
         {
-            var response = (await Coroutine.ExternalTask(client.GetAsync(uri), 10_000)).Result;
-            if (response.IsSuccessStatusCode)
+            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(HttpTimeoutSeconds) };
+            var responseWait = await Coroutine.ExternalTask(client.GetAsync(profileUri), HttpTimeoutSeconds * 1000);
+            if (!responseWait.Completed)
             {
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<ServerProfile?>>(content);
+                Log.Error($"Timed out fetching the profile list from {profileUri.Host}.");
+                return new List<ServerProfile?>();
             }
+
+            using var response = responseWait.Result;
+            if (!response.IsSuccessStatusCode)
+            {
+                Log.Error($"Profile server returned HTTP {(int)response.StatusCode} ({response.StatusCode}).");
+                return new List<ServerProfile?>();
+            }
+
+            // Response content is another ordinary .NET task. It must also be bridged through
+            // Coroutine.ExternalTask or RebornBuddy faults the active profile coroutine.
+            var content = await Coroutine.ExternalTask(response.Content.ReadAsStringAsync());
+            return JsonConvert.DeserializeObject<List<ServerProfile?>>(content) ?? new List<ServerProfile?>();
+        }
+        catch (HttpRequestException ex)
+        {
+            Log.Error($"Failed to fetch the profile list: {ex.Message}");
+        }
+        catch (TaskCanceledException ex)
+        {
+            Log.Error($"Profile list request was canceled or timed out: {ex.Message}");
+        }
+        catch (JsonException ex)
+        {
+            Log.Error($"Profile server returned invalid JSON: {ex.Message}");
         }
 
-        Log.Error("Failed to get profile list from server");
-        return new List<ServerProfile>();
+        return new List<ServerProfile?>();
     }
 
     public static string CurrentLocalizedZoneNameById(int zoneId)
@@ -530,50 +571,100 @@ public class LoadServerProfile
     }
 
     internal static Task RunDutyTask(ServerProfile profile, bool goToBarracks, bool sayHello, bool sayHelloCustom, string sayHelloMessages, int queueType)
-        => RunDutyTask(profile, goToBarracks, sayHello, sayHelloCustom, sayHelloMessages, queueType, null);
-
-    private static async Task RunDutyTask(ServerProfile profile, bool goToBarracks, bool sayHello, bool sayHelloCustom, string sayHelloMessages, int queueType, IServerProfileSource? profileSource)
     {
-        while (DutyManager.QueueState != QueueState.InDungeon)
+        if (!TryParseQueueType(queueType, out var parsedQueueType))
+        {
+            return Task.CompletedTask;
+        }
+
+        return RunDutyTask(profile, goToBarracks, sayHello, sayHelloCustom, sayHelloMessages, parsedQueueType, null);
+    }
+
+    private static Task RunDutyTask(ServerProfile profile, bool goToBarracks, bool sayHello, bool sayHelloCustom, string sayHelloMessages, int queueType, IServerProfileSource? profileSource)
+    {
+        if (!TryParseQueueType(queueType, out var parsedQueueType))
+        {
+            return Task.CompletedTask;
+        }
+
+        return RunDutyTask(profile, goToBarracks, sayHello, sayHelloCustom, sayHelloMessages, parsedQueueType, profileSource);
+    }
+
+    /// <summary>
+    /// Registers for a duty when necessary, follows queue-pop transitions, and loads the matching
+    /// profile only after the client has entered content.
+    /// </summary>
+    private static async Task RunDutyTask(ServerProfile profile, bool goToBarracks, bool sayHello, bool sayHelloCustom, string sayHelloMessages, QueueType queueType, IServerProfileSource? profileSource)
+    {
+        if (!TryGetInstanceContent(profile.DutyId, out var instanceContent))
+        {
+            return;
+        }
+
+        if (!await ValidateUnlockQuest(profile, profileSource))
+        {
+            return;
+        }
+
+        if (DutyManager.QueueState == QueueState.None)
         {
             await GeneralFunctions.StopBusy(false);
 
-            if (!await ValidateAndPrepareForQueue(profile, queueType, profileSource))
+            if (goToBarracks && !IsInGCBarracks())
+            {
+                await GrandCompanyHelper.GetToGCBarracks();
+            }
+
+            if (!ValidateCanQueue(instanceContent))
             {
                 return;
             }
 
-            while (DutyManager.QueueState == QueueState.None)
+            // The party leader can register between CanQueue and this point, so seed the result
+            // from live state before deciding whether this client should issue a queue action.
+            var registered = DutyManager.QueueState != QueueState.None;
+            for (var attempt = 1; attempt <= QueueRegistrationAttempts && DutyManager.QueueState == QueueState.None; attempt++)
             {
-                if (goToBarracks && !IsInGCBarracks())
+                registered = await QueueForDuty(profile, instanceContent, queueType);
+                if (registered)
                 {
-                    await GrandCompanyHelper.GetToGCBarracks();
+                    break;
                 }
 
-                if (DutyManager.QueueState == QueueState.None)
+                Log.Warning($"Queue registration for {instanceContent.CurrentLocaleName} did not start (attempt {attempt}/{QueueRegistrationAttempts}).");
+                if (attempt < QueueRegistrationAttempts)
                 {
-                    if (!await QueueForDuty(profile, queueType))
-                    {
-                        return;
-                    }
+                    await Coroutine.Sleep(QueueRegistrationRetryDelay);
                 }
             }
 
-            if (!await WaitForDutyPopAndCommence(profile))
+            if (!registered)
             {
+                ShowErrorToast($"Unable to queue for {instanceContent.CurrentLocaleName} after {QueueRegistrationAttempts} attempts.");
                 return;
             }
-
-            await HandleCutscene();
-
-            if (!await WaitForBarrierAndSayHello(profile.DutyType, sayHello, sayHelloCustom, sayHelloMessages))
-            {
-                return;
-            }
-
-            Log.Information("Should be ready");
+        }
+        else
+        {
+            // CanQueue returns -1 for every active queue and cannot validate which duty is selected.
+            // Preserve the caller's profile choice and resume monitoring instead of abandoning the pop.
+            Log.Information($"Resuming existing duty queue in state {DutyManager.QueueState}.");
         }
 
+        if (!await WaitForDutyPopAndCommence())
+        {
+            Log.Warning($"Queue for {instanceContent.CurrentLocaleName} ended before the duty loaded.");
+            return;
+        }
+
+        await HandleCutscene();
+
+        if (!await WaitForBarrierAndSayHello(profile.DutyType, sayHello, sayHelloCustom, sayHelloMessages))
+        {
+            return;
+        }
+
+        Log.Information($"Entered {instanceContent.CurrentLocaleName}; loading its profile.");
         await LoadDutyProfile(profile, profileSource);
     }
 
@@ -625,13 +716,6 @@ public class LoadServerProfile
     };
 
     private static bool IsInGCBarracks() => GcBarracksZones.Contains(WorldManager.ZoneId);
-
-    private static void LoadProfileDirect(uint dungeonDutyId, string profileUrl)
-    {
-        Log.Information($"Loading {DataManager.InstanceContentResults[dungeonDutyId].CurrentLocaleName} profile.");
-        ConditionParser.Initialize();
-        NeoProfileManager.Load(profileUrl, false);
-    }
 
     private static async Task<ServerProfile?> FindProfileByName(string profileName)
     {
@@ -697,9 +781,34 @@ public class LoadServerProfile
         return profile;
     }
 
-    private static async Task<bool> ValidateAndPrepareForQueue(ServerProfile profile, int queueType, IServerProfileSource? profileSource)
+    private static bool TryParseQueueType(int value, out QueueType queueType)
     {
-        // Check unlock quest
+        if (Enum.IsDefined(typeof(QueueType), value))
+        {
+            queueType = (QueueType)value;
+            return true;
+        }
+
+        queueType = default;
+        ShowErrorToast($"Unknown queue type {value}. Expected a value from 0 through 3.");
+        return false;
+    }
+
+    private static bool TryGetInstanceContent(uint dutyId, out InstanceContentResult instanceContent)
+    {
+        if (DataManager.InstanceContentResults.TryGetValue(dutyId, out var result) && result != null)
+        {
+            instanceContent = result;
+            return true;
+        }
+
+        instanceContent = null!;
+        ShowErrorToast($"Instance content data not found for duty ID {dutyId}.");
+        return false;
+    }
+
+    private static async Task<bool> ValidateUnlockQuest(ServerProfile profile, IServerProfileSource? profileSource)
+    {
         if (profile.UnlockQuest != 0 && !QuestLogManager.IsQuestCompleted((uint)profile.UnlockQuest))
         {
             Log.Information($"Unlock quest {DataManager.GetLocalizedQuestName(profile.UnlockQuest)} is not complete. Loading profile to complete quest.");
@@ -716,14 +825,13 @@ public class LoadServerProfile
             return false;
         }
 
-        // Use DutyManager.CanQueue for validation
-        var instanceContent = DataManager.InstanceContentResults[(uint)profile.DutyId];
-        if (instanceContent == null)
-        {
-            ShowErrorToast($"Instance content data not found for duty ID {profile.DutyId}");
-            return false;
-        }
+        return true;
+    }
 
+    private static bool ValidateCanQueue(InstanceContentResult instanceContent)
+    {
+        // This check is intentionally limited to QueueState.None. RebornBuddy returns -1 for an
+        // existing queue, which is a valid resumable state rather than a registration failure.
         var canQueueResult = DutyManager.CanQueue(instanceContent);
         return HandleCanQueueResult(canQueueResult, instanceContent);
     }
@@ -738,14 +846,18 @@ public class LoadServerProfile
             -3 => HandleMixedRouletteSoloOnly(instanceContent),
             -4 => HandleInstanceNotAvailable(instanceContent),
             -5 => HandleNullInstance(instanceContent),
+            -6 => HandleQueueSubsystemUnavailable("the queue data pointer is unavailable"),
+            -7 => HandleQueueSubsystemUnavailable("the Contents Finder agent is unavailable"),
             _ => HandleGameSpecificError(result, instanceContent)
         };
     }
 
     private static bool HandleAlreadyInQueue(InstanceContentResult instanceContent)
     {
-        Log.Warning($"Already in queue for {instanceContent.CurrentLocaleName}");
-        return false;
+        // Queue state may change between the caller's pre-check and CanQueue. Treat that race as
+        // success so the state machine resumes monitoring instead of trying to register twice.
+        Log.Information($"A duty queue became active while validating {instanceContent.CurrentLocaleName}.");
+        return true;
     }
 
     private static bool HandleInvalidInstanceCount(InstanceContentResult instanceContent)
@@ -773,6 +885,13 @@ public class LoadServerProfile
     {
         Log.Error("Instance content is null");
         ShowErrorToast("Instance content data is invalid");
+        return false;
+    }
+
+    private static bool HandleQueueSubsystemUnavailable(string reason)
+    {
+        Log.Error($"Cannot inspect duty eligibility because {reason}.");
+        ShowErrorToast("Duty Finder is not ready. Close its windows, wait a moment, and try again.");
         return false;
     }
 
@@ -848,16 +967,16 @@ public class LoadServerProfile
         }
     }
 
-    private static async Task<bool> QueueForDuty(ServerProfile profile, int queueType)
+    private static async Task<bool> QueueForDuty(ServerProfile profile, InstanceContentResult instanceContent, QueueType queueType)
     {
-        var instanceName = DataManager.InstanceContentResults[(uint)profile.DutyId].CurrentLocaleName;
+        var instanceName = instanceContent.CurrentLocaleName;
 
         return queueType switch
         {
-            (int)QueueType.Trust                                 => await QueueForTrust(profile, instanceName),
-            (int)QueueType.DutySupport                           => await QueueForDutySupport(profile, instanceName),
-            (int)QueueType.Standard or (int)QueueType.Undersized => await QueueForParty(profile, instanceName, queueType),
-            _                                                    => false
+            QueueType.Trust                                 => await QueueForTrust(profile, instanceName),
+            QueueType.DutySupport                           => await QueueForDutySupport(profile, instanceName),
+            QueueType.Standard or QueueType.Undersized      => await QueueForParty(instanceContent, queueType),
+            _                                               => false
         };
     }
 
@@ -875,7 +994,11 @@ public class LoadServerProfile
         if (Dawn.Instance.IsOpen && AgentDawn.Instance.TrustId != profile.TrustId)
         {
             AgentDawn.Instance.Toggle();
-            await Coroutine.Wait(TrustWindowTimeout, () => !Dawn.Instance.IsOpen);
+            if (!await Coroutine.Wait(TrustWindowTimeout, () => !Dawn.Instance.IsOpen))
+            {
+                Log.Error("Trust window failed to close before changing the selected duty.");
+                return false;
+            }
         }
 
         if (AgentDawn.Instance.TrustId != profile.TrustId)
@@ -900,10 +1023,7 @@ public class LoadServerProfile
         }
 
         Dawn.Instance.Register();
-        await Coroutine.Wait(TrustWindowTimeout, () => !Dawn.Instance.IsOpen);
-        await Coroutine.Wait(QueueTimeout, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
-
-        return DutyManager.QueueState != QueueState.None;
+        return await WaitForQueueRegistration("Trust");
     }
 
     private static async Task<bool> QueueForDutySupport(ServerProfile profile, string instanceName)
@@ -915,59 +1035,105 @@ public class LoadServerProfile
             AgentDawnStory.Instance.Toggle();
         }
 
-        if (await Coroutine.Wait(TrustWindowTimeout, () => DawnStory.Instance.IsOpen))
+        if (!await Coroutine.Wait(TrustWindowTimeout, () => DawnStory.Instance.IsOpen))
         {
-            if (await DawnStory.Instance.SelectDuty(profile.DutyId))
-            {
-                DawnStory.Instance.Commence();
-            }
+            Log.Error("Duty Support window failed to open.");
+            return false;
         }
 
-        await Coroutine.Wait(QueueTimeout, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
-        return DutyManager.QueueState != QueueState.None;
+        if (!await DawnStory.Instance.SelectDuty(profile.DutyId))
+        {
+            Log.Error($"Duty Support could not select {instanceName}.");
+            return false;
+        }
+
+        DawnStory.Instance.Commence();
+        return await WaitForQueueRegistration("Duty Support");
     }
 
-    private static async Task<bool> QueueForParty(ServerProfile profile, string instanceName, int queueType)
+    private static async Task<bool> QueueForParty(InstanceContentResult instanceContent, QueueType queueType)
     {
         if (PartyManager.IsInParty && !PartyManager.IsPartyLeader)
         {
-            Log.Information("In a party but not leader, waiting for queue...");
-            await Coroutine.Wait(-1, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
+            Log.Information("Waiting for the party leader to register for the duty.");
+            await Coroutine.Wait(-1, () => DutyManager.QueueState != QueueState.None);
+            return DutyManager.QueueState != QueueState.None;
+        }
+
+        var isUndersized = queueType == QueueType.Undersized;
+        Log.Information($"Queuing for {instanceContent.CurrentLocaleName} as {(isUndersized ? "undersized" : "normal")} group.");
+
+        GameSettingsManager.JoinWithUndersizedParty = isUndersized;
+        if (!DutyManager.Queue(instanceContent))
+        {
+            Log.Error($"DutyManager rejected the queue request for {instanceContent.CurrentLocaleName}.");
+            return false;
+        }
+
+        return await WaitForQueueRegistration("Duty Finder");
+    }
+
+    private static async Task<bool> WaitForQueueRegistration(string queueName)
+    {
+        if (await Coroutine.Wait(QueueRegistrationTimeout, () => DutyManager.QueueState != QueueState.None))
+        {
+            Log.Information($"{queueName} registered the duty queue ({DutyManager.QueueState}).");
             return true;
         }
 
-        bool isUndersized = queueType == (int)QueueType.Undersized;
-        Log.Information($"Queuing for {instanceName} as {(isUndersized ? "undersized" : "normal")} group.");
-
-        GameSettingsManager.JoinWithUndersizedParty = isUndersized;
-        DutyManager.Queue(DataManager.InstanceContentResults[(uint)profile.DutyId]);
-
-        await Coroutine.Wait(QueueTimeout, () => DutyManager.QueueState == QueueState.CommenceAvailable || DutyManager.QueueState == QueueState.JoiningInstance);
-        return DutyManager.QueueState != QueueState.None;
+        Log.Error($"{queueName} did not register a duty queue within {QueueRegistrationTimeout / 1000} seconds.");
+        return false;
     }
 
-    private static async Task<bool> WaitForDutyPopAndCommence(ServerProfile profile)
+    private static async Task<bool> WaitForDutyPopAndCommence()
     {
         while (DutyManager.QueueState != QueueState.InDungeon && !CommonBehaviors.IsLoading)
         {
             switch (DutyManager.QueueState)
             {
+                case QueueState.InQueue:
+                    await Coroutine.Wait(-1, () => DutyManager.QueueState != QueueState.InQueue);
+                    break;
+
                 case QueueState.CommenceAvailable:
                     Log.Information("Waiting for queue pop.");
                     await Coroutine.Wait(-1, () => DutyManager.QueueState == QueueState.JoiningInstance || DutyManager.QueueState == QueueState.None);
                     break;
 
                 case QueueState.JoiningInstance:
-                    var randomDelay = new Random().Next(1000, 10000);
+                    var randomDelay = Random.Shared.Next(1000, 10000);
                     Log.Information($"Dungeon popped, commencing in {randomDelay / 1000} seconds.");
                     await Coroutine.Sleep(randomDelay);
+
+                    // A party member can withdraw during the humanized delay. Re-checking prevents
+                    // a stale click against a closed confirmation window and lets the next pop proceed.
+                    if (DutyManager.QueueState != QueueState.JoiningInstance)
+                    {
+                        break;
+                    }
+
                     DutyManager.Commence();
-                    await Coroutine.Wait(-1, () => DutyManager.QueueState == QueueState.LoadingContent || DutyManager.QueueState == QueueState.CommenceAvailable);
+                    await Coroutine.Wait(-1,
+                                         () => DutyManager.QueueState == QueueState.LoadingContent ||
+                                               DutyManager.QueueState == QueueState.CommenceAvailable ||
+                                               DutyManager.QueueState == QueueState.None ||
+                                               CommonBehaviors.IsLoading);
                     break;
 
                 case QueueState.LoadingContent:
                     Log.Information("Waiting for everyone to accept queue.");
-                    await Coroutine.Wait(-1, () => CommonBehaviors.IsLoading || DutyManager.QueueState == QueueState.CommenceAvailable);
+                    await Coroutine.Wait(-1,
+                                         () => CommonBehaviors.IsLoading ||
+                                               DutyManager.QueueState == QueueState.CommenceAvailable ||
+                                               DutyManager.QueueState == QueueState.None);
+
+                    if (DutyManager.QueueState == QueueState.CommenceAvailable)
+                    {
+                        // The client reuses CommenceAvailable after another player withdraws. Give
+                        // Duty Finder time to settle before monitoring for the replacement pop.
+                        await Coroutine.Sleep(DutyRecommenceDelay);
+                    }
+
                     await Coroutine.Sleep(LoadContentTimeout);
                     break;
 
@@ -980,7 +1146,7 @@ public class LoadServerProfile
             }
         }
 
-        return DutyManager.QueueState != QueueState.None;
+        return CommonBehaviors.IsLoading || DutyManager.QueueState == QueueState.InDungeon;
     }
 
     private static async Task HandleCutscene()
@@ -1014,9 +1180,10 @@ public class LoadServerProfile
     {
         Log.Information("Should be in duty");
 
-        if (DirectorManager.ActiveDirector is not InstanceContentDirector director)
+        if (!await Coroutine.Wait(DirectorInitializationTimeout, () => DirectorManager.ActiveDirector is InstanceContentDirector) ||
+            DirectorManager.ActiveDirector is not InstanceContentDirector director)
         {
-            Log.Error("Director is null");
+            Log.Error("The instance content director was not initialized after zoning into the duty.");
             return false;
         }
 
