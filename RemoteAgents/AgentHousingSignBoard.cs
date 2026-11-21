@@ -42,7 +42,11 @@ namespace LlamaLibrary.RemoteAgents
         /// <summary>
         /// Gets a value indicating whether the plot is currently for sale.
         /// </summary>
-        public bool ForSale => Core.Memory.Read<bool>(Pointer + AgentHousingSignBoardOffsets.ForSale);
+        public byte ForSale => Core.Memory.Read<byte>(Pointer + AgentHousingSignBoardOffsets.ForSale);
+
+        public byte Purchase => Core.Memory.Read<byte>(Pointer + 0x48);
+
+        public byte LotteryPeriod => Core.Memory.Read<byte>(Pointer + 0x4A);
 
         /// <summary>
         /// Gets the size category of the plot (Small, Medium, or Large).

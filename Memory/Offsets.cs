@@ -1321,7 +1321,7 @@ namespace LlamaLibrary.Memory
         [Offset("Search E8 ? ? ? ? 48 8B CB C7 43 ? ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? B0 01 TraceCall", Name = "AgentHousingPlant.SetInventoryItem")]
         internal static IntPtr PlantFunction;
 
-        [Offset("Search 41 8B 4E ? 8D 93 ? ? ? ? Add 3 Read8", Name = "AgentHousingPlant.SelectedItems")]
+        [Offset("Search 41 8B 4E ? 8D 93 ? ? ? ? Add 3 Read8", Name = "AgentHousingPlant.SelectedItems", MaintenancePriority = 4)]
         internal static int StructOffset;
     }
 

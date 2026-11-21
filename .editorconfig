@@ -214,3 +214,6 @@ dotnet_diagnostic.CS0649.severity = silent
 dotnet_diagnostic.CA1416.severity = none
 
 
+
+
+dotnet_diagnostic.VSTHRD200.severity = none

@@ -175,6 +175,12 @@ namespace LlamaLibrary.Helpers
                     if (curMoveTo.Count >= curMoveTo.Item.StackSize)
                     {
                         moveToIndex = Array.FindIndex(bagSlotArray, x => x.IsValid && x.IsFilled && x.Count < x.Item.StackSize);
+
+                        // The merge filled the target exactly and no partial stack is left to fill.
+                        if (moveToIndex < 0)
+                        {
+                            break;
+                        }
                     }
                 }
             }
