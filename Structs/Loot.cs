@@ -82,7 +82,8 @@ public struct LootItem
             return false;
         }
 
-        if (Item.Unique && InventoryManager.FilledSlots.Any(i => i.RawItemId == itemId))
+        // The game refuses a unique item while any copy is equipped or in the armoury chest, not just in the bags.
+        if (Item.Unique && InventoryManager.FilledInventoryAndArmory.Any(i => i.TrueItemId == itemId))
         {
             return false;
         }
